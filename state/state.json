@@ -1889,6 +1889,14 @@
     "wuwa": "https://pbs.twimg.com/profile_images/2085696982958665728/qlgc729S_200x200.jpg",
     "zzz": "https://pbs.twimg.com/profile_images/2097499758462140416/YGW1eFcg_200x200.jpg"
   },
+  "news": {
+    "genshin": {
+      "floor": 1792395075,
+      "paused": false,
+      "records": {},
+      "route": "a0f2147590c35140"
+    }
+  },
   "schedule": {
     "ananta": {},
     "genshin": {
@@ -2318,7 +2326,7 @@
           ],
           "b_phase1": [
             100,
-            1792391427
+            1792395075
           ],
           "b_phase1_4": [
             50,
