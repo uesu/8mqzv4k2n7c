@@ -3753,6 +3753,49 @@ def test_python_bump_is_safe_in_a_docless_production_repo():
     assert "ALLOWED_WRITES" in src and '"ci.yml", "monitor.yml", "python_version_bump.yml", "ruff.toml"' in src
 
 
+def _check_fleet_documentation(root, configured, live):
+    """All absent is a docs-free deployment; partial/stale docs still fail."""
+    paths = [root / "README.md", root / "docs" / "SOURCES.md",
+             root / "docs" / "SECURITY.md"]
+    present = [path.is_file() for path in paths]
+    if not any(present):
+        return False
+    assert all(present), "Incomplete fleet documentation: " + ", ".join(
+        str(path.relative_to(root)) for path, exists in zip(paths, present) if not exists)
+    expected = [f"{configured} entries, {live} live",
+                f"{configured} entries, {live} live", f"{live} nitter mirrors"]
+    for path, phrase in zip(paths, expected):
+        assert phrase in path.read_text(encoding="utf-8"), str(path)
+    return True
+
+
+def test_fleet_documentation_supports_docs_free_production_but_rejects_partial_or_stale_docs():
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        assert _check_fleet_documentation(root, 21, 20) is False
+        (root / "README.md").write_text("21 entries, 20 live", encoding="utf-8")
+        try:
+            _check_fleet_documentation(root, 21, 20)
+        except AssertionError:
+            pass
+        else:
+            raise AssertionError("partial documentation must fail")
+        (root / "docs").mkdir()
+        (root / "docs/SOURCES.md").write_text("21 entries, 20 live", encoding="utf-8")
+        (root / "docs/SECURITY.md").write_text("20 nitter mirrors", encoding="utf-8")
+        assert _check_fleet_documentation(root, 21, 20) is True
+        for path in [root / "README.md", root / "docs/SOURCES.md", root / "docs/SECURITY.md"]:
+            original = path.read_text(encoding="utf-8")
+            path.write_text("stale count", encoding="utf-8")
+            try:
+                _check_fleet_documentation(root, 21, 20)
+            except AssertionError:
+                pass
+            else:
+                raise AssertionError("stale documentation must fail")
+            path.write_text(original, encoding="utf-8")
+
+
 def test_the_documented_nitter_fleet_size_matches_the_code():
     """Three docs quote a mirror count; the list they describe lives in config.py.
 
@@ -3767,12 +3810,9 @@ def test_the_documented_nitter_fleet_size_matches_the_code():
     live = configured - len(suspended)
     assert (configured, live) == (21, 20)
 
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    sources = (ROOT / "docs" / "SOURCES.md").read_text(encoding="utf-8")
-    security = (ROOT / "docs" / "SECURITY.md").read_text(encoding="utf-8")
-    assert f"{configured} entries, {live} live" in readme
-    assert f"{configured} entries, {live} live" in sources
-    assert f"{live} nitter mirrors" in security
+    if not _check_fleet_documentation(ROOT, configured, live):
+        print("    INFO: fleet documentation check not applicable: all three docs absent; code fleet assertion still checked")
+
 
 
 # =========================================================================== announcement lock (2026-10-09)
