@@ -99,7 +99,9 @@ async def discover_news(fetcher: Fetcher, game: Game, since: int) -> list[dict] 
             if article.get("articleType") == 0:
                 continue
             aid = str(article.get("articleId") or "")
-            ts = parse_kuro_time(article.get("createTime") or "") or 0
+            # Kuro can create drafts days before their public startTime.
+            # Use publication time for freshness; retain legacy menus without it.
+            ts = parse_kuro_time(article.get("startTime") or article.get("createTime") or "") or 0
             if aid.isdigit() and ts >= since:
                 picked[aid] = {"id": aid, "ts": ts, "title": str(article.get("articleTitle") or "")}
     return sorted(picked.values(), key=lambda row: (row["ts"], row["id"]))
