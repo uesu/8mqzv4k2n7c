@@ -131,6 +131,7 @@ class Fetcher:
         Stop as soon as dimensions are known; do not decode or transform images.
         Unknown/unsupported formats are not evidence for grouping.
         """
+        import re
         from urllib.parse import urljoin, urlsplit
 
         from .media import image_dimensions
@@ -144,6 +145,7 @@ class Fetcher:
                 if (parts.scheme != "https" or parts.username or parts.password
                         or parts.port not in (None, 443)
                         or not any(host == h or host.endswith("." + h) for h in hosts)):
+                    log.warning("news media rejected: host=%s reason=URL policy", host)
                     return None
                 async with self._gate(), self.session.get(
                         url, headers={"User-Agent": BROWSER_UA}, allow_redirects=False,
@@ -154,7 +156,16 @@ class Fetcher:
                             return None
                         url = urljoin(url, location)
                         continue
-                    if response.status != 200:
+                    if response.status == 206:
+                        # Some CDNs return partial media even for an ordinary GET.
+                        # Only a declared prefix from offset zero can be sniffed.
+                        content_range = response.headers.get("Content-Range", "")
+                        match = re.fullmatch(r"bytes 0-(\d+)/(\d+|\*)", content_range.strip())
+                        if (not match or (match[2] != "*" and int(match[2]) <= int(match[1]))):
+                            log.warning("news media rejected: host=%s status=206 reason=non-prefix/invalid range", host)
+                            return None
+                    elif response.status != 200:
+                        log.warning("news media rejected: host=%s status=%s", host, response.status)
                         return None
                     cap = 256 * 1024 if dimensions else 64
                     prefix = bytearray()
@@ -164,8 +175,8 @@ class Fetcher:
                             break
                     mime = response.headers.get("Content-Type", "").split(";")[0].lower()
                     return bytes(prefix), mime
-        except (aiohttp.ClientError, asyncio.TimeoutError, ValueError):
-            pass
+        except (aiohttp.ClientError, asyncio.TimeoutError, ValueError) as exc:
+            log.warning("news media rejected: reason=%s", type(exc).__name__)
         return None
 
     async def verify_media(self, url: str) -> bool:
@@ -176,9 +187,17 @@ class Fetcher:
             image = (raw.startswith((b"\xff\xd8\xff", b"\x89PNG\r\n\x1a\n", b"GIF87a", b"GIF89a"))
                      or (raw[:4] == b"RIFF" and raw[8:12] == b"WEBP"))
             video = raw[4:8] == b"ftyp" or raw.startswith(b"\x1aE\xdf\xa3")
-            if (image and mime.startswith("image/")) or (video and mime.startswith(("video/", "image/avif"))):
+            # Binary MIME is used by some object-storage CDNs. Still require
+            # recognized bytes: octet-stream alone is never proof of media.
+            binary = mime.strip() == "application/octet-stream"
+            if (image and (mime.startswith("image/") or binary)) or (
+                    video and (mime.startswith(("video/", "image/avif")) or binary)):
                 self._mark("news-media", True)
                 return True
+            from urllib.parse import urlsplit
+
+            log.warning("news media rejected: host=%s mime=%s prefix=%s reason=signature/MIME",
+                        urlsplit(url).hostname, mime, raw[:12].hex())
         self._mark("news-media", False, "media GET/status/signature validation failed")
         return False
 
