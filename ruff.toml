@@ -1,0 +1,20 @@
+# Lint settings (`pip install ruff && ruff check .`). CI reads this same file in its ADVISORY job
+# only (`continue-on-error: true`), so a new ruff release can never block a Dependabot PR or a
+# hot-fix; the required `test` job never runs ruff.
+# Matches the interpreter pinned in .github/workflows/{ci,monitor}.yml (python-version: '3.14').
+target-version = "py314"
+line-length = 120
+
+[lint]
+select = ["E4", "E7", "E9", "F", "W", "B", "UP", "SIM", "I"]
+ignore = [
+    "B905",    # zip() without strict= — lengths are equal by construction
+    "SIM105",  # contextlib.suppress — explicit try/except reads better for non-developers
+    "SIM108",  # ternary operator suggestions
+    "UP007", "UP045",
+    "UP017",   # datetime.timezone.utc stays readable + works on older Pythons
+    "UP041",   # asyncio.TimeoutError is the right class on Python 3.10 too
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["E731"]
