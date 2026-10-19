@@ -1,0 +1,2520 @@
+{
+  "bootstrapped": {
+    "codes:genshin": 1790323434,
+    "codes:hna": 1790992409,
+    "codes:starrail": 1790323434,
+    "codes:wuwa": 1790323434,
+    "codes:zzz": 1790323434,
+    "schedule:ananta": 1790992408,
+    "schedule:genshin": 1790323164,
+    "schedule:hna": 1790992408,
+    "schedule:starrail": 1790323164,
+    "schedule:wuwa": 1790323164,
+    "schedule:zzz": 1790323164
+  },
+  "codes": {
+    "genshin": {
+      "2BJ64QRZ7RT8": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "Primogem*60;Adventurer's Experience*5",
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "6LS3F3LS5K87": {
+        "first_seen": 1790944228,
+        "gate": "redeem-validated",
+        "last_seen": 1792377025,
+        "message_id": "1555557642519445636",
+        "msg_codes": [
+          "6LS3F3LS5K87"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1790944228,
+        "rewards": [
+          "Primogem ×20",
+          "Geode of Replication ×160"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
+      "BALLETCOLLAB": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Hero's Wit ×3",
+          "Mora ×10,000",
+          "Mystic Enhancement Ore ×3",
+          "Primogem ×30"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "CODENAMEK": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Masked Ball Invitation Letter ×1"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "DATG5HG1PL89": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "DUGODWKRHAKDNJ": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Hero's Wit ×3",
+          "Mora ×10,000",
+          "Mystic Enhancement Ore ×3",
+          "Primogem ×30"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "EHVE2TEAFY6O": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Mora ×10,000",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "EPIC2026": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "40 primogems, five hero's wit, and 20k mora",
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "EZSB8889C2BZ": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Mora ×10,000",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "GENSHINGIFT": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": [
+          "Hero's Wit ×3",
+          "Primogem ×50"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "GS70XINGOJ": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Hero's Wit ×3",
+          "Mora ×30,000",
+          "Mystic Enhancement Ore ×5"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "GS70XRNWFB": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992405,
+        "rewards": "30000 Mora + 3 Hero's Wit + 5 Fine Enhancement Ore",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "GS71XAVWDS": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": "Mora*30000;Hero's Wit*3;Mystic Enhancement Ore*5",
+        "sources": [
+          "codehub",
+          "ennead",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "GS71XDYGEO": {
+        "first_seen": 1790323430,
+        "last_seen": 1791363020,
+        "rewards": [
+          "Mora ×30000",
+          "Hero's Wit ×3",
+          "Mystic Enhancement Ore ×5"
+        ],
+        "sources": [
+          "ennead",
+          "humbao"
+        ],
+        "status": "seeded"
+      },
+      "GS71XOXYLG": {
+        "first_seen": 1790323430,
+        "last_seen": 1791363020,
+        "rewards": [
+          "Mora ×30000",
+          "Hero's Wit ×3",
+          "Mystic Enhancement Ore ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "seeded"
+      },
+      "GS71XYNSYJ": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Mora ×30000",
+          "Hero's Wit ×3",
+          "Mystic Enhancement Ore ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "GS71YTAICB": {
+        "first_seen": 1790323430,
+        "last_seen": 1791363020,
+        "rewards": [
+          "Mora ×30,000",
+          "Hero's Wit ×3",
+          "Mystic Enhancement Ore ×5"
+        ],
+        "sources": [
+          "ennead",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "LEGEDILJKSGM": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Adventurer's Experience ×5",
+          "Primogem ×60"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "MYSNEZHNAYACAREER": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Hero's Wit ×3",
+          "Mora ×20,000",
+          "Primogem ×160",
+          "Primogem ×20,000"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "NEEI8A8341OW": {
+        "first_seen": 1790840103,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1555120875471118347",
+        "msg_codes": [
+          "NEEI8A8341OW",
+          "OPERACOLLAB"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1790840103,
+        "rewards": [
+          "Primogem ×60",
+          "Adventurer's Experience ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
+      "NEEI986K5X6R": {
+        "first_seen": 1791403234,
+        "gate": "only ennead",
+        "last_seen": 1792371317,
+        "rewards": [
+          "Primogem ×60",
+          "Adventurer's Experience ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
+      "NEEIJB764CA3": {
+        "first_seen": 1791148221,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1556418291717898373",
+        "msg_codes": [
+          "NEEIJB764CA3"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1791149429,
+        "rewards": "Primogem*60",
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
+      "NMI20MAJGIBP": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Geode of Replication ×160",
+          "Primogem ×20"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "OKTCV81F9H8D": {
+        "first_seen": 1791952819,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1559905206463102999",
+        "msg_codes": [
+          "OKTCV81F9H8D"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1791980771,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
+      "OPERACOLLAB": {
+        "first_seen": 1790840103,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1555120875471118347",
+        "msg_codes": [
+          "NEEI8A8341OW",
+          "OPERACOLLAB"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1790840103,
+        "rewards": "Primogem*30;Mora*20000;Hero's Wit*2",
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
+      "P7G0XA30H0Q3": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": null,
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "PFY1S40I88T9": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Adventurer's Experience ×5",
+          "Primogem ×60"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "PLDX12KCWMJ4": {
+        "first_seen": 1790840103,
+        "gate": "only ennead",
+        "last_seen": 1791884117,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "rejected"
+      },
+      "PLDXI8VFKI7C": {
+        "first_seen": 1790323430,
+        "last_seen": 1791884117,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "PLDXIB886Y1S": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ennead",
+          "humbao",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "PLDXULN2L986": {
+        "first_seen": 1790944825,
+        "gate": "only ennead",
+        "last_seen": 1791900320,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "rejected"
+      },
+      "PNKZ3WLNN8G6": {
+        "first_seen": 1790332129,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1552990319136477316",
+        "msg_codes": [
+          "PNKZ3WLNN8G6"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1790332129,
+        "rewards": [
+          "Teachings of Charity ×5",
+          "Teachings of Fortitude ×5",
+          "Teachings of Glory ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
+      "PRIMADONNA": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Mora ×50,000",
+          "Mora ×50000",
+          "Primogem ×100"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "REKVIEM": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Mystic Enhancement Ore ×10",
+          "Primogem ×100"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "SNEZHNAYA": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Fine Enhancement Ore ×5",
+          "Hero's Wit ×3",
+          "Mora ×30,000"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "UIVIBUQM6Q8A": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Mora ×10,000",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "VESNA0923": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Hero's Wit ×5",
+          "Primogem ×100"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "VESNAONPATROL": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "Primogem*40;Mora*20000;Hero's Wit*3",
+        "sources": [
+          "codehub",
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "WA8MJCETGXLR": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": null,
+        "sources": [
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "XVIZDH2B9WGX": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Mora ×10,000",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "Y1INABQB6DEX": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "60 primogems and five adventurer's experience",
+        "sources": [
+          "codehub",
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "Y6JYMKV6JKSL": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "Primogem*60;Adventurer's Experience*5",
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "YOAL3V36XHS7": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Mora ×10,000",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      }
+    },
+    "hna": {},
+    "starrail": {
+      "2TKRKAR6YG2X": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Credit ×50000",
+          "Stellar Jade ×100",
+          "Unknown reward (0b12bdf76fa4abc6b4d1fdfc0fb4d6f5_4521150989210768295) ×50000",
+          "Unknown reward (77cb5426637574ba524ac458fa963da0_6409817950389238658) ×100"
+        ],
+        "sources": [
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "4T28RJM4MS3B": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Credit ×10,000",
+          "Stellar Jade ×50"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "4TKSX77Y58QK": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "30 stellar jade, three traveler’s guides, five condensed aether, four lost gold fragments, and 20k credits",
+        "sources": [
+          "codehub",
+          "ennead",
+          "humbao",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "5S6ZHRWTDNJB": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "60 stellar jade",
+        "sources": [
+          "codehub",
+          "humbao",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "7S4AD2X35NE3": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Stellar Jade ×100",
+          "Traveler's Guide ×5",
+          "Unknown reward (508229a94e4fa459651f64c1cd02687a_6307505132287490837) ×5",
+          "Unknown reward (77cb5426637574ba524ac458fa963da0_6409817950389238658) ×100"
+        ],
+        "sources": [
+          "codehub",
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "8SMSVJWJM7ZT": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Credit ×10,000",
+          "Stellar Jade ×50"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "AT45Q": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Credit ×50,000",
+          "Credit ×50000",
+          "Stellar Jade ×100"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "BESTCOFFEEEVER": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": [
+          "Express Special Blend - Rustic Infusion ×2",
+          "Express Special Blend: Rustic Infusion ×2",
+          "Traveler's Guide ×3"
+        ],
+        "sources": [
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "BGF3A": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Stellar Jade ×100",
+          "Traveler's Guide ×5"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "BLADEFITCHECK": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Cold Joke ×2",
+          "Traveler's Guide ×3"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "CREATIONNYMPH": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "60 stellar jade and one fuel",
+        "sources": [
+          "codehub",
+          "ennead",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "CTK5DRQVT48F": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": null,
+        "sources": [
+          "codehub",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "FAREWELL": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "60 stellar jade and one fuel",
+        "sources": [
+          "codehub",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "HAILYAOGUANG": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Songlotus Cake ×2",
+          "Traveler's Guide ×3"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "HT3QMCJ9U4JB": {
+        "first_seen": 1790323430,
+        "last_seen": 1790323430,
+        "rewards": null,
+        "sources": [
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "IFYOUAREREADINGTHIS": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "60 stellar jade and one fuel",
+        "sources": [
+          "codehub",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "KA5SV3FJM7WX": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Credit ×50000",
+          "Stellar Jade ×100",
+          "Unknown reward (0b12bdf76fa4abc6b4d1fdfc0fb4d6f5_4521150989210768295) ×50000",
+          "Unknown reward (77cb5426637574ba524ac458fa963da0_6409817950389238658) ×100"
+        ],
+        "sources": [
+          "codehub",
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "KBJ8VZ6Y27QX": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Credit ×5,000",
+          "Credit ×5000",
+          "Refined Aether ×3",
+          "Stellar Jade ×60",
+          "Traveler's Guide ×2"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "LSJ9JARPZH33": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Stellar Jade ×100",
+          "Traveler's Guide ×5",
+          "Unknown reward (508229a94e4fa459651f64c1cd02687a_6307505132287490837) ×5",
+          "Unknown reward (77cb5426637574ba524ac458fa963da0_6409817950389238658) ×100"
+        ],
+        "sources": [
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "MALSV2F247FP": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Refined Aether ×4",
+          "Stellar Jade ×100",
+          "Unknown reward (77cb5426637574ba524ac458fa963da0_6409817950389238658) ×100",
+          "Unknown reward (7cb0e487e051f177d3f41de8d4bbc521_2556290033227986328) ×4"
+        ],
+        "sources": [
+          "codehub",
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "MH5KC": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Refined Aether ×4",
+          "Stellar Jade ×100"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "NSJR3B97ZZ5X": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": [
+          "Credit ×10,000",
+          "Credit ×10000",
+          "Stellar Jade ×50"
+        ],
+        "sources": [
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "OMEGA": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "60 stellar jade and one fuel",
+        "sources": [
+          "ennead",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "PEARLAPPRAISE": {
+        "first_seen": 1790840103,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1555120883767443517",
+        "msg_codes": [
+          "PEARLAPPRAISE",
+          "RT4BPNA8FBS3"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1790840103,
+        "rewards": [
+          "Traveler's Guide ×3",
+          "Cold Joke ×2"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
+      },
+      "PSJQKBQPYGMT": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Credit ×10,000",
+          "Stellar Jade ×50"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "RT4BPNA8FBS3": {
+        "first_seen": 1790840103,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1555120883767443517",
+        "msg_codes": [
+          "PEARLAPPRAISE",
+          "RT4BPNA8FBS3"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1790840103,
+        "rewards": [
+          "Stellar Jade ×50",
+          "Credit ×10000"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
+      },
+      "STARRAILFATE2026": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": [
+          "The Fluffy Multi-Functional Fan Glowstick ×2",
+          "Traveler's Guide ×3"
+        ],
+        "sources": [
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "STARRAILGIFT": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "50 stellar jade, 10k credits, two traveler’s guides, and five bottled soda",
+        "sources": [
+          "codehub",
+          "ennead",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "SUB2SPARXIE": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Sparxie Unlimited Edition Collectibles ×2",
+          "Traveler's Guide ×3"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "SUNSWEPTROBIN": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Classic SoulGlad ×2",
+          "Traveler's Guide ×3"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "WA4AV2F24PYX": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Stellar Jade ×50",
+          "Credit ×10000"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "WAK84U29VLYP": {
+        "first_seen": 1790323430,
+        "last_seen": 1790323430,
+        "rewards": null,
+        "sources": [
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "WAVEFLAIRSTYLE": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Traveler's Guide ×3",
+          "Speeding Jet Surfboard ×2"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "XAK9QJ454SG7": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Credit ×10,000",
+          "Credit ×10000",
+          "Stellar Jade ×50"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "XTJ9MV38DL3X": {
+        "first_seen": 1790323430,
+        "last_seen": 1790323430,
+        "rewards": null,
+        "sources": [
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "YAJQ2TR6ZY2P": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Refined Aether ×4",
+          "Stellar Jade ×100",
+          "Unknown reward (77cb5426637574ba524ac458fa963da0_6409817950389238658) ×100",
+          "Unknown reward (7cb0e487e051f177d3f41de8d4bbc521_2556290033227986328) ×4"
+        ],
+        "sources": [
+          "fandom",
+          "ogc"
+        ],
+        "status": "seeded"
+      }
+    },
+    "wuwa": {
+      "2NDANNIVERSARY": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 2 Forgery Premium Supply + 40000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "AGONISON": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 1 Weekly Challenge Supply Pack + 2 Advanced Sealed Tube",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "BACKTOSCHOOL": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 4 Premium Resonance Potion + 5 Advanced Energy Core",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "BAHAMUTKXMHM": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Medium Energy Core ×5",
+          "Medium Resonance Potion ×5",
+          "Shell Credit ×5,000"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "BEYONDTHEDOOR": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Energy Core + 2 Medium Nutrient Block",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "BURNINGSUN": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 4 Premium Resonance Potion + 5 Advanced Energy Core",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "CRUMBLEDCITY": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Energy Core + 2 Medium Nutrient Block",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "DARKSIDE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Resonance Potion + 2 Medium Revival Inhaler",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "DCARD3VN7M": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Medium Energy Core ×5",
+          "Medium Resonance Potion ×5",
+          "Shell Credit ×5,000"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "DREAMSPERSIST": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Energy Core + 2 Medium Nutrient Block",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "ENDLESSSUMMER": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Resonance Potion + 2 Medium Revival Inhaler",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "ETERNALFLAME": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Energy Core + 2 Medium Nutrient Block",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "EVERSHINE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 20 Premium Tuner + 5 Advanced Sealed Tube",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "F5F4D3B2A2": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Escape from Duckov Collab Livery ×1"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "FACEALEPH1": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 4 Premium Resonance Potion + 5 Advanced Energy Core",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "FACETHEFATE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 20 Premium Tuner + 5 Advanced Sealed Tube",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "FALLINGSANCTUM": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Premium Resonance Potion + 2 Advanced Revival Inhaler",
+        "sources": [
+          "codehub",
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "FASTERHIGHERSTRONGER": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "80 Astrite",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "FIGHTFORHOPE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Enclosure Tank + 20000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "FINDSENTINEL": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 2 Premium Enclosure Tank + 40000 Shell Credit",
+        "sources": [
+          "codehub",
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "FLAMESOFHEART": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 2 Forgery Premium Supply + 40000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "HEARTOFSWORD": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Resonance Potion + 2 Medium Revival Inhaler",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "HITTHEROAD": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 2 Forgery Premium Supply + 40000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "ILLUSIONHAUNTS": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Resonance Potion + 2 Medium Revival Inhaler",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "INTOTHEFOG": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 2 Forgery Premium Supply + 20000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "JOURNEYWELL": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 2 Forgery Premium Supply + 2 Advanced Sealed Tube",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "KEEPONSHINING": {
+        "first_seen": 1791691231,
+        "gate": "only ogc",
+        "last_seen": 1792371317,
+        "rewards": [
+          "Astrite ×80"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "pending"
+      },
+      "MECHANISMCITY": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 4 Premium Resonance Potion + 5 Advanced Energy Core",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "MOONLIGHT": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 2 Forgery Premium Supply + 40000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "NOMATTERTHECOST": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Resonance Potion + 2 Medium Revival Inhaler",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "PAPERPLANE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 4 Premium Resonance Potion + 5 Advanced Energy Core",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "PTTMYZSOM": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Medium Energy Core ×5",
+          "Medium Resonance Potion ×5",
+          "Shell Credit ×5,000"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "RABBITHOLE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Energy Core + 2 Medium Nutrient Block",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "RISKEVERYTHING": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Energy Core + 2 Medium Nutrient Block",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "RUNEREADER": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Enclosure Tank + 20000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "SAYCHEESE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Enclosure Tank + 20000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "SHADOWOFGLORY": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 4 Premium Resonance Potion + 5 Advanced Energy Core",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "SLICEDSPACE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Enclosure Tank + 20,000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "SOLARISSUPERCUP": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "80 Astrite",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "STARCHASER": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 20 Premium Tuner + 5 Advanced Sealed Tube",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "STARRYSTAGE2": {
+        "first_seen": 1791691231,
+        "gate": "only ogc",
+        "last_seen": 1792371317,
+        "rewards": [
+          "Astrite ×80"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "pending"
+      },
+      "STRANGEVISITORS": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Resonance Potion + 2 Medium Revival Inhaler",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "TERMINOLOGYINFOBOX": {
+        "first_seen": 1790323430,
+        "last_seen": 1790323430,
+        "rewards": null,
+        "sources": [
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "THEANSWER": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Enclosure Tank + 20000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "THISISFINALE": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 3 Advanced Enclosure Tank + 20000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "WAKINGMOON": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 20 Premium Tuner + 5 Advanced Sealed Tube",
+        "sources": [
+          "codehub",
+          "fandom"
+        ],
+        "status": "seeded"
+      },
+      "WARMSUNLIGHT": {
+        "first_seen": 1790323430,
+        "last_seen": 1790992827,
+        "rewards": "100 Astrite + 4 Premium Enclosure Tank + 40000 Shell Credit",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "WUTHERINGGIFT": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": [
+          "Astrite ×50",
+          "Medium Energy Bag ×2",
+          "Medium Revival Inhaler ×2",
+          "Premium Resonance Potion ×2",
+          "Shell Credit ×10,000",
+          "Shell Credit ×15,000"
+        ],
+        "sources": [
+          "fandom",
+          "ogc",
+          "wuthering.gg"
+        ],
+        "status": "seeded"
+      },
+      "WUWA4PC": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Astrite ×50",
+          "Shell Credit ×20,000"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      }
+    },
+    "zzz": {
+      "CBW0884678": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Denny ×20,000"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "FLINTWORKS": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Dennies ×30000",
+          "Denny ×30,000",
+          "Polychrome ×300",
+          "Senior Investigator Log ×2",
+          "Senior Investigator Logs ×2",
+          "W-Engine Energy Module ×3"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "JRNY2SKY": {
+        "expired_at": 1791734437,
+        "first_seen": 1791546293,
+        "gate": "redeem-validated",
+        "last_seen": 1792371317,
+        "message_id": "1558082849268179067",
+        "msg_codes": [
+          "JRNY2SKY"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1791546293,
+        "rewards": [
+          "Dennies ×30000",
+          "Polychrome ×300",
+          "W-Engine Energy Module ×3",
+          "Senior Investigator Logs ×2"
+        ],
+        "sources": [
+          "codehub",
+          "ennead",
+          "fandom",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "db5f4f8a75a5"
+      },
+      "ROSCAELIFER0617": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Polychrome ×30"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "VRELEASE31": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Polychrome ×50"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "ZENLESSGIFT": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "50 polychrome, two official investigator logs, three w-engine power supplies, and one bangboo algorithm module",
+        "sources": [
+          "codehub",
+          "ennead",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "ZZZ2YEAR": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Polychrome ×50"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "ZZZ30BANGBOO": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Denny ×6,666",
+          "Polychrome ×60"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "ZZZ31REMIELLE": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": [
+          "Denny ×6,666",
+          "Polychrome ×60"
+        ],
+        "sources": [
+          "codehub",
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "ZZZDREAMLAND": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Denny ×6,666",
+          "Polychrome ×30"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "ZZZGRIND32": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "Polychrome*20;Denny*2,222",
+        "sources": [
+          "codehub",
+          "ennead",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "ZZZINK32": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "Polychrome*20;Denny*2,222",
+        "sources": [
+          "codehub",
+          "ennead",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "ZZZMEIJI": {
+        "first_seen": 1790323430,
+        "last_seen": 1791636322,
+        "rewards": "3 Senior Investigator Log + 3 W-Engine Energy Module + 30,000 Denny",
+        "sources": [
+          "codehub"
+        ],
+        "status": "seeded"
+      },
+      "ZZZSEASON3": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Polychrome ×50"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      },
+      "ZZZVOID32": {
+        "first_seen": 1790323430,
+        "last_seen": 1792371317,
+        "rewards": "Polychrome*20;Denny*2,222",
+        "sources": [
+          "codehub",
+          "ennead",
+          "fandom",
+          "humbao",
+          "ogc",
+          "seria"
+        ],
+        "status": "seeded"
+      },
+      "ZZZY2ANNIV": {
+        "first_seen": 1790323430,
+        "last_seen": 1791276018,
+        "rewards": [
+          "Dennies ×30000",
+          "Denny ×30,000",
+          "Polychrome ×300",
+          "Senior Investigator Log ×2",
+          "Senior Investigator Logs ×2",
+          "W-Engine Energy Module ×3"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "seeded"
+      }
+    }
+  },
+  "heartbeat": {
+    "every_min": 1440,
+    "instance": "alpha",
+    "last_success": 1792326916
+  },
+  "icons": {
+    "genshin": "https://pbs.twimg.com/profile_images/2102589386378686464/tS24hVO2_200x200.jpg",
+    "starrail": "https://pbs.twimg.com/profile_images/2061274429456334851/xQfl3Ve__200x200.jpg",
+    "wuwa": "https://pbs.twimg.com/profile_images/2085696982958665728/qlgc729S_200x200.jpg",
+    "zzz": "https://pbs.twimg.com/profile_images/2097499758462140416/YGW1eFcg_200x200.jpg"
+  },
+  "schedule": {
+    "ananta": {},
+    "genshin": {
+      "7.1": {
+        "calendar": {
+          "banners": [
+            {
+              "endsAt": 1791885540,
+              "featured": [
+                "Vesna"
+              ],
+              "featured4": [
+                "Diona",
+                "Faruzan",
+                "Chongyun"
+              ],
+              "startsAt": 1790118000,
+              "title": "",
+              "version": "7.1"
+            },
+            {
+              "endsAt": 1791885540,
+              "featured": [
+                "Vodyanitsa"
+              ],
+              "featured4": [
+                "Diona",
+                "Faruzan",
+                "Chongyun"
+              ],
+              "startsAt": 1790118000,
+              "title": "",
+              "version": "7.1"
+            }
+          ],
+          "ts": 1791536841
+        },
+        "card_retired": 1791483988,
+        "data": {
+          "announcement_locked": true,
+          "banners": {
+            "phase1": [
+              "Vesna",
+              "Vodyanitsa"
+            ],
+            "phase1_4": [
+              "Diona",
+              "Faruzan",
+              "Chongyun"
+            ],
+            "phase2": [
+              "Skirk",
+              "Escoffier"
+            ],
+            "phase2_4": [
+              "Dahlia",
+              "Candace",
+              "Mika"
+            ],
+            "reruns": [
+              "Skirk",
+              "Escoffier"
+            ]
+          },
+          "banners_checked_ts": 1791536841,
+          "banners_search_ts": 1791536841,
+          "banners_settled": [
+            "phase1",
+            "phase1_4",
+            "phase2",
+            "phase2_4",
+            "reruns"
+          ],
+          "calendar_ts": 1791536841,
+          "compensation": "Primogems ×300",
+          "estimate_sources": [
+            "version cadence"
+          ],
+          "estimated": [
+            "preinstall_ts"
+          ],
+          "images": [
+            "https://pbs.twimg.com/media/HRlONCqXcAUhgGD.jpg?name=orig"
+          ],
+          "maint_end_ts": 1790132400,
+          "maint_start_ts": 1790114400,
+          "media_from": "x",
+          "preinstall_ts": 1789959600,
+          "program_ts": 1789214400,
+          "source_label": "x",
+          "source_links": [
+            [
+              "x",
+              "https://x.com/GenshinImpact/status/2096810691021689205"
+            ],
+            [
+              "HoYoLAB",
+              "https://www.hoyolab.com/article/46791577"
+            ]
+          ],
+          "source_url": "https://x.com/GenshinImpact/status/2096810691021689205",
+          "title_url": "https://x.com/GenshinImpact/status/2096810691021689205",
+          "version": "7.1"
+        },
+        "estimated_reported": [
+          "preinstall_ts"
+        ],
+        "first_seen": 1790323161,
+        "mirror_hash": "57acafec61f6ff54",
+        "mirror_retired": 1791483988,
+        "mirror_webhook_fp": "ee502f83bdf4",
+        "payload_hash": "57acafec61f6ff54",
+        "posted_at": 1791465622,
+        "prov": {
+          "b_phase1": [
+            50,
+            1789963203
+          ],
+          "b_phase1_4": [
+            50,
+            1789963203
+          ],
+          "b_phase1_4_by": [
+            "official"
+          ],
+          "b_phase1_by": [
+            "official"
+          ],
+          "b_phase2": [
+            50,
+            1791446403
+          ],
+          "b_phase2_4": [
+            50,
+            1791446403
+          ],
+          "b_phase2_4_by": [
+            "official"
+          ],
+          "b_phase2_by": [
+            "official"
+          ],
+          "b_reruns": [
+            6,
+            1791446431
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
+          "compensation": [
+            50,
+            1790118002
+          ],
+          "maint_end_ts": [
+            50,
+            1790118002
+          ],
+          "maint_start_ts": [
+            50,
+            1790118002
+          ],
+          "preinstall_ts": [
+            9,
+            1791536438
+          ],
+          "program_ts": [
+            45,
+            1791483988
+          ]
+        },
+        "status": "posted",
+        "updated_at": 1791465622,
+        "webhook_fp": "19991534cf6d"
+      }
+    },
+    "hna": {},
+    "starrail": {
+      "4.6": {
+        "calendar": {
+          "banners": [
+            {
+              "endsAt": 1792580340,
+              "featured": [
+                "Evanescia"
+              ],
+              "featured4": [
+                "Qingque",
+                "Xueyi",
+                "Misha"
+              ],
+              "startsAt": 1790560800,
+              "title": "",
+              "version": "4.6"
+            },
+            {
+              "endsAt": 1794319200,
+              "featured": [
+                "Pearl"
+              ],
+              "featured4": [
+                "Qingque",
+                "Xueyi",
+                "Misha"
+              ],
+              "startsAt": 1790560800,
+              "title": "",
+              "version": "4.6"
+            },
+            {
+              "endsAt": 1794319200,
+              "featured": [
+                "Mortenax Blade"
+              ],
+              "featured4": [
+                "Qingque",
+                "Xueyi",
+                "Misha"
+              ],
+              "startsAt": 1792580400,
+              "title": "",
+              "version": "4.6"
+            }
+          ],
+          "ts": 1791536841
+        },
+        "card_retired": 1790496362,
+        "data": {
+          "banners": {
+            "phase1": [
+              "Pearl",
+              "Evanescia"
+            ],
+            "phase1_4": [
+              "Qingque",
+              "Xueyi",
+              "Misha"
+            ],
+            "phase2": [
+              "Mortenax Blade"
+            ],
+            "phase2_4": [
+              "Qingque",
+              "Xueyi",
+              "Misha"
+            ],
+            "reruns": [
+              "Evanescia",
+              "Mortenax Blade"
+            ]
+          },
+          "banners_checked_ts": 1791536841,
+          "banners_search_ts": 1791536841,
+          "banners_settled": [
+            "phase1",
+            "phase1_4",
+            "phase2",
+            "phase2_4",
+            "reruns"
+          ],
+          "calendar_ts": 1791536841,
+          "compensation": "Stellar Jade ×300",
+          "images": [
+            "https://pbs.twimg.com/media/HSK2Q2pXsAA4YJA.jpg?name=orig"
+          ],
+          "maint_end_ts": 1790564400,
+          "maint_start_ts": 1790546400,
+          "media_from": "x",
+          "preinstall_ts": 1790229600,
+          "program_ts": 1789903800,
+          "source_label": "x",
+          "source_links": [
+            [
+              "x",
+              "https://x.com/honkaistarrail/status/2099440781115211916"
+            ],
+            [
+              "HoYoLAB",
+              "https://www.hoyolab.com/article/46814308"
+            ]
+          ],
+          "source_url": "https://x.com/honkaistarrail/status/2099440781115211916",
+          "title_url": "https://x.com/honkaistarrail/status/2099440781115211916",
+          "version": "4.6",
+          "youtube_video": "https://www.youtube.com/watch?v=drFgtruoPe8"
+        },
+        "estimated_reported": [
+          "program_ts"
+        ],
+        "first_seen": 1790323161,
+        "message_id": "1553693390334599169",
+        "payload_hash": "8afd5880df43fad9",
+        "posted_at": 1790499762,
+        "preinstall_offset_h": 88.0,
+        "prov": {
+          "b_phase1": [
+            50,
+            1790488804
+          ],
+          "b_phase1_4": [
+            50,
+            1790488804
+          ],
+          "b_phase1_4_by": [
+            "official"
+          ],
+          "b_phase1_by": [
+            "official"
+          ],
+          "b_phase2": [
+            5,
+            1790479405
+          ],
+          "b_phase2_4": [
+            5,
+            1791536841
+          ],
+          "b_phase2_4_by": [
+            "calendar",
+            "wiki"
+          ],
+          "b_phase2_by": [
+            "calendar",
+            "feed"
+          ],
+          "b_reruns": [
+            6,
+            1791536841
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
+          "compensation": [
+            50,
+            1790229608
+          ],
+          "maint_end_ts": [
+            50,
+            1790229608
+          ],
+          "maint_start_ts": [
+            50,
+            1790229608
+          ],
+          "preinstall_ts": [
+            50,
+            1790229608
+          ],
+          "program_ts": [
+            45,
+            1790488654
+          ]
+        },
+        "status": "posted",
+        "updated_at": 1790489775,
+        "webhook_fp": "19991534cf6d"
+      }
+    },
+    "wuwa": {
+      "3.7": {
+        "data": {
+          "banners": {
+            "four_star": [
+              "Buling",
+              "Taoqi",
+              "Youhu"
+            ],
+            "phase1": [
+              "Hsin",
+              "Chisa",
+              "Iuno"
+            ],
+            "phase1_4": [],
+            "phase2": [
+              "Suoming",
+              "Lucilla",
+              "Lynae"
+            ],
+            "reruns": [
+              "Chisa",
+              "Iuno",
+              "Lucilla",
+              "Lynae"
+            ]
+          },
+          "banners_checked_ts": 1792385716,
+          "banners_search_ts": 1792385716,
+          "banners_settled": [
+            "phase1"
+          ],
+          "compensation": "Astrite x300, Crystal Solvent x2",
+          "estimate_sources": [
+            "wuthering-countdown"
+          ],
+          "estimated": [
+            "program_ts"
+          ],
+          "images": [
+            "https://hw-media-cdn-mingchao.kurogame.com/object/1790006400000/m39h4r47zx7muv6xlk-1790072631821.jpg"
+          ],
+          "maint_end_ts": 1790737200,
+          "maint_start_ts": 1790712000,
+          "preinstall_ts": 1790560800,
+          "program_ts": 1790341813,
+          "source_label": "Official News",
+          "source_links": [
+            [
+              "Official News",
+              "https://wutheringwaves.kurogames.com/en/main/news/detail/5476"
+            ]
+          ],
+          "source_url": "https://wutheringwaves.kurogames.com/en/main/news/detail/5476",
+          "title_url": "https://wutheringwaves.kurogames.com/en/main/news/detail/5476",
+          "version": "3.7"
+        },
+        "estimated_reported": [
+          "program_ts"
+        ],
+        "first_seen": 1790323161,
+        "preinstall_offset_h": 42.0,
+        "prov": {
+          "b_four_star": [
+            6,
+            1791544043
+          ],
+          "b_four_star_by": [
+            "wiki"
+          ],
+          "b_phase1": [
+            100,
+            1792389314
+          ],
+          "b_phase1_4": [
+            50,
+            1790599919
+          ],
+          "b_phase1_4_tba": "2 name(s) found, 3 expected",
+          "b_phase2": [
+            6,
+            1791544043
+          ],
+          "b_phase2_by": [
+            "wiki"
+          ],
+          "b_reruns": [
+            6,
+            1791544043
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
+          "compensation": [
+            50,
+            1790072775
+          ],
+          "maint_end_ts": [
+            50,
+            1790072775
+          ],
+          "maint_start_ts": [
+            50,
+            1790072775
+          ],
+          "preinstall_ts": [
+            50,
+            1790072775
+          ],
+          "program_ts": [
+            10,
+            1790341813
+          ]
+        },
+        "status": "seeded"
+      }
+    },
+    "zzz": {
+      "3.3": {
+        "calendar": {
+          "banners": [
+            {
+              "endsAt": 1794369599,
+              "featured": [
+                "Phoenix",
+                "Velina"
+              ],
+              "featured4": [
+                "Seth",
+                "Manato"
+              ],
+              "startsAt": 1792544400,
+              "title": "",
+              "version": "3.3"
+            }
+          ],
+          "ts": 1792385716
+        },
+        "data": {
+          "announcement_locked": true,
+          "banners": {
+            "phase1": [
+              "Phoenix",
+              "Velina"
+            ],
+            "phase1_4": [
+              "Seth",
+              "Manato"
+            ],
+            "phase2": [
+              "Severian",
+              "Norma"
+            ],
+            "reruns": [
+              "Velina Airgid",
+              "Norma Hollowell"
+            ]
+          },
+          "banners_checked_ts": 1792385716,
+          "banners_display": {
+            "Norma": "Norma Hollowell",
+            "Phoenix": "Phoenix Reffaella",
+            "Severian": "Severian Lowell",
+            "Velina": "Velina Airgid"
+          },
+          "banners_search_ts": 1792385716,
+          "banners_settled": [
+            "phase1",
+            "phase2"
+          ],
+          "calendar_ts": 1792385716,
+          "compensation": "Polychrome ×300",
+          "images": [
+            "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
+          ],
+          "maint_end_ts": 1792551600,
+          "maint_start_ts": 1792533600,
+          "preinstall_ts": 1792382400,
+          "program_name": "Special Program",
+          "program_seen": true,
+          "program_ts": 1791545400,
+          "source_label": "X Post",
+          "source_links": [
+            [
+              "X Post",
+              "https://x.com/ZZZ_EN/status/2106957553435312559"
+            ]
+          ],
+          "source_url": "https://x.com/ZZZ_EN/status/2106957553435312559",
+          "title_url": "https://x.com/ZZZ_EN/status/2106957553435312559",
+          "version": "3.3",
+          "version_name": "Journey to the Sky"
+        },
+        "estimated_reported": [
+          "preinstall_ts",
+          "maint_start_ts",
+          "maint_end_ts"
+        ],
+        "first_seen": 1791172831,
+        "message_id": "1556516427786096744",
+        "mirror_hash": "f2f9636d97d58bdb",
+        "mirror_message_id": "1556585523047436341",
+        "mirror_webhook_fp": "db5f4f8a75a5",
+        "payload_hash": "4717120926f7d334",
+        "posted_at": 1791172831,
+        "preinstall_offset_h": 42.0,
+        "prov": {
+          "b_phase1": [
+            40,
+            1791546366
+          ],
+          "b_phase1_4": [
+            5,
+            1791558619
+          ],
+          "b_phase1_4_by": [
+            "calendar"
+          ],
+          "b_phase1_by": [
+            "official"
+          ],
+          "b_phase2": [
+            40,
+            1791546399
+          ],
+          "b_phase2_by": [
+            "official"
+          ],
+          "b_reruns": [
+            6,
+            1791602418
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
+          "compensation": [
+            50,
+            1792382705
+          ],
+          "maint_end_ts": [
+            50,
+            1792382705
+          ],
+          "maint_start_ts": [
+            50,
+            1792382705
+          ],
+          "preinstall_ts": [
+            50,
+            1792382705
+          ],
+          "program_name": [
+            50,
+            1791172803
+          ],
+          "program_ts": [
+            50,
+            1791172803
+          ],
+          "version_name": [
+            50,
+            1791172803
+          ]
+        },
+        "status": "posted",
+        "updated_at": 1792382715,
+        "webhook_fp": "19991534cf6d"
+      }
+    }
+  },
+  "schema": 1
+}

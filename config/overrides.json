@@ -1,0 +1,38 @@
+{
+  "_help": [
+    "Human-verified corrections — they win over every automatic source and the posted card is EDITED in place (silently, no re-ping) on the next run.",
+    "Shape: { \"<game key>\": { \"<version>\": { ...fields } } }. Game keys: genshin, starrail, zzz, wuwa, hna, ananta.",
+    "Times: unix seconds OR ISO text, e.g. \"2026-11-04T06:00:00+08:00\". Fields: program_ts, preinstall_ts, maint_start_ts, maint_end_ts, program_name, version_name, title_url, image, compensation.",
+    "title_url also pins the source button to the same post (the announcement). image is the key art. Once a card has its announcement, later posts can no longer move its link or key art, so use these to correct one by hand.",
+    "banners: reruns, phase1, phase1_4, phase2, phase2_4, four_star (Wuthering Waves summary line) — lists of names; an empty list shows TBA.",
+    "Example (remove the leading underscore from the game key to activate it):"
+  ],
+  "_starrail": {
+    "4.7": {
+      "banners": {
+        "phase1": ["Character A"],
+        "phase1_4": ["4-star A", "4-star B", "4-star C"],
+        "phase2": ["Character B"],
+        "reruns": ["Rerun A", "Rerun B"]
+      },
+      "maint_start_ts": "2026-11-09T06:00:00+08:00"
+    }
+  },
+
+  "zzz": {
+    "3.3": {
+      "_why": "2026-10-09: the card's link and key art had switched to ZZZ_EN's 05:00 UTC 'Share to Win Master Tape x10' giveaway (2108422202974499088), which repeats the air time. Pinned back to the Special Program announcement itself on X (ZZZ_EN 2106957553435312559, posted 2026-10-05 04:00 UTC), because X is the preferred source for the lock. Its key art is that post's own photo. HoYoLAB article 46972907 is the fallback announcement and was the card's source before this pin.",
+      "title_url": "https://x.com/ZZZ_EN/status/2106957553435312559",
+      "image": "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
+    }
+  },
+
+  "wuwa": {
+    "3.7": {
+      "_why": "2026-10-09: Phase 1 was locked on two names (Chisa, Iuno) without Hsin, and a locked phase never grows. Hsin is in the hub (As Full as Tonight, Forever, 2026-09-30) and on game8's 3.7 page (archives/616859, Phase 1 = Hsin, Chisa, Iuno), so the phase is pinned to all three. Phase 2 is left to the sources.",
+      "banners": {
+        "phase1": ["Hsin", "Chisa", "Iuno"]
+      }
+    }
+  }
+}

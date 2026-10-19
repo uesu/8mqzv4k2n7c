@@ -1,0 +1,177 @@
+{
+  "_help": "Per-game config. Add a game = add an entry. 'enabled': false keeps a game prepared but silent (switch it on with the ENABLE_GAMES variable, or it switches itself on at 'auto_enable_on'). 'four_star_count' = rate-up 4-stars per banner phase: any other count found -> TBA. Card text templates: {game} {version} {program} {version_name}. Every endpoint/id below was verified live on 2026-09-25 (see docs/SOURCES.md).",
+  "defaults": {
+    "color": 14922399,
+    "card": {
+      "title": "{game} Version {version} {program}",
+      "maintenance_heading": "Maintenance Details",
+      "maintenance_style": "start_end",
+      "maintenance_first": false,
+      "four_star_summary": false,
+      "banners_url": "",
+      "show_banners": true
+    }
+  },
+  "games": {
+    "genshin": {
+      "name": "Genshin Impact",
+      "short": "GI",
+      "enabled": true,
+      "four_star_count": 3,
+      "icon": "https://pbs.twimg.com/profile_images/2102589386378686464/tS24hVO2_200x200.jpg",
+      "hoyolab": {"gid": 2, "official_uid": 1015537, "c3kay": "https://feeds.c3kay.de/genshin.json"},
+      "launcher": {"type": "hoyoplay", "game_id": "gopR6Cufr3"},
+      "x_accounts": ["GenshinImpact"],
+      "program_label": "Special Program",
+      "program_patterns": ["special program"],
+      "banner_patterns": ["event wish"],
+      "banner_titles": ["Version {v} Event Wishes Notice - Phase {p}"],
+      "cadence": {
+        "days": 42, "maint_weekday": "Wed", "maint_time": "06:00", "maint_hours": 5,
+        "program_weekday": "Fri", "program_time": "20:00", "program_lead_days": 12,
+        "confidence": "high", "anchor_version": "7.1", "anchor_ts": 1790114400
+      },
+      "news_url": "https://genshin.hoyoverse.com/en/news",
+      "youtube": "https://www.youtube.com/@GenshinImpact/videos",
+      "twitch": "https://www.twitch.tv/genshinimpactofficial",
+      "card": {
+        "maintenance_heading": "Maintenance Details",
+        "banners_url": "https://lunaris.moe/banners"
+      },
+      "codes": {
+        "sources": ["hoyolab:2", "seria:genshin", "humbao:GENSHIN", "ogc:genshin", "ennead:genshin", "fandom:genshin-impact/Promotional_Code", "codehub:genshin-impact", "x"],
+        "redeem_url": "https://genshin.hoyoverse.com/en/gift?code={code}",
+        "redeem_hint": "Tap a code to open the official redemption page with it filled in, or redeem in-game: Paimon Menu → Settings → Account → Redeem Now."
+      }
+    },
+    "starrail": {
+      "name": "Honkai: Star Rail",
+      "short": "HSR",
+      "enabled": true,
+      "four_star_count": 3,
+      "icon": "https://pbs.twimg.com/profile_images/2061274429456334851/xQfl3Ve__200x200.jpg",
+      "hoyolab": {"gid": 6, "official_uid": 172534910, "c3kay": "https://feeds.c3kay.de/starrail.json"},
+      "launcher": {"type": "hoyoplay", "game_id": "4ziysqXOQ8"},
+      "x_accounts": ["honkaistarrail"],
+      "program_label": "Special Program",
+      "program_patterns": ["special program"],
+      "banner_patterns": ["event warp"],
+      "banner_titles": ["Version {v} Event Warp: Phase {p}"],
+      "cadence": {
+        "days": 42, "maint_weekday": "Wed", "maint_time": "06:00", "maint_hours": 5,
+        "program_weekday": "Fri", "program_time": "19:30", "program_lead_days": 12,
+        "confidence": "medium", "anchor_version": "4.6", "anchor_ts": 1790546400
+      },
+      "news_url": "https://hsr.hoyoverse.com/en-us/news",
+      "youtube": "https://www.youtube.com/@HonkaiStarRail/streams",
+      "twitch": "https://www.twitch.tv/honkaistarrail",
+      "card": {
+        "maintenance_heading": "Maintenance Details (STC)"
+      },
+      "codes": {
+        "sources": ["hoyolab:6", "seria:hkrpg", "humbao:HSR", "ogc:starrail", "ennead:starrail", "fandom:honkai-star-rail/Redemption_Code", "codehub:honkai-star-rail", "x"],
+        "redeem_url": "https://hsr.hoyoverse.com/gift?code={code}",
+        "redeem_hint": "Tap a code to open the official redemption page with it filled in (log in first)."
+      }
+    },
+    "zzz": {
+      "name": "Zenless Zone Zero",
+      "short": "ZZZ",
+      "enabled": true,
+      "four_star_count": 2,
+      "icon": "https://pbs.twimg.com/profile_images/2097499758462140416/YGW1eFcg_200x200.jpg",
+      "hoyolab": {"gid": 8, "official_uid": 219270333, "c3kay": "https://feeds.c3kay.de/zenless.json"},
+      "launcher": {"type": "hoyoplay", "game_id": "U5hbdsT9W7"},
+      "x_accounts": ["ZZZ_EN"],
+      "program_label": "Special Program",
+      "program_patterns": ["special program"],
+      "banner_patterns": ["exclusive channel", "signal search", "limited-time channels"],
+      "banner_titles": ["V{v} Limited-Time Channels (Phase {p})", "V{v} Limited-Time Channels"],
+      "cadence": {
+        "days": 42, "maint_weekday": "Wed", "maint_time": "06:00", "maint_hours": 5,
+        "program_weekday": "Fri", "program_time": "19:30", "program_lead_days": 12,
+        "confidence": "low", "anchor_version": "3.2", "anchor_ts": 1788904800
+      },
+      "news_url": "https://zenless.hoyoverse.com/en-us/news",
+      "youtube": "https://www.youtube.com/@ZZZ_Official/videos",
+      "twitch": "https://www.twitch.tv/zenlesszonezero",
+      "card": {
+        "maintenance_heading": "Maintenance Details",
+        "four_star_label": "4 Star Characters (Default)"
+      },
+      "codes": {
+        "sources": ["hoyolab:8", "seria:nap", "humbao:ZZZ", "ogc:zenless", "ennead:zenless", "fandom:zenless-zone-zero/Redemption_Code", "codehub:zenless-zone-zero", "x"],
+        "redeem_url": "https://zenless.hoyoverse.com/redemption?code={code}",
+        "redeem_hint": "Tap a code to open the official redemption page with it filled in (log in first)."
+      }
+    },
+    "wuwa": {
+      "name": "Wuthering Waves",
+      "short": "WW",
+      "enabled": true,
+      "four_star_count": 3,
+      "icon": "https://pbs.twimg.com/profile_images/2085696982958665728/qlgc729S_200x200.jpg",
+      "launcher": {"type": "kuro"},
+      "kuro_news": true,
+      "x_accounts": ["Wuthering_Waves"],
+      "program_label": "Special Broadcast",
+      "program_patterns": ["special broadcast"],
+      "banner_patterns": ["featured resonator", "resonator convene", "convene"],
+      "banner_titles": ["Version {v} Featured Resonator/Weapon Convene: Phase {p}"],
+      "cadence": {
+        "days": 42, "maint_weekday": "Thu", "maint_time": "04:00", "maint_hours": 7,
+        "program_weekday": "Fri", "program_time": "19:00", "program_lead_days": 12,
+        "confidence": "medium", "anchor_version": "3.7", "anchor_ts": 1790712000
+      },
+      "news_url": "https://wutheringwaves.kurogames.com/en/main/news",
+      "program_feeds": [
+        "https://raw.githubusercontent.com/TheLovinator1/wutheringwaves/refs/heads/master/articles_latest.xml",
+        "https://raw.githubusercontent.com/TheLovinator1/wutheringwaves/refs/heads/master/articles_all.xml"
+      ],
+      "youtube": "https://www.youtube.com/@WutheringWaves/streams",
+      "twitch": "https://www.twitch.tv/wuthering_waves",
+      "card": {
+        "title": "{game} Version {version} \"{program}\"",
+        "maintenance_heading": "Maintenance Time & Compensation Details",
+        "maintenance_style": "range",
+        "maintenance_first": true,
+        "four_star_summary": true
+      },
+      "codes": {
+        "sources": ["ogc:wuwa", "wuthering.gg", "fandom:wutheringwaves/Redemption_Code", "codehub:wuthering-waves", "x"],
+        "redeem_hint": "Redeem in-game (Union Level 2+): open the menu → Settings ⚙ → Other Settings → Account → Redemption Code → Redeem. Rewards arrive in your mailbox."
+      }
+    },
+    "hna": {
+      "name": "Honkai: Nexus Anima",
+      "short": "HNA",
+      "enabled": true,
+      "released": false,
+      "aliases": ["NEXUSANIMA"],
+      "note": "Switched ON 2026-10-02, before launch, so pre-release Special Programs and codes are caught the moment they appear (a newly enabled game seeds its state silently on the first run, so nothing old is posted). No release date announced as of 2026-10. HoYoLAB gid 9 and X @HonkaiNA are wired; official YouTube @HonkaiNA (hoyolab.com/article/41196864). HoYoverse has announced no Twitch channel for it, so the card simply has no Twitch button. At launch: add the HoYoPlay launcher game_id, Twitch, and code sources (seria/ogc once they list it).",
+      "hoyolab": {"gid": 9},
+      "launcher": {},
+      "x_accounts": ["HonkaiNA"],
+      "program_label": "Special Program",
+      "program_patterns": ["special program", "livestream", "special broadcast"],
+      "youtube": "https://www.youtube.com/@HonkaiNA",
+      "twitch": "",
+      "codes": {"sources": ["hoyolab:9", "x"]}
+    },
+    "ananta": {
+      "name": "ANANTA",
+      "short": "ANANTA",
+      "enabled": true,
+      "released": false,
+      "auto_enable_on": "2027-01-15",
+      "note": "Switched ON 2026-10-02, ahead of the 2027-01-15 global launch (confirmed at gamescom ONL 2026; NetEase / Naked Rain), so pre-launch livestreams and codes are caught; auto_enable_on is kept as a safety net in case this flag is ever set back to false. A newly enabled game seeds its state silently on the first run. Official YouTube @Ananta_Game (neteasegames.com press releases); NetEase lists no Twitch channel, so the card has no Twitch button. No gacha character unlocking -> banner section hidden. At launch: set four_star_count if that ever changes and add more code sources.",
+      "x_accounts": ["Ananta_EN"],
+      "program_label": "Livestream",
+      "program_patterns": ["livestream", "special program", "special broadcast", "showcase"],
+      "youtube": "https://www.youtube.com/@Ananta_Game",
+      "twitch": "",
+      "card": {"show_banners": false},
+      "codes": {"sources": ["x"]}
+    }
+  }
+}
