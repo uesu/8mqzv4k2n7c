@@ -1,0 +1,9 @@
+{{Warp
+|title        = An Ocean in a Pearl
+|type         = Character Event
+|time_start   = 2026-09-28 06:00:00
+}}
+{{Warp Pool
+|character_5_F = Pearl
+|character_4_F = Pela;Sampo;Natasha
+}}

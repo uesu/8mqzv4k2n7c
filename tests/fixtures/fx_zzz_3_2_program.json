@@ -1,0 +1,35 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/2091737263398862915 (2026-09-27) — NOTE: no year in the date",
+ "tweet": {
+  "url": "https://x.com/ZZZ_EN/status/2091737263398862915",
+  "id": "2091737263398862915",
+  "text": "Zenless Zone Zero Version 3.2 \"Their Secret Histories\" Special Program Announcement\n\nDear Proxies, the Zenless Zone Zero Version 3.2 \"Their Secret Histories\" Special Program will begin on August 28 at 19:30 (UTC+8).\n\nThe Version 3.2 Special Program will be broadcast on our official livestream channels. This program will bring you a preview of the upcoming version's agents and stories, with special on-site guests revealing the latest intel.\nThe show will be broadcast on our official channel, and we will also be dropping an exclusive redemption code during the livestream. Don't miss out!\n\nFollow our official livestream channels:\nYouTube >> https://www.youtube.com/@ZZZ_Official/\nTwitch >> https://www.twitch.tv/zenlesszonezero\nTikTok>> https://www.tiktok.com/@zenlesszonezero\n\n#zzzero #zenlesszonezero \n#zzzSpecialProgram\n#TheirSecretHistories",
+  "raw_text": {
+   "facets": [
+    {
+     "type": "url",
+     "replacement": "https://www.youtube.com/@ZZZ_Official/"
+    },
+    {
+     "type": "url",
+     "replacement": "https://www.twitch.tv/zenlesszonezero"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "ZZZ_EN",
+   "avatar_url": "https://pbs.twimg.com/profile_images/2097499758462140416/YGW1eFcg_200x200.jpg"
+  },
+  "created_timestamp": 1787544000,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HQZWs-3WAAEj32y.jpg?name=orig",
+     "width": 1920,
+     "height": 1080
+    }
+   ]
+  }
+ }
+}

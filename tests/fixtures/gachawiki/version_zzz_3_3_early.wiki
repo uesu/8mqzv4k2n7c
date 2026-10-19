@@ -1,0 +1,13 @@
+{{Version
+|title       = TBA
+|version     = 3.3
+|date        = 2026-10-21
+}}
+
+==Confirmed Details==
+===Playable Agents===
+* {{Intro/Agent/Full|Phoenix Reffaella}}
+* {{Intro/Agent/Full|Severian Lowell}}
+
+===Events===
+* TBA

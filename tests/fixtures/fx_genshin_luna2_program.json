@@ -1,0 +1,32 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/1975773147476504968 (2026-09-25) — NOTE: no numeric version",
+ "tweet": {
+  "url": "https://x.com/GenshinImpact/status/1975773147476504968",
+  "id": "1975773147476504968",
+  "text": "Dear Traveler, it's announcement time!\n#GenshinImpact #GenshinSpecialProgram \n\nThe special program for Genshin Impact's new version will premiere on the official Twitch and YouTube channels on 10/10/2025 at 08:00 AM (UTC-4)!\n\nThis special program will feature juicy details about new game content and developments in Version \"Luna II.\" It will also \"drop\" some redemption codes and other goodies!\n\nMake sure to follow us, Traveler. We'll see you there!\nTwitch: https://www.twitch.tv/genshinimpactofficial/schedule\nYouTube: https://www.youtube.com/@GenshinImpact",
+  "raw_text": {
+   "facets": [
+    {
+     "type": "url",
+     "replacement": "https://www.twitch.tv/genshinimpactofficial/schedule"
+    },
+    {
+     "type": "url",
+     "replacement": "https://www.youtube.com/@GenshinImpact"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "GenshinImpact"
+  },
+  "created_timestamp": 1759896001,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/G2rAfaqXoAAI-5b.jpg?name=orig"
+    }
+   ]
+  }
+ }
+}

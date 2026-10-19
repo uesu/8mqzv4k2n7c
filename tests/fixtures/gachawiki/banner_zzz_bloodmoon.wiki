@@ -1,0 +1,18 @@
+{{Signal Search Infobox
+|name              = Bloodmoon Rising 2026-09-09
+|type              = Exclusive Channel
+|time_start        = 2026-09-09 11:00:00
+|time_end          = 2026-09-30 11:59:59
+}}
+
+==Signal Search Details==
+===Item Pool===
+{{Signal Search Pool
+|agent_S_F    = Claret Flint
+|agent_A_F    = Anton Ivanov;Nicole Demara
+|agent_S      = Grace Howard;Koleda Belobog
+|agent_A      = Anby Demara;Ben Bigger
+}}
+
+==Change History==
+{{Change History|3.2}}

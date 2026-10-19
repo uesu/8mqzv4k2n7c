@@ -1,0 +1,34 @@
+{
+ "_source": "REAL hoyo-codes.seria.moe/codes?game=nap (2026-09-25)",
+ "codes": [
+  {
+   "id": 110,
+   "code": "ZENLESSGIFT",
+   "status": "OK",
+   "game": "nap",
+   "rewards": "50 polychrome, two official investigator logs, three w-engine power supplies, and one bangboo algorithm module"
+  },
+  {
+   "id": 798,
+   "code": "ZZZINK32",
+   "status": "OK",
+   "game": "nap",
+   "rewards": "Polychrome*20;Denny*2,222"
+  },
+  {
+   "id": 805,
+   "code": "ZZZVOID32",
+   "status": "OK",
+   "game": "nap",
+   "rewards": "Polychrome*20;Denny*2,222"
+  },
+  {
+   "id": 797,
+   "code": "ZZZGRIND32",
+   "status": "OK",
+   "game": "nap",
+   "rewards": "Polychrome*20;Denny*2,222"
+  }
+ ],
+ "game": "nap"
+}

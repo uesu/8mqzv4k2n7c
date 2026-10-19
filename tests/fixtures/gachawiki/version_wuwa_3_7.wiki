@@ -1,0 +1,21 @@
+{{Version
+|title    = Prism's Illusion, Heart's Illumination
+|version  = 3.7
+|date     = 2026-09-30 11:00
+}}
+
+==Released Content==
+===Resonators===
+* {{Intro/Resonator/Full|Hsin}}
+* {{Intro/Resonator/Full|Suoming}}
+
+===Character Event Convenes===
+* [[As Full as Tonight, Forever/2026-09-30]] (Hsin)
+* [[Horizon of Dawnbreak/2026-09-30]] ([[Chisa]])
+* [[Across Time's Waxes and Wanes/2026-09-30]] ([[Iuno]])
+* [[Nine Deaths, One Unbent Heart]] (Suoming)
+* [[Tomorrow in the Frame]] ([[Lucilla]])
+* [[Undefined Spectrum]] ([[Lynae]])
+
+===Weapon Event Convenes===
+* [[Absolute Pulsation: Blooming Jadehaven/2026-09-30]]

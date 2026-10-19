@@ -1,0 +1,19 @@
+{
+ "_source": "REAL wutheringwaves.fandom.com Redemption_Code wikitext, fetched 2026-09-25 (trimmed): 3 livestream codes still under 'Active' although their 'Valid until' date has passed",
+ "query": {
+  "pages": {
+   "1": {
+    "revisions": [
+     {
+      "slots": {
+       "main": {
+        "contentmodel": "wikitext",
+        "*": "{{Terminology Infobox\n|type     = Game Systems\n}}\n'''Redemption codes''' are special codes that can be redeemed for in-game items via Terminal ➤ Settings ➤ Other Settings ➤ Redemption Code.\n\n==List==\n===Active===\n\n{| class=\"wikitable sortable\" style=\"width:100%;\"\n!Code !! Server !! Rewards !! Duration\n|-\n|WUTHERINGGIFT||All||{{Card List|Astrite*50;Premium Resonance Potion*2;Medium Revival Inhaler*2;Medium Energy Bag*2;Shell Credit*10000|delim=;}}\n| class=\"bg-new text-background\" |Discovered: September 26, 2024'''Valid until: Unknown'''\n|-\n|FALLINGSANCTUM||All||{{Card List|Astrite*100;Premium Resonance Potion*3;Advanced Revival Inhaler*2|delim=;}}\n| class=\"bg-new text-background\" |Discovered: September 19, 2026'''Valid until: September 21, 2026 08:59 (PT)'''\n|-\n|FINDSENTINEL||All||{{Card List|Astrite*100;Premium Enclosure Tank*2;Shell Credit*40000|delim=;}}\n| class=\"bg-new text-background\" |Discovered: September 19, 2026'''Valid until: September 21, 2026 08:59 (PT)'''\n|-\n|WAKINGMOON||All||{{Card List|Astrite*100;Premium Tuner*20;Advanced Sealed Tube*5|delim=;}}\n| class=\"bg-new text-background\" |Discovered: September 19, 2026'''Valid until: September 21, 2026 08:59 (PT)'''\n|-\n|}\n\n===Expired===\n{| class=\"wikitable sortable\" style=\"width:100%;\"\n!Code !! Server !! Rewards !! Duration\n|-\n|HEARTOFSWORD||All||{{Card List|Astrite*100;Advanced Resonance Potion*3;Medium Revival Inhaler*2|delim=;}}\n| class=\"bg-old text-background\" |Discovered: August 7, 2026'''Valid until: August 9, 2026 08:59 (PT)'''\n|-\n|BURNINGSUN||All||{{Card List|Astrite*100;Premium Resonance Potion*4;Advanced Energy Core*5|delim=;}}\n| class=\"bg-old text-background\" |Discovered: Aug 16, 2025'''Valid until: August 18, 2025 08:59 (PT)'''\n|-\n|}\n"
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

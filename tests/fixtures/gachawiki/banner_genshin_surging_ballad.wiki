@@ -1,0 +1,12 @@
+{{Wish
+|title        = Surging Ballad
+|type         = Character Event
+|time_start   = 2026-09-23 06:00:00
+}}
+{{Wish Pool
+|character_5_F = Vodyanitsa
+|character_4_F = Bennett;Xingqiu;Sucrose
+}}
+
+==Change History==
+{{Change History|7.1}}

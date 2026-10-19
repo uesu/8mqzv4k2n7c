@@ -1,0 +1,22 @@
+{
+ "_source": "REAL getNewsList?gids=2&type=1 item 46791577 text (2026-09-25), trimmed; created_at APPROXIMATED (list order: posted 2026-09-23 during maintenance)",
+ "retcode": 0,
+ "data": {
+  "list": [
+   {
+    "post": {
+     "game_id": 2,
+     "post_id": "46791577",
+     "subject": "\"A Rekviem for the Underworld\" Version 7.1 Update Details",
+     "created_at": 1790128000,
+     "content": "Dear Traveler, Below are the details of the Version 7.1 update \"A Rekviem for the Underworld\" and the update compensation. 〓Compensation Details〓 Maintenance Compensation: Primogems ×300 (60 Primogems per hour the servers are down) Issue Fix Compensation: Primogems ×300 (please refer to the relevant compensation mail for more details) 〓Scope of Compensation〓 Maintenance Compensation: Travelers who have reached Adventure Rank 5 or above by 2026/09/23 06:00 (UTC+8). Compensation must be claimed before the end of Version 7.1. Issue Fix Compensation: Travelers who have reached Adventure Rank 5 or above by 2026/09/23 06:00 (UTC+8). Please log in and claim your compensation before 2026/09/26 06:00 (UTC+8). Our developers will distribute compensation to Travelers via in-game mail within 5 hours after the update maintenance is finished. The mail will expire after 30 days, so don't forget to claim the attached compensation in time. 〓Update Schedule〓 Update maintenance begins 2026/09/23 06:00 (UTC+8) and is estimated to take 5 hours. 〓How to Update Game Client〓 PC: Close the game, open the Genshin Impact Launcher, and click Update."
+    },
+    "cover_list": [],
+    "image_list": [],
+    "user": {
+     "nickname": "Genshin Impact Official"
+    }
+   }
+  ]
+ }
+}

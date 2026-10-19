@@ -1,0 +1,32 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/2000419294669148315 (2026-09-25) — NOTE: no year in the date",
+ "tweet": {
+  "url": "https://x.com/ZZZ_EN/status/2000419294669148315",
+  "id": "2000419294669148315",
+  "text": "Zenless Zone Zero Version 2.5 \"To Be Fuel for the Night\" Special Program Announcement\n\nDear Proxies, the Zenless Zone Zero Version 2.5 \"To Be Fuel for the Night\" Special Program will begin on December 19 at 19:30 (UTC+8).\n\nThe Version 2.5 Special Program will be broadcast on our official livestream channels. This program will bring you a preview of the final battle in Zenless Zone Zero Season 2, with special on-site guests revealing the latest intel.\nThe show will be broadcast on our official channel, and we will also be dropping a redemption code during the livestream. Don't miss out!\n\nFollow our official livestream channels:\nYouTube >> https://www.youtube.com/@ZZZ_Official/\nTwitch >> https://www.twitch.tv/zenlesszonezero\nTikTok>> https://www.tiktok.com/@zenlesszonezero\n\n#zzzero #zenlesszonezero \n#zzzSpecialProgram\n#ToBeFuelfortheNight\n#VoidHunterRises",
+  "raw_text": {
+   "facets": [
+    {
+     "type": "url",
+     "replacement": "https://www.youtube.com/@ZZZ_Official/"
+    },
+    {
+     "type": "url",
+     "replacement": "https://www.twitch.tv/zenlesszonezero"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "ZZZ_EN"
+  },
+  "created_timestamp": 1765772100,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/G8IYauwWUAIWYyc.jpg?name=orig"
+    }
+   ]
+  }
+ }
+}

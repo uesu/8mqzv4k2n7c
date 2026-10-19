@@ -1,0 +1,35 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/2099440781115211916 (2026-09-27)",
+ "tweet": {
+  "url": "https://x.com/honkaistarrail/status/2099440781115211916",
+  "id": "2099440781115211916",
+  "text": "Honkai: Star Rail Version 4.6 \"Dance With the Beast Before Moonrise\" Special Program\n🕙2026/09/20 19:30 (UTC+8)\nThe Honkai: Star Rail Version 4.6 \"Dance With the Beast Before Moonrise\" Special Program will release on 2026/09/20 at 19:30 (UTC+8).\n\nThis program will be broadcast from the official livestream studio. The new version will bring you a Trailblaze Continuance where the moonlight bends and the beast begins to dance — with new characters, new stages, and a preview of what awaits beyond the moonrise.\nFollow our official channels to keep up with news on the latest version!\nYouTube: https://youtube.com/live/drFgtruoPe8\n\nTwitch: https://www.twitch.tv/honkaistarrail\n\n#HonkaiStarRail #HSRSpecialProgram",
+  "raw_text": {
+   "facets": [
+    {
+     "type": "url",
+     "replacement": "https://youtube.com/live/drFgtruoPe8"
+    },
+    {
+     "type": "url",
+     "replacement": "https://www.twitch.tv/honkaistarrail"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "honkaistarrail",
+   "avatar_url": "https://pbs.twimg.com/profile_images/2061274429456334851/xQfl3Ve__200x200.jpg"
+  },
+  "created_timestamp": 1789380662,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HSK2Q2pXsAA4YJA.jpg?name=orig",
+     "width": 1920,
+     "height": 1080
+    }
+   ]
+  }
+ }
+}

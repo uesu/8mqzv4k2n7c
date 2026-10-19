@@ -1,0 +1,18 @@
+{
+ "_source": "SYNTHETIC wikitext in the {{Redemption Code Row}} shape seria's parser targets",
+ "query": {
+  "pages": {
+   "1": {
+    "revisions": [
+     {
+      "slots": {
+       "main": {
+        "*": "== Active Codes ==\n<!-- active -->\n{{Redemption Code Row|STARRAILGIFT|2023-04-26|G|{{Item List|Stellar Jade*100}}}}\n{{Redemption Code Row|CNONLY123|2023-04-26|CN|x}}\n{{Redemption Code Row|NOTREAL|notacode=yes}}\n<!-- expired -->\n{{Redemption Code Row|EXPIREDCODE|2023-01-01|G|x}}\n"
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

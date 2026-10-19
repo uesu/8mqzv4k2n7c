@@ -1,0 +1,204 @@
+{
+ "version": 2,
+ "updatedAt": 1790452566,
+ "games": [
+  {
+   "id": "genshin",
+   "title": "Genshin Impact"
+  },
+  {
+   "id": "hsr",
+   "title": "Honkai: Star Rail"
+  },
+  {
+   "id": "zzz",
+   "title": "Zenless Zone Zero"
+  },
+  {
+   "id": "wuthering",
+   "title": "Wuthering Waves"
+  },
+  {
+   "id": "endfield",
+   "title": "Arknights: Endfield"
+  }
+ ],
+ "banners": [
+  {
+   "gameId": "genshin",
+   "title": "Surging Ballad",
+   "featured": [
+    "Vodyanitsa"
+   ],
+   "rarity": 5,
+   "startsAt": 1790132400,
+   "endsAt": 1791910799,
+   "url": "https://genshin-impact.fandom.com/wiki/Surging_Ballad/2026-09-23"
+  },
+  {
+   "gameId": "genshin",
+   "title": "When Warm Winds Cavort",
+   "featured": [
+    "Vesna"
+   ],
+   "rarity": 5,
+   "startsAt": 1790132400,
+   "endsAt": 1791910799,
+   "url": "https://genshin-impact.fandom.com/wiki/When_Warm_Winds_Cavort/2026-09-23"
+  },
+  {
+   "gameId": "hsr",
+   "title": "A Hunt Through Night",
+   "featured": [
+    "Ashveil"
+   ],
+   "rarity": 5,
+   "startsAt": 1789210800,
+   "endsAt": 1790539199,
+   "url": "https://honkai-star-rail.fandom.com/wiki/A_Hunt_Through_Night/2026-09-12"
+  },
+  {
+   "gameId": "hsr",
+   "title": "Over the Gilded Tides",
+   "featured": [
+    "Aventurine • Waveflair"
+   ],
+   "rarity": 5,
+   "startsAt": 1789210800,
+   "endsAt": 1790539199,
+   "url": "https://honkai-star-rail.fandom.com/wiki/Over_the_Gilded_Tides/2026-09-12"
+  },
+  {
+   "gameId": "hsr",
+   "title": "The Demoiselle in Charge",
+   "featured": [
+    "Evanescia"
+   ],
+   "rarity": 5,
+   "startsAt": 1790564400,
+   "endsAt": 1792580399,
+   "url": "https://honkai-star-rail.fandom.com/wiki/The_Demoiselle_in_Charge/2026-09-28"
+  },
+  {
+   "gameId": "hsr",
+   "title": "An Ocean in a Pearl",
+   "featured": [
+    "Pearl"
+   ],
+   "rarity": 5,
+   "startsAt": 1790564400,
+   "endsAt": 1794319199,
+   "url": "https://honkai-star-rail.fandom.com/wiki/An_Ocean_in_a_Pearl/2026-09-28"
+  },
+  {
+   "gameId": "hsr",
+   "title": "Now I Am Become Blade",
+   "featured": [
+    "Mortenax Blade"
+   ],
+   "rarity": 5,
+   "startsAt": 1792580400,
+   "endsAt": 1794319199,
+   "url": "https://honkai-star-rail.fandom.com/wiki/Now_I_Am_Become_Blade/2026-10-21"
+  },
+  {
+   "gameId": "zzz",
+   "title": "Axiom of Captivation",
+   "featured": [
+    "Nangong Yu"
+   ],
+   "rarity": 5,
+   "startsAt": 1788922800,
+   "endsAt": 1790765999,
+   "url": "https://zenless-zone-zero.fandom.com/wiki/Axiom_of_Captivation/2026-09-09"
+  },
+  {
+   "gameId": "zzz",
+   "title": "Bloodmoon Rising",
+   "featured": [
+    "Claret Flint"
+   ],
+   "rarity": 5,
+   "startsAt": 1788922800,
+   "endsAt": 1790765999,
+   "url": "https://zenless-zone-zero.fandom.com/wiki/Bloodmoon_Rising/2026-09-09"
+  },
+  {
+   "gameId": "zzz",
+   "title": "Cold Rain Wanes in the Night",
+   "featured": [
+    "Promeia"
+   ],
+   "rarity": 5,
+   "startsAt": 1790766000,
+   "endsAt": 1792504799,
+   "url": "https://zenless-zone-zero.fandom.com/wiki/Cold_Rain_Wanes_in_the_Night/2026-09-30"
+  },
+  {
+   "gameId": "zzz",
+   "title": "Cindernite Respite",
+   "featured": [
+    "Roxy Ifrita Pryce"
+   ],
+   "rarity": 5,
+   "startsAt": 1790766000,
+   "endsAt": 1792504799,
+   "url": "https://zenless-zone-zero.fandom.com/wiki/Cindernite_Respite/2026-09-30"
+  },
+  {
+   "gameId": "wuthering",
+   "title": "Distant May the Starlights Be",
+   "featured": [
+    "Mornye"
+   ],
+   "rarity": 5,
+   "startsAt": 1789030800,
+   "endsAt": 1790679540,
+   "url": "https://wutheringwaves.fandom.com/wiki/Distant_May_the_Starlights_Be/2026-09-10"
+  },
+  {
+   "gameId": "wuthering",
+   "title": "Thousand Futures Mirrored in Snow",
+   "featured": [
+    "Hiyuki"
+   ],
+   "rarity": 5,
+   "startsAt": 1789030800,
+   "endsAt": 1790679540,
+   "url": "https://wutheringwaves.fandom.com/wiki/Thousand_Futures_Mirrored_in_Snow/2026-09-10"
+  },
+  {
+   "gameId": "wuthering",
+   "title": "Where Santu Beckons",
+   "featured": [
+    "Jingran"
+   ],
+   "rarity": 5,
+   "startsAt": 1789030800,
+   "endsAt": 1790679540,
+   "url": "https://wutheringwaves.fandom.com/wiki/Where_Santu_Beckons/2026-09-10"
+  },
+  {
+   "gameId": "endfield",
+   "title": "Winter Hunt",
+   "featured": [
+    "Typhoeus"
+   ],
+   "rarity": 6,
+   "startsAt": 1788321600,
+   "endsAt": 1790787540,
+   "url": "https://endfield.wiki.gg/wiki/Headhunting/Banners"
+  },
+  {
+   "gameId": "endfield",
+   "title": "Resplendent Spectrum",
+   "featured": [
+    "Yvonne"
+   ],
+   "rarity": 6,
+   "startsAt": 1790269200,
+   "endsAt": 1792015140,
+   "url": "https://endfield.wiki.gg/wiki/Headhunting/Banners"
+  }
+ ]
+}

@@ -1,0 +1,19 @@
+{
+ "_source": "REAL honkai-star-rail.fandom.com Redemption_Code wikitext, fetched 2026-09-25 (trimmed): nested {{Item List}} + valid-until dates",
+ "query": {
+  "pages": {
+   "1": {
+    "revisions": [
+     {
+      "slots": {
+       "main": {
+        "contentmodel": "wikitext",
+        "*": "{{Terminology Infobox\n|type     = Game Systems\n}}\n'''Redemption codes''' are released as part of events, milestones, or other promotions.\n\n==All Codes==\nAll times listed below are according to UTC.\n\n{{Redemption Code/Header}}\n\n{{Redemption Code Row|MALSV2F247FP|ref=|A|{{Item List|Stellar Jade*100;Refined Aether*4|mode=br}}|2026-09-20|2026-09-21}}\n{{Redemption Code Row|7S4AD2X35NE3|ref=|A|{{Item List|Stellar Jade*100;Traveler's Guide*5|mode=br}}|2026-09-20|2026-09-21}}\n{{Redemption Code Row|NSJR3B97ZZ5X|ref=|A|{{Item List|Stellar Jade*50;Credit*10000|mode=br}}|2026-08-16|unknown}}\n{{Redemption Code Row|OMEGA|ref=|A|{{Item List|Stellar Jade*60;Fuel*1|mode=br}}|2025-11-07|indef}}\n{{Redemption Code Row|CREATIONNYMPH|ref=[[\"Eternal Holy City\" Okhema]], [[Garden of Life]], Aglaea's Golden Chrysalis: [[Creation Nymph]] ROT13 decipher Easter Egg (Mail: [[Mail/Creation Nymph|Creation Nymph]])|A|{{Item List|Stellar Jade*60;Fuel*1;Heroic Variable*1|mode=br}}|2025-07-02|indef}}\n{{Redemption Code Row|SilverWolfLV999|ref=https://x.com/honkaistarrail/status/2046835044547719437?s=20|A|{{Item List|Traveler's Guide*3;Badge Battle Robe*2|mode=br}}|2026-04-22|2026-04-28}}\n{{Redemption Code Row|MH5KC|ref=|A|{{Item List|Stellar Jade*100;Refined Aether*4|mode=br}}|2026-02-12|exp}}\n{{Redemption Code Row|TB2NPKQ8USKF|ref=|A|{{Item List|Stellar Jade*100;Credit*10000|mode=br}}|2025-08-02|2025-08-03 23:59}}\n"
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

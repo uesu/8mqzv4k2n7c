@@ -1,0 +1,43 @@
+{
+ "active": [
+  {
+   "code": "2BJ64QRZ7RT8",
+   "rewards": [
+    "Primogem ×60",
+    "Adventurer's Experience ×5"
+   ]
+  },
+  {
+   "code": "VESNAONPATROL",
+   "rewards": [
+    "Primogem ×40",
+    "Mora ×20000",
+    "Hero's Wit ×3"
+   ]
+  },
+  {
+   "code": "EPIC2026",
+   "rewards": [
+    "Primogem ×40",
+    "Mora ×20000",
+    "Hero's Wit ×5"
+   ]
+  }
+ ],
+ "inactive": [
+  {
+   "code": "GENSHINGIFT",
+   "rewards": [
+    "Primogem ×50",
+    "Hero's Wit ×3"
+   ]
+  },
+  {
+   "code": "6ALMWAVKLK35",
+   "rewards": [
+    "Primogem ×100",
+    "Mystic Enhancement Ore ×10"
+   ]
+  }
+ ]
+}

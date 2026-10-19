@@ -1,0 +1,85 @@
+{
+ "flags": 32768,
+ "components": [
+  {
+   "type": 17,
+   "accent_color": 14922399,
+   "components": [
+    {
+     "type": 10,
+     "content": "## [Genshin Impact Version 7.1 Special Program](https://www.hoyolab.com/article/46604275) <:ananta1:1558340472525693018>\n<t:1789214400:F> or <t:1789214400:R>\n\n※ In the event that the maintenance is extended, the dev team will issue a follow-up notice and adjust the compensation accordingly."
+    },
+    {
+     "type": 14,
+     "divider": true,
+     "spacing": 1
+    },
+    {
+     "type": 10,
+     "content": "**[Version 7.1 Banners (STC)](https://lunaris.moe/banners)**\n\n※ Re-runs: Skirk, Escoffier\n\n✦ First Half/Phase: Vesna\n- 4 Star Characters: TBA\n\n✦ Second Half/Phase: Vodyanitsa\n- 4 Star Characters: TBA"
+    },
+    {
+     "type": 14,
+     "divider": true,
+     "spacing": 1
+    },
+    {
+     "type": 10,
+     "content": "**Maintenance Details**\n\n✦ Pre-Install: <t:1789959600:F>\n✦ Start: <t:1790114400:F>\n✦ End: <t:1790132400:F>"
+    },
+    {
+     "type": 12,
+     "items": [
+      {
+       "media": {
+        "url": "https://upload-os-bbs.hoyolab.com/upload/2026/09/07/3b807be584794bdac0cddc9ddf05bcec_5145680818623480549.jpg"
+       }
+      }
+     ]
+    },
+    {
+     "type": 14,
+     "divider": true,
+     "spacing": 1
+    },
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Youtube",
+       "url": "https://www.youtube.com/@GenshinImpact/videos",
+       "emoji": {
+        "id": "1508619925940473966",
+        "name": "kurobbseventcalendar",
+        "animated": true
+       }
+      },
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Twitch",
+       "url": "https://www.twitch.tv/genshinimpactofficial",
+       "emoji": {
+        "id": "1508647148902813776",
+        "name": "hsrbbsevanescia",
+        "animated": true
+       }
+      }
+     ]
+    },
+    {
+     "type": 10,
+     "content": "-# STC — Subject to Change • TBA — To be Announced <@&1296268365593186426>"
+    }
+   ]
+  }
+ ],
+ "allowed_mentions": {
+  "parse": [],
+  "roles": [
+   "1296268365593186426"
+  ]
+ }
+}

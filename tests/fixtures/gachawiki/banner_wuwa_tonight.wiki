@@ -1,0 +1,12 @@
+{{Convene
+|title        = As Full as Tonight, Forever
+|type         = Featured Resonator
+|time_start   = 2026-09-30 11:00:00
+}}
+{{Convene/Pool
+|resonator_5_F = Hsin
+|resonator_4_F = Danjin;Mortefi;Yuanwu
+}}
+
+==Change History==
+{{Change History|3.7}}

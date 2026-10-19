@@ -1,0 +1,22 @@
+{
+ "_source": "REAL getPostFull?gids=6&post_id=46814308 (2026-09-25), trimmed — content=='en-us' quirk",
+ "retcode": 0,
+ "data": {
+  "post": {
+   "post": {
+    "game_id": 6,
+    "post_id": "46814308",
+    "subject": "Version 4.6 Update and Maintenance Notice",
+    "content": "en-us",
+    "created_at": 1790229608,
+    "structured_content": "[{\"insert\": \"\\n\"}, {\"insert\": {\"image\": \"https://upload-os-bbs.hoyolab.com/upload/community/2026/09/23/1ee62eca62a4d646b14004634c661188_3519077431557110128.png\"}, \"attributes\": {\"align\": \"img-center\", \"height\": 1080, \"width\": 1920}}, {\"insert\": \"Hello, Trailblazers!\\nThe Version 4.6 pre-installation will begin at 2026/09/24 14:00 (UTC+8). Trailblazers can download some resources in advance, allowing for faster game access after the version update maintenance is complete.\\nAdditionally, the Express Crew will conduct version update maintenance on 2026/09/28 06:00 (UTC+8). After maintenance, the game will be updated to Version 4.6 \\\"Dance With the Beast Before Moonrise.\\\"\\nDuring the maintenance, Trailblazers will not be able to log in to the game. Please note the maintenance schedule and plan your gaming time accordingly. The game client must be updated after the maintenance. Due to the large size of the new game resources, we recommended Trailblazers to use a Wi-Fi connection to download the update.\\n\\n▌Update Time\"}, {\"insert\": \"\\n\", \"attributes\": {\"header\": 4}}, {\"insert\": \"Begins at 2026/09/28 06:00 (UTC+8). The update will take approximately 5 hours.\\n\\n▌Version Preview\"}, {\"insert\": \"\\n\", \"attributes\": {\"header\": 4}}, {\"insert\": \"Trailblazers can click to visit Version 4.6 highlights page for details. Please refer to future version update announcements for update details, system optimization, bug fixes, and compensation details.\\n\"}, {\"insert\": \">> GO <<\", \"attributes\": {\"link\": \"https://act.hoyoverse.com/puzzle/hkrpg/e20260913version_fasf13434_77d1c0e99b/index.html?game_biz=hkrpg_global\"}}, {\"insert\": \"\\n▌Compensation Details\"}, {\"insert\": \"\\n\", \"attributes\": {\"header\": 4}}, {\"insert\": \"■ Server Maintenance Compensation\\nCompensation: Stellar Jade ×300\\nEligible Recipients: Trailblazers with Trailblaze Level ≥ 4 before 2026/09/28 06:00 (UTC+8)\\n※ The Express Crew will issue the compensation via in-game mail to Trailblazers within 5 hours after the update is complete. Please be sure to claim it before Version 4.6 ends.\\n\\n▌Pre-Download Guide\"}, {\"insert\": \"\\n\", \"attributes\": {\"header\": 4}}, {\"insert\": \"■ PC\\nOpen HoYoPlay. On the left side of the \\\"Start Game\\\" button, you will find the \\\"Game Pre-Installation\\\" icon. Click the icon to start the download.\\n\"}]"
+   },
+   "image_list": [
+    {
+     "url": "https://upload-os-bbs.hoyolab.com/upload/community/2026/09/23/1ee62eca62a4d646b14004634c661188_3519077431557110128.png"
+    }
+   ],
+   "cover_list": []
+  }
+ }
+}

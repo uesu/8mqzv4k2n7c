@@ -1,0 +1,33 @@
+{
+ "_source": "REAL gripcrip-blip/codehub data/codes.json (2026-09-24), trimmed",
+ "updatedAt": "2026-09-24T10:33:29Z",
+ "codes": [
+  {
+   "id": "genshin-impact-vesnaonpatrol",
+   "code": "VESNAONPATROL",
+   "game": "genshin-impact",
+   "source": {
+    "name": "hoyo-codes"
+   },
+   "reward": "40 Primogem + 20000 Mora + 3 Hero's Wit"
+  },
+  {
+   "id": "wuthering-waves-wakingmoon",
+   "code": "WAKINGMOON",
+   "game": "wuthering-waves",
+   "source": {
+    "name": "Fandom Wiki"
+   },
+   "reward": "100 Astrite + 20 Premium Tuner + 5 Advanced Sealed Tube"
+  },
+  {
+   "id": "wuthering-waves-findsentinel",
+   "code": "FINDSENTINEL",
+   "game": "wuthering-waves",
+   "source": {
+    "name": "Fandom Wiki"
+   },
+   "reward": "100 Astrite + 2 Premium Enclosure Tank + 40000 Shell Credit"
+  }
+ ]
+}

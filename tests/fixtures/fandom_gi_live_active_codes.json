@@ -1,0 +1,33 @@
+{
+ "batchcomplete": "",
+ "_capture": "verbatim 'Active Codes' section of genshin-impact.fandom.com/wiki/Promotional_Code, fetched 2026-09-27 from https://genshin-impact.fandom.com/api.php?action=query&prop=revisions&titles=Promotional_Code&rvprop=content&rvslots=main&format=json (pageid 10893, revid 2183997, 2026-09-25T12:05:33Z)",
+ "query": {
+  "normalized": [
+   {
+    "from": "Promotional_Code",
+    "to": "Promotional Code"
+   }
+  ],
+  "pages": {
+   "10893": {
+    "pageid": 10893,
+    "ns": 0,
+    "title": "Promotional Code",
+    "revisions": [
+     {
+      "revid": 2183997,
+      "parentid": 2182518,
+      "timestamp": "2026-09-25T12:05:33Z",
+      "slots": {
+       "main": {
+        "contentmodel": "wikitext",
+        "contentformat": "text/x-wiki",
+        "*": "==Active Codes==\nAll times listed below are according to UTC. Also note that \"indefinite\" does not mean \"infinite\"; a code can become nonredeemable if it hits its max usage limit or if HoYoverse decides to revoke it.\n{{Code Row/Header}}\n{{Code Row|EPIC2026|G|Primogem*40;Mora*20000;Hero's Wit*5|2026-09-23|unknown}}\n{{Code Row|VesnaOnPatrol|G|Primogem*40;Mora*20000;Hero's Wit*3|2026-09-23|unknown}}\n{{Code Row|GS71XAVWDS;GS71XDYGEO;GS71XYNSYJ;GS71XOXYLG|G|Mora*30000;Hero's Wit*3;Mystic Enhancement Ore*5|2026-09-15|unknown\n       |ref=X: [https://x.com/Paimon2theMoon/status/2099802873513332787 Ella Musk post with Vodyanitsa]X: [https://x.com/Paimon2theMoon/status/2099801740266868953 Ella Musk post with Vesna]}}\n{{Code Row|Y6JYMKV6JKSL|G|Primogem*60;Adventurer's Experience*5|2026-09-13|unknown}}\n{{Code Row|YOAL3V36XHS7|G|Mora*10000;Adventurer's Experience*10;Fine Enhancement Ore*5;Jueyun Chili Chicken*5;Stir-Fried Fish Noodles*5|2026-09-02|unknown}}\n{{Code Row|DUGODWKRHAKDNJ|G|Primogem*30;Mora*10000;Hero's Wit*3;Mystic Enhancement Ore*3|2026-08-31|unknown}}\n{{Code Row|BALLETCOLLAB|G|Primogem*30;Mora*10000;Hero's Wit*3;Mystic Enhancement Ore*3|2026-08-16|unknown\n       |ref=YouTube: [https://www.youtube.com/watch?v=AfLphyTZutI Балетный проект «Вальс снежных воспоминаний»]}}\n{{Code Row|2BJ64QRZ7RT8|G|Primogem*60;Adventurer's Experience*5|2026-07-31|unknown}}\n{{Code Row|YuanShen|CN|Primogem*50;Hero's Wit*3|2020-11-10|indef}}\n{{Code Row/Footer}}\n"
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

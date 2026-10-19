@@ -1,0 +1,30 @@
+{
+ "_source": "SYNTHETIC — shape from seriaati/hoyo-codes parsers.py (modules[].exchange_group.bonuses[].exchange_code)",
+ "retcode": 0,
+ "data": {
+  "modules": [
+   {
+    "exchange_group": {
+     "bonuses": [
+      {
+       "exchange_code": "VESNAONPATROL",
+       "code_status": "ON",
+       "icon_bonuses": [
+        {
+         "bonus_num": 40
+        }
+       ]
+      },
+      {
+       "exchange_code": "OLDCODE123",
+       "code_status": "OFF"
+      }
+     ]
+    }
+   },
+   {
+    "exchange_group": null
+   }
+  ]
+ }
+}

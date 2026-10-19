@@ -1,0 +1,32 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/2086755947540594840 (2026-09-25)",
+ "tweet": {
+  "url": "https://x.com/honkaistarrail/status/2086755947540594840",
+  "id": "2086755947540594840",
+  "text": "Honkai: Star Rail Version 4.5 \"To Roll the Stars in Astropolis\" Special Program\n🕙2026/08/14 19:30 (UTC+8)\nThe Honkai: Star Rail Version 4.5 \"To Roll the Stars in Astropolis\" Special Program will release on 2026/08/14 at 19:30 (UTC+8).\n\nThis program will be broadcast from the official livestream studio in Astropolis. This summer version will bring you a Trailblaze Continuance taking place shortly — or perhaps a long time — after the conclusion of our journey in Planarcadia. Let's enjoy a refreshing summer vacation with Robin • Summeretto and Aventurine • Waveflair!\nInformation regarding the Version 4.5 Trailblaze Mission will ░░░ be ░░░░░ in this ░░░ livestream.\nFollow our official channels to keep up with news on the latest version!\nYouTube: https://youtube.com/live/xpZoM9t7KRA\n\nTwitch: https://www.twitch.tv/honkaistarrail\n\n#HonkaiStarRail #HSRSpecialProgram",
+  "raw_text": {
+   "facets": [
+    {
+     "type": "url",
+     "replacement": "https://youtube.com/live/xpZoM9t7KRA"
+    },
+    {
+     "type": "url",
+     "replacement": "https://www.twitch.tv/honkaistarrail"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "honkaistarrail"
+  },
+  "created_timestamp": 1786356362,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HPWleQMXIAAfQrn.jpg?name=orig"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,24 @@
+{{Version Infobox
+|title        = Dance With the Beast Before Moonrise
+|version      = 4.6
+|release_date = 2026-09-28
+}}
+
+==Released Content==
+===Characters===
+* {{Character Intro|Pearl}}
+
+===Light Cones===
+* {{Light Cone Intro|Colors for Tomorrow}}
+
+===Warps===
+* Character Event Warps:
+** [[An Ocean in a Pearl/2026-09-28|An Ocean in a Pearl]] ([[Pearl]]) - Phase 1
+** [[The Demoiselle in Charge/2026-09-28|The Demoiselle in Charge]] ([[Evanescia]]) - Phase 1
+** [[Now I Am Become Blade/2026-10-21|Now I Am Become Blade]] ([[Mortenax Blade]]) - Phase 2
+* Light Cone Event Warps:
+** [[Brilliant Fixation/2026-09-28|Brilliant Fixation]] ([[Colors for Tomorrow]]) - Phase 1
+** [[Bygone Reminiscence/2026-10-21|Bygone Reminiscence]] ([[Reforged in Hellfire]]) - Phase 2
+
+===Events===
+* [[Love, Ghosts & Robots]]

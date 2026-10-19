@@ -1,0 +1,24 @@
+{{Version
+|title       = Yesterday Once More
+|version     = 3.1
+|date        = July 29, 2026
+}}
+
+==Confirmed Details==
+===Playable Agents===
+* {{Intro/Agent/Full|Remielle Dan}}
+* {{Intro/Agent/Full|Sigrid de L'Azur}}
+
+===Signal Searches===
+====Exclusive Channels====
+* Lasting the whole version:
+** [[Paradise Regained/2026-07-29|Paradise Regained]] (Remielle)
+* Phase 1: 
+** [[Neon Angel/2026-07-29|Neon Angel]] ([[Aria]])
+* Phase 2:
+** [['Till the Ends of the Sky/2026-08-19|'Till the Ends of the Sky]] (Sigrid)
+** [[Exclusive Rescreening/2026-08-19|Exclusive Rescreening]] ([[Dialyn]], [[Ukinami Yuzuha]], [[Asaba Harumasa]])
+
+====W-Engine Channels====
+* Phase 1:
+** [[Hearth's Ember/2026-07-29|"Hearth's Ember" Signal Search]]

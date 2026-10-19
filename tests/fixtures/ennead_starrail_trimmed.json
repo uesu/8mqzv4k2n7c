@@ -1,0 +1,36 @@
+{
+ "_source": "REAL api.ennead.cc/mihoyo/starrail/codes (2026-09-25), trimmed",
+ "active": [
+  {
+   "code": "STARRAILGIFT",
+   "rewards": [
+    "Stellar Jade x100",
+    "Traveler's Guide x4",
+    "Bottled Soda x5",
+    "Credit x50,000"
+   ]
+  },
+  {
+   "code": "4TKSX77Y58QK",
+   "rewards": [
+    "Free items"
+   ]
+  },
+  {
+   "code": "CREATIONNYMPH",
+   "rewards": [
+    "Stellar Jade x60",
+    "Fuel x1",
+    "Heroic Variable x1"
+   ]
+  }
+ ],
+ "inactive": [
+  {
+   "code": "0206GRANDOPEN",
+   "rewards": [
+    "5000 Credits"
+   ]
+  }
+ ]
+}

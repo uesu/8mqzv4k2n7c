@@ -1,0 +1,15 @@
+{{Signal Search Infobox
+|name              = Cindernight Respite 2026-09-30
+|type              = Exclusive Channel
+|time_start        = 2026-09-30 12:00:00
+}}
+
+===Item Pool===
+{{Signal Search Pool
+|agent_S_F    = Roxy Ifrita Pryce
+|agent_A_F    = Corin Wickes; Billy Kid
+|agent_S      = Grace Howard;Koleda Belobog
+}}
+
+==Change History==
+{{Change History|3.2}}

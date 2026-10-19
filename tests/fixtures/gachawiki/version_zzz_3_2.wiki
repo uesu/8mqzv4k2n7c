@@ -1,0 +1,24 @@
+{{Version
+|title       = Their Secret Histories
+|version     = 3.2
+|date        = September 9, 2026
+}}
+
+==Confirmed Details==
+===Playable Agents===
+* {{Intro/Agent/Full|Claret Flint}}
+* {{Intro/Agent/Full|Roxy Ifrita Pryce}}
+
+===Signal Searches===
+====Exclusive Channels====
+* Phase 1: 
+** [[Bloodmoon Rising/2026-09-09|Bloodmoon Rising]] (Claret)
+** [[Axiom of Captivation/2026-09-09|Axiom of Captivation]] ([[Nangong Yu]])
+
+* Phase 2:
+** [[Cindernight Respite/2026-09-30|Cindernight Respite]] (Roxy)
+** [[Cold Rain Wanes in the Night/2026-09-30|Cold Rain Wanes in the Night]] ([[Promeia]])
+
+====W-Engine Channels====
+* Phase 1:
+** [[Crimson Thirst/2026-09-09|"Crimson Thirst" Signal Search]]

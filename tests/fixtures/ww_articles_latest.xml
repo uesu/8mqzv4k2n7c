@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>Wuthering Waves Articles</title>
+    <link href="https://wutheringwaves.kurogames.com/en/main/news/" rel="alternate" type="text/html"/>
+    <id>urn:wutheringwaves:feed</id>
+    <updated>2026-09-24T18:20:49+00:00</updated>
+    <subtitle>Latest articles from Wuthering Waves</subtitle>
+    <entry>
+        <id>urn:article:5513</id>
+        <title>About Tiered Client Resource Downloads</title>
+        <link href="https://wutheringwaves.kurogames.com/en/main/news/detail/5513" rel="alternate" type="text/html"/>
+        <updated>2026-09-24T18:20:49+00:00</updated>
+        <content type="html"><![CDATA[<p>Dear Rovers, the &#34;Tiered Client Resource Downloads&#34; feature is scheduled to be launched soon.</p>
+<p><img alt="" src="https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/images/1790179200000/ra44knce3qj436ld16-1790244779956.jpeg" /></p>]]></content>
+    </entry>
+    <entry>
+        <id>urn:article:5476</id>
+        <title>Version 3.7 Update Maintenance Notice</title>
+        <link href="https://wutheringwaves.kurogames.com/en/main/news/detail/5476" rel="alternate" type="text/html"/>
+        <updated>2026-09-18T10:00:00+00:00</updated>
+        <content type="html"><![CDATA[<p>Dear Rovers, the server will undergo maintenance for Version 3.7.</p>]]></content>
+    </entry>
+    <entry>
+        <id>urn:article:5441</id>
+        <title>Version 3.7 Preview Special Broadcast</title>
+        <link href="https://wutheringwaves.kurogames.com/en/main/news/detail/5441" rel="alternate" type="text/html"/>
+        <updated>2026-09-12T03:00:00+00:00</updated>
+        <content type="html"><![CDATA[<p>Dear Rovers, the Wuthering Waves Version 3.7 Preview Special Broadcast is scheduled to air on September 19, 2026, at 19:00 (UTC+8).</p>
+<p>YouTube: <a href="https://youtube.com/live/nMa_e5ChL6w">https://youtube.com/live/nMa_e5ChL6w</a></p>
+<p><img alt="" src="https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/images/1789182000000/broadcast-1789182000.jpeg" /></p>]]></content>
+    </entry>
+</feed>

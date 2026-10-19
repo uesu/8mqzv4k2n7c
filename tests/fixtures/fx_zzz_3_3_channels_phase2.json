@@ -1,0 +1,45 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/2108524541022818638 (2026-10-09) — the V3.3 Phase II channels tweet, captured live. Same dialect as Phase I: quoted = CHANNEL name, bare word = AGENT.",
+ "tweet": {
+  "url": "https://x.com/ZZZ_EN/status/2108524541022818638",
+  "id": "2108524541022818638",
+  "text": "V3.3 Limited-Time Channels (Phase II)\n\nS-Rank Agent Severian Signal Search \"Answers in the Wind\"\nS-Rank Agent Norma Signal Search \"Outlier of Prodigies\"\n\n#zzzero #zzzSpecialProgram",
+  "raw_text": {
+   "text": "V3.3 Limited-Time Channels (Phase II)\n\nS-Rank Agent Severian Signal Search \"Answers in the Wind\"\nS-Rank Agent Norma Signal Search \"Outlier of Prodigies\"\n\n#zzzero #zzzSpecialProgram https://t.co/Lfnn3XgrCO",
+   "display_text_range": [0, 180],
+   "facets": [
+    {
+     "type": "hashtag",
+     "indices": [154, 161],
+     "original": "zzzero"
+    },
+    {
+     "type": "hashtag",
+     "indices": [162, 180],
+     "original": "zzzSpecialProgram"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "ZZZ_EN",
+   "avatar_url": "https://pbs.twimg.com/profile_images/2097499758462140416/YGW1eFcg_200x200.jpg"
+  },
+  "created_timestamp": 1791546399,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HULrn3BbcAAZOU_.jpg?name=orig",
+     "width": 1920,
+     "height": 1080
+    },
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HULrn2_asAALtrU.jpg?name=orig",
+     "width": 1920,
+     "height": 1080
+    }
+   ]
+  }
+ }
+}

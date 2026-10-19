@@ -1,0 +1,18 @@
+{
+ "_source": "SYNTHETIC plain wikitable (Wuthering Waves page style)",
+ "query": {
+  "pages": {
+   "2": {
+    "revisions": [
+     {
+      "slots": {
+       "main": {
+        "*": "== Active ==\n{| class=\"wikitable\"\n! Code !! Rewards\n|-\n| WAKINGMOON || 100 Astrite\n|-\n| FINDSENTINEL || 100 Astrite\n|}\n=== Expired ===\n{| class=\"wikitable\"\n|-\n| OLDWWCODE || 50 Astrite\n|}\n"
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,8 @@
+{{Wish
+|title        = Void Star's Advent
+|type         = Character Event
+}}
+{{Wish Pool
+|character_5_F = Skirk
+|character_4_F = Unknown Character;Unknown Character;Unknown Character
+}}

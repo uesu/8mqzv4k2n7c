@@ -1,0 +1,45 @@
+{
+  "_source": "REAL HoYoLAB article ids/subjects: 46691962 = Honkai: Star Rail Version 4.6 Special Program Preview, 46814308 = Version 4.6 Update and Maintenance Notice (both reported 2026-09-25). Shape is a real getNewsList?gids=6&type=1 page; created_at APPROXIMATED from the known order (program preview ~2 days before the 2026-09-20 stream, notice ~2 days after).",
+  "retcode": 0,
+  "data": {
+    "list": [
+      {
+        "post": {
+          "game_id": 6,
+          "post_id": "46814308",
+          "subject": "Version 4.6 Update and Maintenance Notice",
+          "created_at": 1790200000,
+          "content": "en-us",
+          "desc": "Dear Trailblazer, Honkai: Star Rail will undergo Version 4.6 update maintenance."
+        },
+        "cover_list": [
+          {"url": "https://img-os-static.hoyolab.com/community/pardot/image/pompom_notice_cover.png"}
+        ]
+      },
+      {
+        "post": {
+          "game_id": 6,
+          "post_id": "46691962",
+          "subject": "Version 4.6 Special Program Preview",
+          "created_at": 1789700000,
+          "content": "Dear Trailblazer, The Version 4.6 Special Program will air on September 20, 2026 07:30 (UTC+8). The program will introduce the new version's content. Redemption codes will be shared during the stream. Watch on https://www.youtube.com/watch?v=EXAMPLE1234",
+          "desc": "The Version 4.6 Special Program airs soon."
+        },
+        "cover_list": [
+          {"url": "https://img-os-static.hoyolab.com/community/pardot/image/hsr_4_6_program_keyart.jpg"}
+        ]
+      },
+      {
+        "post": {
+          "game_id": 6,
+          "post_id": "46690000",
+          "subject": "Version 4.5 \"To Roll the Stars in Astropolis\" Update Details",
+          "created_at": 1788000000,
+          "content": "Update details for Version 4.5.",
+          "desc": ""
+        },
+        "cover_list": []
+      }
+    ]
+  }
+}

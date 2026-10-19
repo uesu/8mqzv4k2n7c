@@ -1,0 +1,16 @@
+{
+ "_source": "REAL WW OS launcher index.json structure (TomyJan capture, 3.6.1) + SYNTHETIC predownload block",
+ "default": {
+  "version": "3.6.1",
+  "config": {
+   "version": "3.6.1"
+  }
+ },
+ "predownloadSwitch": "1",
+ "predownload": {
+  "version": "3.7.0",
+  "config": {
+   "version": "3.7.0"
+  }
+ }
+}

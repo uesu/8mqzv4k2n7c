@@ -1,0 +1,82 @@
+{{Upcoming}}
+{{Stub}}
+{{Version
+|title       = Journey to the Sky
+|version     = 3.3
+|image1      = Version 3.3 Special Program Announcement.png
+|image2      = Zenless Zone Zero Version 3.3 "Journey to the Sky" Special Program
+|date        = October 21, 2026
+|prev        = 3.2
+|next        = 
+|link1       = 
+|link2       = 
+}}
+'''Version 3.3''', '''''Journey to the Sky''''', is the twenty-first major release of ''[[Zenless Zone Zero]]''.
+
+==Confirmed Details==
+===Playable Agents===
+* {{Intro/Agent/Full|Phoenix Reffaella}}
+* {{Intro/Agent/Full|Severian Lowell}}
+
+===W-Engines===
+* {{Intro/W-Engine/Full|Plume of Rebirth}}
+* {{Intro/W-Engine/Full|Incarcerating Grip}}
+* {{Intro/W-Engine/Full|Candlelit Scheme}}
+
+===Outfits===
+* {{Item|Daydream Complex|type=Outfit}} (Phoenix)
+* {{Item|The Illness Called Life|type=Outfit}} (Phoenix)
+* {{Item|Solemnly Impeccable|type=Outfit}} (Severian)
+
+===Signal Searches===
+====Exclusive Channels====
+* Phase 1: 
+** [[Into the Flames of Life/2026-10-21|Into the Flames of Life]] (Phoenix)
+** [[Graceful Gale/2026-10-21|Graceful Gale]] ([[Velina Airgid]])
+* Phase 2:
+** [[(Answers in the Wind/2026-11-11|Answers in the Wind]] (Severian)
+** [[Outlier of Prodigies/2026-11-11|Outlier of Prodigies]] ([[Norma Hollowell]])
+
+====W-Engine Channels====
+* Phase 1:
+** [[Plume of Rebirth/2026-10-21|"Plume of Rebirth" Signal Search]]
+** [[Joyau Dore/2026-10-21|"Joyau Dore" Signal Search]]
+* Phase 2:
+** [[Incarcerating Grip/2026-11-11|"Incarcerating Grip" Signal Search]]
+** [[Chief Sidekick/2026-11-11|"Chief Sidekick" Signal Search]]
+
+===Events===
+* [[All-New Program/2026-10-21|All-New Program]]
+* [["En-Nah" Into Your Lap/2026-11-11|"En-Nah" Into Your Lap]]
+* [[Angels Support Operation]]
+* [[Spooky Funhouse Tales]]
+* [[Cyber Miracle Healer, on Duty!]]
+* [[Trails of the Hobbling Crow]]
+* [[Repair! Drifting Art]]
+* [[Shiyu Defense/Critical Node]]
+* [[Deadly Assault]]
+* [[Data Bounty: Combat Simulation/2026-|Data Bounty: Combat Simulation]]
+* [[Advanced Bounty: Area Patrol/2026-|Advanced Bounty: Area Patrol]]
+* [[The Final Callback/2026-10-21|The Final Callback]], first half
+* [[The Final Callback/2026-11-11|The Final Callback]], second half
+
+===Commissions===
+* '''[[Phaethon's Story]]'''
+** Season 3 Chapter 4: [[Journey to the Sky]]
+
+===Gamemodes===
+* [[Enigma of the Labyrinth|Enigma of the Labyrinth: Spooky Trial]]
+* [[Annihilation Simulacrum]]
+
+==Gallery==
+
+Version 3.3 Special Program Announcement.png|Special Program Announcement
+
+===Videos===
+
+Version 3.3 Teaser - "Journey to the Sky" - Zenless Zone Zero
+Zenless Zone Zero Version 3.3 "Journey to the Sky" Special Program
+
+
+==Navigation==
+{{Version Navbox|3}}

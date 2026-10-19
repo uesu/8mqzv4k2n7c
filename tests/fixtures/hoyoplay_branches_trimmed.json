@@ -1,0 +1,49 @@
+{
+ "_source": "REAL getGameBranches (ZZZ entry, 2026-09-25) + SYNTHETIC HSR/GI entries in the same shape",
+ "retcode": 0,
+ "data": {
+  "game_branches": [
+   {
+    "game": {
+     "id": "U5hbdsT9W7",
+     "biz": "nap_global"
+    },
+    "main": {
+     "package_id": "qsoIbfMm4x",
+     "branch": "main",
+     "tag": "3.2.0",
+     "diff_tags": [
+      "3.1.0",
+      "3.0.0"
+     ]
+    },
+    "pre_download": null
+   },
+   {
+    "game": {
+     "id": "4ziysqXOQ8",
+     "biz": "hkrpg_global"
+    },
+    "main": {
+     "branch": "main",
+     "tag": "4.5.0"
+    },
+    "pre_download": {
+     "branch": "predownload",
+     "tag": "4.6.0"
+    }
+   },
+   {
+    "game": {
+     "id": "gopR6Cufr3",
+     "biz": "hk4e_global"
+    },
+    "main": {
+     "branch": "main",
+     "tag": "7.1.0"
+    },
+    "pre_download": null
+   }
+  ]
+ }
+}

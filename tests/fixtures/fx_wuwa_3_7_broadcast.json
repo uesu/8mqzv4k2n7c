@@ -1,0 +1,35 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/2098607530780021002 (2026-09-25)",
+ "tweet": {
+  "url": "https://x.com/Wuthering_Waves/status/2098607530780021002",
+  "id": "2098607530780021002",
+  "text": "Wuthering Waves Version 3.7 Preview Special Broadcast is scheduled to air on September 19, 2026, at 19:00 (UTC+8).\n\nYouTube: https://youtube.com/live/nMa_e5ChL6w?feature=share\nTwitch: https://www.twitch.tv/wuthering_waves\n\nYou can watch it live on Wuthering Waves' official livestream channels. Remember to tune in for the latest updates on the upcoming version!\n\nFollow @Wuthering_Waves and repost. 10 winners will be chosen for a $50 Amazon Gift Card.\n\n#WutheringWaves",
+  "raw_text": {
+   "facets": [
+    {
+     "type": "url",
+     "replacement": "https://youtube.com/live/nMa_e5ChL6w?feature=share"
+    },
+    {
+     "type": "url",
+     "replacement": "https://www.twitch.tv/wuthering_waves"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "Wuthering_Waves",
+   "avatar_url": "https://pbs.twimg.com/profile_images/2085696982958665728/qlgc729S_200x200.jpg"
+  },
+  "created_timestamp": 1789182000,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HR70hTAaoAA8Dzz.jpg?name=orig",
+     "width": 1920,
+     "height": 1080
+    }
+   ]
+  }
+ }
+}

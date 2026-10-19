@@ -1,0 +1,45 @@
+{
+ "_source": "REAL api.fxtwitter.com/status/2108524400761061839 (2026-10-09) — the V3.3 Phase I channels tweet, captured live. NOTE: in this dialect the quoted string is the CHANNEL name and the bare word is the AGENT — the exact shape the 2026-10-09 banner bug came from.",
+ "tweet": {
+  "url": "https://x.com/ZZZ_EN/status/2108524400761061839",
+  "id": "2108524400761061839",
+  "text": "V3.3 Limited-Time Channels (Phase I)\n\nS-Rank Agent Phoenix Signal Search \"Into the Flames of Life\"\nS-Rank Agent Velina Signal Search \"Graceful Gale\"\n\n#zzzero #zzzSpecialProgram",
+  "raw_text": {
+   "text": "V3.3 Limited-Time Channels (Phase I)\n\nS-Rank Agent Phoenix Signal Search \"Into the Flames of Life\"\nS-Rank Agent Velina Signal Search \"Graceful Gale\"\n\n#zzzero #zzzSpecialProgram https://t.co/Uda4ivWJA1",
+   "display_text_range": [0, 176],
+   "facets": [
+    {
+     "type": "hashtag",
+     "indices": [150, 157],
+     "original": "zzzero"
+    },
+    {
+     "type": "hashtag",
+     "indices": [158, 176],
+     "original": "zzzSpecialProgram"
+    }
+   ]
+  },
+  "author": {
+   "screen_name": "ZZZ_EN",
+   "avatar_url": "https://pbs.twimg.com/profile_images/2097499758462140416/YGW1eFcg_200x200.jpg"
+  },
+  "created_timestamp": 1791546366,
+  "media": {
+   "photos": [
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HULrjDVa0AAc7x9.jpg?name=orig",
+     "width": 1920,
+     "height": 1080
+    },
+    {
+     "type": "photo",
+     "url": "https://pbs.twimg.com/media/HULrjDXa8AA3XAD.jpg?name=orig",
+     "width": 1920,
+     "height": 1080
+    }
+   ]
+  }
+ }
+}

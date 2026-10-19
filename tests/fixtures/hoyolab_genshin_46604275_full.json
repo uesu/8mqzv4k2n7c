@@ -1,0 +1,18 @@
+{
+ "_source": "REAL getPostFull?gids=2&post_id=46604275 (2026-09-25), trimmed",
+ "retcode": 0,
+ "data": {
+  "post": {
+   "post": {
+    "game_id": 2,
+    "post_id": "46604275",
+    "subject": "Genshin Impact Version 7.1 Special Program Preview",
+    "content": "<p class=\"ql-align-center\"><br></p><div class=\"ql-image\"><img src=\"https://upload-os-bbs.hoyolab.com/upload/2026/09/07/3b807be584794bdac0cddc9ddf05bcec_5145680818623480549.jpg?x-oss-process=image%2Fresize%2Cs_1000\"></div><p class=\"ql-align-center\"><strong>Dear Traveler, it's announcement time!</strong></p><p class=\"ql-align-center\"><strong>The special program for Genshin Impact's new version will premiere on the official Twitch and YouTube channels on 09/12/2026 at 08:00 AM (UTC-4)!</strong></p><p class=\"ql-align-center\"><strong>This special program will feature juicy details about new game content and developments in Version 7.1. It will also \"drop\" some redemption codes and other goodies!</strong></p><p class=\"ql-align-center\"><br></p><p class=\"ql-align-center\"><strong>Make sure to follow us, Traveler. We'll see you there!</strong></p><p class=\"ql-align-center\"><a class=\"blot-link\" href=\"https://hoyo.link/U5vue6Q9L\"><strong>Twitch</strong></a></p><p class=\"ql-align-center\"><a class=\"blot-link\" href=\"https://www.youtube.com/@GenshinImpact\"><strong>YouTube</strong></a></p>",
+    "created_at": 1788753605,
+    "structured_content": ""
+   },
+   "image_list": [],
+   "cover_list": []
+  }
+ }
+}
