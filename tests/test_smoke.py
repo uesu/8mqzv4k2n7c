@@ -7596,7 +7596,7 @@ def test_news_captured_47133580_native_video_payload_and_cdn_preflight():
         assert all(not validate_payload(payload) for payload in payloads)
         urls = [entry['media']['url'] for payload in payloads for co in payload['components']
                 for c in co['components'] if c['type'] == 12 for entry in c['items']]
-        assert cover in urls and mp4 in urls
+        assert cover not in urls and urls.count(mp4) == 1
         jpeg = b'\xff\xd8\xff' + b'x' * 80
         video = b'\x00\x00\x00\x18ftypisom' + b'x' * 80
         session = Session([Response(206, jpeg if url == cover else video,
@@ -7613,6 +7613,62 @@ def test_news_captured_47133580_native_video_payload_and_cdn_preflight():
         assert await Fetcher(Session([Response(200, video, 'video/mp4')])).verify_media(mp4)
         assert await Fetcher(Session([Response(200, jpeg, 'image/jpeg')])).verify_media(cover)
     asyncio.run(run())
+
+
+
+def test_news_full_cover_policy_shared_games_formats_and_explicit_body_images():
+    """Synthetic renderer cases; captured 47133580 regression above uses real source JSON."""
+    def urls(payloads):
+        return [entry['media']['url'] for p in payloads for co in p['components']
+                for c in co['components'] if c['type'] == 12 for entry in c['items']]
+
+    cover = 'https://upload-os-bbs.hoyolab.com/poster.jpg'
+    photo = 'https://upload-os-bbs.hoyolab.com/body.png'
+    for key, game in GAMES.items():
+        for suffix in ['mp4', 'webm', 'MP4?token=original', 'webm#fragment']:
+            video = 'https://vod-static.hoyolab.com/original.' + suffix
+            item = replace(news_item(), game=key, images=[cover], article_blocks=[
+                {'kind': 'text', 'text': 'Source opening.'},
+                {'kind': 'image', 'url': photo},
+                {'kind': 'video', 'url': video},
+                {'kind': 'text', 'text': 'Source closing.'}])
+            original = [dict(b) for b in item.article_blocks]
+            ps = cards.news_payloads(game, item)
+            assert all(not cards.validate_payload(p) for p in ps)
+            assert urls(ps) == [photo, video]
+            assert item.images == [cover] and item.article_blocks == original
+            assert ps[-1]['components'][-1]['components'][-1]['type'] == 1
+    for suffix in ['png', 'gif', 'webp', 'jpg']:
+        image = 'https://upload-os-bbs.hoyolab.com/original.' + suffix
+        item = replace(news_item(), images=[image], article_blocks=[
+            {'kind': 'text', 'text': 'Source text.'}, {'kind': 'image', 'url': image}])
+        assert urls(cards.news_payloads(GAMES['genshin'], item)) == [image]
+    # Link-only/unsupported-inline video keeps its lead, not an invented embed.
+    item = replace(news_item(), images=[cover], article_blocks=[
+        {'kind': 'text', 'text': 'Source text.'},
+        {'kind': 'video', 'url': 'https://www.youtube.com/watch?v=12345678901'}])
+    assert urls(cards.news_payloads(GAMES['genshin'], item)) == [cover]
+    # No native video and a distinct lead: retain both independent images.
+    item = replace(news_item(), images=[cover], article_blocks=[{'kind': 'image', 'url': photo}])
+    assert urls(cards.news_payloads(GAMES['genshin'], item)) == [cover, photo]
+
+
+def test_news_video_cover_policy_pagination_and_excerpt_keep_existing_limits():
+    cover = 'https://upload-os-bbs.hoyolab.com/poster.jpg'
+    video = 'https://vod-static.hoyolab.com/original.mp4'
+    def urls(ps):
+        return [e['media']['url'] for p in ps for co in p['components']
+                for c in co['components'] if c['type'] == 12 for e in c['items']]
+    item = replace(news_item(), images=[cover], article_blocks=[
+        {'kind': 'text', 'text': ('Source paragraph. ' * 40 + '\n\n') * 7},
+        {'kind': 'video', 'url': video}])
+    ps = cards.news_payloads(GAMES['genshin'], item)
+    assert len(ps) == 2 and urls(ps) == [video]
+    assert all(not cards.validate_payload(p) for p in ps)
+    item.article_blocks[0]['text'] *= 3
+    ps = cards.news_payloads(GAMES['genshin'], item)
+    assert len(ps) == 1 and urls(ps) == [cover]
+    assert any('**Excerpt' in c.get('content', '') for co in ps[0]['components'] for c in co['components'])
 
 
 if __name__ == "__main__":
