@@ -2318,7 +2318,7 @@
           ],
           "b_phase1": [
             100,
-            1792389314
+            1792391427
           ],
           "b_phase1_4": [
             50,
@@ -2467,6 +2467,7 @@
           "b_phase1_by": [
             "official"
           ],
+          "b_phase1_conflict": "Phoenixis, Velinais",
           "b_phase2": [
             40,
             1791546399
