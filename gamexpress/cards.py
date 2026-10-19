@@ -563,6 +563,16 @@ def news_payloads(game: Game, item) -> list[dict]:
     cover = safe_url(item.images[0]) if item.images else None
     if item.images and not cover:
         raise ValueError("unsupported article cover URL")
+    # Covers are listing artwork, not body content. Do not prepend a separate
+    # poster when the full article already renders a playable native video.
+    # Also avoid repeating a cover already present verbatim in body media.
+    # Keep explicit body images/order, link-only video covers and excerpt leads.
+    body_media = {entry["media"]["url"] for unit in units if unit["type"] == 12
+                  for entry in unit["items"]}
+    native_video = any(block["kind"] == "video" and re.search(
+        r"\.(?:mp4|webm)(?:[?#]|$)", block.get("url", ""), re.I)
+                       for block in item.article_blocks)
+    full_cover = None if native_video or cover in body_media else cover
     chunks, current = [], []
     for unit in units:
         # Do not split one uninterrupted media run merely at the eight-unit
@@ -576,7 +586,7 @@ def news_payloads(game: Game, item) -> list[dict]:
         chunks.append(current)
     containers = []
     for index, chunk in enumerate(chunks):
-        kids = ([header] + ([gallery([cover])] if cover else [])) if index == 0 else []
+        kids = ([header] + ([gallery([full_cover])] if full_cover else [])) if index == 0 else []
         if len(chunks) > 1:
             kids += [text(f"-# Part {index + 1}/{len(chunks)}"), sep()]
         kids += chunk
@@ -605,7 +615,7 @@ def news_payloads(game: Game, item) -> list[dict]:
                 page_units.extend(text(piece) for piece in pieces)
 
         def page_prefix(number):
-            return (([header] + ([gallery([cover])] if cover else [])) if number == 1 else []) + [
+            return (([header] + ([gallery([full_cover])] if full_cover else [])) if number == 1 else []) + [
                 text(f"-# Page {number}"), sep()]
 
         def page_payload(kids, final=False):
