@@ -7671,5 +7671,103 @@ def test_news_video_cover_policy_pagination_and_excerpt_keep_existing_limits():
     assert any('**Excerpt' in c.get('content', '') for co in ps[0]['components'] for c in co['components'])
 
 
+def _captured_kuro_lucilla_5626():
+    # Exact complete Lucilla rows extracted from user MainMenu capture, not the
+    # whole 1,416-row menu; complete original detail response, unchanged.
+    # Full MainMenu/ArticleMenu coverage comparison was additionally replayed offline.
+    return json.loads('{"article": [{"articleContent": "<div>\\n<div data-zone", "articleDesc": "", "articleId": 5626, "articleTitle": "Resonator Review | Memory Palace — Lucilla", "articleType": 0, "createTime": "2026-10-14 17:06:43", "sortingMark": 699, "startTime": "2026-10-19 17:00:00", "suggestCover": "", "top": 0}, {"articleContent": "<div>\\n<div data-zone", "articleDesc": "", "articleId": 5626, "articleTitle": "Resonator Review | Memory Palace — Lucilla", "articleType": 58, "createTime": "2026-10-14 17:06:43", "sortingMark": 699, "startTime": "2026-10-19 17:00:00", "suggestCover": "", "top": 0}]}'), json.loads('{"articleContent": "<div>\\n<div data-zone-id=\\"0\\" data-line-index=\\"0\\" data-line=\\"true\\">Lucilla, President of Startorch Academy and idealist with both feet on the ground. She holds quiet vigil over her students as they rise to challenge the very sky.<img style=\\"display: block; margin-left: auto; margin-right: auto;\\" src=\\"https://hw-media-cdn-mingchao.kurogame.com/object/1792166400000/sgkj4fwuwzyzct5ou2-1792207561469.jpg\\" width=\\"800\\" data-media-source=\\"production_G152_en\\" data-desc=\\"succ\\"><img style=\\"display: block; margin-left: auto; margin-right: auto;\\" src=\\"https://hw-media-cdn-mingchao.kurogame.com/object/1792166400000/upkjxvcen2sk5af43s-1792207580965.jpg\\" width=\\"800\\" data-media-source=\\"production_G152_en\\" data-desc=\\"succ\\"><img style=\\"display: block; margin-left: auto; margin-right: auto;\\" src=\\"https://hw-media-cdn-mingchao.kurogame.com/object/1792166400000/9407hszvlvg9namnbx-1792207597875.jpg\\" width=\\"800\\" height=\\"9904\\" data-media-source=\\"production_G152_en\\" data-desc=\\"succ\\"><img style=\\"display: block; margin-left: auto; margin-right: auto;\\" src=\\"https://hw-media-cdn-mingchao.kurogame.com/object/1792166400000/m8k6ahcf9p850qu9gm-1792207617807.jpg\\" width=\\"800\\" data-media-source=\\"production_G152_en\\" data-desc=\\"succ\\"><img style=\\"display: block; margin-left: auto; margin-right: auto;\\" src=\\"https://hw-media-cdn-mingchao.kurogame.com/object/1792166400000/xpqdl500gw6pafzggl-1792207637574.jpg\\" width=\\"800\\" height=\\"800\\" data-media-source=\\"production_G152_en\\" data-desc=\\"succ\\"></div>\\n</div>", "articleId": 5626, "articleTitle": "Resonator Review | Memory Palace — Lucilla", "articleType": 58, "articleTypeName": "Notice", "endTime": "2099-01-01 00:00:00", "gameId": "G152-en", "startTime": "2026-10-19 17:00:00"}')
+
+
+def test_news_kuro_captured_lucilla_publication_not_draft_creation():
+    import re
+
+    from gamexpress.sources import kuro
+    menu, detail = _captured_kuro_lucilla_5626()
+    for since in [1792395922, 1792400399, 1792400400]:
+        rows = asyncio.run(kuro.discover_news(NewsFetcher([menu]), GAMES['wuwa'], since))
+        assert rows == [{'id': '5626', 'ts': 1792400400, 'title': detail['articleTitle']}]
+    assert asyncio.run(kuro.discover_news(NewsFetcher([menu]), GAMES['wuwa'], 1792400401)) == []
+    rows = asyncio.run(kuro.discover_news(NewsFetcher([menu]), GAMES['wuwa'], 1792395922))
+    item = asyncio.run(kuro.news_article(NewsFetcher([detail]), GAMES['wuwa'], rows[0]))
+    assert item.published_ts == 1792400400
+    payloads = cards.news_payloads(GAMES['wuwa'], item)
+    assert len(payloads) == 1 and not cards.validate_payload(payloads[0])
+    expected = re.findall(r'<img[^>]+src=["\']([^"\']+)', detail['articleContent'], re.I)
+    urls = [e['media']['url'] for p in payloads for co in p['components']
+            for c in co['components'] if c['type'] == 12 for e in c['items']]
+    assert len(expected) == 5 and urls == expected
+    assert [b['label'] for b in payloads[-1]['components'][-1]['components'][-1]['components']] == [
+        'Read Post', 'Citlali News', 'Donate']
+
+
+def test_news_kuro_publication_legacy_invalid_and_future_contracts():
+    from gamexpress.sources import kuro
+    menu, _ = _captured_kuro_lucilla_5626()
+    original = menu['article'][1]
+    # Deliberately modified contract cases, not claimed as official captures.
+    for value in ['', None]:
+        row = dict(original, startTime=value)
+        found = asyncio.run(kuro.discover_news(NewsFetcher([{'article': [row]}]), GAMES['wuwa'], 1))
+        assert found[0]['ts'] == 1791968803
+    row = dict(original, startTime='not-a-date')
+    assert asyncio.run(kuro.discover_news(NewsFetcher([{'article': [row]}]), GAMES['wuwa'], 1)) == []
+    row = dict(original, startTime='2026-10-20 17:00:00')
+    found = asyncio.run(kuro.discover_news(NewsFetcher([{'article': [row]}]), GAMES['wuwa'], 1))
+    assert not [r for r in found if 1792395921 < r['ts'] <= 1792416720]
+
+
+def test_news_kuro_lucilla_runner_delivery_dedup_and_future_hold_offline():
+    from gamexpress.runner import run_news
+    menu, detail = _captured_kuro_lucilla_5626()
+
+    class CapturedFetcher:
+        def __init__(self):
+            self.calls = []
+            self.media = []
+
+        async def get_json(self, url, **kwargs):
+            self.calls.append(url)
+            return menu if url.endswith('/MainMenu.json') else detail
+
+        async def verify_media(self, url):
+            self.media.append(url)
+            return True  # Simulated HTTP availability, NOT a real CDN check.
+
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = make_ctx(Path(directory) / 'state.json', now=1792400432, NEWS_ENABLED='1',
+                       NEWS_GAMES='wuwa', DISCORD_WEBHOOK_NEWS_WUWA=HOOK)
+        ctx.state.news_record('wuwa').update(floor=1792395921, paused=False)
+        ctx.fetcher = CapturedFetcher()
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, 'offline-lucilla')])
+        asyncio.run(run_news(ctx))
+        rec = ctx.state.news_record('wuwa')
+        assert rec['floor'] == 1792395921
+        assert rec['records']['5626']['status'] == 'posted'
+        assert rec['records']['5626']['ts'] == 1792400400
+        assert len(ctx.webhook.sends) == 1 and len(ctx.fetcher.media) == 5
+        assert all('github' not in u for u in ctx.fetcher.calls)
+        asyncio.run(run_news(ctx))
+        assert len(ctx.webhook.sends) == 1  # Stable ID: no duplicate second delivery.
+        assert State.load(ctx.state.path).news_record('wuwa')['records']['5626']['status'] == 'posted'
+        # New installation still baselines silently, never historical-floods.
+        fresh = make_ctx(Path(directory) / 'fresh.json', now=1792400432, NEWS_ENABLED='1',
+                         NEWS_GAMES='wuwa', DISCORD_WEBHOOK_NEWS_WUWA=HOOK)
+        fresh.fetcher = CapturedFetcher()
+        fresh.webhook = ScriptedWebhook([], [])
+        asyncio.run(run_news(fresh))
+        assert fresh.webhook.sends == []
+        assert fresh.state.news_record('wuwa')['floor'] == fresh.now
+        # Runner (not just parser) retains its embargo upper-bound check.
+        menu = json.loads(json.dumps(menu))
+        for row in menu['article']:
+            row['startTime'] = '2026-10-20 17:00:00'
+        future = make_ctx(Path(directory) / 'future.json', now=1792400432, NEWS_ENABLED='1',
+                          NEWS_GAMES='wuwa', DISCORD_WEBHOOK_NEWS_WUWA=HOOK)
+        future.state.news_record('wuwa').update(floor=1792395921, paused=False)
+        future.fetcher = CapturedFetcher()
+        future.webhook = ScriptedWebhook([], [])
+        asyncio.run(run_news(future))
+        assert future.webhook.sends == [] and future.fetcher.media == []
+
 if __name__ == "__main__":
     sys.exit(main())
