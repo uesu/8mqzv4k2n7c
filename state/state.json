@@ -1895,6 +1895,30 @@
       "paused": false,
       "records": {},
       "route": "a0f2147590c35140"
+    },
+    "hna": {
+      "floor": 1792395921,
+      "paused": false,
+      "records": {},
+      "route": "7a204299ff16d73e"
+    },
+    "starrail": {
+      "floor": 1792395921,
+      "paused": false,
+      "records": {},
+      "route": "d6cfe8654063c7ee"
+    },
+    "wuwa": {
+      "floor": 1792395921,
+      "paused": false,
+      "records": {},
+      "route": "f7e18488aac788d3"
+    },
+    "zzz": {
+      "floor": 1792395921,
+      "paused": false,
+      "records": {},
+      "route": "5f931f917050e29a"
     }
   },
   "schedule": {
@@ -2326,7 +2350,7 @@
           ],
           "b_phase1": [
             100,
-            1792395584
+            1792395921
           ],
           "b_phase1_4": [
             50,
