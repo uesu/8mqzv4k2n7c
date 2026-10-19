@@ -1,0 +1,17 @@
+# zizmor (https://docs.zizmor.sh) — static security analysis of the workflow YAML.
+# Run by the advisory-checks job in ci.yml, which can never block a merge, and locally with
+#   uvx zizmor .github/workflows
+#
+# Only ONE audit is re-configured, and it is a policy choice rather than a suppression:
+#
+#   unpinned-uses — zizmor's blanket default wants every `uses:` pinned to a commit SHA.
+#   This repo pins to release TAGS instead, on purpose: .github/dependabot.yml already opens a
+#   weekly PR for every action update, every PR goes through the full CI gate before it can be
+#   merged, and a tag keeps the workflow readable for a non-developer operator (a SHA would also
+#   break the test that asserts `actions/checkout@v7` is what the workflows use). `ref-pin` still
+#   fails anything that floats — a branch name, `@main`, or no ref at all.
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        "*": ref-pin

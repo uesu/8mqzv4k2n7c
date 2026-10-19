@@ -1,0 +1,171 @@
+name: CI — compile + offline tests
+
+# Safety gate for every PR (and Dependabot bumps): proves the monitor installs,
+# compiles and reproduces the reference cards BEFORE anything reaches main.
+# No network, no secrets.
+#
+# Jobs:
+#   test                      the real gate (always required)
+#   advisory-checks           pip-audit (known CVEs in requirements.txt) + actionlint (workflow
+#                              YAML) + zizmor (workflow security) + ruff (Python lint) —
+#                              informational only, can NEVER fail this workflow (see the job)
+#   automerge                 OPT-IN Dependabot auto-merge: only Dependabot PRs, only after
+#                              `test` passed, only when the repository VARIABLE
+#                              AUTO_MERGE_DEPENDABOT=yes exists. See docs/DEPENDABOT.md.
+#
+# Python update PRs are validated by python_version_bump.yml and CI, but always
+# wait for attended review/merge. Package-only Dependabot PRs remain opt-in automatic.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'state/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  # A new commit on the same PR/branch makes the previous CI run pointless, so cancel it: the
+  # reviewer gets the answer for the newest commit sooner and no runner minute is spent proving
+  # something about a commit nobody will merge. Safe here and NOT in monitor.yml — this workflow
+  # only reads; it never posts to Discord and never writes state.
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false   # nothing here pushes; don't leave a token in .git/config
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+        with:
+          python-version: '3.14.8'
+
+      - name: Install uv (same packages pip would install, just a much faster resolver)
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0 # astral-sh doesn't publish a floating major tag like v10
+        with:
+          version: latest-known            # see monitor.yml for why this is not "latest"
+
+      - name: Install dependencies (a broken requirements.txt fails HERE, not in production)
+        env:
+          UV_SYSTEM_PYTHON: '1'   # install into the interpreter setup-python just configured, not a venv
+        run: uv pip install -r requirements.txt pyyaml -q
+
+      - name: Compile every .py file
+        run: python -m compileall -q gamexpress tests .github/scripts
+
+      - name: Validate config + sample cards
+        run: python -m gamexpress validate
+
+      - name: Offline smoke + golden tests
+        run: python tests/test_smoke.py
+
+      # Every test file has its own plain runner and every one of them is a gate. The two below
+      # held 23 regressions (the 2026-10-08 schedule-card faults, the ZZZ 3.3 "Agent" placeholder)
+      # that only pytest ever ran -- and CI does not run pytest, so they guarded nothing until
+      # 2026-10-15. test_ci_and_the_python_bump_gate_run_every_offline_test_file keeps this list
+      # complete.
+      - name: Schedule regressions (2026-10-08) + gacha-wiki placeholder guard
+        run: |
+          python tests/test_schedule_epithet_and_settled.py
+          python tests/test_gachawiki_placeholder.py
+
+      - name: Card preview renders (previews/index.html)
+        run: python -m gamexpress preview --out /tmp/previews > /dev/null
+
+  advisory-checks:
+    name: Advisory checks (never block a merge)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false   # read-only job
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+        with:
+          python-version: '3.14.8'
+
+      - name: Known-vulnerability scan of requirements.txt (pypa/pip-audit)
+        continue-on-error: true   # informational: a new advisory must never block a hot-fix
+        uses: pypa/gh-action-pip-audit@1220774d901786e6f652ae159f7b6bc8fea6d266  # v1.1.0
+        with:
+          inputs: requirements.txt
+
+      - name: Static check of the workflow YAML itself (rhysd/actionlint via reviewdog)
+        continue-on-error: true   # informational only, see above
+        uses: reviewdog/action-actionlint@a8ac3eea598697a830f7d8e701fc9fcbfde88974  # v1.80.0
+        with:
+          reporter: local
+          fail_level: none
+
+      - name: Security review of the workflow YAML (zizmorcore/zizmor)
+        continue-on-error: true   # informational only, see above
+        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482  # v0.6.4
+        with:
+          inputs: .github/workflows
+          advanced-security: false   # print the findings in the log; no code-scanning upload
+          persona: regular
+
+      - name: Lint the Python itself (astral-sh/ruff, reading the repo's own ruff.toml)
+        continue-on-error: true   # a brand-new ruff release must never block a hot-fix
+        # full tag on purpose: ruff-action stopped publishing a floating `v4` tag (only v4.1.0,
+        # v4.0.0 exist), so `@v4` does not resolve. Dependabot bumps this line like any other.
+        uses: astral-sh/ruff-action@278981a28ce3188b1e39527901f38254bf3aac89  # v4.1.0
+        with:
+          args: check --output-format=github   # ruff.toml (target-version, line-length, rules) is picked up automatically
+
+  automerge:
+    name: Dependabot auto-merge (opt-in)
+    needs: test
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      vars.AUTO_MERGE_DEPENDABOT == 'yes'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      # Requested permissions remain subject to GitHub's Dependabot/token restrictions.
+      # No checkout: the PR's code never runs with write access.
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Merge the tested commit
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3  # v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const number = context.payload.pull_request.number;
+            const tested = context.payload.pull_request.head.sha;
+            const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: number });
+            if (pr.state !== 'open' || pr.draft) { core.info(`#${number} is not open / is a draft — nothing to do.`); return; }
+            if (pr.head.sha !== tested) { core.info('New commits arrived after this test run — the next CI run decides.'); return; }
+            const requiresWorkflowReview = files => files.some(file =>
+              [file.filename, file.previous_filename].some(path =>
+                typeof path === 'string' && path.startsWith('.github/workflows/')));
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner, repo, pull_number: number, per_page: 100,
+            });
+            if (requiresWorkflowReview(files)) {
+              core.info('Workflow files changed: review and merge this update while available, then check the next live run.');
+              return;
+            }
+
+            for (const merge_method of ['squash', 'merge', 'rebase']) {
+              try {
+                await github.rest.pulls.merge({ owner, repo, pull_number: number, merge_method, sha: tested });
+                core.info(`Merged #${number} (${merge_method}) — CI passed on ${tested.slice(0, 7)}.`);
+                return;
+              } catch (e) {
+                if (e.status === 405 && /not allowed/i.test(e.message)) continue;   // that merge style is off in Settings
+                core.warning(`Not merged (${e.status}): ${e.message}`);
+                return;
+              }
+            }
+            core.warning('No merge method is enabled in Settings → General → Pull Requests.');

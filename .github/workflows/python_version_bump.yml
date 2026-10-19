@@ -1,0 +1,171 @@
+name: Python version bump (auto)
+
+# Dependabot CANNOT do this job: the interpreter version is a `python-version:` string inside
+# workflow YAML, not a tracked dependency file (requirements.txt / package-ecosystem), so it is
+# invisible to Dependabot by design — see docs/DEPENDABOT.md. This workflow fills that one gap.
+#
+# Weekly (same cadence as Dependabot), it compares the pinned python-version against
+# actions/python-versions' OWN release manifest — the exact list actions/setup-python downloads
+# from — and opens a PR only when a newer STABLE patch or next minor (with a Linux x64 build) already exists
+# there. Nothing is guessed: whatever it proposes is already installable on the runner.
+#
+# THE RULE: 100% GREEN OR NOTHING. No PR is opened unless, under the NEW interpreter, all of
+# this passed first: every dependency installed FROM A PREBUILT WHEEL (`--only-binary=:all:`),
+# then compileall + validate + the offline suite + the preview render — the exact commands
+# ci.yml runs. Missing wheels or a red gate => DEFERRED (a warning, next week retries), never a
+# failed run.
+#
+# WHY THE GATE IS HERE AND NOT IN ci.yml: this job has to decide whether to open a PR AT ALL.
+# It validates the new interpreter on the already-rewritten tree BEFORE any PR exists, so a
+# bump that cannot work becomes a silent deferral instead of a red pull request to clean up.
+# (There used to be a second reason: a PR opened with the built-in GITHUB_TOKEN does not trigger
+# other workflows, so ci.yml could never post a check on it. That stopped being true when this
+# workflow moved to BUMP_PAT — a PAT-opened PR is an ordinary user action, so ci.yml does run on
+# it now. The inline gate is kept because it runs first and gates the PR's very existence;
+# ci.yml is now a second opinion rather than the only one that was impossible.)
+#
+# All verified Python patch/minor update PRs wait for attended review/merge.
+# AUTO_MERGE_PYTHON_BUMP is a legacy variable and is no longer consulted.
+# Detection, wheels-only validation, tests and PR publication remain automatic.
+# A later GitHub security approval can still be required after merging.
+#
+# One-time setup this needs:
+#   1. The repository secret BUMP_PAT — a PAT with Workflows: read and write. Without it this
+#      workflow validates everything and then dies on the final push, because the built-in
+#      GITHUB_TOKEN may never write a file under .github/workflows/. Full permission list and
+#      reasoning: docs/PYTHON_VERSION.md.
+#   2. Settings → Actions → General → Workflow permissions → "Allow GitHub Actions to create and
+#      approve pull requests" — the same kind of one-time repository setting as the cron-job.org
+#      token in docs/SCHEDULER.md.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'       # Monday 06:00 UTC — same day Dependabot checks
+  workflow_dispatch: {}        # or run it by hand any time
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # peter-evans/create-pull-request pushes the bump branch with these credentials, so they
+      # have to persist. Nothing in this job is uploaded as an artifact.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7 # zizmor: ignore[artipacked]
+        with:
+          token: ${{ secrets.BUMP_PAT }}
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+        with:
+          python-version: '3.14.8'
+
+      - name: Install ruff (used only to confirm a target-version bump is safe to propose)
+        run: python -m pip install --disable-pip-version-check -q ruff
+
+      - name: Compare the pinned version against actions/python-versions
+        id: bump
+        env:
+          PR_BODY_PATH: ${{ runner.temp }}/python_bump_body.md
+        run: python .github/scripts/python_version_bump.py
+
+      # ── Prove the bump before proposing it ────────────────────────────────────────────
+      # Runs CI's own commands here, under the NEW interpreter, on the tree the previous step
+      # already rewrote — BEFORE any PR exists. A bump that cannot install its wheels or cannot
+      # pass the suite therefore never becomes a pull request at all; it is deferred to next
+      # Monday instead. ci.yml also runs on the PR once it is opened (BUMP_PAT means workflow
+      # triggers fire normally), but that is too late to stop a bad PR being created.
+      - name: Switch to the proposed interpreter
+        id: switch
+        if: steps.bump.outputs.changed == 'true'
+        continue-on-error: true
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+        with:
+          python-version: '${{ steps.bump.outputs.new_version }}'
+
+      # The single most likely way a new CPython series breaks this repo: aiohttp ships
+      # compiled wheels per interpreter ABI, and so do multidict / yarl / frozenlist /
+      # propcache. On the day 3.x.0 lands those wheels do not exist yet; pip would fall
+      # back to compiling from source, which either fails or silently produces a slower,
+      # less-tested build. No wheels => DEFER, do not propose. Not a failed run.
+      #
+      # Every step below must re-check `switch`: if the interpreter did not actually change,
+      # `python` is still the OLD one, and a green gate here would be a lie.
+      - name: Every dependency must install FROM A PREBUILT WHEEL
+        id: wheels
+        if: steps.bump.outputs.changed == 'true' && steps.switch.outcome == 'success'
+        continue-on-error: true
+        run: >-
+          python -m pip install --disable-pip-version-check -q
+          --only-binary=:all: -r requirements.txt pyyaml
+
+      - name: Re-run CI's own gates under the new interpreter
+        id: gates
+        if: steps.bump.outputs.changed == 'true' && steps.switch.outcome == 'success' && steps.wheels.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -euxo pipefail
+          python -V
+          python -m compileall -q gamexpress tests .github/scripts
+          python -m gamexpress validate
+          python tests/test_smoke.py
+          python tests/test_schedule_epithet_and_settled.py
+          python tests/test_gachawiki_placeholder.py
+          python -m gamexpress preview --out "$RUNNER_TEMP/previews" > /dev/null
+
+      # Values reach the shell through env, never through ${{ }} inlined into `run:` —
+      # that is zizmor's template-injection audit, and every workflow in this repo is clean
+      # of it. Same reason the two steps below use env too.
+      - name: Say why nothing was proposed (deferred, not failed)
+        if: steps.bump.outputs.changed == 'true' && (steps.switch.outcome != 'success' || steps.wheels.outcome != 'success' || steps.gates.outcome != 'success')
+        env:
+          NEW_VERSION: ${{ steps.bump.outputs.new_version }}
+          SWITCH: ${{ steps.switch.outcome }}
+          WHEELS: ${{ steps.wheels.outcome }}
+          GATES: ${{ steps.gates.outcome }}
+        run: |
+          echo "::warning::Python ${NEW_VERSION} is available but NOT proposed yet" \
+               "(interpreter=${SWITCH} wheels=${WHEELS} gates=${GATES})." \
+               "This is a deferral, not a failure — next Monday retries."
+
+      - name: Open the PR (only when a newer stable series was found AND proved green)
+        id: cpr
+        if: steps.bump.outputs.changed == 'true' && steps.switch.outcome == 'success' && steps.wheels.outcome == 'success' && steps.gates.outcome == 'success'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8
+        with:
+          token: ${{ secrets.BUMP_PAT }}
+          commit-message: "chore(python): bump to Python ${{ steps.bump.outputs.new_version }}"
+          title: "Bump Python ${{ steps.bump.outputs.old_version }} → ${{ steps.bump.outputs.new_version }}"
+          body-path: ${{ runner.temp }}/python_bump_body.md
+          branch: auto/python-${{ steps.bump.outputs.new_version }}
+          delete-branch: true
+          labels: python-bump
+          # Exactly the files the script reported rewriting — never a fixed list. A repo that
+          # has no ci.yml and no ruff.toml (a production repo carries only monitor.yml) stages
+          # only what it actually has, so ONE workflow serves dev and prod unmodified. It also
+          # makes it structurally impossible for a bump to stage a README or anything in docs/.
+          add-paths: ${{ steps.bump.outputs.changed_files }}
+
+      - name: Summary
+        if: always()
+        env:
+          OLD_VERSION: ${{ steps.bump.outputs.old_version }}
+          NEW_VERSION: ${{ steps.bump.outputs.new_version }}
+          SWITCH: ${{ steps.switch.outcome }}
+          WHEELS: ${{ steps.wheels.outcome }}
+          GATES: ${{ steps.gates.outcome }}
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+        run: |
+          {
+            echo "### Python version bump"
+            echo ""
+            echo "* current pin: \`${OLD_VERSION:-unknown}\`"
+            echo "* candidate: \`${NEW_VERSION:-none}\`"
+            echo "* interpreter installed: \`${SWITCH:-n/a}\`"
+            echo "* wheels available: \`${WHEELS:-n/a}\`"
+            echo "* CI gates under the new interpreter: \`${GATES:-n/a}\`"
+            echo "* pull request: ${PR_URL:-none opened}"
+            echo "* merge policy: attended review required (patch and minor updates)"
+          } >> "$GITHUB_STEP_SUMMARY"

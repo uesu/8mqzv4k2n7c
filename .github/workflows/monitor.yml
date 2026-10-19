@@ -1,0 +1,245 @@
+name: Game-Express Monitor
+
+# Schedule announcements + code poster. It POSTS only when an official post matches a
+# pattern (special program / broadcast / maintenance notice / new verified code); most
+# runs change nothing and commit nothing.
+#
+# TRIGGER = cron-job.org (external scheduler) calling the workflow_dispatch API every
+# 5 minutes. Setup: docs/SCHEDULER.md (cron-job.org job + GitHub classic token).
+#
+# ────────────────────────────────────────────────────────────────────────────────────────
+# THIS WORKFLOW DOES TWO THINGS, AND THE `mode` INPUT PICKS WHICH. NOTHING ELSE TO CHOOSE.
+#
+#   mode = live   THE REAL MONITOR (default; this is what cron-job.org triggers, because it
+#                 sends no inputs at all). It fetches the official sources, posts a card when
+#                 something new matches, edits it silently when official info arrives, and
+#                 commits the state. Nothing new -> it posts nothing.
+#                 Duplication is impossible: every posted card is remembered in
+#                 state/state.json by its key AND by a hash of its payload, so a re-run can
+#                 neither post twice nor rewrite an unchanged card. Code sources are fetched
+#                 once per run and shared between games (CodeSources cache), and the Fetcher
+#                 caps concurrent requests, so a run costs a handful of HTTP calls.
+#                   · only    everything / only schedule announcements / only codes
+#                   · game    one game
+#                   · repost  post a version card again as a NEW message, e.g. starrail:4.6
+#
+#   mode = test   CHECK IT WITH **REAL** DATA. No sample cards: every test below fetches the
+#                 live sources and shows what they really returned, so a wrong link, a wrong
+#                 picture or a wrong timestamp is visible BEFORE a real announcement goes out.
+#                   · webhooks  one small "✅ connected" card per webhook, listing which
+#                               game/feature cards that channel receives — proves no secret is
+#                               missing or misnamed
+#                   · codes     the REAL codes currently on the live sources, posted to each
+#                               game's own codes channel. Games that are not live yet (HNA,
+#                               ANANTA) have no real code to fetch, so they get example codes.
+#                   · schedule  the REAL schedule card for the version that is out now: the
+#                               announcement's own link and key art, the livestream date/time,
+#                               the maintenance timestamps and the banners — exactly what a
+#                               live run would post.
+#                   · all       webhooks → codes → schedule
+#
+#   A test posts to the REAL channels, labelled 🧪 TEST, and NEVER writes the state — so the
+#   live run still posts the real thing later, and nothing is ever skipped as "already seen".
+#   Every test card is a NEW message: a test run never edits a live card or its copy, so what
+#   you see is a throwaway and the real cards are untouched. Delete the test cards afterwards.
+# ────────────────────────────────────────────────────────────────────────────────────────
+
+concurrency:
+  # One run at a time. A trigger that arrives mid-run QUEUES and later checks out the
+  # NEWEST branch head (with the previous run's state/state.json), so nothing is posted
+  # twice. cancel-in-progress MUST stay false: a run can sit between "posted to Discord"
+  # and "state committed" — cancelling it there would allow a re-post. Test runs never write
+  # state, so queueing them is harmless.
+  group: game-express-${{ github.ref }}
+  cancel-in-progress: false
+
+on:
+  # ── GITHUB NATIVE SCHEDULE: DISABLED ──────────────────────────────────────────────
+  # cron-job.org is the SINGLE scheduler for this monitor (same setup as News-Express,
+  # where two schedulers raced: both runs checked out the same pre-state commit and
+  # both posted). GitHub's own schedule can also start late or skip runs under load.
+  # To re-enable GitHub's schedule instead, uncomment these two lines AND pause the
+  # cron-job.org job (never run both on the same repo):
+  #   schedule:
+  #     - cron: '*/5 * * * *'
+  workflow_dispatch:          # manual runs + cron-job.org (POST .../workflows/monitor.yml/dispatches)
+    inputs:
+      mode:
+        description: '① WHAT THIS RUN DOES — live = the real monitor · test = check it against REAL live data'
+        type: choice
+        options: [live, test]
+        default: live
+      only:
+        description: '② LIVE · which feature — everything, only schedule announcements, or only codes'
+        type: choice
+        options: [all, schedule, codes]
+        default: all
+      game:
+        description: '③ BOTH · optional: one game (genshin, starrail, zzz, wuwa, hna, ananta)'
+        required: false
+        default: ''
+      repost:
+        description: '④ LIVE · optional: post a version card AGAIN as a new message, e.g. starrail:4.6 (only versions the monitor has already seen; the summary lists them)'
+        required: false
+        default: ''
+      test:
+        description: '⑤ TEST · which check — webhooks (every secret), codes (real codes to each codes channel), schedule (the real announcement card), all'
+        type: choice
+        options: [webhooks, codes, schedule, all]
+        default: webhooks
+      ping:
+        description: '⑥ TEST · include your role ping in the test cards (default off: nobody is notified)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  monitor:
+    # Only on a development COPY that must never post: set the repository VARIABLE
+    # ENABLED_FEATURES=none and every live run is skipped, even if something triggers it by
+    # mistake. A TEST run (mode = test) is still allowed there — it never writes the state.
+    # Never set ENABLED_FEATURES=none on the repo that posts.
+    if: vars.ENABLED_FEATURES != 'none' || inputs.mode == 'test'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONUNBUFFERED: '1'
+      # ── Discord webhooks (repository SECRETS) ── routing, most specific first:
+      #    DISCORD_WEBHOOK_<FEATURE>_<GAME>  >  DISCORD_WEBHOOK_<FEATURE>  >  DISCORD_WEBHOOK_URL
+      DISCORD_WEBHOOK_SCHEDULE: ${{ secrets.DISCORD_WEBHOOK_SCHEDULE }}
+      DISCORD_WEBHOOK_CODES: ${{ secrets.DISCORD_WEBHOOK_CODES }}                   # optional fallback for codes
+      DISCORD_WEBHOOK_CODES_GENSHIN: ${{ secrets.DISCORD_WEBHOOK_CODES_GENSHIN }}   # Genshin Impact codes channel
+      DISCORD_WEBHOOK_CODES_STARRAIL: ${{ secrets.DISCORD_WEBHOOK_CODES_STARRAIL }} # Honkai: Star Rail codes channel
+      DISCORD_WEBHOOK_CODES_HNA: ${{ secrets.DISCORD_WEBHOOK_CODES_HNA }}           # Honkai: Nexus Anima codes channel
+      DISCORD_WEBHOOK_CODES_ZZZ: ${{ secrets.DISCORD_WEBHOOK_CODES_ZZZ }}           # Zenless Zone Zero codes channel
+      DISCORD_WEBHOOK_CODES_WUWA: ${{ secrets.DISCORD_WEBHOOK_CODES_WUWA }}         # Wuthering Waves codes channel
+      DISCORD_WEBHOOK_CODES_ANANTA: ${{ secrets.DISCORD_WEBHOOK_CODES_ANANTA }}     # ANANTA codes channel
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}                       # optional catch-all
+      NITTER_RSS_TOKEN: ${{ secrets.NITTER_RSS_TOKEN }}                             # optional (same as News-Express)
+      # ── Everything else, as JSON (catch-all): per-game SCHEDULE webhooks
+      #    (DISCORD_WEBHOOK_SCHEDULE_<GAME>), pings (PING_*), emojis (EMOJI_*) and every other
+      #    variable in docs/CONFIGURATION.md work without editing this file.
+      # Deliberate: this blob is what lets an operator add DISCORD_WEBHOOK_SCHEDULE_<GAME> /
+      # PING_* / EMOJI_* without editing this workflow (config._merge_json_blobs reads it).
+      GE_SECRETS_JSON: ${{ toJSON(secrets) }}  # zizmor: ignore[overprovisioned-secrets]
+      GE_VARS_JSON: ${{ toJSON(vars) }}
+      # ── the dispatch inputs, as env (shell steps read these) ──
+      TEST: ${{ inputs.test }}
+      # ⑥ is a TEST-ONLY switch and must not reach the live run: job-level env reaches every
+      # step, and cron-job.org sends NO inputs, so a bare `!inputs.ping` set NO_PING=1 on
+      # every scheduled run. settings.ping() short-circuits on it before PING_SCHEDULE is
+      # ever read, so a real version announcement posted without pinging the role.
+      #
+      # The live branch emits '0', NOT ''. An empty value is a hole: config._merge_json_blobs()
+      # fills any blank key from GE_VARS_JSON, so the day a NO_PING repo variable is added it
+      # would silently override this line and mute the live run again. '0' is explicit and
+      # _bool() reads it as off. (The 2026-09-27 run logs show GE_VARS_JSON holding only
+      # AUTO_MERGE_DEPENDABOT and PING_SCHEDULE -- no NO_PING variable exists today.)
+      NO_PING: ${{ inputs.mode != 'live' && !inputs.ping && '1' || '0' }}
+      PING_FLAG: ${{ inputs.ping && '--ping' || '' }}
+      GAME_ARG: ${{ inputs.game != 'all' && inputs.game || '' }}
+    steps:
+      - name: Check out (branch HEAD, so a queued run sees the previous run's state)
+        # zizmor: ignore[artipacked] — the credentials are the point: the last step pushes
+        # state/state.json back to this branch. Nothing is uploaded as an artifact.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+        with:
+          python-version: '3.14.8'
+
+      # This step runs every 5 minutes (cron-job.org), so its speed is the one that actually
+      # matters: uv installs the exact same packages pip would, just with a much faster resolver.
+      - name: Install uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0 # astral-sh doesn't publish a floating major tag like v10
+        with:
+          # NOT the default "latest": with no version and no uv.toml/pyproject.toml, setup-uv has
+          # to fetch astral-sh/versions' manifest over the network on EVERY run (0.3-4 s in runs
+          # #215-#218) and installs whatever uv was released minutes ago, unverified.
+          # "latest-known" is the newest uv whose checksum ships inside this pinned setup-uv:
+          # no manifest lookup, the download is checksum-verified, and uv only moves when
+          # Dependabot bumps the action above — through the same green-CI gate as everything else.
+          version: latest-known
+
+      - name: Install dependencies
+        env:
+          UV_SYSTEM_PYTHON: '1'
+        run: uv pip install -r requirements.txt -q
+
+      - name: Show resolved config (routing, pings, emojis)
+        run: python -m gamexpress validate || true
+
+      # ══ LIVE RUN ══════════════════════════════════════════════════════════════════════
+      - name: LIVE · monitor run
+        id: run
+        if: inputs.mode == 'live'
+        env:
+          ONLY: ${{ inputs.only != 'all' && inputs.only || '' }}
+          GAME: ${{ inputs.game }}
+          REPOST: ${{ inputs.repost }}
+        run: python -m gamexpress run
+
+      - name: LIVE · commit state (also after a partial failure, so nothing is ever posted twice)
+        if: always() && inputs.mode == 'live' && steps.run.conclusion != 'skipped'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add state/state.json 2>/dev/null || true
+          # config/program_announcements.json travels WITH the commit, not with the state: a nitter
+          # timeline only reaches back a few days, but the card is re-rendered for the whole version
+          # and every mode=test run starts from an empty state. Committing the discovered tweet id is
+          # what lets a later test run resolve the same announcement by id through fxtwitter and show
+          # the real link and the real key art. Same pattern as posted_tweets.json in the X monitor.
+          git add -f config/program_announcements.json 2>/dev/null || true
+          if git diff --cached --quiet; then echo "state unchanged — nothing to commit"; exit 0; fi
+          git commit -m "auto: update state [skip ci]"
+          for i in 1 2 3 4 5; do
+            if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            sleep $((i * 3))
+          done
+          echo "::error::could not push state/state.json after 5 attempts"
+          exit 1
+
+      # ══ TEST — REAL DATA, posted to the real channels as 🧪 TEST, state never saved ═══
+      - name: TEST · webhooks — is every secret there and pointing at the right channel?
+        if: inputs.mode == 'test' && (env.TEST == 'webhooks' || env.TEST == 'all')
+        run: python -m gamexpress check-webhooks ${GAME_ARG:+--game "$GAME_ARG"}
+
+      - name: TEST · codes — the REAL codes on the live sources, to each game's codes channel
+        if: inputs.mode == 'test' && (env.TEST == 'codes' || env.TEST == 'all')
+        env:
+          TEST_MODE: '1'                     # 🧪 TEST label + the state file is NOT saved
+          BOOTSTRAP_POST: '1'                # post what is out now instead of seeding silently
+          LOOKBACK_HOURS: '720'              # 30 days, so nothing current is missed
+          STATE_PATH: ${{ runner.temp }}/ge-test-state.json
+          ONLY: codes
+          GAME: ${{ inputs.game }}
+          ENABLED_FEATURES: codes            # also on the dev repo (where the variable says none)
+          INSTANCE_ROLE: primary
+          PEER_STATE_URL: none               # a test never imports the peer's state
+        run: python -m gamexpress run
+
+      - name: TEST · codes for games that are not live yet (example codes — nothing real to fetch)
+        if: inputs.mode == 'test' && (env.TEST == 'codes' || env.TEST == 'all')
+        run: python -m gamexpress test-card --kind codes --unlaunched ${GAME_ARG:+--game "$GAME_ARG"} $PING_FLAG
+
+      - name: TEST · schedule — the REAL announcement card (link, key art, livestream + maintenance times, banners)
+        if: inputs.mode == 'test' && (env.TEST == 'schedule' || env.TEST == 'all')
+        env:
+          TEST_MODE: '1'
+          BOOTSTRAP_POST: '1'
+          LOOKBACK_HOURS: '720'
+          STATE_PATH: ${{ runner.temp }}/ge-test-state.json
+          ONLY: schedule
+          GAME: ${{ inputs.game }}
+          ENABLED_FEATURES: schedule
+          INSTANCE_ROLE: primary
+          PEER_STATE_URL: none
+        run: python -m gamexpress run
