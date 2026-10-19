@@ -7548,5 +7548,72 @@ def test_news_group_stable_partial_delivery_resumes_second_page_only():
         assert rec['messages'][0] == 'confirmed-first-page' and rec['status'] == 'posted'
 
 
+def test_news_captured_47133580_native_video_payload_and_cdn_preflight():
+    """Real user-captured article (2026-10-19), simulated CDN envelopes; not live delivery."""
+    from gamexpress.cards import news_payloads, validate_payload
+    from gamexpress.http import Fetcher
+    from gamexpress.media import news_media_available
+    from gamexpress.sources import hoyolab
+
+    captured = json.loads('{"retcode":0,"message":"OK","data":{"post":{"post":{"game_id":8,"post_id":"47133580","f_forum_id":0,"uid":"219270333","subject":"Exclusive Report | Journey to the Sky","content":"{\\"video\\":\\"573227\\",\\"describe\\":\\"Within a sleepwalker\'s dream... another dreamer awakens.\\\\nMain Story Season 3 Chapter 4 drops on October 21!\\"}","cover":"","view_type":5,"created_at":1792404004,"images":[],"post_status":{"is_top":false,"is_good":false,"is_official":false,"is_vote":false,"is_quiz_vote":false,"is_demoted":false,"is_hot":false},"topic_ids":[25010],"view_status":1,"max_floor":2,"is_original":1,"republish_authorization":2,"reply_time":"2026-10-19 10:22:27","is_deleted":0,"is_interactive":false,"structured_content":"","structured_content_rows":[],"lang":"en-us","official_type":3,"reply_forbid":{"date_type":0,"start_date":"0","cur_date":"0","level":0},"video":"","contribution_id":"0","event_start_date":"0","event_end_date":"0","classification_id":"2","is_audit":false,"is_multi_language":true,"origin_lang":"en-us","sub_type":2,"reprint_source":"","can_edit":true,"last_modify_time":0,"multi_language_info":{"langs":["zh-tw","en-us","ko-kr","ja-jp"],"future_post_id":"24790","lang_subject":{"zh-tw":"獨家紀聞｜重返天空的旅程","en-us":"Exclusive Report | Journey to the Sky","ko-kr":"독점 기사 | 다시 하늘을 향해","ja-jp":"独占スクープ｜もう一度、空へと飛び立って"},"lang_content":{},"lang_structured_content":{}},"visible_level":1,"has_cover":false,"suid":"0","desc":"Within a sleepwalker\'s dream... another dreamer awakens.\\nMain Story Season 3 Chapter 4 drops on October 21!","game_uid":"0","game_region":"","channel_id":"49"},"forum":null,"topics":[{"id":25010,"name":"zzzero","cover":"https://upload-os-bbs.hoyolab.com/upload/2022/05/08/460728b543ad584281c00cbefd0232d6_1525446112069087676.png","is_top":false,"is_good":false,"is_interactive":false,"game_id":8,"add_by":0,"entry_style":0,"can_bind_all_game":false,"entry_style_start_at":"0","detail_style":"TopicStyleCommon"}],"user":{"uid":"219270333","nickname":"Zenless Zone Zero","introduce":"Welcome to New Eridu — Where Humanity Rises Anew!","avatar":"100372","gender":0,"certification":{"type":1,"icon_url":"https://hyl-static-res-prod.hoyolab.com/upload/static-resource/2022/02/23/f5a37763f0f2080c0c43cca8638af024_5295925290813405198.webp","desc":"ZZZ Official"},"level_exp":{"level":0,"exp":0},"is_following":true,"is_followed":false,"avatar_url":"https://fastcdn.hoyoverse.com/static-resource-v2/2024/04/10/f1f3767f9fd8e152bb345c6213acc5a5_8432456999464771493.webp","auth":null,"is_logoff":false,"pendant":"","was_following":false,"post_num":2417,"suid":"0","black_relation":{"is_blacking":false,"is_blacked":false},"badge":null,"lantern":null,"otaku_devotion_title":{"icon":"","name":"","desc":"","otaku_identity":"OtakuIdentityNone","accompany_title":"AccompanyTitleUnknown","role_id":"0"},"allow_community":true,"content_cannot_be_upvoted":false,"content_cannot_be_replied":false,"post_cannot_be_shared":false,"post_cannot_be_collected":false,"cannot_be_followed":false},"self_operation":{"attitude":1,"is_collected":false},"stat":{"view_num":272,"reply_num":2,"like_num":36,"bookmark_num":0,"share_num":0,"view_num_unit":"","reply_num_unit":"","like_num_unit":"","bookmark_num_unit":"","share_num_unit":"","true_view_num":0,"click_view_num":0,"summary_for_creator":null,"multi_upvote_stats":[{"upvote_id":"1","upvote_num":34},{"upvote_id":"4","upvote_num":2}],"self_operation":null,"expose_view_num":0},"help_sys":null,"cover":null,"image_list":[],"is_official_master":false,"is_user_master":false,"hot_reply_exist":true,"vote_count":0,"last_modify_time":0,"contribution":null,"classification":{"id":"2","name":"Guides & Analyses","icon":""},"video":{"id":"573227","cover":"https://vod-static.hoyolab.com/4/2026-10-19/transcoded/142112079905011044352_captions.0000000.jpg","url":"https://vod-static.hoyolab.com/4/2026-10-19/transcoded/142112079905011044352_720p.mp4","is_vertical":true,"sub_type":2,"resolution":[{"name":"default","height":"1920","width":"1080","url":"https://vod-static.hoyolab.com/4/2026-10-19/transcoded/142112079905011044352_720p.mp4","duration":"15"}],"status":"published","cover_meta":{"url":"https://vod-static.hoyolab.com/4/2026-10-19/transcoded/142112079905011044352_captions.0000000.jpg","height":3414,"width":1920,"format":"","size":"0","spoiler":false},"vertical_cover":"https://vod-static.hoyolab.com/4/2026-10-19/transcoded/142112079905011044352_captions.0000000.jpg"},"game":{"game_id":8,"game_name":"Zenless Zone Zero","color":"#7D6631","background_color":"#F3E9C8","icon":""},"data_box":"","is_top_icon":false,"tags":{"is_user_top":false,"is_qualified_post":false,"is_hot_entry_post":false,"hot_topic_idx":0,"is_doujin_force_post":false,"is_exclusive":false,"is_show_official_channel_jump":true},"hot_reply":null,"collection":null,"is_rich_text":false,"catalog_style_hint":0,"cover_list":[{"url":"https://vod-static.hoyolab.com/4/2026-10-19/transcoded/142112079905011044352_captions.0000000.jpg","height":3414,"width":1920,"format":"","size":"0","spoiler":false,"cuts":[],"tag_info":{"is_long_picture":false},"template_info":null,"image_id":"0"}],"cut_type":0,"shows_game_classification":false,"vote":null,"hot_reply_v2":null,"feedback":null,"reply_quick_source":[],"trans_source":"GoogleTranslate","ugc_module":null,"channel":{"id":"49","name":"HoYo Guides","type":"guide","extra":{"channel_id":"49","url":"","tab_type":"guide","default_tab":"","new_remind":true,"new_remind_end_time":"1893393869","image_url":"https://upload-os-bbs.hoyolab.com/upload/2023/11/20/e1e5c1bbc091db5ec04f8d0af398b289_8073998417194657950.png","width":362,"height":72,"animation_remind_brief":null,"hot_rank_code":"","icon_url_v2":"https://fastcdn.hoyoverse.com/static-resource-v2/2025/12/16/f1d25db2ae1eed53f302ee3a2ab9b050_4945462783623824949.png","desc_v2":"Post guides, lore analysis, and game mechanics breakdowns"},"game_id":8}},"post_detail_redirection_info":null,"game_version_cards":[]}}')
+    full = captured['data']['post']
+    mp4 = full['video']['resolution'][0]['url']
+    cover = full['cover_list'][0]['url']
+
+    class ArticleFetcher:
+        async def get_json(self, url, **kwargs):
+            assert kwargs['params']['post_id'] == '47133580'
+            return captured
+
+    class Response:
+        def __init__(self, status, raw, mime, content_range=None):
+            self.status, self.raw, self.content = status, raw, self
+            self.headers = {'Content-Type': mime}
+            if content_range is not None:
+                self.headers['Content-Range'] = content_range
+        async def __aenter__(self):
+            return self
+        async def __aexit__(self, *args):
+            return None
+        async def iter_chunked(self, size):
+            for i in range(0, len(self.raw), size):
+                yield self.raw[i:i + size]
+
+    class Session:
+        def __init__(self, responses):
+            self.responses, self.calls = responses, []
+        def get(self, url, **kwargs):
+            self.calls.append((url, kwargs))
+            return self.responses.pop(0)
+
+    async def run():
+        item = await hoyolab.news_article(ArticleFetcher(), GAMES['zzz'],
+                                         {'id': '47133580', 'ts': full['post']['created_at']})
+        assert item.title == 'Exclusive Report | Journey to the Sky'
+        assert [b['url'] for b in item.article_blocks if b['kind'] == 'video'] == [mp4]
+        assert '142112079905011044352_720p.mp4' in mp4
+        payloads = news_payloads(GAMES['zzz'], item)
+        assert all(not validate_payload(payload) for payload in payloads)
+        urls = [entry['media']['url'] for payload in payloads for co in payload['components']
+                for c in co['components'] if c['type'] == 12 for entry in c['items']]
+        assert cover in urls and mp4 in urls
+        jpeg = b'\xff\xd8\xff' + b'x' * 80
+        video = b'\x00\x00\x00\x18ftypisom' + b'x' * 80
+        session = Session([Response(206, jpeg if url == cover else video,
+                                    'application/octet-stream', 'bytes 0-63/5000') for url in dict.fromkeys(urls)])
+        assert await news_media_available(Fetcher(session), payloads)
+        assert [call[0] for call in session.calls] == list(dict.fromkeys(urls))
+        for response in [Response(206, video, 'video/mp4'),
+                         Response(206, video, 'video/mp4', 'bytes 64-127/5000'),
+                         Response(206, video, 'video/mp4', 'bytes 0-63/63'),
+                         Response(403, video, 'video/mp4'),
+                         Response(200, b'<Error>AccessDenied</Error>', 'application/octet-stream'),
+                         Response(200, video, 'text/html')]:
+            assert not await Fetcher(Session([response])).verify_media(mp4)
+        assert await Fetcher(Session([Response(200, video, 'video/mp4')])).verify_media(mp4)
+        assert await Fetcher(Session([Response(200, jpeg, 'image/jpeg')])).verify_media(cover)
+    asyncio.run(run())
+
+
 if __name__ == "__main__":
     sys.exit(main())
