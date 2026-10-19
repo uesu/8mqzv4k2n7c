@@ -1881,7 +1881,7 @@
   "heartbeat": {
     "every_min": 1440,
     "instance": "alpha",
-    "last_success": 1792326916
+    "last_success": 1792413798
   },
   "icons": {
     "genshin": "https://pbs.twimg.com/profile_images/2102589386378686464/tS24hVO2_200x200.jpg",
@@ -1921,7 +1921,15 @@
       ],
       "floor": 1792395921,
       "paused": false,
-      "records": {},
+      "records": {
+        "47133580": {
+          "messages": [
+            "1561721454482169881"
+          ],
+          "status": "posted",
+          "ts": 1792404004
+        }
+      },
       "route": "5f931f917050e29a"
     }
   },
@@ -2354,7 +2362,7 @@
           ],
           "b_phase1": [
             100,
-            1792409178
+            1792413798
           ],
           "b_phase1_4": [
             50,
