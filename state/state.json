@@ -1916,8 +1916,8 @@
     },
     "starrail": {
       "cursor": [
-        1792465205,
-        "47141115"
+        1792476008,
+        "47142215"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -1928,6 +1928,14 @@
           ],
           "status": "posted",
           "ts": 1792465205
+        },
+        "47142215": {
+          "messages": [
+            "1561984957025484801",
+            "1561984962872221759"
+          ],
+          "status": "posted",
+          "ts": 1792476008
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -1952,8 +1960,8 @@
     },
     "zzz": {
       "cursor": [
-        1792470605,
-        "47141679"
+        1792476007,
+        "47142214"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -1978,6 +1986,13 @@
           ],
           "status": "posted",
           "ts": 1792470605
+        },
+        "47142214": {
+          "messages": [
+            "1561984974356222003"
+          ],
+          "status": "posted",
+          "ts": 1792476007
         }
       },
       "route": "5f931f917050e29a"
@@ -2210,6 +2225,7 @@
         },
         "card_retired": 1790496362,
         "data": {
+          "announcement_locked": true,
           "banners": {
             "phase1": [
               "Pearl",
@@ -2221,6 +2237,7 @@
               "Misha"
             ],
             "phase2": [
+              "Pearl",
               "Mortenax Blade"
             ],
             "phase2_4": [
@@ -2292,20 +2309,20 @@
             "official"
           ],
           "b_phase2": [
-            5,
-            1790479405
+            40,
+            1792476002
           ],
           "b_phase2_4": [
-            5,
-            1791536841
+            50,
+            1792476008
           ],
           "b_phase2_4_by": [
             "calendar",
+            "official",
             "wiki"
           ],
           "b_phase2_by": [
-            "calendar",
-            "feed"
+            "official"
           ],
           "b_reruns": [
             6,
@@ -2367,8 +2384,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792464021,
-          "banners_search_ts": 1792464021,
+          "banners_checked_ts": 1792476618,
+          "banners_search_ts": 1792476618,
           "banners_settled": [
             "phase1"
           ],
@@ -2412,7 +2429,7 @@
           ],
           "b_phase1": [
             100,
-            1792473323
+            1792476618
           ],
           "b_phase1_4": [
             50,
@@ -2476,7 +2493,7 @@
               "version": "3.3"
             }
           ],
-          "ts": 1792464021
+          "ts": 1792476618
         },
         "data": {
           "announcement_locked": true,
@@ -2498,19 +2515,19 @@
               "Norma Hollowell"
             ]
           },
-          "banners_checked_ts": 1792464021,
+          "banners_checked_ts": 1792476618,
           "banners_display": {
             "Norma": "Norma Hollowell",
             "Phoenix": "Phoenix Reffaella",
             "Severian": "Severian Lowell",
             "Velina": "Velina Airgid"
           },
-          "banners_search_ts": 1792464021,
+          "banners_search_ts": 1792476618,
           "banners_settled": [
             "phase1",
             "phase2"
           ],
-          "calendar_ts": 1792464021,
+          "calendar_ts": 1792476618,
           "compensation": "Polychrome ×300",
           "images": [
             "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
