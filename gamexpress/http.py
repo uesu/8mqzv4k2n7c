@@ -173,7 +173,13 @@ class Fetcher:
                         prefix += chunk[:cap - len(prefix)]
                         if len(prefix) >= cap or (dimensions and image_dimensions(prefix)):
                             break
-                    mime = response.headers.get("Content-Type", "").split(";")[0].lower()
+                    mime = response.headers.get("Content-Type", "").split(";")[0].strip().lower()
+                    # HoYoLAB CDN can label real GIFs as bare "gif" (#205,
+                    # HSR 47141115). Normalize only this observed alias, and
+                    # only with GIF magic; never trust an extension/header alone.
+                    # Shared here so availability and dimensions agree.
+                    if mime == "gif" and prefix.startswith((b"GIF87a", b"GIF89a")):
+                        mime = "image/gif"
                     return bytes(prefix), mime
         except (aiohttp.ClientError, asyncio.TimeoutError, ValueError) as exc:
             log.warning("news media rejected: reason=%s", type(exc).__name__)

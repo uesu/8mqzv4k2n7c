@@ -404,7 +404,6 @@ class Settings:
     news_enabled: bool = False
     news_games: set[str] = field(default_factory=set)
     news_group_long_strips: bool = False
-    news_max_posts: int = 5
 
     # -- routing ---------------------------------------------------------------
     def _game_slugs(self, game_key: str) -> list[str]:
@@ -576,7 +575,6 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         news_enabled=news_enabled,
         news_games={g.strip().lower() for g in _env(env, "NEWS_GAMES", "genshin,starrail,zzz,wuwa,hna").split(",") if g.strip()},
         news_group_long_strips=_bool(env, "NEWS_GROUP_LONG_STRIPS", False),
-        news_max_posts=min(20, max(1, _int(env, "NEWS_MAX_POSTS_PER_RUN", 5))),
     )
 
 

@@ -25,7 +25,7 @@ from .cards import validate_payload
 log = logging.getLogger("gamexpress.discord")
 
 WEBHOOK_RE = re.compile(r"^https://(?:(?:ptb|canary)\.)?discord(?:app)?\.com/api(?:/v\d+)?/webhooks/(\d+)/([\w-]+)")
-WEBHOOK_SPACING = 1.2   # seconds between two requests — well under the 5 req / 2 s webhook bucket
+WEBHOOK_SPACING = 1.2   # local conservative spacing, not a published Discord quota
 
 
 @dataclass
@@ -60,7 +60,8 @@ class WebhookClient:
     async def _pace(self) -> None:
         """Space requests out WITHOUT paying for the gap after the last one.
 
-        Discord's webhook bucket is 5 requests / 2 s, so posts have to be spaced. That used to
+        This local conservative pacer is not a guarantee of Discord capacity.
+        Route/resource limits can change; 429 handling remains necessary. There used to
         be an unconditional `sleep(WEBHOOK_SPACING)` *after* every successful send — including
         after the final one, where there is nothing left to space against, so every posting run
         ended with 1.2 s of dead time (and n posts cost n gaps instead of n-1). Waiting *before*

@@ -381,7 +381,6 @@ async def run_news(ctx: Ctx) -> None:
     for key, record in (ctx.state.data.get("news") or {}).items():
         if key not in ctx.settings.news_games:
             record["paused"] = True
-    remaining = ctx.settings.news_max_posts
     ephemeral = ctx.settings.dry_run or ctx.settings.test_mode
     for game in ctx.games:
         if game.key not in ctx.settings.news_games:
@@ -426,18 +425,12 @@ async def run_news(ctx: Ctx) -> None:
                 eligible.append(rec["row"])
         failures = attempted = delivered = 0
         eligible.sort(key=lambda value: (value["ts"], value["id"]))
-        cursor = record.get("cursor")
-        if isinstance(cursor, list) and len(cursor) == 2:
-            # Rotate the attempt budget over retry holes; this is NOT a publication floor
-            # or delivery checkpoint, so failures remain eligible on subsequent passes.
-            eligible = ([row for row in eligible if [row["ts"], row["id"]] > cursor]
-                        + [row for row in eligible if [row["ts"], row["id"]] <= cursor])
+        # Process every discovered eligible row in publication order. The stored
+        # cursor remains diagnostic only, never a floor or delivery checkpoint.
         for row in eligible:
             rec = records.get(row["id"])
             if rec and rec.get("status") == "posted":
                 continue
-            if remaining <= 0 or attempted >= 10:
-                break
             attempted += 1
             if rec is None and len(records) >= 500:
                 ctx.warnings.append(f"{game.short} news: state capacity reached; safe cleanup deferred admission")
@@ -494,7 +487,6 @@ async def run_news(ctx: Ctx) -> None:
                 rec.pop("signature", None)
                 if not ephemeral:
                     ctx.state.save()
-                remaining -= 1
                 delivered += 1
                 ctx.report.append(f"📰 {game.short} news: delivered {item.id} ({len(payloads)} message(s), "
                                   f"{sum(len(p['components']) for p in payloads)} container(s))")

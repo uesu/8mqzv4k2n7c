@@ -263,7 +263,7 @@ def cmd_validate(_args) -> int:
     print(f"peer_state_url={'set' if settings.peer_state_url else '—'} | X={'on' if settings.x_enabled else 'off'} "
           f"| nitter instances={len(settings.nitter_instances)} | token={'set' if settings.nitter_token else '—'}")
     print(f"news={'on' if 'news' in settings.features else 'off'} | news games={','.join(sorted(settings.news_games))} "
-          f"| max articles/run={settings.news_max_posts} "
+          f"| article count cap=none "
           f"| group long strips={'on' if settings.news_group_long_strips else 'off'} | dedicated destinations only")
     print("emoji: " + ", ".join(f"{k}={'✓' if v else '—'}" for k, v in settings.emoji.items()))
     ok = True
