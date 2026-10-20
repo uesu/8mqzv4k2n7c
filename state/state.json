@@ -374,7 +374,8 @@
           "Jueyun Chili Chicken ×5"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "ogc"
         ],
         "status": "pending"
       },
@@ -2459,7 +2460,7 @@
           ],
           "b_phase1": [
             100,
-            1792482919
+            1792483232
           ],
           "b_phase1_4": [
             50,
