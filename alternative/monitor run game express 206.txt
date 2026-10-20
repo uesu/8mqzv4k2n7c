@@ -1,0 +1,676 @@
+2026-10-20T05:15:15.6000887Z Current runner version: '2.337.0'
+2026-10-20T05:15:15.6019791Z ##[group]Runner Image Provisioner
+2026-10-20T05:15:15.6020485Z Hosted Compute Agent
+2026-10-20T05:15:15.6020946Z Version: 20261012.601
+2026-10-20T05:15:15.6021447Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-20T05:15:15.6022192Z Build Date: 2026-10-12T17:48:21Z
+2026-10-20T05:15:15.6022657Z Worker ID: {4ba4ee5b-fcee-4222-b35c-2cf1cd08521c}
+2026-10-20T05:15:15.6023229Z Region: westus3
+2026-10-20T05:15:15.6023646Z Cloud: Azure
+2026-10-20T05:15:15.6024149Z ##[endgroup]
+2026-10-20T05:15:15.6025013Z ##[group]Operating System
+2026-10-20T05:15:15.6025484Z Ubuntu
+2026-10-20T05:15:15.6025879Z 24.04.5
+2026-10-20T05:15:15.6026342Z LTS
+2026-10-20T05:15:15.6026801Z ##[endgroup]
+2026-10-20T05:15:15.6027256Z ##[group]Runner Image
+2026-10-20T05:15:15.6027696Z Image: ubuntu-24.04
+2026-10-20T05:15:15.6028197Z Version: 20261012.334.1
+2026-10-20T05:15:15.6029048Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-20T05:15:15.6030066Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-20T05:15:15.6030747Z ##[endgroup]
+2026-10-20T05:15:15.6031574Z ##[group]GITHUB_TOKEN Permissions
+2026-10-20T05:15:15.6032954Z Contents: write
+2026-10-20T05:15:15.6033388Z Metadata: read
+2026-10-20T05:15:15.6033896Z ##[endgroup]
+2026-10-20T05:15:15.6035269Z Secret source: Actions
+2026-10-20T05:15:15.6035992Z Cache mode: write
+2026-10-20T05:15:15.6036474Z Prepare workflow directory
+2026-10-20T05:15:15.7186671Z Prepare all required actions
+2026-10-20T05:15:15.7231580Z Getting action download info
+2026-10-20T05:15:16.0097351Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-20T05:15:16.1724051Z Download action repository 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+2026-10-20T05:15:16.4282106Z Download action repository 'astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884' (SHA:1c37ad07a6a961277cf70c0d37d6f313000f5884)
+2026-10-20T05:15:17.9188159Z Complete job name: monitor
+2026-10-20T05:15:17.9621677Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-20T05:15:17.9622272Z with:
+2026-10-20T05:15:17.9622456Z   ref: main
+2026-10-20T05:15:17.9622643Z   repository: uesu/8mqzv4k2n7c
+2026-10-20T05:15:17.9624724Z   token: ***
+2026-10-20T05:15:17.9624916Z   ssh-strict: true
+2026-10-20T05:15:17.9625110Z   ssh-user: git
+2026-10-20T05:15:17.9625308Z   persist-credentials: true
+2026-10-20T05:15:17.9625515Z   clean: true
+2026-10-20T05:15:17.9625714Z   sparse-checkout-cone-mode: true
+2026-10-20T05:15:17.9625940Z   fetch-depth: 1
+2026-10-20T05:15:17.9626127Z   fetch-tags: false
+2026-10-20T05:15:17.9626391Z   show-progress: true
+2026-10-20T05:15:17.9626596Z   lfs: false
+2026-10-20T05:15:17.9626780Z   submodules: false
+2026-10-20T05:15:17.9626978Z   set-safe-directory: true
+2026-10-20T05:15:17.9627218Z   allow-unsafe-pr-checkout: false
+2026-10-20T05:15:17.9627518Z env:
+2026-10-20T05:15:17.9627701Z   PYTHONUNBUFFERED: 1
+2026-10-20T05:15:17.9628202Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-20T05:15:17.9628429Z   DISCORD_WEBHOOK_CODES: 
+2026-10-20T05:15:17.9628893Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-20T05:15:17.9629406Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-20T05:15:17.9629871Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-20T05:15:17.9630319Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-20T05:15:17.9630794Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-20T05:15:17.9631241Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-20T05:15:17.9631466Z   DISCORD_WEBHOOK_URL: 
+2026-10-20T05:15:17.9631756Z   NITTER_RSS_TOKEN: ***
+2026-10-20T05:15:17.9640672Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***"
+}
+2026-10-20T05:15:17.9642851Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-20T05:15:17.9643341Z   TEST: webhooks
+2026-10-20T05:15:17.9643622Z   NO_PING: 0
+2026-10-20T05:15:17.9643797Z   PING_FLAG: 
+2026-10-20T05:15:17.9643969Z   GAME_ARG: 
+2026-10-20T05:15:17.9644146Z ##[endgroup]
+2026-10-20T05:15:18.0418306Z Syncing repository: uesu/8mqzv4k2n7c
+2026-10-20T05:15:18.0419806Z ##[group]Getting Git version info
+2026-10-20T05:15:18.0420320Z Working directory is '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-10-20T05:15:18.0421056Z [command]/usr/bin/git version
+2026-10-20T05:15:18.0421385Z git version 2.55.0
+2026-10-20T05:15:18.0422647Z ##[endgroup]
+2026-10-20T05:15:18.0426368Z Temporarily overriding HOME='/home/runner/work/_temp/0fb299e3-05ff-4307-bcc0-37631200f6d7' before making global git config changes
+2026-10-20T05:15:18.0427200Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T05:15:18.0427924Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-20T05:15:18.0456575Z Deleting the contents of '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-10-20T05:15:18.0459103Z ##[group]Determining repository object format
+2026-10-20T05:15:18.4368031Z ##[endgroup]
+2026-10-20T05:15:18.4368517Z ##[group]Initializing the repository
+2026-10-20T05:15:18.4374416Z [command]/usr/bin/git init /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-20T05:15:18.4474632Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-20T05:15:18.4475613Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-20T05:15:18.4476344Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-20T05:15:18.4476977Z hint: call:
+2026-10-20T05:15:18.4477400Z hint:
+2026-10-20T05:15:18.4477943Z hint: 	git config --global init.defaultBranch <name>
+2026-10-20T05:15:18.4478512Z hint:
+2026-10-20T05:15:18.4479055Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-20T05:15:18.4479769Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-20T05:15:18.4480342Z hint:
+2026-10-20T05:15:18.4480767Z hint: 	git branch -m <name>
+2026-10-20T05:15:18.4481202Z hint:
+2026-10-20T05:15:18.4481746Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-20T05:15:18.4482854Z Initialized empty Git repository in /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/
+2026-10-20T05:15:18.4486684Z [command]/usr/bin/git remote add origin https://github.com/uesu/8mqzv4k2n7c
+2026-10-20T05:15:18.4543108Z ##[endgroup]
+2026-10-20T05:15:18.4543744Z ##[group]Disabling automatic garbage collection
+2026-10-20T05:15:18.4546583Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-20T05:15:18.4583985Z ##[endgroup]
+2026-10-20T05:15:18.4584484Z ##[group]Setting up auth
+2026-10-20T05:15:18.4584874Z Removing SSH command configuration
+2026-10-20T05:15:18.4589967Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T05:15:18.4629907Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T05:15:18.4917456Z Removing HTTP extra header
+2026-10-20T05:15:18.4921810Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T05:15:18.4962226Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T05:15:18.5145543Z Removing includeIf entries pointing to credentials config files
+2026-10-20T05:15:18.5149650Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T05:15:18.5181286Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-20T05:15:18.5368151Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-20T05:15:18.5404458Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path /home/runner/work/_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:18.5437740Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:18.5470752Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:18.5502354Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:18.5532701Z ##[endgroup]
+2026-10-20T05:15:18.5533051Z ##[group]Fetching the repository
+2026-10-20T05:15:18.5538016Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/main*:refs/remotes/origin/main* +refs/tags/main*:refs/tags/main*
+2026-10-20T05:15:19.3804695Z From https://github.com/uesu/8mqzv4k2n7c
+2026-10-20T05:15:19.3805886Z  * [new branch]      main       -> origin/main
+2026-10-20T05:15:19.3809232Z ##[endgroup]
+2026-10-20T05:15:19.3809679Z ##[group]Determining the checkout info
+2026-10-20T05:15:19.3816394Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-20T05:15:19.3849648Z   origin/main
+2026-10-20T05:15:19.3856273Z ##[endgroup]
+2026-10-20T05:15:19.3856819Z [command]/usr/bin/git sparse-checkout disable
+2026-10-20T05:15:19.3906481Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-20T05:15:19.3940572Z ##[group]Checking out the ref
+2026-10-20T05:15:19.3943423Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-20T05:15:19.4076503Z Switched to a new branch 'main'
+2026-10-20T05:15:19.4083089Z branch 'main' set up to track 'origin/main'.
+2026-10-20T05:15:19.4086314Z ##[endgroup]
+2026-10-20T05:15:19.4132778Z [command]/usr/bin/git log -1 --format=%H
+2026-10-20T05:15:19.4162344Z a7d7daa0afeeac2eb26ac1f7e14ac38d387429b5
+2026-10-20T05:15:19.4358679Z ##[group]Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+2026-10-20T05:15:19.4358950Z with:
+2026-10-20T05:15:19.4359095Z   python-version: 3.14.8
+2026-10-20T05:15:19.4359258Z   check-latest: false
+2026-10-20T05:15:19.4361083Z   token: ***
+2026-10-20T05:15:19.4361227Z   update-environment: true
+2026-10-20T05:15:19.4361391Z   allow-prereleases: false
+2026-10-20T05:15:19.4361547Z   freethreaded: false
+2026-10-20T05:15:19.4361690Z env:
+2026-10-20T05:15:19.4361823Z   PYTHONUNBUFFERED: 1
+2026-10-20T05:15:19.4362442Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-20T05:15:19.4362612Z   DISCORD_WEBHOOK_CODES: 
+2026-10-20T05:15:19.4363011Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-20T05:15:19.4363440Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-20T05:15:19.4363880Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-20T05:15:19.4364415Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-20T05:15:19.4364831Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-20T05:15:19.4365250Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-20T05:15:19.4365427Z   DISCORD_WEBHOOK_URL: 
+2026-10-20T05:15:19.4365648Z   NITTER_RSS_TOKEN: ***
+2026-10-20T05:15:19.4373763Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***"
+}
+2026-10-20T05:15:19.4375473Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-20T05:15:19.4375914Z   TEST: webhooks
+2026-10-20T05:15:19.4376053Z   NO_PING: 0
+2026-10-20T05:15:19.4376186Z   PING_FLAG: 
+2026-10-20T05:15:19.4376315Z   GAME_ARG: 
+2026-10-20T05:15:19.4376446Z ##[endgroup]
+2026-10-20T05:15:19.5235229Z ##[group]Installed versions
+2026-10-20T05:15:19.5256820Z Successfully set up CPython (3.14.8)
+2026-10-20T05:15:19.5257324Z ##[endgroup]
+2026-10-20T05:15:19.5456892Z ##[group]Run astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884
+2026-10-20T05:15:19.5457183Z with:
+2026-10-20T05:15:19.5457327Z   version: latest-known
+2026-10-20T05:15:19.5457489Z   activate-environment: false
+2026-10-20T05:15:19.5457671Z   no-project: false
+2026-10-20T05:15:19.5457866Z   working-directory: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-20T05:15:19.5459774Z   github-token: ***
+2026-10-20T05:15:19.5459921Z   enable-cache: auto
+2026-10-20T05:15:19.5460280Z   cache-dependency-glob: **/*requirements*.txt
+**/*requirements*.in
+**/*constraints*.txt
+**/*constraints*.in
+**/pyproject.toml
+**/uv.lock
+**/*.py.lock
+
+2026-10-20T05:15:19.5460659Z   restore-cache: true
+2026-10-20T05:15:19.5460802Z   save-cache: auto
+2026-10-20T05:15:19.5460943Z   prune-cache: false
+2026-10-20T05:15:19.5461087Z   cache-python: false
+2026-10-20T05:15:19.5461243Z   ignore-nothing-to-cache: false
+2026-10-20T05:15:19.5461420Z   ignore-empty-workdir: false
+2026-10-20T05:15:19.5461627Z   download-from-astral-mirror: true
+2026-10-20T05:15:19.5461809Z   add-problem-matchers: true
+2026-10-20T05:15:19.5471450Z   quiet: false
+2026-10-20T05:15:19.5471730Z   resolution-strategy: highest
+2026-10-20T05:15:19.5472112Z env:
+2026-10-20T05:15:19.5472336Z   PYTHONUNBUFFERED: 1
+2026-10-20T05:15:19.5472974Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-20T05:15:19.5473232Z   DISCORD_WEBHOOK_CODES: 
+2026-10-20T05:15:19.5473841Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-20T05:15:19.5474523Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-20T05:15:19.5475137Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-20T05:15:19.5475756Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-20T05:15:19.5476523Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-20T05:15:19.5477223Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-20T05:15:19.5477547Z   DISCORD_WEBHOOK_URL: 
+2026-10-20T05:15:19.5477890Z   NITTER_RSS_TOKEN: ***
+2026-10-20T05:15:19.5490094Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***"
+}
+2026-10-20T05:15:19.5493709Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-20T05:15:19.5494711Z   TEST: webhooks
+2026-10-20T05:15:19.5494994Z   NO_PING: 0
+2026-10-20T05:15:19.5495521Z   PING_FLAG: 
+2026-10-20T05:15:19.5495771Z   GAME_ARG: 
+2026-10-20T05:15:19.5496266Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:19.5496864Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-20T05:15:19.5497412Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:19.5497830Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:19.5498087Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:19.5498442Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-20T05:15:19.5498819Z ##[endgroup]
+2026-10-20T05:15:19.6789278Z Fetching manifest data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+2026-10-20T05:15:19.7905160Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.13.0/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+2026-10-20T05:15:20.0716485Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/0343c4a7-e7d3-4233-8c92-d0504dfbef80 -f /home/runner/work/_temp/71292ded-f56e-4922-9ce3-1eaaa3f7d005
+2026-10-20T05:15:20.4444684Z Added /home/runner/.local/bin to the path
+2026-10-20T05:15:20.4447008Z Added /opt/hostedtoolcache/uv/0.13.0/x86_64 to the path
+2026-10-20T05:15:20.4447872Z Set UV_PYTHON_INSTALL_DIR to /home/runner/work/_temp/uv-python-dir
+2026-10-20T05:15:20.4448360Z Added /home/runner/work/_temp/uv-python-dir to the path
+2026-10-20T05:15:20.4458092Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+2026-10-20T05:15:20.4458531Z Successfully installed uv version 0.13.0
+2026-10-20T05:15:20.5378634Z Searching files using cache dependency glob: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/pyproject.toml,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/uv.lock,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*.py.lock
+2026-10-20T05:15:20.5527709Z /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/requirements.txt
+2026-10-20T05:15:20.5675593Z Found 1 files to hash.
+2026-10-20T05:15:20.5734269Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.8-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-20T05:15:20.7648507Z Cache hit for: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.8-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-20T05:15:21.8921155Z Received 6565761 of 6565761 (100.0%), 7.6 MBs/sec
+2026-10-20T05:15:21.8921582Z Cache Size: ~6 MB (6565761 B)
+2026-10-20T05:15:21.8941947Z [command]/usr/bin/tar -xf /home/runner/work/_temp/370e64a4-5381-423a-9060-276b6636f53b/cache.tzst -P -C /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c --use-compress-program unzstd
+2026-10-20T05:15:21.9306763Z Cache restored successfully
+2026-10-20T05:15:21.9314233Z cache restored from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.8-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-20T05:15:22.0475213Z ##[group]Run uv pip install -r requirements.txt -q
+2026-10-20T05:15:22.0475543Z [36;1muv pip install -r requirements.txt -q[0m
+2026-10-20T05:15:22.0684353Z shell: /usr/bin/bash -e {0}
+2026-10-20T05:15:22.0684552Z env:
+2026-10-20T05:15:22.0684699Z   PYTHONUNBUFFERED: 1
+2026-10-20T05:15:22.0685321Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-20T05:15:22.0685501Z   DISCORD_WEBHOOK_CODES: 
+2026-10-20T05:15:22.0685911Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-20T05:15:22.0686360Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-20T05:15:22.0686805Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-20T05:15:22.0687188Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-20T05:15:22.0687610Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-20T05:15:22.0688053Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-20T05:15:22.0688230Z   DISCORD_WEBHOOK_URL: 
+2026-10-20T05:15:22.0688462Z   NITTER_RSS_TOKEN: ***
+2026-10-20T05:15:22.0696646Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***"
+}
+2026-10-20T05:15:22.0698322Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-20T05:15:22.0698764Z   TEST: webhooks
+2026-10-20T05:15:22.0698908Z   NO_PING: 0
+2026-10-20T05:15:22.0699053Z   PING_FLAG: 
+2026-10-20T05:15:22.0699187Z   GAME_ARG: 
+2026-10-20T05:15:22.0699366Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.0699648Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-20T05:15:22.0699921Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.0700173Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.0700417Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.0700660Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-20T05:15:22.0700914Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-20T05:15:22.0701151Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-20T05:15:22.0701349Z   UV_SYSTEM_PYTHON: 1
+2026-10-20T05:15:22.0701500Z ##[endgroup]
+2026-10-20T05:15:22.1709497Z ##[group]Run python -m gamexpress validate || true
+2026-10-20T05:15:22.1709803Z [36;1mpython -m gamexpress validate || true[0m
+2026-10-20T05:15:22.1765627Z shell: /usr/bin/bash -e {0}
+2026-10-20T05:15:22.1765800Z env:
+2026-10-20T05:15:22.1765945Z   PYTHONUNBUFFERED: 1
+2026-10-20T05:15:22.1766424Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-20T05:15:22.1766599Z   DISCORD_WEBHOOK_CODES: 
+2026-10-20T05:15:22.1767005Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-20T05:15:22.1767441Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-20T05:15:22.1767841Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-20T05:15:22.1768237Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-20T05:15:22.1768663Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-20T05:15:22.1769060Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-20T05:15:22.1769241Z   DISCORD_WEBHOOK_URL: 
+2026-10-20T05:15:22.1769473Z   NITTER_RSS_TOKEN: ***
+2026-10-20T05:15:22.1777507Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***"
+}
+2026-10-20T05:15:22.1779316Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-20T05:15:22.1779752Z   TEST: webhooks
+2026-10-20T05:15:22.1779896Z   NO_PING: 0
+2026-10-20T05:15:22.1780041Z   PING_FLAG: 
+2026-10-20T05:15:22.1780179Z   GAME_ARG: 
+2026-10-20T05:15:22.1780364Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.1780648Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-20T05:15:22.1780920Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.1781164Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.1781409Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.1781655Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-20T05:15:22.1781916Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-20T05:15:22.1782386Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-20T05:15:22.1782589Z ##[endgroup]
+2026-10-20T05:15:22.3956649Z Game-Express a7d7daa | features=['codes', 'news', 'schedule'] | instance=alpha (primary) | dry_run=False
+2026-10-20T05:15:22.3957624Z peer_state_url=— | X=on | nitter instances=21 | token=set
+2026-10-20T05:15:22.3958288Z news=on | news games=genshin,hna,starrail,wuwa,zzz | article count cap=none | group long strips=on | dedicated destinations only
+2026-10-20T05:15:22.3959021Z emoji: title=✓, youtube=✓, twitch=✓, source=—, redeem=✓
+2026-10-20T05:15:22.6669242Z   ✓ genshin   Genshin Impact        
+2026-10-20T05:15:22.6669817Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI]
+2026-10-20T05:15:22.6670209Z       codes[✓ DISCORD_WEBHOOK_CODES_GENSHIN | no ping]
+2026-10-20T05:15:22.6670472Z       news[✓ DISCORD_WEBHOOK_NEWS_GENSHIN | no ping]
+2026-10-20T05:15:22.6671027Z       X=GenshinImpact code_sources=hoyolab:2,seria:genshin,humbao:GENSHIN,ogc:genshin,ennead:genshin,fandom:genshin-impact/Promotional_Code,codehub:genshin-impact,x 4★/phase=3
+2026-10-20T05:15:22.6671548Z   ✓ starrail  Honkai: Star Rail     
+2026-10-20T05:15:22.6672681Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR]
+2026-10-20T05:15:22.6673092Z       codes[✓ DISCORD_WEBHOOK_CODES_STARRAIL | no ping]
+2026-10-20T05:15:22.6673394Z       news[✓ DISCORD_WEBHOOK_NEWS_STARRAIL | no ping]
+2026-10-20T05:15:22.6673958Z       X=honkaistarrail code_sources=hoyolab:6,seria:hkrpg,humbao:HSR,ogc:starrail,ennead:starrail,fandom:honkai-star-rail/Redemption_Code,codehub:honkai-star-rail,x 4★/phase=3
+2026-10-20T05:15:22.6674422Z   ✓ zzz       Zenless Zone Zero     
+2026-10-20T05:15:22.6674776Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ]
+2026-10-20T05:15:22.6675132Z       codes[✓ DISCORD_WEBHOOK_CODES_ZZZ | no ping]
+2026-10-20T05:15:22.6675373Z       news[✓ DISCORD_WEBHOOK_NEWS_ZZZ | no ping]
+2026-10-20T05:15:22.6675888Z       X=ZZZ_EN code_sources=hoyolab:8,seria:nap,humbao:ZZZ,ogc:zenless,ennead:zenless,fandom:zenless-zone-zero/Redemption_Code,codehub:zenless-zone-zero,x 4★/phase=2
+2026-10-20T05:15:22.6676488Z   ✓ wuwa      Wuthering Waves       
+2026-10-20T05:15:22.6676960Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA]
+2026-10-20T05:15:22.6677379Z       codes[✓ DISCORD_WEBHOOK_CODES_WUWA | no ping]
+2026-10-20T05:15:22.6677623Z       news[✓ DISCORD_WEBHOOK_NEWS_WUWA | no ping]
+2026-10-20T05:15:22.6678062Z       X=Wuthering_Waves code_sources=ogc:wuwa,wuthering.gg,fandom:wutheringwaves/Redemption_Code,codehub:wuthering-waves,x 4★/phase=3
+2026-10-20T05:15:22.6678547Z   ✓ hna       Honkai: Nexus Anima   
+2026-10-20T05:15:22.6678902Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA]
+2026-10-20T05:15:22.6679285Z       codes[✓ DISCORD_WEBHOOK_CODES_HNA | no ping]
+2026-10-20T05:15:22.6679596Z       news[✓ DISCORD_WEBHOOK_NEWS_HNA | no ping]
+2026-10-20T05:15:22.6680289Z       X=HonkaiNA code_sources=hoyolab:9,x 4★/phase=count not set (set four_star_count at launch)
+2026-10-20T05:15:22.6680649Z   ✓ ananta    ANANTA                
+2026-10-20T05:15:22.6681019Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA]
+2026-10-20T05:15:22.6681419Z       codes[✓ DISCORD_WEBHOOK_CODES_ANANTA | no ping]
+2026-10-20T05:15:22.6681686Z       news[— none | no ping]
+2026-10-20T05:15:22.6682198Z       X=Ananta_EN code_sources=x 4★/phase=count not set (set four_star_count at launch)
+2026-10-20T05:15:22.6683936Z config OK
+2026-10-20T05:15:22.7092576Z ##[group]Run python -m gamexpress run
+2026-10-20T05:15:22.7092824Z [36;1mpython -m gamexpress run[0m
+2026-10-20T05:15:22.7147854Z shell: /usr/bin/bash -e {0}
+2026-10-20T05:15:22.7148023Z env:
+2026-10-20T05:15:22.7148163Z   PYTHONUNBUFFERED: 1
+2026-10-20T05:15:22.7148625Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-20T05:15:22.7148807Z   DISCORD_WEBHOOK_CODES: 
+2026-10-20T05:15:22.7149232Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-20T05:15:22.7149667Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-20T05:15:22.7150079Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-20T05:15:22.7150465Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-20T05:15:22.7150880Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-20T05:15:22.7151275Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-20T05:15:22.7151457Z   DISCORD_WEBHOOK_URL: 
+2026-10-20T05:15:22.7151684Z   NITTER_RSS_TOKEN: ***
+2026-10-20T05:15:22.7159882Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***"
+}
+2026-10-20T05:15:22.7161577Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-20T05:15:22.7162119Z   TEST: webhooks
+2026-10-20T05:15:22.7162260Z   NO_PING: 0
+2026-10-20T05:15:22.7162400Z   PING_FLAG: 
+2026-10-20T05:15:22.7162534Z   GAME_ARG: 
+2026-10-20T05:15:22.7162718Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.7162997Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-20T05:15:22.7163268Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.7163510Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.7163749Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:22.7164151Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-20T05:15:22.7164412Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-20T05:15:22.7164663Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-20T05:15:22.7164857Z   ONLY: 
+2026-10-20T05:15:22.7164986Z   GAME: 
+2026-10-20T05:15:22.7165112Z   REPOST: 
+2026-10-20T05:15:22.7165247Z ##[endgroup]
+2026-10-20T05:15:25.2329443Z 05:15:25 INFO    gamexpress: [genshin] 0 official item(s) matched in the last 72h (live 7.1, pre-install —)
+2026-10-20T05:15:25.2699849Z 05:15:25 INFO    gamexpress: [starrail] 0 official item(s) matched in the last 72h (live 4.6, pre-install —)
+2026-10-20T05:15:25.7802893Z 05:15:25 INFO    gamexpress: [wuwa] 0 official item(s) matched in the last 72h (live 3.7, pre-install —)
+2026-10-20T05:15:25.7962276Z 05:15:25 INFO    gamexpress: [ananta] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-10-20T05:15:25.8104622Z 05:15:25 INFO    gamexpress: [hna] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-10-20T05:15:26.5072419Z 05:15:26 INFO    gamexpress: [zzz] 6 official item(s) matched in the last 72h (live 3.2, pre-install 3.3)
+2026-10-20T05:15:42.0304201Z 05:15:42 INFO    gamexpress: sources: bannerfeed: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 4 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; hoyolab: 19 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 18 ok / 0 fail; nitter: 15 ok / 0 fail
+2026-10-20T05:15:42.0319683Z 05:15:42 INFO    gamexpress: 
+2026-10-20T05:15:42.0320329Z ### Game-Express a7d7daa — alpha (primary)
+2026-10-20T05:15:42.0320778Z - 📰 GI news: delivered 47141479 (1 message(s), 1 container(s))
+2026-10-20T05:15:42.0321351Z - 📰 GI news: discovered=1, attempted=1, delivered=1, deferred/error=0
+2026-10-20T05:15:42.0321845Z - 📰 HSR news: delivered 47141115 (1 message(s), 1 container(s))
+2026-10-20T05:15:42.0322459Z - 📰 HSR news: discovered=1, attempted=1, delivered=1, deferred/error=0
+2026-10-20T05:15:42.0322941Z - 📰 ZZZ news: delivered 47141478 (1 message(s), 1 container(s))
+2026-10-20T05:15:42.0323289Z - 📰 ZZZ news: delivered 47141679 (1 message(s), 1 container(s))
+2026-10-20T05:15:42.0323609Z - 📰 ZZZ news: discovered=3, attempted=2, delivered=2, deferred/error=0
+2026-10-20T05:15:42.0323937Z - 📰 WW news: discovered=1, attempted=0, delivered=0, deferred/error=0
+2026-10-20T05:15:42.0324250Z - 📰 HNA news: discovered=0, attempted=0, delivered=0, deferred/error=0
+2026-10-20T05:15:42.0324601Z - repository commit/push: not observed here; see the subsequent workflow persistence step.
+2026-10-20T05:15:42.0325622Z - sources: bannerfeed: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 4 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; hoyolab: 19 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 18 ok / 0 fail; nitter: 15 ok / 0 fail
+2026-10-20T05:15:42.0326548Z - ⏱️ run took 19.0s
+2026-10-20T05:15:42.0748989Z ##[group]Run git config user.name "github-actions[bot]"
+2026-10-20T05:15:42.0749287Z [36;1mgit config user.name "github-actions[bot]"[0m
+2026-10-20T05:15:42.0749576Z [36;1mgit config user.email "41898282+github-actions[bot]@users.noreply.github.com"[0m
+2026-10-20T05:15:42.0749869Z [36;1mgit add state/state.json 2>/dev/null || true[0m
+2026-10-20T05:15:42.0750183Z [36;1m# config/program_announcements.json travels WITH the commit, not with the state: a nitter[0m
+2026-10-20T05:15:42.0750570Z [36;1m# timeline only reaches back a few days, but the card is re-rendered for the whole version[0m
+2026-10-20T05:15:42.0751088Z [36;1m# and every mode=test run starts from an empty state. Committing the discovered tweet id is[0m
+2026-10-20T05:15:42.0751466Z [36;1m# what lets a later test run resolve the same announcement by id through fxtwitter and show[0m
+2026-10-20T05:15:42.0751857Z [36;1m# the real link and the real key art. Same pattern as posted_tweets.json in the X monitor.[0m
+2026-10-20T05:15:42.0752427Z [36;1mgit add -f config/program_announcements.json 2>/dev/null || true[0m
+2026-10-20T05:15:42.0752771Z [36;1mif git diff --cached --quiet; then echo "state unchanged — nothing to commit"; exit 0; fi[0m
+2026-10-20T05:15:42.0753079Z [36;1mgit commit -m "auto: update state [skip ci]"[0m
+2026-10-20T05:15:42.0753284Z [36;1mfor i in 1 2 3 4 5; do[0m
+2026-10-20T05:15:42.0753594Z [36;1m  if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then[0m
+2026-10-20T05:15:42.0753908Z [36;1m    exit 0[0m
+2026-10-20T05:15:42.0754054Z [36;1m  fi[0m
+2026-10-20T05:15:42.0754195Z [36;1m  sleep $((i * 3))[0m
+2026-10-20T05:15:42.0754352Z [36;1mdone[0m
+2026-10-20T05:15:42.0754552Z [36;1mecho "::error::could not push state/state.json after 5 attempts"[0m
+2026-10-20T05:15:42.0754786Z [36;1mexit 1[0m
+2026-10-20T05:15:42.0809233Z shell: /usr/bin/bash -e {0}
+2026-10-20T05:15:42.0809442Z env:
+2026-10-20T05:15:42.0809612Z   PYTHONUNBUFFERED: 1
+2026-10-20T05:15:42.0810071Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-20T05:15:42.0810249Z   DISCORD_WEBHOOK_CODES: 
+2026-10-20T05:15:42.0810666Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-20T05:15:42.0811152Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-20T05:15:42.0811574Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-20T05:15:42.0812062Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-20T05:15:42.0812556Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-20T05:15:42.0812956Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-20T05:15:42.0813131Z   DISCORD_WEBHOOK_URL: 
+2026-10-20T05:15:42.0813363Z   NITTER_RSS_TOKEN: ***
+2026-10-20T05:15:42.0821349Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***"
+}
+2026-10-20T05:15:42.0823058Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-20T05:15:42.0823492Z   TEST: webhooks
+2026-10-20T05:15:42.0823630Z   NO_PING: 0
+2026-10-20T05:15:42.0823761Z   PING_FLAG: 
+2026-10-20T05:15:42.0823893Z   GAME_ARG: 
+2026-10-20T05:15:42.0824073Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:42.0824505Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-20T05:15:42.0824780Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:42.0841786Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:42.0842741Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-20T05:15:42.0843006Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-20T05:15:42.0843263Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-20T05:15:42.0843505Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-20T05:15:42.0843872Z ##[endgroup]
+2026-10-20T05:15:42.1073145Z [main a62a69f] auto: update state [skip ci]
+2026-10-20T05:15:42.1073461Z  1 file changed, 39 insertions(+), 5 deletions(-)
+2026-10-20T05:15:42.4671714Z From https://github.com/uesu/8mqzv4k2n7c
+2026-10-20T05:15:42.4672178Z  * branch            main       -> FETCH_HEAD
+2026-10-20T05:15:42.4732086Z Current branch main is up to date.
+2026-10-20T05:15:43.6945939Z To https://github.com/uesu/8mqzv4k2n7c
+2026-10-20T05:15:43.6946305Z    a7d7daa..a62a69f  HEAD -> main
+2026-10-20T05:15:43.7101526Z Post job cleanup.
+2026-10-20T05:15:43.7851022Z UV_CACHE_DIR is already set to /home/runner/work/_temp/setup-uv-cache
+2026-10-20T05:15:43.7859083Z UV_PYTHON_INSTALL_DIR is already set to /home/runner/work/_temp/uv-python-dir
+2026-10-20T05:15:43.7859713Z Cache hit occurred on key setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.8-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d, not saving cache.
+2026-10-20T05:15:43.8962556Z Post job cleanup.
+2026-10-20T05:15:43.9916993Z Post job cleanup.
+2026-10-20T05:15:44.0614887Z [command]/usr/bin/git version
+2026-10-20T05:15:44.0656090Z git version 2.55.0
+2026-10-20T05:15:44.0696916Z Temporarily overriding HOME='/home/runner/work/_temp/bc34e76c-2c80-43d5-aba4-2614eb7c0313' before making global git config changes
+2026-10-20T05:15:44.0697847Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-20T05:15:44.0702636Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-20T05:15:44.1314435Z Removing SSH command configuration
+2026-10-20T05:15:44.1318657Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-20T05:15:44.1359950Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-20T05:15:44.1582848Z Removing HTTP extra header
+2026-10-20T05:15:44.1588848Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-20T05:15:44.1641844Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-20T05:15:44.1847300Z Removing includeIf entries pointing to credentials config files
+2026-10-20T05:15:44.1853774Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-20T05:15:44.1884937Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-10-20T05:15:44.1885523Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-10-20T05:15:44.1885980Z includeif.gitdir:/github/workspace/.git.path
+2026-10-20T05:15:44.1886344Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T05:15:44.1894302Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-10-20T05:15:44.1919439Z /home/runner/work/_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:44.1928237Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-aa5a5cf3\-e577\-4243\-939a\-9dcd7695d183\.config
+2026-10-20T05:15:44.2213186Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-10-20T05:15:44.2240106Z /home/runner/work/_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:44.2248030Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-aa5a5cf3\-e577\-4243\-939a\-9dcd7695d183\.config
+2026-10-20T05:15:44.2293187Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-20T05:15:44.2316849Z /github/runner_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:44.2322886Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-aa5a5cf3\-e577\-4243\-939a\-9dcd7695d183\.config
+2026-10-20T05:15:44.2602635Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-20T05:15:44.2626741Z /github/runner_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config
+2026-10-20T05:15:44.2632942Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-aa5a5cf3\-e577\-4243\-939a\-9dcd7695d183\.config
+2026-10-20T05:15:44.2698213Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-20T05:15:44.2891655Z Removing credentials config '/home/runner/work/_temp/git-credentials-aa5a5cf3-e577-4243-939a-9dcd7695d183.config'
+2026-10-20T05:15:44.3026653Z Cleaning up orphan processes
