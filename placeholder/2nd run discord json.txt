@@ -172,3 +172,79 @@
     }
   ]
 }
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 2"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**▌ Event Warp Details**\n※ Among the above characters and Light Cones, limited characters and limited Light Cones will not be available in the Stellar Warp event.\n\n※ In this phase of Warp, obtainable 5-star characters include the featured 5-star characters and the custom-selected characters from \"Celestial Invitation.\"\n\n※ During the Event Warp period, the limited 5-star character Pearl (Elation: Ice) can only be obtained from the \"An Ocean in a Pearl\" Character Event Warp, and the limited 5-star character Mortenax Blade (Nihility: Fire) can only be obtained from the \"Now I Am Become Blade\" Character Event Warp.\n\n※ During the Event Warp period, the limited 5-star Light Cone \"Colors for Tomorrow (Elation)\" can only be obtained from the \"Brilliant Fixation: Colors for Tomorrow\" Light Cone Event Warp, and the limited 5-star Light Cone \"Reforged in Hellfire (Nihility)\" can only be obtained from the \"Bygone Reminiscence: Reforged in Hellfire\" Light Cone Event Warp.\n\n※ \"An Ocean in a Pearl\" and \"Now I Am Become Blade\" are Character Event Warps that share the same guaranteed drop counter. The cumulative Warp count for a guaranteed 5-star character in any Character Event Warp will always be carried over to other Character Event Warps, but is independent of and unaffected by other types of Warps.\n\n※ \"Brilliant Fixation: Colors for Tomorrow\" and \"Bygone Reminiscence: Reforged in Hellfire\" are considered Light Cone Event Warps, and share the same guaranteed drop counter. The cumulative Warp count for a guaranteed 5-star Light Cone in any Light Cone Event Warp will always be carried over to other Light Cone Event Warps, but is independent of and unaffected by other types of Warps.\n\n※ For more information, please head to the Warp screen.\n\n**▌ \"Aptitude Showcase\" Character Trial Event**\n- Requirement: Unlock Travel Log\nEvent Details: After the Version 4.6 update on 2026/09/28 – 2026/11/10 15:00 (server time), you can experience the trial stages for characters Pearl (Elation: Ice), Qingque (Erudition: Quantum), Xueyi (Destruction: Quantum), and Misha (Destruction: Ice). From 2026/10/21 12:00 – 2026/11/10 15:00 (server time), you can experience the trial stage for the character Mortenax Blade (Nihility: Fire). Completing the challenges awards Stellar Jades, Adventure Logs, Universal Enhancement Materials, and Credits."
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.hoyolab.com/article/47142215"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
