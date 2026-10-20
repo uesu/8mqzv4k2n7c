@@ -1898,7 +1898,7 @@
   "heartbeat": {
     "every_min": 1440,
     "instance": "alpha",
-    "last_success": 1792413798
+    "last_success": 1792500326
   },
   "icons": {
     "genshin": "https://pbs.twimg.com/profile_images/2102589386378686464/tS24hVO2_200x200.jpg",
@@ -2481,7 +2481,7 @@
           ],
           "b_phase1": [
             100,
-            1792500018
+            1792500326
           ],
           "b_phase1_4": [
             50,
