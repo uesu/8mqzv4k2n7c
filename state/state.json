@@ -851,16 +851,27 @@
       },
       "DSLSPNBREASP": {
         "first_seen": 1792556421,
-        "gate": "only ennead",
-        "last_seen": 1792556421,
+        "gate": "redeem-validated",
+        "last_seen": 1792563919,
+        "message_id": "1562351094334758915",
+        "msg_codes": [
+          "DSLSPNBREASP"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1792563919,
         "rewards": [
           "Stellar Jade ×50",
           "Credit ×10000"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
       },
       "FAREWELL": {
         "first_seen": 1790323430,
@@ -2604,8 +2615,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792553119,
-          "banners_search_ts": 1792553119,
+          "banners_checked_ts": 1792563919,
+          "banners_search_ts": 1792563919,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -2652,7 +2663,7 @@
           ],
           "b_phase1": [
             100,
-            1792563622
+            1792563919
           ],
           "b_phase1_4": [
             50,
