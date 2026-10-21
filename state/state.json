@@ -2274,11 +2274,17 @@
         "webhook_fp": "19991534cf6d"
       },
       "7.2": {
+        "calendar": {
+          "banners": [],
+          "ts": 1792555515
+        },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1792555200,
           "banners_checked_ts": 1792555239,
+          "banners_search_ts": 1792555515,
+          "calendar_ts": 1792555515,
           "estimate_sources": [
             "version cadence"
           ],
@@ -2612,7 +2618,7 @@
           ],
           "b_phase1": [
             100,
-            1792555239
+            1792555515
           ],
           "b_phase1_4": [
             50,
