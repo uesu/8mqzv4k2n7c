@@ -2476,12 +2476,13 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792542315,
-          "banners_search_ts": 1792542315,
+          "banners_checked_ts": 1792553119,
+          "banners_search_ts": 1792553119,
           "banners_settled": [
             "phase1",
             "phase2",
-            "phase2_4"
+            "phase2_4",
+            "reruns"
           ],
           "compensation": "Astrite x300, Crystal Solvent x2",
           "estimate_sources": [
@@ -2523,7 +2524,7 @@
           ],
           "b_phase1": [
             100,
-            1792552822
+            1792553119
           ],
           "b_phase1_4": [
             50,
@@ -2582,6 +2583,7 @@
             {
               "endsAt": 1794369599,
               "featured": [
+                "Phoenix",
                 "Velina"
               ],
               "featured4": [
@@ -2591,9 +2593,22 @@
               "startsAt": 1792544400,
               "title": "",
               "version": "3.3"
+            },
+            {
+              "endsAt": 1796108399,
+              "featured": [
+                "Norma"
+              ],
+              "featured4": [
+                "Nicole",
+                "Pulchra"
+              ],
+              "startsAt": 1794369600,
+              "title": "",
+              "version": "3.3"
             }
           ],
-          "ts": 1792542315
+          "ts": 1792553119
         },
         "data": {
           "announcement_locked": true,
@@ -2610,24 +2625,28 @@
               "Severian",
               "Norma"
             ],
+            "phase2_4": [
+              "Nicole",
+              "Pulchra"
+            ],
             "reruns": [
               "Velina Airgid",
               "Norma Hollowell"
             ]
           },
-          "banners_checked_ts": 1792542315,
+          "banners_checked_ts": 1792553119,
           "banners_display": {
             "Norma": "Norma Hollowell",
             "Phoenix": "Phoenix Reffaella",
             "Severian": "Severian Lowell",
             "Velina": "Velina Airgid"
           },
-          "banners_search_ts": 1792542315,
+          "banners_search_ts": 1792553119,
           "banners_settled": [
             "phase1",
             "phase2"
           ],
-          "calendar_ts": 1792542315,
+          "calendar_ts": 1792553119,
           "compensation": "Polychrome ×300",
           "images": [
             "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
@@ -2657,10 +2676,10 @@
         ],
         "first_seen": 1791172831,
         "message_id": "1556516427786096744",
-        "mirror_hash": "f2f9636d97d58bdb",
+        "mirror_hash": "9d69665a66ff77a9",
         "mirror_message_id": "1556585523047436341",
         "mirror_webhook_fp": "db5f4f8a75a5",
-        "payload_hash": "4717120926f7d334",
+        "payload_hash": "144c3b60c2ce0aac",
         "posted_at": 1791172831,
         "preinstall_offset_h": 42.0,
         "prov": {
@@ -2682,6 +2701,13 @@
           "b_phase2": [
             40,
             1791546399
+          ],
+          "b_phase2_4": [
+            5,
+            1792553119
+          ],
+          "b_phase2_4_by": [
+            "calendar"
           ],
           "b_phase2_by": [
             "official"
@@ -2723,7 +2749,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1792382715,
+        "updated_at": 1792553119,
         "webhook_fp": "19991534cf6d"
       }
     }
