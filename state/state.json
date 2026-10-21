@@ -2336,15 +2336,15 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1792610120
+          "ts": 1792620920
         },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1792555200,
-          "banners_checked_ts": 1792610120,
-          "banners_search_ts": 1792610120,
-          "calendar_ts": 1792610120,
+          "banners_checked_ts": 1792620920,
+          "banners_search_ts": 1792620920,
+          "calendar_ts": 1792620920,
           "estimate_sources": [
             "version cadence"
           ],
@@ -2678,7 +2678,7 @@
           ],
           "b_phase1": [
             100,
-            1792620621
+            1792620920
           ],
           "b_phase1_4": [
             50,
