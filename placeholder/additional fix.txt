@@ -1,0 +1,103 @@
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [(ZZZ × Discord) New Account Linking and Rich Presence Functions Now Available ](https://www.hoyolab.com/article/47154012)\n-# HoYoLAB · Zenless Zone Zero · <t:1792576806:f>"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/20/4438b17679eecd82fc2eb29df1f7dfdb_2500454347764058281.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/vKJBTdFE5dHECPDm_RA56U3bHZR52CWa6XmZDa5I5l8/https/upload-os-bbs.hoyolab.com/upload/2026/10/20/4438b17679eecd82fc2eb29df1f7dfdb_2500454347764058281.jpg",
+                "width": 1200,
+                "height": 675,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "Dear Proxy,\nZenless Zone Zero Version 3.3 now supports Discord account linking, along with the all-new Rich Presence functions for displaying your game status!\nAfter linking your account, not only will you be able to show off your game status on Discord, but you can also claim 30 Polychromes as a linking reward. Proxies who already linked their accounts via the old account linking function can claim this linking reward once more.\n\n**[Function Details]**\n1. Account Linking and Unlinking\nThe new function to link your HoYoverse account with your Discord account has been added. Proxies can set this up in-game via Options > Account > User Center > Link Account. Once linked, related in-game activity will be displayed on the corresponding Discord profile. You can also unlink the accounts at any time if needed.\n2. Discord Rich Presence\nOnce you've linked your account and entered the game, Discord will display your Zenless Zone Zero game status, character info, level, days active, and more.\n3. More Game Stats Displayed\nWhen viewing your game status on Discord on your desktop, you can also hover over the icon to see your number of achievements, Bangboo, and Agents owned.\n\n**[Account Link Reward]**\nLink your Zenless Zone Zero account to your Discord account to claim 30 Polychromes.\nOnce linked, click the link below to head to the account linking reward page and claim your Polychromes:\n[\\[Go to the Account Linking Rewards page to claim Polychromes\\]](https://hoyo.link/XY3DL2Pp8)\n\nProxies who have already linked their accounts via the old account linking function can also head to the rewards page to claim this reward after completing the new linking process.\n\n**[More Functions Coming Soon]**\nThis release is just the beginning of the ZZZ × Discord crossover experience. More functions, such as Linked Roles and the Game Stats Widget, are in the works. Stay tuned for future announcements.\nLink your account now to claim 30 Polychromes and stay tuned for more updates from the ZZZ × Discord community!\nhttps://discord.gg/zenlesszonezero"
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/20/0/1cefc206074aa8c54e8c9cf21e3a462a_6450583642920372150.jpeg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/eMy425v0_2oCGTf5uXxzbLY11b9iMMZyOuz4O-IiNqI/https/upload-os-bbs.hoyolab.com/upload/2026/10/20/0/1cefc206074aa8c54e8c9cf21e3a462a_6450583642920372150.jpeg",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.hoyolab.com/article/47154012"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
