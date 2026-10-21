@@ -1959,8 +1959,8 @@
     },
     "wuwa": {
       "cursor": [
-        1792490400,
-        "5653"
+        1792552500,
+        "5668"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -1978,6 +1978,14 @@
           ],
           "status": "posted",
           "ts": 1792490400
+        },
+        "5668": {
+          "messages": [
+            "1562304556044386365",
+            "1562304559949283410"
+          ],
+          "status": "posted",
+          "ts": 1792552500
         }
       },
       "route": "f7e18488aac788d3"
@@ -2453,9 +2461,13 @@
             ],
             "phase1_4": [],
             "phase2": [
-              "Suoming",
               "Lucilla",
               "Lynae"
+            ],
+            "phase2_4": [
+              "Lumi",
+              "Danjin",
+              "Chixia"
             ],
             "reruns": [
               "Chisa",
@@ -2467,7 +2479,9 @@
           "banners_checked_ts": 1792542315,
           "banners_search_ts": 1792542315,
           "banners_settled": [
-            "phase1"
+            "phase1",
+            "phase2",
+            "phase2_4"
           ],
           "compensation": "Astrite x300, Crystal Solvent x2",
           "estimate_sources": [
@@ -2509,7 +2523,7 @@
           ],
           "b_phase1": [
             100,
-            1792552520
+            1792552822
           ],
           "b_phase1_4": [
             50,
@@ -2517,11 +2531,18 @@
           ],
           "b_phase1_4_tba": "2 name(s) found, 3 expected",
           "b_phase2": [
-            6,
-            1791544043
+            50,
+            1792491520
+          ],
+          "b_phase2_4": [
+            50,
+            1792491520
+          ],
+          "b_phase2_4_by": [
+            "official"
           ],
           "b_phase2_by": [
-            "wiki"
+            "official"
           ],
           "b_reruns": [
             6,
