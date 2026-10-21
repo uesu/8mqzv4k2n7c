@@ -30,7 +30,7 @@
       "6LS3F3LS5K87": {
         "first_seen": 1790944228,
         "gate": "redeem-validated",
-        "last_seen": 1792550417,
+        "last_seen": 1792593625,
         "message_id": "1555557642519445636",
         "msg_codes": [
           "6LS3F3LS5K87"
@@ -2678,7 +2678,7 @@
           ],
           "b_phase1": [
             100,
-            1792593318
+            1792593625
           ],
           "b_phase1_4": [
             50,
