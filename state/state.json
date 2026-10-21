@@ -1909,8 +1909,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1792468806,
-        "47141479"
+        1792555204,
+        "47151000"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -1921,6 +1921,12 @@
           ],
           "status": "posted",
           "ts": 1792468806
+        },
+        "47151000": {
+          "excluded": "schedule",
+          "messages": [],
+          "status": "posted",
+          "ts": 1792555204
         }
       },
       "route": "a0f2147590c35140"
@@ -1992,8 +1998,8 @@
     },
     "zzz": {
       "cursor": [
-        1792551604,
-        "47150540"
+        1792555202,
+        "47150997"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -2081,6 +2087,13 @@
           ],
           "status": "posted",
           "ts": 1792551604
+        },
+        "47150997": {
+          "messages": [
+            "1562314707086352396"
+          ],
+          "status": "posted",
+          "ts": 1792555202
         }
       },
       "route": "5f931f917050e29a"
@@ -2258,6 +2271,81 @@
         },
         "status": "posted",
         "updated_at": 1791465622,
+        "webhook_fp": "19991534cf6d"
+      },
+      "7.2": {
+        "data": {
+          "announcement_locked": true,
+          "announcement_source": "x",
+          "announcement_ts": 1792555200,
+          "banners_checked_ts": 1792555239,
+          "estimate_sources": [
+            "version cadence"
+          ],
+          "estimated": [
+            "preinstall_ts",
+            "maint_start_ts",
+            "maint_end_ts"
+          ],
+          "images": [
+            "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
+          ],
+          "maint_end_ts": 1793761200,
+          "maint_start_ts": 1793743200,
+          "preinstall_ts": 1793588400,
+          "program_name": "Special Program",
+          "program_seen": true,
+          "program_ts": 1792756800,
+          "source_label": "X Post",
+          "source_links": [
+            [
+              "X Post",
+              "https://x.com/GenshinImpact/status/2112755760107081755"
+            ],
+            [
+              "HoYoLAB",
+              "https://www.hoyolab.com/article/47151000"
+            ]
+          ],
+          "source_url": "https://x.com/GenshinImpact/status/2112755760107081755",
+          "title_url": "https://x.com/GenshinImpact/status/2112755760107081755",
+          "version": "7.2"
+        },
+        "estimated_reported": [
+          "preinstall_ts",
+          "maint_start_ts",
+          "maint_end_ts"
+        ],
+        "first_seen": 1792555239,
+        "message_id": "1562314671103418552",
+        "mirror_hash": "ef98f33c0a38cada",
+        "mirror_message_id": "1562314676023332895",
+        "mirror_webhook_fp": "ee502f83bdf4",
+        "payload_hash": "76abd3b9ef0cb207",
+        "posted_at": 1792555239,
+        "prov": {
+          "maint_end_ts": [
+            9,
+            1792555239
+          ],
+          "maint_start_ts": [
+            9,
+            1792555239
+          ],
+          "preinstall_ts": [
+            9,
+            1792555239
+          ],
+          "program_name": [
+            40,
+            1792555200
+          ],
+          "program_ts": [
+            40,
+            1792555200
+          ]
+        },
+        "status": "posted",
         "webhook_fp": "19991534cf6d"
       }
     },
@@ -2524,7 +2612,7 @@
           ],
           "b_phase1": [
             100,
-            1792554915
+            1792555239
           ],
           "b_phase1_4": [
             50,
