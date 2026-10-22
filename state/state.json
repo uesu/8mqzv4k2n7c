@@ -869,6 +869,7 @@
         "sources": [
           "codehub",
           "ennead",
+          "ogc",
           "seria"
         ],
         "status": "posted",
@@ -1062,6 +1063,7 @@
         "status": "seeded"
       },
       "RT4BPNA8FBS3": {
+        "expired_at": 1792632628,
         "first_seen": 1790840103,
         "gate": "redeem-validated",
         "last_seen": 1792631722,
@@ -2678,7 +2680,7 @@
           ],
           "b_phase1": [
             100,
-            1792632316
+            1792632628
           ],
           "b_phase1_4": [
             50,
