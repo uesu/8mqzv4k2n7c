@@ -1,5 +1,6 @@
 {
   "bootstrapped": {
+    "codes:ananta": 1792660529,
     "codes:genshin": 1790323434,
     "codes:hna": 1790992409,
     "codes:starrail": 1790323434,
@@ -13,6 +14,7 @@
     "schedule:zzz": 1790323164
   },
   "codes": {
+    "ananta": {},
     "genshin": {
       "2BJ64QRZ7RT8": {
         "first_seen": 1790323430,
@@ -365,7 +367,7 @@
       "OKTCHX26J57Q": {
         "first_seen": 1792482628,
         "gate": "only ennead",
-        "last_seen": 1792613117,
+        "last_seen": 1792660519,
         "rewards": [
           "Mora ×10,000",
           "Adventurer's Experience ×10",
@@ -852,7 +854,7 @@
       "DSLSPNBREASP": {
         "first_seen": 1792556421,
         "gate": "redeem-validated",
-        "last_seen": 1792607429,
+        "last_seen": 1792660519,
         "message_id": "1562351094334758915",
         "msg_codes": [
           "DSLSPNBREASP"
@@ -1936,8 +1938,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1792639802,
-        "47161839"
+        1792652406,
+        "47163124"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -1968,6 +1970,13 @@
           ],
           "status": "posted",
           "ts": 1792639802
+        },
+        "47163124": {
+          "messages": [
+            "1562756279032881265"
+          ],
+          "status": "posted",
+          "ts": 1792652406
         }
       },
       "route": "a0f2147590c35140"
@@ -2352,15 +2361,15 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1792642817
+          "ts": 1792660519
         },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1792555200,
-          "banners_checked_ts": 1792642817,
-          "banners_search_ts": 1792642817,
-          "calendar_ts": 1792642817,
+          "banners_checked_ts": 1792660519,
+          "banners_search_ts": 1792660519,
+          "calendar_ts": 1792660519,
           "estimate_sources": [
             "version cadence"
           ],
@@ -2618,6 +2627,7 @@
     "wuwa": {
       "3.7": {
         "data": {
+          "announcement_locked": true,
           "banners": {
             "four_star": [
               "Buling",
@@ -2629,7 +2639,11 @@
               "Chisa",
               "Iuno"
             ],
-            "phase1_4": [],
+            "phase1_4": [
+              "Buling",
+              "Taoqi",
+              "Youhu"
+            ],
             "phase2": [
               "Lucilla",
               "Lynae"
@@ -2646,8 +2660,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792641020,
-          "banners_search_ts": 1792641020,
+          "banners_checked_ts": 1792660519,
+          "banners_search_ts": 1792660519,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -2655,28 +2669,27 @@
             "reruns"
           ],
           "compensation": "Astrite x300, Crystal Solvent x2",
-          "estimate_sources": [
-            "wuthering-countdown"
-          ],
-          "estimated": [
-            "program_ts"
-          ],
           "images": [
-            "https://hw-media-cdn-mingchao.kurogame.com/object/1790006400000/m39h4r47zx7muv6xlk-1790072631821.jpg"
+            "https://pbs.twimg.com/media/HR70hTAaoAA8Dzz.jpg?name=orig"
           ],
           "maint_end_ts": 1790737200,
           "maint_start_ts": 1790712000,
+          "media_from": "x",
           "preinstall_ts": 1790560800,
-          "program_ts": 1790341813,
-          "source_label": "Official News",
+          "program_ts": 1789815600,
+          "source_label": "x",
           "source_links": [
+            [
+              "x",
+              "https://x.com/Wuthering_Waves/status/2098607530780021002"
+            ],
             [
               "Official News",
               "https://wutheringwaves.kurogames.com/en/main/news/detail/5476"
             ]
           ],
-          "source_url": "https://wutheringwaves.kurogames.com/en/main/news/detail/5476",
-          "title_url": "https://wutheringwaves.kurogames.com/en/main/news/detail/5476",
+          "source_url": "https://x.com/Wuthering_Waves/status/2098607530780021002",
+          "title_url": "https://x.com/Wuthering_Waves/status/2098607530780021002",
           "version": "3.7"
         },
         "estimated_reported": [
@@ -2697,8 +2710,11 @@
             1792647317
           ],
           "b_phase1_4": [
-            50,
-            1790599919
+            6,
+            1792660519
+          ],
+          "b_phase1_4_by": [
+            "wiki"
           ],
           "b_phase1_4_tba": "2 name(s) found, 3 expected",
           "b_phase2": [
@@ -2739,8 +2755,8 @@
             1790072775
           ],
           "program_ts": [
-            10,
-            1790341813
+            45,
+            1792660519
           ]
         },
         "status": "seeded"
@@ -2814,6 +2830,7 @@
           "banners_search_ts": 1792640116,
           "banners_settled": [
             "phase1",
+            "phase1_4",
             "phase2"
           ],
           "calendar_ts": 1792640116,
@@ -2862,6 +2879,7 @@
             1792575028
           ],
           "b_phase1_4_by": [
+            "calendar",
             "wiki"
           ],
           "b_phase1_by": [
