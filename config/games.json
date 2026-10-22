@@ -22,6 +22,7 @@
       "hoyolab": {"gid": 2, "official_uid": 1015537, "c3kay": "https://feeds.c3kay.de/genshin.json"},
       "launcher": {"type": "hoyoplay", "game_id": "gopR6Cufr3"},
       "x_accounts": ["GenshinImpact"],
+      "reddit": {"subreddits": ["Genshin_Impact"], "official": ["genshinimpact"]},
       "program_label": "Special Program",
       "program_patterns": ["special program"],
       "banner_patterns": ["event wish"],
@@ -39,7 +40,7 @@
         "banners_url": "https://lunaris.moe/banners"
       },
       "codes": {
-        "sources": ["hoyolab:2", "seria:genshin", "humbao:GENSHIN", "ogc:genshin", "ennead:genshin", "fandom:genshin-impact/Promotional_Code", "codehub:genshin-impact", "x"],
+        "sources": ["hoyolab:2", "seria:genshin", "humbao:GENSHIN", "ogc:genshin", "ennead:genshin", "fandom:genshin-impact/Promotional_Code", "codehub:genshin-impact", "reddit:Genshin_Impact", "x"],
         "redeem_url": "https://genshin.hoyoverse.com/en/gift?code={code}",
         "redeem_hint": "Tap a code to open the official redemption page with it filled in, or redeem in-game: Paimon Menu → Settings → Account → Redeem Now."
       }
@@ -53,6 +54,7 @@
       "hoyolab": {"gid": 6, "official_uid": 172534910, "c3kay": "https://feeds.c3kay.de/starrail.json"},
       "launcher": {"type": "hoyoplay", "game_id": "4ziysqXOQ8"},
       "x_accounts": ["honkaistarrail"],
+      "reddit": {"subreddits": ["HonkaiStarRail"], "official": ["HonkaiStarRail"]},
       "program_label": "Special Program",
       "program_patterns": ["special program"],
       "banner_patterns": ["event warp"],
@@ -69,7 +71,7 @@
         "maintenance_heading": "Maintenance Details (STC)"
       },
       "codes": {
-        "sources": ["hoyolab:6", "seria:hkrpg", "humbao:HSR", "ogc:starrail", "ennead:starrail", "fandom:honkai-star-rail/Redemption_Code", "codehub:honkai-star-rail", "x"],
+        "sources": ["hoyolab:6", "seria:hkrpg", "humbao:HSR", "ogc:starrail", "ennead:starrail", "fandom:honkai-star-rail/Redemption_Code", "codehub:honkai-star-rail", "reddit:HonkaiStarRail", "x"],
         "redeem_url": "https://hsr.hoyoverse.com/gift?code={code}",
         "redeem_hint": "Tap a code to open the official redemption page with it filled in (log in first)."
       }
@@ -83,6 +85,7 @@
       "hoyolab": {"gid": 8, "official_uid": 219270333, "c3kay": "https://feeds.c3kay.de/zenless.json"},
       "launcher": {"type": "hoyoplay", "game_id": "U5hbdsT9W7"},
       "x_accounts": ["ZZZ_EN"],
+      "reddit": {"subreddits": ["ZZZ_Official"], "official": ["ZZZ_Official"]},
       "program_label": "Special Program",
       "program_patterns": ["special program"],
       "banner_patterns": ["exclusive channel", "signal search", "limited-time channels"],
@@ -100,7 +103,7 @@
         "four_star_label": "4 Star Characters (Default)"
       },
       "codes": {
-        "sources": ["hoyolab:8", "seria:nap", "humbao:ZZZ", "ogc:zenless", "ennead:zenless", "fandom:zenless-zone-zero/Redemption_Code", "codehub:zenless-zone-zero", "x"],
+        "sources": ["hoyolab:8", "seria:nap", "humbao:ZZZ", "ogc:zenless", "ennead:zenless", "fandom:zenless-zone-zero/Redemption_Code", "codehub:zenless-zone-zero", "reddit:ZZZ_Official", "x"],
         "redeem_url": "https://zenless.hoyoverse.com/redemption?code={code}",
         "redeem_hint": "Tap a code to open the official redemption page with it filled in (log in first)."
       }
@@ -114,8 +117,9 @@
       "launcher": {"type": "kuro"},
       "kuro_news": true,
       "x_accounts": ["Wuthering_Waves"],
+      "reddit": {"subreddits": ["WutheringWaves"], "official": []},
       "program_label": "Special Broadcast",
-      "program_patterns": ["special broadcast"],
+      "program_patterns": ["special broadcast", "preview livestream", "preview live stream"],
       "banner_patterns": ["featured resonator", "resonator convene", "convene"],
       "banner_titles": ["Version {v} Featured Resonator/Weapon Convene: Phase {p}"],
       "cadence": {
@@ -138,7 +142,7 @@
         "four_star_summary": true
       },
       "codes": {
-        "sources": ["ogc:wuwa", "wuthering.gg", "fandom:wutheringwaves/Redemption_Code", "codehub:wuthering-waves", "x"],
+        "sources": ["ogc:wuwa", "wuthering.gg", "fandom:wutheringwaves/Redemption_Code", "codehub:wuthering-waves", "reddit:WutheringWaves", "x"],
         "redeem_hint": "Redeem in-game (Union Level 2+): open the menu → Settings ⚙ → Other Settings → Account → Redemption Code → Redeem. Rewards arrive in your mailbox."
       }
     },
@@ -152,11 +156,12 @@
       "hoyolab": {"gid": 9},
       "launcher": {},
       "x_accounts": ["HonkaiNA"],
+      "reddit": {"subreddits": ["HonkaiNexusAnima"], "official": ["HonkaiNexusAnima"]},
       "program_label": "Special Program",
       "program_patterns": ["special program", "livestream", "special broadcast"],
       "youtube": "https://www.youtube.com/@HonkaiNA",
       "twitch": "",
-      "codes": {"sources": ["hoyolab:9", "x"]}
+      "codes": {"sources": ["hoyolab:9", "fandom:honkai-nexus-anima/Redemption_Code", "reddit:HonkaiNexusAnima", "x"]}
     },
     "ananta": {
       "name": "ANANTA",
@@ -166,12 +171,13 @@
       "auto_enable_on": "2027-01-15",
       "note": "Switched ON 2026-10-02, ahead of the 2027-01-15 global launch (confirmed at gamescom ONL 2026; NetEase / Naked Rain), so pre-launch livestreams and codes are caught; auto_enable_on is kept as a safety net in case this flag is ever set back to false. A newly enabled game seeds its state silently on the first run. Official YouTube @Ananta_Game (neteasegames.com press releases); NetEase lists no Twitch channel, so the card has no Twitch button. No gacha character unlocking -> banner section hidden. At launch: set four_star_count if that ever changes and add more code sources.",
       "x_accounts": ["Ananta_EN"],
+      "reddit": {"subreddits": ["AnantaOfficial"], "official": ["AnantaOfficial"]},
       "program_label": "Livestream",
       "program_patterns": ["livestream", "special program", "special broadcast", "showcase"],
       "youtube": "https://www.youtube.com/@Ananta_Game",
       "twitch": "",
       "card": {"show_banners": false},
-      "codes": {"sources": ["x"]}
+      "codes": {"sources": ["fandom:ananta/Redemption_Code", "reddit:AnantaOfficial", "x"]}
     }
   }
 }
