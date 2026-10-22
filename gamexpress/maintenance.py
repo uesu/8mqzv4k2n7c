@@ -308,20 +308,22 @@ def resolve_version_plans(
         raw_prev_data = existing_rec.get("data") if isinstance(existing_rec.get("data"), dict) else {}
         raw_prev_prov = existing_rec.get("prov") if isinstance(existing_rec.get("prov"), dict) else {}
         raw_prev_est = set(raw_prev_data.get("estimated") or [])
+        official_min_rank = schedule.PRIORITY["reddit"]
         official_seed_data: dict = {}
         official_seed_prov: dict = {}
         for k_field in ("preinstall_ts", "maint_start_ts", "maint_end_ts", "images", "version"):
-            rank_val = (raw_prev_prov.get(k_field) or [0])[0]
+            prov_pair = raw_prev_prov.get(k_field)
+            rank_val = prov_pair[0] if isinstance(prov_pair, (list, tuple)) and prov_pair else 0
             if k_field in ("images", "version") and raw_prev_data.get(k_field):
                 official_seed_data[k_field] = copy.deepcopy(raw_prev_data[k_field])
-            elif k_field not in raw_prev_est and 40 <= rank_val < 100 and raw_prev_data.get(k_field):
+            elif k_field not in raw_prev_est and official_min_rank <= rank_val < 100 and raw_prev_data.get(k_field):
                 official_seed_data[k_field] = raw_prev_data[k_field]
-                official_seed_prov[k_field] = list(raw_prev_prov[k_field])
+                official_seed_prov[k_field] = list(prov_pair)
         official_rec = {"data": official_seed_data, "prov": official_seed_prov}
 
         # Merge official items ONLY onto official provenance so prior rank-100 overrides can never
         # shadow a newly published official notice, and estimates remain cleanly separated.
-        ver_extracts = [schedule.extract(game, it) for it in ver_items]
+        ver_extracts = [e for e in (schedule.extract(game, it) for it in ver_items) if e is not None]
         merged_official = schedule.merge(
             game, ver, ver_extracts, official_rec, {}, {}, now, [], lead_h=lead_h
         )
@@ -339,14 +341,14 @@ def resolve_version_plans(
         maint_prov = ""
         maint_src = ""
 
-        # 1. Official published values (rank >= 40 / non-estimated from official posts).
+        # 1. Official published values (rank >= official_min_rank / non-estimated from official posts).
         raw_pre = merged_official.get("preinstall_ts")
-        if raw_pre and "preinstall_ts" not in est_fields and prov.get("preinstall_ts", [50])[0] >= 40:
+        if raw_pre and "preinstall_ts" not in est_fields and prov.get("preinstall_ts", [50])[0] >= official_min_rank:
             pre_ts = int(raw_pre)
             pre_prov = "official"
 
         raw_start = merged_official.get("maint_start_ts")
-        if raw_start and "maint_start_ts" not in est_fields and prov.get("maint_start_ts", [50])[0] >= 40:
+        if raw_start and "maint_start_ts" not in est_fields and prov.get("maint_start_ts", [50])[0] >= official_min_rank:
             start_ts = int(raw_start)
             maint_prov = "official"
             raw_end = merged_official.get("maint_end_ts")
@@ -719,22 +721,27 @@ async def _ensure_inputs_for_games(ctx, target_games: list[Game]) -> None:
     missing_item_games = [g for g in target_games if g.key not in ctx.items]
     if missing_item_games:
         async def _collect_one(g: Game) -> None:
-            want = schedule.wants(g)
-            probe = Probe(ctx.fetcher)
-            x_client = getattr(ctx, "x", None)
-            parts = await asyncio.gather(
-                hoyolab.fetch_items(probe, g, want, since),
-                kuro.fetch_items(probe, g, want, since),
-                x_client.items(g, want, since) if x_client is not None else asyncio.sleep(0, result=[]),
-            )
-            items = [it for part in parts for it in part]
-            x_reachable = getattr(x_client, "reachable", None) if x_client is not None else ()
-            x_ok = True if x_reachable is None else any(a.lower() in x_reachable for a in g.x_accounts)
-            has_primary_api = bool(g.hoyolab_gid or g.kuro_news)
-            primary_ok = (not has_primary_api) or probe.ok > 0
-            if getattr(ctx, "reddit", None) is not None and ctx.settings.reddit_enabled and (not x_ok or not primary_ok):
-                items.extend(await ctx.reddit.items(g, want, since))
-            ctx.items[g.key] = items
+            try:
+                want = schedule.wants(g)
+                probe = Probe(ctx.fetcher)
+                x_client = getattr(ctx, "x", None)
+                parts = await asyncio.gather(
+                    hoyolab.fetch_items(probe, g, want, since),
+                    kuro.fetch_items(probe, g, want, since),
+                    x_client.items(g, want, since) if x_client is not None else asyncio.sleep(0, result=[]),
+                )
+                items = [it for part in parts for it in part]
+                x_reachable = getattr(x_client, "reachable", None) if x_client is not None else ()
+                x_ok = True if x_reachable is None else any(a.lower() in x_reachable for a in g.x_accounts)
+                has_primary_api = bool(g.hoyolab_gid or g.kuro_news)
+                primary_ok = (not has_primary_api) or probe.ok > 0
+                if getattr(ctx, "reddit", None) is not None and ctx.settings.reddit_enabled and (not x_ok or not primary_ok):
+                    items.extend(await ctx.reddit.items(g, want, since))
+                ctx.items[g.key] = items
+            except Exception as exc:  # noqa: BLE001 — isolate standalone collection per game
+                log.exception("maintenance input collection failed for %s", g.key)
+                ctx.warnings.append(f"{g.short} maintenance: input collection failed ({type(exc).__name__})")
+                ctx.items.setdefault(g.key, [])
 
         await asyncio.gather(*(_collect_one(g) for g in missing_item_games))
 
@@ -788,6 +795,29 @@ async def run(ctx) -> None:
         return basic_info
 
     for game, hook, fp in routed_games:
+        try:
+            await _run_game_maintenance(
+                ctx, game, hook, fp, ephemeral=ephemeral,
+                program_pins=program_pins, get_basic_info=get_basic_info,
+                verified_cache=verified_cache,
+            )
+        except Exception as exc:  # noqa: BLE001 — isolate per-game maintenance execution
+            log.exception("maintenance run failed for %s", game.key)
+            ctx.errors.append(f"{game.short} maintenance failed: {exc}")
+
+
+async def _run_game_maintenance(
+    ctx,
+    game: Game,
+    hook: str,
+    fp: str,
+    *,
+    ephemeral: bool,
+    program_pins: dict,
+    get_basic_info,
+    verified_cache: dict[str, bool],
+) -> None:
+    for _once in (1,):
         record = ctx.state.maintenance_record(game.key)
         versions_state = record.setdefault("versions", {})
         sched_records = ctx.state.data.get("schedule", {}).get(game.key, {})

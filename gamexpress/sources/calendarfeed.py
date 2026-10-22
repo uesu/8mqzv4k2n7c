@@ -40,12 +40,18 @@ def parse_banners(data: dict) -> list[dict]:
     4★ list: {"version", "featured" (5★), "featured4" (4★), "startsAt", "endsAt", "title"}. The title is
     left empty: a calendar banner name is generic ("Character Event Wish"), so it never feeds the hub's
     title reject-list."""
+    if not isinstance(data, dict):
+        return []
     out: list[dict] = []
-    for b in (data or {}).get("banners") or []:
+    for b in data.get("banners") or []:
         if not isinstance(b, dict):
             continue
         version = str(b.get("version") or "").strip()
-        starts = int(b.get("start_time") or b.get("startsAt") or 0)   # zenless writes start_time too
+        try:
+            starts = int(b.get("start_time") or b.get("startsAt") or 0)   # zenless writes start_time too
+            ends = int(b.get("end_time") or b.get("endsAt") or 0)
+        except (TypeError, ValueError):
+            continue
         if not version or not starts:
             continue
         # Genshin and Star Rail list "characters"; Zenless Zone Zero lists "agents". Weapons, light
@@ -68,7 +74,7 @@ def parse_banners(data: dict) -> list[dict]:
             "featured": five,
             "featured4": four,
             "startsAt": starts,
-            "endsAt": int(b.get("end_time") or b.get("endsAt") or 0),
+            "endsAt": ends,
             "title": "",
         })
     return out
@@ -77,12 +83,12 @@ def parse_banners(data: dict) -> list[dict]:
 def lineup(banners: list[dict], release_ts: int | None, four_star_count: int | None) -> dict[str, list[str]]:
     """One version's calendar banners -> {phase1, phase2, phase1_4, phase2_4}. Only the keys with names
     are returned. A 4★ list with any count other than `four_star_count` is dropped (TBA, as the wiki)."""
-    if not banners or not release_ts:
+    if not isinstance(banners, list) or not banners or not release_ts:
         return {}
     five = [{"featured": b.get("featured") or [], "startsAt": b["startsAt"], "endsAt": b.get("endsAt", 0),
-             "title": ""} for b in banners if b.get("featured")]
+             "title": ""} for b in banners if isinstance(b, dict) and b.get("featured") and b.get("startsAt")]
     four = [{"featured": b.get("featured4") or [], "startsAt": b["startsAt"], "endsAt": b.get("endsAt", 0),
-             "title": ""} for b in banners if b.get("featured4")]
+             "title": ""} for b in banners if isinstance(b, dict) and b.get("featured4") and b.get("startsAt")]
     out = {k: v for k, v in banner_feed_for(five, release_ts).items() if k in ("phase1", "phase2")}
     four_split = banner_feed_for(four, release_ts)
     for k in ("phase1", "phase2"):

@@ -84,23 +84,41 @@ def drop_concatenations(hits: list[CodeHit]) -> list[CodeHit]:
 
 # ------------------------------------------------------------------ parsers (pure, tested)
 def parse_hoyolab_material(data: dict) -> list[CodeHit]:
+    if not isinstance(data, dict):
+        return []
+    inner = data.get("data")
+    modules = inner.get("modules") if isinstance(inner, dict) else None
     hits = []
-    for module in ((data or {}).get("data") or {}).get("modules") or []:
-        group = (module or {}).get("exchange_group") or {}
+    for module in modules or []:
+        if not isinstance(module, dict):
+            continue
+        group = module.get("exchange_group")
+        if not isinstance(group, dict):
+            continue
         for bonus in group.get("bonuses") or []:
+            if not isinstance(bonus, dict):
+                continue
             code = sanitize(bonus.get("exchange_code") or "")
             if not code:
                 continue
             if str(bonus.get("code_status") or "ON").upper() in ("OFF", "EXPIRED", "INVALID"):
                 continue
-            rewards = [f"×{b.get('bonus_num')}" for b in (bonus.get("icon_bonuses") or []) if b.get("bonus_num")]
+            rewards = [
+                f"×{b.get('bonus_num')}"
+                for b in (bonus.get("icon_bonuses") or [])
+                if isinstance(b, dict) and b.get("bonus_num")
+            ]
             hits.append(CodeHit(code, "hoyolab", rewards or None, verified=True))
     return hits
 
 
 def parse_seria(data: dict) -> list[CodeHit]:
+    if not isinstance(data, dict):
+        return []
     hits = []
-    for c in (data or {}).get("codes") or []:
+    for c in data.get("codes") or []:
+        if not isinstance(c, dict):
+            continue
         code = sanitize(c.get("code") or "")
         if not code:
             continue
@@ -113,13 +131,19 @@ def parse_seria(data: dict) -> list[CodeHit]:
 
 
 def parse_ennead(data: dict) -> list[CodeHit]:
+    if not isinstance(data, dict):
+        return []
     hits = []
-    for c in (data or {}).get("active") or []:
+    for c in data.get("active") or []:
+        if not isinstance(c, dict):
+            continue
         code = sanitize(c.get("code") or "")
-        rewards = [r for r in (c.get("rewards") or []) if r and r.lower() != "free items"]
+        rewards = [r for r in (c.get("rewards") or []) if r and isinstance(r, str) and r.lower() != "free items"]
         if code:
             hits.append(CodeHit(code, "ennead", rewards or None))
-    for c in (data or {}).get("inactive") or []:
+    for c in data.get("inactive") or []:
+        if not isinstance(c, dict):
+            continue
         code = sanitize(c.get("code") or "")
         if code:
             hits.append(CodeHit(code, "ennead", None, expired=True))
@@ -300,12 +324,19 @@ def parse_fandom(data: dict, now: float | None = None) -> list[CodeHit]:
     valid-until date has passed. Wiki editors often leave dead livestream codes under
     'Active' for days, so the date is what counts."""
     now = time.time() if now is None else now
-    pages = ((data or {}).get("query") or {}).get("pages") or {}
+    if not isinstance(data, dict):
+        return []
+    query = data.get("query")
+    pages = query.get("pages") if isinstance(query, dict) else None
     wikitext = ""
-    for page in pages.values():
+    for page in (pages.values() if isinstance(pages, dict) else ()):
+        if not isinstance(page, dict):
+            continue
         revs = page.get("revisions") or []
-        if revs:
-            wikitext = (revs[0].get("slots") or {}).get("main", {}).get("*") or revs[0].get("*") or ""
+        if revs and isinstance(revs[0], dict):
+            slots = revs[0].get("slots")
+            main_slot = slots.get("main") if isinstance(slots, dict) else None
+            wikitext = (main_slot.get("*") if isinstance(main_slot, dict) else None) or revs[0].get("*") or ""
             break
     if not wikitext:
         return []
@@ -380,14 +411,17 @@ def parse_codehub(data: dict, slug: str) -> list[CodeHit]:
     """PromoGacha's data/codes.json is an AGGREGATOR: every entry names where it was copied
     from (hoyo-codes = seria, Fandom Wiki) and entries are never removed. It therefore only
     counts as that upstream source (never as an extra, independent one)."""
+    if not isinstance(data, dict):
+        return []
     hits = []
-    for c in (data or {}).get("codes") or []:
-        if c.get("game") != slug:
+    for c in data.get("codes") or []:
+        if not isinstance(c, dict) or c.get("game") != slug:
             continue
         code = sanitize(c.get("code") or "")
         if not code:
             continue
-        upstream = str((c.get("source") or {}).get("name") or "").lower()
+        src_obj = c.get("source")
+        upstream = str((src_obj.get("name") if isinstance(src_obj, dict) else None) or "").lower()
         # Same rule for every known upstream, so a copy can never be counted as a SECOND
         # independent source: hoyo-codes = seria, a wiki = fandom, Open Gacha Codes /
         # api.ennead.cc = ennead (ogc and ennead are already one family).

@@ -20,13 +20,20 @@ BASIC_INFO_URL = (
 
 def parse_branches(data: dict) -> dict[str, dict]:
     """{game_id: {'live': '7.1', 'pre': '7.2' | None}}"""
+    if not isinstance(data, dict):
+        return {}
+    inner = data.get("data")
+    branches = inner.get("game_branches") if isinstance(inner, dict) else None
     out: dict[str, dict] = {}
-    for b in ((data or {}).get("data") or {}).get("game_branches") or []:
-        gid = (b.get("game") or {}).get("id")
+    for b in branches or []:
+        if not isinstance(b, dict):
+            continue
+        game_obj = b.get("game")
+        gid = game_obj.get("id") if isinstance(game_obj, dict) else None
         if not gid:
             continue
-        main = b.get("main") or {}
-        pre = b.get("pre_download") or None
+        main = b.get("main") if isinstance(b.get("main"), dict) else {}
+        pre = b.get("pre_download") if isinstance(b.get("pre_download"), dict) else None
         out[gid] = {"live": short_version(main.get("tag")),
                     "pre": short_version(pre.get("tag")) if isinstance(pre, dict) else None}
     return out
@@ -38,8 +45,12 @@ def parse_basic_info(data: dict) -> dict[str, list[dict]]:
     Each entry contains raw URLs from `backgrounds[]`: `video`, `background` (WebP/image),
     `theme`, and associated structured `links` without modifying query strings.
     """
+    if not isinstance(data, dict):
+        return {}
+    inner = data.get("data")
+    info_list = inner.get("game_info_list") if isinstance(inner, dict) else None
     out: dict[str, list[dict]] = {}
-    for info in ((data or {}).get("data") or {}).get("game_info_list") or []:
+    for info in info_list or []:
         if not isinstance(info, dict):
             continue
         game = info.get("game") or {}

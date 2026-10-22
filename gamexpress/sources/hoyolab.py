@@ -75,9 +75,11 @@ def _images(wrapper: dict) -> list[str]:
 async def _full_post(fetcher: Fetcher, gid: int, post_id: str) -> dict | None:
     data = await fetcher.get_json(API + "getPostFull", source="hoyolab",
                                   headers=HEADERS, params={"gids": gid, "post_id": post_id, "read": 1})
-    if not data or data.get("retcode") != 0:
+    if not isinstance(data, dict) or data.get("retcode") != 0:
         return None
-    return (data.get("data") or {}).get("post")
+    inner = data.get("data")
+    post_obj = inner.get("post") if isinstance(inner, dict) else None
+    return post_obj if isinstance(post_obj, dict) else None
 
 
 async def official_items(fetcher: Fetcher, game: Game, want: Callable[[str], bool],
@@ -94,11 +96,16 @@ async def official_items(fetcher: Fetcher, game: Game, want: Callable[[str], boo
     any_ok = False
     picked: dict[str, tuple[dict, dict, int, str]] = {}
     for data in lists:
-        if not data or data.get("retcode") != 0:
+        if not isinstance(data, dict) or data.get("retcode") != 0:
             continue
         any_ok = True
-        for wrapper in (data.get("data") or {}).get("list") or []:
-            post = wrapper.get("post") or {}
+        inner = data.get("data")
+        for wrapper in (inner.get("list") if isinstance(inner, dict) else None) or []:
+            if not isinstance(wrapper, dict):
+                continue
+            post = wrapper.get("post")
+            if not isinstance(post, dict):
+                continue
             pid = str(post.get("post_id") or "")
             created = int(post.get("created_at") or 0)
             subject = (post.get("subject") or "").strip()
@@ -113,7 +120,8 @@ async def official_items(fetcher: Fetcher, game: Game, want: Callable[[str], boo
     items: list[Item] = []
     for (pid, (wrapper, post, created, subject)), full in zip(picked.items(), fulls):
         if full:
-            text, links, imgs = _post_text(full.get("post") or {})
+            full_post = full.get("post") if isinstance(full.get("post"), dict) else {}
+            text, links, imgs = _post_text(full_post)
             images = _images(full) or imgs or _images(wrapper)
         else:  # list preview is truncated but usually holds the key sentences
             text, links, imgs = (post.get("content") or post.get("desc") or ""), [], []
@@ -129,10 +137,12 @@ async def c3kay_items(fetcher: Fetcher, game: Game, want: Callable[[str], bool],
     if not game.c3kay_feed:
         return []
     feed = await fetcher.get_json(game.c3kay_feed, source="c3kay")
-    if not feed:
+    if not isinstance(feed, dict):
         return []
     out = []
     for it in feed.get("items") or []:
+        if not isinstance(it, dict):
+            continue
         ts = parse_iso(it.get("date_published") or "") or 0
         if ts < since_ts:
             continue

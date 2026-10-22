@@ -94,11 +94,12 @@ def sample_payloads(kind: str = "all", game: str = "", *, mark: bool = False,
             "zzz": ("3.3", 1792382400, 1792533600, 1792551600),
             "wuwa": ("3.7", 1790560800, 1790712000, 1790737200),
             "hna": ("1.0", 1795000000, 1795140000, None),
+            "ananta": ("1.0", 1800000000, 1800144000, None),
         }
         for key, (ver, pre_ts, start_ts, end_ts) in sample_versions.items():
             if game and key != game:
                 continue
-            media = "https://example.com/sample-launch.mp4" if key != "hna" else None
+            media = "https://example.com/sample-launch.mp4" if key not in ("hna", "ananta") else None
             out.append((
                 "maintenance",
                 f"maintenance_{key}_preload",

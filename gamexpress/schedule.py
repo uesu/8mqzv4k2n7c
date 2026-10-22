@@ -561,8 +561,10 @@ def extract(game: Game, item: Item) -> Extract | None:
 def infer_versions(extracts: list[Extract], live: str | None, records: dict) -> None:
     """Fill missing versions (e.g. Genshin tweets say 'the new version'): match another
     program post within 3 h, else a tracked record within 3 h, else live+0.1."""
-    known = [e for e in extracts if e.version and e.kind == "program"]
-    for e in extracts:
+    clean = [e for e in (extracts or []) if e is not None]
+    safe_records = records if isinstance(records, dict) else {}
+    known = [e for e in clean if e.version and e.kind == "program"]
+    for e in clean:
         if e.version:
             continue
         pts = e.fields.get("program_ts")
@@ -571,8 +573,9 @@ def infer_versions(extracts: list[Extract], live: str | None, records: dict) -> 
             if match:
                 e.version = match.version
                 continue
-            rec = next((v for v, r in records.items()
-                        if abs(((r.get("data") or {}).get("program_ts") or 0) - pts) <= 3 * 3600), None)
+            rec = next((v for v, r in safe_records.items()
+                        if isinstance(r, dict)
+                        and abs(((r.get("data") if isinstance(r.get("data"), dict) else {}).get("program_ts") or 0) - pts) <= 3 * 3600), None)
             if rec:
                 e.version = rec
                 continue
@@ -1474,7 +1477,8 @@ def announcement_gap(record: dict, game_key: str, now: int) -> str:
 def needs_program_lookup(extracts: list[Extract], record: dict, now: int,
                          game_key: str = "") -> bool:
     """Whether this version still needs its archived announcement looked up."""
-    data = (record or {}).get("data") or {}
+    raw_data = record.get("data") if isinstance(record, dict) else None
+    data = raw_data if isinstance(raw_data, dict) else {}
     start = data.get("maint_start_ts")
     if start and now > int(start) + 12 * 3600 \
             and not _recoverable_announcement(data, game_key, now, start):
@@ -1486,7 +1490,7 @@ def needs_program_lookup(extracts: list[Extract], record: dict, now: int,
     if (data.get("program_seen") or data.get("media_from")) and \
             "program_ts" not in (data.get("estimated") or []):
         return False
-    return not any(e.kind == "program" for e in extracts)
+    return not any(e is not None and e.kind == "program" for e in (extracts or []))
 
 
 def needs_media(state, game_key: str, now: int) -> bool:
@@ -1494,7 +1498,10 @@ def needs_media(state, game_key: str, now: int) -> bool:
     fetch to find the program article. Never for a version that is already live, and never
     twice for the same version."""
     for rec in (state.schedule_records(game_key) or {}).values():
-        data = rec.get("data") or {}
+        if not isinstance(rec, dict):
+            continue
+        raw_data = rec.get("data")
+        data = raw_data if isinstance(raw_data, dict) else {}
         start = data.get("maint_start_ts")
         if start and now > int(start) + 12 * 3600:
             continue                                   # long live — the card is history by now
@@ -1511,6 +1518,8 @@ def _link_label(url: str, fallback: str) -> str:
         return "X Post"
     if host == "hoyolab.com" or host.endswith(".hoyolab.com"):
         return "HoYoLAB"
+    if host == "reddit.com" or host.endswith(".reddit.com"):
+        return "Reddit"
     return fallback
 
 
@@ -1562,8 +1571,12 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
     """Return the merged card data (record['data'] is the previous state).
     4★ rule: no data or ANY doubt (wrong count, odd name, sources disagree) -> TBA;
     config/overrides.json is always trusted."""
-    prev = dict(record.get("data") or {})
-    prov = dict(record.get("prov") or {})
+    extracts = [e for e in (extracts or []) if e is not None and getattr(e, "item", None) is not None]
+    record = record if isinstance(record, dict) else {}
+    override = override if isinstance(override, dict) else {}
+    launcher = launcher if isinstance(launcher, dict) else {}
+    prev = dict(record.get("data")) if isinstance(record.get("data"), dict) else {}
+    prov = dict(record.get("prov")) if isinstance(record.get("prov"), dict) else {}
     data = dict(prev)
     data["version"] = version
     # A card that is already locked (by the flag, or by the legacy markers program_seen / media_from)
@@ -1793,30 +1806,36 @@ def repost_problem(repost: str, games: list, records_of) -> str | None:
 async def run(ctx) -> None:
     s = ctx.settings
     for game in ctx.games:
-        live_info = ctx.versions.get(game.key, {})
-        records = ctx.state.schedule_records(game.key)
-        by_version = version_extracts(ctx, game, log_missing=True)
-        overrides = ctx.overrides.get(game.key, {})
-        for ver in overrides:
-            if ver in records and ver not in by_version:
-                by_version[ver] = []                       # override-only edits
-        if s.repost:
-            rg, _, rv = s.repost.partition(":")
-            if rg == game.key and rv in records and rv not in by_version:
-                by_version[rv] = []
+        try:
+            live_info = ctx.versions.get(game.key, {})
+            records = ctx.state.schedule_records(game.key)
+            by_version = version_extracts(ctx, game, log_missing=True)
+            overrides = (ctx.overrides or {}).get(game.key) or {}
+            if not isinstance(overrides, dict):
+                overrides = {}
+            for ver in overrides:
+                if ver in records and ver not in by_version:
+                    by_version[ver] = []                       # override-only edits
+            if s.repost:
+                rg, _, rv = s.repost.partition(":")
+                if rg == game.key and rv in records and rv not in by_version:
+                    by_version[rv] = []
 
-        await gather_banner_search(ctx, game, records, by_version)
-        await gather_calendar(ctx, game, records, by_version)
-        bootstrapped = ctx.state.is_bootstrapped("schedule", game.key)
-        est = (ctx.estimates.get(game.key) or {}) if s.countdown_estimates else {}
-        media = (ctx.media.get(game.key) or {}) if s.program_media else {}
-        feed_list = (ctx.banners.get(game.key) or []) if s.banner_feed else []
-        for ver in sorted(by_version, key=version_key):
-            version_est = est if (est.get("version") in (None, ver)) else {}
-            await _handle_version(ctx, game, ver, by_version[ver], records, overrides.get(ver, {}),
-                                  live_info, bootstrapped, version_est, media.get(ver), feed_list)
-        if not bootstrapped and ctx.reachable.get(game.key, True):
-            ctx.state.mark_bootstrapped("schedule", game.key)   # only after a source really answered
+            await gather_banner_search(ctx, game, records, by_version)
+            await gather_calendar(ctx, game, records, by_version)
+            bootstrapped = ctx.state.is_bootstrapped("schedule", game.key)
+            est = (ctx.estimates.get(game.key) or {}) if s.countdown_estimates else {}
+            media = (ctx.media.get(game.key) or {}) if s.program_media else {}
+            feed_list = (ctx.banners.get(game.key) or []) if s.banner_feed else []
+            for ver in sorted(by_version, key=version_key):
+                version_est = est if (est.get("version") in (None, ver)) else {}
+                await _handle_version(ctx, game, ver, by_version[ver], records, overrides.get(ver, {}),
+                                      live_info, bootstrapped, version_est, media.get(ver), feed_list)
+            if not bootstrapped and ctx.reachable.get(game.key, True):
+                ctx.state.mark_bootstrapped("schedule", game.key)   # only after a source really answered
+        except Exception as exc:  # noqa: BLE001 — isolate per-game schedule execution
+            log.exception("schedule run failed for %s", game.key)
+            ctx.errors.append(f"{game.short} schedule failed: {exc}")
     problem = repost_problem(s.repost, ctx.games, ctx.state.schedule_records)   # after this run's records
     if problem:
         ctx.report.append(problem)

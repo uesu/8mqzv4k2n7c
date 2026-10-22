@@ -290,6 +290,16 @@ async def failover_check(ctx: Ctx) -> None:
                           f"— this standby is now posting")
 
 
+async def _safe_step(ctx: Ctx, label: str, coro) -> None:
+    """Run one top-level feature pass so an unhandled exception logs its traceback and
+    records a summary error without skipping sibling features, state persistence, or summary."""
+    try:
+        await coro
+    except Exception as exc:  # noqa: BLE001 — isolate top-level feature stage
+        log.exception("feature step '%s' raised an unexpected exception", label)
+        ctx.errors.append(f"{label} failed: {_summary_text(exc)}")
+
+
 async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
                    overrides: dict | None = None, session: aiohttp.ClientSession | None = None) -> Ctx:
     games_all = games_all if games_all is not None else load_games()
@@ -305,48 +315,62 @@ async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
                   webhook=WebhookClient(session, dry_run=settings.dry_run), x=XClient(fetcher, settings),
                   code_sources=CodeSources(fetcher, reddit=reddit), overrides=overrides,
                   now=int(time.time()), reddit=reddit)
-        await failover_check(ctx)
-        features = settings.features if ctx.active else set()
-        if features & {"schedule", "codes"} and ctx.games:
-            await gather_versions(ctx)
-            await gather_items(ctx)
-            await asyncio.gather(gather_program_media(ctx), gather_estimates(ctx), gather_banners(ctx))
-            for g in ctx.games:
-                if not ctx.reachable.get(g.key, True):
-                    ctx.warnings.append(f"{g.short}: no announcement source answered this run — the next run "
-                                        f"re-reads the last {settings.lookback_hours}h, so nothing is missed")
-            if "schedule" in features:
-                await schedule.run(ctx)
-            if "codes" in features:
-                await codeposter.run(ctx)
-        if "maintenance" in features:
-            await maintenance.run(ctx)
-        elif ctx.active and not settings.maintenance_enabled:
-            for record in (state.data.get("maintenance") or {}).values():
-                record["paused"] = True
-        if "news" in features:
-            await run_news(ctx)
-        elif ctx.active and not settings.news_enabled:
-            # One control-marker write on disabling, no discovery or per-tick news churn.
-            for record in (state.data.get("news") or {}).values():
-                record["paused"] = True
-        if not features:
-            ctx.report.append("⏸️ no active features this run (ENABLED_FEATURES=none or passive standby)")
         ephemeral = settings.dry_run or settings.test_mode
-        if ctx.active and features and not ctx.errors and not ephemeral:
-            state.heartbeat(settings.instance_name, settings.heartbeat_min, ctx.now)
-        state.prune(ctx.now)
-        if not ephemeral:
-            if state.save():
-                log.info("state saved -> %s", settings.state_path)
-        elif settings.test_mode:
-            ctx.report.insert(0, "🧪 TEST MODE — every card below is a NEW message marked TEST, built "
-                                 "from this run's live data. No live card was edited, no copy was "
-                                 "touched and the state file was NOT saved. Delete the test cards "
-                                 "when you are done")
-        log.info("sources: %s", _summary_text(fetcher.summary()))
-        ctx.elapsed = time.monotonic() - started
-        write_summary(ctx)
+        features: set[str] = set()
+        try:
+            await failover_check(ctx)
+            features = settings.features if ctx.active else set()
+            if features & {"schedule", "codes"} and ctx.games:
+                await _safe_step(ctx, "gather_versions", gather_versions(ctx))
+                await _safe_step(ctx, "gather_items", gather_items(ctx))
+                await asyncio.gather(
+                    _safe_step(ctx, "gather_program_media", gather_program_media(ctx)),
+                    _safe_step(ctx, "gather_estimates", gather_estimates(ctx)),
+                    _safe_step(ctx, "gather_banners", gather_banners(ctx)),
+                )
+                for g in ctx.games:
+                    if not ctx.reachable.get(g.key, True):
+                        ctx.warnings.append(f"{g.short}: no announcement source answered this run — the next run "
+                                            f"re-reads the last {settings.lookback_hours}h, so nothing is missed")
+                if "schedule" in features:
+                    await _safe_step(ctx, "schedule", schedule.run(ctx))
+                if "codes" in features:
+                    await _safe_step(ctx, "codes", codeposter.run(ctx))
+            if "maintenance" in features:
+                await _safe_step(ctx, "maintenance", maintenance.run(ctx))
+            elif ctx.active and not settings.maintenance_enabled:
+                maint_map = state.data.get("maintenance")
+                for record in (maint_map.values() if isinstance(maint_map, dict) else ()):
+                    if isinstance(record, dict):
+                        record["paused"] = True
+            if "news" in features:
+                await _safe_step(ctx, "news", run_news(ctx))
+            elif ctx.active and not settings.news_enabled:
+                # One control-marker write on disabling, no discovery or per-tick news churn.
+                news_map = state.data.get("news")
+                for record in (news_map.values() if isinstance(news_map, dict) else ()):
+                    if isinstance(record, dict):
+                        record["paused"] = True
+            if not features:
+                ctx.report.append("⏸️ no active features this run (ENABLED_FEATURES=none or passive standby)")
+        except Exception as exc:  # noqa: BLE001 — guarantee persistence & step summary on unexpected abort
+            log.exception("unexpected failure during run_once orchestration")
+            ctx.errors.append(f"orchestration failed: {_summary_text(exc)}")
+        finally:
+            if ctx.active and features and not ctx.errors and not ephemeral:
+                state.heartbeat(settings.instance_name, settings.heartbeat_min, ctx.now)
+            state.prune(ctx.now)
+            if not ephemeral:
+                if state.save():
+                    log.info("state saved -> %s", settings.state_path)
+            elif settings.test_mode:
+                ctx.report.insert(0, "🧪 TEST MODE — every card below is a NEW message marked TEST, built "
+                                     "from this run's live data. No live card was edited, no copy was "
+                                     "touched and the state file was NOT saved. Delete the test cards "
+                                     "when you are done")
+            log.info("sources: %s", _summary_text(fetcher.summary()))
+            ctx.elapsed = time.monotonic() - started
+            write_summary(ctx)
         return ctx
     finally:
         if own_session:
@@ -452,6 +476,8 @@ async def run_news(ctx: Ctx) -> None:
         if "floor" not in record or record.get("paused"):
             record.update(floor=ctx.now, route=fp, paused=False)
             record.setdefault("records", {})
+            if not ephemeral:
+                ctx.state.save()
             ctx.report.append(f"🌱 {game.short} news: silent baseline; historical articles not posted")
             continue
         record.setdefault("route", fp)
@@ -571,7 +597,7 @@ async def run_news(ctx: Ctx) -> None:
                 delivered += 1
                 ctx.report.append(f"📰 {game.short} news: delivered {item.id} ({len(payloads)} message(s), "
                                   f"{sum(len(p['components']) for p in payloads)} container(s))")
-            except (TypeError, ValueError, KeyError, AttributeError) as exc:
+            except Exception as exc:  # noqa: BLE001 — hold single article without aborting remaining news
                 failures += 1
                 ctx.warnings.append(f"{game.short} news {row['id']}: {type(exc).__name__}: {exc}")
         ctx.report.append(f"📰 {game.short} news: discovered={len(rows)}, eligible={len(eligible)}, "

@@ -36,7 +36,11 @@ def parse_hub(data: dict[str, Any], now: int) -> dict[str, list[dict]]:
     if not isinstance(data, dict):
         return {}
     updated_at = data.get("updatedAt")
-    if updated_at and (now - int(updated_at) > MAX_AGE_SECONDS):
+    try:
+        updated_ts = int(updated_at) if updated_at else 0
+    except (TypeError, ValueError):
+        return {}
+    if updated_ts and (now - updated_ts > MAX_AGE_SECONDS):
         log.warning("banner feed is stale (updatedAt: %s, now: %s) — ignored", updated_at, now)
         return {}
     rev_map = {v: k for k, v in GAME_MAP.items()}
@@ -49,10 +53,15 @@ def parse_hub(data: dict[str, Any], now: int) -> dict[str, list[dict]]:
             continue
         gk = rev_map[gid]
         rarity = b.get("rarity")
-        if rarity is not None and rarity < 5:
+        if rarity is not None and (not isinstance(rarity, int | float) or rarity < 5):
             continue
         starts_at = b.get("startsAt")
         if not starts_at:
+            continue
+        try:
+            starts_ts = int(starts_at)
+            ends_ts = int(b.get("endsAt") or 0)
+        except (TypeError, ValueError):
             continue
         featured = [n for n in (b.get("featured") or []) if n and isinstance(n, str)]
         if not featured:
@@ -61,8 +70,8 @@ def parse_hub(data: dict[str, Any], now: int) -> dict[str, list[dict]]:
             "title": str(b.get("title") or ""),
             "featured": featured,
             "rarity": rarity,
-            "startsAt": int(starts_at),
-            "endsAt": int(b.get("endsAt") or 0),
+            "startsAt": starts_ts,
+            "endsAt": ends_ts,
             "url": str(b.get("url") or ""),
             "image": b.get("image"),
         })
@@ -75,11 +84,13 @@ def banner_feed_for(banners: list[dict], release_ts: int | None) -> dict[str, li
     Phase 1: banners starting at release_ts (± 3 days).
     Phase 2: banners starting 1 to 5 weeks after release_ts (+7d to +35d).
     """
-    if not banners or not release_ts:
+    if not isinstance(banners, list) or not banners or not release_ts:
         return {}
     p1: list[str] = []
     p2: list[str] = []
     for b in banners:
+        if not isinstance(b, dict):
+            continue
         starts = b.get("startsAt", 0)
         featured = b.get("featured", [])
         if abs(starts - release_ts) <= 3 * 86400:

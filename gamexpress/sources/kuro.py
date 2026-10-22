@@ -115,12 +115,14 @@ def parse_launcher_index(data: dict) -> dict:
     """{'live': '3.6', 'pre': '3.7' | None} (+ optional structured launch media) from index.json."""
     if not isinstance(data, dict):
         return {}
-    default = data.get("default") or {}
-    live = short_version(default.get("version") or (default.get("config") or {}).get("version"))
-    pre_obj = data.get("predownload") or {}
+    default = data.get("default") if isinstance(data.get("default"), dict) else {}
+    def_cfg = default.get("config") if isinstance(default.get("config"), dict) else {}
+    live = short_version(default.get("version") or def_cfg.get("version"))
+    pre_obj = data.get("predownload") if isinstance(data.get("predownload"), dict) else {}
     pre = None
-    if isinstance(pre_obj, dict) and pre_obj:
-        pre = short_version(pre_obj.get("version") or (pre_obj.get("config") or {}).get("version"))
+    if pre_obj:
+        pre_cfg = pre_obj.get("config") if isinstance(pre_obj.get("config"), dict) else {}
+        pre = short_version(pre_obj.get("version") or pre_cfg.get("version"))
     out: dict = {"live": live, "pre": pre}
     pre_video, pre_vmeta, pre_art, pre_ameta = _launcher_media_fields(pre_obj if isinstance(pre_obj, dict) else None)
     live_video, live_vmeta, live_art, live_ameta = _launcher_media_fields(default if isinstance(default, dict) else None)

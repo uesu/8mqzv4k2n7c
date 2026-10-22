@@ -38,8 +38,8 @@ log = logging.getLogger("gamexpress.codes")
 MAX_CARDS_PER_RUN = 5     # per game: 50 codes in one run is a broken source, not a real drop
 
 REWARD_PREFERENCE = ("seria", "ennead", "ogc", "hoyolab", "codehub", "wuthering.gg", "fandom", "humbao",
-                     "x", "kuro")
-OFFICIAL = {"hoyolab", "x", "kuro"}
+                     "x", "kuro", "reddit_official", "reddit")
+OFFICIAL = {"hoyolab", "x", "kuro", "reddit_official"}
 PENDING_DAYS = 14
 LAST_SEEN_GRANULARITY = 12 * 3600
 
@@ -49,7 +49,12 @@ def official_hits_from_items(items) -> list[CodeHit]:
     for it in items:
         if not it.official:
             continue
-        src = it.source if it.source in OFFICIAL else "hoyolab"
+        if it.source == "reddit":
+            src = "reddit_official"
+        elif it.source in OFFICIAL:
+            src = it.source
+        else:
+            src = "hoyolab"
         for code in extract_codes_from_text(it.full):
             hits.append(CodeHit(code, src, None, verified=True, url=it.url))
     return hits

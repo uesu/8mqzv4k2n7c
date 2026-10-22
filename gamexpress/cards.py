@@ -465,6 +465,8 @@ SOURCE_LABELS = {
     "hoyolab": "HoYoLAB (official)",
     "x": "Official X",
     "kuro": "Kuro official news",
+    "reddit_official": "Official Reddit",
+    "reddit": "Reddit",
     "seria": "hoyo-codes.seria.moe (verified)",
     "humbao": "hoyoverse-codes (verified)",
     "ogc": "Open Gacha Codes",

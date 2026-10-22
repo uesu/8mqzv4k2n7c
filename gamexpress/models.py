@@ -28,7 +28,12 @@ class Item:
 
     @property
     def source_label(self) -> str:
-        return {"hoyolab": "HoYoLAB", "x": "X Post", "kuro": "Official News"}.get(self.source, "Source")
+        return {
+            "hoyolab": "HoYoLAB",
+            "x": "X Post",
+            "kuro": "Official News",
+            "reddit": "Reddit",
+        }.get(self.source, "Source")
 
 
 @dataclass

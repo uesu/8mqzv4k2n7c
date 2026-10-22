@@ -26,6 +26,7 @@ DEFAULT_STATE_PATH = ROOT / "state" / "state.json"
 FEATURES = ("schedule", "codes", "news", "maintenance")
 DEDICATED_FEATURES = ("news", "maintenance")
 DEFAULT_OPTIONAL_GAMES = ("genshin", "starrail", "zzz", "wuwa", "hna")
+ALL_MAINTENANCE_GAMES = ("genshin", "starrail", "zzz", "wuwa", "hna", "ananta")
 DEFAULT_COLOR = 14922399  # the gold accent used by every reference card
 MAINTENANCE_NOTE = ("※ In the event that the maintenance is extended, the dev team will issue a "
                     "follow-up notice and adjust the compensation accordingly.")
@@ -617,6 +618,7 @@ def _game_set_env(
     name: str,
     aliases: Mapping[str, list[str]],
     default: tuple[str, ...] = DEFAULT_OPTIONAL_GAMES,
+    all_games: tuple[str, ...] = DEFAULT_OPTIONAL_GAMES,
 ) -> set[str]:
     raw = _env(env, name)
     if not raw:
@@ -630,7 +632,7 @@ def _game_set_env(
     out: set[str] = set()
     for tok in tokens:
         if tok == "all":
-            out.update(DEFAULT_OPTIONAL_GAMES)
+            out.update(all_games)
         else:
             out.add(reverse.get(tok, tok))
     return out
@@ -721,7 +723,9 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         news_expand_max_chars=max(1, _int(env, "NEWS_EXPAND_MAX_CHARS", 120000)),
         news_expand_max_media=max(1, _int(env, "NEWS_EXPAND_MAX_MEDIA", 120)),
         maintenance_enabled=maintenance_enabled,
-        maintenance_games=_game_set_env(env, "MAINTENANCE_GAMES", aliases, default=()),
+        maintenance_games=_game_set_env(
+            env, "MAINTENANCE_GAMES", aliases, default=(), all_games=ALL_MAINTENANCE_GAMES
+        ),
     )
 
 
