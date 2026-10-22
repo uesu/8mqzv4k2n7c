@@ -98,8 +98,12 @@ def action_row(buttons: list[dict]) -> dict:
     return {"type": 1, "components": [b for b in buttons if b][:5]}
 
 
-def container(children: list[dict], color: int) -> dict:
-    return {"type": 17, "accent_color": int(color) & 0xFFFFFF, "components": children}
+def container(children: list[dict], color: int | None = None) -> dict:
+    return {
+        "type": 17,
+        "accent_color": None if color is None else (int(color) & 0xFFFFFF),
+        "components": children,
+    }
 
 
 def _md_link_text(s: str) -> str:
@@ -112,9 +116,9 @@ SAFE_URL_MAX = 1024
 def safe_url(url: str | None) -> str | None:
     """A URL that is safe to put on a card, or None if it cannot be trusted.
 
-    Most URLs on a card are scraped from somebody else's server - 16 community nitter mirrors,
-    wikis, code APIs - so any of them can turn hostile the day a mirror changes hands. Two
-    things go wrong if the string is used as-is:
+    Most URLs on a card are scraped from somebody else's server - community nitter and Redlib
+    mirrors, rich-embed proxies, wikis, code APIs - so any of them can turn hostile the day a
+    mirror changes hands. Two things go wrong if the string is used as-is:
 
       * a non-http scheme ("javascript:", "data:") in a link button makes Discord reject the
         whole message, so one poisoned field silently kills a real announcement;
@@ -185,7 +189,7 @@ def validate_payload(payload: dict) -> list[str]:
     def walk(cs: list[dict], parent: int | None) -> None:
         for c in cs:
             ty = c.get("type")
-            if ty == 2 and parent != 1:
+            if ty == 2 and parent not in (1, 9):
                 problems.append("button outside an action row")
             if ty == 1 and len(c.get("components", [])) > 5:
                 problems.append("more than 5 buttons in a row")
@@ -195,6 +199,8 @@ def validate_payload(payload: dict) -> list[str]:
                 problems.append("empty text display")
             if ty == 12 and not 1 <= len(c.get("items", [])) <= 10:
                 problems.append("media gallery needs 1-10 items")
+            if isinstance(c.get("accessory"), dict):
+                walk([c["accessory"]], ty)
             walk(c.get("components", []), ty)
     walk(comps, None)
     return problems
@@ -490,13 +496,164 @@ def mark_test(payload: dict, note: str = TEST_NOTE) -> dict:
 # Full-content news: each part independently satisfies existing Components V2 limits.
 NEWS_DONATE = "https://ko-fi.com/jieunlatte"
 NEWS_COMMUNITY = "https://discord.gg/HyrVP9wRXu"
+NEWS_EXPAND_MAX_PAGES = 12
+NEWS_EXPAND_MAX_CHARS = 120000
+NEWS_EXPAND_MAX_MEDIA = 120
+
+MAINT_HEADING_EMOJIS = "<a:starwardlove:1483082509439733893><a:starwardspark3:1483083423290490891>"
+MAINT_GEAR_EMOJI = "<a:gearfinal:1483076702551805983>"
+CITLALI_FOOTER_TEXT = "<a:starwardsleepywink:1483078175436050432> **Citlali News**\n-# Delivering news and official updates"
+CITLALI_FOOTER_EMOJI = {"id": "1483074533073223843", "name": "starwardyayy", "animated": True}
 
 
-def news_payloads(game: Game, item) -> list[dict]:
-    """Full article in one message, or at most two pages up to 7,000 text chars.
+def maintenance_payload(
+    game: Game,
+    version: str,
+    kind: str,
+    *,
+    start_ts: int,
+    end_ts: int | None = None,
+    ping: Ping | None = None,
+    media_url: str | None = None,
+    estimated: bool = False,
+    estimate_source: str = "",
+    observed: bool = False,
+    silent: bool = False,
+) -> dict:
+    """Build a Pre-Load Started or Maintenance Started Components V2 payload.
 
-    Character/component limits apply per message across ALL its containers.
-    Longer/unpageable content uses one excerpt; paged buttons occur only at the end.
+    Follows the approved Components V2 template without any third-party social button:
+      * Flags 32768 (`IS_COMPONENTS_V2`), type 17 container (`accent_color: None`)
+      * Type 10 header with `[SHORT - VERSION]` + approved emojis + configured ping
+      * Type 14 divider (`spacing: 1`)
+      * Type 10 timestamp line (`:f` + `:R` for preload; `:f` + known `:t` for maintenance)
+      * Optional type 12 media gallery (omitted cleanly when no valid version-matched media exists)
+      * Type 9 Citlali News section footer with `starwardyayy` link button accessory
+    """
+    if kind not in ("preload", "maintenance"):
+        raise ValueError(f"unsupported maintenance announcement kind: {kind!r}")
+    ver = strip_invisible(version).strip()
+    if not ver:
+        raise ValueError("maintenance announcement requires a non-empty version")
+    ping_obj = ping or Ping()
+    label = "Pre-Load Started" if kind == "preload" else "Maintenance Started"
+    headline = f"## [{game.short} - {ver}] {label} {MAINT_HEADING_EMOJIS}"
+    if ping_obj:
+        headline += f"\n{ping_obj.text}"
+    if kind == "preload":
+        timing = (
+            f"※ **Date Time:** <t:{int(start_ts)}:f> "
+            f"※ **Hour Time:** <t:{int(start_ts)}:R> {MAINT_GEAR_EMOJI}"
+        )
+    elif end_ts is not None and int(end_ts) > int(start_ts):
+        timing = (
+            f"※ **Date Time:** <t:{int(start_ts)}:f> "
+            f"※ **End Time:** <t:{int(end_ts)}:t> {MAINT_GEAR_EMOJI}"
+        )
+    else:
+        timing = f"※ **Date Time:** <t:{int(start_ts)}:f> {MAINT_GEAR_EMOJI}"
+    if observed:
+        timing += "\n-# Observed available in launcher — official start time not published"
+    elif estimated:
+        source_note = estimate_source.strip() or "version cadence"
+        timing += f"\n-# Estimated ({source_note}) — subject to official notice"
+
+    children: list[dict] = [
+        text(headline),
+        sep(),
+        text(timing),
+    ]
+    if media_url:
+        safe_media = safe_url(media_url)
+        if safe_media:
+            children.append(gallery([safe_media]))
+    footer_btn = link_button("Citlali News", NEWS_COMMUNITY, CITLALI_FOOTER_EMOJI)
+    if footer_btn:
+        children.append(section([CITLALI_FOOTER_TEXT], footer_btn))
+    return {
+        "flags": IS_COMPONENTS_V2,
+        "components": [container(children, None)],
+        "allowed_mentions": {"parse": []} if silent else ping_obj.allowed_mentions,
+    }
+
+
+_UNESCAPED_OPEN_BRACKET_RE = re.compile(r"(?<!\\)\[")
+_UNESCAPED_CLOSE_BRACKET_RE = re.compile(r"(?<!\\)\]")
+
+
+def _brackets_balanced(piece: str) -> bool:
+    if "\\" not in piece:
+        return piece.count("[") == piece.count("]")
+    return len(_UNESCAPED_OPEN_BRACKET_RE.findall(piece)) == len(
+        _UNESCAPED_CLOSE_BRACKET_RE.findall(piece)
+    )
+
+
+def _balanced_markdown_piece(piece: str) -> bool:
+    return (
+        piece.count("**") % 2 == 0
+        and piece.count("`") % 2 == 0
+        and _brackets_balanced(piece)
+    )
+
+
+def _split_expanded_text(content: str, max_chars: int) -> list[str] | None:
+    """Split a long normalized text block at safe paragraph/line/word boundaries.
+
+    Guarantees `"".join(result) == content` whenever splitting succeeds. Returns `None`
+    if an indivisible token exceeds `max_chars` or leaves unbalanced inline formatting.
+    """
+    if len(content) <= max_chars:
+        return [content] if _balanced_markdown_piece(content) else None
+    out: list[str] = []
+    paragraphs = [p for p in re.findall(r".+?(?:\n\n|$)", content, re.S) if p]
+    for para in paragraphs:
+        if len(para) <= max_chars and _balanced_markdown_piece(para):
+            out.append(para)
+            continue
+        lines = [ln for ln in re.findall(r".+?(?:\n|$)", para, re.S) if ln]
+        for line in lines:
+            if len(line) <= max_chars and _balanced_markdown_piece(line):
+                out.append(line)
+                continue
+            tokens = [tok for tok in re.findall(r"\S+\s*", line) if tok]
+            buf = ""
+            for tok in tokens:
+                if len(tok) > max_chars:
+                    return None
+                cand = buf + tok
+                if len(cand) <= max_chars:
+                    buf = cand
+                    continue
+                if not buf or not _balanced_markdown_piece(buf):
+                    return None
+                out.append(buf)
+                buf = tok
+            if buf:
+                if not _balanced_markdown_piece(buf) or len(buf) > max_chars:
+                    return None
+                out.append(buf)
+    return out if out and "".join(out) == content else None
+
+
+def news_payloads(
+    game: Game,
+    item,
+    *,
+    timestamps: bool = False,
+    expand_full: bool = False,
+    max_pages: int | None = None,
+    max_chars: int | None = None,
+    max_media: int | None = None,
+) -> list[dict]:
+    """Full article in one message, or paged according to the active policy switch.
+
+    When `expand_full` is False (default): attempts 1 message, then at most 2 pages up to
+    7,000 normalized text chars, otherwise 1 halved-word excerpt with 1 lead image.
+    When `expand_full` is True: lifts the 2-page / 7,000-char policy ceiling up to the
+    explicit `NEWS_EXPAND_MAX_PAGES` / `NEWS_EXPAND_MAX_CHARS` / `NEWS_EXPAND_MAX_MEDIA`
+    operational safety bounds, preserving inline text/media order and falling back honestly
+    if any bound is exceeded.
     """
     title = strip_invisible(item.title).replace("[", "(").replace("]", ")")
     if len(title) > 500 or not safe_url(item.url):
@@ -541,6 +698,12 @@ def news_payloads(game: Game, item) -> list[dict]:
         value = polish(pending)
         pending = ""
         if value:
+            if timestamps:
+                from .news_timestamps import convert_news_timestamps
+
+                value = convert_news_timestamps(
+                    value, published_ts=int(item.published_ts or 0), enabled=True
+                )
             article_text.append(value)
             units.append(text(value))
 
@@ -597,10 +760,86 @@ def news_payloads(game: Game, item) -> list[dict]:
     if not validate_payload(payload):
         return [payload]
 
-    # Moderate overflow may retain the full source in at most two messages.
+    def page_prefix(number):
+        return (([header] + ([gallery([full_cover])] if full_cover else [])) if number == 1 else []) + [
+            text(f"-# Page {number}"), sep()]
+
+    def page_payload(kids, final=False):
+        return {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []},
+                "components": [container(kids + ([sep(), buttons] if final else []), game.color)]}
+
+    excerpt_notice = ("**Excerpt — this article exceeds Discord's single-message limits.** "
+                      "Read Post opens the complete article and remaining media.")
+
+    if expand_full:
+        eff_max_pages = max(1, int(NEWS_EXPAND_MAX_PAGES if max_pages is None else max_pages))
+        eff_max_chars = max(1, int(NEWS_EXPAND_MAX_CHARS if max_chars is None else max_chars))
+        eff_max_media = max(1, int(NEWS_EXPAND_MAX_MEDIA if max_media is None else max_media))
+        distinct_media = set(body_media) | ({full_cover} if full_cover else set())
+        if text_length([header] + units) > eff_max_chars or len(distinct_media) > eff_max_media:
+            excerpt_notice = (
+                "**Excerpt — this article exceeds the expanded delivery safety limit.** "
+                "Read Post opens the complete article and remaining media."
+            )
+        else:
+            first_page_budget = MAX_TEXT_TOTAL - text_length(page_prefix(1)) - 16
+            cont_page_budget = MAX_TEXT_TOTAL - 32
+            page_units = []
+            splittable = True
+            for unit in units:
+                if unit["type"] != 10:
+                    page_units.append(unit)
+                    continue
+                budget = first_page_budget if not page_units else cont_page_budget
+                pieces = _split_expanded_text(unit["content"], max(1, budget))
+                if pieces is None:
+                    splittable = False
+                    break
+                page_units.extend(text(piece) for piece in pieces)
+            if not splittable:
+                excerpt_notice = (
+                    "**Excerpt — this article contains content that exceeds single-message limits.** "
+                    "Read Post opens the complete article and remaining media."
+                )
+            else:
+                pages, current = [], page_prefix(1)
+                have_body = False
+                for unit in page_units:
+                    trial = list(current)
+                    if unit["type"] == 10 and have_body and trial[-1]["type"] == 10:
+                        trial[-1] = text(trial[-1]["content"] + unit["content"])
+                    else:
+                        trial.append(unit)
+                    if not validate_payload(page_payload(trial, final=True)):
+                        current, have_body = trial, True
+                        continue
+                    if not have_body or len(pages) + 1 >= eff_max_pages:
+                        excerpt_notice = (
+                            "**Excerpt — this article exceeds the expanded delivery safety limit.** "
+                            "Read Post opens the complete article and remaining media."
+                        )
+                        break
+                    pages.append(page_payload(current))
+                    next_num = len(pages) + 1
+                    current, have_body = page_prefix(next_num) + [unit], True
+                    if validate_payload(page_payload(current, final=True)):
+                        excerpt_notice = (
+                            "**Excerpt — this article contains content that exceeds single-message limits.** "
+                            "Read Post opens the complete article and remaining media."
+                        )
+                        break
+                else:
+                    if have_body:
+                        pages.append(page_payload(current, final=True))
+                        if (
+                            1 <= len(pages) <= eff_max_pages
+                            and all(not validate_payload(page) for page in pages)
+                        ):
+                            return pages
+    # Moderate overflow may retain the full source in at most two messages when default mode is active.
     # The 7,000 ceiling measures normalized text + title/byline ONCE; page labels
     # are additional overhead checked independently against each 4,000 cap.
-    if text_length([header] + units) <= 7000:
+    elif text_length([header] + units) <= 7000:
         page_units = []
         for unit in units:
             if unit["type"] != 10 or len(unit.get("content", "")) <= MAX_TEXT_TOTAL - text_length([header]) - 64:
@@ -609,18 +848,10 @@ def news_payloads(game: Game, item) -> list[dict]:
             # Split only between existing paragraphs, never inside links/bold.
             # Preserve the exact separators in content when flattened again.
             pieces = re.findall(r".+?(?:\n\n|$)", unit["content"], re.S)
-            if any(piece.count("**") % 2 or piece.count("[") != piece.count("]") for piece in pieces):
+            if any(piece.count("**") % 2 or not _brackets_balanced(piece) for piece in pieces):
                 page_units.append(unit)
             else:
                 page_units.extend(text(piece) for piece in pieces)
-
-        def page_prefix(number):
-            return (([header] + ([gallery([full_cover])] if full_cover else [])) if number == 1 else []) + [
-                text(f"-# Page {number}"), sep()]
-
-        def page_payload(kids, final=False):
-            return {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []},
-                    "components": [container(kids + ([sep(), buttons] if final else []), game.color)]}
 
         pages, current = [], page_prefix(1)
         have_body = False
@@ -651,8 +882,7 @@ def news_payloads(game: Game, item) -> list[dict]:
     # Oversized article: retain the opening text, ONE lead image, and source access.
     # This deliberately replaces the previous multi-message full-body policy.
     lead = cover or next((safe_url(b.get("url")) for b in item.article_blocks if b["kind"] == "image"), None)
-    notice = text("**Excerpt — this article exceeds Discord's single-message limits.** "
-                  "Read Post opens the complete article and remaining media.")
+    notice = text(excerpt_notice)
     kids = [header] + ([gallery([lead])] if lead else []) + [notice, sep()]
     body = "\n\n".join(article_text) or "Open the original article for its remaining media."
     remaining = MAX_TEXT_TOTAL - text_length(kids) - 4

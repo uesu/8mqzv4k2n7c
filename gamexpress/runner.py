@@ -12,16 +12,17 @@ from dataclasses import dataclass, field
 
 import aiohttp
 
-from . import build_id, codeposter, schedule
+from . import build_id, codeposter, maintenance, schedule
 from .config import Game, Settings, active_games, load_games, load_overrides
 from .discord import WebhookClient, webhook_fingerprint
 from .http import BOT_UA, Fetcher, Probe
 from .models import Item
 from .sources import bannerfeed, countdown, hoyolab, kuro, launcher, newspage
 from .sources.codes import CodeSources
+from .sources.reddit import RedditClient
 from .sources.twitter import XClient
 from .state import State
-from .textutil import find_version, version_key
+from .textutil import version_key
 
 log = logging.getLogger("gamexpress")
 
@@ -48,6 +49,7 @@ class Ctx:
     estimates: dict = field(default_factory=dict)   # game key -> countdown-site estimate
     media: dict = field(default_factory=dict)       # game key -> version -> program announcement
     banners: dict = field(default_factory=dict)     # game key -> list of 5★ rate-up banners
+    reddit: RedditClient | None = None
 
 
 async def gather_versions(ctx: Ctx) -> None:
@@ -73,8 +75,21 @@ async def _gather_game(ctx: Ctx, g: Game, since: int) -> None:
                                  kuro.fetch_items(probe, g, want, since),
                                  ctx.x.items(g, want, since))
     items: list[Item] = [it for part in parts for it in part]
+    x_reachable = getattr(ctx.x, "reachable", ())
+    x_ok = any(a.lower() in x_reachable for a in g.x_accounts)
+    has_primary_api = bool(g.hoyolab_gid or g.kuro_news)
+    primary_ok = (not has_primary_api) or probe.ok > 0
+    # True failover backup: when primary APIs + X both answered, skip `/user/<official>` requests
+    # (`0` extra schedule HTTP requests on healthy runs); fail over automatically in the same run
+    # whenever X or a primary official feed could not be reached.
+    if getattr(ctx, "reddit", None) is not None and ctx.settings.reddit_enabled and (not x_ok or not primary_ok):
+        items.extend(await ctx.reddit.items(g, want, since))
     ctx.items[g.key] = items
-    ctx.reachable[g.key] = probe.ok > 0 or any(a.lower() in ctx.x.reachable for a in g.x_accounts)
+    reddit_ok = getattr(ctx, "reddit", None) is not None and (
+        any(f"u/{a.lower()}" in ctx.reddit.reachable for a in g.reddit_official)
+        or any(f"r/{s.lower()}" in ctx.reddit.reachable for s in g.subreddits)
+    )
+    ctx.reachable[g.key] = probe.ok > 0 or x_ok or reddit_ok
     icons = ctx.state.data.setdefault("icons", {})
     fresh = next((ctx.x.avatars[a.lower()] for a in g.x_accounts if a.lower() in ctx.x.avatars), None)
     if fresh and icons.get(g.key) != fresh:
@@ -144,6 +159,19 @@ async def find_program(ctx, g: Game, ver: str) -> dict | None:
         hit = await newspage.fetch_program(ctx.fetcher, g, ver, now)
     if not hit and getattr(g, "program_feeds", None):
         hit = await newspage.fetch_program_feed(ctx.fetcher, g, ver, now)
+    if not hit and getattr(ctx, "reddit", None) is not None and ctx.settings.reddit_enabled:
+        r_item = await ctx.reddit.program_post(g, ver)
+        if r_item:
+            source_url = r_item.url
+            hit = {
+                "url": r_item.url,
+                "title": r_item.title,
+                "images": list(r_item.images or []),
+                "youtube": "",
+                "text": r_item.text,
+                "ts": r_item.published_ts or now,
+                "source": "reddit",
+            }
     if not hit:
         return None
     # the air time comes from the article's own text, through the same extractor that
@@ -236,7 +264,11 @@ async def failover_check(ctx: Ctx) -> None:
     peer = await ctx.fetcher.get_json(s.peer_state_url, source="peer-state",
                                       headers={"Cache-Control": "no-cache"}, retries=1)
     if isinstance(peer, dict):
-        n = ctx.state.merge_peer(peer, include_news="news" in s.features)
+        n = ctx.state.merge_peer(
+            peer,
+            include_news="news" in s.features,
+            include_maintenance="maintenance" in s.features,
+        )
         if n:
             ctx.report.append(f"🔄 imported {n} posted key(s) from the peer instance")
     if s.instance_role != "standby":
@@ -268,9 +300,11 @@ async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
     try:
         started = time.monotonic()
         fetcher = Fetcher(session, timeout=settings.http_timeout)
+        reddit = RedditClient(fetcher, settings)
         ctx = Ctx(settings=settings, games=active_games(games_all, settings), state=state, fetcher=fetcher,
                   webhook=WebhookClient(session, dry_run=settings.dry_run), x=XClient(fetcher, settings),
-                  code_sources=CodeSources(fetcher), overrides=overrides, now=int(time.time()))
+                  code_sources=CodeSources(fetcher, reddit=reddit), overrides=overrides,
+                  now=int(time.time()), reddit=reddit)
         await failover_check(ctx)
         features = settings.features if ctx.active else set()
         if features & {"schedule", "codes"} and ctx.games:
@@ -285,6 +319,11 @@ async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
                 await schedule.run(ctx)
             if "codes" in features:
                 await codeposter.run(ctx)
+        if "maintenance" in features:
+            await maintenance.run(ctx)
+        elif ctx.active and not settings.maintenance_enabled:
+            for record in (state.data.get("maintenance") or {}).values():
+                record["paused"] = True
         if "news" in features:
             await run_news(ctx)
         elif ctx.active and not settings.news_enabled:
@@ -321,7 +360,7 @@ def _summary_text(value):
             text = text.replace(secret, "[REDACTED]")
     text = re.sub(r"https?://[^\s/]*(?:discord(?:app)?\.com)/api/webhooks/[^\s<>]+",
                   "[REDACTED_WEBHOOK]", text, flags=re.I)
-    text = re.sub(r"([?&](?:token|feed|key|api_key|access_token)=)[^&\s<>]+",
+    text = re.sub(r"([?&](?:token|feed|user|key|api_key|access_token|auth_key)=)[^&\s<>]+",
                   r"\1[REDACTED]", text, flags=re.I)
     text = re.sub(r"(Bearer\s+)[^\s<>]+", r"\1[REDACTED]", text, flags=re.I)
     return html.escape(text.replace("\r", " ").replace("\n", " "), quote=False).replace("`", "'")[:1200]
@@ -419,11 +458,20 @@ async def run_news(ctx: Ctx) -> None:
         records = record.setdefault("records", {})
         eligible = [row for row in rows if record["floor"] < row["ts"] <= ctx.now
                     and row["ts"] >= ctx.now - 48 * 3600]
+        failures = attempted = delivered = 0
         # Finish known partial deliveries even if the discovery page/window has moved on.
         for key, rec in records.items():
-            if rec.get("status") == "partial" and not any(row["id"] == key for row in eligible):
-                eligible.append(rec["row"])
-        failures = attempted = delivered = 0
+            if not isinstance(rec, dict) or rec.get("status") != "partial":
+                continue
+            saved_row = rec.get("row")
+            if not isinstance(saved_row, dict) or "id" not in saved_row or "ts" not in saved_row:
+                failures += 1
+                ctx.warnings.append(
+                    f"{game.short} news {key}: incomplete partial delivery state; manual review required"
+                )
+                continue
+            if not any(row["id"] == key for row in eligible):
+                eligible.append(saved_row)
         eligible.sort(key=lambda value: (value["ts"], value["id"]))
         # Process every discovered eligible row in publication order. The stored
         # cursor remains diagnostic only, never a floor or delivery checkpoint.
@@ -440,43 +488,76 @@ async def run_news(ctx: Ctx) -> None:
                 item = await source.news_article(ctx.fetcher, game, row)
                 if item is None:
                     raise ValueError("full article unavailable/mismatched")
-                # Existing version/program notices remain schedule-only; do not duplicate them
-                # into news. Codes and schedule mirrors still use their original pipelines.
-                is_program = (any(re.search(pattern, item.title, re.I) for pattern in game.program_patterns)
-                              and not schedule.PROGRAM_EXCLUDE.search(item.title)
-                              and not schedule.NOT_PROGRAM_TITLE.search(item.title))
-                # A third-party payment/service maintenance notice is ordinary news,
-                # not game-version maintenance. Do not exclude every "Maintenance Notice".
-                is_version_notice = (schedule.MAINT_RE.search(item.title)
-                                     and (find_version(item.title) or schedule.PRE_WORDS.search(item.title)))
-                if is_version_notice or is_program:
-                    records[row["id"]] = {"status": "posted", "ts": row["ts"], "messages": [],
-                                          "excluded": "schedule"}
-                    ctx.report.append(f"ℹ️ {game.short} news {item.id}: schedule-only announcement")
-                    continue
-                payloads = news_payloads(game, item)
+                # Official news delivery is strictly independent of schedule, schedule mirrors,
+                # codes, and preload/maintenance started alerts (Monitor #456 / GI 47151000).
+                # Schedule classification or mirror routing never suppresses an eligible official
+                # article. Previously persisted legacy entries carrying {"status": "posted",
+                # "excluded": "schedule"} stay marked "posted" above so historical articles are
+                # never mass-reposted on rollout without separate operator authorization.
+                payloads = news_payloads(
+                    game,
+                    item,
+                    timestamps=ctx.settings.news_timestamps,
+                    expand_full=ctx.settings.news_expand_full,
+                    max_pages=ctx.settings.news_expand_max_pages,
+                    max_chars=ctx.settings.news_expand_max_chars,
+                    max_media=ctx.settings.news_expand_max_media,
+                )
                 from .media import group_news_media, news_media_available
 
-                if not await news_media_available(ctx.fetcher, payloads):
+                media_cap = ctx.settings.news_expand_max_media if ctx.settings.news_expand_full else 40
+                if not await news_media_available(ctx.fetcher, payloads, max_urls=media_cap):
                     # One fresh official full response can supply a corrected/renewed URL.
                     fresh = await source.news_article(ctx.fetcher, game, row)
                     if fresh is None or fresh.title != item.title:
                         raise ValueError("media unavailable; fresh official article mismatched")
                     item = fresh
-                    payloads = news_payloads(game, item)
-                    if not await news_media_available(ctx.fetcher, payloads):
+                    payloads = news_payloads(
+                        game,
+                        item,
+                        timestamps=ctx.settings.news_timestamps,
+                        expand_full=ctx.settings.news_expand_full,
+                        max_pages=ctx.settings.news_expand_max_pages,
+                        max_chars=ctx.settings.news_expand_max_chars,
+                        max_media=ctx.settings.news_expand_max_media,
+                    )
+                    if not await news_media_available(ctx.fetcher, payloads, max_urls=media_cap):
                         raise ValueError("media unavailable after official refresh; held for retry, not posted")
                 payloads = await group_news_media(
-                    ctx.fetcher, payloads, enabled=ctx.settings.news_group_long_strips)
+                    ctx.fetcher,
+                    payloads,
+                    enabled=ctx.settings.news_group_long_strips,
+                    max_urls=media_cap,
+                )
                 signature = stable_hash(payloads)
-                if rec and rec.get("signature") != signature:
-                    raise ValueError("partially delivered article changed; manual review required")
+                if rec is not None:
+                    if rec.get("ambiguous"):
+                        raise ValueError(
+                            "partially delivered article had an ambiguous webhook outcome; manual review required"
+                        )
+                    msgs = rec.get("messages")
+                    if (
+                        not isinstance(msgs, list)
+                        or not msgs
+                        or any(not isinstance(m, str) or not m for m in msgs)
+                        or not rec.get("signature")
+                        or len(msgs) > len(payloads)
+                    ):
+                        raise ValueError("incomplete partial delivery state; manual review required")
+                    if rec.get("signature") != signature:
+                        raise ValueError("partially delivered article changed; manual review required")
                 if rec is None:
                     rec = {"status": "partial", "ts": row["ts"], "row": row,
                            "signature": signature, "messages": []}
                 for payload in payloads[len(rec["messages"]):]:
-                    result = await ctx.webhook.send(hook, payload)
-                    if not result.ok or not result.message_id:
+                    result = await ctx.webhook.send(hook, payload, stop_on_ambiguous=True)
+                    if result.ambiguous or (result.ok and not result.message_id):
+                        rec["ambiguous"] = True
+                        records[row["id"]] = rec
+                        if not ephemeral:
+                            ctx.state.save()
+                        raise ValueError("ambiguous Discord webhook outcome; held to prevent duplicate repost")
+                    if not result.ok:
                         raise ValueError(f"Discord delivery failed ({result.status}); retry required")
                     rec["messages"].append(result.message_id)
                     records[row["id"]] = rec
@@ -493,5 +574,5 @@ async def run_news(ctx: Ctx) -> None:
             except (TypeError, ValueError, KeyError, AttributeError) as exc:
                 failures += 1
                 ctx.warnings.append(f"{game.short} news {row['id']}: {type(exc).__name__}: {exc}")
-        ctx.report.append(f"📰 {game.short} news: discovered={len(rows)}, attempted={attempted}, "
-                          f"delivered={delivered}, deferred/error={failures}")
+        ctx.report.append(f"📰 {game.short} news: discovered={len(rows)}, eligible={len(eligible)}, "
+                          f"attempted={attempted}, delivered={delivered}, deferred/error={failures}")

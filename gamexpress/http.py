@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 
 import aiohttp
@@ -25,11 +26,11 @@ MAX_PARALLEL = 12          # polite global cap on simultaneous requests (all gam
 MAX_BYTES = 8 * 1024 * 1024
 """Hard cap on one response body (8 MiB).
 
-Almost everything this monitor reads belongs to a third party nobody here controls: 16
-community nitter mirrors, wikis, code APIs. A hostile or simply broken host can answer with
-an endless stream, and `resp.text()` would buffer all of it until the runner runs out of
-memory or the job hits its timeout. Reading a bounded number of bytes turns that into one
-ordinary source failure instead. The largest real body seen in production is ~1.3 MB.
+Almost everything this monitor reads belongs to a third party nobody here controls: community
+nitter and Redlib mirrors, rich-embed proxies, wikis, and code APIs. A hostile or broken host
+can answer with an endless stream, and `resp.text()` would buffer all of it until the runner
+runs out of memory or the job hits its timeout. Reading a bounded number of bytes turns that
+into one ordinary source failure instead. The largest real body seen in production is ~1.3 MB.
 """
 CHUNK_BYTES = 64 * 1024
 """Read size per iteration while streaming a body (see get_text)."""
@@ -97,7 +98,7 @@ class Fetcher:
                     if r.status in (400, 401, 403, 404, 410):
                         break  # permanent for this run — don't hammer
             except (aiohttp.ClientError, asyncio.TimeoutError, UnicodeDecodeError) as e:
-                last = f"{type(e).__name__}: {e}"
+                last = re.sub(r"\?[^\s)'\"]+", "", f"{type(e).__name__}: {e}")
             if attempt < retries:
                 await asyncio.sleep(delay)
                 delay *= 2
@@ -137,7 +138,8 @@ class Fetcher:
         from .media import image_dimensions
 
         hosts = ("hoyolab.com", "hoyoverse.com", "hoyocdn.com", "mihoyo.com",
-                 "mihoyocdn.com", "kurogame.com", "kurogames.com", "ytimg.com")
+                 "mihoyocdn.com", "kurogame.com", "kurogames.com", "ytimg.com", "twimg.com",
+                 "redd.it", "redditmedia.com", "vxreddit.com", "embedez.com", "deltandy.me")
         try:
             for _ in range(4):
                 parts = urlsplit(url)

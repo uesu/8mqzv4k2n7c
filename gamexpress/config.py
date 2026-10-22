@@ -1,6 +1,6 @@
 """Settings (environment) + per-game config (config/games.json).
 
-Secrets (GitHub → Settings → Secrets):   webhook URLs, NITTER_RSS_TOKEN
+Secrets (GitHub → Settings → Secrets):   webhook URLs, NITTER_RSS_TOKEN, REDDIT_FEED_TOKEN
 Variables (GitHub → Settings → Variables): everything else — ping roles, emojis,
 feature switches, instance role. Nothing in a variable is sensitive, so they are
 visible/editable in one click (the "easy, intuitive" switches).
@@ -8,6 +8,7 @@ visible/editable in one click (the "easy, intuitive" switches).
 
 from __future__ import annotations
 
+import html
 import json
 import os
 import re
@@ -22,7 +23,9 @@ ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = ROOT / "config"
 DEFAULT_STATE_PATH = ROOT / "state" / "state.json"
 
-FEATURES = ("schedule", "codes", "news")
+FEATURES = ("schedule", "codes", "news", "maintenance")
+DEDICATED_FEATURES = ("news", "maintenance")
+DEFAULT_OPTIONAL_GAMES = ("genshin", "starrail", "zzz", "wuwa", "hna")
 DEFAULT_COLOR = 14922399  # the gold accent used by every reference card
 MAINTENANCE_NOTE = ("※ In the event that the maintenance is extended, the dev team will issue a "
                     "follow-up notice and adjust the compensation accordingly.")
@@ -165,6 +168,59 @@ DEFAULT_COMMUNITY_BUTTONS = [
 # fresh (blocked 10-13 three days after 25 ok on 10-10), so it sits behind everyone
 # who has never refused. xcopy records its verdict beside kareem, demoted not
 # deleted. Fleet 19 -> 21; nothing deleted, as always.
+#
+# 2026-10-22 ROTATION #7 (teapawt TLD expansion + mie.foundation): all six new
+# candidates answered 8/8 union handles live with 100% top-tweet id parity against
+# nitter.cf/xitter.cf and zero refusals -- all five newly listed 4cuck/teapawt sibling
+# domains on status.d420.net (commit 145ca9eb, 2026-10-22 07:55 UTC): teapawt.org
+# (426 ms avg, 100%), xitter.gq (450 ms, 100%), nitter.gq (455 ms, 100%), teapawt.net
+# (462 ms, 100%), and teapaw.org (488 ms, 100%), plus codeberg.org/shitter/shitter's
+# working-list host nitter.mie.foundation (rev a75ff9fa14). Every RSS link on
+# teapawt.org, teapaw.org, teapawt.net, xitter.gq and nitter.gq points back at
+# xitter.cf -- they front the same runner-proven teapawt origin behind independent
+# .org/.net/.gq TLDs alongside .cf, with explicit operator scraping permission on
+# status.d420.net and working /<account>/status/<id>/rss feeds. Keeping all four
+# runner-proven hosts in Batch 1 (nitter.cf, xitter.cf, meowing, miningtcup) avoids
+# extra parallel hits on the teapawt origin during normal runs while avoiding
+# un-runner-tested 403 risk; Batch 2 (slots 5-8) opens with teapawt.org -> teapaw.org
+# -> teapawt.net -> nitter.mie.foundation (TRIAL), and Batch 3 (slots 9-12) opens with
+# xitter.gq -> nitter.gq -> nitter.freedit.eu -> nitter.gravitywell.xyz, preserving
+# multi-backend diversity in every 4-host wave while spanning .cf/.org/.net/.gq.
+# Fleet 21 -> 27 (26 live); nothing deleted.
+DEFAULT_REDDIT = [
+    # Hot path & active healthy tier: 100% 200 OK public dual-path Redlib mirrors + token-gated
+    # private Redlib (`NITTER_RSS_TOKEN`). `https://www.reddit.com` leaps to slot 0 automatically
+    # on `/r/<sub>/new.rss?feed=...` when `REDDIT_FEED_TOKEN` is configured; without a token,
+    # unauthenticated `reddit.com` / `old.reddit.com` 403 on Azure Actions runner IPs and sit in
+    # the fallback tail below so normal runs incur zero 403 waste.
+    "https://redlib.catsarch.com",
+    "https://redlib.privacyredirect.com",
+    "https://snoo.habedieeh.re",          # Redlib v3.0.0 (#592), full listing + single-post + 1080p CMAF
+    "https://redlib.miningtcup.me",       # token-gated private Redlib (`NITTER_RSS_TOKEN`)
+    "https://redlib.tiekoetter.com",      # Redlib (#592), full listing + single-post
+    "https://redlib-1.privadency.com",    # direct Privadency node #1 (bypasses splash wall)
+    "https://redlib-2.privadency.com",    # direct Privadency node #2 (bypasses splash wall)
+    # Tail: partial-working (`/new`-only pre-#592), runner-gated, & legacy degraded mirrors
+    "https://red.artemislena.eu",         # `/new` 200 OK; pre-#592 on `/comments/`
+    "https://rl.awy.one",                 # `/new` 200 OK; pre-#592 on `/comments/`
+    "https://redlib.freedit.eu",          # `/new` 200 OK; pre-#592 on `/comments/`
+    "https://redlib.utilibre.org",        # `/new` 200 OK; pre-#592 on `/comments/`
+    "https://www.reddit.com",             # promoted to head when `REDDIT_FEED_TOKEN` is set; 403 unauth on Actions IPs
+    "https://old.reddit.com",             # official RSS fallback origin (403 unauth on Actions IPs)
+    "https://eddrit.com",                 # legacy RSS frontend (`/r/<sub>/.rss`, rate-limited)
+    "https://redlib.privadency.com",      # legacy splash redirect in front of `redlib-1` / `redlib-2`
+    "https://safereddit.com",             # legacy mirror (upstream 429 rate-limited)
+    "https://redlib.nadeko.net",          # legacy mirror (`__goaway_challenge` bot wall)
+]
+
+DEFAULT_REDDIT_PROXIES = [
+    "https://www.vxreddit.com",           # primary: oEmbed JSON + muxed video+audio `redditvideo.mp4`
+    "https://embedez.com",                # secondary: `providers/search` + `proxy.embedez.com` 1080p muxed fallback
+    "https://embeddit.deltandy.me",       # tertiary: v1 Mastodon JSON + v2 `discord:component-embed` (`Discordbot/2.0`)
+]
+
+DEFAULT_REDDIT_ARCHIVE = "https://arctic-shift.photon-reddit.com"
+
 DEFAULT_NITTER = [
     # ── hot path: probed on EVERY run (NITTER_BATCH = 4) — measured answerers only ──
     "https://nitter.cf",                # proven from the runners: 6/6 handles, every run
@@ -190,6 +246,37 @@ DEFAULT_NITTER = [
                                         # needs two).
     "https://nitter.miningtcup.me",     # token-gated — proven from the runners: 6/6 handles
     # ── fallbacks (batch 2+): zero requests while batch 1 gives two working feeds ──
+    "https://teapawt.org",              # rotation #7 (2026-10-22): NEW, head of batch 2.
+                                        # Official 4cuck/teapawt .org sibling domain of
+                                        # nitter.cf/xitter.cf (493 ms avg on d420, #1
+                                        # fastest, 100% uptime, explicit scraping
+                                        # permission, 8/8 union + /status/<id>/rss).
+                                        # Same runner-proven teapawt origin on an
+                                        # independent .org TLD: zero load while .cf
+                                        # answers, instant failover if .cf DNS degrades.
+    "https://teapaw.org",               # rotation #7 (2026-10-22): NEW. Official
+                                        # 4cuck/teapawt .org sibling (548 ms avg on d420,
+                                        # 100% uptime, 8/8 union + /status/<id>/rss).
+    "https://teapawt.net",              # rotation #7 (2026-10-22): NEW. Official
+                                        # 4cuck/teapawt .net sibling (578 ms avg on d420,
+                                        # 100% uptime, 8/8 union + /status/<id>/rss).
+    "https://nitter.mie.foundation",    # rotation #7 (2026-10-22): NEW, independent
+                                        # shitter/shitter working-list host (rev
+                                        # a75ff9fa14). 8/8 union handles verified with
+                                        # 100% top-id parity, zero refusals, native t.co
+                                        # expansion; rewrites YouTube links to
+                                        # piped.video (handled by youtube_id). TRIAL.
+    "https://xitter.gq",                # rotation #7 (2026-10-22): NEW, head of batch 3.
+                                        # Official 4cuck/teapawt .gq sibling on
+                                        # status.d420.net (450 ms avg, 100% uptime,
+                                        # explicit scraping permission, 8/8 union +
+                                        # /status/<id>/rss). Seated alongside independent
+                                        # shitter/nitter hosts in batch 3 so neither
+                                        # batch 2 nor batch 3 is single-origin.
+    "https://nitter.gq",                # rotation #7 (2026-10-22): NEW. Official
+                                        # 4cuck/teapawt .gq sibling on status.d420.net
+                                        # (455 ms avg, 100% uptime, explicit scraping
+                                        # permission, 8/8 union + /status/<id>/rss).
     "https://nitter.freedit.eu",        # rotation #6 (2026-10-15): NEW, head of the
                                         # fallbacks. The only host in existence with
                                         # full union coverage: 5/5 News-Express accounts
@@ -295,7 +382,7 @@ def parse_emoji(value: str | None) -> dict | None:
     """'a:name:123' | 'name:123' | '<a:name:123>' | '<:name:123>' | unicode | '' / 'none'."""
     if value is None:
         return None
-    v = value.strip()
+    v = html.unescape(value).strip()
     if not v or v.lower() in ("none", "off", "0", "false"):
         return None
     # The animated marker needs its own colon ('a:name:id'). A plain 'name:id' whose name
@@ -342,7 +429,7 @@ class Ping:
 
 def parse_ping(value: str) -> Ping | None:
     """None = inherit (unset); Ping() = explicit no-ping ('none'/'off')."""
-    v = (value or "").strip()
+    v = html.unescape(value or "").strip()
     if v == "":
         return None
     if v.lower() in ("none", "off", "no", "false", "0", "-"):
@@ -400,10 +487,21 @@ class Settings:
     banner_search: bool = True         # BANNER_SEARCH=0 -> never look up banner notices by title
     banner_calendar: bool = True       # BANNER_CALENDAR=0 -> never read the official calendar (api.ennead.cc) for banner names
     gacha_wiki: bool = True            # GACHA_WIKI=0 -> never fill banner lineups from the game wikis
+    reddit_enabled: bool = True
+    reddit_instances: list[str] = field(default_factory=lambda: list(DEFAULT_REDDIT))
+    reddit_proxies: list[str] = field(default_factory=lambda: list(DEFAULT_REDDIT_PROXIES))
+    reddit_token: str = ""
 
     news_enabled: bool = False
     news_games: set[str] = field(default_factory=set)
     news_group_long_strips: bool = False
+    news_timestamps: bool = False
+    news_expand_full: bool = False
+    news_expand_max_pages: int = 12
+    news_expand_max_chars: int = 120000
+    news_expand_max_media: int = 120
+    maintenance_enabled: bool = False
+    maintenance_games: set[str] = field(default_factory=set)
 
     # -- routing ---------------------------------------------------------------
     def _game_slugs(self, game_key: str) -> list[str]:
@@ -417,12 +515,12 @@ class Settings:
         """(secret name, url). Order: FORCE_WEBHOOK (test channel) > DISCORD_WEBHOOK_<FEATURE>_<GAME>
         (the game key, or its short name: CODES_GENSHIN / CODES_GI, CODES_STARRAIL / CODES_HSR …)
         > DISCORD_WEBHOOK_<FEATURE> > DISCORD_WEBHOOK_URL."""
-        if self.force_webhook and feature != "news":
+        if self.force_webhook and feature not in DEDICATED_FEATURES:
             return "FORCE_WEBHOOK", self.force_webhook
         f = slug(feature)
         names = [f"DISCORD_WEBHOOK_{f}_{g}" for g in self._game_slugs(game_key)]
-        # News must never inherit the schedule/code catch-all or a shared news channel.
-        if feature != "news":
+        # Opt-in per-game features must never inherit the schedule/code catch-all or shared channel.
+        if feature not in DEDICATED_FEATURES:
             names += [f"DISCORD_WEBHOOK_{f}", "DISCORD_WEBHOOK_URL"]
         for name in names:
             v = _env(self.env, name)
@@ -446,7 +544,7 @@ class Settings:
         FORCE_WEBHOOK (the test channel) switches the fan-out off entirely: it already
         redirects the primary card, so a second copy must not leak into a real game channel.
         """
-        if self.force_webhook:
+        if self.force_webhook or feature in DEDICATED_FEATURES:
             return "", None
         f = slug(feature)
         names = [f"DISCORD_WEBHOOK_{f}_MIRROR_{g}" for g in self._game_slugs(game_key)]
@@ -459,15 +557,19 @@ class Settings:
 
     def expected_webhook_names(self, feature: str, game_key: str) -> str:
         f = slug(feature)
+        if feature in DEDICATED_FEATURES:
+            return f"DISCORD_WEBHOOK_{f}_{slug(game_key)}"
         return f"DISCORD_WEBHOOK_{f}_{slug(game_key)} (or DISCORD_WEBHOOK_{f})"
 
     def ping(self, feature: str, game_key: str) -> Ping:
-        """PING_<FEATURE>_<GAME>  >  PING_<FEATURE>  >  PING_ROLE_ID.  'none' = explicit off.
-        NO_PING=1 (test runs) silences everything."""
+        """PING_<FEATURE>_<GAME>  >  PING_<FEATURE>  (>  PING_ROLE_ID for schedule/codes).
+        'none' = explicit off. NO_PING=1 (test runs) silences everything."""
         if self.no_ping:
             return Ping()
         f = slug(feature)
-        names = [f"PING_{f}_{g}" for g in self._game_slugs(game_key)] + [f"PING_{f}", "PING_ROLE_ID"]
+        names = [f"PING_{f}_{g}" for g in self._game_slugs(game_key)] + [f"PING_{f}"]
+        if feature != "maintenance":
+            names.append("PING_ROLE_ID")
         for name in names:
             p = parse_ping(_env(self.env, name))
             if p is not None:
@@ -510,25 +612,59 @@ def _buttons_env(env: Mapping[str, str], name: str, limit: int = 3) -> list[dict
     return [b for b in parsed if isinstance(b, dict) and b.get("url") and b.get("label")][:limit]
 
 
+def _game_set_env(
+    env: Mapping[str, str],
+    name: str,
+    aliases: Mapping[str, list[str]],
+    default: tuple[str, ...] = DEFAULT_OPTIONAL_GAMES,
+) -> set[str]:
+    raw = _env(env, name)
+    if not raw:
+        return set(default)
+    reverse = {a.lower(): key for key, vals in aliases.items() for a in vals}
+    tokens = [g.strip().lower() for g in raw.split(",") if g.strip()]
+    if not tokens:
+        return set(default)
+    if len(tokens) == 1 and tokens[0] in ("none", "off", "0", "-"):
+        return set()
+    out: set[str] = set()
+    for tok in tokens:
+        if tok == "all":
+            out.update(DEFAULT_OPTIONAL_GAMES)
+        else:
+            out.add(reverse.get(tok, tok))
+    return out
+
+
 def load_settings(env: Mapping[str, str] | None = None) -> Settings:
     env = dict(os.environ if env is None else env)
     _merge_json_blobs(env)
     feats_raw = _env(env, "ENABLED_FEATURES", "schedule,codes").lower()
     only = _env(env, "ONLY", "").lower()
-    if feats_raw in ("none", "off", "standby", "0"):
+    standby = feats_raw in ("none", "off", "standby", "0")
+    if standby:
         features: set[str] = set()
     else:
         features = {f.strip() for f in feats_raw.split(",") if f.strip() in FEATURES}
     # Explicit opt-in even if a pre-existing installation asks for all features.
     features.discard("news")
-    if feats_raw not in ("none", "off", "standby", "0") and _bool(env, "NEWS_ENABLED"):
+    features.discard("maintenance")
+    if not standby and _bool(env, "NEWS_ENABLED"):
         features.add("news")
+    if not standby and _bool(env, "MAINTENANCE_ENABLED"):
+        features.add("maintenance")
+    if only:
+        only_set = {f.strip() for f in only.split(",") if f.strip() in FEATURES}
+        if only_set:
+            features &= only_set
     news_enabled = "news" in features
-    if only in FEATURES:
-        features &= {only}
+    maintenance_enabled = "maintenance" in features
+    aliases = _game_aliases()
     games_filter = {g.strip().lower() for g in (_env(env, "GAMES") + "," + _env(env, "GAME")).split(",")
                     if g.strip()}
     nitter = [u.strip().rstrip("/") for u in _env(env, "NITTER_INSTANCES").split(",") if u.strip()]
+    reddit = [u.strip().rstrip("/") for u in _env(env, "REDDIT_INSTANCES").split(",") if u.strip()]
+    reddit_proxies = [u.strip().rstrip("/") for u in _env(env, "REDDIT_PROXIES").split(",") if u.strip()]
     extra = _buttons_env(env, "EXTRA_BUTTONS", 3)
     community = _buttons_env(env, "COMMUNITY_BUTTONS") or list(DEFAULT_COMMUNITY_BUTTONS)
     if _env(env, "COMMUNITY_BUTTONS", "").strip().lower() in ("none", "off", "-", "0", "false"):
@@ -563,6 +699,10 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         banner_search=_bool(env, "BANNER_SEARCH", True),
         banner_calendar=_bool(env, "BANNER_CALENDAR", True),
         gacha_wiki=_bool(env, "GACHA_WIKI", True),
+        reddit_enabled=_bool(env, "REDDIT_ENABLED", True),
+        reddit_instances=reddit or list(DEFAULT_REDDIT),
+        reddit_proxies=reddit_proxies or list(DEFAULT_REDDIT_PROXIES),
+        reddit_token=_env(env, "REDDIT_FEED_TOKEN"),
         show_legend=_bool(env, "SHOW_LEGEND", True),
         repost=_env(env, "REPOST").replace(" ", "").lower(),
         http_timeout=_int(env, "HTTP_TIMEOUT", 20),
@@ -570,11 +710,18 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         force_webhook=_env(env, "FORCE_WEBHOOK"),
         test_mode=_bool(env, "TEST_MODE"),
         enable_games={g.strip().lower() for g in _env(env, "ENABLE_GAMES").split(",") if g.strip()},
-        aliases=_game_aliases(),
+        aliases=aliases,
         codes_mark_expired=_bool(env, "CODES_MARK_EXPIRED", True),
         news_enabled=news_enabled,
-        news_games={g.strip().lower() for g in _env(env, "NEWS_GAMES", "genshin,starrail,zzz,wuwa,hna").split(",") if g.strip()},
+        news_games=_game_set_env(env, "NEWS_GAMES", aliases),
         news_group_long_strips=_bool(env, "NEWS_GROUP_LONG_STRIPS", False),
+        news_timestamps=_bool(env, "NEWS_TIMESTAMPS", False),
+        news_expand_full=_bool(env, "NEWS_EXPAND_FULL", False),
+        news_expand_max_pages=max(1, _int(env, "NEWS_EXPAND_MAX_PAGES", 12)),
+        news_expand_max_chars=max(1, _int(env, "NEWS_EXPAND_MAX_CHARS", 120000)),
+        news_expand_max_media=max(1, _int(env, "NEWS_EXPAND_MAX_MEDIA", 120)),
+        maintenance_enabled=maintenance_enabled,
+        maintenance_games=_game_set_env(env, "MAINTENANCE_GAMES", aliases, default=()),
     )
 
 
@@ -722,6 +869,8 @@ class Game:
     c3kay_feed: str = ""
     launcher: dict = field(default_factory=dict)
     x_accounts: list[str] = field(default_factory=list)
+    subreddits: list[str] = field(default_factory=list)
+    reddit_official: list[str] = field(default_factory=list)
     kuro_news: bool = False
     program_label: str = "Special Program"
     program_patterns: list[str] = field(default_factory=lambda: ["special program"])
@@ -755,6 +904,7 @@ def load_games(path: Path | None = None) -> dict[str, Game]:
         card_raw = {**defaults.get("card", {}), **g.get("card", {})}
         card = CardStyle(**{k: v for k, v in card_raw.items() if k in CardStyle.__dataclass_fields__})
         hl = g.get("hoyolab") or {}
+        rd = g.get("reddit") or {}
         games[key] = Game(
             key=key,
             name=g["name"],
@@ -767,6 +917,8 @@ def load_games(path: Path | None = None) -> dict[str, Game]:
             c3kay_feed=hl.get("c3kay", ""),
             launcher=g.get("launcher") or {},
             x_accounts=list(g.get("x_accounts") or []),
+            subreddits=list(rd.get("subreddits") or []),
+            reddit_official=list(rd.get("official") or []),
             kuro_news=bool(g.get("kuro_news", False)),
             program_label=g.get("program_label", "Special Program"),
             program_patterns=list(g.get("program_patterns") or ["special program"]),

@@ -91,7 +91,8 @@ class State:
             hb.update({"last_success": now, "instance": instance, "every_min": every_min})
 
     # ------------------------------------------------------------------ peer merge
-    def merge_peer(self, peer: dict, *, include_news: bool = False) -> int:
+    def merge_peer(self, peer: dict, *, include_news: bool = False,
+                   include_maintenance: bool = False) -> int:
         """Import posted/seeded keys (and message ids) from the other instance.
         Returns how many keys were imported."""
         imported = 0
@@ -130,12 +131,39 @@ class State:
                     current = records.get(key)
                     if current and current.get("status") == "posted":
                         continue
+                    if current and current.get("ambiguous") and not rec.get("ambiguous"):
+                        continue
                     if current and rec.get("status") == "partial" and (
                             current.get("signature") != rec.get("signature")
                             or current.get("messages") != rec.get("messages", [])[:len(current.get("messages", []))]):
                         continue
                     if key in records or len(records) < 500:
                         records[key] = copy.deepcopy(rec)
+                        imported += 1
+        if include_maintenance:
+            for game, other in (peer.get("maintenance") or {}).items():
+                mine = self.maintenance_record(game)
+                if mine.get("route") and other.get("route") and mine["route"] != other["route"]:
+                    continue
+                if other.get("route"):
+                    mine.setdefault("route", other["route"])
+                if "seeded_at" in other:
+                    mine["seeded_at"] = max(mine.get("seeded_at", 0), other["seeded_at"])
+                versions = mine.setdefault("versions", {})
+                for ver, vrec in (other.get("versions") or {}).items():
+                    dst = versions.setdefault(ver, {})
+                    if "launch_media" in vrec and "launch_media" not in dst:
+                        dst["launch_media"] = copy.deepcopy(vrec["launch_media"])
+                    for kind in ("preload", "maintenance"):
+                        src_a = vrec.get(kind)
+                        if not isinstance(src_a, dict):
+                            continue
+                        if src_a.get("status") not in ("posted", "seeded", "ambiguous"):
+                            continue
+                        cur_a = dst.get(kind)
+                        if cur_a and cur_a.get("status") in ("posted", "ambiguous"):
+                            continue
+                        dst[kind] = copy.deepcopy(src_a)
                         imported += 1
         return imported
 
@@ -149,6 +177,17 @@ class State:
             for code in [c for c, r in codes.items()
                          if now - int(r.get("last_seen") or r.get("first_seen") or now) > code_days * 86400]:
                 codes.pop(code, None)
+
+    def maintenance_record(self, game: str) -> dict:
+        return self.data.setdefault("maintenance", {}).setdefault(game, {})
+
+    def prune_maintenance(self, keep_versions: int = 8) -> None:
+        for game in (self.data.get("maintenance") or {}).values():
+            versions = game.get("versions") or {}
+            if len(versions) > keep_versions:
+                from .textutil import version_key
+                for ver in sorted(versions, key=version_key)[:-keep_versions]:
+                    versions.pop(ver, None)
 
 
     def news_record(self, game: str) -> dict:

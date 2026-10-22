@@ -347,26 +347,32 @@ def parse_fandom(data: dict, now: float | None = None) -> list[CodeHit]:
             hits.append(CodeHit(code, "fandom", rewards, expired=(not active) or date_expired or flagged,
                                 expires_at=valid_until))
 
-    # 2) plain wikitable rows (Wuthering Waves page)
+    # 2) plain wikitable rows (Wuthering Waves page — strictly inside {| ... |} wikitables so
+    # top-of-page {{Terminology Infobox | ...}} templates never emit fake codes)
     if not hits:
-        heading = re.search(r"\n=+\s*(?:Expired|Inactive|Invalid)\b[^\n]*", wikitext, re.I)
+        heading = re.search(r"(?m)^=+\s*(?:Expired|Inactive|Invalid)\b[^\n]*", wikitext, re.I)
         expired_from = heading.start() if heading else len(wikitext)
-        offset = 0
-        for chunk in re.split(r"(\n\|-|\n\|\})", wikitext):
-            pos, offset = offset, offset + len(chunk)
-            m = re.search(r"(?m)^\|(?![-}+])\s*([^|\n]*?)\s*\|\|", chunk)
-            if not m:
-                continue
-            raw = re.sub(r"'{2,3}|<[^>]+>|\[\[|\]\]", "", m.group(1)).strip(" *")
-            if not re.fullmatch(r"[A-Z0-9]{5,20}", raw):     # headers, templates, prose
-                continue
-            code = sanitize(raw)
-            if not code:
-                continue
-            until = re.search(r"Valid\s+until:?\s*(.+?)(?:'{2,3}|\n|$)", chunk, re.I)
-            date_expired, valid_until = parse_expiry(until.group(1), now) if until else (False, None)
-            hits.append(CodeHit(code, "fandom", _wiki_rewards([chunk]),
-                                expired=pos >= expired_from or date_expired, expires_at=valid_until))
+        for tbl in re.finditer(r"\{\|.*?\|\}", wikitext, re.S):
+            offset = tbl.start()
+            for chunk in re.split(r"(\n\|-|\n\|\})", tbl.group(0)):
+                pos, offset = offset, offset + len(chunk)
+                m = re.search(r"(?m)^\|(?![-}+])([^\n]*)", chunk)
+                if not m:
+                    continue
+                cleaned = re.sub(r"<ref\b[^>]*>.*?</ref>", "", m.group(1), flags=re.I | re.S)
+                cleaned = re.sub(r"\{\{\s*(?:Code|Copy|Tt)\s*\|\s*([A-Za-z0-9]+)(?:\|[^}]*)?\}\}",
+                                 r"\1", cleaned, flags=re.I)
+                cell0 = cleaned.split("||", 1)[0].rsplit("|", 1)[-1]
+                raw = re.sub(r"'{2,3}|<[^>]+>|\[\[|\]\]", "", cell0).strip(" *")
+                if not re.fullmatch(r"[A-Z0-9]{5,20}", raw):     # headers, templates, prose
+                    continue
+                code = sanitize(raw)
+                if not code:
+                    continue
+                until = re.search(r"Valid\s+until:?\s*(.+?)(?:'{2,3}|\n|$)", chunk, re.I)
+                date_expired, valid_until = parse_expiry(until.group(1), now) if until else (False, None)
+                hits.append(CodeHit(code, "fandom", _wiki_rewards([chunk]),
+                                    expired=pos >= expired_from or date_expired, expires_at=valid_until))
     return hits
 
 
@@ -462,8 +468,9 @@ class CodeSources:
     """Per-run cache + in-flight de-duplication: every spec is fetched at most once per
     run even when all games prefetch concurrently (codehub's JSON is shared by 4 games)."""
 
-    def __init__(self, fetcher: Fetcher) -> None:
+    def __init__(self, fetcher: Fetcher, reddit=None) -> None:
         self.fetcher = fetcher
+        self._reddit = reddit
         self._inflight: dict[str, asyncio.Task] = {}
 
     async def _once(self, key: str, factory):
@@ -525,5 +532,11 @@ class CodeSources:
             t = await f.get_text(WUTHERING_GG, source="codes:wuthering.gg", retries=1,
                                  headers={"Accept": "text/html,application/xhtml+xml"})
             return parse_wuthering_gg(t) if t is not None else None
+        if kind == "reddit":
+            if self._reddit is None:
+                from ..config import load_settings
+                from .reddit import RedditClient
+                self._reddit = RedditClient(f, load_settings({}))
+            return await self._reddit.community_codes(arg)
         log.warning("unknown code source spec %r", spec)
         return None

@@ -14,6 +14,7 @@ import re
 import time
 from calendar import timegm
 from collections.abc import Callable
+from pathlib import Path
 from urllib.parse import quote
 
 import feedparser
@@ -23,7 +24,7 @@ from ..config import CONFIG_DIR, Game, Settings
 from ..http import Fetcher
 from ..media import nitter_pic_to_twimg, sane_aspect
 from ..models import Item
-from ..textutil import find_urls, html_to_text
+from ..textutil import find_urls, find_versions, html_to_text
 
 log = logging.getLogger("gamexpress.x")
 
@@ -52,32 +53,46 @@ def program_seed(game_key: str, version: str) -> dict:
     return hit if isinstance(hit, dict) else {}
 
 
-def save_program_seed(game_key: str, version: str, entry: dict) -> bool:
+def save_program_seed(game_key: str, version: str, entry: dict, path: Path | None = None) -> bool:
     """Record a newly discovered announcement. Returns True when the file changed, which is what
     tells the workflow there is something to commit back."""
     global _seeds
-    data = json.loads(SEED_PATH.read_text(encoding="utf-8")) if SEED_PATH.exists() else {}
+    target = SEED_PATH if path is None else path
+    data = json.loads(target.read_text(encoding="utf-8")) if target.exists() else {}
     per_game = data.setdefault(game_key, {})
     old = per_game.get(version)
     if isinstance(old, dict) and old.get("id") == entry.get("id"):
         return False
     import time as _t
-    per_game[version] = {**entry, "found_at": int(_t.time())}
-    SEED_PATH.write_text(json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
-                         encoding="utf-8")
-    _seeds = None                                  # next read picks the new entry up
+    per_game[version] = {"found_at": int(_t.time()), **entry}
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
+                      encoding="utf-8")
+    if path is None:
+        _seeds = None                              # next read picks the new entry up
     log.info("[x:%s] recorded the %s program announcement (%s) in %s",
-             game_key, version, entry.get("id"), SEED_PATH.name)
+             game_key, version, entry.get("id"), target.name)
     return True
 
 
 FX_SOURCES = (("fxtwitter", "https://api.fxtwitter.com/status/{id}"),
               ("fixupx", "https://api.fixupx.com/status/{id}"))
 VXTWITTER_URL = "https://api.vxtwitter.com/Twitter/status/{id}"
-# Single-tweet lookups ask nitter.cf first. xitter.cf is the same backend behind a second domain, so it
-# is only the second try. Both serve a per-status RSS feed (…/<account>/status/<id>/rss) that reaches
-# back weeks, not days: nitter.cf returned the ZZZ 3.2 announcement from 2026-08-24 on 2026-10-09.
-STATUS_MIRRORS = ("https://nitter.cf", "https://xitter.cf")
+# Single-tweet lookups ask nitter.cf first. xitter.cf, teapawt.org, teapaw.org, teapawt.net,
+# xitter.gq and nitter.gq are the same 4cuck/teapawt backend across .cf/.org/.net/.gq domains on
+# status.d420.net, so they follow in order for zero-API DNS/edge failover. All seven serve a
+# per-status RSS feed (…/<account>/status/<id>/rss) reaching back weeks: nitter.cf resolved ZZZ
+# 3.2's post from 2026-08-24 on 2026-10-09, and all seven resolved Genshin 7.2's announcement
+# (2112755760107081755) live on 2026-10-22.
+STATUS_MIRRORS = (
+    "https://nitter.cf",
+    "https://xitter.cf",
+    "https://teapawt.org",
+    "https://teapaw.org",
+    "https://teapawt.net",
+    "https://xitter.gq",
+    "https://nitter.gq",
+)
 # After this many failed requests in one run a status mirror is skipped for the rest of the run. Without
 # this a dead nitter.cf costs a full NITTER_TIMEOUT on EVERY tweet before FxTwitter is asked.
 STATUS_FAIL_LIMIT = 2
@@ -339,7 +354,8 @@ class XClient:
             for e in await self.timeline(account):
                 if not schedule.is_program_announcement(game, e["text"]):
                     continue
-                if version and version not in e["text"]:
+                mentioned = find_versions(e["text"])
+                if version and mentioned and version not in mentioned and version not in e["text"]:
                     continue                      # an announcement for some other version
                 if found is None or e["ts"] < found[1]["ts"]:
                     found = (account, e)

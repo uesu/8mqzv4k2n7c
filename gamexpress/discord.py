@@ -34,6 +34,7 @@ class SendResult:
     status: int
     message_id: str | None = None
     error: str = ""
+    ambiguous: bool = False
 
 
 def webhook_fingerprint(url: str) -> str:
@@ -48,6 +49,32 @@ def _split(url: str) -> tuple[str, dict]:
     params = dict(parse_qsl(parts.query))
     keep = {k: v for k, v in params.items() if k == "thread_id"}
     return base, keep
+
+
+def _redact_webhook(value: object) -> str:
+    """Redact `/webhooks/<id>/<token>` path secrets in logs and persisted error strings."""
+    return re.sub(r"/webhooks/[^/\s?#]+/[^\s/?#)'\"]+", "/webhooks/…", str(value))
+
+
+def _is_non_retryable_pre_send_error(exc: BaseException) -> bool:
+    """True when URL validation fails locally before opening any network connection."""
+    return isinstance(exc, (aiohttp.InvalidURL, aiohttp.NonHttpUrlClientError)) and not isinstance(
+        exc, aiohttp.RedirectClientError
+    )
+
+
+def _is_definite_pre_send_error(exc: BaseException) -> bool:
+    """True only when failure occurred strictly during connection/TLS/tunnel setup before
+    any HTTP request bytes could reach the target origin."""
+    return isinstance(
+        exc,
+        (
+            aiohttp.ClientConnectorError,
+            aiohttp.ConnectionTimeoutError,
+            aiohttp.ServerFingerprintMismatch,
+            aiohttp.ClientHttpProxyError,
+        ),
+    )
 
 
 class WebhookClient:
@@ -74,7 +101,14 @@ class WebhookClient:
             await asyncio.sleep(self._next_slot - now)
         self._next_slot = time.monotonic() + WEBHOOK_SPACING
 
-    async def _request(self, method: str, url: str, payload: dict) -> SendResult:
+    async def _request(
+        self,
+        method: str,
+        url: str,
+        payload: dict,
+        *,
+        stop_on_ambiguous: bool = False,
+    ) -> SendResult:
         problems = validate_payload(payload)
         if problems:
             return SendResult(False, 0, error="invalid payload: " + "; ".join(problems))
@@ -82,7 +116,7 @@ class WebhookClient:
             # The fingerprint, never the URL: it is enough to tell two destinations apart (which
             # is what the fan-out tests assert) and it cannot be turned back into a secret.
             self.sent.append({"method": method, "payload": payload, "fp": webhook_fingerprint(url)})
-            log.info("DRY RUN %s %s\n%s", method, re.sub(r"/webhooks/\d+/[\w-]+", "/webhooks/…", url),
+            log.info("DRY RUN %s %s\n%s", method, _redact_webhook(url),
                      json.dumps(payload, ensure_ascii=False)[:1500])
             return SendResult(True, 200, message_id="dry-run")
         await self._pace()
@@ -91,39 +125,94 @@ class WebhookClient:
             try:
                 async with self.session.request(method, url, json=payload,
                                                 timeout=aiohttp.ClientTimeout(total=30)) as r:
-                    body = await r.text()
-                    if r.status in (200, 204):
+                    status = int(getattr(r, "status", 0) or 0)
+                    try:
+                        body = await r.text()
+                    except (aiohttp.ClientError, asyncio.TimeoutError, UnicodeDecodeError) as e:
+                        safe_err = _redact_webhook(e)
+                        if stop_on_ambiguous and method == "POST" and (status == 0 or 200 <= status < 400):
+                            log.warning(
+                                "Discord POST response body read failed after HTTP %s (%s)"
+                                " — holding as ambiguous without retry",
+                                status,
+                                safe_err,
+                            )
+                            return SendResult(
+                                False,
+                                status,
+                                error=f"response body read failed after HTTP {status}: {safe_err}",
+                                ambiguous=True,
+                            )
+                        if isinstance(e, UnicodeDecodeError):
+                            body = ""
+                        else:
+                            raise
+                    if status in (200, 204):
                         mid = None
                         if body:
                             try:
                                 mid = str(json.loads(body).get("id") or "") or None
                             except json.JSONDecodeError:
                                 mid = None
-                        return SendResult(True, r.status, message_id=mid)
-                    if r.status == 429:
+                        return SendResult(
+                            True,
+                            status,
+                            message_id=mid,
+                            ambiguous=(stop_on_ambiguous and method == "POST" and mid is None),
+                        )
+                    if status == 429:
                         try:
                             retry = float(json.loads(body).get("retry_after", 1.0))
                         except (json.JSONDecodeError, TypeError, ValueError):
-                            retry = float(r.headers.get("Retry-After", 1.0))
+                            try:
+                                retry = float(r.headers.get("Retry-After", 1.0))
+                            except (TypeError, ValueError):
+                                retry = 1.0
                         log.warning("Discord 429 — retrying in %.2fs", retry)
                         await asyncio.sleep(min(retry, 30) + 0.25)
                         continue
-                    if r.status >= 500:
-                        log.warning("Discord %s — retry %d", r.status, attempt + 1)
+                    if status >= 500:
+                        log.warning("Discord %s — retry %d", status, attempt + 1)
                         await asyncio.sleep(delay)
                         delay *= 2
                         continue
-                    return SendResult(False, r.status, error=body[:500])
+                    return SendResult(False, status, error=_redact_webhook(body)[:500])
             except (aiohttp.ClientError, asyncio.TimeoutError) as e:
-                log.warning("Discord request error %s — retry %d", e, attempt + 1)
+                safe_err = _redact_webhook(e)
+                if stop_on_ambiguous:
+                    if _is_non_retryable_pre_send_error(e):
+                        return SendResult(False, 0, error=safe_err, ambiguous=False)
+                    if method == "POST" and not _is_definite_pre_send_error(e):
+                        log.warning(
+                            "Discord POST outcome indeterminate (%s) — holding as ambiguous without retry",
+                            safe_err,
+                        )
+                        return SendResult(
+                            False,
+                            0,
+                            error=f"indeterminate POST outcome: {safe_err}",
+                            ambiguous=True,
+                        )
+                log.warning("Discord request error %s — retry %d", safe_err, attempt + 1)
                 await asyncio.sleep(delay)
                 delay *= 2
         return SendResult(False, 0, error="gave up after retries")
 
-    async def send(self, webhook_url: str, payload: dict) -> SendResult:
+    async def send(
+        self,
+        webhook_url: str,
+        payload: dict,
+        *,
+        stop_on_ambiguous: bool = False,
+    ) -> SendResult:
         base, keep = _split(webhook_url)
         q = urlencode({"wait": "true", "with_components": "true", **keep})
-        return await self._request("POST", f"{base}?{q}", payload)
+        return await self._request(
+            "POST",
+            f"{base}?{q}",
+            payload,
+            stop_on_ambiguous=stop_on_ambiguous,
+        )
 
     async def edit(self, webhook_url: str, message_id: str, payload: dict) -> SendResult:
         base, keep = _split(webhook_url)

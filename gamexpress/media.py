@@ -25,7 +25,7 @@ TWIMG = re.compile(r"^https?://(?:pbs\.twimg\.com|ton\.twimg\.com)/", re.I)
 NITTER_PIC = re.compile(r"/pic/(?:orig/)?(.+)$")
 YOUTUBE_IMG = re.compile(r"^https?://i\.ytimg\.com/vi/([^/]+)/", re.I)
 _MEDIA_PREFIXES = ("media/", "ext_twvideo_thumb/", "ext_tw_video_thumb/", "tweet_video_thumb/",
-                   "amplify_video_thumb/")
+                   "amplify_video_thumb/", "card_img/")
 
 
 def nitter_pic_to_twimg(url: str) -> str:
@@ -33,13 +33,15 @@ def nitter_pic_to_twimg(url: str) -> str:
     m = NITTER_PIC.search(url or "")
     if not m:
         return url
-    path = unquote(m.group(1)).split("?")[0]
+    raw = unquote(m.group(1))
+    path, _, query = raw.partition("?")
     if path.startswith(_MEDIA_PREFIXES):
-        return f"https://pbs.twimg.com/{path}"
+        keep = f"?{query}" if path.startswith("card_img/") and query else ""
+        return f"https://pbs.twimg.com/{path}{keep}"
     # nitter's RSS and status feeds carry the whole twimg address, not just the media path:
     # /pic/https%3A%2F%2Fpbs%2Etwimg%2Ecom%2Fmedia%2F<id>.jpg  (seen 2026-10-09 on nitter.cf)
     if path.startswith("https://pbs.twimg.com/"):
-        return path
+        return raw if path.startswith("https://pbs.twimg.com/card_img/") and query else path
     return url
 
 
@@ -136,17 +138,19 @@ def rank(images: list[str] | None, limit: int = 4) -> list[str]:
     return out[:limit]
 
 
-async def news_media_available(fetcher, payloads: list[dict]) -> bool:
+async def news_media_available(fetcher, payloads: list[dict], *, max_urls: int = 40) -> bool:
     """Check only media actually included (not omitted overflow media); preserve URLs.
 
-    Sequential and capped by the message component bound. No URL guessing, fixture
-    replacements, screenshot bytes, arbitrary proxies or changes to schedule/codes.
+    Sequential and capped by the caller's explicit operational media bound (40 by
+    default; raised explicitly when expanded full-article delivery is opted into).
+    No URL guessing, fixture replacements, screenshot bytes, arbitrary proxies or
+    changes to schedule/codes.
     """
     urls = list(dict.fromkeys(entry["media"]["url"]
                              for payload in payloads for card in payload["components"]
                              for component in card["components"] if component["type"] == 12
                              for entry in component["items"]))
-    if len(urls) > 40:
+    if len(urls) > max_urls:
         return False
     for url in urls:
         if not await fetcher.verify_media(url):
@@ -266,8 +270,14 @@ def group_measured_news(payloads: list[dict], dimensions: dict) -> list[dict]:
     return proposal
 
 
-async def group_news_media(fetcher, payloads: list[dict], *, enabled: bool = False) -> list[dict]:
-    """Runner adapter: optional <=40 distinct reads, <=20s/article; off = no I/O.
+async def group_news_media(
+    fetcher,
+    payloads: list[dict],
+    *,
+    enabled: bool = False,
+    max_urls: int = 40,
+) -> list[dict]:
+    """Runner adapter: optional bounded reads, <=20s/article; off = no I/O.
 
     Availability preflight/refresh runs FIRST; optional measurement never holds a
     deliverable article. Group only after all dimensions are known. No cross-tick
@@ -279,7 +289,7 @@ async def group_news_media(fetcher, payloads: list[dict], *, enabled: bool = Fal
                           for co in p["components"] for c in co["components"]):
         return payloads
     urls = list(dict.fromkeys(_news_urls(payloads)))
-    if not urls or len(urls) > 40:
+    if not urls or len(urls) > max_urls:
         return payloads
 
     async def measure():

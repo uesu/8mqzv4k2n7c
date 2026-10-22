@@ -23,7 +23,7 @@ from statistics import median
 from urllib.parse import urlparse
 
 from .cards import ESTIMATE_LABELS, mark_test, schedule_payload
-from .config import Game, Ping
+from .config import CONFIG_DIR, Game, Ping
 from .discord import webhook_fingerprint
 from .media import rank, youtube_thumb
 from .models import Item
@@ -49,7 +49,8 @@ MAINT_RE = re.compile(
     r"update\s+details|version\s+update\s+(?:notice|details)|pre-?install(?:ation)?|pre-?download|pre-?load",
     re.I)
 PROGRAM_EXCLUDE = re.compile(
-    r"\b(recap|replay|re-?watch|highlights?|vod|thank(?:s| you) for (?:watching|tuning)|has ended|"
+    r"\b(recap|replay|re-?watch|highlights?|vod|thank(?:s| you) for (?:watching|tuning)|"
+    r"has (?:ended|concluded)|"
     r"codes? (?:are|is) (?:now )?(?:live|available|here))\b", re.I)
 NOT_PROGRAM_TITLE = re.compile(
     r"\b(?:(?:prize|sharing|fan[- ]?art|creation|community|login|check-?in|web|in-?game|"
@@ -59,7 +60,7 @@ NOT_PROGRAM_TITLE = re.compile(
     r"(?:notice|details)|merchandise|recap|replay|vod|survey|questionnaire|thank\s+you|"
     r"collaboration|insider\s+channel|combat\s+intro|character\s+demo)\b", re.I)
 DEFAULT_BANNER_RE = (r"event\s+wish|event\s+warp|signal\s+search|exclusive\s+channel|featured\s+resonator|"
-                     r"resonator\s+convene|character\s+event|limited[-\s]time\s+(?:character|agent)")
+                     r"resonator\s+convene|character\s+event|limited[-\s]time\s+(?:character|agent|channels?)")
 
 # --------------------------------------------------------------------- X-first announcement test
 # X is the PRIMARY schedule source, so this test has to be tight. One positive requirement does
@@ -71,7 +72,9 @@ DEFAULT_BANNER_RE = (r"event\s+wish|event\s+warp|signal\s+search|exclusive\s+cha
 #        real 3.7 announcement, so the giveaway words must not be allowed to veto it
 PROGRAM_AIR = re.compile(
     r"\b(?:will\s+(?:premiere|begin|air|release|start|go\s+live|be\s+broadcast|be\s+available)|"
-    r"is\s+scheduled\s+to\s+air|scheduled\s+for|airing\s+on|premieres?\s+on|"
+    r"is\s+(?:scheduled|set)\s+to\s+(?:air|begin|start|premiere|broadcast|go\s+live)|"
+    r"scheduled\s+for|airing\s+on|airs\s+on|premieres?\s+on|goes\s+live\s+on|"
+    r"(?:broadcast|livestream|live\s+stream)\s+time\s*[:：]|"
     r"livestream\s+starts?|tune\s+in\s+(?:on|at)|starts?\s+(?:on|at)\b)", re.I)
 AIR_DATE = re.compile(
     r"\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4}|\d{4}-\d{1,2}-\d{1,2}|"
@@ -92,9 +95,10 @@ def is_program_announcement(game: Game, text: str, title: str = "") -> bool:
     body = text or ""
     if not _any(program_patterns(game), f"{title}\n{body}"):
         return False
-    if title and NOT_PROGRAM_TITLE.search(title):
-        return False
-    if NOT_PROGRAM_TITLE.search(body[:HEADLINE_LEN]):
+    if title:
+        if NOT_PROGRAM_TITLE.search(title):
+            return False
+    elif NOT_PROGRAM_TITLE.search(body[:HEADLINE_LEN]):
         return False
     if PROGRAM_EXCLUDE.search(body):
         return False
@@ -111,8 +115,8 @@ FIVE_RE = re.compile(r"(?:5[-\s]?star|5\s?★|★\s?5|S[-\s]?Rank)\s+(?:limited[
                      r"(?:character|resonator|agent)s?", re.I)
 FOUR_RE = re.compile(r"(?:4[-\s]?star|4\s?★|★\s?4|A[-\s]?Rank)\s+(?:character|resonator|agent)s?", re.I)
 QUOTED = re.compile(r"[\"“「『]([^\"”」』\n]{2,40})[\"”」』]")
-PHASE1 = re.compile(r"phase\s*(?:I|1)\b(?!I)|first\s+(?:half|phase)|1st\s+(?:half|phase)", re.I)
-PHASE2 = re.compile(r"phase\s*(?:II|2)\b|second\s+(?:half|phase)|2nd\s+(?:half|phase)", re.I)
+PHASE1 = re.compile(r"phase\s*(?:[IⅠⅰ]|1)\b(?![IⅠⅰ])|first\s+(?:half|phase)|1st\s+(?:half|phase)", re.I)
+PHASE2 = re.compile(r"phase\s*(?:II|[Ⅱⅱ]|2)\b|second\s+(?:half|phase)|2nd\s+(?:half|phase)", re.I)
 
 # HoYoverse notices name CHARACTERS bare and put WEAPONS in quotes:
 #     the limited 5-star character Pearl (Elation: Ice) and the limited 5-star Light Cone
@@ -127,8 +131,9 @@ PHASE2 = re.compile(r"phase\s*(?:II|2)\b|second\s+(?:half|phase)|2nd\s+(?:half|p
 # guard that was supposed to cut the weapon clause off did not fire at all.
 TIER_STOP = re.compile(
     r"\b(?:light\s+cones?|weapons?|w-engines?|as\s+well\s+as|will\s+(?:be|return|receive)|"
-    r"and\s+the\s+limited|drop[-\s]rates?|receives?|significantly|(?:have|has)\s+(?:significantly\s+)?boosted)\b",
-    re.I)                       # \"Sanhua receive boosted\" (WuWa), \"Nicole have significantly boosted\" (ZZZ)
+    r"and\s+the\s+limited|drop[-\s]rates?|receives?|significantly|"
+    r"(?:is|are|have|has)\s+(?:significantly\s+|now\s+)?(?:boosted|available))\b",
+    re.I)                       # "Sanhua receive boosted" (WuWa), "Phoenix (...)is significantly boosted" / "Nicole have significantly boosted" (ZZZ)
 NAME_SPLIT = re.compile(r",\s*(?:and\s+)?|\s+and\s+|\s*;\s*")
 # A star-tier phrase is often followed by an article before the name ("5-star character \"Pearl\"",
 # "…and the 4-star characters …"), and truncating at the NEXT tier leaves a dangling "the". Those
@@ -244,13 +249,13 @@ LABEL_NO_TIME = re.compile(r"storage|space|GB|file\s+size|download\s+size", re.I
 
 # precedence of sources for a field (higher wins). Derived values are below external countdown
 # estimates; the banner feed is the lowest (5). Any official source or override replaces both.
-PRIORITY = {"override": 100, "hoyolab": 50, "kuro": 50, "news": 45, "x": 40, "launcher": 20,
+PRIORITY = {"override": 100, "hoyolab": 50, "kuro": 50, "news": 45, "x": 40, "reddit": 38, "launcher": 20,
             "countdown": 10, "pattern": 9, "gachawiki": 6, "bannerfeed": 5}
 # Which program post may HOLD the card's link and key art (the lock). X first: its post carries the
 # announcement's own URL and its photo at full size. HoYoLAB and the official sites hold the card
 # when X cannot be read (nitter and the tweet-data services all down). A card locked to one of
 # them is upgraded once X shows the same announcement -- see _upgrade_announcement().
-LOCK_RANK = {"x": 3, "hoyolab": 2, "kuro": 2, "news": 1}
+LOCK_RANK = {"x": 3, "hoyolab": 2, "kuro": 2, "news": 1, "reddit": 1}
 ESTIMATED_KEYS = ("program_ts", "preinstall_ts", "maint_start_ts", "maint_end_ts")
 MAINT_HOURS_ESTIMATE = 5          # typical HoYoverse / Kuro maintenance window
 WIKI_RECHECK_H = 6                  # a complete banner block with unconfirmed names is re-read this often
@@ -317,7 +322,7 @@ def classify(game: Game, item: Item) -> str | None:
             and not extract_codes_from_text(lead):      # a codes post is not an announcement
         return "program"
     banner_rx = "|".join([DEFAULT_BANNER_RE] + game.banner_patterns)
-    if re.search(banner_rx, item.title or item.text[:200], re.I):
+    if re.search(banner_rx, f"{item.title or ''}\n{item.text[:200]}", re.I):
         return "banner"
     if MAINT_RE.search(lead):
         return "maintenance"
@@ -434,7 +439,7 @@ def extract_maintenance(item: Item) -> dict:
 
 
 def _clean_name(raw: str) -> str:
-    name = re.sub(r"\s*[\(（][^)）]*[\)）]\s*", "", raw).strip(" .,;:!")
+    name = re.sub(r"\s+", " ", re.sub(r"\s*[\(（][^)）]*[\)）]\s*", " ", raw)).strip(" .,;:!")
     return name if 1 < len(name) <= 40 and not re.search(r"https?://|\d{3,}", name) else ""
 
 
@@ -655,7 +660,7 @@ def observed_lead_h(records: dict) -> float | None:
             continue
         if math.isfinite(hours) and 0 < hours <= MAX_LEAD_H:
             values.append(hours)
-    return float(median(values)) if values else None
+    return float(median(values)) if len(values) >= SPECULATE_MIN_HISTORY else None
 
 
 def derive_preinstall(game: Game, data: dict, prov: dict, now: int,
@@ -826,7 +831,10 @@ def predict_cycle(game: Game, records: dict, now: int,
     if hours is not None and not (math.isfinite(hours) and 0 < hours <= MAX_LEAD_H):
         hours = None
 
-    guess, alt = next_version(anchor_version)
+    base_version = anchor_version
+    for _ in range(guard):
+        base_version = bump_minor(base_version) if base_version else ""
+    guess, alt = next_version(base_version)
     return {
         "version": guess,
         "version_alt": alt,
@@ -958,6 +966,37 @@ def _names(value) -> tuple[str, ...]:
     return tuple(str(n).strip().lower() for n in (value or []))
 
 
+def _same_person(a: str, b: str) -> bool:
+    """True when `a` and `b` refer to the same character across short/full source conventions
+    (e.g. 'Velina'/'Velina Airgid', 'Norma'/'Norma Hollowell', 'Manato'/'Komano Manato',
+    'Seth'/'Seth Lowell'), while keeping SP/variant names ('The Herta', 'Dan Heng • ...',
+    'Soldier 0 - Anby') distinct."""
+    na, nb = a.strip().lower(), b.strip().lower()
+    if na == nb:
+        return True
+    short, full = (na, nb) if len(na) <= len(nb) else (nb, na)
+    words = full.split()
+    if " " in short or full.startswith("the ") or not all(w.isalpha() for w in words):
+        return False
+    return short in words
+
+
+def _same_names(left, right) -> bool:
+    """True when two character lists name the same set of characters 1-for-1."""
+    xs, ys = list(_names(left)), list(_names(right))
+    if len(xs) != len(ys):
+        return False
+    if xs == ys:
+        return True
+    used = [False] * len(ys)
+    for x in xs:
+        idx = next((i for i, y in enumerate(ys) if not used[i] and _same_person(x, y)), None)
+        if idx is None:
+            return False
+        used[idx] = True
+    return True
+
+
 def banner_settled(data: dict) -> set[str]:
     """The banner keys that are confirmed and locked on this card."""
     return set(data.get("banners_settled") or [])
@@ -967,9 +1006,9 @@ def _derived_ok(key: str, value, banners: dict) -> bool:
     """A wiki-derived field must agree with the phase lists it comes from. The 4★ summary is the
     list both phases share; re-runs are names featured in a phase, so they are a subset of them."""
     if key == "four_star":
-        return all(_names(banners.get(k)) == _names(value) for k in DERIVED_BANNER_INPUTS[key])
-    phase_names = set(_names(banners.get("phase1"))) | set(_names(banners.get("phase2")))
-    return bool(phase_names) and set(_names(value)) <= phase_names
+        return all(_same_names(banners.get(k), value) for k in DERIVED_BANNER_INPUTS[key])
+    phase_names = list(_names(banners.get("phase1"))) + list(_names(banners.get("phase2")))
+    return bool(phase_names) and all(any(_same_person(v, p) for p in phase_names) for v in _names(value))
 
 
 def _official_owned(prov: dict, key: str) -> bool:
@@ -1001,7 +1040,7 @@ def _confirm(data: dict, prov: dict, key: str, group: str, current, value, banne
     A matching name is one more witness. An official notice locks its name on its own; feed and wiki
     names lock once they agree (two groups). The two derived 4★-summary keys keep their own rule.
     Nothing happens when the names differ: the caller decides what to write in that case."""
-    if not value or _names(current) != _names(value):
+    if not value or not _same_names(current, value):
         return
     groups = set(prov.get(f"b_{key}_by") or []) | {group}
     prov[f"b_{key}_by"] = sorted(groups)
@@ -1033,12 +1072,15 @@ def _fill_phase(data: dict, prov: dict, banners: dict, key: str, group: str, val
     if not value:
         return False
     have = banners.get(key)
-    if have and _names(have) == _names(value):
+    if have and _same_names(have, value):
         _confirm(data, prov, key, group, have, value, banners)
         return False
     owner = prov.get(f"b_{key}", [0])[0]
     if not have:
-        if owner <= PRIORITY["bannerfeed"]:
+        tba_reason = prov.get(f"b_{key}_tba")
+        if owner <= PRIORITY["bannerfeed"] or (
+            owner < PRIORITY["override"] and tba_reason and tba_reason != "official sources disagree"
+        ):
             banners[key] = value
             prov[f"b_{key}"] = [PRIORITY["bannerfeed"], now]
             prov[f"b_{key}_by"] = [group]
@@ -1052,7 +1094,7 @@ def _fill_phase(data: dict, prov: dict, banners: dict, key: str, group: str, val
     fill = {g for g in by if g in ("feed", "calendar")}
     if group not in fill:
         return False
-    other_backs_card = bool(other) and _names(other) == _names(have)
+    other_backs_card = bool(other) and _same_names(other, have)
     if fill == {group} or not other_backs_card:
         banners[key] = value
         prov[f"b_{key}"] = [PRIORITY["bannerfeed"], now]
@@ -1214,7 +1256,7 @@ def apply_gacha_wiki(game: Game, data: dict, prov: dict, wiki: dict | None, now:
         owner = prov.get(f"b_{key}", [0])[0]
         have = banners.get(key)
         if have:
-            if _names(have) == _names(value):
+            if _same_names(have, value):
                 _confirm(data, prov, key, "wiki", have, value, banners)
                 continue
             # A value is only as good as the read it came from, so the wiki reader is allowed
@@ -1237,7 +1279,12 @@ def apply_gacha_wiki(game: Game, data: dict, prov: dict, wiki: dict | None, now:
                 continue                        # the wiki is silent about a feed value: keep the feed's
             changed = True
             continue
-        if not value or owner > PRIORITY["gachawiki"]:
+        if not value or (
+            owner > PRIORITY["gachawiki"]
+            and not (owner < PRIORITY["override"]
+                     and prov.get(f"b_{key}_tba")
+                     and prov.get(f"b_{key}_tba") != "official sources disagree")
+        ):
             continue
         banners[key] = value
         prov[f"b_{key}"] = [PRIORITY["gachawiki"], now]
@@ -1385,7 +1432,8 @@ def _recoverable_announcement(data: dict, game_key: str, now: int, maint_start) 
     with no cached id keeps the old behaviour and never retries, and a frozen card ends it either
     way. The cache is also what makes this work on a `mode=test` run, whose state starts empty.
     """
-    if data.get("program_ts") or not game_key or not data.get("version"):
+    has_official_ts = bool(data.get("program_ts")) and "program_ts" not in (data.get("estimated") or [])
+    if has_official_ts or data.get("media_from") or data.get("program_seen") or not game_key or not data.get("version"):
         return False
     if now > int(maint_start) + CARD_FREEZE_D * 86400:
         return False                       # frozen card: nothing the lookup finds can be shown
@@ -1404,7 +1452,8 @@ def announcement_gap(record: dict, game_key: str, now: int) -> str:
     operator can act on, so the run summary can say it (once) instead.
     """
     data = (record or {}).get("data") or {}
-    if data.get("program_ts") or data.get("program_seen") or data.get("media_from"):
+    has_official_ts = bool(data.get("program_ts")) and "program_ts" not in (data.get("estimated") or [])
+    if has_official_ts or data.get("program_seen") or data.get("media_from"):
         return ""                                  # the card has (or had) its announcement
     start = data.get("maint_start_ts")
     if not start or not TS_MIN <= int(start) <= TS_MAX:
@@ -1558,13 +1607,15 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
                 same5 = prov.get(f"b_{key5}") == [PRIORITY.get(src, 10), ts]
                 if five and _official_owned(prov, key5) and not same5:
                     # Final. A different 5★ from a later official post is logged once, not applied.
-                    if _names(banners.get(key5)) != _names(five):
+                    if not _same_names(banners.get(key5), five):
                         conflict = ", ".join(five)
                         if prov.get(f"b_{key5}_conflict") != conflict and notes is not None:
                             notes.append(f"⚠️ {game.short} {version} phase {phase}: a later notice names "
                                          f"{conflict}, the locked official name is kept. Correct it via "
                                          "config/overrides.json if the notice is right.")
                         prov[f"b_{key5}_conflict"] = conflict
+                    else:
+                        prov.pop(f"b_{key5}_conflict", None)
                 elif five and (same5 or _official_may_write(prov, key5)):
                     if _names(banners.get(key5)) != _names(five):
                         prov[f"b_{key5}_by"] = ["official"]           # a new name from the notice
@@ -1673,8 +1724,9 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
         if key in override:
             ts = _to_ts(override[key])
             if ts:
+                if data.get(key) != ts or prov.get(key, [0])[0] != PRIORITY["override"]:
+                    prov[key] = [PRIORITY["override"], now]
                 data[key] = ts
-                prov[key] = [PRIORITY["override"], now]
                 _unmark_estimated(data, key)
     for key in ("program_name", "version_name", "compensation"):
         if override.get(key):
@@ -1700,8 +1752,9 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
         banners = dict(data.get("banners") or {})
         for k, v in override["banners"].items():
             if isinstance(v, list):
+                if banners.get(k) != v or prov.get(f"b_{k}", [0])[0] != PRIORITY["override"]:
+                    prov[f"b_{k}"] = [PRIORITY["override"], now]
                 banners[k] = v
-                prov[f"b_{k}"] = [PRIORITY["override"], now]
                 if v:                                  # a human-set name is confirmed and locked
                     data["banners_settled"] = sorted(banner_settled(data) | {k})
         data["banners"] = banners
@@ -2047,6 +2100,41 @@ def newly_locked_lines(before: dict, after: dict, prov: dict) -> list[str]:
     return lines
 
 
+def _persist_live_program_seed(ctx, game: Game, ver: str, data: dict, now: int) -> None:
+    """Persist an official X Special Program / Broadcast tweet discovered on the live Nitter
+    timeline directly into `program_announcements.json` on the first run that locks the card.
+
+    Previously only fallback lookups in `XClient.program_tweet()` called `save_program_seed()`,
+    so timely announcements caught live on the 5-minute poll (such as Genshin Impact 7.2 tweet
+    2112755760107081755 on 2026-10-21) were never written to `program_announcements.json` and
+    aged out of Nitter a few days later."""
+    if ctx.settings.test_mode or not data.get("announcement_locked") or data.get("announcement_source") != "x":
+        return
+    url = str(data.get("title_url") or "")
+    m = re.search(r"https?://(?:x|twitter)\.com/([A-Za-z0-9_]+)/status/(\d{15,25})", url)
+    if not m:
+        return
+    account, tid = m.group(1), m.group(2)
+    entry = {
+        "id": tid,
+        "account": account,
+        "url": f"https://x.com/{account}/status/{tid}",
+        "posted_ts": int(data.get("announcement_ts") or now),
+        "image": (data.get("images") or [""])[0],
+        "found_at": int(now),
+    }
+    state_path = getattr(ctx.state, "path", None)
+    seed_path = None
+    if state_path is not None:
+        try:
+            if state_path.resolve() != (CONFIG_DIR.parent / "state" / "state.json").resolve():
+                seed_path = state_path.parent / "program_announcements.json"
+        except OSError:
+            seed_path = state_path.parent / "program_announcements.json"
+    from .sources.twitter import save_program_seed
+    save_program_seed(game.key, ver, entry, path=seed_path)
+
+
 async def _handle_version(ctx, game: Game, ver: str, extracts: list[Extract], records: dict,
                           override: dict, live_info: dict, bootstrapped: bool,
                           estimates: dict | None = None, media: dict | None = None,
@@ -2058,6 +2146,7 @@ async def _handle_version(ctx, game: Game, ver: str, extracts: list[Extract], re
     data = merge(game, ver, extracts, record, override, live_info, now, notes, estimates, media,
                  banner_feed, lead_h=observed_lead_h(records), records=records, wiki=wiki,
                  calendar=(record.get("calendar") or {}).get("banners"))
+    _persist_live_program_seed(ctx, game, ver, data, now)
     ctx.report.extend(notes)
     before = record.get("data") or {}      # merge() copies; record["data"] is reassigned below
     changed_fields = [lbl for key, lbl in CARD_FIELDS if before.get(key) != data.get(key)] if before else []

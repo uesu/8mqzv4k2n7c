@@ -63,8 +63,56 @@ async def fetch_items(fetcher: Fetcher, game: Game, want: Callable[[str], bool],
     return out
 
 
+def _extract_media_entry(section: dict, keys: tuple[str, ...]) -> tuple[str, dict]:
+    """Return `(raw_url, asset_meta)` preserving query strings and binding metadata."""
+    cfg = section.get("config") if isinstance(section.get("config"), dict) else {}
+    section_hash = str(
+        cfg.get("indexFileMd5")
+        or section.get("indexFileMd5")
+        or cfg.get("md5")
+        or section.get("md5")
+        or section.get("hash")
+        or section.get("sha256")
+        or section.get("etag")
+        or ""
+    ).strip()
+    section_size = str(cfg.get("size") or section.get("size") or section.get("fileSize") or "").strip()
+    full_ver = str(section.get("version") or cfg.get("version") or "").strip()
+
+    for key in keys:
+        val = section.get(key)
+        if isinstance(val, str) and val.strip():
+            meta = {
+                "full_version": full_ver,
+                "hash": str(section.get(f"{key}Md5") or section.get(f"{key}_md5") or section_hash).strip(),
+                "size": str(section.get(f"{key}Size") or section.get(f"{key}_size") or section_size).strip(),
+                "asset_id": str(section.get(f"{key}Id") or section.get(f"{key}_id") or section.get("id") or "").strip(),
+            }
+            return val.strip(), {k: v for k, v in meta.items() if v}
+        if isinstance(val, dict) and isinstance(val.get("url"), str) and val["url"].strip():
+            meta = {
+                "full_version": str(val.get("version") or full_ver).strip(),
+                "hash": str(val.get("md5") or val.get("hash") or val.get("sha256") or val.get("etag") or section_hash).strip(),
+                "size": str(val.get("size") or val.get("fileSize") or section_size).strip(),
+                "asset_id": str(val.get("id") or section.get("id") or "").strip(),
+            }
+            return val["url"].strip(), {k: v for k, v in meta.items() if v}
+    return "", {}
+
+
+def _launcher_media_fields(section: dict | None) -> tuple[str, dict, str, dict]:
+    """Extract optional structured video/artwork URLs + metadata without altering signed queries."""
+    if not isinstance(section, dict):
+        return "", {}, "", {}
+    video, video_meta = _extract_media_entry(section, ("bgVideo", "videoUrl", "video_url", "video"))
+    artwork, artwork_meta = _extract_media_entry(
+        section, ("background", "bgImage", "imageUrl", "image_url", "poster", "cover", "image")
+    )
+    return video, video_meta, artwork, artwork_meta
+
+
 def parse_launcher_index(data: dict) -> dict:
-    """{'live': '3.6', 'pre': '3.7' | None} from the Kuro launcher index.json."""
+    """{'live': '3.6', 'pre': '3.7' | None} (+ optional structured launch media) from index.json."""
     if not isinstance(data, dict):
         return {}
     default = data.get("default") or {}
@@ -73,7 +121,31 @@ def parse_launcher_index(data: dict) -> dict:
     pre = None
     if isinstance(pre_obj, dict) and pre_obj:
         pre = short_version(pre_obj.get("version") or (pre_obj.get("config") or {}).get("version"))
-    return {"live": live, "pre": pre}
+    out: dict = {"live": live, "pre": pre}
+    pre_video, pre_vmeta, pre_art, pre_ameta = _launcher_media_fields(pre_obj if isinstance(pre_obj, dict) else None)
+    live_video, live_vmeta, live_art, live_ameta = _launcher_media_fields(default if isinstance(default, dict) else None)
+    top_video, top_vmeta, top_art, top_ameta = _launcher_media_fields(data)
+    if pre and (pre_video or pre_art):
+        out["pre_media"] = {
+            "version": pre,
+            "video": pre_video,
+            "video_meta": {**pre_vmeta, "version": pre, "slot": "predownload"} if pre_video else {},
+            "artwork": pre_art,
+            "artwork_meta": {**pre_ameta, "version": pre, "slot": "predownload"} if pre_art else {},
+        }
+    if live and (live_video or live_art or top_video or top_art):
+        chosen_video = live_video or top_video
+        chosen_vmeta = live_vmeta if live_video else top_vmeta
+        chosen_art = live_art or top_art
+        chosen_ameta = live_ameta if live_art else top_ameta
+        out["live_media"] = {
+            "version": live,
+            "video": chosen_video,
+            "video_meta": {**chosen_vmeta, "version": live, "slot": "default"} if chosen_video else {},
+            "artwork": chosen_art,
+            "artwork_meta": {**chosen_ameta, "version": live, "slot": "default"} if chosen_art else {},
+        }
+    return out
 
 
 async def launcher_versions(fetcher: Fetcher) -> dict:

@@ -85,6 +85,36 @@ def sample_payloads(kind: str = "all", game: str = "", *, mark: bool = False,
                         author="Official source (sample)")
             for i, payload in enumerate(news_payloads(games[key], item)):
                 out.append(("news", f"news_{key}_{i + 1}", payload))
+    if kind == "maintenance":
+        from .cards import maintenance_payload
+
+        sample_versions = {
+            "genshin": ("7.2", 1793570400, 1793725200, 1793743200),
+            "starrail": ("4.7", 1794013200, 1794157200, 1794175200),
+            "zzz": ("3.3", 1792382400, 1792533600, 1792551600),
+            "wuwa": ("3.7", 1790560800, 1790712000, 1790737200),
+            "hna": ("1.0", 1795000000, 1795140000, None),
+        }
+        for key, (ver, pre_ts, start_ts, end_ts) in sample_versions.items():
+            if game and key != game:
+                continue
+            media = "https://example.com/sample-launch.mp4" if key != "hna" else None
+            out.append((
+                "maintenance",
+                f"maintenance_{key}_preload",
+                maintenance_payload(
+                    games[key], ver, "preload", start_ts=pre_ts,
+                    ping=_ping("maintenance", key), media_url=media,
+                ),
+            ))
+            out.append((
+                "maintenance",
+                f"maintenance_{key}_start",
+                maintenance_payload(
+                    games[key], ver, "maintenance", start_ts=start_ts, end_ts=end_ts,
+                    ping=_ping("maintenance", key), media_url=media,
+                ),
+            ))
     if mark:
         out = [(f, n, mark_test(p)) for f, n, p in out]
     return out
@@ -95,8 +125,8 @@ async def cmd_test_card(args) -> int:
 
     from .discord import WebhookClient
     settings = load_settings()
-    if args.kind == "news":
-        print("News samples are preview-only; use preview --kind news. No messages sent.")
+    if args.kind in ("news", "maintenance"):
+        print(f"{args.kind.title()} samples are preview-only; use preview --kind {args.kind}. No messages sent.")
         return 0
     rc = 0
     async with aiohttp.ClientSession() as session:
@@ -178,7 +208,12 @@ def cmd_preview(args) -> int:
         problems = validate_payload(payload)
         (out / f"{name}.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
         print(f"{name}.json  {'OK' if not problems else 'PROBLEMS: ' + '; '.join(problems)}")
-        group = {"schedule": "Schedule cards", "codes": "Code cards", "news": "Official news samples"}[feature]
+        group = {
+            "schedule": "Schedule cards",
+            "codes": "Code cards",
+            "news": "Official news samples",
+            "maintenance": "Pre-Load & Maintenance samples",
+        }[feature]
         cards.append((group, name, payload))
     if args.kind in ("all", "codes") and (not args.game or args.game == "starrail"):
         # how a posted card looks after the automatic silent edit once a code has expired
@@ -204,7 +239,7 @@ def cmd_speculate(args) -> int:
     """
     from datetime import datetime, timezone
 
-    from .schedule import observed_starts, predict_cycle
+    from .schedule import observed_lead_h, observed_starts, predict_cycle
     from .state import State
     settings, games = load_settings(), load_games()
     state = State.load(settings.state_path)
@@ -219,7 +254,7 @@ def cmd_speculate(args) -> int:
         if g.cadence is None:
             continue
         records = state.schedule_records(g.key)
-        guess = predict_cycle(g, records, now)
+        guess = predict_cycle(g, records, now, lead_h=observed_lead_h(records))
         if not guess:
             print(f"{g.short:5} {g.name:22} no prediction (no anchor, or the next cycle is "
                   "outside the 120-day horizon)")
@@ -256,29 +291,43 @@ def cmd_speculate(args) -> int:
 
 
 def cmd_validate(_args) -> int:
+    from .sources.reddit import format_reddit_feed_query
+
     settings = load_settings()
     games = load_games()
+    feed_q = format_reddit_feed_query(settings.reddit_token)
     print(f"Game-Express {build_id()} | features={sorted(settings.features) or 'NONE'} | "
           f"instance={settings.instance_name} ({settings.instance_role}) | dry_run={settings.dry_run}")
     print(f"peer_state_url={'set' if settings.peer_state_url else '—'} | X={'on' if settings.x_enabled else 'off'} "
           f"| nitter instances={len(settings.nitter_instances)} | token={'set' if settings.nitter_token else '—'}")
+    print(f"Reddit={'on' if settings.reddit_enabled else 'off'} "
+          f"| reddit instances={len(settings.reddit_instances)} | proxies={len(settings.reddit_proxies)} "
+          f"| feed_token={'set' if feed_q else ('invalid' if settings.reddit_token else '—')}")
     print(f"news={'on' if 'news' in settings.features else 'off'} | news games={','.join(sorted(settings.news_games))} "
           f"| article count cap=none "
+          f"| timestamps={'on' if settings.news_timestamps else 'off'} "
+          f"| expand full={'on' if settings.news_expand_full else 'off'} "
           f"| group long strips={'on' if settings.news_group_long_strips else 'off'} | dedicated destinations only")
+    print(f"maintenance={'on' if 'maintenance' in settings.features else 'off'} "
+          f"| maintenance games={','.join(sorted(settings.maintenance_games)) or 'none'} | dedicated destinations only")
     print("emoji: " + ", ".join(f"{k}={'✓' if v else '—'}" for k, v in settings.emoji.items()))
     ok = True
     from .discord import WEBHOOK_RE, webhook_fingerprint
     for g in games.values():
         on = game_is_on(g, settings)
         cols = []
-        for feature in ("schedule", "codes", "news"):
+        for feature in ("schedule", "codes", "news", "maintenance"):
             secret, url = settings.webhook_source(feature, g.key)
             hook = f"✓ {secret}" if url else "— none"
             if url and not WEBHOOK_RE.match(url):
                 hook = f"✗ {secret} is not a webhook URL"
                 ok = False
             mirror = ""
-            msecret, murl = settings.mirror_webhook_source(feature, g.key) if feature != "news" else ("", None)
+            msecret, murl = (
+                settings.mirror_webhook_source(feature, g.key)
+                if feature not in ("news", "maintenance")
+                else ("", None)
+            )
             if murl and not WEBHOOK_RE.match(murl):
                 mirror = f" | ✗ {msecret} is not a webhook URL"
                 ok = False
@@ -290,21 +339,426 @@ def cmd_validate(_args) -> int:
             cols.append(f"{feature}[{hook} | {ping_text or 'no ping'}{mirror}]")
         flag = "✓" if on else "·"
         note = "" if on else (f" (off; auto-on {g.auto_enable_on})" if g.auto_enable_on else " (off)")
-        print(f"  {flag} {g.key:9} {g.name:22}{note}\n      {cols[0]}\n      {cols[1]}\n      {cols[2]}\n"
-              f"      X={','.join(g.x_accounts) or '—'} code_sources={','.join(g.codes.get('sources', [])) or '—'} "
+        print(f"  {flag} {g.key:9} {g.name:22}{note}\n      {cols[0]}\n      {cols[1]}\n      {cols[2]}\n      {cols[3]}\n"
+              f"      X={','.join(g.x_accounts) or '—'} Reddit={','.join(g.subreddits) or '—'} "
+              f"code_sources={','.join(g.codes.get('sources', [])) or '—'} "
               f"4★/phase={g.four_star_count or 'count not set (set four_star_count at launch)'}")
-    for name in ("PING_ROLE_ID", "PING_SCHEDULE", "PING_CODES"):
+    valid_bools = {"1", "true", "yes", "on", "y", "0", "false", "no", "off", "n"}
+    if settings.reddit_token and not feed_q:
+        print("  ! REDDIT_FEED_TOKEN has no usable 'feed=...' key "
+              "(expected https://old.reddit.com/.rss?feed=<40-char-key>&user=<username>, "
+              "https://www.reddit.com/.rss?feed=<40-char-key>&user=<username>, or <40-char-key>&user=<username>)")
+        ok = False
+    for name in (
+        "REDDIT_ENABLED",
+        "NEWS_ENABLED",
+        "NEWS_TIMESTAMPS",
+        "NEWS_EXPAND_FULL",
+        "NEWS_GROUP_LONG_STRIPS",
+        "MAINTENANCE_ENABLED",
+    ):
+        raw_val = str(settings.env.get(name, "") or "").strip()
+        if raw_val and raw_val.lower() not in valid_bools:
+            print(f"  ! {name}={raw_val!r} is not a recognized boolean ('0'/'1', 'false'/'true')")
+            ok = False
+    for name, gset in (("NEWS_GAMES", settings.news_games), ("MAINTENANCE_GAMES", settings.maintenance_games)):
+        unknown = sorted(k for k in gset if k not in games)
+        if unknown:
+            print(f"  ! {name} contains unknown game key(s): {', '.join(unknown)}")
+            ok = False
+    ping_env_names = ["PING_ROLE_ID", "PING_SCHEDULE", "PING_CODES", "PING_MAINTENANCE"]
+    for g in games.values():
+        for slug_name in settings._game_slugs(g.key):
+            ping_env_names.append(f"PING_MAINTENANCE_{slug_name}")
+    for name in ping_env_names:
         v = str(settings.env.get(name, "") or "")
         if v and parse_ping(v) is not None and not parse_ping(v) and v.lower() not in ("none", "off", "no", "false", "0", "-"):
             print(f"  ! {name}={v!r} has no valid role id (expected digits, 'everyone', 'here' or 'none')")
             ok = False
-    for _f, name, payload in sample_payloads():
-        problems = validate_payload(payload)
-        if problems:
-            ok = False
-            print(f"  ! sample {name}: {'; '.join(problems)}")
+    for check_kind in ("all", "news", "maintenance"):
+        for _f, name, payload in sample_payloads(check_kind):
+            problems = validate_payload(payload)
+            if problems:
+                ok = False
+                print(f"  ! sample {name}: {'; '.join(problems)}")
     print("config OK" if ok else "config has problems (see the '!' / '✗' lines)")
     return 0 if ok else 1
+
+
+def cmd_benchmark(args) -> int:
+    """Reproducible offline micro-benchmark for disabled bypass, timestamp scanning,
+    human vs Discord epoch formatting, and expanded long-article pagination."""
+    import platform
+    import statistics
+    import subprocess
+    from datetime import datetime, timezone
+    from unittest.mock import patch
+
+    from . import news_timestamps
+    from .cards import news_payloads
+    from .models import Item
+    from .news_timestamps import convert_news_timestamps
+
+    repo_root = Path(__file__).resolve().parent.parent
+    try:
+        commit_sha = subprocess.check_output(
+            ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+        tree_clean = subprocess.check_output(
+            ["git", "-C", str(repo_root), "status", "--porcelain"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip() == ""
+    except Exception:
+        commit_sha = build_id()
+        tree_clean = False
+
+    games = load_games()
+    iters = max(20, int(getattr(args, "iterations", 200) or 200))
+    cmd_str = f"python -m gamexpress benchmark --iterations {iters}"
+
+    short_body = (
+        "Dear Proxies,\n"
+        "Version 3.3 Pre-Installation begins on September 30, 12:00 (server time) — "
+        "October 20, 14:59 (server time).\n"
+        "Special Program airs September 12, 2026, 08:00 (UTC-4). "
+        "Event window: From June 22, 2026 12:00 (UTC+8) to July 3, 2026 23:59 (UTC+8).\n"
+        "Reference link: https://hoyo.link/example and inline code `2026/10/21 06:00 (UTC+8)`."
+    )
+    med_para = (
+        "Version 7.2 event details open on October 25, 2026 10:00 (UTC+8) with domains, "
+        "story quests, and seasonal rewards available across all regions."
+    )
+    medium_blocks = [
+        {"kind": "text", "text": "\n\n".join([med_para] * 17)},
+        {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/bench-mid.jpg"},
+        {"kind": "text", "text": "\n\n".join([med_para] * 17)},
+    ]
+    long_body = "\n\n".join([short_body] * 36)
+    short_item = Item(
+        "hoyolab", "zzz", "bench-short", "https://www.hoyolab.com/article/46863847",
+        "Version 3.3 Event & Pre-Download Details", "", 1790650000,
+        article_blocks=[
+            {"kind": "text", "text": short_body},
+            {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/bench-lead.jpg"},
+        ],
+        author="Zenless Zone Zero",
+    )
+    medium_item = Item(
+        "hoyolab", "genshin", "bench-2page", "https://www.hoyolab.com/article/47151000",
+        "Version 7.2 Event Overview", "", 1792555204,
+        article_blocks=medium_blocks,
+        author="Genshin Impact",
+    )
+    long_blocks = []
+    for idx in range(18):
+        long_blocks.append({"kind": "text", "text": (short_body + "\n\n") * 2})
+        long_blocks.append({"kind": "image", "url": f"https://hw-media-cdn-mingchao.kurogame.com/object/{idx}.gif"})
+    long_item = Item(
+        "kuro", "wuwa", "bench-long", "https://wutheringwaves.kurogames.com/en/main/news/detail/5571",
+        "Version 3.7 Patch Notes & Adjustments", "", 1791000000,
+        article_blocks=long_blocks,
+        author="Kuro Games",
+    )
+
+    # Verify default-off parity, timestamp-converter bypass, and 7000/2-page sequence before timing.
+    assert convert_news_timestamps(long_body, published_ts=1790650000, enabled=False) is long_body
+    ts_calls = 0
+    real_convert = news_timestamps.convert_news_timestamps
+
+    def _spy_convert(*c_args, **c_kwargs):
+        nonlocal ts_calls
+        ts_calls += 1
+        return real_convert(*c_args, **c_kwargs)
+
+    with patch.object(news_timestamps, "convert_news_timestamps", side_effect=_spy_convert):
+        default_short = news_payloads(games["zzz"], short_item)
+        base_short = news_payloads(games["zzz"], short_item, timestamps=False, expand_full=False)
+        default_medium = news_payloads(games["genshin"], medium_item)
+        base_medium = news_payloads(games["genshin"], medium_item, timestamps=False, expand_full=False)
+        default_long = news_payloads(games["wuwa"], long_item)
+        base_long = news_payloads(games["wuwa"], long_item, timestamps=False, expand_full=False)
+    assert ts_calls == 0
+    assert base_short == default_short
+    assert base_medium == default_medium
+    assert base_long == default_long
+    expanded_medium = news_payloads(games["genshin"], medium_item, timestamps=False, expand_full=True)
+    expanded_long = news_payloads(games["wuwa"], long_item, timestamps=False, expand_full=True)
+    assert len(base_short) == 1 and len(base_medium) == 2 and len(base_long) == 1
+    assert len(expanded_medium) == 2 and len(expanded_long) > 2
+
+    epochs = [1789214400 + i * 3600 for i in range(16)]
+    utc8 = timezone.utc
+
+    def _measure(label: str, fn) -> dict:
+        samples_us: list[float] = []
+        fn()  # warmup
+        for _ in range(iters):
+            t0 = time.perf_counter_ns()
+            fn()
+            samples_us.append((time.perf_counter_ns() - t0) / 1000.0)
+        samples_us.sort()
+        p95 = samples_us[min(len(samples_us) - 1, int(len(samples_us) * 0.95))]
+        return {
+            "case": label,
+            "iterations": iters,
+            "median_us": round(statistics.median(samples_us), 2),
+            "mean_us": round(statistics.mean(samples_us), 2),
+            "p95_us": round(p95, 2),
+        }
+
+    med_chars = sum(len(b.get("text", "")) for b in medium_blocks)
+    long_chars = sum(len(b.get("text", "")) for b in long_blocks)
+    results = [
+        _measure("token_format_16_epochs", lambda: [f"<t:{ts}:f>" for ts in epochs]),
+        _measure(
+            "human_strftime_16_epochs",
+            lambda: [datetime.fromtimestamp(ts, utc8).strftime("%b %d, %Y %H:%M UTC") for ts in epochs],
+        ),
+        _measure(
+            f"timestamp_scan_disabled_{len(long_body)}c",
+            lambda: convert_news_timestamps(long_body, published_ts=1790650000, enabled=False),
+        ),
+        _measure(
+            f"timestamp_scan_enabled_short_{len(short_body)}c",
+            lambda: convert_news_timestamps(short_body, published_ts=1790650000, enabled=True),
+        ),
+        _measure(
+            f"timestamp_scan_enabled_long_{len(long_body)}c",
+            lambda: convert_news_timestamps(long_body, published_ts=1790650000, enabled=True),
+        ),
+        _measure(
+            "short_news_render_absent_switches",
+            lambda: news_payloads(games["zzz"], short_item),
+        ),
+        _measure(
+            "short_news_render_default_off",
+            lambda: news_payloads(games["zzz"], short_item, timestamps=False, expand_full=False),
+        ),
+        _measure(
+            "short_news_render_timestamps_on",
+            lambda: news_payloads(games["zzz"], short_item, timestamps=True, expand_full=False),
+        ),
+        _measure(
+            f"medium_news_render_2pages_under_7000_off_{med_chars}c",
+            lambda: news_payloads(games["genshin"], medium_item, timestamps=False, expand_full=False),
+        ),
+        _measure(
+            f"long_news_render_expand_off_1msg_{long_chars}c",
+            lambda: news_payloads(games["wuwa"], long_item, timestamps=False, expand_full=False),
+        ),
+        _measure(
+            f"long_news_render_expand_on_{len(expanded_long)}pages_{long_chars}c",
+            lambda: news_payloads(games["wuwa"], long_item, timestamps=False, expand_full=True),
+        ),
+        _measure(
+            f"long_news_render_both_on_{len(expanded_long)}pages",
+            lambda: news_payloads(games["wuwa"], long_item, timestamps=True, expand_full=True),
+        ),
+    ]
+
+    def _media_urls(payloads: list[dict]) -> list[str]:
+        seen: list[str] = []
+        for p in payloads:
+            for co in p.get("components") or []:
+                for child in co.get("components") or []:
+                    if child.get("type") == 12:
+                        for item_obj in child.get("items") or []:
+                            u = (item_obj.get("media") or {}).get("url") or ""
+                            if u and u not in seen:
+                                seen.append(u)
+        return seen
+
+    request_counts = {
+        "basis": "derived_from_rendered_payloads_not_live_http",
+        "short_default_off": {
+            "payloads": len(base_short),
+            "distinct_media_preflights": len(_media_urls(base_short)),
+            "webhook_posts": len(base_short),
+            "min_pacing_s": round(max(0, len(base_short) - 1) * 1.2, 2),
+        },
+        "medium_under_7000_default_off": {
+            "payloads": len(base_medium),
+            "distinct_media_preflights": len(_media_urls(base_medium)),
+            "webhook_posts": len(base_medium),
+            "min_pacing_s": round(max(0, len(base_medium) - 1) * 1.2, 2),
+        },
+        "long_expand_off": {
+            "payloads": len(base_long),
+            "distinct_media_preflights": len(_media_urls(base_long)),
+            "webhook_posts": len(base_long),
+            "min_pacing_s": round(max(0, len(base_long) - 1) * 1.2, 2),
+        },
+        "long_expand_on": {
+            "payloads": len(expanded_long),
+            "distinct_media_preflights": len(_media_urls(expanded_long)),
+            "webhook_posts": len(expanded_long),
+            "min_pacing_s": round(max(0, len(expanded_long) - 1) * 1.2, 2),
+        },
+    }
+
+    def _canon_sha256(obj) -> str:
+        import hashlib
+
+        raw = json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        return hashlib.sha256(raw).hexdigest()
+
+    # Exact canonical JSON SHA-256 digests generated by pre-PR main (1e071d82eba82baa0a2977f33d6f8180d3677aaf).
+    main_base_rev = "1e071d82eba82baa0a2977f33d6f8180d3677aaf"
+    main_1e071d8_digests = {
+        "short": "a9de6cf9e4376f8c4b66dfa870433a31950dbc7b359bf107524b53f18be659f4",
+        "medium": "e6743273e21ad0eb21371ab8912fe1870a709abf5d324e370eb8939891a3ca38",
+        "long": "b308b350f71851d7fab703662aa24a2dac6cc05e781a0592de23a0c92859486f",
+    }
+    main_baseline_sha256_equal = (
+        _canon_sha256(default_short) == main_1e071d8_digests["short"]
+        and _canon_sha256(default_medium) == main_1e071d8_digests["medium"]
+        and _canon_sha256(default_long) == main_1e071d8_digests["long"]
+    )
+    assert main_baseline_sha256_equal
+    main_live_code_equal: bool | None = None
+    if subprocess.run(
+        ["git", "cat-file", "-e", f"{main_base_rev}^{{commit}}"],
+        cwd=ROOT,
+        capture_output=True,
+    ).returncode == 0:
+        import tarfile
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp_main:
+            arch = subprocess.run(
+                ["git", "archive", main_base_rev, "gamexpress", "config"],
+                cwd=ROOT,
+                capture_output=True,
+                check=True,
+            )
+            with tarfile.open(fileobj=__import__("io").BytesIO(arch.stdout)) as tf:
+                tf.extractall(tmp_main, **({"filter": "data"} if sys.version_info >= (3, 12) else {}))
+            probe_code = (
+                "import hashlib, json, sys\n"
+                "from gamexpress.config import load_games\n"
+                "from gamexpress.cards import news_payloads\n"
+                "from gamexpress.models import Item\n"
+                "inp = json.loads(sys.stdin.read())\n"
+                "games = load_games()\n"
+                "out = {}\n"
+                "for k, spec in inp.items():\n"
+                "    it = Item(spec['source'], spec['game'], spec['id'], spec['url'], spec['title'], '', "
+                "spec['published_ts'], article_blocks=spec['article_blocks'], author=spec['author'])\n"
+                "    raw = json.dumps(news_payloads(games[spec['game']], it), sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode('utf-8')\n"
+                "    out[k] = hashlib.sha256(raw).hexdigest()\n"
+                "print(json.dumps(out))\n"
+            )
+            probe_in = {
+                "short": {
+                    "source": short_item.source, "game": short_item.game, "id": short_item.id,
+                    "url": short_item.url, "title": short_item.title, "published_ts": short_item.published_ts,
+                    "article_blocks": short_item.article_blocks, "author": short_item.author,
+                },
+                "medium": {
+                    "source": medium_item.source, "game": medium_item.game, "id": medium_item.id,
+                    "url": medium_item.url, "title": medium_item.title, "published_ts": medium_item.published_ts,
+                    "article_blocks": medium_item.article_blocks, "author": medium_item.author,
+                },
+                "long": {
+                    "source": long_item.source, "game": long_item.game, "id": long_item.id,
+                    "url": long_item.url, "title": long_item.title, "published_ts": long_item.published_ts,
+                    "article_blocks": long_item.article_blocks, "author": long_item.author,
+                },
+            }
+            live_proc = subprocess.run(
+                [sys.executable, "-c", probe_code],
+                cwd=tmp_main,
+                input=json.dumps(probe_in),
+                text=True,
+                capture_output=True,
+                check=True,
+            )
+            live_digests = json.loads(live_proc.stdout)
+            main_live_code_equal = (
+                _canon_sha256(default_short) == live_digests["short"]
+                and _canon_sha256(default_medium) == live_digests["medium"]
+                and _canon_sha256(default_long) == live_digests["long"]
+            )
+            assert main_live_code_equal
+    main_comparison_mode = (
+        "live_1e071d8_code_and_stored_sha256"
+        if main_live_code_equal is not None
+        else "stored_sha256_only_shallow_clone"
+    )
+
+    report = {
+        "revision": commit_sha,
+        "working_tree_clean": tree_clean,
+        "python": platform.python_version(),
+        "platform": platform.platform(),
+        "command": cmd_str,
+        "iterations": iters,
+        "short_input_chars": len(short_body),
+        "medium_input_chars": med_chars,
+        "long_input_chars": long_chars,
+        "long_inline_media": sum(1 for b in long_blocks if b["kind"] == "image"),
+        "default_short_messages": len(base_short),
+        "default_medium_messages": len(base_medium),
+        "default_long_messages": len(base_long),
+        "expanded_long_messages": len(expanded_long),
+        "disabled_output_equal": (
+            base_short == default_short
+            and base_medium == default_medium
+            and base_long == default_long
+        ),
+        "main_baseline_sha256_equal": main_baseline_sha256_equal,
+        "main_live_code_equal": main_live_code_equal,
+        "main_comparison_mode": main_comparison_mode,
+        "timestamp_converter_calls_when_off": ts_calls,
+        "request_counts": request_counts,
+        "benchmarks": results,
+    }
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+        return 0
+    tree_state = "clean" if tree_clean else "uncommitted-edits"
+    print(f"Revision: {commit_sha} ({tree_state}) | Command: {cmd_str}")
+    print(f"Environment: Python {report['python']} on {report['platform']}")
+    print(
+        f"Fixtures: short={report['short_input_chars']}c+1img ({report['default_short_messages']} msg) | "
+        f"medium={report['medium_input_chars']}c+1img ({report['default_medium_messages']} msgs <=7000 policy) | "
+        f"long={report['long_input_chars']}c+{report['long_inline_media']}imgs "
+        f"(off={report['default_long_messages']} excerpt msg -> expand_full={report['expanded_long_messages']} pages)"
+    )
+    print(
+        f"Default-off checks: output_equal={report['disabled_output_equal']} | "
+        f"main_1e071d8_sha256_equal={main_baseline_sha256_equal} | "
+        f"main_live_code_equal={main_live_code_equal} ({main_comparison_mode}) | "
+        f"timestamp_parser_calls={ts_calls} | extra_feature_http_or_webhook=0"
+    )
+    print(
+        f"Derived protocol counts (mocked/offline, not live network): "
+        f"short(off)={request_counts['short_default_off']['payloads']} msg / "
+        f"{request_counts['short_default_off']['distinct_media_preflights']} media GET / "
+        f"{request_counts['short_default_off']['webhook_posts']} POST | "
+        f"medium<=7000(off)={request_counts['medium_under_7000_default_off']['payloads']} msgs / "
+        f"{request_counts['medium_under_7000_default_off']['distinct_media_preflights']} media GET / "
+        f"{request_counts['medium_under_7000_default_off']['webhook_posts']} POSTs "
+        f"(+{request_counts['medium_under_7000_default_off']['min_pacing_s']:.1f}s min pacing) | "
+        f"long>7000(off)={request_counts['long_expand_off']['payloads']} excerpt msg / "
+        f"{request_counts['long_expand_off']['distinct_media_preflights']} media GET / "
+        f"{request_counts['long_expand_off']['webhook_posts']} POST | "
+        f"long>7000(expand_full=1)={request_counts['long_expand_on']['payloads']} msgs / "
+        f"{request_counts['long_expand_on']['distinct_media_preflights']} media GETs / "
+        f"{request_counts['long_expand_on']['webhook_posts']} POSTs "
+        f"(+{request_counts['long_expand_on']['min_pacing_s']:.1f}s min pacing)"
+    )
+    print(f"{'Measured local CPU case (offline in-memory)':52} {'iters':>6} {'median µs':>11} {'mean µs':>11} {'p95 µs':>11}")
+    print("-" * 95)
+    for row in results:
+        print(
+            f"{row['case']:52} {row['iterations']:6d} "
+            f"{row['median_us']:11.2f} {row['mean_us']:11.2f} {row['p95_us']:11.2f}"
+        )
+    return 0
 
 
 async def cmd_run(_args) -> int:
@@ -317,12 +771,12 @@ def main(argv: list[str] | None = None) -> int:
     _load_dotenv()
     p = argparse.ArgumentParser(prog="python -m gamexpress", description="Game-Express monitor")
     p.add_argument("command", nargs="?", default="run",
-                   choices=["run", "test-card", "check-webhooks", "preview", "speculate", "validate"])
+                   choices=["run", "test-card", "check-webhooks", "preview", "speculate", "validate", "benchmark"])
     p.add_argument("--dry-run", action="store_true", help="build + log cards, never post")
-    p.add_argument("--only", choices=["schedule", "codes", "news"], help="run one feature")
+    p.add_argument("--only", choices=["schedule", "codes", "news", "maintenance"], help="run one feature")
     p.add_argument("--game", default="", help="restrict to one game key (e.g. starrail)")
     p.add_argument("--repost", default="", help="force a NEW post for game:version (e.g. genshin:7.2)")
-    p.add_argument("--kind", default="all", choices=["all", "schedule", "codes", "news"],
+    p.add_argument("--kind", default="all", choices=["all", "schedule", "codes", "news", "maintenance"],
                    help="test-card / check-webhooks / preview")
     p.add_argument("--ping", action="store_true", help="test-card: include your role ping (default: no ping)")
     p.add_argument("--unlaunched", action="store_true",
@@ -332,6 +786,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--verbose", action="store_true", help="speculate: also list the observed history")
     p.add_argument("--now", type=int, default=0,
                    help="speculate: pretend it is this unix time (for checking a past prediction)")
+    p.add_argument("--iterations", type=int, default=200, help="benchmark: timed repetitions per case")
+    p.add_argument("--json", action="store_true", help="benchmark: output machine-readable JSON")
     args = p.parse_args(argv)
     if args.dry_run:
         os.environ["DRY_RUN"] = "1"
@@ -348,6 +804,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_speculate(args)
     if args.command == "validate":
         return cmd_validate(args)
+    if args.command == "benchmark":
+        return cmd_benchmark(args)
     if args.command == "test-card":
         return asyncio.run(cmd_test_card(args))
     if args.command == "check-webhooks":
