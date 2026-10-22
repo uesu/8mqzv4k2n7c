@@ -880,6 +880,39 @@ def test_every_official_feed_a_game_declares_is_actually_requested():
         assert f"https://nitter.cf/{a}/rss" in urls, a
         assert f"https://xitter.cf/{a}/rss" in urls, a
 
+    # every game's declared official Reddit account AND subreddit must also be queried
+    from gamexpress.sources.reddit import RedditClient
+
+    reddit_officials = [a for g in live for a in g.reddit_official]
+    reddit_subs = [s for g in live for s in g.subreddits]
+    assert reddit_officials == [
+        "genshinimpact", "HonkaiStarRail", "ZZZ_Official",
+        "HonkaiNexusAnima", "AnantaOfficial",
+    ]
+    assert reddit_subs == [
+        "Genshin_Impact", "HonkaiStarRail", "ZZZ_Official",
+        "WutheringWaves", "HonkaiNexusAnima", "AnantaOfficial",
+    ]
+    rec3 = Rec()
+    rc = RedditClient(rec3, st)
+
+    async def pull_reddit():
+        for a in reddit_officials:
+            await rc.user(a)
+        for s in reddit_subs:
+            await rc.subreddit(s)
+
+    asyncio.run(pull_reddit())
+    r_urls = {u for u, _p in rec3.calls}
+    for a in reddit_officials:
+        assert f"https://redlib.catsarch.com/user/{a}" in r_urls, a
+        assert f"https://snoo.habedieeh.re/user/{a}" in r_urls, a
+        assert f"https://www.reddit.com/user/{a}/submitted.rss" in r_urls, a
+    for s in reddit_subs:
+        assert f"https://redlib.catsarch.com/r/{s}/new" in r_urls, s
+        assert f"https://snoo.habedieeh.re/r/{s}/new" in r_urls, s
+        assert f"https://www.reddit.com/r/{s}/new.rss" in r_urls, s
+
 
 def test_prepared_games_switch_on():
     """All six games ship ON now, but the prepared-game machinery must keep working: it is what
@@ -2267,8 +2300,10 @@ class ScriptedWebhook:
         self.edits.append((message_id, payload))
         return self.edit_results.pop(0)
 
-    async def send(self, webhook: str, payload: dict) -> SendResult:
+    async def send(self, webhook: str, payload: dict, *, stop_on_ambiguous: bool = False) -> SendResult:
         self.sends.append(payload)
+        self.stop_flags = getattr(self, "stop_flags", [])
+        self.stop_flags.append(stop_on_ambiguous)
         return self.send_results.pop(0)
 
 
@@ -2361,7 +2396,7 @@ class FanOutWebhook:
             return SendResult(False, self.status, error="channel is gone")
         return SendResult(True, 200, message_id=message_id)
 
-    async def send(self, webhook: str, payload: dict) -> SendResult:
+    async def send(self, webhook: str, payload: dict, *, stop_on_ambiguous: bool = False) -> SendResult:
         fp = webhook_fingerprint(webhook)
         self.calls.append(("POST", fp, payload))
         self._n += 1
@@ -3808,7 +3843,7 @@ def test_the_documented_nitter_fleet_size_matches_the_code():
     configured = len(DEFAULT_NITTER)
     suspended = [u for u in DEFAULT_NITTER if "xcancel" in u]      # kept last, cannot answer
     live = configured - len(suspended)
-    assert (configured, live) == (21, 20)
+    assert (configured, live) == (27, 26)
 
     if not _check_fleet_documentation(ROOT, configured, live):
         print("    INFO: fleet documentation check not applicable: all three docs absent; code fleet assertion still checked")
@@ -4091,7 +4126,7 @@ def test_when_nitter_is_silent_fxtwitter_still_answers():
     f = _NitterThenFx(nitter_body=None, fx=_fx_body())
     c = tw.XClient(f, settings())
     t = asyncio.run(c.tweet(NIT_ID, "ZZZ_EN"))
-    assert f.calls == ["nitter", "nitter", "fxtwitter"]                 # nitter.cf, then xitter.cf
+    assert f.calls == ["nitter"] * len(tw.STATUS_MIRRORS) + ["fxtwitter"]
     assert t["text"] == "fxtwitter's text" and c.source_used == {"fxtwitter": 1}
 
 
@@ -5412,6 +5447,18 @@ NITTER_SERVES_REAL_RSS = (
                           # hand-read that day, nitter.cf parity on top tweet ids; on the
                           # shitter fork's working list. TRIAL until a runner probe says
                           # otherwise.
+    "https://teapawt.org",          # rotation #7 (2026-10-22): 8/8 union handles + /status/rss,
+                                    # 493 ms avg on d420, 4cuck/teapawt .org sibling
+    "https://teapaw.org",           # rotation #7 (2026-10-22): 8/8 union handles + /status/rss,
+                                    # 548 ms avg on d420, 4cuck/teapawt .org sibling
+    "https://teapawt.net",          # rotation #7 (2026-10-22): 8/8 union handles + /status/rss,
+                                    # 578 ms avg on d420, 4cuck/teapawt .net sibling
+    "https://nitter.mie.foundation", # rotation #7 (2026-10-22): 8/8 union handles, top-id parity,
+                                    # zero refusals, native t.co expansion (shitter list). TRIAL.
+    "https://xitter.gq",            # rotation #7 (2026-10-22): 8/8 union handles + /status/rss,
+                                    # 450 ms avg on status.d420.net, 4cuck/teapawt .gq sibling
+    "https://nitter.gq",            # rotation #7 (2026-10-22): 8/8 union handles + /status/rss,
+                                    # 455 ms avg on status.d420.net, 4cuck/teapawt .gq sibling
     "https://nitter.freedit.eu",   # rotation #6 (2026-10-15): 8/8 union handles across
                                    # two days -- 5/5 News-Express accounts (2026-10-14)
                                    # plus GenshinImpact, honkaistarrail and ZZZ_EN this
@@ -5537,11 +5584,13 @@ def test_rotation_6_runner_proven_hot_path_xcopy_verdict_demotes_it():
     assert "https://xcopy.uk" not in hot, "the trial's verdict: 403 to the runners, 24/24"
     assert DEFAULT_NITTER.index("https://xcopy.uk") > DEFAULT_NITTER.index("https://nitter.kareem.one"), \
         "demoted into the runner-refused tier, beside its own signature"
-    assert DEFAULT_NITTER[4] == "https://nitter.freedit.eu", "8/8 union handles -- the fallback head"
-    assert DEFAULT_NITTER[5] == "https://nitter.gravitywell.xyz", "5/8 union, deterministic gaps"
+    assert DEFAULT_NITTER.index("https://nitter.freedit.eu") < DEFAULT_NITTER.index("https://nitter.gravitywell.xyz"), \
+        "8/8 union handles seats ahead of 5/8 deterministic gaps"
+    assert DEFAULT_NITTER.index("https://nitter.gravitywell.xyz") < DEFAULT_NITTER.index("https://tw.eir-nya.gay"), \
+        "zero-refusal union trials seat ahead of measured non-deliveries"
     assert DEFAULT_NITTER.index("https://tw.eir-nya.gay") < DEFAULT_NITTER.index("https://shitter.thepixora.com"), \
         "no-block (slow, empty) seats above flapping-403 by this round's rule"
-    assert len(DEFAULT_NITTER) == 21 and "https://xcancel.com" in DEFAULT_NITTER
+    assert len(DEFAULT_NITTER) >= 21 and "https://xcancel.com" in DEFAULT_NITTER
     for kept in ("https://nitter.cf", "https://xitter.cf", "https://xcopy.uk",
                  "https://nitter.meowing.monster", "https://nitter.miningtcup.me",
                  "https://shitter.thepixora.com", "https://tw.eir-nya.gay",
@@ -6534,7 +6583,7 @@ def test_news_full_fetch_failure_does_not_mark_or_block_later_candidate():
         assert len(ctx.webhook.sent) == 1 and any("bad" in line for line in ctx.warnings)
 
 
-def test_news_schedule_announcements_are_excluded_from_news_without_moving_codes():
+def test_news_schedule_announcements_deliver_independently_without_touching_schedule_or_codes():
     from unittest.mock import patch
 
     from gamexpress.runner import run_news
@@ -6547,8 +6596,12 @@ def test_news_schedule_announcements_are_excluded_from_news_without_moving_codes
             row = {"id": str(i), "ts": ctx.now - 10}
             with patch.object(hoyolab, "discover_news", return_value=[row]), patch.object(hoyolab, "news_article", return_value=news_item(str(i), title=title)):
                 asyncio.run(run_news(ctx))
-        assert not ctx.webhook.sent
-        assert all(rec["excluded"] == "schedule" for rec in ctx.state.news_record("genshin")["records"].values())
+        assert len(ctx.webhook.sent) == 2
+        assert all(
+            rec["status"] == "posted" and rec["messages"] and "excluded" not in rec
+            for rec in ctx.state.news_record("genshin")["records"].values()
+        )
+        assert not any("schedule-only" in line for line in ctx.report)
         assert ctx.state.data["schedule"] == {} and ctx.state.data["codes"] == {}
 
 
@@ -8122,6 +8175,6447 @@ def test_news_validate_reports_no_article_count_cap_and_no_retired_field():
     text = output.getvalue()
     assert 'article count cap=none' in text
     assert 'max articles/run=' not in text and not hasattr(s, 'news_max_posts')
+
+
+# ===========================================================================
+# Additions 1–3 comprehensive offline test suite (Sections 8A–8G & Section 9)
+# ===========================================================================
+
+
+def test_three_additions_default_off_independent_matrix_and_validation():
+    import contextlib
+    import io
+    from unittest.mock import patch
+
+    # Default absent: all three switches are strictly off; only schedule + codes active.
+    base = settings()
+    assert base.news_timestamps is False
+    assert base.news_expand_full is False
+    assert base.maintenance_enabled is False
+    assert base.features == {"schedule", "codes"}
+
+    # Explicit false tokens stay off; explicit true tokens opt in independently.
+    for falsy in ("0", "false", "no", "off", ""):
+        s = settings(NEWS_TIMESTAMPS=falsy, NEWS_EXPAND_FULL=falsy, MAINTENANCE_ENABLED=falsy)
+        assert not s.news_timestamps and not s.news_expand_full and not s.maintenance_enabled
+        assert "maintenance" not in s.features and "news" not in s.features
+
+    for truthy in ("1", "true", "yes", "on"):
+        s_ts = settings(NEWS_TIMESTAMPS=truthy)
+        assert s_ts.news_timestamps is True
+        assert s_ts.news_expand_full is False and s_ts.maintenance_enabled is False
+        assert "news" not in s_ts.features and "maintenance" not in s_ts.features
+
+        s_ex = settings(NEWS_EXPAND_FULL=truthy)
+        assert s_ex.news_expand_full is True
+        assert s_ex.news_timestamps is False and s_ex.maintenance_enabled is False
+        assert "news" not in s_ex.features and "maintenance" not in s_ex.features
+
+        s_mn = settings(MAINTENANCE_ENABLED=truthy)
+        assert s_mn.maintenance_enabled is True and "maintenance" in s_mn.features
+        assert s_mn.news_timestamps is False and s_mn.news_expand_full is False
+        assert "news" not in s_mn.features
+
+    # Maintenance-only mode works cleanly without features 1–3 (both ONLY and ENABLED_FEATURES).
+    assert settings(MAINTENANCE_ENABLED="1", ONLY="maintenance").features == {"maintenance"}
+    assert settings(MAINTENANCE_ENABLED="1", ENABLED_FEATURES="maintenance").features == {"maintenance"}
+    assert "maintenance" not in settings(ENABLED_FEATURES="maintenance").features
+    for standby in ("none", "off", "standby", "0"):
+        assert not settings(MAINTENANCE_ENABLED="1", NEWS_ENABLED="1", ENABLED_FEATURES=standby).features
+
+    # Per-game activation, isolated per-game webhooks, and scoped per-game pings.
+    s_route = settings(
+        MAINTENANCE_ENABLED="1",
+        MAINTENANCE_GAMES="hsr,zzz,ww",
+        DISCORD_WEBHOOK_MAINTENANCE=HOOK,
+        DISCORD_WEBHOOK_URL=HOOK,
+        FORCE_WEBHOOK=HOOK,
+        DISCORD_WEBHOOK_MAINTENANCE_HSR=HOOK + "hsr",
+        DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK + "zzz",
+        PING_ROLE_ID="111111111111111111",
+        PING_MAINTENANCE_ZZZ="1296268365593186426",
+        PING_MAINTENANCE_HSR="none",
+    )
+    assert s_route.maintenance_games == {"starrail", "zzz", "wuwa"}
+    assert settings(MAINTENANCE_ENABLED="1").maintenance_games == set()
+    assert s_route.webhook("maintenance", "starrail") == HOOK + "hsr"
+    assert s_route.webhook("maintenance", "zzz") == HOOK + "zzz"
+    assert s_route.webhook("maintenance", "genshin") is None
+    assert s_route.webhook("maintenance", "wuwa") is None
+    assert s_route.ping("maintenance", "zzz").text == "<@&1296268365593186426>"
+    assert s_route.ping("maintenance", "starrail").text == ""
+    # Global schedule PING_ROLE_ID never leaks onto unconfigured per-game maintenance routes.
+    assert s_route.ping("maintenance", "genshin").text == ""
+    assert settings(PING_MAINTENANCE_ZZZ="1296268365593186426", NO_PING="1").ping("maintenance", "zzz").text == ""
+
+    # Invalid configuration values are flagged cleanly by `gamexpress validate`.
+    for bad_env in (
+        {"NEWS_TIMESTAMPS": "maybe"},
+        {"NEWS_EXPAND_FULL": "invalid"},
+        {"MAINTENANCE_ENABLED": "sometimes"},
+        {"MAINTENANCE_GAMES": "wangyue"},
+        {"DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "https://example.com/not-discord"},
+        {"PING_MAINTENANCE_ZZZ": "not-a-snowflake"},
+    ):
+        buf = io.StringIO()
+        with patch.object(gxmain, "load_settings", return_value=settings(**bad_env)), contextlib.redirect_stdout(buf):
+            assert gxmain.cmd_validate(None) == 1, bad_env
+
+
+def test_news_timestamps_explicit_tz_server_time_rollover_ranges_and_exclusions():
+    from gamexpress.news_timestamps import convert_news_timestamps
+
+    # Representative investigated fixtures across GI, HSR, ZZZ, WuWa, and HNA:
+    assert convert_news_timestamps("September 12, 2026, 08:00 (UTC-4)", published_ts=1789000000, enabled=True) == "<t:1789214400:f>"
+    assert (
+        convert_news_timestamps(
+            "Preload September 24, 14:00 (UTC+8)\nMaintenance September 28, 06:00 (UTC+8)",
+            published_ts=1789300000,
+            enabled=True,
+        )
+        == "Preload <t:1790229600:f>\nMaintenance <t:1790546400:f>"
+    )
+    assert (
+        convert_news_timestamps(
+            "After the Version 3.2 update – 2026/09/30 11:59 (server time)",
+            published_ts=1789900000,
+            enabled=True,
+        )
+        == "After the Version 3.2 update – <t:1790740740:f>"
+    )
+    assert (
+        convert_news_timestamps(
+            "September 30, 12:00 — October 20, 14:59 server time",
+            published_ts=1790650000,
+            enabled=True,
+        )
+        == "<t:1790740800:f> — <t:1792479540:f>"
+    )
+    assert convert_news_timestamps("September 19, 19:00 UTC+8", published_ts=1789182000, enabled=True) == "<t:1789815600:f>"
+    # HNA: left untouched when timezone is absent; converted cleanly when trailing UTC+8 is present.
+    assert convert_news_timestamps("July 9, 10:00 — July 27, 18:00", published_ts=1783300000, enabled=True) == "July 9, 10:00 — July 27, 18:00"
+    assert (
+        convert_news_timestamps("July 9, 10:00 — July 27, 18:00 (UTC+8)", published_ts=1783300000, enabled=True)
+        == "<t:1783562400:f> — <t:1785146400:f>"
+    )
+    assert convert_news_timestamps("10/19 22:59 (UTC+8)", published_ts=1792300000, enabled=True) == "<t:1792421940:f>"
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 – 11:00 (UTC+8)", published_ts=1790000000, enabled=True)
+        == "<t:1790546400:f> – <t:1790564400:f>"
+    )
+
+    # Year rollover: Dec -> Jan, early Jan -> late Dec, Dec-to-Jan span, and missing published_ts guard.
+    dec_pub = 1797724800  # 2026-12-20 00:00 UTC
+    jan_pub = 1798848000  # 2027-01-02 00:00 UTC
+    assert convert_news_timestamps("January 5, 06:00 (UTC+8)", published_ts=dec_pub, enabled=True) == "<t:1799100000:f>"
+    assert convert_news_timestamps("December 28, 12:00 (UTC+8)", published_ts=jan_pub, enabled=True) == "<t:1798430400:f>"
+    assert (
+        convert_news_timestamps("December 25, 10:00 — January 12, 03:59 (UTC+8)", published_ts=dec_pub, enabled=True)
+        == "<t:1798164000:f> — <t:1799697540:f>"
+    )
+    assert convert_news_timestamps("October 9, 19:30 (UTC+8)", published_ts=0, enabled=True) == "October 9, 19:30 (UTC+8)"
+
+    # Date-only, after-update, approximate times, and protected non-prose remain untouched.
+    unchanged_samples = [
+        "Event Duration: 2025/06/11 – 2025/06/25 and July 9 (UTC+8)",
+        "Permanently available after the Version 3.3 update",
+        "Maintenance ends around October 21, 2026 11:00 (UTC+8) or ~2026/10/21 11:30 (server time)",
+        "Existing <t:1792533600:f>, `2026/10/21 06:00 (UTC+8)`, https://hoyo.link/2026/10/21?t=12:00",
+        "```txt\nSeptember 12, 2026, 08:00 (UTC-4)\n``` and [September 12, 2026, 08:00 (UTC-4)](https://example.com)",
+    ]
+    for sample in unchanged_samples:
+        assert convert_news_timestamps(sample, published_ts=1792300000, enabled=True) == sample
+
+
+def test_news_timestamps_disabled_bypass_source_immutability_and_schedule_isolation():
+    import copy
+    from unittest.mock import patch
+
+    from gamexpress import news_timestamps, timeparse
+
+    schedule_before = timeparse.find_datetimes("September 28, 2026 06:00 (UTC+8)")
+
+    for fixture_name, game_key in (
+        ("hoyolab_genshin_46604275_full.json", "genshin"),
+        ("hoyolab_starrail_46814308_full.json", "starrail"),
+        ("hoyolab_zzz_46604530_full.json", "zzz"),
+        ("hoyolab_zzz_46863847_full.json", "zzz"),
+    ):
+        raw = fx(fixture_name)
+        post = raw["data"]["post"]["post"]
+        item = asyncio.run(hoyolab.news_article(NewsFetcher([raw]), GAMES[game_key],
+                                                {"id": post["post_id"], "ts": post["created_at"]}))
+        frozen_item = copy.deepcopy(item)
+        expected_default = cards.news_payloads(GAMES[game_key], item)
+        with patch.object(news_timestamps, "convert_news_timestamps", side_effect=AssertionError("must bypass")):
+            actual_disabled = cards.news_payloads(GAMES[game_key], item, timestamps=False, expand_full=False)
+        assert actual_disabled == expected_default
+        enabled_out = cards.news_payloads(GAMES[game_key], item, timestamps=True, expand_full=False)
+        assert item == frozen_item
+        assert all(not cards.validate_payload(p) for p in enabled_out)
+
+    # Conversion happens before 4,000-char sizing so converted tokens never overflow a payload.
+    near_cap_body = ("Event notice text. " * 195) + "Starts September 12, 2026, 08:00 (UTC-4)."
+    near_item = news_item(body=near_cap_body)
+    rendered = cards.news_payloads(GAMES["genshin"], near_item, timestamps=True, expand_full=False)
+    assert all(not cards.validate_payload(p) for p in rendered)
+    assert "<t:1789214400:f>" in json.dumps(rendered)
+    assert timeparse.find_datetimes("September 28, 2026 06:00 (UTC+8)") == schedule_before
+
+
+def test_maintenance_precedence_holiday_shifts_unknown_end_and_no_hna_cadence():
+    from gamexpress.maintenance import resolve_version_plans
+
+    now = 1793900000
+    hsr_records = {
+        "4.6": {
+            "data": {"version": "4.6", "maint_start_ts": 1790546400, "preinstall_ts": 1790229600},
+            "prov": {"maint_start_ts": [50, 1790500000], "preinstall_ts": [50, 1790200000]},
+        }
+    }
+    # 1) Cold/cadence prediction for 4.7 is flagged estimated.
+    predicted = resolve_version_plans(GAMES["starrail"], hsr_records, [], {}, {}, now)
+    assert predicted["4.7"]["maint_estimated"] is True
+    assert predicted["4.7"]["preinstall_estimated"] is True
+
+    # 2) Explicit holiday override beats cadence prediction and preserves unknown end time when omitted.
+    holiday_ov = {"4.7": {"preinstall_ts": 1794186000, "maint_start_ts": 1794330000}}
+    with_override = resolve_version_plans(GAMES["starrail"], hsr_records, [], {}, holiday_ov, now)
+    assert with_override["4.7"]["preinstall_ts"] == 1794186000
+    assert with_override["4.7"]["maint_start_ts"] == 1794330000
+    assert with_override["4.7"]["maint_end_ts"] is None
+    assert with_override["4.7"]["maint_estimated"] is False
+
+    # 3) Official Chinese-holiday-shifted announcement overrides BOTH cadence and prior overrides.
+    official_item = Item(
+        source="hoyolab",
+        game="starrail",
+        id="49000001",
+        url="https://www.hoyolab.com/article/49000001",
+        title="Version 4.7 Update and Maintenance Notice",
+        text=(
+            "Pre-installation opens on 2026/11/10 14:00 (UTC+8).\n"
+            "Version 4.7 update maintenance begins at 2026/11/12 06:00 (UTC+8) and is estimated to take 5 hours."
+        ),
+        published_ts=now,
+    )
+    with_official = resolve_version_plans(GAMES["starrail"], hsr_records, [official_item], {}, holiday_ov, now)
+    assert with_official["4.7"]["preinstall_ts"] == 1794290400
+    assert with_official["4.7"]["maint_start_ts"] == 1794434400
+    assert with_official["4.7"]["maint_end_ts"] == 1794452400
+    assert with_official["4.7"]["maint_estimated"] is False
+
+    # 4) HNA never invents cadence predictions or unknown maintenance end times.
+    assert resolve_version_plans(GAMES["hna"], {}, [], {}, {}, now) == {}
+    hna_plans = resolve_version_plans(GAMES["hna"], {}, [], {}, {"1.0": {"maint_start_ts": now + 600}}, now)
+    assert hna_plans["1.0"]["maint_start_ts"] == now + 600
+    assert hna_plans["1.0"]["maint_end_ts"] is None
+    assert hna_plans["1.0"]["preinstall_ts"] is None
+
+
+def test_maintenance_payload_exact_v2_template_gallery_omission_and_no_tiktok():
+    from gamexpress.config import Ping
+
+    role = Ping(roles=["1296268365593186426"])
+    pre = cards.maintenance_payload(
+        GAMES["zzz"],
+        "3.3",
+        "preload",
+        start_ts=1792382400,
+        ping=role,
+        media_url="https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/d9666bfb6df441d244dc24dfdfac5a58_8954332136235293402.webm",
+    )
+    assert not cards.validate_payload(pre)
+    assert pre["flags"] == 32768
+    assert pre["allowed_mentions"] == {"parse": [], "roles": ["1296268365593186426"]}
+    box = pre["components"][0]
+    assert box["type"] == 17 and box["accent_color"] is None
+    kids = box["components"]
+    assert [c["type"] for c in kids] == [10, 14, 10, 12, 9]
+    assert kids[0]["content"] == (
+        "## [ZZZ - 3.3] Pre-Load Started "
+        "<a:starwardlove:1483082509439733893><a:starwardspark3:1483083423290490891>\n"
+        "<@&1296268365593186426>"
+    )
+    assert kids[1] == {"type": 14, "divider": True, "spacing": 1}
+    assert kids[2]["content"] == (
+        "※ **Date Time:** <t:1792382400:f> ※ **Hour Time:** <t:1792382400:R> <a:gearfinal:1483076702551805983>"
+    )
+    assert kids[3] == {
+        "type": 12,
+        "items": [
+            {
+                "media": {
+                    "url": "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/d9666bfb6df441d244dc24dfdfac5a58_8954332136235293402.webm"
+                }
+            }
+        ],
+    }
+    assert kids[4] == {
+        "type": 9,
+        "components": [
+            {
+                "type": 10,
+                "content": (
+                    "<a:starwardsleepywink:1483078175436050432> **Citlali News**\n"
+                    "-# Delivering news and official updates"
+                ),
+            }
+        ],
+        "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "url": "https://discord.gg/HyrVP9wRXu",
+            "emoji": {"id": "1483074533073223843", "name": "starwardyayy", "animated": True},
+        },
+    }
+    assert all(c["type"] != 1 for c in kids)
+    dumped = json.dumps(pre)
+    assert "tiktok" not in dumped.lower() and "minilorax" not in dumped.lower()
+
+    # Maintenance with known end_ts uses start `:f` + known end `:t` and Citlali News section footer.
+    maint_known = cards.maintenance_payload(
+        GAMES["zzz"],
+        "3.3",
+        "maintenance",
+        start_ts=1792533600,
+        end_ts=1792551600,
+        ping=role,
+        media_url="https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/d9666bfb6df441d244dc24dfdfac5a58_8954332136235293402.webm",
+    )
+    assert not cards.validate_payload(maint_known)
+    mk_kids = maint_known["components"][0]["components"]
+    assert [c["type"] for c in mk_kids] == [10, 14, 10, 12, 9]
+    assert mk_kids[2]["content"] == (
+        "※ **Date Time:** <t:1792533600:f> ※ **End Time:** <t:1792551600:t> <a:gearfinal:1483076702551805983>"
+    )
+    assert mk_kids[3] == kids[3]
+    assert mk_kids[4] == kids[4]
+    assert all(c["type"] != 1 for c in mk_kids)
+
+    # Maintenance with unknown end omits invented End Time; missing media omits type 12 gallery;
+    # empty Ping() produces no trailing newline or mention.
+    maint_no_media = cards.maintenance_payload(
+        GAMES["wuwa"], "3.7", "maintenance", start_ts=1792533600, end_ts=None, ping=Ping(), media_url=None,
+        estimated=True, estimate_source="version cadence",
+    )
+    assert not cards.validate_payload(maint_no_media)
+    mkids = maint_no_media["components"][0]["components"]
+    assert [c["type"] for c in mkids] == [10, 14, 10, 9]
+    assert "\n" not in mkids[0]["content"]
+    assert "End Time" not in mkids[2]["content"]
+    assert "Estimated (version cadence)" in mkids[2]["content"]
+
+
+def test_maintenance_media_priority_version_matching_phase2_lock_and_wuwa_signed_url():
+    from gamexpress.maintenance import resolve_launch_media
+    from gamexpress.sources.launcher import parse_basic_info
+
+    zzz_video = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/d9666bfb6df441d244dc24dfdfac5a58_8954332136235293402.webm"
+    zzz_webp = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/7fed3cc9957dc9d9ee124489ca986432_2474341198014569023.webp"
+    zzz_prog = "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
+    zzz_32_launch = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/09/07/4cce94f51e9c284d57aca5b1e8eb4402_2004184150440516738.webm"
+    zzz_32_phase2 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/09/28/b0a00690fb2c2a6b8d475a281bfd676d_1399158587140561816.webm"
+    wuwa_signed = (
+        "https://wutheringwaves.kurogames.com/website-preface/video/bg/bg-video.mp4"
+        "?auth_key=1792498595-Zn8XHdFgOx-0-655f65a3d6db767106e57a2834c05fdc"
+    )
+    wuwa_renewed = (
+        "https://wutheringwaves.kurogames.com/website-preface/video/bg/bg-video.mp4"
+        "?auth_key=1792600000-RenewedTok-0-abcdef1234567890abcdef1234567890"
+    )
+    pins = {"zzz": {"3.3": {"image": zzz_prog}}, "wuwa": {"3.7": {"image": "https://pbs.twimg.com/media/HR70hTAaoAA8Dzz.jpg?name=orig"}}}
+    raw_info = {
+        "data": {
+            "game_info_list": [
+                {
+                    "game": {"id": "U5hbdsT9W7", "biz": "nap_global"},
+                    "backgrounds": [{"video": {"url": zzz_video}, "background": {"url": zzz_webp}}],
+                }
+            ]
+        }
+    }
+    binfo = parse_basic_info(raw_info)
+
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = make_ctx(Path(directory) / "state.json", now=1792382500)
+        plan_33 = {"preinstall_ts": 1792382400, "maint_start_ts": 1792533600, "schedule_images": [], "override": {}}
+
+        # Wrong live launcher branch (still 3.2, pre=None) must NOT claim 3.2 media for 3.3 -> falls back to tier 3.
+        ctx.versions["zzz"] = {"live": "3.2", "pre": None}
+        allowed = {zzz_video, zzz_webp, zzz_prog}
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=(u in allowed)))
+        tier, url = asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins))
+        assert (tier, url) == (3, zzz_prog)
+
+        # Matching launcher `pre == 3.3`: Priority 1 video -> Priority 2 WebP -> Priority 3 X art -> Priority 4 None.
+        ctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+        vstate: dict = {}
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, vstate, basic_info=binfo, program_pins=pins)) == (1, zzz_video)
+        assert vstate["launch_media"]["locked"] is True
+
+        allowed = {zzz_webp, zzz_prog}
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (2, zzz_webp)
+        allowed = {zzz_prog}
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (3, zzz_prog)
+        allowed = set()
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (4, None)
+
+        # ZZZ 3.2 launch lock rejects Phase II background BOTH when locked AND on cold state!
+        allowed = {zzz_32_launch, zzz_32_phase2}
+        ctx.now = 1790600000
+        ctx.versions["zzz"] = {"live": "3.2", "pre": None}
+        phase2_info = parse_basic_info({
+            "data": {"game_info_list": [{"game": {"id": "U5hbdsT9W7"}, "backgrounds": [{"video": {"url": zzz_32_phase2}}]}]}
+        })
+        plan_32 = {"preinstall_ts": 1788753600, "maint_start_ts": 1788904800, "schedule_images": [], "override": {}}
+        locked_32 = {"launch_media": {"video": zzz_32_launch, "locked": True}}
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.2", plan_32, locked_32, basic_info=phase2_info, program_pins={})) == (1, zzz_32_launch)
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.2", plan_32, {}, basic_info=phase2_info, program_pins={})) == (4, None)
+
+        # WuWa signed URL preserves exact `auth_key` query, rejects uncorroborated same-path swap,
+        # renews when corroborated metadata matches, and falls back when expired.
+        allowed = {wuwa_signed, wuwa_renewed, pins["wuwa"]["3.7"]["image"]}
+        ctx.now = 1792490000  # before 1792498595 expiry
+        ctx.versions["wuwa"] = {
+            "live": "3.6",
+            "pre": "3.7",
+            "pre_media": {"version": "3.7", "video": wuwa_signed, "video_md5": "wuwa37md5", "artwork": ""},
+        }
+        wuwa_state: dict = {}
+        plan_ww = {"preinstall_ts": 1792480000, "maint_start_ts": 1792630000, "schedule_images": [], "override": {}}
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["wuwa"], "3.7", plan_ww, wuwa_state, basic_info={}, program_pins=pins)) == (1, wuwa_signed)
+
+        # After `1792498595` expires with no renewal -> falls back cleanly to official 3.7 broadcast key art!
+        ctx.now = 1792500000
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["wuwa"], "3.7", plan_ww, wuwa_state, basic_info={}, program_pins=pins)) == (
+            3, pins["wuwa"]["3.7"]["image"]
+        )
+        # Same host/path WITHOUT matching corroboration -> STILL rejected, falls back to official 3.7 art:
+        ctx.versions["wuwa"]["pre_media"] = {"version": "3.7", "video": wuwa_renewed, "artwork": ""}
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["wuwa"], "3.7", plan_ww, wuwa_state, basic_info={}, program_pins=pins)) == (
+            3, pins["wuwa"]["3.7"]["image"]
+        )
+        # Corroborated same asset (`video_md5 == "wuwa37md5"`) -> renews `auth_key` cleanly to Tier 1!
+        ctx.versions["wuwa"]["pre_media"] = {"version": "3.7", "video": wuwa_renewed, "video_md5": "wuwa37md5", "artwork": ""}
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["wuwa"], "3.7", plan_ww, wuwa_state, basic_info={}, program_pins=pins)) == (1, wuwa_renewed)
+
+
+def test_maintenance_separate_dedup_silent_seed_late_edit_and_isolated_collection():
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance, runner
+    from gamexpress.sources import launcher as launcher_mod
+
+    zzz_video = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/d9666bfb6df441d244dc24dfdfac5a58_8954332136235293402.webm"
+    zzz_prog = "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(
+            path,
+            now=1792380000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="zzz",
+            DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+            PING_MAINTENANCE_ZZZ="1296268365593186426",
+        )
+        # Pre-existing settled schedule history must NEVER repost on first activation.
+        ctx.state.schedule_records("zzz")["3.2"] = {
+            "status": "posted",
+            "data": {"version": "3.2", "preinstall_ts": 1788753600, "maint_start_ts": 1788904800, "maint_end_ts": 1788922800},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1], "maint_end_ts": [50, 1]},
+        }
+        ctx.state.schedule_records("zzz")["3.3"] = {
+            "status": "posted",
+            "data": {"version": "3.3", "preinstall_ts": 1792382400, "maint_start_ts": 1792533600, "maint_end_ts": 1792551600, "images": [zzz_prog]},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1], "maint_end_ts": [50, 1]},
+        }
+        ctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+        ctx.items["zzz"] = []
+        available_urls = {zzz_prog}
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=(u in available_urls)))
+
+        # Run 1 (first enable): silent seed — zero webhook posts!
+        asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sent == []
+        assert ctx.state.maintenance_record("zzz")["versions"]["3.2"]["preload"]["status"] == "seeded"
+        assert ctx.state.maintenance_record("zzz")["versions"]["3.2"]["maintenance"]["status"] == "seeded"
+
+        # Run 2 (Pre-Load Started window at 1792382460, before video is live): posts with tier-3 art + role ping.
+        ctx.now = 1792382460
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [SendResult(True, 200, "preload-msg-1")])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 1 and len(ctx.webhook.edits) == 0
+        assert "<@&1296268365593186426>" in json.dumps(ctx.webhook.sends[0])
+
+        # Run 3 (15 min later, video becomes live on HoYoPlay): edits `preload-msg-1` SILENTLY (`parse: []`, 0 sends)!
+        ctx.now = 1792383360
+        available_urls.add(zzz_video)
+        live_binfo = {"U5hbdsT9W7": [{"video": zzz_video, "background": "", "theme": "", "links": []}]}
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=live_binfo)):
+            asyncio.run(maintenance.run(ctx))
+            # Run 4: now locked at tier 1 -> zero duplicate edits and zero duplicate sends!
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 1 and len(ctx.webhook.edits) == 1
+        assert ctx.webhook.edits[0][0] == "preload-msg-1"
+        assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": []}
+        assert [
+            it["media"]["url"]
+            for c in ctx.webhook.edits[0][1]["components"][0]["components"]
+            if c["type"] == 12
+            for it in c["items"]
+        ] == [zzz_video]
+
+        # Run 5 (Maintenance Started at 1792533660): independent from preload -> posts `Maintenance Started` once!
+        ctx.now = 1792533660
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "maint-msg-1")])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=live_binfo)):
+            asyncio.run(maintenance.run(ctx))
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 1
+        assert "Maintenance Started" in json.dumps(ctx.webhook.sends[0])
+
+        # Verify `runner.run_once` in maintenance-only mode never invokes codes/countdown/banners/news.
+        maint_only = settings(
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="zzz",
+            DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+        )
+        maint_only.state_path = Path(directory) / "isolated.json"
+        fake_fetcher = types.SimpleNamespace(summary=lambda: "ok")
+        with (
+            patch.object(runner, "Fetcher", return_value=fake_fetcher),
+            patch.object(runner, "XClient", return_value=types.SimpleNamespace(items=AsyncMock(return_value=[]))),
+            patch.object(runner, "gather_estimates", side_effect=AssertionError("no countdown in maint-only")),
+            patch.object(runner, "gather_banners", side_effect=AssertionError("no banners in maint-only")),
+            patch.object(runner, "run_news", side_effect=AssertionError("no news in maint-only")),
+            patch.object(launcher_mod, "hoyoplay_versions", new=AsyncMock(return_value={})),
+            patch.object(hoyolab, "fetch_items", new=AsyncMock(return_value=[])),
+            patch.object(runner, "write_summary"),
+        ):
+            asyncio.run(runner.run_once(maint_only, {"zzz": GAMES["zzz"]}, {}, session=object()))
+
+
+def test_news_expand_full_disabled_equality_multipage_order_cover_video_and_fallback():
+    import copy
+
+    from gamexpress.media import group_news_media
+
+    cover_url = "https://upload-os-bbs.hoyolab.com/cover-art.png"
+    inline_urls = [f"https://upload-os-bbs.hoyolab.com/section-{i}.gif" for i in range(6)]
+    video_url = "https://vod-static.hoyolab.com/4/2026-10-19/demo_1080p.mp4"
+    yt_embed = "https://www.youtube.com/embed/drFgtruoPe8"
+
+    blocks = []
+    expected_sections = []
+    for idx in range(6):
+        sec_text = (
+            f"**▌Section {idx + 1} Overview**\n\n"
+            f"1. Rule {idx + 1}A with [Official Guide](https://hoyo.link/sec{idx}) and https://hoyo.link/bare{idx}\n"
+            f"2. Rule {idx + 1}B preserved verbatim.\n\n"
+            f"※ Footnote {idx + 1} first\n"
+            f"※ Footnote {idx + 1} second\n\n"
+            + (f"Detailed explanation sentence for section {idx + 1}. " * 32)
+        )
+        blocks.append({"kind": "text", "text": sec_text})
+        blocks.append({"kind": "image", "url": inline_urls[idx]})
+        expected_sections.append(f"**▌Section {idx + 1} Overview**")
+    blocks.append({"kind": "video", "url": video_url})
+    blocks.append({"kind": "link", "url": yt_embed})
+    blocks.append({"kind": "text", "text": "Closing official summary paragraph."})
+
+    item = Item(
+        "hoyolab", "zzz", "expand-1", "https://www.hoyolab.com/article/999001",
+        "Version 3.3 Complete Patch Notes", "", 1792400000,
+        images=[cover_url],
+        article_blocks=blocks,
+        author="Zenless Zone Zero",
+    )
+    frozen = copy.deepcopy(item)
+
+    # Disabled: identical to original single-message excerpt fallback.
+    default_out = cards.news_payloads(GAMES["zzz"], item)
+    disabled_out = cards.news_payloads(GAMES["zzz"], item, timestamps=False, expand_full=False)
+    assert disabled_out == default_out and len(default_out) == 1
+    assert "Excerpt" in json.dumps(default_out)
+
+    # Enabled: multi-page full article > 2 pages preserving ALL text, media, videos, links, and order!
+    expanded = cards.news_payloads(GAMES["zzz"], item, timestamps=False, expand_full=True)
+    assert item == frozen
+    assert len(expanded) > 2
+    assert all(not cards.validate_payload(p) for p in expanded)
+
+    # Native `.mp4` suppresses separate listing cover; title/byline ONLY on Page 1; buttons ONLY at end!
+    rendered_media = [
+        entry["media"]["url"]
+        for p in expanded
+        for co in p["components"]
+        for c in co["components"]
+        if c["type"] == 12
+        for entry in c["items"]
+    ]
+    assert rendered_media == inline_urls + [video_url]
+    for idx, page in enumerate(expanded, start=1):
+        kids = page["components"][0]["components"]
+        body_str = "\n".join(c.get("content", "") for c in kids if c["type"] == 10)
+        assert f"-# Page {idx}" in body_str
+        if idx == 1:
+            assert "## [Version 3.3 Complete Patch Notes]" in body_str
+        else:
+            assert "## [Version 3.3 Complete Patch Notes]" not in body_str
+        has_buttons = any(c["type"] == 1 for c in kids)
+        assert has_buttons is (idx == len(expanded))
+    final_buttons = expanded[-1]["components"][-1]["components"][-1]["components"]
+    assert [b["label"] for b in final_buttons] == ["Read Post", "Citlali News", "Donate"]
+    flattened_all = "\n".join(
+        c["content"]
+        for p in expanded
+        for co in p["components"]
+        for c in co["components"]
+        if c["type"] == 10
+    )
+    assert "Excerpt" not in flattened_all
+    assert f"[Open original media]({yt_embed})" in flattened_all
+    assert "Closing official summary paragraph." in flattened_all
+    for marker in expected_sections:
+        assert marker in flattened_all
+    # Long-strip grouping stays strictly off unless `NEWS_GROUP_LONG_STRIPS=1`.
+    assert asyncio.run(group_news_media(None, expanded, enabled=False)) is expanded
+
+    # Link-only video article (no native .mp4/.webm) keeps unique cover deduplicated once on Page 1.
+    link_only_item = copy.deepcopy(item)
+    link_only_item.article_blocks = [b for b in link_only_item.article_blocks if b.get("url") != video_url]
+    link_pages = cards.news_payloads(GAMES["zzz"], link_only_item, expand_full=True)
+    link_media = [
+        e["media"]["url"]
+        for p in link_pages for co in p["components"] for c in co["components"]
+        if c["type"] == 12 for e in c["items"]
+    ]
+    assert link_media == [cover_url] + inline_urls
+
+    # Safety-bound & indivisible fallbacks are explicitly labelled and NEVER pretend to be full.
+    over_bound = news_item(body=("Paragraph exceeding operational page cap. " * 190 + "\n\n") * 25)
+    over_pages = cards.news_payloads(GAMES["wuwa"], over_bound, expand_full=True)
+    assert len(over_pages) == 1 and not cards.validate_payload(over_pages[0])
+    assert "**Excerpt — this article exceeds the expanded delivery safety limit.**" in json.dumps(
+        over_pages[0], ensure_ascii=False
+    )
+
+    indivisible = news_item(body="x" * 5000)
+    indiv_pages = cards.news_payloads(GAMES["wuwa"], indivisible, expand_full=True)
+    assert len(indiv_pages) == 1 and not cards.validate_payload(indiv_pages[0])
+    assert "**Excerpt —" in json.dumps(indiv_pages[0], ensure_ascii=False)
+
+
+def test_delivery_failure_recovery_partial_resume_ambiguous_hold_and_state_isolation():
+    from unittest.mock import patch
+
+    from gamexpress.runner import run_news
+
+    long_item = news_item(
+        "777",
+        body=("\n\n".join(f"Section {i}: " + ("Complete sentence here. " * 80) for i in range(6))),
+    )
+    pages_preview = cards.news_payloads(GAMES["genshin"], long_item, expand_full=True)
+    assert len(pages_preview) >= 3
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = news_ctx(path, NEWS_EXPAND_FULL="1")
+        ctx.state.schedule_records("genshin")["7.1"] = {"status": "posted", "data": {"version": "7.1"}}
+        ctx.state.code_records("genshin")["GENSHINGIFT"] = {"status": "posted", "first_seen": 100}
+        with patch.object(hoyolab, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+
+        ctx.now += 30
+        row = {"id": "777", "ts": ctx.now - 10}
+
+        # 1) Failure BEFORE page 1 -> nothing marked in records; retries cleanly from page 1.
+        ctx.webhook = ScriptedWebhook([], [SendResult(False, 503)])
+        with patch.object(hoyolab, "discover_news", return_value=[row]), patch.object(hoyolab, "news_article", return_value=long_item):
+            asyncio.run(run_news(ctx))
+        assert "777" not in ctx.state.news_record("genshin")["records"]
+
+        # 2) Pages 1 & 2 succeed, Page 3 fails -> persisted on disk as `partial` with `["p1", "p2"]`!
+        ctx.webhook = ScriptedWebhook([], [
+            SendResult(True, 200, "p1"),
+            SendResult(True, 200, "p2"),
+            SendResult(False, 502),
+        ])
+        with patch.object(hoyolab, "discover_news", return_value=[row]), patch.object(hoyolab, "news_article", return_value=long_item):
+            asyncio.run(run_news(ctx))
+        reloaded = State.load(path)
+        partial = reloaded.news_record("genshin")["records"]["777"]
+        assert partial["status"] == "partial" and partial["messages"] == ["p1", "p2"]
+
+        # 3) Restart from persisted `State.load(path)` -> sends ONLY remaining pages without duplicating p1/p2!
+        ctx.state = reloaded
+        remaining_count = len(pages_preview) - 2
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, f"p{3 + i}") for i in range(remaining_count)])
+        with patch.object(hoyolab, "discover_news", return_value=[row]), patch.object(hoyolab, "news_article", return_value=long_item):
+            asyncio.run(run_news(ctx))
+        assert len(ctx.webhook.sends) == remaining_count
+        done = State.load(path).news_record("genshin")["records"]["777"]
+        assert done["status"] == "posted"
+        assert done["messages"] == ["p1", "p2"] + [f"p{3 + i}" for i in range(remaining_count)]
+
+        # 4) Ambiguous webhook outcome (200 with missing message_id) holds safely without blind unlimited reposts!
+        amb_row = {"id": "888", "ts": ctx.now - 5}
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, None), SendResult(True, 200, "never-reached")])
+        with patch.object(hoyolab, "discover_news", return_value=[amb_row]), patch.object(hoyolab, "news_article", return_value=news_item("888")):
+            asyncio.run(run_news(ctx))
+            asyncio.run(run_news(ctx))
+        assert len(ctx.webhook.sends) == 1
+        amb_rec = ctx.state.news_record("genshin")["records"]["888"]
+        assert amb_rec["status"] == "partial" and amb_rec["ambiguous"] is True
+
+        # Unrelated schedule/codes state untouched throughout all failures and recoveries.
+        assert ctx.state.schedule_records("genshin")["7.1"]["data"]["version"] == "7.1"
+        assert ctx.state.code_records("genshin")["GENSHINGIFT"]["status"] == "posted"
+
+
+def test_reproducible_offline_benchmark_command_and_bypass_invariants():
+    import contextlib
+    import io
+
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        rc = gxmain.main(["benchmark", "--iterations", "20", "--json"])
+    assert rc == 0
+    data = json.loads(out.getvalue())
+    assert data["default_long_messages"] == 1
+    assert data["expanded_long_messages"] > 2
+    assert data["disabled_output_equal"] is True
+    assert data["request_counts"]["short_default_off"]["webhook_posts"] == 1
+    assert data["request_counts"]["long_expand_off"]["webhook_posts"] == 1
+    assert data["request_counts"]["long_expand_on"]["webhook_posts"] == data["expanded_long_messages"]
+    assert data["default_short_messages"] == 1
+    assert data["default_medium_messages"] == 2
+    assert data["timestamp_converter_calls_when_off"] == 0
+    assert data["request_counts"]["basis"] == "derived_from_rendered_payloads_not_live_http"
+    assert len(data["benchmarks"]) == 12
+    assert all(b["median_us"] >= 0 and b["iterations"] == 20 for b in data["benchmarks"])
+
+
+def test_webhook_ambiguous_response_auth_key_redaction_and_video_preview_html():
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import discord as discord_mod
+    from gamexpress import preview_html, runner
+
+    class _Resp:
+        def __init__(self, status: int, body: str):
+            self.status = status
+            self._body = body
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def text(self):
+            return self._body
+
+    class _TimeoutCtx:
+        async def __aenter__(self):
+            raise asyncio.TimeoutError("post-write timeout")
+
+        async def __aexit__(self, *exc):
+            return False
+
+    sample_payload = cards.news_payloads(GAMES["wuwa"], news_item())[0]
+
+    async def _exercise():
+        with patch.object(asyncio, "sleep", new=AsyncMock()):
+            no_id_session = types.SimpleNamespace(request=lambda *a, **kw: _Resp(204, ""))
+            client = discord_mod.WebhookClient(no_id_session, dry_run=False)
+            res_204_default = await client.send(HOOK, sample_payload)
+            assert res_204_default.ok is True and res_204_default.message_id is None and res_204_default.ambiguous is False
+            client._next_slot = 0.0
+            res_204 = await client.send(HOOK, sample_payload, stop_on_ambiguous=True)
+            assert res_204.ok is True and res_204.message_id is None and res_204.ambiguous is True
+
+            ok_session = types.SimpleNamespace(request=lambda *a, **kw: _Resp(200, '{"id":"999111"}'))
+            client_ok = discord_mod.WebhookClient(ok_session, dry_run=False)
+            res_ok = await client_ok.send(HOOK, sample_payload, stop_on_ambiguous=True)
+            assert res_ok.ok is True and res_ok.message_id == "999111" and res_ok.ambiguous is False
+
+            res_patch = await client.edit(HOOK, "999111", sample_payload)
+            assert res_patch.ok is True and res_patch.ambiguous is False
+
+            to_calls = 0
+
+            def _make_to_ctx(*a, **kw):
+                nonlocal to_calls
+                to_calls += 1
+                return _TimeoutCtx()
+
+            to_session = types.SimpleNamespace(request=_make_to_ctx)
+            client_to = discord_mod.WebhookClient(to_session, dry_run=False)
+            res_to = await client_to.send(HOOK, sample_payload, stop_on_ambiguous=True)
+            assert to_calls == 1
+            assert res_to.ok is False and res_to.ambiguous is True
+
+            to_calls = 0
+            client_to_base = discord_mod.WebhookClient(to_session, dry_run=False)
+            res_to_base = await client_to_base.send(HOOK, sample_payload)
+            assert to_calls == 5
+            assert res_to_base == SendResult(False, 0, error="gave up after retries")
+
+    asyncio.run(_exercise())
+
+    signed_video = (
+        "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/3.7/bg.mp4"
+        "?auth_key=1792500000-0-0-deadbeefcafe1234"
+    )
+    redacted = runner._summary_text(f"loaded media {signed_video}")
+    assert "deadbeefcafe1234" not in redacted and "auth_key=[REDACTED]" in redacted
+
+    maint_card = cards.maintenance_payload(
+        GAMES["wuwa"],
+        "3.7",
+        "preload",
+        start_ts=1790560800,
+        media_url=signed_video,
+    )
+    rendered_html = preview_html.render_page([("maintenance", "wuwa_preload", maint_card)])
+    assert "<video " in rendered_html and "auth_key=1792500000-0-0-deadbeefcafe1234" in rendered_html
+
+
+def test_correction_1_launch_media_lock_vs_tier_upgrade_window_and_edit_failure():
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.sources import launcher as launcher_mod
+
+    zzz_art = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/launch_art_33.webp"
+    zzz_vid = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/launch_vid_33.webm"
+    phase2_vid = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/12/phase2_vid_33.webm"
+    other_ver_vid = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/launch_vid_34.webm"
+    unverified_vid = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/broken_vid_33.webm"
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(
+            path,
+            now=1792380000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="zzz",
+            DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+            PING_MAINTENANCE_ZZZ="1296268365593186426",
+        )
+        ctx.state.schedule_records("zzz")["3.3"] = {
+            "status": "posted",
+            "data": {"version": "3.3", "preinstall_ts": 1792382400, "maint_start_ts": 1792533600},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+        }
+        ctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+        ctx.items["zzz"] = []
+        valid_urls = {zzz_art, zzz_vid, phase2_vid, other_ver_vid}
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=(u in valid_urls)))
+
+        # Seed baseline at 1792380000.
+        asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sent == []
+
+        # 1) Initial post promptly selects matching Tier-2 launch artwork (`launch_art_33.webp`) — never delayed!
+        ctx.now = 1792382460
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "preload-art-msg")])
+        art_binfo = {
+            "U5hbdsT9W7": [
+                {
+                    "id": "bg-launch-33",
+                    "video": unverified_vid,
+                    "background": zzz_art,
+                    "links": ["https://hoyo.link/v3.3"],
+                }
+            ]
+        }
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=art_binfo)):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 1 and len(ctx.webhook.edits) == 0
+        posted_entry = ctx.state.maintenance_record("zzz")["versions"]["3.3"]["preload"]
+        assert posted_entry["media_tier"] == 2 and posted_entry["media_url"] == zzz_art
+
+        # 2) Failed PATCH edit does NOT persist false Tier-1 replacement or emit a second announcement.
+        ctx.now = 1792382760
+        vid_binfo = {
+            "U5hbdsT9W7": [
+                {
+                    "id": "bg-launch-33",
+                    "video": zzz_vid,
+                    "background": zzz_art,
+                    "links": ["https://hoyo.link/v3.3"],
+                }
+            ]
+        }
+        ctx.webhook = ScriptedWebhook([SendResult(False, 500, error="upstream error")], [])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=vid_binfo)):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 0 and len(ctx.webhook.edits) == 1
+        assert posted_entry["media_tier"] == 2 and posted_entry["media_url"] == zzz_art
+        assert not ctx.state.maintenance_record("zzz")["versions"]["3.3"]["launch_media"].get("video")
+
+        # 3) Next poll within window succeeds: upgrades SAME message (`preload-art-msg`) to Tier-1 video silently!
+        ctx.now = 1792383060
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=vid_binfo)):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 0 and len(ctx.webhook.edits) == 1
+        assert ctx.webhook.edits[0][0] == "preload-art-msg"
+        assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": []}
+        assert [
+            it["media"]["url"]
+            for c in ctx.webhook.edits[0][1]["components"][0]["components"]
+            if c["type"] == 12
+            for it in c["items"]
+        ] == [zzz_vid]
+        assert posted_entry["media_tier"] == 1 and posted_entry["media_url"] == zzz_vid
+
+        # 4) Phase II, different-version (`3.4`), and unverified media never replace the locked launch selection.
+        bad_binfo = {
+            "U5hbdsT9W7": [
+                {"id": "bg-phase2", "video": phase2_vid, "background": "", "links": []},
+                {"id": "bg-v34", "video": other_ver_vid, "background": "", "links": ["https://hoyo.link/v3.4"]},
+                {"id": "bg-broken", "video": unverified_vid, "background": "", "links": ["https://hoyo.link/v3.3"]},
+            ]
+        }
+        ctx.now = 1792383600
+        ctx.webhook = ScriptedWebhook([], [])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=bad_binfo)):
+            asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sends == [] and ctx.webhook.edits == []
+        assert posted_entry["media_url"] == zzz_vid
+
+        # 5) Outside `LATE_MEDIA_EDIT_WINDOW_S`, NO upgrade edit occurs even when `cur_tier > 1`.
+        ctx.state.schedule_records("zzz")["3.4"] = {
+            "status": "posted",
+            "data": {"version": "3.4", "preinstall_ts": 1795900000, "maint_start_ts": 1796050000},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+        }
+        ctx.versions["zzz"] = {"live": "3.3", "pre": "3.4"}
+        ctx.now = 1795900060
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "preload-34-msg")])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 1
+        assert ctx.state.maintenance_record("zzz")["versions"]["3.4"]["preload"]["media_tier"] == 4
+
+        ctx.now = 1795900060 + maintenance.LATE_MEDIA_EDIT_WINDOW_S + 120
+        ctx.webhook = ScriptedWebhook([], [])
+        late_34_binfo = {
+            "U5hbdsT9W7": [{"id": "bg-34", "video": other_ver_vid, "background": "", "links": ["https://hoyo.link/v3.4"]}]
+        }
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=late_34_binfo)):
+            asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sends == [] and ctx.webhook.edits == []
+
+
+def test_correction_2_expiring_tier1_video_same_tier_renewal_and_safe_fallbacks():
+    from gamexpress import maintenance
+    from gamexpress.sources import kuro as kuro_mod
+
+    vid_tok1 = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/bg.mp4?auth_key=1790563000-0-0-tok1"
+    vid_tok2 = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/bg.mp4?auth_key=1790568000-0-0-tok2"
+    unrelated_vid = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/phase2_other.mp4?auth_key=1790575000-0-0-other"
+    art_37 = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/image/3.7/kv.webp?auth_key=1790590000-0-0-art1"
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(
+            path,
+            now=1790560000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="wuwa",
+            DISCORD_WEBHOOK_MAINTENANCE_WUWA=HOOK,
+        )
+        ctx.state.schedule_records("wuwa")["3.7"] = {
+            "status": "posted",
+            "data": {"version": "3.7", "preinstall_ts": 1790560800, "maint_start_ts": 1790712000},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+        }
+        ctx.items["wuwa"] = []
+        valid_urls = {vid_tok1, vid_tok2, unrelated_vid, art_37}
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=(u in valid_urls)))
+
+        # Seed baseline at 1790560000.
+        ctx.versions["wuwa"] = kuro_mod.parse_launcher_index({"default": {"version": "3.6.0"}})
+        asyncio.run(maintenance.run(ctx))
+
+        # 1) Initial Pre-Load Started posts Tier-1 signed video (`vid_tok1`) + locks corroborated MD5 metadata.
+        ctx.now = 1790560860
+        ctx.versions["wuwa"] = kuro_mod.parse_launcher_index({
+            "default": {"version": "3.6.0"},
+            "predownload": {
+                "version": "3.7.0",
+                "bgVideo": vid_tok1,
+                "bgVideoMd5": "md5-launch-37",
+                "bgImage": art_37,
+                "bgImageMd5": "md5-art-37",
+            },
+        })
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "wuwa-preload-1")])
+        asyncio.run(maintenance.run(ctx))
+        entry = ctx.state.maintenance_record("wuwa")["versions"]["3.7"]["preload"]
+        assert entry["media_tier"] == 1 and entry["media_url"] == vid_tok1
+
+        # 2) Once `vid_tok1` expires (`now > 1790563000`), corroborated same-asset renewal (`vid_tok2`)
+        #    succeeds DESPITE remaining Tier 1 (`1 -> 1`) and preserves full `auth_key=` query!
+        ctx.now = 1790563500
+        ctx.versions["wuwa"] = kuro_mod.parse_launcher_index({
+            "default": {"version": "3.6.0"},
+            "predownload": {
+                "version": "3.7.0",
+                "bgVideo": vid_tok2,
+                "bgVideoMd5": "md5-launch-37",
+                "bgImage": art_37,
+                "bgImageMd5": "md5-art-37",
+            },
+        })
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+        asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 0 and len(ctx.webhook.edits) == 1
+        assert entry["media_tier"] == 1 and entry["media_url"] == vid_tok2
+        assert [
+            it["media"]["url"]
+            for c in ctx.webhook.edits[0][1]["components"][0]["components"]
+            if c["type"] == 12
+            for it in c["items"]
+        ] == [vid_tok2]
+
+        # 3) When `vid_tok2` expires (`now > 1790568000`) and ONLY an uncorroborated/unrelated video is offered,
+        #    unrelated video is NEVER substituted — card falls back to matching-version `art_37` (`tier 2`)!
+        ctx.now = 1790568500
+        ctx.versions["wuwa"] = kuro_mod.parse_launcher_index({
+            "default": {"version": "3.6.0"},
+            "predownload": {
+                "version": "3.7.0",
+                "bgVideo": unrelated_vid,
+                "bgVideoMd5": "md5-different-asset",
+                "bgImage": art_37,
+                "bgImageMd5": "md5-art-37",
+            },
+        })
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+        asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 0 and len(ctx.webhook.edits) == 1
+        extracted_fallback_media = [
+            it["media"]["url"]
+            for c in ctx.webhook.edits[0][1]["components"][0]["components"]
+            if c["type"] == 12
+            for it in c["items"]
+        ]
+        assert extracted_fallback_media == [art_37]
+        assert unrelated_vid not in extracted_fallback_media
+        assert entry["media_tier"] == 2 and entry["media_url"] == art_37
+
+        # 4) When `art_37` also becomes unavailable and no valid media remains, omits gallery cleanly (`tier 4`)
+        #    AND respects bounded `MAX_LATE_MEDIA_ATTEMPTS` when webhook edits fail!
+        valid_urls.discard(art_37)
+        ctx.now = 1790569000
+        ctx.webhook = ScriptedWebhook(
+            [SendResult(False, 502, error="bad gateway") for _ in range(maintenance.MAX_LATE_MEDIA_ATTEMPTS)],
+            [],
+        )
+        for step in range(maintenance.MAX_LATE_MEDIA_ATTEMPTS + 2):
+            ctx.now = 1790569000 + step * 60
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.edits) == maintenance.MAX_LATE_MEDIA_ATTEMPTS
+        assert ctx.webhook.sends == []
+        assert entry["edit_attempts"] == maintenance.MAX_LATE_MEDIA_ATTEMPTS
+        assert entry["media_tier"] == 2 and entry["media_url"] == art_37
+
+
+def test_correction_3_wuwa_mutable_path_never_suffices_without_corroboration():
+    from gamexpress.maintenance import _build_asset_meta, _corroborated_same_asset
+
+    mutable_old = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/bg.mp4?auth_key=1790561000-0-0-old"
+    mutable_new = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/bg.mp4?auth_key=1790599000-0-0-new"
+
+    # 1) Same host + mutable path ALONE without corroborating asset identity -> MUST BE REJECTED!
+    bare_locked = _build_asset_meta(mutable_old, "3.7")
+    bare_cand = _build_asset_meta(mutable_new, "3.7")
+    assert _corroborated_same_asset(mutable_new, bare_cand, mutable_old, bare_locked, "3.7") is False
+
+    # 2) Same host + path with changed version (`3.8` vs `3.7`) -> REJECTED!
+    locked_hash = _build_asset_meta(mutable_old, "3.7", extra={"hash": "abc123"})
+    wrong_ver = _build_asset_meta(mutable_new, "3.8", extra={"hash": "abc123"})
+    assert _corroborated_same_asset(mutable_new, wrong_ver, mutable_old, locked_hash, "3.7") is False
+
+    # 3) Same host + path with conflicting content hash / Phase II bytes -> REJECTED!
+    phase2_swap = _build_asset_meta(mutable_new, "3.7", extra={"hash": "phase2diff999"})
+    assert _corroborated_same_asset(mutable_new, phase2_swap, mutable_old, locked_hash, "3.7") is False
+
+    # 4) Same host + path where candidate dropped the hash of a hash-locked asset -> REJECTED!
+    assert _corroborated_same_asset(mutable_new, bare_cand, mutable_old, locked_hash, "3.7") is False
+
+    # 5) Genuinely corroborated renewal (matching version + matching content hash + intact query) -> ACCEPTED!
+    valid_renewal = _build_asset_meta(mutable_new, "3.7", extra={"hash": "abc123"})
+    assert _corroborated_same_asset(mutable_new, valid_renewal, mutable_old, locked_hash, "3.7") is True
+
+
+def test_correction_4_first_observed_preload_timestamp_provenance_and_seeding():
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.sources import launcher as launcher_mod
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        # 1) Initial seeding when launcher `pre == "3.2"` ALREADY exists: seeds silently with ZERO posts!
+        ctx = make_ctx(
+            path,
+            now=1792300000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="genshin",
+            DISCORD_WEBHOOK_MAINTENANCE_GENSHIN=HOOK,
+        )
+        ctx.versions["genshin"] = {"live": "3.1", "pre": "3.2"}
+        ctx.items["genshin"] = []
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=True))
+        asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sent == []
+        assert ctx.state.maintenance_record("genshin")["versions"]["3.2"]["preload"]["status"] == "seeded"
+
+        # 2) New version `3.3` appears in launcher `pre` at `first_seen = 1792310000` with NO official start timestamp:
+        #    posts with persisted `observed_preinstall_ts == 1792310000` and explicit observed provenance wording!
+        first_seen = 1792310000
+        ctx.now = first_seen
+        ctx.versions["genshin"] = {"live": "3.2", "pre": "3.3"}
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "gi-obs-msg")])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 1
+        sent_blob = json.dumps(ctx.webhook.sends[0], ensure_ascii=False)
+        assert f"<t:{first_seen}:f>" in sent_blob
+        assert "Observed available in launcher — official start time not published" in sent_blob
+
+        # 3) Repeated runs (+5m, +15m) AND full disk reload keep the EXACT original `first_seen` timestamp!
+        reloaded_state = State.load(path)
+        for later_now in (first_seen + 300, first_seen + 900):
+            plans_later = maintenance.resolve_version_plans(
+                GAMES["genshin"],
+                {},
+                [],
+                {"live": "3.2", "pre": "3.3"},
+                {},
+                later_now,
+                maintenance_versions=reloaded_state.maintenance_record("genshin")["versions"],
+            )
+            assert plans_later["3.3"]["preinstall_ts"] == first_seen
+            assert plans_later["3.3"]["preinstall_observed"] is True
+            assert plans_later["3.3"]["preinstall_provenance"] == "observed"
+
+        # 4) Explicit override AND official notice both outrank observation and clear `preinstall_observed`!
+        official_published_ts = 1792304400
+        official_notice = Item(
+            source="hoyolab",
+            game="genshin",
+            id="499991",
+            url="https://www.hoyolab.com/article/499991",
+            title="Version 3.3 Pre-Installation Function Now Available",
+            text="Pre-installation opens on 2026/10/18 14:20 (UTC+8).",
+            published_ts=first_seen + 600,
+        )
+        ctx.state = reloaded_state
+        ctx.items["genshin"] = [official_notice]
+        ctx.now = first_seen + 600
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 0 and len(ctx.webhook.edits) == 1
+        upgraded_blob = json.dumps(ctx.webhook.edits[0][1], ensure_ascii=False)
+        assert f"<t:{official_published_ts}:f>" in upgraded_blob
+        assert "Observed available in launcher" not in upgraded_blob
+
+
+def test_correction_5_bare_utc_gmt_explicit_offsets_and_invalid_ranges():
+    from gamexpress.news_timestamps import _parse_tz, convert_news_timestamps
+
+    pub = 1790000000
+
+    # 1) Bare `UTC` and `GMT` resolve cleanly to zero offset (`+00:00`) standalone and in ranges!
+    assert _parse_tz("UTC") == _parse_tz("GMT") == datetime.now(timezone.utc).tzinfo
+    assert convert_news_timestamps("2026/09/28 06:00 UTC", published_ts=pub, enabled=True) == "<t:1790575200:f>"
+    assert convert_news_timestamps("2026/09/28 06:00 (UTC)", published_ts=pub, enabled=True) == "<t:1790575200:f>"
+    assert convert_news_timestamps("September 28, 2026 06:00 GMT", published_ts=pub, enabled=True) == "<t:1790575200:f>"
+    assert convert_news_timestamps("September 28, 2026, 06:00 (GMT)", published_ts=pub, enabled=True) == "<t:1790575200:f>"
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 – 11:00 (UTC)", published_ts=pub, enabled=True)
+        == "<t:1790575200:f> – <t:1790593200:f>"
+    )
+
+    # 2) Explicit offsets retain strict precedence over `"server time"` (`UTC+8`).
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 (UTC) vs 2026/09/28 06:00 (server time)", published_ts=pub, enabled=True)
+        == "<t:1790575200:f> vs <t:1790546400:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 (UTC-4) (server time)", published_ts=pub, enabled=True)
+        == "<t:1790589600:f> (server time)"
+    )
+
+    # 3) Malformed, ambiguous, or out-of-range TZ forms remain 100% unchanged (no partial bare-UTC backtrack!).
+    for unchanged_tz in (
+        "2026/09/28 06:00 UTC+99",
+        "2026/09/28 06:00 (UTC+99)",
+        "2026/09/28 06:00 UTC+123",
+        "2026/09/28 06:00 UTC+8:5",
+        "2026/09/28 06:00 UTC+foo",
+        "2026/09/28 06:00 UTCfoo",
+        "2026/09/28 06:00 (CST)",
+        "2026/09/28 06:00 PT",
+        "2026/09/28 06:00 local time",
+    ):
+        assert convert_news_timestamps(unchanged_tz, published_ts=pub, enabled=True) == unchanged_tz, unchanged_tz
+
+    # 4) Invalid, inverted, or partially unresolved ranges are NEVER partially converted into misleading half-tokens!
+    for bad_range in (
+        "2026/09/28 11:00 (UTC+8) – 2026/09/28 06:00 (UTC+8)",
+        "2026/09/28 11:00 – 06:00 (UTC+8)",
+        "2026/09/28 06:00 (UTC+8) – 11:00",
+        "2026/09/28 06:00 (UTC+8) – 2026/09/28 11:00",
+        "2026/09/28 06:00 (UTC+8) – 2026/02/30 11:00 (UTC+8)",
+        "2026/09/28 06:00 (UTC+8) – 25:00 (UTC+8)",
+        "2026/09/28 06:00 (UTC+8) – TBA",
+        "2026/09/28 06:00 (UTC+8) – After the Version 3.3 update",
+    ):
+        assert convert_news_timestamps(bad_range, published_ts=pub, enabled=True) == bad_range, bad_range
+
+
+def test_followup_1_deterministic_media_refresh_request_and_edit_bounds():
+    from unittest.mock import patch
+
+    from gamexpress import maintenance
+    from gamexpress.sources import kuro as kuro_mod
+    from gamexpress.sources import launcher as launcher_mod
+
+    assert maintenance.LATE_MEDIA_EDIT_WINDOW_S == 6 * 3600
+    assert maintenance.MAX_LATE_MEDIA_ATTEMPTS == 3
+    assert maintenance.MAX_LATE_EDITS == 6
+
+    vid_33 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/det_vid_33.webm"
+    art_33 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/det_art_33.webp"
+    prog_33 = "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
+
+    # --- Cases 1, 2, 4, 5, 6, 7 across deterministic mocked HoYoPlay 5-minute polls ---
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(
+            path,
+            now=1792380000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="zzz",
+            DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+        )
+        ctx.state.schedule_records("zzz")["3.3"] = {
+            "status": "posted",
+            "data": {
+                "version": "3.3",
+                "preinstall_ts": 1792382400,
+                "maint_start_ts": 1792533600,
+                "images": [prog_33],
+            },
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+        }
+        ctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+        ctx.items["zzz"] = []
+
+        verify_log: list[str] = []
+        basic_calls = 0
+        valid_urls = {vid_33, art_33, prog_33}
+        current_binfo: dict = {}
+
+        async def _counted_verify(u: str) -> bool:
+            verify_log.append(u)
+            return u in valid_urls
+
+        async def _counted_binfo(_fetcher) -> dict:
+            nonlocal basic_calls
+            basic_calls += 1
+            return current_binfo
+
+        ctx.fetcher = types.SimpleNamespace(verify_media=_counted_verify)
+
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=_counted_binfo):
+            # Seed baseline silently.
+            asyncio.run(maintenance.run(ctx))
+            assert ctx.webhook.sent == []
+
+            # Initial post with Tier-2 artwork (`art_33`) awaiting launch video:
+            current_binfo = {
+                "U5hbdsT9W7": [{"id": "bg-33", "video": "", "background": art_33, "links": ["https://hoyo.link/v3.3"]}]
+            }
+            ctx.now = 1792382460
+            ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "msg-det-1")])
+            verify_log.clear()
+            basic_calls = 0
+            asyncio.run(maintenance.run(ctx))
+            assert len(ctx.webhook.sends) == 1 and len(ctx.webhook.edits) == 0
+            assert basic_calls == 1 and verify_log == [art_33]
+
+            # Case 2 (Polls 1..2): Artwork awaiting matching launch video -> 1 binfo + 1 verify per poll, 0 edits!
+            verify_log.clear()
+            basic_calls = 0
+            ctx.webhook = ScriptedWebhook([], [])
+            for poll in (1, 2):
+                ctx.now = 1792382460 + poll * 300
+                asyncio.run(maintenance.run(ctx))
+            assert basic_calls == 2
+            assert verify_log == [art_33, art_33]
+            assert len(ctx.webhook.edits) == 0 and len(ctx.webhook.sends) == 0
+
+            # Case 2 (Poll 3): Matching launch video appears -> 1 binfo + 2 verifies (`art_33`, `vid_33`), 1 PATCH!
+            current_binfo = {
+                "U5hbdsT9W7": [
+                    {"id": "bg-33", "video": vid_33, "background": art_33, "links": ["https://hoyo.link/v3.3"]}
+                ]
+            }
+            verify_log.clear()
+            basic_calls = 0
+            ctx.now = 1792382460 + 3 * 300
+            ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+            asyncio.run(maintenance.run(ctx))
+            entry = ctx.state.maintenance_record("zzz")["versions"]["3.3"]["preload"]
+            assert basic_calls == 1 and verify_log == [art_33, vid_33]
+            assert len(ctx.webhook.edits) == 1 and len(ctx.webhook.sends) == 0
+            assert entry["media_tier"] == 1 and entry["edit_count"] == 1 and entry["edit_attempts"] == 0
+
+            # Case 1: Healthy existing Tier-1 video across 5 repeated polls -> 5 verifies, 0 binfo, 0 edits, 0 sends!
+            verify_log.clear()
+            basic_calls = 0
+            ctx.webhook = ScriptedWebhook([], [])
+            for poll in range(4, 9):
+                ctx.now = 1792382460 + poll * 300
+                asyncio.run(maintenance.run(ctx))
+            assert verify_log == [vid_33] * 5
+            assert basic_calls == 0
+            assert len(ctx.webhook.edits) == 0 and len(ctx.webhook.sends) == 0
+            assert entry["edit_count"] == 1 and entry["edit_attempts"] == 0
+
+            # Case 6: Tier 1 unreachable -> falls back cleanly to Tier 2 (`art_33`), then Tier 3 (`prog_33`), then Tier 4 (`None`)!
+            valid_urls.discard(vid_33)
+            ctx.now = 1792382460 + 9 * 300
+            ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+            asyncio.run(maintenance.run(ctx))
+            assert len(ctx.webhook.edits) == 1 and entry["media_tier"] == 2 and entry["media_url"] == art_33
+
+            valid_urls.discard(art_33)
+            ctx.now = 1792382460 + 10 * 300
+            ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+            asyncio.run(maintenance.run(ctx))
+            assert len(ctx.webhook.edits) == 1 and entry["media_tier"] == 3 and entry["media_url"] == prog_33
+
+            # Case 5: Unusable media with NO verified replacement -> 1 PATCH omits gallery (`tier 4`), then 0 further edits across 3 polls!
+            valid_urls.discard(prog_33)
+            ctx.now = 1792382460 + 11 * 300
+            ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+            asyncio.run(maintenance.run(ctx))
+            assert len(ctx.webhook.edits) == 1 and entry["media_tier"] == 4 and entry["media_url"] == ""
+            edits_after_omit = entry["edit_count"]
+
+            ctx.webhook = ScriptedWebhook([], [])
+            for poll in (12, 13, 14):
+                ctx.now = 1792382460 + poll * 300
+                asyncio.run(maintenance.run(ctx))
+            assert len(ctx.webhook.edits) == 0 and len(ctx.webhook.sends) == 0
+            assert entry["edit_count"] == edits_after_omit
+
+            # Case 7: Polls strictly AFTER `LATE_MEDIA_EDIT_WINDOW_S` -> 0 verifies, 0 binfo, 0 edits, 0 sends!
+            valid_urls.update({vid_33, art_33, prog_33})
+            verify_log.clear()
+            basic_calls = 0
+            ctx.webhook = ScriptedWebhook([], [])
+            for after_offset in (60, 3600, 10800):
+                ctx.now = 1792382460 + maintenance.LATE_MEDIA_EDIT_WINDOW_S + after_offset
+                asyncio.run(maintenance.run(ctx))
+            assert verify_log == [] and basic_calls == 0
+            assert len(ctx.webhook.edits) == 0 and len(ctx.webhook.sends) == 0
+
+    # --- Case 3 + Case 4 + separate `MAX_LATE_EDITS = 6` ceiling on signed WuWa URLs ---
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(
+            path,
+            now=1790560000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="wuwa",
+            DISCORD_WEBHOOK_MAINTENANCE_WUWA=HOOK,
+        )
+        ctx.state.schedule_records("wuwa")["3.7"] = {
+            "status": "posted",
+            "data": {"version": "3.7", "preinstall_ts": 1790560800, "maint_start_ts": 1790712000},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+        }
+        ctx.items["wuwa"] = []
+        ww_verifies: list[str] = []
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: (ww_verifies.append(u), asyncio.sleep(0, result=True))[1])
+
+        def _signed(exp_ts: int, tok: str) -> str:
+            return f"https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/bg.mp4?auth_key={exp_ts}-0-0-{tok}"
+
+        ctx.versions["wuwa"] = kuro_mod.parse_launcher_index({"default": {"version": "3.6.0"}})
+        asyncio.run(maintenance.run(ctx))
+
+        t_post = 1790560860
+        ctx.now = t_post
+        ctx.versions["wuwa"] = kuro_mod.parse_launcher_index(
+            {"default": {"version": "3.6.0"}, "predownload": {"version": "3.7.0", "bgVideo": _signed(t_post + 600, "t0"), "bgVideoMd5": "h37"}}
+        )
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww-det-1")])
+        asyncio.run(maintenance.run(ctx))
+        ww_entry = ctx.state.maintenance_record("wuwa")["versions"]["3.7"]["preload"]
+
+        # 2 transient failures increment `edit_attempts` to 2, then 1 succeeded renewal resets `edit_attempts == 0`!
+        ctx.now = t_post + 700
+        ctx.versions["wuwa"] = kuro_mod.parse_launcher_index(
+            {"default": {"version": "3.6.0"}, "predownload": {"version": "3.7.0", "bgVideo": _signed(t_post + 1800, "t1"), "bgVideoMd5": "h37"}}
+        )
+        ww_verifies.clear()
+        ctx.webhook = ScriptedWebhook(
+            [SendResult(False, 502, error="gw"), SendResult(False, 502, error="gw"), SendResult(True, 200)],
+            [],
+        )
+        asyncio.run(maintenance.run(ctx))
+        assert ww_entry["edit_attempts"] == 1 and ww_entry["edit_count"] == 0
+        asyncio.run(maintenance.run(ctx))
+        assert ww_entry["edit_attempts"] == 2 and ww_entry["edit_count"] == 0
+        ww_verifies.clear()
+        asyncio.run(maintenance.run(ctx))
+        # Expired `t0` rejected in 0 HTTP calls; only `t1` probed once!
+        assert ww_verifies == [_signed(t_post + 1800, "t1")]
+        assert ww_entry["edit_attempts"] == 0 and ww_entry["edit_count"] == 1
+
+        # Perform remaining 5 corroborated renewals up to `MAX_LATE_EDITS == 6`:
+        for idx in range(2, maintenance.MAX_LATE_EDITS + 1):
+            exp_prev = t_post + idx * 1800
+            ctx.now = exp_prev + 100
+            ctx.versions["wuwa"] = kuro_mod.parse_launcher_index(
+                {"default": {"version": "3.6.0"}, "predownload": {"version": "3.7.0", "bgVideo": _signed(exp_prev + 1800, f"t{idx}"), "bgVideoMd5": "h37"}}
+            )
+            ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+            asyncio.run(maintenance.run(ctx))
+        assert ww_entry["edit_count"] == maintenance.MAX_LATE_EDITS
+
+        # Once `edit_count == MAX_LATE_EDITS` (still inside 6h window!), 3 further polls perform 0 verifies and 0 edits!
+        ww_verifies.clear()
+        ctx.webhook = ScriptedWebhook([], [])
+        for extra in range(3):
+            ctx.now = t_post + 12000 + extra * 300
+            assert ctx.now - t_post < maintenance.LATE_MEDIA_EDIT_WINDOW_S
+            asyncio.run(maintenance.run(ctx))
+        assert ww_verifies == [] and len(ctx.webhook.edits) == 0 and len(ctx.webhook.sends) == 0
+
+
+def test_followup_3_complete_expanded_news_disabled_parity_strips_and_failure_matrix():
+    import re
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import config, news_timestamps, runner
+    from gamexpress import media as media_mod
+    from gamexpress.sources import hoyolab as hoyolab_mod
+
+    # 1) Absent / explicit false / explicit true / invalid switch parsing + complete independence:
+    with patch.dict(os.environ, {}, clear=True):
+        s_absent = config.load_settings()
+        assert (
+            s_absent.news_timestamps is False
+            and s_absent.news_expand_full is False
+            and s_absent.news_group_long_strips is False
+            and "maintenance" not in s_absent.features
+            and s_absent.maintenance_games == set()
+        )
+    for bad_bool in ("0", "false", "FALSE", "no", "off", "banana", "2", "-1", "enable_maybe"):
+        with patch.dict(
+            os.environ,
+            {
+                "NEWS_TIMESTAMPS": bad_bool,
+                "NEWS_EXPAND_FULL": bad_bool,
+                "NEWS_GROUP_LONG_STRIPS": bad_bool,
+                "MAINTENANCE_ENABLED": bad_bool,
+                "MAINTENANCE_GAMES": "genshin,unknown_game,zzz",
+            },
+            clear=True,
+        ):
+            st = config.load_settings()
+            assert st.news_timestamps is False and st.news_expand_full is False
+            assert st.news_group_long_strips is False and "maintenance" not in st.features
+            assert st.maintenance_games - set(GAMES) == {"unknown_game"}
+            assert st.maintenance_games & set(GAMES) == {"genshin", "zzz"}
+    for disabled_games in ("none", "off", "0", "-"):
+        with patch.dict(os.environ, {"MAINTENANCE_GAMES": disabled_games}, clear=True):
+            assert config.load_settings().maintenance_games == set()
+    with patch.dict(os.environ, {"MAINTENANCE_GAMES": "gi,hsr,zzz"}, clear=True):
+        assert config.load_settings().maintenance_games == {"genshin", "starrail", "zzz"}
+    for truthy in ("1", "true", "TRUE", "yes", "on"):
+        with patch.dict(os.environ, {"NEWS_TIMESTAMPS": truthy, "NEWS_EXPAND_FULL": "0"}, clear=True):
+            st_ts = config.load_settings()
+            assert st_ts.news_timestamps is True and st_ts.news_expand_full is False
+        with patch.dict(os.environ, {"NEWS_TIMESTAMPS": "0", "NEWS_EXPAND_FULL": truthy}, clear=True):
+            st_ex = config.load_settings()
+            assert st_ex.news_timestamps is False and st_ex.news_expand_full is True
+
+    def _art(*, game: str, id: str = "100", published_ts: int = 1792400100, images: list[str] | None = None, article_blocks: list[dict] | None = None) -> Item:
+        src = "kuro" if game == "wuwa" else "hoyolab"
+        base_url = (
+            f"https://wutheringwaves.kurogames.com/en/main/news/detail/{id}"
+            if game == "wuwa"
+            else f"https://www.hoyolab.com/article/{id}"
+        )
+        return Item(
+            source=src,
+            game=game,
+            id=id,
+            url=base_url,
+            title="Official Event & Update Details",
+            text="",
+            published_ts=published_ts,
+            images=list(images or []),
+            article_blocks=list(article_blocks or [{"kind": "text", "text": "Article body"}]),
+            author="Official Publisher",
+        )
+
+    # 2) Disabled-output byte equality + guaranteed timestamp-parser bypass across all 5 news games:
+    for gk in ("genshin", "starrail", "hna", "zzz", "wuwa"):
+        short_it = _art(
+            game=gk,
+            id=f"{gk}-short",
+            article_blocks=[
+                {"kind": "text", "text": "Event window: 2026/09/28 06:00 (UTC+8) – 11:00 (UTC+8).\n\n"},
+                {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/18/1.jpg"},
+            ],
+        )
+        long_blocks = []
+        for idx in range(1, 13):
+            long_blocks.append(
+                {
+                    "kind": "text",
+                    "text": f"Section {idx} opens 2026/10/{10 + idx:02d} 10:00 (UTC+8): " + ("details " * 130) + "\n\n",
+                }
+            )
+            long_blocks.append({"kind": "image", "url": f"https://upload-os-bbs.hoyolab.com/upload/2026/10/18/{idx}.jpg"})
+        long_it = _art(game=gk, id=f"{gk}-long", article_blocks=long_blocks)
+
+        with patch.object(news_timestamps, "convert_news_timestamps", wraps=news_timestamps.convert_news_timestamps) as spy:
+            assert cards.news_payloads(GAMES[gk], short_it, timestamps=False, expand_full=False) == cards.news_payloads(
+                GAMES[gk], short_it
+            )
+            assert cards.news_payloads(GAMES[gk], long_it, timestamps=False, expand_full=False) == cards.news_payloads(
+                GAMES[gk], long_it
+            )
+            spy.assert_not_called()
+
+        # 3, 4, 6, 7) >2-page expanded articles across all 5 games: Discord limits, order, labels, non-repeated header, final buttons only:
+        pages = cards.news_payloads(GAMES[gk], long_it, timestamps=False, expand_full=True)
+        assert 3 <= len(pages) <= cards.NEWS_EXPAND_MAX_PAGES
+        seen_media_seq: list[str] = []
+        seen_sections: list[int] = []
+        for p_idx, page in enumerate(pages, start=1):
+            assert cards.validate_payload(page) == []
+            flat_texts = [
+                c["content"] for co in page["components"] for c in co["components"] if c["type"] == 10
+            ]
+            assert any(t == f"-# Page {p_idx}" for t in flat_texts)
+            if p_idx > 1:
+                assert not any(t.startswith("## [") for t in flat_texts)
+            for co_idx, co in enumerate(page["components"]):
+                btn_rows = [c for c in co["components"] if c["type"] == 1]
+                if p_idx == len(pages) and co_idx == len(page["components"]) - 1:
+                    assert len(btn_rows) == 1 and len(btn_rows[0]["components"]) == 3
+                else:
+                    assert btn_rows == []
+                for c in co["components"]:
+                    if c["type"] == 12:
+                        assert len(c["items"]) == 1
+                        seen_media_seq.append(c["items"][0]["media"]["url"])
+                    elif c["type"] == 10:
+                        seen_sections.extend(int(m) for m in re.findall(r"Section (\d+) opens", c["content"]))
+        assert seen_media_seq == [f"https://upload-os-bbs.hoyolab.com/upload/2026/10/18/{i}.jpg" for i in range(1, 13)]
+        assert seen_sections == list(range(1, 13))
+
+    # 5) Cover deduplication + native video vs link-video under `expand_full=True`:
+    cover_url = "https://upload-os-bbs.hoyolab.com/upload/2026/10/18/cover.jpg"
+    native_mp4 = "https://vod-static.hoyolab.com/upload/2026/10/18/trailer.mp4"
+    yt_link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    filler = ("Expanded paragraph prose keeping multi-page layout active across sections. " * 90) + "\n\n"
+
+    dup_cover_pages = cards.news_payloads(
+        GAMES["zzz"],
+        _art(
+            game="zzz",
+            images=[cover_url],
+            article_blocks=[{"kind": "text", "text": filler}, {"kind": "image", "url": cover_url}, {"kind": "text", "text": filler}],
+        ),
+        expand_full=True,
+    )
+    assert [
+        it["media"]["url"] for p in dup_cover_pages for co in p["components"] for c in co["components"] if c["type"] == 12 for it in c["items"]
+    ] == [cover_url]
+
+    native_vid_pages = cards.news_payloads(
+        GAMES["zzz"],
+        _art(
+            game="zzz",
+            images=[cover_url],
+            article_blocks=[{"kind": "text", "text": filler}, {"kind": "video", "url": native_mp4}, {"kind": "text", "text": filler}],
+        ),
+        expand_full=True,
+    )
+    assert [
+        it["media"]["url"] for p in native_vid_pages for co in p["components"] for c in co["components"] if c["type"] == 12 for it in c["items"]
+    ] == [native_mp4]
+
+    link_vid_pages = cards.news_payloads(
+        GAMES["zzz"],
+        _art(
+            game="zzz",
+            images=[cover_url],
+            article_blocks=[{"kind": "text", "text": filler}, {"kind": "video", "url": yt_link}, {"kind": "text", "text": filler}],
+        ),
+        expand_full=True,
+    )
+    assert [
+        it["media"]["url"] for p in link_vid_pages for co in p["components"] for c in co["components"] if c["type"] == 12 for it in c["items"]
+    ] == [cover_url]
+    assert f"[Open original media]({yt_link})" in json.dumps(link_vid_pages)
+
+    # 8) Explicit 12-page / 120,000-char / 120-media / single-unit safety bounds & honest labelled excerpt fallback:
+    assert cards.NEWS_EXPAND_MAX_PAGES == 12
+    assert cards.NEWS_EXPAND_MAX_CHARS == 120000
+    assert cards.NEWS_EXPAND_MAX_MEDIA == 120
+    default_cfg = load_settings({})
+    assert default_cfg.news_expand_max_pages == 12
+    assert default_cfg.news_expand_max_chars == 120000
+    assert default_cfg.news_expand_max_media == 120
+    override_cfg = load_settings(
+        {"NEWS_EXPAND_MAX_PAGES": "9", "NEWS_EXPAND_MAX_CHARS": "90000", "NEWS_EXPAND_MAX_MEDIA": "80"}
+    )
+    assert override_cfg.news_expand_max_pages == 9
+    assert override_cfg.news_expand_max_chars == 90000
+    assert override_cfg.news_expand_max_media == 80
+
+    fit_12_pages = cards.news_payloads(
+        GAMES["zzz"],
+        _art(game="zzz", article_blocks=[{"kind": "text", "text": ("Page block " + ("word " * 760) + "\n\n") * 12}]),
+        expand_full=True,
+    )
+    assert len(fit_12_pages) == 12
+    assert all(cards.validate_payload(p) == [] for p in fit_12_pages)
+
+    over_pages = cards.news_payloads(
+        GAMES["zzz"],
+        _art(game="zzz", article_blocks=[{"kind": "text", "text": ("Page block " + ("word " * 760) + "\n\n") * 13}]),
+        expand_full=True,
+    )
+    assert len(over_pages) == 1 and "**Excerpt — this article exceeds the expanded delivery safety limit.**" in json.dumps(
+        over_pages, ensure_ascii=False
+    )
+
+    over_chars = cards.news_payloads(
+        GAMES["zzz"],
+        _art(game="zzz", article_blocks=[{"kind": "text", "text": ("Paragraph char bound check " + ("word " * 600) + "\n\n") * 40}]),
+        expand_full=True,
+        max_pages=60,
+    )
+    assert len(over_chars) == 1 and "**Excerpt — this article exceeds the expanded delivery safety limit.**" in json.dumps(
+        over_chars, ensure_ascii=False
+    )
+
+    over_media = cards.news_payloads(
+        GAMES["zzz"],
+        _art(
+            game="zzz",
+            article_blocks=[
+                {"kind": "image", "url": f"https://upload-os-bbs.hoyolab.com/upload/2026/10/18/m{i}.jpg"} for i in range(121)
+            ],
+        ),
+        expand_full=True,
+    )
+    assert len(over_media) == 1 and "**Excerpt — this article exceeds the expanded delivery safety limit.**" in json.dumps(
+        over_media, ensure_ascii=False
+    )
+
+    indivisible = cards.news_payloads(
+        GAMES["zzz"],
+        _art(game="zzz", article_blocks=[{"kind": "text", "text": "X" * 4500}]),
+        expand_full=True,
+    )
+    assert len(indivisible) == 1 and "**Excerpt — this article contains content that exceeds single-message limits.**" in json.dumps(
+        indivisible, ensure_ascii=False
+    )
+
+    # 9) Independent `NEWS_GROUP_LONG_STRIPS` behavior on multi-page expanded payloads:
+    s1 = "https://upload-os-bbs.hoyolab.com/upload/2026/10/18/strip1.jpg"
+    s2 = "https://upload-os-bbs.hoyolab.com/upload/2026/10/18/strip2.jpg"
+    wide = "https://upload-os-bbs.hoyolab.com/upload/2026/10/18/wide.jpg"
+    strip_item = _art(
+        game="zzz",
+        images=[],
+        article_blocks=[
+            {"kind": "text", "text": filler},
+            {"kind": "image", "url": s1},
+            {"kind": "image", "url": s2},
+            {"kind": "image", "url": wide},
+            {"kind": "text", "text": filler},
+        ],
+    )
+    ungrouped = cards.news_payloads(GAMES["zzz"], strip_item, expand_full=True)
+    dim_map = {s1: (800, 3200), s2: (800, 3200), wide: (1600, 900)}
+    dim_fetcher = types.SimpleNamespace(media_dimensions=AsyncMock(side_effect=lambda u: dim_map.get(u)))
+    assert asyncio.run(media_mod.group_news_media(dim_fetcher, ungrouped, enabled=False, max_urls=120)) == ungrouped
+    dim_fetcher.media_dimensions.assert_not_called()
+
+    grouped = asyncio.run(media_mod.group_news_media(dim_fetcher, ungrouped, enabled=True, max_urls=120))
+    grouped_galleries = [
+        [it["media"]["url"] for it in c["items"]]
+        for p in grouped
+        for co in p["components"]
+        for c in co["components"]
+        if c["type"] == 12
+    ]
+    assert [s1, s2] in grouped_galleries and [wide] in grouped_galleries
+    broken_dim_fetcher = types.SimpleNamespace(media_dimensions=AsyncMock(return_value=None))
+    assert asyncio.run(media_mod.group_news_media(broken_dim_fetcher, ungrouped, enabled=True, max_urls=120)) == ungrouped
+
+    # 10 & 11) Before-send failure, mid-send restart resume, incomplete partial state isolation, & ambiguous outcome holds:
+    row_bad = {"id": "77000", "ts": 1792400600}
+    row_ok = {"id": "77001", "ts": 1792400700}
+    art_3page = _art(
+        game="zzz",
+        id="77001",
+        published_ts=1792400700,
+        article_blocks=[
+            {"kind": "text", "text": ("Page one content " * 190) + "\n\n"},
+            {"kind": "image", "url": s1},
+            {"kind": "text", "text": ("Page two content " * 190) + "\n\n"},
+            {"kind": "image", "url": s2},
+            {"kind": "text", "text": ("Page three content " * 190) + "\n\n"},
+        ],
+    )
+    assert len(cards.news_payloads(GAMES["zzz"], art_3page, expand_full=True)) == 3
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(
+            path,
+            now=1792400500,
+            NEWS_ENABLED="1",
+            NEWS_GAMES="zzz",
+            NEWS_EXPAND_FULL="1",
+            DISCORD_WEBHOOK_NEWS_ZZZ=HOOK,
+        )
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=True))
+
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row_ok])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=art_3page)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            # Seed baseline first run:
+            asyncio.run(runner.run_news(ctx))
+            assert ctx.webhook.sent == []
+
+            # (10a) Before-send media unavailability + (10b) Page-1 500 failure leave NO partial hold:
+            ctx.now = 1792400750
+            with patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=False)):
+                asyncio.run(runner.run_news(ctx))
+            assert "77001" not in ctx.state.news_record("zzz")["records"]
+
+            ctx.webhook = ScriptedWebhook([], [SendResult(False, 500, error="p1 fail")])
+            asyncio.run(runner.run_news(ctx))
+            assert "77001" not in ctx.state.news_record("zzz")["records"]
+
+            # (11a) Mid-send failure after Page 1 (`p1-id`), Page 2 returns 500 -> reload from disk & resume ONLY Pages 2..3!
+            ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "p1-id"), SendResult(False, 500, error="p2 fail")])
+            asyncio.run(runner.run_news(ctx))
+            assert ctx.state.news_record("zzz")["records"]["77001"]["messages"] == ["p1-id"]
+
+            restarted_ctx = make_ctx(
+                path,
+                now=1792400900,
+                NEWS_ENABLED="1",
+                NEWS_GAMES="zzz",
+                NEWS_EXPAND_FULL="1",
+                DISCORD_WEBHOOK_NEWS_ZZZ=HOOK,
+            )
+            restarted_ctx.state = State.load(path)
+            # Inject an incomplete partial state record (`"76999"` missing `"row"` AND `"77000"` missing `"messages"`)
+            # alongside healthy resuming `"77001"` to prove clean isolation without aborting `"77001"`!
+            restarted_ctx.state.news_record("zzz")["records"]["76999"] = {"status": "partial"}
+            restarted_ctx.state.news_record("zzz")["records"]["77000"] = {"status": "partial", "ts": 1792400600, "row": row_bad}
+            restarted_ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "p2-id"), SendResult(True, 200, "p3-id")])
+            with patch.object(
+                hoyolab_mod,
+                "news_article",
+                new=AsyncMock(side_effect=lambda _f, _g, r: art_3page if r["id"] == "77001" else _art(game="zzz", id=r["id"])),
+            ):
+                asyncio.run(runner.run_news(restarted_ctx))
+            assert len(restarted_ctx.webhook.sends) == 2
+            assert restarted_ctx.state.news_record("zzz")["records"]["77001"] == {
+                "status": "posted",
+                "ts": 1792400700,
+                "messages": ["p1-id", "p2-id", "p3-id"],
+            }
+            assert any("76999: incomplete partial delivery state" in w for w in restarted_ctx.warnings)
+            assert any("77000: ValueError: incomplete partial delivery state" in w for w in restarted_ctx.warnings)
+
+            # (11b) Ambiguous HTTP 204 / missing-ID outcome holds cleanly without duplicate replay:
+            row_amb = {"id": "77002", "ts": 1792400800}
+            art_amb = _art(
+                game="zzz",
+                id="77002",
+                published_ts=1792400800,
+                article_blocks=art_3page.article_blocks,
+            )
+            restarted_ctx.webhook = ScriptedWebhook(
+                [],
+                [SendResult(True, 200, "amb-p1"), SendResult(True, 204, None, ambiguous=True)],
+            )
+            with (
+                patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row_amb])),
+                patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=art_amb)),
+            ):
+                asyncio.run(runner.run_news(restarted_ctx))
+                assert restarted_ctx.state.news_record("zzz")["records"]["77002"]["ambiguous"] is True
+                restarted_ctx.webhook = ScriptedWebhook([], [])
+                asyncio.run(runner.run_news(restarted_ctx))
+                assert restarted_ctx.webhook.sends == []
+
+
+def test_followup_4_default_off_preservation_7000_policy_and_production_baselines():
+    """Verify default-off preservation, intact 7,000-char / max-2-page policy, independent
+    NEWS_GROUP_LONG_STRIPS behavior, real captured HoYoLAB fixtures, and production baseline
+    structural invariants (#432 / #436 / #444) without claiming live network execution."""
+    import copy
+    import io
+    from contextlib import redirect_stdout
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import __main__ as cli_mod
+    from gamexpress import media as media_mod
+    from gamexpress import news_timestamps, runner
+    from gamexpress.sources import hoyolab as hoyolab_mod
+
+    # 1. Both switches default to False when absent and when explicitly false.
+    s_absent = settings()
+    s_false = settings(NEWS_TIMESTAMPS="0", NEWS_EXPAND_FULL="0")
+    assert s_absent.news_timestamps is False and s_absent.news_expand_full is False
+    assert s_false.news_timestamps is False and s_false.news_expand_full is False
+    assert not hasattr(settings(NEWS_MAX_POSTS_PER_RUN="5"), "news_max_posts")
+
+    # 2. Real captured HoYoLAB fixtures in tests/fixtures/: raw dict & Item immutability,
+    # complete timestamp-parser bypass, and byte-identical absent vs False outputs.
+    real_fixtures = (
+        ("hoyolab_genshin_46604275_full.json", "genshin"),
+        ("hoyolab_starrail_46814308_full.json", "starrail"),
+        ("hoyolab_zzz_46604530_full.json", "zzz"),
+        ("hoyolab_zzz_46863847_full.json", "zzz"),
+    )
+    spy_calls = 0
+    real_convert = news_timestamps.convert_news_timestamps
+
+    def _spy(*args, **kwargs):
+        nonlocal spy_calls
+        spy_calls += 1
+        return real_convert(*args, **kwargs)
+
+    with patch.object(news_timestamps, "convert_news_timestamps", side_effect=_spy):
+        for fname, gkey in real_fixtures:
+            raw = fx(fname)
+            raw_snap = copy.deepcopy(raw)
+            post = raw["data"]["post"]["post"]
+            row = {"id": post["post_id"], "ts": post["created_at"]}
+            item = asyncio.run(hoyolab_mod.news_article(NewsFetcher([raw]), GAMES[gkey], row))
+            item_snap = copy.deepcopy(item)
+            out_absent = cards.news_payloads(GAMES[gkey], item)
+            out_false = cards.news_payloads(GAMES[gkey], item, timestamps=False, expand_full=False)
+            assert out_absent == out_false
+            assert raw == raw_snap and item == item_snap
+            assert f"<t:{post['created_at']}:f>" in json.dumps(out_absent, ensure_ascii=False)
+        # 3. Verify all 3 regimes of the default-off 7,000-char / max-2-page policy across all 5 games:
+        #    (a) 1-message fit -> 1 msg
+        #    (b) >1 msg & <= 7,000 chars -> 2 msgs (Page 1 + Page 2)
+        #    (c) > 7,000 chars -> 1-message labelled excerpt fallback
+        for gkey in ("genshin", "starrail", "hna", "zzz", "wuwa"):
+            fit1 = Item(
+                "hoyolab", gkey, "3101", "https://www.hoyolab.com/article/3101",
+                "Short official notice", "", 1792549120,
+                article_blocks=[
+                    {"kind": "text", "text": "Opens on October 25, 2026 and October 28, 2026 at 12:00 (UTC+8)."},
+                    {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/short.jpg"},
+                ],
+                author="Official",
+            )
+            fit2 = Item(
+                "hoyolab", gkey, "3102", "https://www.hoyolab.com/article/3102",
+                "Moderate two-page official notice", "", 1792549120,
+                article_blocks=[
+                    {"kind": "text", "text": ("Event section alpha opens 2026/10/25 12:00 (UTC+8).\n\n" * 42)},
+                    {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/mid.jpg"},
+                    {"kind": "text", "text": ("Event section beta closes 2026/11/05 03:59 (UTC+8).\n\n" * 42)},
+                ],
+                author="Official",
+            )
+            over7k = Item(
+                "hoyolab", gkey, "3103", "https://www.hoyolab.com/article/3103",
+                "Long official patch notes", "", 1792549120,
+                article_blocks=[
+                    {"kind": "text", "text": ("Detailed patch adjustment entry on October 25, 2026.\n\n" * 200)},
+                    {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/inline1.jpg"},
+                ],
+                images=["https://upload-os-bbs.hoyolab.com/upload/cover.jpg"],
+                author="Official",
+            )
+            p1_abs = cards.news_payloads(GAMES[gkey], fit1)
+            p1_fls = cards.news_payloads(GAMES[gkey], fit1, timestamps=False, expand_full=False)
+            p2_abs = cards.news_payloads(GAMES[gkey], fit2)
+            p2_fls = cards.news_payloads(GAMES[gkey], fit2, timestamps=False, expand_full=False)
+            p3_abs = cards.news_payloads(GAMES[gkey], over7k)
+            p3_fls = cards.news_payloads(GAMES[gkey], over7k, timestamps=False, expand_full=False)
+            assert p1_abs == p1_fls and len(p1_abs) == 1
+            # Date-only phrases AND TZ phrases stay literal when NEWS_TIMESTAMPS is absent/off:
+            assert "October 25, 2026 and October 28, 2026 at 12:00 (UTC+8)" in json.dumps(p1_abs)
+            # 7,000-character / maximum-two-page policy intact:
+            assert p2_abs == p2_fls and len(p2_abs) == 2
+            assert "-# Page 1" in json.dumps(p2_abs[0]) and "-# Page 2" in json.dumps(p2_abs[1])
+            assert any(c["type"] == 1 for c in p2_abs[1]["components"][-1]["components"])
+            assert not any(c["type"] == 1 for c in p2_abs[0]["components"][-1]["components"])
+            # Over-7,000 labelled excerpt fallback intact:
+            assert p3_abs == p3_fls and len(p3_abs) == 1
+            dumped_ex = json.dumps(p3_abs[0], ensure_ascii=False)
+            assert "**Excerpt — this article exceeds Discord's single-message limits.**" in dumped_ex
+            assert dumped_ex.count("https://upload-os-bbs.hoyolab.com/upload/cover.jpg") == 1
+            assert "inline1.jpg" not in dumped_ex
+    assert spy_calls == 0
+
+    # 4. Production regression baseline shapes (#432 ZZZ 47150244, #436 ZZZ 47150315 4-issue short
+    # card, #444 ZZZ 47150540 tall image in 1 msg/1 container + preserved dedup state):
+    zzz_436 = Item(
+        "hoyolab", "zzz", "47150315", "https://www.hoyolab.com/article/47150315",
+        "Known Issues & Optimization Summary", "", 1792549120,
+        article_blocks=[
+            {"kind": "text", "text": (
+                "Dear Proxies,\nHere are the current known issues as of October 21, 2026:\n"
+                "1. Fixed an issue where Agent animations could clip during Chain Attacks.\n"
+                "2. Fixed an issue with Signal Search details text alignment.\n"
+                "3. Fixed an audio playback issue in Hollow Zero stages.\n"
+                "4. Adjusted controller navigation focus in the Event menu."
+            )},
+        ],
+        images=["https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150315_cover.jpg"],
+        author="Zenless Zone Zero",
+    )
+    tall_url = "https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150540_tall.jpg?x-oss-process=image/quality,q_90"
+    zzz_444 = Item(
+        "hoyolab", "zzz", "47150540", "https://www.hoyolab.com/article/47150540",
+        "Agent Mechanics Overview", "", 1792551604,
+        article_blocks=[
+            {"kind": "text", "text": "Dear Proxies,\nCheck out the full mechanics overview starting October 22, 2026!"},
+            {"kind": "image", "url": tall_url},
+        ],
+        images=["https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150540_cover.jpg"],
+        author="Zenless Zone Zero",
+    )
+    out_436 = cards.news_payloads(GAMES["zzz"], zzz_436)
+    out_444 = cards.news_payloads(GAMES["zzz"], zzz_444)
+    assert len(out_436) == 1 and len(out_436[0]["components"]) == 1
+    assert len(out_444) == 1 and len(out_444[0]["components"]) == 1
+    # Single tall image keeps exact source URL without cropping, splitting, stitching, or removal:
+    tall_grouped = asyncio.run(
+        media_mod.group_news_media(
+            SimpleNamespace(media_dimensions=AsyncMock(return_value=(1080, 4200))),
+            out_444,
+            enabled=True,
+        )
+    )
+    gals_444 = [c for c in tall_grouped[0]["components"][0]["components"] if c["type"] == 12]
+    assert [it["media"]["url"] for g in gals_444 for it in g["items"]] == [
+        "https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150540_cover.jpg",
+        tall_url,
+    ]
+    assert out_444[0]["components"][0]["components"][-1]["type"] == 1
+    assert len(out_444[0]["components"][0]["components"][-1]["components"]) == 3
+
+    # End-to-end `run_news` request count comparison: absent switches vs explicit `0` make
+    # identical discovery + article + media preflight + webhook POST counts (0 feature HTTP calls):
+    counts_by_mode = {}
+    for mode_label, extra_env in (("absent", {}), ("explicit_false", {"NEWS_TIMESTAMPS": "0", "NEWS_EXPAND_FULL": "0"})):
+        with tempfile.TemporaryDirectory() as td:
+            ctx_m = make_ctx(
+                Path(td) / "state.json", now=1792552000,
+                NEWS_ENABLED="1", NEWS_GAMES="zzz", DISCORD_WEBHOOK_NEWS_ZZZ=HOOK,
+                **extra_env,
+            )
+            ctx_m.state.news_record("zzz").update(floor=1792550000, records={})
+            disc_mock = AsyncMock(return_value=[{"id": "47150540", "ts": 1792551604}])
+            art_mock = AsyncMock(return_value=zzz_444)
+            media_mock = AsyncMock(return_value=True)
+            with (
+                patch.object(hoyolab_mod, "discover_news", new=disc_mock),
+                patch.object(hoyolab_mod, "news_article", new=art_mock),
+                patch.object(media_mod, "news_media_available", new=media_mock),
+            ):
+                asyncio.run(runner.run_news(ctx_m))
+            counts_by_mode[mode_label] = (
+                disc_mock.call_count, art_mock.call_count, media_mock.call_count, len(ctx_m.webhook.sent),
+            )
+    assert counts_by_mode["absent"] == counts_by_mode["explicit_false"] == (1, 1, 1, 1)
+
+    # Verify benchmark CLI JSON provenance fields directly:
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = cli_mod.cmd_benchmark(SimpleNamespace(iterations=25, json=True))
+    assert rc == 0
+    bench = json.loads(buf.getvalue())
+    assert bench["disabled_output_equal"] is True
+    assert bench["timestamp_converter_calls_when_off"] == 0
+    assert bench["default_short_messages"] == 1
+    assert bench["default_medium_messages"] == 2
+    assert bench["default_long_messages"] == 1
+    assert bench["expanded_long_messages"] == 4
+    assert bench["request_counts"]["basis"] == "derived_from_rendered_payloads_not_live_http"
+    assert len(bench["benchmarks"]) == 12
+
+
+def test_followup_5_independent_official_news_delivery_shared_mirror_and_historical_safety():
+    """Verify independent delivery across schedule, schedule mirrors (including shared channel),
+    codes, official news, and started announcements — covering Monitor #456 / GI 47151000
+    (scoped from the captured HoYoLAB Special Program HTML layout + #456 metadata), real
+    HSR 46814308 preload/maintenance notice, asymmetric retries, restarts, and historical
+    rollout safety against legacy `excluded == 'schedule'` state records."""
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance as maint_mod
+    from gamexpress import media as media_mod
+    from gamexpress import runner, schedule
+    from gamexpress.discord import SendResult
+    from gamexpress.sources import hoyolab as hoyolab_mod
+
+    SCHED_HOOK = "https://discord.com/api/webhooks/111/sched"
+    SHARED_GI_NEWS_HOOK = "https://discord.com/api/webhooks/222/gi-news-shared"
+    MAINT_HOOK = "https://discord.com/api/webhooks/333/maint"
+
+    # Scoped HoYoLAB Special Program fixture built directly from the captured HTML schema in
+    # `hoyolab_genshin_46604275_full.json` with Monitor #456's verified GI 7.2 metadata
+    # (post_id=47151000, ts=1792555204, 10/23/2026 at 08:00 AM UTC-4 == 1792756800 == 20:00 UTC+8).
+    gi_47151000_raw = {
+        "retcode": 0,
+        "data": {
+            "post": {
+                "post": {
+                    "game_id": 2,
+                    "post_id": "47151000",
+                    "subject": "Genshin Impact Version 7.2 Special Program Preview",
+                    "content": (
+                        '<p class="ql-align-center"><br></p>'
+                        '<div class="ql-image"><img src="https://upload-os-bbs.hoyolab.com/upload/2026/10/21/gi_7_2_sp_keyart.jpg"></div>'
+                        '<p class="ql-align-center"><strong>Dear Traveler, it\'s announcement time!</strong></p>'
+                        '<p class="ql-align-center"><strong>The special program for Genshin Impact\'s new version will premiere on the official Twitch and YouTube channels on 10/23/2026 at 08:00 AM (UTC-4)!</strong></p>'
+                        '<p class="ql-align-center"><strong>This special program will feature juicy details about new game content and developments in Version 7.2. It will also "drop" some redemption codes and other goodies!</strong></p>'
+                        '<p class="ql-align-center"><br></p>'
+                        '<p class="ql-align-center"><strong>Make sure to follow us, Traveler. We\'ll see you there!</strong></p>'
+                        '<p class="ql-align-center"><a class="blot-link" href="https://www.twitch.tv/genshinimpactofficial"><strong>Twitch</strong></a></p>'
+                        '<p class="ql-align-center"><a class="blot-link" href="https://www.youtube.com/@GenshinImpact"><strong>YouTube</strong></a></p>'
+                    ),
+                    "created_at": 1792555204,
+                    "structured_content": "",
+                },
+                "image_list": [],
+                "cover_list": [],
+            }
+        },
+    }
+    row_47151000 = {"id": "47151000", "ts": 1792555204}
+    item_47151000 = asyncio.run(
+        hoyolab_mod.news_article(NewsFetcher([gi_47151000_raw]), GAMES["genshin"], row_47151000)
+    )
+    assert item_47151000 is not None
+    # Verify rendered news payload retains full article content, links, artwork & 3 buttons:
+    rendered_off = cards.news_payloads(GAMES["genshin"], item_47151000)
+    rendered_on = cards.news_payloads(GAMES["genshin"], item_47151000, timestamps=True, expand_full=False)
+    dumped_off = json.dumps(rendered_off, ensure_ascii=False)
+    dumped_on = json.dumps(rendered_on, ensure_ascii=False)
+    assert "Dear Traveler, it's announcement time!" in dumped_off
+    assert "10/23/2026 at 08:00 AM (UTC-4)" in dumped_off
+    assert "<t:1792756800:f>" in dumped_on  # Oct 23, 2026 08:00 UTC-4 == Oct 23, 2026 20:00 UTC+8
+    assert "Make sure to follow us, Traveler. We'll see you there!" in dumped_off
+    assert "https://upload-os-bbs.hoyolab.com/upload/2026/10/21/gi_7_2_sp_keyart.jpg" in dumped_off
+    assert "[**Twitch**](https://www.twitch.tv/genshinimpactofficial)" in dumped_off or "https://www.twitch.tv/genshinimpactofficial" in dumped_off
+    assert "https://www.youtube.com/@GenshinImpact" in dumped_off
+    assert len(rendered_off[0]["components"][-1]["components"][-1]["components"]) == 3
+    # Also verify schedule extraction from the exact same announcement:
+    sched_item = Item(
+        "x", "genshin", "2112755760107081755",
+        "https://x.com/GenshinImpact/status/2112755760107081755",
+        item_47151000.title,
+        "Dear Traveler! The special program for Version 7.2 premieres on 10/23/2026 at 08:00 AM (UTC-4)!",
+        1792555200,
+        images=["https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"],
+    )
+    prog_fields = schedule.extract_program(GAMES["genshin"], sched_item)
+    assert prog_fields["program_ts"] == 1792756800
+
+    class MultiRouteWebhook:
+        def __init__(self, fail_urls=()):
+            self.fail_urls = set(fail_urls)
+            self.calls = []
+            self._seq = 0
+
+        async def send(self, url, payload, **kwargs):
+            self._seq += 1
+            self.calls.append(("POST", url, payload))
+            if url in self.fail_urls:
+                return SendResult(False, 500, None)
+            return SendResult(True, 200, f"msg-{self._seq}")
+
+        async def edit(self, url, msg_id, payload, **kwargs):
+            self.calls.append(("PATCH", url, msg_id, payload))
+            return SendResult(True, 200, msg_id)
+
+    # (A) News enabled while schedule disabled: 47151000 delivers via news alone.
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "state.json"
+        ctx = make_ctx(
+            p, now=1792555240,
+            ENABLED_FEATURES="news", NEWS_ENABLED="1", NEWS_GAMES="genshin",
+            DISCORD_WEBHOOK_NEWS_GENSHIN=SHARED_GI_NEWS_HOOK,
+        )
+        ctx.state.news_record("genshin").update(floor=1792550000, records={})
+        wh = MultiRouteWebhook()
+        ctx.webhook = wh
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row_47151000])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=item_47151000)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(runner.run_news(ctx))
+        assert [c[1] for c in wh.calls] == [SHARED_GI_NEWS_HOOK]
+        assert ctx.state.news_record("genshin")["records"]["47151000"]["status"] == "posted"
+        assert "excluded" not in ctx.state.news_record("genshin")["records"]["47151000"]
+
+    # (B) Schedule enabled while news disabled: schedule + mirror post; news state untouched.
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "state.json"
+        ctx = make_ctx(
+            p, now=1792555240,
+            ENABLED_FEATURES="schedule", GAMES="genshin",
+            DISCORD_WEBHOOK_SCHEDULE_GENSHIN=SCHED_HOOK,
+            DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI=SHARED_GI_NEWS_HOOK,
+        )
+        ctx.state.mark_bootstrapped("schedule", "genshin")
+        ctx.items = {"genshin": [sched_item]}
+        wh = MultiRouteWebhook()
+        ctx.webhook = wh
+        asyncio.run(schedule.run(ctx))
+        assert [c[1] for c in wh.calls] == [SCHED_HOOK, SHARED_GI_NEWS_HOOK]
+        assert "news" not in ctx.state.data
+
+    # (C) BOTH enabled WITH intentional shared destination (`DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI == DISCORD_WEBHOOK_NEWS_GENSHIN`),
+    # asymmetric retry isolation, and rerun/restart deduplication:
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "state.json"
+        ctx = make_ctx(
+            p, now=1792555240,
+            ENABLED_FEATURES="schedule,news", GAMES="genshin",
+            NEWS_ENABLED="1", NEWS_GAMES="genshin",
+            DISCORD_WEBHOOK_SCHEDULE_GENSHIN=SCHED_HOOK,
+            DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI=SHARED_GI_NEWS_HOOK,
+            DISCORD_WEBHOOK_NEWS_GENSHIN=SHARED_GI_NEWS_HOOK,
+        )
+        ctx.state.mark_bootstrapped("schedule", "genshin")
+        ctx.state.news_record("genshin").update(floor=1792550000, records={})
+        ctx.items = {"genshin": [sched_item]}
+        wh = MultiRouteWebhook()
+        ctx.webhook = wh
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row_47151000])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=item_47151000)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(schedule.run(ctx))
+            asyncio.run(runner.run_news(ctx))
+        # Schedule posts to SCHED_HOOK + mirror to SHARED_GI_NEWS_HOOK, AND official news ALSO posts to SHARED_GI_NEWS_HOOK!
+        assert [c[1] for c in wh.calls] == [SCHED_HOOK, SHARED_GI_NEWS_HOOK, SHARED_GI_NEWS_HOOK]
+        # Stage-accurate reporting: mirror reported separately, news reports eligible=1, delivered=1:
+        assert any("DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI" in line for line in ctx.report)
+        assert any("GI news: discovered=1, eligible=1, attempted=1, delivered=1, deferred/error=0" in line for line in ctx.report)
+        assert not any("schedule-only" in line for line in ctx.report)
+        ctx.state.save()
+
+        # Reload from disk and rerun: 0 duplicate posts on both schedule/mirror and news!
+        ctx2 = make_ctx(
+            p, now=1792555540,
+            ENABLED_FEATURES="schedule,news", GAMES="genshin",
+            NEWS_ENABLED="1", NEWS_GAMES="genshin",
+            DISCORD_WEBHOOK_SCHEDULE_GENSHIN=SCHED_HOOK,
+            DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI=SHARED_GI_NEWS_HOOK,
+            DISCORD_WEBHOOK_NEWS_GENSHIN=SHARED_GI_NEWS_HOOK,
+        )
+        ctx2.state = State.load(p)
+        ctx2.items = {"genshin": [sched_item]}
+        wh2 = MultiRouteWebhook()
+        ctx2.webhook = wh2
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row_47151000])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=item_47151000)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(schedule.run(ctx2))
+            asyncio.run(runner.run_news(ctx2))
+        assert wh2.calls == []
+
+    # (D) Asymmetric failures: (1) schedule succeeds + news fails -> retry sends only news;
+    #     (2) schedule fails + news succeeds -> retry sends only schedule.
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "state.json"
+        NEWS_ONLY_HOOK = "https://discord.com/api/webhooks/444/gi-news-dedicated"
+        ctx = make_ctx(
+            p, now=1792555240,
+            ENABLED_FEATURES="schedule,news", GAMES="genshin",
+            NEWS_ENABLED="1", NEWS_GAMES="genshin",
+            DISCORD_WEBHOOK_SCHEDULE_GENSHIN=SCHED_HOOK,
+            DISCORD_WEBHOOK_NEWS_GENSHIN=NEWS_ONLY_HOOK,
+        )
+        ctx.state.mark_bootstrapped("schedule", "genshin")
+        ctx.state.news_record("genshin").update(floor=1792550000, records={})
+        ctx.items = {"genshin": [sched_item]}
+        wh_fail_news = MultiRouteWebhook(fail_urls={NEWS_ONLY_HOOK})
+        ctx.webhook = wh_fail_news
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row_47151000])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=item_47151000)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(schedule.run(ctx))
+            asyncio.run(runner.run_news(ctx))
+            assert ctx.state.schedule_record("genshin", "7.2")["status"] == "posted"
+            assert "47151000" not in ctx.state.news_record("genshin")["records"]
+            wh_recover = MultiRouteWebhook()
+            ctx.webhook = wh_recover
+            asyncio.run(schedule.run(ctx))
+            asyncio.run(runner.run_news(ctx))
+            assert [c[1] for c in wh_recover.calls] == [NEWS_ONLY_HOOK]
+
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "state.json"
+        NEWS_ONLY_HOOK = "https://discord.com/api/webhooks/444/gi-news-dedicated"
+        ctx = make_ctx(
+            p, now=1792555240,
+            ENABLED_FEATURES="schedule,news", GAMES="genshin",
+            NEWS_ENABLED="1", NEWS_GAMES="genshin",
+            DISCORD_WEBHOOK_SCHEDULE_GENSHIN=SCHED_HOOK,
+            DISCORD_WEBHOOK_NEWS_GENSHIN=NEWS_ONLY_HOOK,
+        )
+        ctx.state.mark_bootstrapped("schedule", "genshin")
+        ctx.state.news_record("genshin").update(floor=1792550000, records={})
+        ctx.items = {"genshin": [sched_item]}
+        wh_fail_sched = MultiRouteWebhook(fail_urls={SCHED_HOOK})
+        ctx.webhook = wh_fail_sched
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row_47151000])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=item_47151000)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(schedule.run(ctx))
+            asyncio.run(runner.run_news(ctx))
+            assert ctx.state.news_record("genshin")["records"]["47151000"]["status"] == "posted"
+            wh_recover2 = MultiRouteWebhook()
+            ctx.webhook = wh_recover2
+            asyncio.run(schedule.run(ctx))
+            asyncio.run(runner.run_news(ctx))
+            assert [c[1] for c in wh_recover2.calls] == [SCHED_HOOK]
+
+    # (E) Real HSR 46814308 preload/maintenance notice consumed simultaneously by `maintenance` + `news`:
+    hsr_raw = fx("hoyolab_starrail_46814308_full.json")
+    hsr_post = hsr_raw["data"]["post"]["post"]
+    hsr_row = {"id": hsr_post["post_id"], "ts": hsr_post["created_at"]}
+    hsr_item = asyncio.run(hoyolab_mod.news_article(NewsFetcher([hsr_raw]), GAMES["starrail"], hsr_row))
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "state.json"
+        HSR_NEWS_HOOK = "https://discord.com/api/webhooks/555/hsr-news"
+        ctx = make_ctx(
+            p, now=1790380900,
+            ENABLED_FEATURES="maintenance,news", GAMES="starrail",
+            MAINTENANCE_ENABLED="1", MAINTENANCE_GAMES="starrail",
+            NEWS_ENABLED="1", NEWS_GAMES="starrail",
+            DISCORD_WEBHOOK_MAINTENANCE_STARRAIL=MAINT_HOOK,
+            DISCORD_WEBHOOK_NEWS_STARRAIL=HSR_NEWS_HOOK,
+        )
+        from gamexpress.sources import launcher as launcher_mod
+
+        ctx.state.schedule_records("starrail")["4.6"] = {
+            "status": "posted",
+            "data": {
+                "version": "4.6",
+                "preinstall_ts": hsr_row["ts"] + 30,
+                "maint_start_ts": hsr_row["ts"] + 18030,
+                "maint_end_ts": hsr_row["ts"] + 36030,
+                "estimated": [],
+            },
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+        }
+        ctx.items["starrail"] = []
+        ctx.state.news_record("starrail").update(floor=1790200000, records={})
+        ctx.fetcher = SimpleNamespace(
+            get_json=AsyncMock(return_value={}),
+            get_text=AsyncMock(return_value=None),
+            verify_media=AsyncMock(return_value=True),
+            media_dimensions=AsyncMock(return_value=None),
+        )
+        with (
+            patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})),
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[hsr_row])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=hsr_item)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            ctx.versions["starrail"] = {"live": "4.4.0", "pre": ""}
+            ctx.webhook = MultiRouteWebhook()
+            ctx.now = 1790056000
+            asyncio.run(maint_mod.run(ctx))  # silent baseline seed before 4.5 pre-load starts
+            ctx.versions["starrail"] = {"live": "4.4.0", "pre": "4.5.0"}
+            wh = MultiRouteWebhook()
+            ctx.webhook = wh
+            ctx.now = hsr_row["ts"] + 60
+            asyncio.run(maint_mod.run(ctx))  # real 46814308 notice + launcher fire 4.5 Pre-Load & Maintenance Started
+            asyncio.run(runner.run_news(ctx))  # AND 46814308 ALSO delivers as a full official news article!
+        assert [c[1] for c in wh.calls] == [MAINT_HOOK, MAINT_HOOK, HSR_NEWS_HOOK]
+        assert ctx.state.news_record("starrail")["records"]["46814308"]["status"] == "posted"
+
+    # (F) Historical rollout safety on exact live `5952b04` / `#444` state shape:
+    # Existing `47151000` (`excluded: "schedule"`) & ZZZ `47150244`/`47150315`/`47150540` NEVER repost,
+    # while future special-program / maintenance articles (`47152000`) deliver normally!
+    with tempfile.TemporaryDirectory() as d:
+        p = Path(d) / "state.json"
+        ctx = make_ctx(
+            p, now=1792556000,
+            ENABLED_FEATURES="news", NEWS_ENABLED="1", NEWS_GAMES="genshin,zzz",
+            DISCORD_WEBHOOK_NEWS_GENSHIN=SHARED_GI_NEWS_HOOK,
+            DISCORD_WEBHOOK_NEWS_ZZZ="https://discord.com/api/webhooks/666/zzz-news",
+        )
+        ctx.state.news_record("genshin").update(
+            floor=1792468000,
+            records={
+                "47141479": {"messages": ["1561971101599404043"], "status": "posted", "ts": 1792468806},
+                "47151000": {"excluded": "schedule", "messages": [], "status": "posted", "ts": 1792555204},
+            },
+        )
+        ctx.state.news_record("zzz").update(
+            floor=1792500000,
+            records={
+                "47150244": {"messages": ["1562284486060671079"], "status": "posted", "ts": 1792548005},
+                "47150315": {"messages": ["1562289437352656917"], "status": "posted", "ts": 1792549120},
+                "47150540": {"messages": ["1562299578181746699"], "status": "posted", "ts": 1792551604},
+            },
+        )
+        row_future = {"id": "47152000", "ts": 1792555900}
+        art_future = news_item("47152000", ts=1792555900, title="Genshin Impact Version 7.2 Update and Maintenance Notice")
+        wh = MultiRouteWebhook()
+        ctx.webhook = wh
+        with (
+            patch.object(
+                hoyolab_mod, "discover_news",
+                new=AsyncMock(side_effect=lambda _f, g, _s: [row_47151000, row_future] if g.key == "genshin" else [{"id": "47150540", "ts": 1792551604}]),
+            ),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=art_future)),
+            patch.object(media_mod, "news_media_available", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(runner.run_news(ctx))
+        # ONLY `47152000` posts; `47151000` and all historical ZZZ articles are NEVER replayed!
+        assert len(wh.calls) == 1 and wh.calls[0][1] == SHARED_GI_NEWS_HOOK
+        assert ctx.state.news_record("genshin")["records"]["47151000"] == {
+            "excluded": "schedule", "messages": [], "status": "posted", "ts": 1792555204,
+        }
+        assert ctx.state.news_record("genshin")["records"]["47152000"]["status"] == "posted"
+        assert "excluded" not in ctx.state.news_record("genshin")["records"]["47152000"]
+        # After 31 days, `prune_news` advances `floor` >= 1792555204 so pruned entries never resurrect:
+        ctx.state.prune_news(1792556000 + 31 * 86400)
+        assert ctx.state.news_record("genshin")["floor"] >= 1792555900
+
+    # Also verify real live capture `hoyolab_genshin_46604275_full.json` (`09/12/2026 at 08:00 AM (UTC-4)` -> `<t:1789214400:f>`):
+    real_46604275_raw = fx("hoyolab_genshin_46604275_full.json")
+    real_46604275_post = real_46604275_raw["data"]["post"]["post"]
+    real_46604275_item = asyncio.run(
+        hoyolab_mod.news_article(
+            NewsFetcher([real_46604275_raw]),
+            GAMES["genshin"],
+            {"id": real_46604275_post["post_id"], "ts": real_46604275_post["created_at"]},
+        )
+    )
+    assert "09/12/2026 at 08:00 AM (UTC-4)" in json.dumps(cards.news_payloads(GAMES["genshin"], real_46604275_item))
+    assert "<t:1789214400:f>" in json.dumps(cards.news_payloads(GAMES["genshin"], real_46604275_item, timestamps=True))
+
+
+def test_followup_6_range_explicit_invalid_tz_rejected_vs_omitted_inherited():
+    """Verify `_resolve_range_tzs` across both same-date and two-date ranges:
+    1) Invalid or ambiguous explicit first-endpoint timezones (`(UTC+99)`, `(CST)`, etc.)
+       NEVER inherit `tz2` and NEVER convert either half — output stays byte-identical.
+    2) Invalid or ambiguous explicit second-endpoint timezones NEVER convert either half.
+    3) Genuinely omitted first-endpoint timezones cleanly inherit a valid trailing `tz2`
+       across `–`, `-`, `~`, `to`, and `until`.
+    4) Valid differing explicit offsets on both endpoints stay individually authoritative.
+    """
+    from gamexpress.news_timestamps import convert_news_timestamps
+
+    pub = 1790000000
+
+    # Exact required regression cases + parenthesized/bare cousins — ALL must stay byte-identical:
+    must_remain_verbatim = (
+        # Explicit invalid / ambiguous FIRST zone in same-date and two-date ranges:
+        "2026/09/28 06:00 (UTC+99) – 11:00 (UTC+8)",
+        "2026/09/28 06:00 (CST) – 11:00 (UTC+8)",
+        "2026/09/28 06:00 (UTC+99) – 2026/09/29 11:00 (UTC+8)",
+        "2026/09/28 06:00 (CST) – 2026/09/29 11:00 (UTC+8)",
+        "2026/09/28 06:00 (PT) – 11:00 (UTC+8)",
+        "2026/09/28 06:00 (IST) – 2026/09/29 11:00 (server time)",
+        "2026/09/28 06:00 (UTC+foo) – 2026/09/29 11:00 (UTC+8)",
+        "2026/09/28 06:00 (local time) – 2026/09/29 11:00 (UTC+8)",
+        "2026/09/28 06:00 UTC+99 – 11:00 UTC+8",
+        "2026/09/28 06:00 CST – 11:00 UTC+8",
+        "2026/09/28 06:00 UTC+99 – 2026/09/29 11:00 UTC+8",
+        "2026/09/28 06:00 CST – 2026/09/29 11:00 UTC+8",
+        "2026/09/28 06:00 local time – 2026/09/29 11:00 (UTC+8)",
+        # Explicit invalid / ambiguous SECOND zone (with valid first zone or omitted first zone):
+        "2026/09/28 06:00 (UTC+8) – 11:00 (UTC+99)",
+        "2026/09/28 06:00 (UTC+8) – 11:00 (CST)",
+        "2026/09/28 06:00 – 11:00 (UTC+99)",
+        "2026/09/28 06:00 – 11:00 (CST)",
+        "2026/09/28 06:00 (UTC+8) – 2026/09/29 11:00 (UTC+99)",
+        "2026/09/28 06:00 (UTC+8) – 2026/09/29 11:00 (CST)",
+        "2026/09/28 06:00 – 2026/09/29 11:00 (UTC+99)",
+        "2026/09/28 06:00 – 2026/09/29 11:00 (CST)",
+        # Chronologically inverted when distinct valid offsets are respected (`08:00 UTC > 15:00 UTC+8 == 07:00 UTC`):
+        "2026/09/28 08:00 (UTC) – 15:00 (UTC+8)",
+        "2026/09/28 08:00 (UTC) – 2026/09/28 15:00 (UTC+8)",
+    )
+    for sample in must_remain_verbatim:
+        out = convert_news_timestamps(sample, published_ts=pub, enabled=True)
+        assert out == sample and out.encode("utf-8") == sample.encode("utf-8"), (sample, out)
+        # Also verify end-to-end inside `cards.news_payloads(..., timestamps=True)` vs `timestamps=False`:
+        art = Item(
+            "hoyolab", "genshin", "tz-guard", "https://www.hoyolab.com/article/46604275",
+            "Maintenance & Event Notice", sample, pub,
+            article_blocks=[{"kind": "text", "text": sample}],
+        )
+        assert cards.news_payloads(GAMES["genshin"], art, timestamps=True) == cards.news_payloads(
+            GAMES["genshin"], art, timestamps=False
+        )
+
+    # Genuinely omitted first zone inherits valid trailing shared zone across all connectors:
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 – 11:00 (UTC+8)", published_ts=pub, enabled=True)
+        == "<t:1790546400:f> – <t:1790564400:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 to 11:00 (UTC+8)", published_ts=pub, enabled=True)
+        == "<t:1790546400:f> to <t:1790564400:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 until 11:00 (UTC+8)", published_ts=pub, enabled=True)
+        == "<t:1790546400:f> until <t:1790564400:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 – 2026/09/29 11:00 (UTC+8)", published_ts=pub, enabled=True)
+        == "<t:1790546400:f> – <t:1790650800:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 to 2026/09/29 11:00 (UTC+8)", published_ts=pub, enabled=True)
+        == "<t:1790546400:f> to <t:1790650800:f>"
+    )
+
+    # Valid differing explicit offsets on BOTH endpoints remain individually authoritative:
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 (UTC) – 15:00 (UTC+8)", published_ts=pub, enabled=True)
+        == "<t:1790575200:f> – <t:1790578800:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 (UTC-4) – 19:00 (UTC+8)", published_ts=pub, enabled=True)
+        == "<t:1790589600:f> – <t:1790593200:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 (UTC+8) – 2026/09/28 02:00 (UTC)", published_ts=pub, enabled=True)
+        == "<t:1790546400:f> – <t:1790560800:f>"
+    )
+
+
+def test_followup_7_yearless_publication_window_rollover_and_explicit_years():
+    """Verify exact conservative `±180`-day yearless resolution & range rollover rules:
+    1) October 21, 2026 publication with a recent June date resolves to June 2026 (never June 2027).
+    2) Valid December-to-January and early-January-to-December rollovers within `±180` days succeed
+       (both yearless-to-yearless and explicit-year-to-yearless across year wrap).
+    3) Inverted September-to-September (and autumn-to-autumn) yearless or mixed ranges remain
+       byte-for-byte unchanged rather than rolling the end date +1 year into a ~365-day span.
+    4) Exact minute-level `±180`-day publication-window boundaries accept `<= 180d` and leave
+       ambiguous half-year antipode dates (`> 180d`) untouched.
+    5) Explicit years are always 100% authoritative regardless of `published_ts`.
+    """
+    from gamexpress.news_timestamps import SERVER_TZ, convert_news_timestamps
+
+    oct_pub = int(datetime(2026, 10, 21, 12, 0, 0, tzinfo=SERVER_TZ).timestamp())  # 1792555200
+    sep_pub = int(datetime(2026, 9, 20, 12, 0, 0, tzinfo=SERVER_TZ).timestamp())   # 1789876800
+    dec_pub = int(datetime(2026, 12, 20, 0, 0, 0, tzinfo=timezone.utc).timestamp())  # 1797724800
+    jan_pub = int(datetime(2027, 1, 2, 0, 0, 0, tzinfo=timezone.utc).timestamp())    # 1798848000
+
+    # 1) October 21, 2026 publication with recent June yearless date stays in 2026 (~142d earlier):
+    expected_jun1_2026 = int(datetime(2026, 6, 1, 12, 0, 0, tzinfo=SERVER_TZ).timestamp())
+    expected_jun15_2026 = int(datetime(2026, 6, 15, 3, 59, 0, tzinfo=SERVER_TZ).timestamp())
+    assert (
+        convert_news_timestamps("June 1, 12:00 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{expected_jun1_2026}:f>"
+    )
+    assert (
+        convert_news_timestamps("06/01 12:00 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{expected_jun1_2026}:f>"
+    )
+    assert (
+        convert_news_timestamps("June 1, 12:00 – June 15, 03:59 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{expected_jun1_2026}:f> – <t:{expected_jun15_2026}:f>"
+    )
+
+    # 2) Valid December <-> January rollover (both yearless AND explicit-first -> yearless-second):
+    assert (
+        convert_news_timestamps("December 25, 10:00 — January 12, 03:59 (UTC+8)", published_ts=dec_pub, enabled=True)
+        == "<t:1798164000:f> — <t:1799697540:f>"
+    )
+    assert (
+        convert_news_timestamps("December 25, 10:00 — January 12, 03:59 (UTC+8)", published_ts=jan_pub, enabled=True)
+        == "<t:1798164000:f> — <t:1799697540:f>"
+    )
+    assert (
+        convert_news_timestamps("December 25, 2026 10:00 — January 12, 03:59 (UTC+8)", published_ts=dec_pub, enabled=True)
+        == "<t:1798164000:f> — <t:1799697540:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/12/25 10:00 – 01/12 03:59 (UTC+8)", published_ts=dec_pub, enabled=True)
+        == "<t:1798164000:f> – <t:1799697540:f>"
+    )
+
+    # 3) Inverted September-to-September (and autumn-to-autumn) ranges remain byte-identical:
+    for inverted_range in (
+        "September 28, 11:00 – September 20, 06:00 (UTC+8)",
+        "09/28 11:00 – 09/20 06:00 (UTC+8)",
+        "September 28, 11:00 – September 28, 06:00 (UTC+8)",
+        "2026/09/28 11:00 – 09/20 06:00 (UTC+8)",
+        "2026/09/28 11:00 – 09/28 06:00 (UTC+8)",
+        "September 28, 2026 11:00 – September 20, 06:00 (UTC+8)",
+        "October 10, 12:00 – September 25, 12:00 (UTC+8)",
+        "October 10, 2026 12:00 – September 25, 12:00 (UTC+8)",
+    ):
+        got = convert_news_timestamps(inverted_range, published_ts=sep_pub, enabled=True)
+        assert got == inverted_range and got.encode("utf-8") == inverted_range.encode("utf-8"), (inverted_range, got)
+
+    # 4) Exact minute-level `±180`-day boundaries around `oct_pub` (`2026-10-21 12:00 UTC+8`):
+    minus_180d_exact = int(datetime(2026, 4, 24, 12, 0, 0, tzinfo=SERVER_TZ).timestamp())  # -180d 00m
+    plus_180d_exact = int(datetime(2027, 4, 19, 12, 0, 0, tzinfo=SERVER_TZ).timestamp())   # +180d 00m
+    assert (
+        convert_news_timestamps("04/24 12:00 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{minus_180d_exact}:f>"
+    )
+    assert (
+        convert_news_timestamps("04/24 11:59 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == "04/24 11:59 (UTC+8)"
+    )
+    assert (
+        convert_news_timestamps("04/19 12:00 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{plus_180d_exact}:f>"
+    )
+    assert (
+        convert_news_timestamps("04/19 12:01 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == "04/19 12:01 (UTC+8)"
+    )
+
+    # 5) Explicit years remain 100% authoritative regardless of `published_ts` (even outside `±180d` or `published_ts=0`):
+    assert (
+        convert_news_timestamps("2026/04/24 11:59 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{minus_180d_exact - 60}:f>"
+    )
+    assert (
+        convert_news_timestamps("2027/04/19 12:01 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{plus_180d_exact + 60}:f>"
+    )
+    jun1_2027 = int(datetime(2027, 6, 1, 12, 0, 0, tzinfo=SERVER_TZ).timestamp())
+    assert (
+        convert_news_timestamps("June 1, 2027 12:00 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == f"<t:{jun1_2027}:f>"
+    )
+    assert (
+        convert_news_timestamps("June 1, 2026 12:00 (UTC+8)", published_ts=0, enabled=True)
+        == f"<t:{expected_jun1_2026}:f>"
+    )
+    assert (
+        convert_news_timestamps("2026/09/28 06:00 – 2027/09/28 06:00 (UTC+8)", published_ts=oct_pub, enabled=True)
+        == "<t:1790546400:f> – <t:1822082400:f>"
+    )
+
+
+def test_correction_6_ambiguous_post_no_replay_and_state_durability():
+    """Verify safe ambiguous POST handling end-to-end across WebhookClient, runner.run_news,
+    and State.merge_peer:
+      1. Simulated accepted-but-response-timeout outcome causes exactly ONE POST attempt (no retry).
+      2. The multi-page article remains incomplete (`status == "partial"`) and is marked `ambiguous: True`.
+      3. Process restart and repeated reruns send NO duplicate page (`0` POST attempts).
+      4. Earlier confirmed pages and message IDs remain durably recorded and intact in `state.json`.
+      5. A timeout followed by a queued would-be `200 {"id": ...}` response cannot erase the original
+         uncertainty (neither by automatic replay nor even if white-box retry is invoked directly).
+      6. Post-dispatch connection loss and response-body read failures (`ServerDisconnectedError`,
+         `ClientConnectionResetError`, `ClientPayloadError`, `UnicodeDecodeError`) stop after 1 POST
+         and mark `ambiguous=True`, whereas definite pre-send connection setup errors
+         (`ClientConnectorError`, `ConnectionTimeoutError`), HTTP `429` rate limits, explicit `4xx`
+         rejections, and idempotent `PATCH` edits retain safe retry / non-ambiguous semantics.
+    """
+    from unittest.mock import AsyncMock, patch
+
+    import aiohttp
+
+    from gamexpress import discord as discord_mod
+    from gamexpress import runner
+    from gamexpress.sources import hoyolab as hoyolab_mod
+    from gamexpress.state import State
+
+    class _MockResp:
+        def __init__(self, status: int, body: str = "", headers: dict[str, str] | None = None, body_exc: Exception | None = None):
+            self.status = status
+            self._body = body
+            self.headers = headers or {}
+            self._body_exc = body_exc
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def text(self) -> str:
+            if self._body_exc is not None:
+                raise self._body_exc
+            return self._body
+
+    class _RaiseOnEnter:
+        def __init__(self, exc: BaseException):
+            self._exc = exc
+
+        async def __aenter__(self):
+            raise self._exc
+
+        async def __aexit__(self, *exc):
+            return False
+
+    class _QueuedSession:
+        def __init__(self, steps: list):
+            self.steps = list(steps)
+            self.calls: list[tuple[str, str, dict]] = []
+
+        def request(self, method: str, url: str, **kw):
+            self.calls.append((method, url, kw.get("json")))
+            if not self.steps:
+                raise AssertionError(f"unexpected extra HTTP request #{len(self.calls)}: {method} {url}")
+            nxt = self.steps.pop(0)
+            if isinstance(nxt, BaseException):
+                return _RaiseOnEnter(nxt)
+            return nxt
+
+    # Build a deterministic 4-page expanded article so Pages 1 & 2 confirm cleanly,
+    # Page 3 encounters simulated accepted-but-response-timeout, and Page 4 + queued retry
+    # responses sit immediately behind it in the transport queue.
+    four_page_item = news_item(
+        "960001",
+        body="\n\n".join(
+            f"Section {idx}: " + ("Verified official event details and schedule notes. " * 55)
+            for idx in range(1, 5)
+        ),
+    )
+    rendered_pages = cards.news_payloads(GAMES["genshin"], four_page_item, expand_full=True)
+    assert len(rendered_pages) == 4
+
+    with tempfile.TemporaryDirectory() as tmp:
+        state_path = Path(tmp) / "state.json"
+        ctx = news_ctx(state_path, NEWS_EXPAND_FULL="1")
+        ctx.state.schedule_records("genshin")["5.1"] = {"status": "posted", "message_id": "sched-51"}
+        ctx.state.code_records("genshin")["GENSHINGIFT"] = {"status": "posted", "first_seen": ctx.now - 100}
+        with patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[])):
+            asyncio.run(runner.run_news(ctx))
+        ctx.now += 60
+        ctx.state.save()
+
+        # Pre-ambiguous snapshot simulating an earlier peer before Page 3 uncertainty occurred.
+        peer_pre_ambiguous = None
+
+        row = {"id": "960001", "ts": ctx.now - 30}
+        # Queue:
+        #   - POST #1 (Page 1): confirmed 200 {"id": "msg-c6-p1"}
+        #   - POST #2 (Page 2): confirmed 200 {"id": "msg-c6-p2"}
+        #   - POST #3 (Page 3): simulated accepted-by-Discord then response timeout (`ServerTimeoutError`)
+        #   - Slot #4 (queued right behind it!): `200 {"id": "msg-c6-p3-dup"}` — MUST NEVER BE CALLED
+        #     AND MUST NEVER ERASE THE AMBIGUOUS STATE!
+        #   - Slot #5: `200 {"id": "msg-c6-p4"}` — MUST NEVER BE CALLED!
+        queued_session = _QueuedSession(
+            [
+                _MockResp(200, '{"id":"msg-c6-p1"}'),
+                _MockResp(200, '{"id":"msg-c6-p2"}'),
+                aiohttp.ServerTimeoutError("Timeout on reading data from socket after POST dispatch"),
+                _MockResp(200, '{"id":"msg-c6-p3-dup"}'),
+                _MockResp(200, '{"id":"msg-c6-p4"}'),
+            ]
+        )
+
+        async def _run_all_checks():
+            nonlocal peer_pre_ambiguous
+            with (
+                patch.object(asyncio, "sleep", new=AsyncMock()),
+                patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[row])),
+                patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=four_page_item)),
+            ):
+                ctx.webhook = discord_mod.WebhookClient(queued_session, dry_run=False)
+                await runner.run_news(ctx)
+
+                # Property 1: Page 1 (1 POST) + Page 2 (1 POST) + Page 3 (EXACTLY 1 POST, NOT retried!) = 3 total POSTs.
+                assert len(queued_session.calls) == 3
+                assert all(call[0] == "POST" for call in queued_session.calls)
+                assert queued_session.calls[0][2] == rendered_pages[0]
+                assert queued_session.calls[1][2] == rendered_pages[1]
+                assert queued_session.calls[2][2] == rendered_pages[2]
+                # Both queued would-be `200` responses remain completely untouched in the transport queue.
+                assert len(queued_session.steps) == 2
+
+                # Property 2 & Property 4: Reload from disk (`state.json`) to prove durability:
+                # article remains incomplete (`status == "partial"`), marked `ambiguous is True`,
+                # and earlier confirmed pages + IDs (`["msg-c6-p1", "msg-c6-p2"]`) are completely intact!
+                persisted = State.load(state_path)
+                rec = persisted.news_record("genshin")["records"]["960001"]
+                assert rec["status"] == "partial"
+                assert rec["ambiguous"] is True
+                assert rec["messages"] == ["msg-c6-p1", "msg-c6-p2"]
+                assert "msg-c6-p3-dup" not in rec["messages"]
+                assert rec.get("signature")
+
+                # Verify peer-merge safety: an un-ambiguous partial peer snapshot cannot clear `ambiguous: True`.
+                peer_pre_ambiguous = {
+                    "news": {
+                        "genshin": {
+                            "route": persisted.news_record("genshin")["route"],
+                            "floor": persisted.news_record("genshin")["floor"],
+                            "records": {
+                                "960001": {
+                                    "status": "partial",
+                                    "ts": row["ts"],
+                                    "row": row,
+                                    "signature": rec["signature"],
+                                    "messages": ["msg-c6-p1", "msg-c6-p2"],
+                                }
+                            },
+                        }
+                    }
+                }
+                persisted.merge_peer(peer_pre_ambiguous, include_news=True)
+                assert persisted.news_record("genshin")["records"]["960001"]["ambiguous"] is True
+                assert persisted.news_record("genshin")["records"]["960001"]["messages"] == ["msg-c6-p1", "msg-c6-p2"]
+
+                # Property 3: Simulate fresh process restarts / subsequent polls against persisted `state.json` —
+                # sends ZERO duplicate pages (`0` POST attempts) across repeated runs while keeping IDs intact.
+                restart_session = _QueuedSession([])
+                restarted_ctx = news_ctx(state_path, NEWS_EXPAND_FULL="1")
+                restarted_ctx.now = ctx.now + 300
+                restarted_ctx.state = State.load(state_path)
+                restarted_ctx.webhook = discord_mod.WebhookClient(restart_session, dry_run=False)
+                await runner.run_news(restarted_ctx)
+                await runner.run_news(restarted_ctx)
+                assert restart_session.calls == []
+                assert any("ambiguous webhook outcome; manual review required" in w for w in restarted_ctx.warnings)
+                reloaded_after_reruns = State.load(state_path)
+                after_rec = reloaded_after_reruns.news_record("genshin")["records"]["960001"]
+                assert after_rec["status"] == "partial" and after_rec["ambiguous"] is True
+                assert after_rec["messages"] == ["msg-c6-p1", "msg-c6-p2"]
+                assert reloaded_after_reruns.schedule_records("genshin")["5.1"]["message_id"] == "sched-51"
+                assert reloaded_after_reruns.code_records("genshin")["GENSHINGIFT"]["status"] == "posted"
+
+            # Property 5: Default `WebhookClient.send(url, payload)` (`stop_on_ambiguous=False`)
+            # preserves pre-PR baseline retry & `SendResult` behavior for `schedule`/`codes`/CLI:
+            with patch.object(asyncio, "sleep", new=AsyncMock()):
+                sticky_session = _QueuedSession(
+                    [
+                        asyncio.TimeoutError("simulated post-write timeout"),
+                        _MockResp(200, '{"id":"later-ok-id"}'),
+                    ]
+                )
+                sticky_client = discord_mod.WebhookClient(sticky_session, dry_run=False)
+                sticky_res = await sticky_client.send(HOOK, rendered_pages[0])
+                assert len(sticky_session.calls) == 2
+                assert sticky_res == SendResult(True, 200, message_id="later-ok-id")
+                assert sticky_res.ambiguous is False
+
+                # Property 6a: With `stop_on_ambiguous=True`, post-dispatch disconnect & HTTP 200
+                # body-read failures stop at 1 POST with `ambiguous=True` (queued step untouched).
+                for post_dispatch_step in (
+                    aiohttp.ServerDisconnectedError("server closed connection after POST write"),
+                    aiohttp.ClientConnectionResetError("connection reset after dispatch"),
+                    _MockResp(200, body_exc=aiohttp.ClientPayloadError("truncated chunked response body")),
+                    _MockResp(200, body_exc=UnicodeDecodeError("utf-8", b"\xff", 0, 1, "invalid byte")),
+                ):
+                    ind_session = _QueuedSession([post_dispatch_step, _MockResp(200, '{"id":"never-sent"}')])
+                    ind_client = discord_mod.WebhookClient(ind_session, dry_run=False)
+                    ind_res = await ind_client.send(HOOK, rendered_pages[0], stop_on_ambiguous=True)
+                    assert len(ind_session.calls) == 1
+                    assert len(ind_session.steps) == 1
+                    assert ind_res.ok is False and ind_res.ambiguous is True
+
+                # Property 6b: Definite pre-send connection setup errors (`ClientConnectorError`,
+                # `ConnectionTimeoutError`) safely retry even under `stop_on_ambiguous=True` and
+                # succeed/exhaust with `ambiguous=False` (never false-locked).
+                conn_key = types.SimpleNamespace(host="discord.com", port=443, ssl=True)
+                presend_ok_session = _QueuedSession(
+                    [
+                        aiohttp.ClientConnectorError(conn_key, OSError("DNS lookup transient failure")),
+                        aiohttp.ConnectionTimeoutError("TCP SYN connect timeout before write"),
+                        _MockResp(200, '{"id":"msg-after-presend-retry"}'),
+                    ]
+                )
+                presend_client = discord_mod.WebhookClient(presend_ok_session, dry_run=False)
+                presend_res = await presend_client.send(HOOK, rendered_pages[0], stop_on_ambiguous=True)
+                assert len(presend_ok_session.calls) == 3
+                assert presend_res.ok is True
+                assert presend_res.message_id == "msg-after-presend-retry"
+                assert presend_res.ambiguous is False
+
+                presend_down_session = _QueuedSession(
+                    [aiohttp.ConnectionTimeoutError("pool/connect timeout") for _ in range(5)]
+                )
+                presend_down_client = discord_mod.WebhookClient(presend_down_session, dry_run=False)
+                presend_down_res = await presend_down_client.send(HOOK, rendered_pages[0], stop_on_ambiguous=True)
+                assert len(presend_down_session.calls) == 5
+                assert presend_down_res.ok is False and presend_down_res.ambiguous is False
+
+                # Property 6c: Explicit 4xx rejection (`ambiguous=False`, 1 call), 429 rate-limit backoff + retry,
+                # and idempotent PATCH retry (`ambiguous=False`).
+                explicit_400_session = _QueuedSession([_MockResp(400, '{"message":"Invalid Form Body"}')])
+                res_400 = await discord_mod.WebhookClient(explicit_400_session, dry_run=False).send(
+                    HOOK, rendered_pages[0], stop_on_ambiguous=True
+                )
+                assert len(explicit_400_session.calls) == 1
+                assert res_400.ok is False and res_400.status == 400 and res_400.ambiguous is False
+
+                rate_429_session = _QueuedSession(
+                    [
+                        _MockResp(429, "", headers={"Retry-After": "0.5"}),
+                        _MockResp(200, '{"id":"msg-after-429"}'),
+                    ]
+                )
+                res_429 = await discord_mod.WebhookClient(rate_429_session, dry_run=False).send(
+                    HOOK, rendered_pages[0], stop_on_ambiguous=True
+                )
+                assert len(rate_429_session.calls) == 2
+                assert res_429.ok is True and res_429.message_id == "msg-after-429" and res_429.ambiguous is False
+
+                patch_session = _QueuedSession(
+                    [
+                        asyncio.TimeoutError("transient PATCH timeout"),
+                        _MockResp(200, '{"id":"msg-c6-p1"}'),
+                    ]
+                )
+                res_patch = await discord_mod.WebhookClient(patch_session, dry_run=False).edit(
+                    HOOK, "msg-c6-p1", rendered_pages[0]
+                )
+                assert len(patch_session.calls) == 2
+                assert res_patch.ok is True and res_patch.ambiguous is False
+
+                # Property 6d: Maintenance milestone POST timeout also stops after 1 POST (no retry),
+                # persists `status: "ambiguous"`, holds across reruns, and cannot be cleared by a
+                # stale `"seeded"` peer record during `State.merge_peer(..., include_maintenance=True)`.
+                from gamexpress import maintenance as maint_mod
+                from gamexpress.sources import launcher as launcher_mod
+
+                maint_state_path = Path(tmp) / "maint_state.json"
+                mctx = make_ctx(
+                    maint_state_path,
+                    now=1792380000,
+                    MAINTENANCE_ENABLED="1",
+                    ONLY="maintenance",
+                    MAINTENANCE_GAMES="zzz",
+                    DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+                )
+                mctx.state.schedule_records("zzz")["3.3"] = {
+                    "status": "posted",
+                    "data": {"version": "3.3", "preinstall_ts": 1792382400, "maint_start_ts": 1792533600},
+                    "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+                }
+                mctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+                mctx.items["zzz"] = []
+                await maint_mod.run(mctx)  # silent baseline seed
+                mctx.now = 1792382460
+                maint_session = _QueuedSession(
+                    [
+                        aiohttp.ServerTimeoutError("maintenance POST timeout after write"),
+                        _MockResp(200, '{"id":"maint-dup-never-sent"}'),
+                    ]
+                )
+                mctx.webhook = discord_mod.WebhookClient(maint_session, dry_run=False)
+                with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
+                    await maint_mod.run(mctx)
+                    assert len(maint_session.calls) == 1
+                    assert len(maint_session.steps) == 1
+                    m_persisted = State.load(maint_state_path)
+                    assert m_persisted.maintenance_record("zzz")["versions"]["3.3"]["preload"]["status"] == "ambiguous"
+                    m_peer = {
+                        "maintenance": {
+                            "zzz": {
+                                "route": m_persisted.maintenance_record("zzz")["route"],
+                                "seeded_at": m_persisted.maintenance_record("zzz")["seeded_at"],
+                                "versions": {"3.3": {"preload": {"status": "seeded", "ts": 1792382400}}},
+                            }
+                        }
+                    }
+                    m_persisted.merge_peer(m_peer, include_maintenance=True)
+                    assert m_persisted.maintenance_record("zzz")["versions"]["3.3"]["preload"]["status"] == "ambiguous"
+                    m_rerun_session = _QueuedSession([])
+                    mctx.state = m_persisted
+                    mctx.webhook = discord_mod.WebhookClient(m_rerun_session, dry_run=False)
+                    await maint_mod.run(mctx)
+                    assert m_rerun_session.calls == []
+
+        asyncio.run(_run_all_checks())
+
+        # Item 2: Verify exact dedicated maintenance routing & activation contract:
+        #   - Dedicated `DISCORD_WEBHOOK_MAINTENANCE_<GAME>` only (generic `DISCORD_WEBHOOK_MAINTENANCE` NEVER applies).
+        #   - `MAINTENANCE_ENABLED=1` adds `"maintenance"` automatically without needing it in `ENABLED_FEATURES`,
+        #     unless globally disabled (`none`/`off`/`standby`/`0`) or excluded by `ONLY`.
+        st_generic_only = settings(
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="genshin",
+            DISCORD_WEBHOOK_MAINTENANCE=HOOK,
+        )
+        assert "maintenance" in st_generic_only.features
+        assert st_generic_only.webhook_source("maintenance", "genshin") == ("", None)
+        assert st_generic_only.webhook("maintenance", "genshin") is None
+
+        st_per_game = settings(
+            ENABLED_FEATURES="schedule,codes",
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="genshin",
+            DISCORD_WEBHOOK_MAINTENANCE_GENSHIN=HOOK,
+        )
+        assert st_per_game.features == {"schedule", "codes", "maintenance"}
+        assert st_per_game.webhook_source("maintenance", "genshin") == (
+            "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN",
+            HOOK,
+        )
+        assert st_per_game.webhook("maintenance", "genshin") == HOOK
+        assert st_per_game.webhook_source("maintenance", "starrail") == ("", None)
+        assert st_per_game.webhook("maintenance", "starrail") is None
+
+        for disabled_token in ("none", "off", "standby", "0"):
+            st_off = settings(
+                ENABLED_FEATURES=disabled_token,
+                MAINTENANCE_ENABLED="1",
+                MAINTENANCE_GAMES="genshin",
+                DISCORD_WEBHOOK_MAINTENANCE_GENSHIN=HOOK,
+            )
+            assert st_off.features == set()
+
+        st_only_sched = settings(
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="genshin",
+            ONLY="schedule",
+        )
+        assert st_only_sched.features == {"schedule"}
+
+        st_only_maint = settings(
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="genshin",
+            ONLY="maintenance",
+        )
+        assert st_only_maint.features == {"maintenance"}
+
+
+def test_final_acceptance_baseline_parity_shared_callers_and_template():
+    """Verify:
+    1) Actual pre-PR `main` (`1e071d82eba82baa0a2977f33d6f8180d3677aaf`) payload & request parity
+       across real HoYoLAB fixtures, all 5 games x 3 pagination regimes, and production baselines
+       (cryptographic SHA-256 digests + live `git archive` cross-check when `1e071d8` is present).
+    2) Preserved pre-PR baseline retry & `SendResult` behavior (`stop_on_ambiguous=False` default)
+       for all existing shared callers:
+       - `schedule.run` (primary `POST`, mirror `POST`, `404`-recovery repost `POST`, `PATCH` edits)
+       - `codeposter.run` (code-card `POST`, `_mark_expired` `PATCH`)
+       - `gamexpress.__main__.cmd_check_webhooks` / `cmd_test_card` (CLI sends)
+       including live side-by-side comparison against `main` (`1e071d8`) when present in git.
+    3) Explicit `stop_on_ambiguous=True` opt-in on official news (`runner.run_news`, ordinary and
+       expanded) and maintenance alerts (`maintenance.run`, `preload` and `maintenance`) — single
+       `POST` attempt, queued retry unexecuted, intact prior page IDs, restart & peer-merge hold.
+    """
+    import hashlib
+    import io
+    import subprocess
+    from contextlib import redirect_stdout
+    from types import SimpleNamespace
+    from unittest.mock import AsyncMock, patch
+
+    import aiohttp
+
+    from gamexpress import __main__ as cli_mod
+    from gamexpress import codeposter, runner, schedule
+    from gamexpress.discord import WebhookClient
+    from gamexpress.sources import hoyolab as hoyolab_mod
+
+    def _canon_sha256(obj) -> str:
+        raw = json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+        return hashlib.sha256(raw).hexdigest()
+
+    # Exact canonical JSON SHA-256 digests generated directly by `main` (`1e071d82eba82baa0a2977f33d6f8180d3677aaf`).
+    MAIN_1E071D8_SHA256 = {
+        "fixture:hoyolab_genshin_46604275_full.json": (1, "a87d0dc74d042fb12d9f89490b67ade96546133168e0c5394eaf321480816598"),
+        "fixture:hoyolab_starrail_46814308_full.json": (1, "d0833d351eacad7c690c566948618a52f6f21e867b21cc9c0e0f44a78a4876b0"),
+        "fixture:hoyolab_zzz_46604530_full.json": (1, "c863e2ef50ba360b3400278278b3c3e44498fd31b4c951197a8a141837e27b76"),
+        "fixture:hoyolab_zzz_46863847_full.json": (1, "8245162cd633f95510ee9d2b6b7b0c1c07801d1247445432ec968ff1aebfb14d"),
+        "fit1:genshin": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
+        "fit2:genshin": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
+        "over7k:genshin": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "fit1:starrail": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
+        "fit2:starrail": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
+        "over7k:starrail": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "fit1:hna": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
+        "fit2:hna": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
+        "over7k:hna": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "fit1:zzz": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
+        "fit2:zzz": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
+        "over7k:zzz": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "fit1:wuwa": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
+        "fit2:wuwa": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
+        "over7k:wuwa": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "prod:zzz_436": (1, "1bae1ccb24aa17d136f564038cc0a4545c066be4315fcc85d84f48448eea1417"),
+        "prod:zzz_444": (1, "d2038dc109cd2f15c5df47e6da5e2887434914dd48f90dbec430e686b529b1de"),
+    }
+
+    real_fixtures = (
+        ("hoyolab_genshin_46604275_full.json", "genshin"),
+        ("hoyolab_starrail_46814308_full.json", "starrail"),
+        ("hoyolab_zzz_46604530_full.json", "zzz"),
+        ("hoyolab_zzz_46863847_full.json", "zzz"),
+    )
+    for fname, gkey in real_fixtures:
+        raw = fx(fname)
+        post = raw["data"]["post"]["post"]
+        item = asyncio.run(hoyolab_mod.news_article(NewsFetcher([raw]), GAMES[gkey], {"id": post["post_id"], "ts": post["created_at"]}))
+        out_abs = cards.news_payloads(GAMES[gkey], item)
+        out_fls = cards.news_payloads(GAMES[gkey], item, timestamps=False, expand_full=False)
+        exp_len, exp_sha = MAIN_1E071D8_SHA256[f"fixture:{fname}"]
+        assert len(out_abs) == exp_len
+        assert out_abs == out_fls
+        assert _canon_sha256(out_abs) == exp_sha, fname
+
+    for gkey in ("genshin", "starrail", "hna", "zzz", "wuwa"):
+        fit1 = Item(
+            "hoyolab", gkey, "3101", "https://www.hoyolab.com/article/3101",
+            "Short official notice", "", 1792549120,
+            article_blocks=[
+                {"kind": "text", "text": "Opens on October 25, 2026 and October 28, 2026 at 12:00 (UTC+8)."},
+                {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/short.jpg"},
+            ],
+            author="Official",
+        )
+        fit2 = Item(
+            "hoyolab", gkey, "3102", "https://www.hoyolab.com/article/3102",
+            "Moderate two-page official notice", "", 1792549120,
+            article_blocks=[
+                {"kind": "text", "text": ("Event section alpha opens 2026/10/25 12:00 (UTC+8).\n\n" * 42)},
+                {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/mid.jpg"},
+                {"kind": "text", "text": ("Event section beta closes 2026/11/05 03:59 (UTC+8).\n\n" * 42)},
+            ],
+            author="Official",
+        )
+        over7k = Item(
+            "hoyolab", gkey, "3103", "https://www.hoyolab.com/article/3103",
+            "Long official patch notes", "", 1792549120,
+            article_blocks=[
+                {"kind": "text", "text": ("Detailed patch adjustment entry on October 25, 2026.\n\n" * 200)},
+                {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/inline1.jpg"},
+            ],
+            images=["https://upload-os-bbs.hoyolab.com/upload/cover.jpg"],
+            author="Official",
+        )
+        for tag, cand in (("fit1", fit1), ("fit2", fit2), ("over7k", over7k)):
+            out_a = cards.news_payloads(GAMES[gkey], cand)
+            out_f = cards.news_payloads(GAMES[gkey], cand, timestamps=False, expand_full=False)
+            exp_len, exp_sha = MAIN_1E071D8_SHA256[f"{tag}:{gkey}"]
+            assert len(out_a) == exp_len and out_a == out_f
+            assert _canon_sha256(out_a) == exp_sha, f"{tag}:{gkey}"
+
+    zzz_436 = Item(
+        "hoyolab", "zzz", "47150315", "https://www.hoyolab.com/article/47150315",
+        "Known Issues & Optimization Summary", "", 1792549120,
+        article_blocks=[
+            {"kind": "text", "text": (
+                "Dear Proxies,\nHere are the current known issues as of October 21, 2026:\n"
+                "1. Fixed an issue where Agent animations could clip during Chain Attacks.\n"
+                "2. Fixed an issue with Signal Search details text alignment.\n"
+                "3. Fixed an audio playback issue in Hollow Zero stages.\n"
+                "4. Adjusted controller navigation focus in the Event menu."
+            )},
+        ],
+        images=["https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150315_cover.jpg"],
+        author="Zenless Zone Zero",
+    )
+    tall_url = "https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150540_tall.jpg?x-oss-process=image/quality,q_90"
+    zzz_444 = Item(
+        "hoyolab", "zzz", "47150540", "https://www.hoyolab.com/article/47150540",
+        "Agent Mechanics Overview", "", 1792551604,
+        article_blocks=[
+            {"kind": "text", "text": "Dear Proxies,\nCheck out the full mechanics overview starting October 22, 2026!"},
+            {"kind": "image", "url": tall_url},
+        ],
+        images=["https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150540_cover.jpg"],
+        author="Zenless Zone Zero",
+    )
+    assert _canon_sha256(cards.news_payloads(GAMES["zzz"], zzz_436)) == MAIN_1E071D8_SHA256["prod:zzz_436"][1]
+    assert _canon_sha256(cards.news_payloads(GAMES["zzz"], zzz_444)) == MAIN_1E071D8_SHA256["prod:zzz_444"][1]
+
+    # When `main` (`1e071d82eba82baa0a2977f33d6f8180d3677aaf`) is reachable in `.git`, also execute
+    # `main`'s actual `gamexpress/cards.py` in a child interpreter to cross-verify digests directly.
+    base_rev = "1e071d82eba82baa0a2977f33d6f8180d3677aaf"
+    if subprocess.run(["git", "cat-file", "-e", f"{base_rev}^{{commit}}"], capture_output=True).returncode == 0:
+        with tempfile.TemporaryDirectory() as git_tmp:
+            subprocess.run(f"git archive {base_rev} | tar -x -C {git_tmp}", shell=True, check=True)
+            live_check = subprocess.check_output(
+                [
+                    sys.executable,
+                    "-c",
+                    (
+                        "import asyncio, hashlib, json, sys\n"
+                        "from pathlib import Path\n"
+                        "sys.path.insert(0, sys.argv[1])\n"
+                        "from gamexpress import cards\n"
+                        "from gamexpress.config import load_games\n"
+                        "from gamexpress.sources import hoyolab as h\n"
+                        "g = load_games()\n"
+                        "raw = json.loads((Path(sys.argv[1]) / 'tests/fixtures/hoyolab_zzz_46863847_full.json').read_text())\n"
+                        "p = raw['data']['post']['post']\n"
+                        "class _F:\n"
+                        "    async def get_json(self, *a, **k): return raw\n"
+                        "it = asyncio.run(h.news_article(_F(), g['zzz'], {'id': p['post_id'], 'ts': p['created_at']}))\n"
+                        "out = cards.news_payloads(g['zzz'], it)\n"
+                        "print(hashlib.sha256(json.dumps(out, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest())"
+                    ),
+                    git_tmp,
+                ],
+                text=True,
+            ).strip()
+            assert live_check == MAIN_1E071D8_SHA256["fixture:hoyolab_zzz_46863847_full.json"][1]
+
+    # --- Shared `WebhookClient` caller end-to-end verification across `schedule`, `codes`, and CLI ---
+    class _WireResp:
+        def __init__(self, status: int, body: str = "", headers: dict | None = None):
+            self.status = status
+            self._body = body
+            self.headers = headers or {}
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_exc):
+            return False
+
+        async def text(self) -> str:
+            return self._body
+
+    class _WireSession:
+        def __init__(self, steps: list):
+            self.steps = list(steps)
+            self.calls: list[tuple[str, str, dict]] = []
+
+        def request(self, method: str, url: str, json: dict, timeout=None):
+            self.calls.append((method, url, json))
+            nxt = self.steps.pop(0)
+            if isinstance(nxt, BaseException):
+                raise nxt
+            return nxt
+
+    import inspect
+
+    assert inspect.signature(WebhookClient.send).parameters["stop_on_ambiguous"].default is False
+    assert inspect.signature(WebhookClient._request).parameters["stop_on_ambiguous"].default is False
+
+    orig_send = WebhookClient.send
+    observed_send_flags: list[bool] = []
+
+    async def _spy_send(self, webhook_url: str, payload: dict, *, stop_on_ambiguous: bool = False):
+        observed_send_flags.append(stop_on_ambiguous)
+        return await orig_send(self, webhook_url, payload, stop_on_ambiguous=stop_on_ambiguous)
+
+    with (
+        patch("gamexpress.discord.asyncio.sleep", new=AsyncMock()),
+        patch.object(WebhookClient, "send", _spy_send),
+    ):
+        # 1) `schedule.run`: preserves exact pre-PR `main` (`1e071d8`) retry & result handling across
+        #    primary `POST`, mirror `POST`, silent `PATCH` edits, `404`-recovery repost `POST`, and
+        #    full 5-attempt exhaustion (`"gave up after retries"`):
+        with tempfile.TemporaryDirectory() as td:
+            observed_send_flags.clear()
+            sess_ok = _WireSession([
+                asyncio.TimeoutError("transient primary timeout"),
+                _WireResp(200, '{"id": "sched-msg-1"}'),
+                aiohttp.ServerDisconnectedError("transient mirror disconnect"),
+                _WireResp(200, '{"id": "mirror-msg-1"}'),
+            ])
+            ctx_s = _wuwa_ctx(
+                Path(td) / "state.json",
+                WebhookClient(sess_ok),
+                BOOTSTRAP_POST="1",
+                DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA=MIRROR,
+            )
+            ctx_s.webhook._next_slot = 0.0
+            asyncio.run(schedule.run(ctx_s))
+            assert [(m, "wait=true" in u) for m, u, _ in sess_ok.calls] == [
+                ("POST", True),
+                ("POST", True),
+                ("POST", True),
+                ("POST", True),
+            ]
+            assert observed_send_flags == [False, False]
+            rec_37 = ctx_s.state.schedule_records("wuwa")["3.7"]
+            assert rec_37["message_id"] == "sched-msg-1"
+            assert rec_37["mirror_message_id"] == "mirror-msg-1"
+            assert any("schedule card posted" in r for r in ctx_s.report)
+            assert any("also posted" in r for r in ctx_s.report)
+            assert ctx_s.errors == []
+
+            # Update maintenance details -> silent `PATCH` on primary + mirror (retries transient error):
+            sess_patch = _WireSession([
+                asyncio.TimeoutError("transient PATCH timeout"),
+                _WireResp(200, '{"id": "sched-msg-1"}'),
+                _WireResp(200, '{"id": "mirror-msg-1"}'),
+            ])
+            ctx_s.webhook = WebhookClient(sess_patch)
+            ctx_s.webhook._next_slot = 0.0
+            ctx_s.items["wuwa"].append(
+                Item(
+                    "hoyolab", "wuwa", "ww-maint-37",
+                    "https://wutheringwaves.kurogames.com/en/main/news/detail/5570",
+                    "Version 3.7 Update Maintenance Notice",
+                    "Update Maintenance Time: 2026/09/30 06:00 to 2026/09/30 13:00 (UTC+8)\nCompensation: Astrite*300",
+                    ctx_s.now - 600,
+                )
+            )
+            asyncio.run(schedule.run(ctx_s))
+            assert [m for m, _, _ in sess_patch.calls] == ["PATCH", "PATCH", "PATCH"]
+
+            # Deleted primary card (`404` on `PATCH`) -> `POST` repost retries transient error & adopts new ID:
+            observed_send_flags.clear()
+            rec_37["payload_hash"] = "force-repost-ok"
+            sess_404_ok = _WireSession([
+                _WireResp(404, '{"code": 10008, "message": "Unknown Message"}'),
+                asyncio.TimeoutError("transient repost timeout"),
+                _WireResp(200, '{"id": "sched-reposted-2"}'),
+            ])
+            ctx_s.webhook = WebhookClient(sess_404_ok)
+            ctx_s.webhook._next_slot = 0.0
+            ctx_s.errors.clear()
+            asyncio.run(schedule.run(ctx_s))
+            assert [m for m, _, _ in sess_404_ok.calls] == ["PATCH", "POST", "POST"]
+            assert observed_send_flags == [False]
+            assert rec_37["message_id"] == "sched-reposted-2"
+            assert ctx_s.errors == []
+
+            # Deleted primary card (`404` on `PATCH`) -> `POST` repost exhausts all 5 baseline attempts:
+            rec_37["payload_hash"] = "force-repost-fail"
+            sess_404_fail = _WireSession([
+                _WireResp(404, '{"code": 10008, "message": "Unknown Message"}'),
+                *[asyncio.TimeoutError("repost timeout") for _ in range(5)],
+            ])
+            ctx_s.webhook = WebhookClient(sess_404_fail)
+            ctx_s.webhook._next_slot = 0.0
+            ctx_s.errors.clear()
+            asyncio.run(schedule.run(ctx_s))
+            assert [m for m, _, _ in sess_404_fail.calls] == ["PATCH", "POST", "POST", "POST", "POST", "POST"]
+            assert any("repost failed (0) gave up after retries" in e for e in ctx_s.errors)
+            assert rec_37["message_id"] == "sched-reposted-2"
+            assert rec_37["payload_hash"] == "force-repost-fail"
+
+            # Primary schedule `POST` exhausts all 5 baseline attempts -> error logged, unrecorded for retry:
+            sess_s_fail = _WireSession([asyncio.TimeoutError("schedule post timeout") for _ in range(5)])
+            ctx_s_fail = _wuwa_ctx(Path(td) / "state_fail.json", WebhookClient(sess_s_fail), BOOTSTRAP_POST="1")
+            ctx_s_fail.webhook._next_slot = 0.0
+            asyncio.run(schedule.run(ctx_s_fail))
+            assert [m for m, _, _ in sess_s_fail.calls] == ["POST"] * 5
+            assert any("post failed (0) gave up after retries" in err for err in ctx_s_fail.errors)
+            assert "message_id" not in ctx_s_fail.state.schedule_records("wuwa").get("3.7", {})
+
+            # Mirror `POST` exhausts all 5 baseline attempts while primary succeeds cleanly:
+            sess_mir_fail = _WireSession([
+                _WireResp(200, '{"id": "sched-prim-ok"}'),
+                *[asyncio.TimeoutError("mirror post timeout") for _ in range(5)],
+            ])
+            ctx_mir_fail = _wuwa_ctx(
+                Path(td) / "state_mir_fail.json",
+                WebhookClient(sess_mir_fail),
+                BOOTSTRAP_POST="1",
+                DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA=MIRROR,
+            )
+            ctx_mir_fail.webhook._next_slot = 0.0
+            asyncio.run(schedule.run(ctx_mir_fail))
+            assert [m for m, _, _ in sess_mir_fail.calls] == ["POST"] * 6
+            assert ctx_mir_fail.state.schedule_records("wuwa")["3.7"]["message_id"] == "sched-prim-ok"
+            assert any("copy failed (0) gave up after retries" in r for r in ctx_mir_fail.report)
+
+        # 2) `codeposter.run`: preserves 5-attempt baseline retry (`"gave up after retries"` -> `"pending"`),
+        #    transient disconnect + `429` recovery -> `"posted"`, and `_mark_expired` `PATCH` retry:
+        with tempfile.TemporaryDirectory() as td:
+            ctx_c = make_ctx(Path(td) / "codes_base.json", now=1790000000, DISCORD_WEBHOOK_CODES_GENSHIN=HOOK)
+            ctx_c.state.mark_bootstrapped("codes", "genshin")
+            official_code_item = Item(
+                "x", "genshin", "991", "https://x.com/GenshinImpact/status/991",
+                "Redemption Code: GENSHINGIFT", "Redemption Code: GENSHINGIFT", 1789999900,
+            )
+            ctx_c.items["genshin"] = [official_code_item]
+            observed_send_flags.clear()
+            sess_c_fail = _WireSession([aiohttp.ServerDisconnectedError("codes disconnect") for _ in range(5)])
+            ctx_c.webhook = WebhookClient(sess_c_fail)
+            ctx_c.webhook._next_slot = 0.0
+            with patch.object(codeposter, "prefetch", new=AsyncMock(return_value={})):
+                asyncio.run(codeposter.run(ctx_c))
+            assert observed_send_flags == [False]
+            assert [m for m, _, _ in sess_c_fail.calls] == ["POST"] * 5
+            assert ctx_c.state.code_records("genshin")["GENSHINGIFT"]["status"] == "pending"
+            assert any("code post failed (0) gave up after retries" in e for e in ctx_c.errors)
+
+            sess_c_ok = _WireSession([
+                aiohttp.ServerDisconnectedError("transient disconnect"),
+                _WireResp(429, '{"retry_after": 0.1}'),
+                _WireResp(200, '{"id": "code-msg-1"}'),
+                asyncio.TimeoutError("transient PATCH timeout"),
+                _WireResp(200, '{"id": "code-msg-1"}'),
+            ])
+            ctx_c.webhook = WebhookClient(sess_c_ok)
+            ctx_c.webhook._next_slot = 0.0
+            ctx_c.errors.clear()
+            with patch.object(codeposter, "prefetch", new=AsyncMock(return_value={})):
+                asyncio.run(codeposter.run(ctx_c))
+            assert ctx_c.state.code_records("genshin")["GENSHINGIFT"]["status"] == "posted"
+            assert ctx_c.state.code_records("genshin")["GENSHINGIFT"]["message_id"] == "code-msg-1"
+            expired_table = {
+                "fandom:genshin-impact/Promotional_Code": [
+                    CodeHit("GENSHINGIFT", "fandom:genshin-impact/Promotional_Code", expired=True)
+                ]
+            }
+            ctx_c.items["genshin"] = []
+            with patch.object(codeposter, "prefetch", new=AsyncMock(return_value=expired_table)):
+                asyncio.run(codeposter.run(ctx_c))
+            assert [m for m, _, _ in sess_c_ok.calls] == ["POST", "POST", "POST", "PATCH", "PATCH"]
+
+        # 3) CLI `check-webhooks` & `test-card` callers (`gamexpress/__main__.py`): baseline 5-attempt retry:
+        long_hook = (
+            "https://discord.com/api/webhooks/123456789012345678/"
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-abcd"
+        )
+        observed_send_flags.clear()
+        sess_cli = _WireSession([
+            *[asyncio.TimeoutError("cli check timeout") for _ in range(5)],
+            asyncio.TimeoutError("cli transient check timeout"),
+            _WireResp(200, '{"id": "cli-ok-1"}'),
+            *[asyncio.TimeoutError("cli sample timeout") for _ in range(5)],
+            asyncio.TimeoutError("cli transient sample timeout"),
+            _WireResp(200, '{"id": "cli-sample-ok-1"}'),
+        ])
+        out_cli = io.StringIO()
+        with (
+            patch.object(cli_mod, "load_settings", return_value=settings(DISCORD_WEBHOOK_CODES_GENSHIN=long_hook)),
+            patch("aiohttp.ClientSession") as mock_cs,
+            redirect_stdout(out_cli),
+        ):
+            mock_cs.return_value.__aenter__ = AsyncMock(return_value=sess_cli)
+            mock_cs.return_value.__aexit__ = AsyncMock(return_value=False)
+            rc_cli_fail = asyncio.run(cli_mod.cmd_check_webhooks(SimpleNamespace(kind="codes", game="genshin", dry_run=False)))
+            rc_cli_ok = asyncio.run(cli_mod.cmd_check_webhooks(SimpleNamespace(kind="codes", game="genshin", dry_run=False)))
+            tc_args = SimpleNamespace(kind="codes", game="genshin", dry_run=False, ping=False, unlaunched=False)
+            rc_smp_fail = asyncio.run(cli_mod.cmd_test_card(tc_args))
+            rc_smp_ok = asyncio.run(cli_mod.cmd_test_card(tc_args))
+        assert observed_send_flags == [False, False, False, False]
+        assert (rc_cli_fail, rc_cli_ok, rc_smp_fail, rc_smp_ok) == (1, 0, 1, 0)
+        assert [m for m, _, _ in sess_cli.calls] == ["POST"] * 14
+
+        # Live side-by-side `WebhookClient.send()` behavioral comparison against clean `1e071d8` when present:
+        if subprocess.run(
+            ["git", "cat-file", "-e", "1e071d82eba82baa0a2977f33d6f8180d3677aaf^{commit}"],
+            capture_output=True,
+        ).returncode == 0:
+            with tempfile.TemporaryDirectory() as base_dir:
+                subprocess.run(
+                    f"git archive 1e071d82eba82baa0a2977f33d6f8180d3677aaf | tar -x -C {base_dir}",
+                    shell=True,
+                    check=True,
+                )
+                probe_code = """
+import asyncio, json
+from unittest.mock import AsyncMock, patch
+import aiohttp
+from gamexpress import discord
+
+class R:
+    def __init__(self, status, body="", headers=None):
+        self.status, self._b, self.headers = status, body, headers or {}
+    async def __aenter__(self): return self
+    async def __aexit__(self, *e): return False
+    async def text(self): return self._b
+
+class S:
+    def __init__(self, steps):
+        self.steps, self.n = list(steps), 0
+    def request(self, m, u, json=None, timeout=None):
+        self.n += 1
+        x = self.steps.pop(0)
+        if isinstance(x, BaseException): raise x
+        return x
+
+async def run():
+    p = {"flags": 32768, "components": [{"type": 17, "components": [{"type": 10, "content": "hi"}]}]}
+    hook = "https://discord.com/api/webhooks/111/tok"
+    out = []
+    with patch("gamexpress.discord.asyncio.sleep", new=AsyncMock()):
+        for name, steps in [
+            ("ok", [R(200, '{"id":"m1"}')]),
+            ("retry_ok", [asyncio.TimeoutError("t"), R(200, '{"id":"m2"}')]),
+            ("give_up", [asyncio.TimeoutError("t") for _ in range(5)]),
+            ("disc_retry", [aiohttp.ServerDisconnectedError("d"), R(200, '{"id":"m3"}')]),
+            ("r429", [R(429, '{"retry_after":0.1}'), R(200, '{"id":"m4"}')]),
+            ("r400", [R(400, "bad")]),
+        ]:
+            s = S(steps)
+            c = discord.WebhookClient(s)
+            c._next_slot = 0.0
+            r = await c.send(hook, p)
+            out.append((name, s.n, r.ok, r.status, r.message_id, r.error))
+    print(json.dumps(out))
+
+asyncio.run(run())
+"""
+                base_out = json.loads(subprocess.check_output([sys.executable, "-c", probe_code], cwd=base_dir, text=True))
+                head_out = json.loads(subprocess.check_output([sys.executable, "-c", probe_code], text=True))
+                assert head_out == base_out
+
+        # 4) Default-off `runner.run_news` end-to-end wire trace + explicit `stop_on_ambiguous=True`
+        #    protection on BOTH ordinary single-card news (`NEWS_EXPAND_FULL=0`) AND maintenance alerts:
+        with tempfile.TemporaryDirectory() as td_n:
+            observed_send_flags.clear()
+            ctx_n = make_ctx(
+                Path(td_n) / "news_wire.json",
+                now=1792552000,
+                NEWS_ENABLED="1",
+                NEWS_GAMES="zzz",
+                DISCORD_WEBHOOK_NEWS_ZZZ=HOOK,
+            )
+            ctx_n.state.news_record("zzz").update(floor=1792550000, records={})
+            sess_n = _WireSession([_WireResp(200, '{"id": "news-wire-1"}')])
+            ctx_n.webhook = WebhookClient(sess_n)
+            ctx_n.webhook._next_slot = 0.0
+            verified_media_log: list[str] = []
+            ctx_n.fetcher = types.SimpleNamespace(
+                verify_media=lambda u: (verified_media_log.append(u), asyncio.sleep(0, result=True))[1]
+            )
+            with (
+                patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[{"id": "47150540", "ts": 1792551604}])),
+                patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=zzz_444)),
+            ):
+                asyncio.run(runner.run_news(ctx_n))
+            assert observed_send_flags == [True]
+            assert verified_media_log == [
+                "https://upload-os-bbs.hoyolab.com/upload/2026/10/21/zzz_47150540_cover.jpg",
+                tall_url,
+            ]
+            assert len(sess_n.calls) == 1
+            assert sess_n.calls[0][0] == "POST" and "wait=true" in sess_n.calls[0][1]
+            assert _canon_sha256([sess_n.calls[0][2]]) == MAIN_1E071D8_SHA256["prod:zzz_444"][1]
+
+            # Ordinary single-card news (`NEWS_EXPAND_FULL=0`) with indeterminate post-dispatch disconnect:
+            # explicitly passes `stop_on_ambiguous=True`, makes strictly 1 attempt, NEVER runs queued
+            # retry step, holds as partial+ambiguous across restart & peer merge with 0 duplicate sends:
+            observed_send_flags.clear()
+            ord_state_path = Path(td_n) / "news_ord_amb.json"
+            ctx_ord = make_ctx(
+                ord_state_path,
+                now=1792552000,
+                NEWS_ENABLED="1",
+                NEWS_GAMES="zzz",
+                NEWS_EXPAND_FULL="0",
+                DISCORD_WEBHOOK_NEWS_ZZZ=HOOK,
+            )
+            ctx_ord.state.news_record("zzz").update(floor=1792548000, records={})
+            ctx_ord.fetcher = types.SimpleNamespace(verify_media=lambda _u: asyncio.sleep(0, result=True))
+            sess_ord = _WireSession([
+                aiohttp.ServerDisconnectedError("socket dropped after POST write"),
+                _WireResp(200, '{"id": "queued-retry-must-not-run"}'),
+            ])
+            ctx_ord.webhook = WebhookClient(sess_ord)
+            ctx_ord.webhook._next_slot = 0.0
+            with (
+                patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[{"id": "47150315", "ts": 1792549120}])),
+                patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=zzz_436)),
+            ):
+                asyncio.run(runner.run_news(ctx_ord))
+            assert observed_send_flags == [True]
+            assert len(sess_ord.calls) == 1
+            assert len(sess_ord.steps) == 1  # queued retry strictly unexecuted
+            saved_ord = State.load(ord_state_path).news_record("zzz")["records"]["47150315"]
+            assert saved_ord["status"] == "partial" and saved_ord["ambiguous"] is True and saved_ord["messages"] == []
+
+            # Restart + peer merge on ordinary news hold -> 0 requests and hold intact:
+            restarted_ord = make_ctx(
+                ord_state_path,
+                now=1792552300,
+                NEWS_ENABLED="1",
+                NEWS_GAMES="zzz",
+                NEWS_EXPAND_FULL="0",
+                DISCORD_WEBHOOK_NEWS_ZZZ=HOOK,
+            )
+            restarted_ord.fetcher = types.SimpleNamespace(verify_media=lambda _u: asyncio.sleep(0, result=True))
+            restarted_ord.state.merge_peer({"news": {"zzz": {"floor": 1792548000, "records": {}}}})
+            assert restarted_ord.state.news_record("zzz")["records"]["47150315"]["ambiguous"] is True
+            sess_ord_rerun = _WireSession([])
+            restarted_ord.webhook = WebhookClient(sess_ord_rerun)
+            with (
+                patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[{"id": "47150315", "ts": 1792549120}])),
+                patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=zzz_436)),
+            ):
+                asyncio.run(runner.run_news(restarted_ord))
+            assert sess_ord_rerun.calls == []
+
+            # Maintenance alerts (`maintenance.run`: BOTH `preload` AND `maintenance`) explicitly
+            # pass `stop_on_ambiguous=True`, stop after 1 attempt without running queued retries,
+            # persist `status == "ambiguous"`, and stay suppressed across restart + peer merge:
+            from gamexpress import maintenance as maint_mod
+            from gamexpress.sources import launcher as launcher_mod
+
+            observed_send_flags.clear()
+            m_state_path = Path(td_n) / "maint_amb_explicit.json"
+            mctx = make_ctx(
+                m_state_path,
+                now=1792380000,
+                MAINTENANCE_ENABLED="1",
+                ONLY="maintenance",
+                MAINTENANCE_GAMES="zzz",
+                DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+            )
+            mctx.state.schedule_records("zzz")["3.3"] = {
+                "status": "posted",
+                "data": {"version": "3.3", "preinstall_ts": 1792382400, "maint_start_ts": 1792383600},
+                "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1]},
+            }
+            mctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+            mctx.items["zzz"] = []
+            with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
+                asyncio.run(maint_mod.run(mctx))  # silent baseline seed
+                mctx.now = 1792383700
+                sess_maint = _WireSession([
+                    aiohttp.ClientConnectionResetError("reset after preload POST write"),
+                    asyncio.TimeoutError("timeout after maintenance POST write"),
+                    _WireResp(200, '{"id": "queued-maint-retry-must-not-run"}'),
+                ])
+                mctx.webhook = WebhookClient(sess_maint)
+                mctx.webhook._next_slot = 0.0
+                asyncio.run(maint_mod.run(mctx))
+            assert observed_send_flags == [True, True]
+            assert len(sess_maint.calls) == 2
+            assert len(sess_maint.steps) == 1  # queued 3rd response strictly unexecuted
+            m_persisted = State.load(m_state_path).maintenance_record("zzz")
+            mrecs = m_persisted["versions"]["3.3"]
+            assert mrecs["preload"]["status"] == "ambiguous"
+            assert mrecs["maintenance"]["status"] == "ambiguous"
+
+            mctx_rerun = make_ctx(
+                m_state_path,
+                now=1792384000,
+                MAINTENANCE_ENABLED="1",
+                ONLY="maintenance",
+                MAINTENANCE_GAMES="zzz",
+                DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+            )
+            mctx_rerun.state.merge_peer(
+                {
+                    "maintenance": {
+                        "zzz": {
+                            "route": m_persisted["route"],
+                            "seeded_at": m_persisted["seeded_at"],
+                            "versions": {
+                                "3.3": {
+                                    "preload": {"status": "seeded", "ts": 1792382400},
+                                    "maintenance": {"status": "seeded", "ts": 1792383600},
+                                }
+                            },
+                        }
+                    }
+                },
+                include_maintenance=True,
+            )
+            assert mctx_rerun.state.maintenance_record("zzz")["versions"]["3.3"]["preload"]["status"] == "ambiguous"
+            assert mctx_rerun.state.maintenance_record("zzz")["versions"]["3.3"]["maintenance"]["status"] == "ambiguous"
+            mctx_rerun.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+            mctx_rerun.items["zzz"] = []
+            sess_maint_rerun = _WireSession([_WireResp(200, '{"id": "must-not-replay-maint"}')])
+            mctx_rerun.webhook = WebhookClient(sess_maint_rerun)
+            mctx_rerun.webhook._next_slot = 0.0
+            with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
+                asyncio.run(maint_mod.run(mctx_rerun))
+            assert sess_maint_rerun.calls == []
+
+            # Provenance-honest verification of HoYoLAB 47066240, 46791577, and 46233468:
+            # - 47066240: complete body transcribed from official page-reader extraction
+            #   (explicitly NOT a raw HoYoLAB API JSON fixture; exact publication_ts omitted),
+            #   verifying <=7,000 normalized chars renders identically in 2 validated messages
+            #   (2,105 + 2,096 text chars) with NEWS_EXPAND_FULL off and on.
+            # - 46791577: exists locally ONLY as a trimmed/scoped schedule-extraction excerpt in
+            #   `hoyolab_genshin_list_update_details.json` — never misrepresented as a full capture.
+            # - 46233468: no full local capture exists in `tests/fixtures/` — zero fabricated full fixtures.
+            item_47066240 = Item(
+                source="hoyolab",
+                game="genshin",
+                id="47066240",
+                url="https://www.hoyolab.com/article/47066240",
+                title="Version 7.1 Share HoYoverse Top-Up Center Event: Win Primogems, Phase 2",
+                text="",
+                published_ts=None,
+                author="Diligent Hilichurls",
+                images=["https://upload-os-bbs.hoyolab.com/upload/2026/10/10/b94c862ac64f8fdc52995dca3785e0c4_7565450137320262844.jpg"],
+                article_blocks=[
+                    {
+                        "kind": "text",
+                        "text": (
+                            'Olah! Hello, Traveler~\n\n'
+                            'Bonus Rewards Are Here for the Version 7.1 HoYoverse Top-Up Center Sharing Event!\n\n'
+                            'Make a top-up at the Top-Up Center and you\'ll receive **Primogems ×300** if this is your '
+                            'first purchase since the release of Version "Luna VI"! And, there\'s also **an extra 8% '
+                            'Primogem bonus** waiting for you! Don\'t forget to share this good news with your fellow Travelers!\n\n'
+                            'Phase 2 of the Version 7.1 sharing event is now live! Share the **"Promotional Image + Link"** '
+                            'from the HoYoverse Top-Up Center in the current phase with other Travelers for a chance to win '
+                            'an extra Primogems ×120!\n\n'
+                            '### How to Participate\n\n'
+                            'Share the promotional image and link from the Top-Up Center in the current phase on platforms '
+                            'such as X, Facebook, WhatsApp, Discord, etc., keep the post public for the duration of the event, '
+                            'and leave a comment with a screenshot of your post in the comments section. Please note that the '
+                            'promotional image and link must be shared together!\n\n'
+                            '### To ensure a valid entry:\n\n'
+                            '1. Only posts shared on platforms outside HoYoLAB will count.\n\n'
+                            '2. Your shared post must be visible to someone other than yourself to count as a valid entry.\n\n'
+                            '3. Do not reuse screenshots from successful entries in previous events.\n\n'
+                            '4. Your screenshot must clearly show the time of sharing, which must fall within the event period.\n\n'
+                            '### Promotional Image (Save image to local storage):'
+                        ),
+                    },
+                    {
+                        "kind": "image",
+                        "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/10/519bc76d605dcc0ef676af5e94605b74_3853398692464654951.jpg?x-oss-process=image%2Fresize%2Cs_1000%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp%2Fquality%2Cq_70",
+                    },
+                    {
+                        "kind": "text",
+                        "text": (
+                            '### Link:\n\n'
+                            'https://hoyo.link/ovXxkF1hj\n\n'
+                            '### Event Rewards\n\n'
+                            'Gold Prize: 20 randomly selected participating Travelers who share on three or more platforms '
+                            'other than HoYoLAB will receive Primogems ×120 each.\n\n'
+                            'Silver Prize: 30 randomly selected participating Travelers who share on two or more platforms '
+                            'other than HoYoLAB will receive Primogems ×120 each.\n\n'
+                            'Standard Prize: 150 randomly selected participating Travelers will receive Primogems ×120 each.\n\n'
+                            'Guaranteed: All Travelers participating in this event will receive "Fatui Comment Decoration: The Jester" (permanent).'
+                        ),
+                    },
+                    {
+                        "kind": "image",
+                        "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/10/9c21bca8c67c40dee5b60b4da25d46dd_3316486111006063918.png?x-oss-process=image%2Fresize%2Cs_1000%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp%2Fquality%2Cq_70",
+                    },
+                    {
+                        "kind": "text",
+                        "text": (
+                            '### Event Duration\n\n'
+                            'October 13, 2026 – November 3, 2026 23:59:59 (UTC+8)\n\n'
+                            'Results: The list of winners will be updated in this event post after November 13 (UTC+8).\n\n'
+                            'P.S. Don\'t forget to share the latest promotional image from this phase. Yours truly will be checking!\n\n'
+                            '[Click to redeem more community decorations! Go to the web event to redeem >>>]'
+                            '(https://act.hoyolab.com/ys/event/bbs-event-20251029points/index.html?hyl_presentation_style=fullscreen&hyl_auth_required=true&utm_id=2&utm_source=h5&utm_medium=task&utm_campaign=QiuQiuRen)\n\n'
+                            'Redemption Method:\n\n'
+                            '① Enter the event page\n\n'
+                            '② Click the "Redeem" button to enter the Exchange Center and redeem rewards\n\n'
+                            '### Notes\n\n'
+                            '1. Please note the discount validity period in the HoYoverse Top-Up Center. Please refer to the event duration displayed there.\n\n'
+                            '2. Please enable Reward Notifications in advance, as we will notify you of the results via System Messages. '
+                            'If you do not enable notifications in advance and this affects the reward distribution process, the rewards will not be reissued. '
+                            'System notification settings:\n\n'
+                            'https://www.hoyolab.com/setting/notification\n\n'
+                            '3. Please fill in your Genshin Impact UID in advance via My Information > Information Management > Game Information Management > Genshin Impact. '
+                            'If your UID has not been filled in by the time the results are announced, you will be deemed to have forfeited your Primogems reward.\n\n'
+                            '4. The following situations will be considered invalid participation:\n\n'
+                            'a. The content posted violates Community Rules, or plagiarized, or misappropriated content from other authors.\n\n'
+                            'b. Publishing content unrelated to the theme of the event, content that contains any form of advertising, and that which seeks to spread malicious rumors or discredit the game and its characters.\n\n'
+                            'c. Replying to a comment on the post.\n\n'
+                            '5. Each HoYoLAB account can win only one prize per phase of the sharing event.\n\n'
+                            '6. By participating in this event, you agree that you are bound by the Terms of Service and Privacy Policy. We reserve the right to modify or terminate this event in accordance with applicable laws.'
+                        ),
+                    },
+                ],
+            )
+            p47066240_off = cards.news_payloads(GAMES["genshin"], item_47066240, expand_full=False)
+            p47066240_on = cards.news_payloads(GAMES["genshin"], item_47066240, expand_full=True)
+            assert p47066240_off == p47066240_on
+            assert len(p47066240_off) == 2
+            assert [cards.text_length(p["components"]) for p in p47066240_off] == [2105, 2096]
+            assert all(cards.validate_payload(p) == [] for p in p47066240_off)
+
+            scoped_46791577 = fx("hoyolab_genshin_list_update_details.json")["data"]["list"][0]["post"]
+            assert scoped_46791577["post_id"] == "46791577"
+            assert len(scoped_46791577["content"]) < 2000  # scoped excerpt fixture only, not complete article HTML
+            fx_dir = Path(__file__).resolve().parent / "fixtures"
+            assert not any("46233468" in p.name or "46791577" in p.name for p in fx_dir.iterdir())
+
+
+
+
+def test_zzz_47154012_bracketed_link_label_repro_and_fix():
+    """Exact regression test for HoYoLAB ZZZ article 47154012 (Monitor #528).
+
+    Provenance note: the structured Quill ops and HTML source strings below are
+    reconstructed directly from the live Monitor #528 Discord Components V2 payload
+    for HoYoLAB post 47154012 (not a captured raw upstream HTTP body).
+    """
+    from gamexpress import preview_html
+    from gamexpress.textutil import news_link
+
+    reconstructed_ops = [
+        {"insert": (
+            "Dear Proxy,\n"
+            "Zenless Zone Zero Version 3.3 now supports Discord account linking, along with the all-new "
+            "Rich Presence functions for displaying your game status!\n"
+            "After linking your account, not only will you be able to show off your game status on Discord, "
+            "but you can also claim 30 Polychromes as a linking reward. Proxies who already linked their "
+            "accounts via the old account linking function can claim this linking reward once more.\n\n"
+        )},
+        {"insert": "[Function Details]", "attributes": {"bold": True}},
+        {"insert": (
+            "\n1. Account Linking and Unlinking\n"
+            "The new function to link your HoYoverse account with your Discord account has been added. "
+            "Proxies can set this up in-game via Options > Account > User Center > Link Account. Once linked, "
+            "related in-game activity will be displayed on the corresponding Discord profile. You can also "
+            "unlink the accounts at any time if needed.\n"
+            "2. Discord Rich Presence\n"
+            "Once you've linked your account and entered the game, Discord will display your Zenless Zone Zero "
+            "game status, character info, level, days active, and more.\n"
+            "3. More Game Stats Displayed\n"
+            "When viewing your game status on Discord on your desktop, you can also hover over the icon to see "
+            "your number of achievements, Bangboo, and Agents owned.\n\n"
+        )},
+        {"insert": "[Account Link Reward]", "attributes": {"bold": True}},
+        {"insert": (
+            "\nLink your Zenless Zone Zero account to your Discord account to claim 30 Polychromes.\n"
+            "Once linked, click the link below to head to the account linking reward page and claim your Polychromes:\n"
+        )},
+        {
+            "insert": "[Go to the Account Linking Rewards page to claim Polychromes]",
+            "attributes": {"link": "https://hoyo.link/XY3DL2Pp8"},
+        },
+        {"insert": (
+            "\n\nProxies who have already linked their accounts via the old account linking function can also "
+            "head to the rewards page to claim this reward after completing the new linking process.\n\n"
+        )},
+        {"insert": "[More Functions Coming Soon]", "attributes": {"bold": True}},
+        {"insert": (
+            "\nThis release is just the beginning of the ZZZ × Discord crossover experience. More functions, "
+            "such as Linked Roles and the Game Stats Widget, are in the works. Stay tuned for future announcements.\n"
+            "Link your account now to claim 30 Polychromes and stay tuned for more updates from the ZZZ × Discord community!\n"
+        )},
+        {"insert": "https://discord.gg/zenlesszonezero", "attributes": {"link": "https://discord.gg/zenlesszonezero"}},
+        {"insert": "\n"},
+        {"insert": {"image": "https://upload-os-bbs.hoyolab.com/upload/2026/10/20/0/1cefc206074aa8c54e8c9cf21e3a462a_6450583642920372150.jpeg"}},
+        {"insert": "\n"},
+    ]
+
+    reconstructed_html = (
+        "<p>Dear Proxy,<br>"
+        "Zenless Zone Zero Version 3.3 now supports Discord account linking, along with the all-new Rich Presence functions for displaying your game status!<br>"
+        "After linking your account, not only will you be able to show off your game status on Discord, but you can also claim 30 Polychromes as a linking reward. Proxies who already linked their accounts via the old account linking function can claim this linking reward once more.</p>"
+        "<p><strong>[Function Details]</strong><br>"
+        "1. Account Linking and Unlinking<br>"
+        "The new function to link your HoYoverse account with your Discord account has been added. Proxies can set this up in-game via Options &gt; Account &gt; User Center &gt; Link Account. Once linked, related in-game activity will be displayed on the corresponding Discord profile. You can also unlink the accounts at any time if needed.<br>"
+        "2. Discord Rich Presence<br>"
+        "Once you've linked your account and entered the game, Discord will display your Zenless Zone Zero game status, character info, level, days active, and more.<br>"
+        "3. More Game Stats Displayed<br>"
+        "When viewing your game status on Discord on your desktop, you can also hover over the icon to see your number of achievements, Bangboo, and Agents owned.</p>"
+        "<p><strong>[Account Link Reward]</strong><br>"
+        "Link your Zenless Zone Zero account to your Discord account to claim 30 Polychromes.<br>"
+        "Once linked, click the link below to head to the account linking reward page and claim your Polychromes:<br>"
+        '<a href="https://hoyo.link/XY3DL2Pp8">[Go to the Account Linking Rewards page to claim Polychromes]</a></p>'
+        "<p>Proxies who have already linked their accounts via the old account linking function can also head to the rewards page to claim this reward after completing the new linking process.</p>"
+        "<p><strong>[More Functions Coming Soon]</strong><br>"
+        "This release is just the beginning of the ZZZ × Discord crossover experience. More functions, such as Linked Roles and the Game Stats Widget, are in the works. Stay tuned for future announcements.<br>"
+        "Link your account now to claim 30 Polychromes and stay tuned for more updates from the ZZZ × Discord community!<br>"
+        '<a href="https://discord.gg/zenlesszonezero">https://discord.gg/zenlesszonezero</a></p>'
+        '<p><img src="https://upload-os-bbs.hoyolab.com/upload/2026/10/20/0/1cefc206074aa8c54e8c9cf21e3a462a_6450583642920372150.jpeg"></p>'
+    )
+
+    expected_link = "[[Go to the Account Linking Rewards page to claim Polychromes]](https://hoyo.link/XY3DL2Pp8)"
+    assert news_link("[Go to the Account Linking Rewards page to claim Polychromes]", "https://hoyo.link/XY3DL2Pp8") == expected_link
+    assert json.dumps(expected_link, ensure_ascii=False) == '"[[Go to the Account Linking Rewards page to claim Polychromes]](https://hoyo.link/XY3DL2Pp8)"'
+
+    cover_url = "https://upload-os-bbs.hoyolab.com/upload/2026/10/20/4438b17679eecd82fc2eb29df1f7dfdb_2500454347764058281.jpg"
+    promo_url = "https://upload-os-bbs.hoyolab.com/upload/2026/10/20/0/1cefc206074aa8c54e8c9cf21e3a462a_6450583642920372150.jpeg"
+
+    for content_arg, structured_arg in [
+        ("", json.dumps(reconstructed_ops)),
+        (reconstructed_html, ""),
+    ]:
+        api_doc = {
+            "retcode": 0,
+            "data": {
+                "post": {
+                    "post": {
+                        "post_id": "47154012",
+                        "game_id": GAMES["zzz"].hoyolab_gid,
+                        "subject": "[ZZZ × Discord] New Account Linking and Rich Presence Functions Now Available ",
+                        "created_at": 1792576806,
+                        "content": content_arg,
+                        "structured_content": structured_arg,
+                        "images": [cover_url],
+                    },
+                    "user": {"nickname": "Zenless Zone Zero"},
+                    "cover_list": [{"url": cover_url}],
+                    "image_list": [],
+                    "vod_list": [],
+                }
+            }
+        }
+        item = asyncio.run(
+            hoyolab.news_article(
+                NewsFetcher([api_doc]),
+                GAMES["zzz"],
+                {"id": "47154012", "ts": 1792576806},
+            )
+        )
+        payloads = cards.news_payloads(GAMES["zzz"], item)
+        assert len(payloads) == 1
+        payload = payloads[0]
+        assert cards.validate_payload(payload) == []
+        kids = payload["components"][0]["components"]
+        assert kids[0]["content"] == (
+            "## [(ZZZ × Discord) New Account Linking and Rich Presence Functions Now Available ]"
+            "(https://www.hoyolab.com/article/47154012)\n"
+            "-# HoYoLAB · Zenless Zone Zero · <t:1792576806:f>"
+        )
+        assert kids[1]["type"] == 12 and [e["media"]["url"] for e in kids[1]["items"]] == [cover_url]
+        body = kids[2]["content"]
+        assert expected_link in body
+        assert r"\[" not in body and r"\]" not in body
+        assert body.count("Go to the Account Linking Rewards page to claim Polychromes") == 1
+        assert body.count("https://hoyo.link/XY3DL2Pp8") == 1
+        assert "**[Function Details]**" in body
+        assert "**[Account Link Reward]**" in body
+        assert "**[More Functions Coming Soon]**" in body
+        assert body.endswith("\nhttps://discord.gg/zenlesszonezero")
+        raw_json = json.dumps(payload, ensure_ascii=False)
+        assert '"[[Go to the Account Linking Rewards page to claim Polychromes]](https://hoyo.link/XY3DL2Pp8)"'[1:-1] in raw_json
+        assert r"\\[" not in raw_json and r"\\]" not in raw_json
+        assert kids[3]["type"] == 12 and [e["media"]["url"] for e in kids[3]["items"]] == [promo_url]
+        assert kids[4]["type"] == 14
+        assert [b["label"] for b in kids[5]["components"]] == ["Read Post", "Citlali News", "Donate"]
+
+        page_html = preview_html.render_page([("Zenless Zone Zero", "Article 47154012", payload)], title="ZZZ 47154012")
+        assert (
+            '<a href="https://hoyo.link/XY3DL2Pp8" target="_blank" rel="noopener">'
+            "[Go to the Account Linking Rewards page to claim Polychromes]</a>"
+        ) in page_html
+        assert r"\[" not in page_html.split("<details>")[0]
+        assert "<strong>[Function Details]</strong>" in page_html
+        assert "<strong>[Account Link Reward]</strong>" in page_html
+        assert "<strong>[More Functions Coming Soon]</strong>" in page_html
+
+
+def test_news_link_bracket_matrix_sources_and_markdown_safety():
+    import html
+    import itertools
+    import re
+
+    from gamexpress import preview_html
+    from gamexpress.sources import kuro
+    from gamexpress.textutil import MARKDOWN_LINK_RE, news_blocks, news_link
+
+    url = "https://hoyo.link/XY3DL2Pp8"
+    complex_url = "https://example.com/events(2026)/claim?uid=42&step=1#reward"
+    encoded_complex = "https://example.com/events%282026%29/claim?uid=42&step=1#reward"
+
+    # Ordinary, bracketed, mid-label, multi-span, nested, adjacent, unbalanced, pre-escaped, self-labelled
+    assert news_link("Click Here", url) == f"[Click Here]({url})"
+    assert news_link("[Claim Reward]", url) == f"[[Claim Reward]]({url})"
+    assert news_link("[Event] Claim Reward", url) == f"[[Event] Claim Reward]({url})"
+    assert news_link("Claim [Bonus] Reward", url) == f"[Claim [Bonus] Reward]({url})"
+    assert news_link("Claim Reward [Bonus]", url) == f"[Claim Reward [Bonus]]({url})"
+    assert news_link("[Part 1] and [Part 2]", url) == f"[[Part 1] and [Part 2]]({url})"
+    assert news_link("[[Deep Tag]]", url) == rf"\[[[Deep Tag]]({url})\]"
+    assert news_link("[Tag1][Tag2]", url) == f"[[Tag1]]({url})[[Tag2]]({url})"
+    assert news_link("[Unclosed label", url) == rf"\[[Unclosed label]({url})"
+    assert news_link("Unopened label]", url) == rf"[Unopened label]({url})\]"
+    assert news_link(r"\[Already Escaped\]", url) == f"[[Already Escaped]]({url})"
+    assert news_link("Claim [Bonus] ([other])", complex_url) == f"[Claim [Bonus] ([other])]({encoded_complex})"
+    assert news_link("[Claim [Bonus]]([other])", complex_url) == (
+        rf"\[[Claim [Bonus]]({encoded_complex})\][([other])]({encoded_complex})"
+    )
+    assert news_link("https://discord.gg/zenlesszonezero", "https://discord.gg/zenlesszonezero") == "https://discord.gg/zenlesszonezero"
+    assert news_link("[Unsafe]", "javascript:void(0)") == "[Unsafe]"
+
+    # Multiple bracketed & ordinary links on the same line do not bridge in regex or preview HTML
+    multi_html = (
+        '<p><a href="https://a.example/one">[First Page]</a> and '
+        '<a href="https://b.example/two">Second</a> plus '
+        '<a href="https://c.example/three">[Third Page]</a></p>'
+    )
+    multi_md = "".join(b.get("text", "") for b in news_blocks(multi_html)).strip()
+    assert multi_md == (
+        "[[First Page]](https://a.example/one) and "
+        "[Second](https://b.example/two) plus "
+        "[[Third Page]](https://c.example/three)"
+    )
+    matches = [(m.group(1), m.group(2)) for m in MARKDOWN_LINK_RE.finditer(multi_md)]
+    assert matches == [
+        ("[First Page]", "https://a.example/one"),
+        ("Second", "https://b.example/two"),
+        ("[Third Page]", "https://c.example/three"),
+    ]
+    rendered_multi = preview_html.inline(multi_md)
+    assert rendered_multi == (
+        '<a href="https://a.example/one" target="_blank" rel="noopener">[First Page]</a> and '
+        '<a href="https://b.example/two" target="_blank" rel="noopener">Second</a> plus '
+        '<a href="https://c.example/three" target="_blank" rel="noopener">[Third Page]</a>'
+    )
+
+    # Inline and fenced code, literal bracketed headings/text, and bare URLs remain intact
+    code_prose = (
+        "**[Notice]** Keep `[raw](https://example.com)` and `[[code]](https://example.com)` "
+        "plus https://discord.gg/zenlesszonezero\n```\n[fenced](https://example.com)\n```"
+    )
+    item = news_item(body=code_prose)
+    body_out = cards.news_payloads(GAMES["zzz"], item)[0]["components"][0]["components"][1]["content"]
+    assert body_out == code_prose
+
+    # Exhaustive combinatorial property check across all 1,092 strings of length 1..6 over {'[', ']', 'x'}
+    for length in range(1, 7):
+        for tup in itertools.product(["[", "]", "x"], repeat=length):
+            orig = "".join(tup)
+            ser = news_link(orig, url)
+            assert news_link(ser, url) == ser  # strict idempotence: no double-escaping or double-wrapping
+            assert cards._brackets_balanced(ser)
+            html_out = preview_html.inline(ser)
+            assert f'href="{url}"' in html_out
+            vis_text = html.unescape(re.sub(r"<[^>]+>", "", html_out))
+            expected_vis = orig if ("x" in orig or "[]" in orig) else f"{orig} {url}"
+            assert vis_text == expected_vis
+
+    # Kuro HTML article adapter path with bracketed anchor label
+    kuro_detail = {
+        "articleId": 9901,
+        "articleTitle": "[WuWa] Account Center Rewards",
+        "startTime": "2026-10-20 12:00:00",
+        "articleContent": '<p><a href="https://wutheringwaves.kurogames.com/en/reward">[Claim Astrite Reward]</a></p>',
+    }
+    kuro_item = asyncio.run(
+        kuro.news_article(NewsFetcher([kuro_detail]), GAMES["wuwa"], {"id": "9901", "ts": 1792497600})
+    )
+    assert kuro_item is not None
+    kuro_payload = cards.news_payloads(GAMES["wuwa"], kuro_item)[0]
+    assert "[[Claim Astrite Reward]](https://wutheringwaves.kurogames.com/en/reward)" in (
+        kuro_payload["components"][0]["components"][1]["content"]
+    )
+
+
+def test_bracketed_links_feature_switches_pagination_boundary_and_holds():
+    import tempfile
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import runner
+    from gamexpress.discord import SendResult
+    from gamexpress.news_timestamps import convert_news_timestamps
+    from gamexpress.textutil import news_blocks
+
+    # 1. NEWS_TIMESTAMPS=0 bypasses conversion; NEWS_TIMESTAMPS=1 converts prose while protecting bracketed link labels
+    html_with_ts = (
+        "<p>Event Window: October 21, 2026 10:00 (UTC+8)</p>"
+        '<p><a href="https://hoyo.link/XY3DL2Pp8">[Open October 21, 2026 10:00 (UTC+8) Page]</a></p>'
+    )
+    ts_item = Item(
+        "hoyolab", "zzz", "ts-bracket-1",
+        "https://www.hoyolab.com/article/47154012",
+        "Event Window Notice", "", 1792576806,
+        article_blocks=news_blocks(html_with_ts),
+        author="Zenless Zone Zero",
+    )
+    off_body = cards.news_payloads(GAMES["zzz"], ts_item, timestamps=False)[0]["components"][0]["components"][1]["content"]
+    on_body = cards.news_payloads(GAMES["zzz"], ts_item, timestamps=True)[0]["components"][0]["components"][1]["content"]
+    assert "October 21, 2026 10:00 (UTC+8)" in off_body
+    assert "[[Open October 21, 2026 10:00 (UTC+8) Page]](https://hoyo.link/XY3DL2Pp8)" in off_body
+    assert "<t:1792548000:f>" in on_body
+    assert "[[Open October 21, 2026 10:00 (UTC+8) Page]](https://hoyo.link/XY3DL2Pp8)" in on_body
+    assert convert_news_timestamps(off_body, published_ts=1792576806, enabled=False) is off_body
+
+    # 2. Exact single-message pagination boundary where removing 2 backslashes keeps a 3,999-char article on 1 page
+    base_item = Item(
+        "hoyolab", "zzz", "boundary-4000",
+        "https://www.hoyolab.com/article/47154012",
+        "Boundary Check", "", 1792576806,
+        article_blocks=news_blocks('<p><a href="https://hoyo.link/XY3DL2Pp8">[Claim Polychromes]</a></p>'),
+        author="Zenless Zone Zero",
+    )
+    probe = cards.news_payloads(GAMES["zzz"], base_item)[0]
+    current_len = cards.text_length(probe["components"])
+    pad_len = cards.MAX_TEXT_TOTAL - current_len - 1  # 3,999 total text chars (would have been 4,001 with \[\])
+    padded_html = f'<p>{"a" * (pad_len - 2)}</p><p><a href="https://hoyo.link/XY3DL2Pp8">[Claim Polychromes]</a></p>'
+    boundary_item = Item(
+        "hoyolab", "zzz", "boundary-4000",
+        "https://www.hoyolab.com/article/47154012",
+        "Boundary Check", "", 1792576806,
+        article_blocks=news_blocks(padded_html),
+        author="Zenless Zone Zero",
+    )
+    single_pages = cards.news_payloads(GAMES["zzz"], boundary_item, expand_full=False)
+    assert len(single_pages) == 1
+    assert cards.text_length(single_pages[0]["components"]) == cards.MAX_TEXT_TOTAL - 1
+    assert cards.validate_payload(single_pages[0]) == []
+
+    # 3. NEWS_EXPAND_FULL=1 multi-page article with bracketed links + ambiguous/partial hold safety
+    para = (
+        "Proxy reward update details for account linking and event milestones. "
+        "[[Go to the Account Linking Rewards page to claim Polychromes]](https://hoyo.link/XY3DL2Pp8)"
+    )
+    long_item = Item(
+        "hoyolab", "zzz", "expand-bracket-1",
+        "https://www.hoyolab.com/article/47154012",
+        "[ZZZ × Discord] Expanded Reward Details", "", 1792576806,
+        article_blocks=[
+            {"kind": "text", "text": "\n\n".join([para] * 35)},
+            {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/inline-1.jpg"},
+            {"kind": "text", "text": "\n\n".join([para] * 35)},
+        ],
+        author="Zenless Zone Zero",
+    )
+    expanded = cards.news_payloads(GAMES["zzz"], long_item, expand_full=True)
+    assert len(expanded) >= 3
+    assert all(cards.validate_payload(p) == [] for p in expanded)
+    assert all(p["components"][0]["components"][-1]["type"] != 1 for p in expanded[:-1])
+    assert expanded[-1]["components"][0]["components"][-1]["type"] == 1
+    full_joined = "\n".join(
+        c.get("content", "") for p in expanded for co in p["components"] for c in co["components"]
+    )
+    assert full_joined.count("[[Go to the Account Linking Rewards page to claim Polychromes]](https://hoyo.link/XY3DL2Pp8)") == 70
+    assert r"\[" not in full_joined and r"\]" not in full_joined
+
+    sent_calls = []
+
+    class AmbiguousPage2Webhook:
+        async def send(self, url, payload, *, stop_on_ambiguous=False):
+            sent_calls.append((url, stop_on_ambiguous, payload))
+            if len(sent_calls) == 1:
+                return SendResult(True, 200, message_id="msg-page-1")
+            return SendResult(False, 0, error="timeout after POST", ambiguous=True)
+
+    hook = "https://discord.com/api/webhooks/123456789/token"
+    with tempfile.TemporaryDirectory() as td:
+        st_path = Path(td) / "bracket_hold.json"
+        ctx = make_ctx(
+            st_path,
+            now=1792580000,
+            NEWS_ENABLED="1",
+            NEWS_GAMES="zzz",
+            NEWS_EXPAND_FULL="1",
+            DISCORD_WEBHOOK_NEWS_ZZZ=hook,
+        )
+        ctx.state.news_record("zzz")["floor"] = 1792500000
+        ctx.webhook = AmbiguousPage2Webhook()
+        with (
+            patch("gamexpress.media.news_media_available", new=AsyncMock(return_value=True)),
+            patch.object(hoyolab, "discover_news", new=AsyncMock(return_value=[{"id": "expand-bracket-1", "ts": 1792576806}])),
+            patch.object(hoyolab, "news_article", new=AsyncMock(return_value=long_item)),
+        ):
+            asyncio.run(runner.run_news(ctx))
+            assert len(sent_calls) == 2
+            assert all(call[1] is True for call in sent_calls)
+            rec = ctx.state.news_record("zzz")["records"]["expand-bracket-1"]
+            assert rec["status"] == "partial"
+            assert rec["ambiguous"] is True
+            assert rec["messages"] == ["msg-page-1"]
+            # Subsequent poll holds cleanly with 0 duplicate page-1 re-sends:
+            asyncio.run(runner.run_news(ctx))
+            assert len(sent_calls) == 2
+
+
+def test_post_zzz_33_live_rollover_and_cold_start_version_bump():
+    """After ZZZ 3.3 goes live (2026-10-21 06:00 UTC+8), every path advances cleanly to 3.4."""
+    from gamexpress import maintenance
+
+    now_after_33 = at8("2026-10-22 07:00")
+    # 1. Cold start ({}) where config anchor is still 3.2 (2026-09-09): roll-forward guard=1
+    #    must advance version 3.2 -> 3.3 -> 3.4 instead of stamping Dec 2 as version "3.3".
+    cold_zzz = schedule.predict_cycle(GAMES["zzz"], {}, now_after_33)
+    assert cold_zzz is not None
+    assert cold_zzz["version"] == "3.4"
+    assert cold_zzz["preinstall_ts"] == at8("2026-11-30 12:00")
+    assert cold_zzz["maint_start_ts"] == at8("2026-12-02 06:00")
+    assert cold_zzz["maint_end_ts"] == at8("2026-12-02 11:00")
+
+    # 2. Immediate post-maintenance window (2026-10-21 12:00 UTC+8, 6h after 3.3 maint start,
+    #    inside ACTIVE_WINDOW_S=12h): unannounced cycle 3.3 retains its active trigger window AND
+    #    successor 3.4 is projected immediately with zero 12h blind spot.
+    plans_window = maintenance.resolve_version_plans(
+        GAMES["zzz"], {}, [], {"live": "3.3"}, {}, at8("2026-10-21 12:00")
+    )
+    assert "3.3" in plans_window and "3.4" in plans_window
+    assert plans_window["3.4"]["preinstall_ts"] == at8("2026-11-30 12:00")
+    assert plans_window["3.4"]["maint_start_ts"] == at8("2026-12-02 06:00")
+    assert plans_window["3.4"]["maint_end_ts"] == at8("2026-12-02 11:00")
+
+    # 3. Full four-game agreement across predict_cycle, schedule.merge, and resolve_version_plans
+    #    on production-shape state at 2026-10-22 07:00 UTC+8.
+    prod_like = {
+        "genshin": {
+            "7.1": {
+                "data": {
+                    "version": "7.1",
+                    "preinstall_ts": at8("2026-09-21 11:00"),
+                    "maint_start_ts": at8("2026-09-23 06:00"),
+                    "maint_end_ts": at8("2026-09-23 11:00"),
+                    "estimated": ["preinstall_ts"],
+                },
+                "prov": {"maint_start_ts": [50, 1], "maint_end_ts": [50, 1], "preinstall_ts": [9, 1]},
+            }
+        },
+        "starrail": {
+            "4.6": {
+                "data": {
+                    "version": "4.6",
+                    "preinstall_ts": at8("2026-09-24 14:00"),
+                    "maint_start_ts": at8("2026-09-28 06:00"),
+                    "maint_end_ts": at8("2026-09-28 11:00"),
+                },
+                "preinstall_offset_h": 88.0,
+                "prov": {"maint_start_ts": [50, 1], "maint_end_ts": [50, 1], "preinstall_ts": [50, 1]},
+            }
+        },
+        "zzz": {
+            "3.3": {
+                "data": {
+                    "version": "3.3",
+                    "preinstall_ts": at8("2026-10-19 12:00"),
+                    "maint_start_ts": at8("2026-10-21 06:00"),
+                    "maint_end_ts": at8("2026-10-21 11:00"),
+                },
+                "preinstall_offset_h": 42.0,
+                "prov": {"maint_start_ts": [50, 1], "maint_end_ts": [50, 1], "preinstall_ts": [50, 1]},
+            }
+        },
+        "wuwa": {
+            "3.7": {
+                "data": {
+                    "version": "3.7",
+                    "preinstall_ts": at8("2026-09-28 10:00"),
+                    "maint_start_ts": at8("2026-09-30 04:00"),
+                    "maint_end_ts": at8("2026-09-30 11:00"),
+                },
+                "preinstall_offset_h": 42.0,
+                "prov": {"maint_start_ts": [50, 1], "maint_end_ts": [50, 1], "preinstall_ts": [50, 1]},
+            }
+        },
+    }
+    expected_next = {
+        "genshin": ("7.2", "2026-11-02 11:00", "2026-11-04 06:00", "2026-11-04 11:00"),
+        "starrail": ("4.7", "2026-11-09 14:00", "2026-11-11 06:00", "2026-11-11 11:00"),
+        "zzz": ("3.4", "2026-11-30 12:00", "2026-12-02 06:00", "2026-12-02 11:00"),
+        "wuwa": ("3.8", "2026-11-10 10:00", "2026-11-12 04:00", "2026-11-12 11:00"),
+    }
+    for gkey, (ver, pre_s, start_s, end_s) in expected_next.items():
+        recs = prod_like[gkey]
+        lead = schedule.observed_lead_h(recs)
+        guess = schedule.predict_cycle(GAMES[gkey], recs, now_after_33, lead_h=lead)
+        plans = maintenance.resolve_version_plans(GAMES[gkey], recs, [], {}, {}, now_after_33)
+        assert guess is not None and guess["version"] == ver
+        assert ver in plans
+        assert guess["preinstall_ts"] == plans[ver]["preinstall_ts"] == at8(pre_s), gkey
+        assert guess["maint_start_ts"] == plans[ver]["maint_start_ts"] == at8(start_s), gkey
+        assert guess["maint_end_ts"] == plans[ver]["maint_end_ts"] == at8(end_s), gkey
+
+
+def test_single_holiday_lead_outlier_does_not_skew_predicted_preload():
+    """A single version (HSR 4.6 = 88h Golden Week outlier) must not override 40h corpus lead."""
+    single = {"4.6": {"preinstall_offset_h": 88.0}}
+    assert schedule.observed_lead_h(single) is None
+    two = {"4.6": {"preinstall_offset_h": 88.0}, "4.7": {"preinstall_offset_h": 40.0}}
+    assert schedule.observed_lead_h(two) == 64.0
+    three = {**two, "4.8": {"preinstall_offset_h": 40.0}}
+    assert schedule.observed_lead_h(three) == 40.0
+
+
+def test_major_version_rollover_suppresses_phantom_minor_plan():
+    """When a publisher rolls 3.7 -> 4.0 directly, no phantom 3.8 maintenance plan is emitted."""
+    from gamexpress import maintenance
+
+    recs = {
+        "3.7": {
+            "data": {"version": "3.7", "maint_start_ts": at8("2026-09-30 04:00")},
+            "prov": {"maint_start_ts": [50, 1]},
+        },
+        "4.0": {
+            "data": {"version": "4.0", "program_ts": at8("2026-10-30 19:00")},
+            "prov": {"program_ts": [50, 2]},
+        },
+    }
+    plans = maintenance.resolve_version_plans(
+        GAMES["wuwa"], recs, [], {}, {}, at8("2026-11-01 12:00")
+    )
+    assert "3.8" not in plans
+    assert "4.0" in plans
+    assert plans["4.0"]["preinstall_ts"] == at8("2026-11-10 10:00")
+    assert plans["4.0"]["maint_start_ts"] == at8("2026-11-12 04:00")
+
+
+def test_estimated_milestone_card_upgrades_silently_when_official_notice_arrives():
+    """An estimated maintenance alert with Tier-1 media edits silently once when official data arrives."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.discord import SendResult
+
+    hook = "https://discord.com/api/webhooks/123456789/maint-token"
+    sent: list[dict] = []
+    edits: list[tuple[str, dict]] = []
+
+    class TrackingWebhook:
+        async def send(self, url, payload, *, stop_on_ambiguous=False):
+            sent.append(payload)
+            return SendResult(True, 200, message_id="maint-msg-1")
+
+        async def edit(self, url, msg_id, payload):
+            edits.append((msg_id, payload))
+            return SendResult(True, 200, message_id=msg_id)
+
+    t_base = at8("2026-10-22 07:00")
+    t_maint = at8("2026-11-04 06:00")
+    banner = "https://upload-os-bbs.hoyolab.com/upload/2026/10/23/gi72_program.jpg"
+
+    with tempfile.TemporaryDirectory() as td:
+        st_path = Path(td) / "maint_upgrade.json"
+        # Baseline run at 2026-10-22 07:00
+        ctx0 = make_ctx(
+            st_path,
+            now=t_base,
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="genshin",
+            DISCORD_WEBHOOK_MAINTENANCE_GENSHIN=hook,
+        )
+        ctx0.state.data.setdefault("schedule", {})["genshin"] = {
+            "7.1": {
+                "data": {"version": "7.1", "maint_start_ts": at8("2026-09-23 06:00")},
+                "prov": {"maint_start_ts": [50, 1]},
+            }
+        }
+        ctx0.webhook = TrackingWebhook()
+        with (
+            patch.object(maintenance, "_ensure_inputs_for_games", new=AsyncMock()),
+            patch.object(maintenance.launcher, "hoyoplay_basic_info", new=AsyncMock(return_value={})),
+        ):
+            asyncio.run(maintenance.run(ctx0))
+        assert len(sent) == 0
+
+        # Maintenance start at 2026-11-04 06:00:05 with Tier-1 livestream media already present,
+        # still on cadence estimate -> posts estimated card once.
+        ctx1 = make_ctx(
+            st_path,
+            now=t_maint + 5,
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="genshin",
+            DISCORD_WEBHOOK_MAINTENANCE_GENSHIN=hook,
+        )
+        ctx1.state.data["maintenance"]["genshin"]["versions"]["7.2"] = {
+            "preload": {"status": "posted", "ts": at8("2026-11-02 11:00"), "provenance": "official"},
+        }
+        ctx1.items["genshin"] = []
+        ctx1.webhook = TrackingWebhook()
+        with (
+            patch.object(maintenance, "_ensure_inputs_for_games", new=AsyncMock()),
+            patch.object(maintenance.launcher, "hoyoplay_basic_info", new=AsyncMock(return_value={})),
+            patch.object(maintenance, "resolve_launch_media", new=AsyncMock(return_value=(1, banner))),
+            patch.object(maintenance, "_verify_url", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(maintenance.run(ctx1))
+        assert len(sent) == 1
+        assert "Estimated (version cadence)" in json.dumps(sent[0])
+
+        # 5 minutes later (06:05:05): official HoYoLAB notice arrives with 6h maintenance end ->
+        # silently edits card ONCE to clear caveat and apply official end_ts, then stays quiet.
+        official_end = at8("2026-11-04 12:00")
+        ctx2 = make_ctx(
+            st_path,
+            now=t_maint + 305,
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="genshin",
+            DISCORD_WEBHOOK_MAINTENANCE_GENSHIN=hook,
+        )
+        ctx2.state.data["schedule"]["genshin"]["7.2"] = {
+            "data": {
+                "version": "7.2",
+                "maint_start_ts": t_maint,
+                "maint_end_ts": official_end,
+            },
+            "prov": {"maint_start_ts": [50, t_maint + 300], "maint_end_ts": [50, t_maint + 300]},
+        }
+        ctx2.webhook = TrackingWebhook()
+        with (
+            patch.object(maintenance, "_ensure_inputs_for_games", new=AsyncMock()),
+            patch.object(maintenance.launcher, "hoyoplay_basic_info", new=AsyncMock(return_value={})),
+            patch.object(maintenance, "resolve_launch_media", new=AsyncMock(return_value=(1, banner))),
+            patch.object(maintenance, "_verify_url", new=AsyncMock(return_value=True)),
+        ):
+            asyncio.run(maintenance.run(ctx2))
+            assert len(edits) == 1
+            edit_json = json.dumps(edits[0][1])
+            assert "Estimated (version cadence)" not in edit_json
+            assert f"<t:{official_end}:t>" in edit_json
+            # Next 5-minute poll makes zero further edits:
+            ctx2.now = t_maint + 605
+            asyncio.run(maintenance.run(ctx2))
+            assert len(edits) == 1
+
+
+def test_wuwa_upcoming_broadcast_phrasings_post_stream_exclusion_and_unnumbered_seed():
+    """Verify all Wuthering Waves 3.8/4.0 broadcast phrasings, unnumbered X seed lookup,
+    and exclusion of post-stream Kuro 'has concluded' recap articles."""
+    from unittest.mock import patch
+
+    from gamexpress import runner
+    from gamexpress.config import load_overrides, load_settings
+    from gamexpress.discord import SendResult
+    from gamexpress.sources import twitter as tw
+
+    want_ww = schedule.wants(GAMES["wuwa"])
+    templates = [
+        ("3.8", "Wuthering Waves Version 3.8 Preview Special Broadcast is scheduled to air on "
+                "October 30, 2026, at 19:00 (UTC+8).\nYouTube: https://youtube.com/live/AbCdEfGh123"),
+        ("4.0", "Wuthering Waves Version 4.0 Preview Special Broadcast is scheduled to air on "
+                "October 30, 2026, at 19:00 (UTC+8).\nYouTube: https://youtube.com/live/AbCdEfGh124"),
+        ("3.8", "Dear Rovers,\nWuthering Waves Version 3.8 Preview Special Broadcast is set to begin "
+                "on October 30, 2026, at 19:00 (UTC+8)!\nWatch: https://youtu.be/AbCdEfGh125"),
+        ("3.8", "Wuthering Waves Version 3.8 Preview Special Broadcast\n\nBroadcast Time: "
+                "2026/10/30 19:00 (UTC+8)\nYouTube: https://www.youtube.com/watch?v=AbCdEfGh126"),
+        ("3.8", "Wuthering Waves Version 3.8 Preview Livestream will air on 2026-10-30 at 19:00 (UTC+8).\n"
+                "YouTube: https://youtube.com/live/AbCdEfGh127"),
+        ("3.8", "Wuthering Waves V3.8 Special Broadcast starts on Oct 30, 2026, 19:00 (UTC+8)!\n"
+                "YouTube: https://youtube.com/live/AbCdEfGh128"),
+        ("3.8", "Wuthering Waves Preview Special Broadcast is scheduled to air on October 30, 2026, "
+                "at 19:00 (UTC+8).\nYouTube: https://youtube.com/live/AbCdEfGh129"),
+    ]
+    for expected_ver, tweet_text in templates:
+        assert want_ww(tweet_text)
+        assert schedule.is_program_announcement(GAMES["wuwa"], tweet_text)
+        saved = []
+        client = tw.XClient(None, load_settings())
+
+        async def _tl(_acc, text=tweet_text):
+            return [
+                {"id": "2100000000000000001", "ts": 1792750000, "title": "", "links": [], "images": [],
+                 "text": "Wuthering Waves Version 3.6 Preview Special Broadcast is scheduled to air "
+                         "on August 8, 2026, at 19:00 (UTC+8)."},
+                {"id": "2119999999999999999", "ts": 1792753200, "title": "", "links": [],
+                 "images": ["https://pbs.twimg.com/media/KEYART38.jpg?name=orig"], "text": text},
+            ]
+
+        async def _tw(_tid, _acc=None):
+            return None
+
+        client.timeline, client.tweet = _tl, _tw
+        with (
+            patch.object(tw, "program_seed", return_value={}),
+            patch.object(tw, "save_program_seed",
+                         side_effect=lambda gk, v, entry, s=saved: s.append((gk, v, entry["id"])) or True),
+        ):
+            item = asyncio.run(client.program_tweet(GAMES["wuwa"], expected_ver))
+        assert item is not None and item.id == "2119999999999999999"
+        assert saved == [("wuwa", expected_ver, "2119999999999999999")]
+
+    # Post-stream Kuro recap articles ("The Preview Special Broadcast has concluded.") must NEVER match
+    post_stream_recap = (
+        'Wuthering Waves Version Preview | Version 3.6 "Lamplight in Mirage, Sword\'s Resolve in Heart" '
+        "Scheduled for Release on August 20 (UTC+8)\n\n"
+        "The Preview Special Broadcast has concluded. Take a look back at all these exciting updates!"
+    )
+    assert not schedule.is_program_announcement(
+        GAMES["wuwa"],
+        post_stream_recap,
+        'Wuthering Waves Version Preview | Version 3.6 "Lamplight in Mirage, Sword\'s Resolve in Heart"',
+    )
+
+    # Full schedule.run() end-to-end check on upcoming WuWa 3.8 broadcast
+    sent = []
+
+    class _WH:
+        async def send(self, url, payload, stop_on_ambiguous=False):
+            sent.append(payload)
+            return SendResult(True, 200, "999888777666555444")
+
+        async def edit(self, url, mid, payload):
+            return SendResult(True, 200, mid)
+
+    with tempfile.TemporaryDirectory() as td, patch.dict(
+        os.environ, {"DISCORD_WEBHOOK_SCHEDULE": "https://discord.com/api/webhooks/111/aaa"}
+    ):
+        sp = Path(td) / "state.json"
+        st = State.load(sp)
+        st.mark_bootstrapped("schedule", "wuwa")
+        s = load_settings()
+        ctx = runner.Ctx(
+            settings=s, games=[GAMES["wuwa"]], state=st, fetcher=None, webhook=_WH(),
+            x=None, code_sources=None, overrides=load_overrides(), now=1792753200,
+        )
+        ctx.versions["wuwa"] = {"live": "3.7"}
+        ctx.items["wuwa"] = [
+            Item("x", "wuwa", "2119999999999999999",
+                 "https://x.com/Wuthering_Waves/status/2119999999999999999",
+                 "", templates[0][1], 1792753200,
+                 ["https://pbs.twimg.com/media/KEYART38.jpg?name=orig"], [])
+        ]
+        asyncio.run(schedule.run(ctx))
+    assert len(sent) == 1 and cards.validate_payload(sent[0]) == []
+    assert st.schedule_records("wuwa")["3.8"]["data"]["program_ts"] == 1793358000
+
+
+def test_schedule_cached_seed_replaces_sticky_countdown_estimate_and_override_zero_churn():
+    """A card seeded post-maintenance with a countdown-estimated program_ts replays its cached
+    tweet seed once, clears estimated, and produces zero state churn on subsequent 5-min ticks."""
+    from unittest.mock import patch
+
+    from gamexpress import runner
+    from gamexpress.config import load_overrides, load_settings
+    from gamexpress.discord import SendResult
+    from gamexpress.sources import twitter as tw
+
+    fx37 = fx("fx_wuwa_3_7_broadcast.json")
+    seeded_state = {
+        "bootstrapped": {"schedule:wuwa": 1790323161},
+        "schedule": {
+            "wuwa": {
+                "3.7": {
+                    "status": "seeded",
+                    "first_seen": 1790323161,
+                    "data": {
+                        "version": "3.7",
+                        "program_ts": 1790341813,
+                        "estimated": ["program_ts"],
+                        "estimate_sources": ["wuthering-countdown"],
+                        "maint_start_ts": 1790712000,
+                        "maint_end_ts": 1790737200,
+                        "preinstall_ts": 1790560800,
+                        "banners": {
+                            "phase1": ["Chisa", "Iuno", "Hsin"],
+                            "phase1_4": ["Aalto", "Taoqi", "Yuanwu"],
+                            "phase2": ["Lucilla", "Lynae"],
+                            "phase2_4": ["Lumi", "Danjin", "Chixia"],
+                            "reruns": ["Iuno", "Lynae"],
+                            "four_star": ["Aalto", "Taoqi", "Yuanwu"],
+                        },
+                        "banners_settled": ["phase1", "phase1_4", "phase2", "phase2_4", "reruns", "four_star"],
+                        "source_url": "https://wutheringwaves.kurogames.com/en/main/news/detail/5476",
+                        "title_url": "https://wutheringwaves.kurogames.com/en/main/news/detail/5476",
+                        "source_label": "Official News",
+                    },
+                    "prov": {"b_phase1": [100, 1790500000]},
+                }
+            }
+        },
+    }
+
+    # Without a seed in program_announcements.json, announcement_gap() now surfaces the missing-seed notice
+    no_seed_rec = json.loads(json.dumps(seeded_state["schedule"]["wuwa"]["3.7"]))
+    no_seed_rec["data"]["version"] = "9.9"
+    assert "program_announcements.json" in schedule.announcement_gap(no_seed_rec, "wuwa", 1792625500)
+
+    class _WH:
+        async def send(self, *a, **kw):
+            return SendResult(True, 200, "1")
+
+        async def edit(self, *a, **kw):
+            return SendResult(True, 200, "1")
+
+    class _FXFetcher:
+        calls = 0
+
+        async def get_json(self, url, **kw):
+            if "2098607530780021002" in url:
+                self.calls += 1
+                return fx37
+            return None
+
+        async def get_text(self, url, **kw):
+            return None
+
+    with tempfile.TemporaryDirectory() as td, patch.dict(
+        os.environ, {"DISCORD_WEBHOOK_SCHEDULE": "https://discord.com/api/webhooks/111/aaa"}
+    ):
+        sp = Path(td) / "state.json"
+        sp.write_text(json.dumps(seeded_state))
+        fxf = _FXFetcher()
+        st1 = State.load(sp)
+        s = load_settings()
+        ctx1 = runner.Ctx(
+            settings=s, games=[GAMES["wuwa"]], state=st1, fetcher=fxf, webhook=_WH(),
+            x=tw.XClient(fxf, s), code_sources=None, overrides=load_overrides(), now=1792625500,
+        )
+        ctx1.versions["wuwa"] = {"live": "3.7"}
+        assert schedule.needs_program_lookup([], st1.schedule_records("wuwa")["3.7"], ctx1.now, "wuwa") is True
+        asyncio.run(runner.gather_program_media(ctx1))
+        asyncio.run(schedule.run(ctx1))
+        st1.save()
+        snap1 = sp.read_text()
+        d37 = st1.schedule_records("wuwa")["3.7"]["data"]
+        assert d37["program_ts"] == 1789815600
+        assert "estimated" not in d37
+        assert d37["title_url"] == "https://x.com/Wuthering_Waves/status/2098607530780021002"
+        assert d37["youtube_video"] == "https://www.youtube.com/watch?v=nMa_e5ChL6w"
+        assert fxf.calls == 1
+
+        # Second cron tick 5 minutes later must produce ZERO fxtwitter calls and ZERO bytes diff in state.json
+        st2 = State.load(sp)
+        ctx2 = runner.Ctx(
+            settings=s, games=[GAMES["wuwa"]], state=st2, fetcher=fxf, webhook=_WH(),
+            x=tw.XClient(fxf, s), code_sources=None, overrides=load_overrides(), now=1792625800,
+        )
+        ctx2.versions["wuwa"] = {"live": "3.7"}
+        asyncio.run(runner.gather_program_media(ctx2))
+        asyncio.run(schedule.run(ctx2))
+        st2.save()
+        snap2 = sp.read_text()
+        assert fxf.calls == 1
+        assert snap1 == snap2
+
+
+def test_fandom_wuwa_wikitable_cited_multiline_and_template_codes_unblock_pending():
+    """Cited (<ref>...</ref>), multi-line VisualEditor cells, and {{Code|...}} rows on the
+    Wuthering Waves Fandom wiki parse cleanly so pending OGC codes corroborate and post."""
+    from gamexpress.sources import codes
+    ww_wikitext = {
+        "query": {
+            "pages": {
+                "1": {
+                    "revisions": [
+                        {
+                            "slots": {
+                                "main": {
+                                    "*": (
+                                        "===Active===\n{| class=\"wikitable sortable\"\n"
+                                        "!Code !! Server !! Rewards !! Duration\n"
+                                        "|-\n|KEEPONSHINING<ref>[https://x.com/Wuthering_Waves/status/1 X]</ref>"
+                                        "||All||{{Card List|Astrite*80|delim=;}}\n"
+                                        "|Discovered: October 11, 2026'''Valid until: November 11, 2026 08:59 (PT)'''\n"
+                                        "|-\n| class=\"bg-new\" | {{Code|STARRYSTAGE2}}<ref>Discord</ref>\n"
+                                        "|All\n|{{Card List|Astrite*80|delim=;}}\n"
+                                        "|Discovered: October 11, 2026'''Valid until: November 11, 2026 08:59 (PT)'''\n"
+                                        "|}\n===Expired===\n{| class=\"wikitable\"\n"
+                                        "|-\n|OLDWWCODE<ref>Old</ref>||All||50 Astrite\n|}\n"
+                                    )
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+    parsed = codes.parse_fandom(ww_wikitext, now=1792625500)
+    assert [(h.code, h.expired, h.rewards) for h in parsed] == [
+        ("KEEPONSHINING", False, "Astrite*80"),
+        ("STARRYSTAGE2", False, "Astrite*80"),
+        ("OLDWWCODE", True, None),
+    ]
+    grouped = codeposter.group_hits(
+        parsed + codes.parse_ogc([
+            {"code": "KEEPONSHINING", "rewards": ["Astrite x80"]},
+            {"code": "STARRYSTAGE2", "rewards": ["Astrite x80"]},
+            {"code": "OLDWWCODE", "rewards": ["Astrite x50"]},
+        ]),
+        now=1792625500,
+    )
+    assert codeposter.gate(grouped["KEEPONSHINING"], 2) == (True, "2 independent sources")
+    assert codeposter.gate(grouped["STARRYSTAGE2"], 2) == (True, "2 independent sources")
+    assert codeposter.gate(grouped["OLDWWCODE"], 2)[0] is False
+
+
+def test_news_malformed_cms_img_src_renders_cleanly_across_default_timestamps_and_expand_full():
+    """Real Kuro article 4665 (<img alt='' src='800' /> alongside valid CDN media) and Quill
+    non-HTTP embeds render cleanly across default, NEWS_TIMESTAMPS=1, and NEWS_EXPAND_FULL=1."""
+    from gamexpress.textutil import html_to_text, news_blocks
+
+    denia_html = (
+        "<p>Event Window: 2026-10-22 10:00 - 2026-11-11 11:59 (server time)</p>"
+        '<p><img alt="" src="https://hw-media-cdn-mingchao.kurogame.com/object/denia_1.jpg" />'
+        '<img alt="" src="800" />'
+        '<img alt="" src="https://hw-media-cdn-mingchao.kurogame.com/object/denia_2.gif" /></p>'
+    )
+    txt, links, imgs = html_to_text(denia_html)
+    assert imgs == [
+        "https://hw-media-cdn-mingchao.kurogame.com/object/denia_1.jpg",
+        "https://hw-media-cdn-mingchao.kurogame.com/object/denia_2.gif",
+    ]
+    blocks = news_blocks(denia_html)
+    it = Item(
+        "kuro", "wuwa", "4665",
+        "https://wutheringwaves.kurogames.com/en/main/news/detail/4665",
+        "Profile Reveal | Bubbles of Nihility - Denia",
+        txt, 1792490000, imgs, links, article_blocks=blocks, author="Kuro Games",
+    )
+    for exp in (False, True):
+        for ts in (False, True):
+            pls = cards.news_payloads(GAMES["wuwa"], it, timestamps=ts, expand_full=exp)
+            assert all(cards.validate_payload(p) == [] for p in pls)
+            raw_json = json.dumps(pls)
+            assert "denia_1.jpg" in raw_json and "denia_2.gif" in raw_json
+            if ts:
+                assert "<t:1792634400:f> - <t:1794369540:f>" in raw_json
+
+    # Quill embed with non-HTTP id emits safe unavailable placeholder instead of raising ValueError
+    quill_blocks = news_blocks("en-us", json.dumps([
+        {"insert": "Hello\n"},
+        {"insert": {"image": "800"}},
+        {"insert": {"image": "https://upload-os-bbs.hoyolab.com/upload/real.png"}},
+    ]))
+    assert any("Embedded media unavailable" in b.get("text", "") for b in quill_blocks)
+    # Strict cards.news_payloads contract still rejects raw unsafe article_blocks directly
+    bad_item = Item(
+        "kuro", "wuwa", "bad", "https://wutheringwaves.kurogames.com/en/main/news/detail/1",
+        "Bad Media", "Body", 1792490000, [], [],
+        article_blocks=[{"kind": "image", "url": "javascript:alert(1)"}], author="Kuro Games",
+    )
+    try:
+        cards.news_payloads(GAMES["wuwa"], bad_item)
+        raise AssertionError("expected ValueError for raw unsafe article_blocks URL")
+    except ValueError as exc:
+        assert "unsupported article media URL" in str(exc)
+
+
+def test_clean_name_preserves_word_boundary_around_parenthetical_tags():
+    """Parenthetical tags like '(Fire - Anomaly)' or '(Hydro)' must leave a space when stripped."""
+    assert schedule._clean_name("Phoenix (Fire - Anomaly) is") == "Phoenix is"
+    assert schedule._clean_name("Columbina (Hydro) is") == "Columbina is"
+    zzz_notice = Item(
+        "hoyolab", "zzz", "47100001", "https://www.hoyolab.com/article/47100001",
+        'Exclusive Channel "Into the Flames of Life" Signal Search Details',
+        "During the event, limited S-Rank Agent Phoenix (Fire - Anomaly) and A-Rank Agents "
+        "Seth (Electric - Defense) & Manato (Ether - Support) have significantly boosted drop rates! "
+        '※ Limited S-Rank Agent Phoenix (Fire - Anomaly) is "Star-Studded Cast" exclusive. '
+        '※ Limited S-Rank Agent Velina (Physical - Stun) is "Star-Studded Cast" exclusive.',
+        at8("2026-10-14 12:00"), [], [],
+    )
+    ex = schedule.extract(GAMES["zzz"], zzz_notice)
+    assert ex is not None
+    assert ex.fields["banner_five"] == ["Phoenix"]
+    assert ex.fields["banner_four"] == ["Seth", "Manato"]
+
+
+def test_short_and_full_character_names_confirm_and_lock_phase4_and_reruns():
+    """Short feed/calendar names and full wiki names lock phase1_4 & reruns without overwriting stored names,
+    while keeping distinct SP/variant characters ('The Herta', 'Soldier 0 - Anby', 'Dan Heng • ...') apart."""
+    from gamexpress.sources import gachawiki
+
+    assert schedule._same_person("Velina", "Velina Airgid") is True
+    assert schedule._same_person("Norma", "Norma Hollowell") is True
+    assert schedule._same_person("Seth", "Seth Lowell") is True
+    assert schedule._same_person("Manato", "Komano Manato") is True
+    assert schedule._same_person("Herta", "The Herta") is False
+    assert schedule._same_person("Dan Heng", "Dan Heng • Imbibitor Lunae") is False
+    assert schedule._same_person("Anby", "Soldier 0 - Anby") is False
+
+    wiki_raw = (Path(__file__).parent / "fixtures" / "gachawiki" / "version_zzz_3_3.wiki").read_text()
+    wiki = gachawiki.build_lineup("zzz", wiki_raw, {}, four_star_count=2)
+    rec = {
+        "status": "posted",
+        "data": {
+            "version": "3.3",
+            "banners": {
+                "phase1": ["Phoenix", "Velina"],
+                "phase2": ["Severian", "Norma"],
+                "phase1_4": ["Seth", "Manato"],
+            },
+            "banners_settled": ["phase1", "phase2"],
+        },
+        "prov": {
+            "b_phase1": [50, 1], "b_phase1_by": ["official"],
+            "b_phase2": [50, 1], "b_phase2_by": ["official"],
+            "b_phase1_4": [40, 1], "b_phase1_4_by": ["calendar"],
+        },
+    }
+    data = schedule.merge(
+        GAMES["zzz"], "3.3", [], rec, {}, {"live": "3.3"}, at8("2026-10-22 08:00"), [],
+        wiki=wiki, calendar={"phase1": ["Phoenix", "Velina"], "phase1_4": ["Seth", "Manato"]},
+    )
+    assert data["banners"]["phase1_4"] == ["Seth", "Manato"]
+    assert "phase1_4" in data["banners_settled"]
+    assert "reruns" in data["banners_settled"]
+
+
+def test_live_hoyoverse_special_programs_persist_seeds_and_genshin_72_seed_present():
+    """Live Nitter Special Program tweets persist to program_announcements.json on first lock across all HoYo games."""
+    from unittest.mock import patch
+
+    from gamexpress import runner
+    from gamexpress.config import load_settings
+    from gamexpress.discord import SendResult
+    from gamexpress.sources import twitter as tw
+
+    seed72 = tw.program_seed("genshin", "7.2")
+    assert seed72 is not None
+    assert seed72["id"] == "2112755760107081755"
+    assert seed72["image"] == "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
+
+    sent: list[dict] = []
+
+    class _WH:
+        async def send(self, url, payload, stop_on_ambiguous=False):
+            assert cards.validate_payload(payload) == []
+            sent.append(payload)
+            return SendResult(True, 200, f"m-{len(sent)}")
+
+        async def edit(self, url, mid, payload):
+            return SendResult(True, 200, mid)
+
+    with tempfile.TemporaryDirectory() as td, patch.dict(
+        os.environ, {"DISCORD_WEBHOOK_SCHEDULE": "https://discord.com/api/webhooks/111/sched"}
+    ):
+        st = State.load(Path(td) / "state.json")
+        for gk in ("genshin", "starrail", "zzz", "hna"):
+            st.mark_bootstrapped("schedule", gk)
+        ctx = runner.Ctx(
+            settings=load_settings(),
+            games=[GAMES[k] for k in ("genshin", "starrail", "zzz", "hna")],
+            state=st, fetcher=None, webhook=_WH(), x=None, code_sources=None,
+            overrides={}, now=1793350000,
+        )
+        ctx.versions = {"genshin": {"live": "7.2"}, "starrail": {"live": "4.6"}, "zzz": {"live": "3.3"}, "hna": {}}
+        ctx.items = {
+            "genshin": [Item("x", "genshin", "2125000000000000001",
+                             "https://x.com/GenshinImpact/status/2125000000000000001", "",
+                             'Dear Travelers, the Genshin Impact "Song of the Welkin Moon" Special Program will premiere '
+                             'on November 27, 2026 at 07:00 AM (UTC-5)!',
+                             1793350000, ["https://pbs.twimg.com/media/GI73KEYART.jpg?name=orig"], [])],
+            "starrail": [Item("x", "starrail", "2125000000000000002",
+                              "https://x.com/honkaistarrail/status/2125000000000000002", "",
+                              'The Honkai: Star Rail Version 4.7 "Twilight of Stars" Special Program will officially '
+                              'release on October 30 at 19:30 (UTC+8)!',
+                              1793350000, ["https://pbs.twimg.com/media/HSR47KEYART.jpg?name=orig"], [])],
+            "zzz": [Item("x", "zzz", "2125000000000000003",
+                         "https://x.com/ZZZ_EN/status/2125000000000000003", "",
+                         'Zenless Zone Zero Version 3.4 "Hollow Echoes" Special Program will begin on '
+                         'November 20 at 19:30 (UTC+8)!',
+                         1793350000, ["https://pbs.twimg.com/media/ZZZ34KEYART.jpg?name=orig"], [])],
+            "hna": [Item("x", "hna", "2125000000000000004",
+                         "https://x.com/HonkaiNA/status/2125000000000000004", "",
+                         'Honkai: Nexus Anima Version 1.0 Special Program will premiere on November 15, 2026 at 19:00 (UTC+8)!',
+                         1793350000, ["https://pbs.twimg.com/media/HNA10KEYART.jpg?name=orig"], [])],
+        }
+        asyncio.run(schedule.run(ctx))
+        assert len(sent) == 4
+        seeds = json.loads((Path(td) / "program_announcements.json").read_text())
+        assert seeds["genshin"]["7.3"]["id"] == "2125000000000000001"
+        assert seeds["starrail"]["4.7"]["id"] == "2125000000000000002"
+        assert seeds["zzz"]["3.4"]["id"] == "2125000000000000003"
+        assert seeds["hna"]["1.0"]["id"] == "2125000000000000004"
+
+
+def test_fandom_code_parser_ignores_non_wikitable_templates_like_terminology_infobox():
+    """Top-of-page '{{Terminology Infobox | ...}}' templates outside '{| ... |}' wikitables must never emit bogus codes."""
+    from gamexpress.sources import codes
+
+    wikitext = """{{Terminology Infobox
+|title        = Redemption Code
+|type         = Game Systems
+}}
+{| class="wikitable"
+! Code !! Rewards !! Duration
+|-
+| WUWAGIFT || Astrite x50 || Indefinite
+|}
+=== Expired Codes ===
+{| class="wikitable"
+|-
+| OLDWUWACODE || Shell Credit x10,000 || Expired
+|}
+"""
+    payload = {"query": {"pages": {"1": {"revisions": [{"slots": {"main": {"*": wikitext}}}]}}}}
+    hits = {h.code: h for h in codes.parse_fandom(payload, "wuwa")}
+    assert "TERMINOLOGYINFOBOX" not in hits
+    assert hits["WUWAGIFT"].expired is False
+    assert hits["OLDWUWACODE"].expired is True
+
+
+def test_rotation_7_teapawt_tld_expansion_and_mie_foundation():
+    """Rotation #7 (2026-10-22): slots 1-4 remain runner-proven (nitter.cf & xitter.cf untouched,
+    meowing.monster, miningtcup.me); Batch 2 (slots 5-8) seats teapawt.org, teapaw.org, teapawt.net
+    (.org/.net TLD failover on 4cuck/teapawt) + independent nitter.mie.foundation (8/8 union TRIAL);
+    Batch 3 (slots 9-12) seats xitter.gq & nitter.gq (.gq siblings on status.d420.net) ahead of
+    nitter.freedit.eu & nitter.gravitywell.xyz; and STATUS_MIRRORS fails over across .cf -> .org ->
+    .net -> .gq without external API calls."""
+    from gamexpress.config import DEFAULT_NITTER
+    from gamexpress.sources import twitter as tw
+
+    assert len(DEFAULT_NITTER) == 27
+    assert DEFAULT_NITTER[:4] == [
+        "https://nitter.cf",
+        "https://xitter.cf",
+        "https://nitter.meowing.monster",
+        "https://nitter.miningtcup.me",
+    ]
+    assert DEFAULT_NITTER[4:8] == [
+        "https://teapawt.org",
+        "https://teapaw.org",
+        "https://teapawt.net",
+        "https://nitter.mie.foundation",
+    ]
+    assert DEFAULT_NITTER[8:12] == [
+        "https://xitter.gq",
+        "https://nitter.gq",
+        "https://nitter.freedit.eu",
+        "https://nitter.gravitywell.xyz",
+    ]
+    assert tw.STATUS_MIRRORS == (
+        "https://nitter.cf",
+        "https://xitter.cf",
+        "https://teapawt.org",
+        "https://teapaw.org",
+        "https://teapawt.net",
+        "https://xitter.gq",
+        "https://nitter.gq",
+    )
+    for host in DEFAULT_NITTER[4:12]:
+        assert host in NITTER_SERVES_REAL_RSS, host
+
+    status_xml = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>GenshinImpact</title>
+<item>
+  <title>Version 7.2 Special Program Preview</title>
+  <description><![CDATA[<p>Version 7.2 Special Program premieres on 10/23/2026 at 08:00 AM (UTC-4)!</p>
+  <img src="https://teapawt.org/pic/https%3A%2F%2Fpbs.twimg.com%2Fmedia%2FHVFT48EXYAA351X.jpg" />]]></description>
+  <pubDate>Wed, 21 Oct 2026 04:00:01 GMT</pubDate>
+  <link>https://xitter.cf/GenshinImpact/status/2112755760107081755#m</link>
+</item></channel></rss>"""
+
+    calls: list[str] = []
+
+    class CfDownFetcher:
+        async def get_text(self, url, **_kw):
+            calls.append(url)
+            if ".cf/" in url:
+                return None
+            if url == "https://teapawt.org/GenshinImpact/status/2112755760107081755/rss":
+                return status_xml
+            return None
+
+        async def get_json(self, url, **_kw):
+            calls.append(url)
+            raise AssertionError("FxTwitter should not be called when teapawt.org resolves cleanly")
+
+    client = tw.XClient(CfDownFetcher(), settings())
+    hit = asyncio.run(client.tweet("2112755760107081755", account="GenshinImpact"))
+    assert hit is not None
+    assert hit["id"] == "2112755760107081755"
+    assert hit["photos"] == ["https://pbs.twimg.com/media/HVFT48EXYAA351X.jpg"]
+    assert client.source_used == {"nitter": 1}
+    assert calls == [
+        "https://nitter.cf/GenshinImpact/status/2112755760107081755/rss",
+        "https://xitter.cf/GenshinImpact/status/2112755760107081755/rss",
+        "https://teapawt.org/GenshinImpact/status/2112755760107081755/rss",
+    ]
+
+    # Full .cf + .org + .net TLD outage fails over onto .gq (`xitter.gq` -> `nitter.gq`) cleanly
+    gq_calls: list[str] = []
+
+    class GqOnlyFetcher:
+        async def get_text(self, url, **_kw):
+            gq_calls.append(url)
+            if url == "https://nitter.gq/GenshinImpact/status/2112755760107081755/rss":
+                return status_xml
+            return None
+
+        async def get_json(self, url, **_kw):
+            gq_calls.append(url)
+            raise AssertionError("FxTwitter should not be called when nitter.gq resolves cleanly")
+
+    gq_client = tw.XClient(GqOnlyFetcher(), settings())
+    gq_hit = asyncio.run(gq_client.tweet("2112755760107081755", account="GenshinImpact"))
+    assert gq_hit is not None and gq_hit["id"] == "2112755760107081755"
+    assert gq_client.source_used == {"nitter": 1}
+    assert gq_calls[-2:] == [
+        "https://xitter.gq/GenshinImpact/status/2112755760107081755/rss",
+        "https://nitter.gq/GenshinImpact/status/2112755760107081755/rss",
+    ]
+
+
+def test_nitter_piped_youtube_and_card_img_rewrites():
+    """nitter.mie.foundation and nitter.freedit.eu rewrite YouTube links to piped.video, and X link
+    cards carry extensionless card_img/...?format=jpg URLs that must retain their format query."""
+    from gamexpress.media import nitter_pic_to_twimg
+    from gamexpress.textutil import youtube_id, youtube_video_url
+
+    assert youtube_id("https://piped.video/7W82J_Q-W3o") == "7W82J_Q-W3o"
+    assert youtube_id("https://piped.video/watch?v=nMa_e5ChL6w&t=10") == "nMa_e5ChL6w"
+    assert (
+        youtube_video_url(["https://piped.video/7W82J_Q-W3o"], "")
+        == "https://www.youtube.com/watch?v=7W82J_Q-W3o"
+    )
+    assert (
+        nitter_pic_to_twimg(
+            "https://nitter.mie.foundation/pic/card_img%2F2112394137521569792%2FZTTalx-c%3Fformat%3Djpg%26name%3D800x419"
+        )
+        == "https://pbs.twimg.com/card_img/2112394137521569792/ZTTalx-c?format=jpg&name=800x419"
+    )
+    assert (
+        nitter_pic_to_twimg(
+            "https://teapawt.org/pic/https%3A%2F%2Fpbs.twimg.com%2Fcard_img%2F2112755753614585857%2FD_9x_X2Z%3Fformat%3Djpg%26name%3Dorig"
+        )
+        == "https://pbs.twimg.com/card_img/2112755753614585857/D_9x_X2Z?format=jpg&name=orig"
+    )
+
+
+def test_live_oct_2026_banner_notices_and_self_healing():
+    """Verify real Oct 2026 live upstream notices: ZZZ HoYoLAB 47131668 ('Limited-Time Channels' +
+    self-healing 'Phoenixis, Velinais' conflict + Manato/Seth surname-first lock), Kuro 5546/5668
+    Unicode Roman numerals 'Phase \u2160'/'Phase \u2161', and incomplete single-post TBA recovery."""
+    zzz_hyl = Item(
+        "hoyolab",
+        "zzz",
+        "47131668",
+        "https://www.hoyolab.com/article/47131668",
+        "V3.3 Limited-Time Channels (Phase I)",
+        (
+            "Dear Proxies,\n"
+            "The Agent and W-Engine Signal Search Event period is as follows: "
+            "After the Version 3.3 Update – 2026/11/11 11:59 (server time).\n"
+            "During the event, the reception rate for the limited S-Rank Agent "
+            "Phoenix (Fire - Anomaly)is significantly boosted!\n"
+            "During the event, the reception rate for the limited S-Rank W-Engine "
+            "Plume of Rebirth (Anomaly)is significantly boosted!\n"
+            "During the event, the reception rate for the limited S-Rank Agent "
+            "Velina (Wind - Anomaly)is significantly boosted!"
+        ),
+        1792389600,
+    )
+    ex_zzz = schedule.extract(GAMES["zzz"], zzz_hyl)
+    assert ex_zzz is not None and ex_zzz.kind == "banner"
+    assert ex_zzz.fields["banner_five"] == ["Phoenix", "Velina"]
+    assert ex_zzz.fields["banner_phase"] == 1
+
+    zzz_rec = {
+        "data": {
+            "version": "3.3",
+            "banners": {
+                "phase1": ["Phoenix", "Velina"],
+                "phase1_4": ["Komano Manato", "Seth Lowell"],
+                "banners_settled": ["phase1"],
+            },
+            "banners_settled": ["phase1"],
+        },
+        "prov": {
+            "b_phase1": [40, 1791546366],
+            "b_phase1_by": ["official"],
+            "b_phase1_conflict": "Phoenixis, Velinais",
+            "b_phase1_4": [6, 1792575028],
+            "b_phase1_4_by": ["wiki"],
+        },
+    }
+    merged_zzz = schedule.merge(GAMES["zzz"], "3.3", [ex_zzz], zzz_rec, {}, {}, 1792633227, [])
+    assert "b_phase1_conflict" not in zzz_rec["prov"]
+    schedule.apply_banner_feed(
+        merged_zzz, zzz_rec["prov"], {}, 1792633227, calendar={"phase1_4": ["Seth", "Manato"]}
+    )
+    assert "phase1_4" in schedule.banner_settled(merged_zzz)
+
+    kuro_p1 = Item(
+        "kuro",
+        "wuwa",
+        "5546",
+        "https://wutheringwaves.kurogames.com/en/main/news/detail/5546",
+        "[Version 3.7 Featured Resonator/Weapon Convene: Phase \u2160]",
+        "During the event, 5-Star Resonator: Chisa, 4-Star Resonators: Buling, Taoqi, and Youhu receive boosted drop rates!",
+        1790651700,
+    )
+    kuro_p2 = Item(
+        "kuro",
+        "wuwa",
+        "5668",
+        "https://wutheringwaves.kurogames.com/en/main/news/detail/5668",
+        "[Version 3.7 Featured Resonator/Weapon Convene: Phase \u2161]",
+        "During the event, 5-Star Resonator: Lucilla, 4-Star Resonators: Lumi, Danjin, and Chixia receive boosted drop rates!",
+        1792552500,
+    )
+    assert schedule.extract(GAMES["wuwa"], kuro_p1).fields["banner_phase"] == 1
+    assert schedule.extract(GAMES["wuwa"], kuro_p2).fields["banner_phase"] == 2
+
+    wuwa_rec = {
+        "data": {"version": "3.7", "banners": {"phase1": ["Hiyuki", "Aemeath", "Iuno"], "phase1_4": []}},
+        "prov": {"b_phase1": [50, 1790599919], "b_phase1_4": [50, 1790599919], "b_phase1_4_tba": "2 name(s) found, 3 expected"},
+    }
+    schedule.apply_gacha_wiki(
+        GAMES["wuwa"], wuwa_rec["data"], wuwa_rec["prov"], {"phase1_4": ["Buling", "Taoqi", "Youhu"]}, 1792633227
+    )
+    assert wuwa_rec["data"]["banners"]["phase1_4"] == ["Buling", "Taoqi", "Youhu"]
+
+    disagree_rec = {
+        "data": {"version": "3.7", "banners": {"phase1_4": []}},
+        "prov": {"b_phase1_4": [50, 1790599919], "b_phase1_4_tba": "official sources disagree"},
+    }
+    schedule.apply_gacha_wiki(
+        GAMES["wuwa"], disagree_rec["data"], disagree_rec["prov"], {"phase1_4": ["Buling", "Taoqi", "Youhu"]}, 1792633227
+    )
+    assert disagree_rec["data"]["banners"]["phase1_4"] == []
+
+
+def test_reddit_fleet_ordering_tiering_and_exclusions():
+    """Pins the 2026-10-22 verified Reddit/Redlib fleet order, proxy chain, and excluded hosts."""
+    from gamexpress.config import DEFAULT_REDDIT, DEFAULT_REDDIT_ARCHIVE, DEFAULT_REDDIT_PROXIES
+    from gamexpress.sources.reddit import REDDIT_LISTING_ONLY, TOKEN_GATED_REDDIT, RedditClient
+
+    assert len(DEFAULT_REDDIT) == 17
+    assert set(TOKEN_GATED_REDDIT) == {"https://redlib.miningtcup.me"}
+
+    active_healthy_tier = [
+        "https://redlib.catsarch.com",
+        "https://redlib.privacyredirect.com",
+        "https://snoo.habedieeh.re",
+        "https://redlib.miningtcup.me",
+        "https://redlib.tiekoetter.com",
+        "https://redlib-1.privadency.com",
+        "https://redlib-2.privadency.com",
+    ]
+    partial_and_legacy_tail = [
+        "https://red.artemislena.eu",
+        "https://rl.awy.one",
+        "https://redlib.freedit.eu",
+        "https://redlib.utilibre.org",
+        "https://www.reddit.com",
+        "https://old.reddit.com",
+        "https://eddrit.com",
+        "https://redlib.privadency.com",
+        "https://safereddit.com",
+        "https://redlib.nadeko.net",
+    ]
+    assert DEFAULT_REDDIT[:7] == active_healthy_tier
+    assert DEFAULT_REDDIT[7:] == partial_and_legacy_tail
+    assert frozenset(partial_and_legacy_tail[:4]) == REDDIT_LISTING_ONLY
+    assert max(DEFAULT_REDDIT.index(h) for h in active_healthy_tier) < min(
+        DEFAULT_REDDIT.index(h) for h in partial_and_legacy_tail
+    )
+
+    # Without `REDDIT_FEED_TOKEN`, Batch 1 hits only live public dual-path mirrors (zero unauth `reddit.com` 403s);
+    # with `REDDIT_FEED_TOKEN`, `https://www.reddit.com` leaps automatically to slot 0 for subreddit RSS!
+    rc_unauth = RedditClient(None, settings())
+    assert "https://www.reddit.com" not in rc_unauth._eligible_instances(kind="sub")[:4]
+    rc_authed = RedditClient(None, settings(REDDIT_FEED_TOKEN="feedtok123"))
+    assert rc_authed._eligible_instances(kind="sub")[0] == "https://www.reddit.com"
+
+    # Verified publisher trust audit: `u/WutheringWaves` on live Reddit is an unrelated 2022 squatter account!
+    assert GAMES["wuwa"].reddit_official == []
+    assert GAMES["wuwa"].subreddits == ["WutheringWaves"]
+    assert GAMES["genshin"].reddit_official == ["genshinimpact"]
+    assert GAMES["starrail"].reddit_official == ["HonkaiStarRail"]
+    assert GAMES["zzz"].reddit_official == ["ZZZ_Official"]
+    assert GAMES["hna"].reddit_official == ["HonkaiNexusAnima"]
+    assert GAMES["ananta"].reddit_official == ["AnantaOfficial"]
+
+    excluded_candidates = {
+        "https://reddit.idevicehacked.com",
+        "https://redlib.nohost.network",
+        "https://redlib.kylrth.com",
+        "https://redlib-3.privadency.com",
+        "https://redlib.kareem.one",
+        "https://rl.blitzw.in",
+        "https://red.arancia.click",
+        "https://redlib.jaydenha.uk",
+        "https://l.opnxng.com",
+        "https://api.pullpush.io",
+        "https://ghostddit.aeddit.com",
+        "https://rxddit.com",
+        "https://rxyddit.com",
+        "https://troddit.com",
+    }
+    fleet_all = set(DEFAULT_REDDIT) | set(DEFAULT_REDDIT_PROXIES) | {DEFAULT_REDDIT_ARCHIVE}
+    assert excluded_candidates.isdisjoint(fleet_all)
+    assert DEFAULT_REDDIT_PROXIES == [
+        "https://www.vxreddit.com",
+        "https://embedez.com",
+        "https://embeddit.deltandy.me",
+    ]
+
+
+def test_redlib_html_parser_merges_author_comment_and_rewrites_redd_it_media():
+    """Live 2026-10-22 `u/genshinimpact` `1xbd2nm` shape: image post + same-author comment timestamp,
+    canonical `redd.it` URL rewrite, challenge rejection, and zero tail hits when healthy tier answers."""
+    from gamexpress.sources.reddit import (
+        RedditClient,
+        is_challenge_or_error_page,
+        parse_redlib_html,
+        redlib_media_to_reddit,
+    )
+
+    assert is_challenge_or_error_page("<html><body>Still trying to load your page…</body></html>")
+    assert is_challenge_or_error_page("<!doctype html><html><head></head><body></body></html>")
+    assert is_challenge_or_error_page("Error: RSS is disabled on this instance.")
+    assert redlib_media_to_reddit("/img/cvcmo1xyeqwh1.jpeg", "https://snoo.habedieeh.re") == (
+        "https://i.redd.it/cvcmo1xyeqwh1.jpeg"
+    )
+    assert redlib_media_to_reddit(
+        "https://redlib.tiekoetter.com/preview/pre/abc123.png?width=1080&auto=webp"
+    ) == "https://preview.redd.it/abc123.png?width=1080&auto=webp"
+    assert redlib_media_to_reddit("/vid/xyz987/CMAF_1080.mp4", "https://snoo.habedieeh.re") == (
+        "https://v.redd.it/xyz987/CMAF_1080.mp4"
+    )
+
+    user_page = """<!DOCTYPE html><html><head><title>genshinimpact (u/genshinimpact) - Redlib</title></head><body>
+    <div id="posts">
+      <div class="post" id="1xbd2nm">
+        <div class="post_header">
+          <a class="post_subreddit" href="/r/Genshin_Impact">r/Genshin_Impact</a>
+          <a class="post_author" href="/user/genshinimpact">u/genshinimpact</a>
+          <span class="created" title="Oct 21 2026, 04:00:05 UTC">23h ago</span>
+        </div>
+        <h2 class="post_title">
+          <a class="post_flair" href="/r/Genshin_Impact/search?q=flair%3AOfficial">Official Post</a>
+          <a href="/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/">
+            Genshin Impact Version 7.2 Special Program Preview
+          </a>
+        </h2>
+        <div class="post_media_content">
+          <a class="post_media_image" href="/img/cvcmo1xyeqwh1.jpeg"><img src="/preview/pre/cvcmo1xyeqwh1.jpeg"/></a>
+        </div>
+      </div>
+      <a href="/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/n9z1abc/#n9z1abc">
+        Genshin Impact Version 7.2 Special Program Preview
+      </a>
+      <div class="comment_body"><p>in r/Genshin_Impact • 23h ago</p>
+        <p>Dear Travelers, it's announcement time! The special program for Genshin Impact's new version will premiere on the official <a href="https://www.twitch.tv/genshinimpactofficial">Twitch</a> and <a href="https://www.youtube.com/@GenshinImpact">YouTube</a> channels on 10/23/2026 at 08:00 AM (UTC-4)!</p>
+      </div>
+    </div></body></html>"""
+
+    parsed = parse_redlib_html(user_page, "https://snoo.habedieeh.re")
+    assert len(parsed) == 1
+    post = parsed[0]
+    assert post["id"] == "1xbd2nm"
+    assert post["subreddit"] == "Genshin_Impact"
+    assert post["author"] == "genshinimpact"
+    assert post["flair"] == "Official Post"
+    assert post["url"] == (
+        "https://www.reddit.com/r/Genshin_Impact/comments/1xbd2nm/"
+        "genshin_impact_version_72_special_program_preview/"
+    )
+    assert post["images"] == ["https://i.redd.it/cvcmo1xyeqwh1.jpeg"]
+    assert "10/23/2026 at 08:00 AM (UTC-4)" in post["text"]
+    assert schedule.is_program_announcement(GAMES["genshin"], post["text"], title=post["title"])
+
+    # Healthy batch-1 answers stop before partial/degraded tail hosts are ever probed,
+    # and public Redlib hosts never waste a `.rss` probe.
+    probed: list[str] = []
+
+    class _TierFetcher:
+        async def get_text(self, url, **kw):
+            probed.append(url)
+            if url.startswith(("https://redlib.catsarch.com/", "https://redlib.privacyredirect.com/")):
+                return user_page
+            return None
+
+    rc = RedditClient(_TierFetcher(), settings())
+    items = asyncio.run(rc.items(GAMES["genshin"], schedule.wants(GAMES["genshin"]), 0))
+    assert len(items) == 1 and items[0].source == "reddit" and items[0].id == "1xbd2nm"
+    assert not any("red.artemislena.eu" in u or "safereddit.com" in u or "nadeko.net" in u for u in probed)
+    assert not any("catsarch.com" in u and u.endswith(".rss") for u in probed)
+
+
+def test_reddit_official_vs_community_code_corroboration_and_program_backup():
+    """Community subreddit posts cannot self-confirm codes; paired with a second family they post;
+    official Reddit serves as `find_program` fallback when X/HoYoLAB/news miss, and upgrades to X."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import runner
+    from gamexpress.sources import hoyolab, newspage
+    from gamexpress.sources.codes import CodeSources
+    from gamexpress.sources.reddit import RedditClient
+
+    sub_html = """<!DOCTYPE html><html><head><title>r/AnantaOfficial</title></head><body>
+    <div id="posts">
+      <div class="post" id="1zcode9">
+        <a class="post_subreddit" href="/r/AnantaOfficial">r/AnantaOfficial</a>
+        <a class="post_author" href="/user/random_player">u/random_player</a>
+        <span class="created" title="Oct 22 2026, 05:00:00 UTC">1h ago</span>
+        <h2 class="post_title"><a href="/r/AnantaOfficial/comments/1zcode9/new_redeem_code/">
+          New redemption code: ANANTA2027GIFT
+        </a></h2>
+        <div class="post_body"><p>Redeem code ANANTA2027GIFT before next week!</p></div>
+      </div>
+    </div></body></html>"""
+
+    fandom_json = {
+        "query": {
+            "pages": {
+                "1": {
+                    "revisions": [{
+                        "slots": {
+                            "main": {
+                                "*": "{{Code Row|ANANTA2027GIFT|All|100 Credits|2026-10-22|2027-02-01}}"
+                            }
+                        }
+                    }]
+                }
+            }
+        }
+    }
+
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+
+        class _LoneRedditFetcher:
+            async def get_text(self, url, **kw):
+                if "r/AnantaOfficial/new" in url:
+                    return sub_html
+                return None
+
+            async def get_json(self, url, **kw):
+                return None
+
+        ctx = make_ctx(
+            path,
+            now=1792650000,
+            GAMES="ananta",
+            ENABLE_GAMES="ananta",
+            BOOTSTRAP_POST="1",
+            DISCORD_WEBHOOK_CODES_ANANTA=HOOK,
+        )
+        lone_f = _LoneRedditFetcher()
+        ctx.reddit = RedditClient(lone_f, ctx.settings)
+        ctx.code_sources = CodeSources(lone_f, reddit=ctx.reddit)
+        asyncio.run(codeposter.run(ctx))
+        # Lone community Reddit mention MUST stay pending — never posted alone!
+        assert ctx.webhook.sent == []
+        assert ctx.state.code_records("ananta")["ANANTA2027GIFT"]["status"] == "pending"
+
+        # Add Fandom as the second independent community witness -> posts cleanly!
+        class _CorroboratedFetcher(_LoneRedditFetcher):
+            async def get_json(self, url, **kw):
+                if "fandom.com/api.php" in url:
+                    return fandom_json
+                return None
+
+        corr_f = _CorroboratedFetcher()
+        ctx.reddit = RedditClient(corr_f, ctx.settings)
+        ctx.code_sources = CodeSources(corr_f, reddit=ctx.reddit)
+        asyncio.run(codeposter.run(ctx))
+        assert len(ctx.webhook.sent) == 1
+        assert "ANANTA2027GIFT" in json.dumps(ctx.webhook.sent[0])
+
+        # `find_program`: X first when present; official Reddit backup when X/HoYoLAB/newspage miss;
+        # card locked to `reddit` upgrades automatically to `x` once X returns.
+        prog_item = Item(
+            source="reddit",
+            game="genshin",
+            id="1xbd2nm",
+            url="https://www.reddit.com/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/",
+            title="Genshin Impact Version 7.2 Special Program Preview",
+            text="The Version 7.2 Special Program will premiere on 10/23/2026 at 08:00 AM (UTC-4)!",
+            published_ts=1792555205,
+            images=["https://i.redd.it/cvcmo1xyeqwh1.jpeg"],
+            author="genshinimpact",
+        )
+        ctx.x = types.SimpleNamespace(program_tweet=AsyncMock(return_value=None))
+        ctx.reddit = types.SimpleNamespace(program_post=AsyncMock(return_value=prog_item))
+        with (
+            patch.object(hoyolab, "find_program", new=AsyncMock(return_value=None)),
+            patch.object(newspage, "fetch_program", new=AsyncMock(return_value=None)),
+        ):
+            hit = asyncio.run(runner.find_program(ctx, GAMES["genshin"], "7.2"))
+        assert hit is not None and hit["source"] == "reddit"
+        assert hit["images"] == ["https://i.redd.it/cvcmo1xyeqwh1.jpeg"]
+        assert hit["program_ts"] == 1792756800
+
+
+def test_reddit_proxy_chain_v1_mastodon_v2_component_embed_and_muxed_video_priority():
+    """Tests both Embeddit v1 Mastodon JSON and v2 `<script id="discord:component-embed">` HTML,
+    `Discordbot/2.0` UA, skipping pre-#592 listing-only Redlib mirrors on `/comments/`, and
+    preferring muxed video+audio (`vxreddit`/`embedez`) over silent un-muxed `v.redd.it` streams."""
+    from gamexpress.sources.reddit import (
+        PROXY_BOT_UA,
+        RedditClient,
+        parse_embeddit_component_html,
+        parse_embeddit_status,
+    )
+
+    v1 = parse_embeddit_status({
+        "content": "<p>Official trailer drop! https://youtu.be/dQw4w9WgXcQ</p>",
+        "media_attachments": [
+            {"type": "image", "url": "https://i.redd.it/keyart72.png"},
+        ],
+    })
+    assert v1 is not None and v1["format"] == "mastodon-v1"
+    assert v1["images"] == ["https://i.redd.it/keyart72.png"]
+    assert v1["audio_muxed"] is True
+
+    # Escaped `\u003c` inside `<script id="discord:component-embed" type="application/json">`
+    v2_video_html = (
+        '<!doctype html><html><head><script id="discord:component-embed" type="application/json">'
+        '{"component":{"type":"container","components":['
+        '{"type":"text_display","content":"## \\u003ca\\u003e Official Clip\\n\\nBody copy"},'
+        '{"type":"media_gallery","items":[{"media":{"url":"https://v.redd.it/abc999/DASH_1080.mp4"}}]}'
+        ']}}</script></head><body></body></html>'
+    )
+    v2 = parse_embeddit_component_html(v2_video_html)
+    assert v2 is not None and v2["format"] == "component-embed-v2"
+    assert v2["videos"] == ["https://v.redd.it/abc999/DASH_1080.mp4"]
+    assert v2["audio_muxed"] is False
+
+    seen_calls: list[tuple[str, dict]] = []
+
+    class _ProxyFetcher:
+        async def get_text(self, url, **kw):
+            seen_calls.append((url, kw.get("headers") or {}))
+            if "embeddit.deltandy.me/r/" in url:
+                return v2_video_html
+            if "vxreddit.com/r/" in url:
+                return '<meta property="og:video" content="https://www.vxreddit.com/r/ZZZ_Official/comments/1vid/redditvideo.mp4">'
+            return None
+
+        async def get_json(self, url, **kw):
+            seen_calls.append((url, kw.get("headers") or {}))
+            return None
+
+    # Put `embeddit.deltandy.me` AHEAD of `vxreddit.com` deliberately to prove un-muxed
+    # `v.redd.it/DASH_*.mp4` yields to muxed `vxreddit` video while still sending `Discordbot/2.0`!
+    st = settings(
+        REDDIT_INSTANCES="https://red.artemislena.eu,https://rl.awy.one",
+        REDDIT_PROXIES="https://embeddit.deltandy.me,https://www.vxreddit.com",
+    )
+    rc = RedditClient(_ProxyFetcher(), st)
+    resolved = asyncio.run(rc.resolve_post("ZZZ_Official", "1vid"))
+    assert resolved is not None
+    assert resolved["videos"] == ["https://www.vxreddit.com/r/ZZZ_Official/comments/1vid/redditvideo.mp4"]
+    called_urls = [u for u, _h in seen_calls]
+    assert not any("red.artemislena.eu" in u or "rl.awy.one" in u for u in called_urls)
+    assert all(h.get("User-Agent") == PROXY_BOT_UA for u, h in seen_calls if "embeddit" in u or "vxreddit" in u)
+
+
+def test_edge_case_regressions_bare_tz_period_kuro_empty_ameta_and_maint_extension():
+    """Pins three edge-case bugs uncovered during the 2026-10-22 audit:
+    1. `news_timestamps`: bare `UTC+8.` / `UTC-4.` / `UTC.` at end of sentence keep trailing period
+       and convert cleanly, while malformed fractional `UTC+8.5.` stays rejected.
+    2. `sources.kuro.parse_launcher_index`: empty `live_ameta` on `live_art` never leaks `top_ameta`.
+    3. `maintenance.run`: mid-maintenance official `end_ts` extension silently edits the posted card."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.news_timestamps import convert_news_timestamps
+    from gamexpress.sources import kuro
+    from gamexpress.sources import launcher as launcher_mod
+
+    # 1. Bare timezone followed immediately by sentence-ending period `.`
+    assert convert_news_timestamps("Maintenance starts on 2026/10/28 06:00 UTC+8.", enabled=True) == (
+        "Maintenance starts on <t:1793138400:f>."
+    )
+    assert convert_news_timestamps("Livestream on 2026/10/23 08:00 AM UTC-4.", enabled=True) == (
+        "Livestream on <t:1792756800:f>."
+    )
+    assert convert_news_timestamps("Reset at 2026/10/23 00:00 UTC.", enabled=True) == (
+        "Reset at <t:1792713600:f>."
+    )
+    assert convert_news_timestamps("Event runs 2026/10/28 06:00 – 11:00 UTC+8.", enabled=True) == (
+        "Event runs <t:1793138400:f> – <t:1793156400:f>."
+    )
+    # Fractional / invalid bare offset followed by `.` must still stay untouched
+    assert convert_news_timestamps("Invalid zone 2026/10/28 06:00 UTC+8.5.", enabled=True) == (
+        "Invalid zone 2026/10/28 06:00 UTC+8.5."
+    )
+
+    # 2. `kuro.parse_launcher_index` with `live_art` carrying no dimension metadata vs `top_art`
+    parsed_kuro = kuro.parse_launcher_index({
+        "default": {
+            "version": "3.7.0",
+            "background": "https://cdn.kurogame.com/live_bg.png",
+        },
+        "background": {
+            "url": "https://cdn.kurogame.com/top_fallback_bg.png",
+            "width": 1920,
+            "height": 1080,
+        },
+    })
+    assert parsed_kuro["live_media"]["artwork"] == "https://cdn.kurogame.com/live_bg.png"
+    assert "width" not in parsed_kuro["live_media"]["artwork_meta"]
+
+    # 3. `maintenance.run`: official end-time extension within 6h edit window silently PATCHes card
+    zzz_video = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/19/zzz_33.webm"
+    live_binfo = {"U5hbdsT9W7": [{"video": zzz_video, "background": "", "theme": "", "links": []}]}
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(
+            path,
+            now=1792530000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="zzz",
+            DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+        )
+        ctx.state.schedule_records("zzz")["3.3"] = {
+            "status": "posted",
+            "data": {"version": "3.3", "maint_start_ts": 1792533600, "maint_end_ts": 1792551600},
+            "prov": {"maint_start_ts": [50, 1], "maint_end_ts": [50, 1]},
+        }
+        ctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
+        ctx.items["zzz"] = []
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=(u == zzz_video)))
+
+        # Seed baseline first
+        asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sent == []
+
+        # Maintenance starts (`1792533600` .. `1792551600`) with tier-1 video already locked
+        ctx.now = 1792533660
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [SendResult(True, 200, "maint-ext-1")])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=live_binfo)):
+            asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 1 and len(ctx.webhook.edits) == 0
+        assert ctx.state.maintenance_record("zzz")["versions"]["3.3"]["maintenance"]["end_ts"] == 1792551600
+
+        # Official notice extends maintenance end by +2h (`1792558800`) inside 6h window -> silent PATCH!
+        ctx.now = 1792540800
+        ctx.state.schedule_records("zzz")["3.3"]["data"]["maint_end_ts"] = 1792558800
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=live_binfo)):
+            asyncio.run(maintenance.run(ctx))
+            asyncio.run(maintenance.run(ctx))  # idempotent on subsequent ticks
+        assert len(ctx.webhook.edits) == 1
+        assert ctx.webhook.edits[0][0] == "maint-ext-1"
+        assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": []}
+        assert "<t:1792558800:" in json.dumps(ctx.webhook.edits[0][1])
+        assert ctx.state.maintenance_record("zzz")["versions"]["3.3"]["maintenance"]["end_ts"] == 1792558800
+
+
+def test_extra_audit_reddit_parser_op_comment_program_and_empty_official_reachability():
+    """Covers the five final live-audit fixes on `gamexpress/sources/reddit.py` & `gamexpress/runner.py`:
+    1. `parse_redlib_html`: `h1/h2.post_title` link wins over older Reddit links quoted inside body.
+    2. `parse_redlib_html`: single-thread (`/comments/<id>/`) OP comment stays attached to `order[0]`
+       even when the OP comment cross-links an earlier Reddit megathread.
+    3. `RedditClient.program_post`: image announcement on `/r/ZZZ_Official/new` (`1wxyy16` shape)
+       with `Official Media` flair resolves `/r/ZZZ_Official/comments/1wxyy16/` and merges OP air time."""
+    from gamexpress.sources.reddit import RedditClient, parse_redlib_html
+
+    # 1 + 2: Single-thread page whose body & OP comment both link an older thread `1oldmega`
+    thread_html = """<!DOCTYPE html><html><head><title>ZZZ 3.3 Special Program - Redlib</title></head><body>
+    <div id="page">
+      <div class="post" id="1wxyy16">
+        <div class="post_header">
+          <a class="post_subreddit" href="/r/ZZZ_Official">r/ZZZ_Official</a>
+          <a class="post_author" href="/user/cakeel-">u/cakeel-</a>
+          <span class="created" title="Oct 07 2026, 04:00:00 UTC">15d ago</span>
+        </div>
+        <h1 class="post_title">
+          <a class="post_flair" href="/r/ZZZ_Official/search?q=flair%3AOfficial">Official Media</a>
+          <a href="/r/ZZZ_Official/comments/1wxyy16/zenless_zone_zero_version_33_special_program/">
+            Zenless Zone Zero Version 3.3 "Journey to the Sky" Special Program Announcement
+          </a>
+        </h1>
+        <div class="post_media_content">
+          <a class="post_media_image" href="/img/w2qz30mdokth1.png"><img src="/preview/pre/w2qz30mdokth1.png"/></a>
+        </div>
+        <div class="post_body"><p>Previous thread: <a href="/r/ZZZ_Official/comments/1oldmega/prev/">here</a> — during the livestream, not only will we drop a redemption code!</p></div>
+      </div>
+      <div class="comment" id="c_op_airtime">
+        <a class="comment_author op" href="/user/cakeel-">u/cakeel-</a>
+        <div class="comment_body">
+          <p>See <a href="/r/ZZZ_Official/comments/1oldmega/prev/">hype thread</a> — The Zenless Zone Zero Version 3.3 "Journey to the Sky" Special Program will begin on October 9 at 19:30 (UTC+8)!</p>
+        </div>
+        <div class="replies">
+          <details class="comment" id="c_collapsed_op">
+            <a class="comment_author op" href="/user/cakeel-">u/cakeel-</a>
+            <div class="replies">
+              <div class="comment" id="c_troll_reply">
+                <a class="comment_author" href="/user/troll_user">u/troll_user</a>
+                <div class="comment_body"><p>Redemption Codes: SPOOFEDFAKE999</p></div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div></body></html>"""
+
+    parsed = parse_redlib_html(thread_html, "https://snoo.habedieeh.re")
+    assert len(parsed) == 1
+    assert parsed[0]["id"] == "1wxyy16"
+    assert "October 9 at 19:30 (UTC+8)" in parsed[0]["text"]
+    assert "SPOOFEDFAKE999" not in parsed[0]["text"]
+    assert parsed[0]["images"] == ["https://i.redd.it/w2qz30mdokth1.png"]
+
+    # 3: Listing page has NO text body on image post `1wxyy16` -> `program_post` auto-resolves thread!
+    listing_html = """<!DOCTYPE html><html><head><title>r/ZZZ_Official</title></head><body>
+    <div id="posts">
+      <div class="post" id="1wxyy16">
+        <a class="post_subreddit" href="/r/ZZZ_Official">r/ZZZ_Official</a>
+        <a class="post_author" href="/user/cakeel-">u/cakeel-</a>
+        <span class="created" title="Oct 07 2026, 04:00:00 UTC">15d ago</span>
+        <h2 class="post_title">
+          <a class="post_flair" href="/r/ZZZ_Official/search?q=flair%3AOfficial">Official Media</a>
+          <a href="/r/ZZZ_Official/comments/1wxyy16/zenless_zone_zero_version_33_special_program/">
+            Zenless Zone Zero Version 3.3 "Journey to the Sky" Special Program Announcement
+          </a>
+        </h2>
+      </div>
+    </div></body></html>"""
+
+    class _ZzzProgramFetcher:
+        async def get_text(self, url, **kw):
+            if "/user/ZZZ_Official" in url:
+                return """<!DOCTYPE html><html><body><div id="posts"><div class="post" id="1c6tf7z">
+                  <a class="post_subreddit" href="/r/ZZZ_Official">r/ZZZ_Official</a>
+                  <a class="post_author" href="/user/ZZZ_Official">u/ZZZ_Official</a>
+                  <span class="created" title="Apr 20 2024, 04:00:00 UTC">2y ago</span>
+                  <h2 class="post_title"><a href="/r/ZZZ_Official/comments/1c6tf7z/welcome/">Welcome</a></h2>
+                </div></div></body></html>"""
+            if "/r/ZZZ_Official/new" in url:
+                return listing_html
+            if "/r/ZZZ_Official/comments/1wxyy16/" in url:
+                return thread_html
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc = RedditClient(_ZzzProgramFetcher(), settings())
+    item = asyncio.run(rc.program_post(GAMES["zzz"], "3.3"))
+    assert item is not None
+    assert item.id == "1wxyy16"
+    assert "October 9 at 19:30 (UTC+8)" in item.text
+    assert item.images == ["https://i.redd.it/w2qz30mdokth1.png"]
+
+
+def test_reddit_zero_waste_schedule_failover_single_request_feed_token_and_shared_miningtcup_secret():
+    """Proves:
+    1. When X + primary HoYoLAB/Kuro API succeed on a game, `_gather_game` makes `0` Reddit user calls;
+       the instant X fails on that game, `_gather_game` automatically fails over to `ctx.reddit.items()`.
+    2. `GE_SECRETS_JSON` passes both `REDDIT_FEED_TOKEN` and `NITTER_RSS_TOKEN` automatically with zero
+       workflow edits: `NITTER_RSS_TOKEN` unlocks both `nitter.miningtcup.me` and `redlib.miningtcup.me`,
+       while `REDDIT_FEED_TOKEN` runs a single 1-request `www.reddit.com/r/<sub>/new.rss?feed=...` fast path."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import runner
+    from gamexpress.config import load_settings
+    from gamexpress.sources import hoyolab
+    from gamexpress.sources.reddit import RedditClient, format_reddit_feed_query
+
+    # All 4 copy-paste formats from `old.reddit.com/prefs/feeds/` normalize identically
+    dummy_key = "0123456789abcdef0123456789abcdef01234567"
+    expected_q = f"feed={dummy_key}&user=example_user"
+    assert format_reddit_feed_query(f"{dummy_key}&user=example_user") == expected_q
+    assert format_reddit_feed_query(f"?feed={dummy_key}&user=example_user") == expected_q
+    assert format_reddit_feed_query(f"feed={dummy_key}&user=example_user") == expected_q
+    assert format_reddit_feed_query(f"https://old.reddit.com/.rss?feed={dummy_key}&user=example_user") == expected_q
+    assert format_reddit_feed_query(dummy_key) == f"feed={dummy_key}"
+
+    # 1. `GE_SECRETS_JSON` auto-wiring + 1-request `REDDIT_FEED_TOKEN` fast path
+    st_tokens = load_settings({
+        "GE_SECRETS_JSON": json.dumps({
+            "NITTER_RSS_TOKEN": "shared_miningtcup_tok",
+            "REDDIT_FEED_TOKEN": "priv_reddit_feed_tok",
+        })
+    })
+    assert st_tokens.nitter_token == "shared_miningtcup_tok"
+    assert st_tokens.reddit_token == "priv_reddit_feed_tok"
+
+    feed_calls: list[str] = []
+    rss_xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom"><entry>
+      <id>t3_1fast</id><title>Redemption Code: GENSHINFAST72</title>
+      <link href="https://www.reddit.com/r/Genshin_Impact/comments/1fast/code/"/>
+      <author><name>/u/genshinimpact</name></author><updated>2026-10-22T01:00:00+00:00</updated>
+      <content type="html">&lt;p&gt;Redemption Code: GENSHINFAST72&lt;/p&gt;</content>
+    </entry></feed>"""
+
+    class _TokenFastFetcher:
+        async def get_text(self, url, **kw):
+            feed_calls.append(url)
+            if url == "https://www.reddit.com/r/Genshin_Impact/new.rss?feed=priv_reddit_feed_tok":
+                return rss_xml
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc_tok = RedditClient(_TokenFastFetcher(), st_tokens)
+    assert "https://redlib.miningtcup.me" in rc_tok._eligible_instances(kind="user")
+    hits = asyncio.run(rc_tok.community_codes("Genshin_Impact"))
+    assert [h.code for h in (hits or [])] == ["GENSHINFAST72"]
+    # Strictly 1 single HTTP call to official `www.reddit.com` — 0 Redlib mirrors touched!
+    assert feed_calls == ["https://www.reddit.com/r/Genshin_Impact/new.rss?feed=priv_reddit_feed_tok"]
+
+    # 2. `_gather_game`: 0 Reddit `/user/` calls when healthy, automatic same-run failover when X drops
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(path, now=1792650000)
+        reddit_spy = AsyncMock(return_value=[])
+        ctx.reddit = types.SimpleNamespace(items=reddit_spy, reachable=set())
+        ctx.x = types.SimpleNamespace(
+            items=AsyncMock(return_value=[]),
+            reachable={"genshinimpact"},
+            avatars={},
+        )
+
+        async def _healthy_hoyo(probe, game, want, since):
+            probe.ok += 1
+            return []
+
+        with patch.object(hoyolab, "fetch_items", side_effect=_healthy_hoyo):
+            asyncio.run(runner._gather_game(ctx, GAMES["genshin"], 0))
+            assert reddit_spy.await_count == 0
+
+            # Now simulate X unreachable on `GenshinImpact` -> automatic failover in the same run!
+            ctx.x.reachable = set()
+            asyncio.run(runner._gather_game(ctx, GAMES["genshin"], 0))
+            assert reddit_spy.await_count == 1
+
+
+def test_final_edge_case_audit_reddit_token_variants_wuwa_rss_op_comment_and_redeem_links():
+    """Pins five real edge-case bugs caught during final pre-merge audit (`2026-10-22`):
+    1. `format_reddit_feed_query` + `cmd_validate`: unescapes `&amp;user=...`, strips wrapping `.env`
+       quotes (`"https://old.reddit.com/.rss?..."`), refuses to promote unauthenticated `www.reddit.com`
+       on malformed non-feed URLs (`https://old.reddit.com/prefs/feeds/`), and flags invalid tokens in
+       `gamexpress validate`.
+    2. Official RSS token coverage: attaches `?{feed_q}` on BOTH `www.reddit.com` AND `old.reddit.com`
+       (both `/r/<sub>/new.rss` and `/user/<account>/submitted.rss`) when `REDDIT_FEED_TOKEN` is valid.
+    3. `wuwa` (`official: []`, `r/WutheringWaves`): both `RedditClient.items()` and `program_post()`
+       recognize `u/WutheringWavesMod` even on `www.reddit.com` Atom RSS where post `flair` is `""`.
+    4. `RedditClient.items()`: resolves up to 2 empty-body official image announcements via
+       `/r/<sub>/comments/<id>/` so `schedule.extract()` gets OP's pinned comment timestamps + key art.
+    5. `RedditClient.community_codes()`: extracts codes from hyperlinked official `hoyoverse.com`
+       gift/redemption URLs while generating `0` false positives on YouTube/X/Discord/Imgur links."""
+    import io
+    from contextlib import redirect_stdout
+    from unittest.mock import patch
+
+    from gamexpress import __main__ as cli_main
+    from gamexpress import schedule
+    from gamexpress.config import load_settings
+    from gamexpress.sources.reddit import RedditClient, format_reddit_feed_query
+
+    dummy_key = "0123456789abcdef0123456789abcdef01234567"
+    expected_q = f"feed={dummy_key}&user=example_user"
+
+    # 1. HTML `&amp;` entity + `.env` single/double quotes + malformed prefs URL guard
+    assert format_reddit_feed_query(f"https://old.reddit.com/.rss?feed={dummy_key}&amp;user=example_user") == expected_q
+    assert format_reddit_feed_query(f'"{dummy_key}&amp;user=example_user"') == expected_q
+    assert format_reddit_feed_query(f"'https://old.reddit.com/.rss?feed={dummy_key}&user=example_user'") == expected_q
+    assert format_reddit_feed_query("https://old.reddit.com/prefs/feeds/") == ""
+
+    bad_st = load_settings({"REDDIT_FEED_TOKEN": "https://old.reddit.com/prefs/feeds/"})
+    bad_rc = RedditClient(None, bad_st)
+    assert bad_rc._eligible_instances(kind="sub")[0] != "https://www.reddit.com"
+
+    buf_bad = io.StringIO()
+    with patch.object(cli_main, "load_settings", return_value=bad_st), redirect_stdout(buf_bad):
+        rc_exit_bad = cli_main.cmd_validate(None)
+    assert rc_exit_bad == 1 and "REDDIT_FEED_TOKEN" in buf_bad.getvalue()
+
+    good_st = load_settings({"REDDIT_FEED_TOKEN": f"https://old.reddit.com/.rss?feed={dummy_key}&user=example_user"})
+    buf_good = io.StringIO()
+    with patch.object(cli_main, "load_settings", return_value=good_st), redirect_stdout(buf_good):
+        rc_exit_good = cli_main.cmd_validate(None)
+    assert rc_exit_good == 0 and "feed_token=set" in buf_good.getvalue()
+
+    # 2 + 3 + 4: `wuwa` image announcement on `www.reddit.com/r/WutheringWaves/new.rss?feed=...`
+    # (where Atom RSS has `flair=""` and `text=""`) falls back cleanly when `www.reddit.com` 503s to
+    # authenticated `old.reddit.com`, resolves OP's pinned comment on Redlib, and feeds BOTH
+    # `RedditClient.items()` AND `RedditClient.program_post()`!
+    wuwa_rss = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom"><entry>
+      <id>t3_1xc7b4o</id>
+      <title>Wuthering Waves Version 3.8 Special Broadcast Preview</title>
+      <link href="https://www.reddit.com/r/WutheringWaves/comments/1xc7b4o/wuwa_38_broadcast/"/>
+      <author><name>/u/WutheringWavesMod</name></author>
+      <category term="WutheringWaves" label="r/WutheringWaves"/>
+      <updated>2026-10-22T04:00:00+00:00</updated>
+      <content type="html">&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;a href="https://i.redd.it/wuwa38art.jpg"&gt;[link]&lt;/a&gt; &lt;a href="https://www.reddit.com/r/WutheringWaves/comments/1xc7b4o/wuwa_38_broadcast/"&gt;[comments]&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content>
+    </entry></feed>"""
+
+    wuwa_thread_html = """<!DOCTYPE html><html><head><title>WW 3.8 - Redlib</title></head><body>
+      <div class="post" id="1xc7b4o">
+        <a class="post_subreddit" href="/r/WutheringWaves">r/WutheringWaves</a>
+        <a class="post_author" href="/user/WutheringWavesMod">u/WutheringWavesMod</a>
+        <span class="created" title="Oct 22 2026, 04:00:00 UTC">1h ago</span>
+        <h1 class="post_title"><a href="/r/WutheringWaves/comments/1xc7b4o/wuwa_38_broadcast/">
+          Wuthering Waves Version 3.8 Special Broadcast Preview</a></h1>
+        <div class="post_media_content">
+          <a class="post_media_image" href="/img/wuwa38art.jpg"><img src="/preview/pre/wuwa38art.jpg"/></a>
+        </div>
+      </div>
+      <div class="comment" id="c_wuwa_op">
+        <a class="comment_author op" href="/user/WutheringWavesMod">u/WutheringWavesMod</a>
+        <div class="comment_body"><p>Wuthering Waves Version 3.8 Special Broadcast will air on 2026-11-13 at 19:00 (UTC+8)! Watch at <a href="https://www.youtube.com/watch?v=wuwa38live1">YouTube</a>.</p></div>
+      </div>
+    </body></html>"""
+
+    seen_urls: list[str] = []
+
+    class _WuwaAuditFetcher:
+        async def get_text(self, url, **kw):
+            seen_urls.append(url)
+            if url == f"https://old.reddit.com/r/WutheringWaves/new.rss?{expected_q}":
+                return wuwa_rss
+            if "/r/WutheringWaves/comments/1xc7b4o/" in url:
+                return wuwa_thread_html
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    wuwa_st = load_settings({
+        "REDDIT_FEED_TOKEN": f"https://old.reddit.com/.rss?feed={dummy_key}&amp;user=example_user",
+        "REDDIT_INSTANCES": "https://www.reddit.com,https://old.reddit.com,https://snoo.habedieeh.re",
+    })
+    rc_wuwa = RedditClient(_WuwaAuditFetcher(), wuwa_st)
+    items = asyncio.run(rc_wuwa.items(GAMES["wuwa"], schedule.wants(GAMES["wuwa"]), 0))
+    assert len(items) == 1
+    assert items[0].id == "1xc7b4o"
+    extracted = schedule.extract(GAMES["wuwa"], items[0])
+    assert extracted is not None and extracted.version == "3.8" and extracted.fields["program_ts"] == 1794567600
+    prog = asyncio.run(rc_wuwa.program_post(GAMES["wuwa"], "3.8"))
+    assert prog is not None and prog.id == "1xc7b4o" and "2026-11-13" in prog.text
+    assert f"https://old.reddit.com/r/WutheringWaves/new.rss?{expected_q}" in seen_urls
+
+    # 5: Hyperlinked official `hoyoverse.com` gift links yield codes with `0` false positives on noise URLs
+    hyperlink_rss = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom"><entry>
+      <id>t3_1xlinks</id><title>7.2 Stream Direct Redemption Links!</title>
+      <link href="https://www.reddit.com/r/Genshin_Impact/comments/1xlinks/links/"/>
+      <author><name>/u/helper</name></author><updated>2026-10-22T04:00:00+00:00</updated>
+      <content type="html">&lt;div class="md"&gt;
+        &lt;p&gt;&lt;a href="https://genshin.hoyoverse.com/en/gift?code=GENSHIN72GIFT1"&gt;Code 1 — Click Here&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href="https://hsr.hoyoverse.com/gift?code=STARRAIL47GIFT"&gt;Code 2 — Click Here&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href="https://zenless.hoyoverse.com/redemption?code=ZENLESS34GIFT"&gt;Code 3 — Click Here&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"&gt;Stream Link&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href="https://discord.gg/HyrVP9wRXu"&gt;Community&lt;/a&gt;&lt;/p&gt;
+      &lt;/div&gt;</content>
+    </entry></feed>"""
+
+    class _LinkCodeFetcher:
+        async def get_text(self, url, **kw):
+            return hyperlink_rss
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc_links = RedditClient(_LinkCodeFetcher(), good_st)
+    link_hits = asyncio.run(rc_links.community_codes("Genshin_Impact"))
+    assert [h.code for h in (link_hits or [])] == ["GENSHIN72GIFT1", "STARRAIL47GIFT", "ZENLESS34GIFT"]
+
+
+def test_old_and_www_reddit_feed_urls_dual_origin_failover_post_rss_op_comment_and_maint_zero_waste():
+    """Proves full parity & edge-case coverage across `old.reddit.com`, `www.reddit.com`, and `reddit.com`:
+    1. `format_reddit_feed_query()` normalizes all first-party URL/wrapper forms identically:
+       `https://old.reddit.com/.rss?feed=...&user=...`, `https://www.reddit.com/.rss?feed=...&user=...`,
+       `https://reddit.com/.rss?feed=...&user=...`, `https://old.reddit.com/?feed=...&user=...`,
+       `https://www.reddit.com/?feed=...&user=...`, Markdown `[url](url)` pastes, `(url)` / `<url>`,
+       and scheme-less `old.reddit.com/...` / `www.reddit.com/...` / `reddit.com/...`, while rejecting
+       empty `feed=` links (`[https://www.reddit.com/.rss?feed=](https://www.reddit.com/.rss?feed=)`)
+       and unreplaced `<token>` placeholders as `""`.
+    2. With `REDDIT_FEED_TOKEN` set, `[0] https://www.reddit.com` and `[1] https://old.reddit.com`
+       form a 2-origin authenticated RSS fast path before touching any third-party Redlib host, and
+       bare `https://reddit.com` is recognized in `OFFICIAL_RSS_HOSTS`.
+    3. `parse_reddit_rss()` + `resolve_post()` merge OP's own `t1_` comment from per-post
+       `/r/<sub>/comments/<id>/.rss?feed=...&user=...` on `www.reddit.com` / `old.reddit.com` when
+       Redlib mirrors are down, and strip `[removed]` / `[deleted]` tombstones on Arctic Shift.
+    4. `maintenance._ensure_inputs_for_games()` makes `0` Reddit calls when primary APIs + X succeed,
+       and fails over to `ctx.reddit.items()` automatically when X drops."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance, schedule
+    from gamexpress.config import load_settings
+    from gamexpress.sources import hoyolab
+    from gamexpress.sources.reddit import RedditClient, format_reddit_feed_query, parse_reddit_rss
+
+    dummy_key = "0123456789abcdef0123456789abcdef01234567"
+    expected_q = f"feed={dummy_key}&user=example_user"
+
+    # 1. All `old.reddit.com` / `www.reddit.com` / `reddit.com` / wrapper forms -> identical query
+    for valid_input in (
+        f"https://old.reddit.com/.rss?feed={dummy_key}&user=example_user",
+        f"https://www.reddit.com/.rss?feed={dummy_key}&user=example_user",
+        f"https://reddit.com/.rss?feed={dummy_key}&user=example_user",
+        f"https://old.reddit.com/?feed={dummy_key}&user=example_user",
+        f"https://www.reddit.com/?feed={dummy_key}&user=example_user",
+        f"https://reddit.com/?feed={dummy_key}&user=example_user",
+        f"[https://www.reddit.com/.rss?feed={dummy_key}&user=example_user]"
+        f"(https://www.reddit.com/.rss?feed={dummy_key}&user=example_user)",
+        f"(https://old.reddit.com/.rss?feed={dummy_key}&user=example_user)",
+        f"<https://www.reddit.com/.rss?feed={dummy_key}&user=example_user>",
+        f"old.reddit.com/.rss?feed={dummy_key}&user=example_user",
+        f"www.reddit.com/.rss?feed={dummy_key}&user=example_user",
+        f"reddit.com/.rss?feed={dummy_key}&user=example_user",
+    ):
+        assert format_reddit_feed_query(valid_input) == expected_q, f"failed on {valid_input!r}"
+
+    # Truncated empty `feed=` links & literal `<token>` placeholders must reject cleanly as `""`
+    for invalid_input in (
+        "https://www.reddit.com/.rss?feed=",
+        "https://old.reddit.com/?feed=",
+        "[https://www.reddit.com/.rss?feed=](https://www.reddit.com/.rss?feed=)",
+        "https://old.reddit.com/.rss?feed=<token>&user=example_user",
+        "<40-char-key>&user=<username>",
+    ):
+        assert format_reddit_feed_query(invalid_input) == "", f"should reject {invalid_input!r}"
+
+    # 2. `[0] www.reddit.com -> [1] old.reddit.com` sequential fast path before Redlib mirrors
+    st_dual = load_settings({
+        "REDDIT_FEED_TOKEN": f"https://www.reddit.com/.rss?feed={dummy_key}&user=example_user",
+    })
+    fast_calls: list[str] = []
+    sample_sub_rss = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom"><entry>
+      <id>t3_1dual</id><title>Redemption Code: DUALREDDIT99</title>
+      <link href="https://old.reddit.com/r/Genshin_Impact/comments/1dual/code/"/>
+      <author><name>/u/genshinimpact</name></author><updated>2026-10-22T05:00:00+00:00</updated>
+      <content type="html">&lt;p&gt;Redemption Code: DUALREDDIT99&lt;/p&gt;</content>
+    </entry></feed>"""
+
+    class _DualOriginFailoverFetcher:
+        async def get_text(self, url, **kw):
+            fast_calls.append(url)
+            # Simulate `www.reddit.com` transient 503 -> immediate 1-request failover to `old.reddit.com`
+            # with zero third-party Redlib mirrors touched!
+            if url == f"https://old.reddit.com/r/Genshin_Impact/new.rss?{expected_q}":
+                return sample_sub_rss
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc_dual = RedditClient(_DualOriginFailoverFetcher(), st_dual)
+    assert rc_dual._eligible_instances(kind="sub")[:2] == ["https://www.reddit.com", "https://old.reddit.com"]
+    dual_hits = asyncio.run(rc_dual.community_codes("Genshin_Impact"))
+    assert [h.code for h in (dual_hits or [])] == ["DUALREDDIT99"]
+    assert fast_calls == [
+        f"https://www.reddit.com/r/Genshin_Impact/new.rss?{expected_q}",
+        f"https://old.reddit.com/r/Genshin_Impact/new.rss?{expected_q}",
+    ]
+
+    # Bare `https://reddit.com` custom instance also works natively on the 1-request RSS fast path
+    bare_calls: list[str] = []
+
+    class _BareRedditFetcher:
+        async def get_text(self, url, **kw):
+            bare_calls.append(url)
+            if url == f"https://reddit.com/r/Genshin_Impact/new.rss?{expected_q}":
+                return sample_sub_rss
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc_bare = RedditClient(
+        _BareRedditFetcher(),
+        load_settings({
+            "REDDIT_FEED_TOKEN": f"https://reddit.com/.rss?feed={dummy_key}&user=example_user",
+            "REDDIT_INSTANCES": "https://reddit.com,https://redlib.catsarch.com",
+        }),
+    )
+    assert [h.code for h in (asyncio.run(rc_bare.community_codes("Genshin_Impact")) or [])] == ["DUALREDDIT99"]
+    assert bare_calls == [f"https://reddit.com/r/Genshin_Impact/new.rss?{expected_q}"]
+
+    # 3. Per-post `.rss?feed=...` OP comment merging on `www.reddit.com` / `old.reddit.com` when Redlib is down
+    post_rss_xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom">
+      <entry>
+        <id>t3_1postrss</id>
+        <title>Version 7.3 Special Program Preview</title>
+        <link href="https://www.reddit.com/r/Genshin_Impact/comments/1postrss/v73_program/"/>
+        <author><name>/u/genshinimpact</name></author>
+        <updated>2026-10-22T05:30:00+00:00</updated>
+        <content type="html">&lt;a href="https://i.redd.it/gi73keyart.jpg"&gt;[link]&lt;/a&gt; &lt;a href="https://www.reddit.com/r/Genshin_Impact/comments/1postrss/v73_program/"&gt;[comments]&lt;/a&gt;</content>
+      </entry>
+      <entry>
+        <id>t1_m9opcmt</id>
+        <title>/u/genshinimpact on Version 7.3 Special Program Preview</title>
+        <link href="https://www.reddit.com/r/Genshin_Impact/comments/1postrss/v73_program/m9opcmt/"/>
+        <author><name>/u/genshinimpact</name></author>
+        <updated>2026-10-22T05:31:00+00:00</updated>
+        <content type="html">&lt;div class="md"&gt;&lt;p&gt;The special program for Genshin Impact's new version will premiere on 2026-11-20 at 08:00 (UTC-4) on our official &lt;a href="https://www.twitch.tv/genshinimpactofficial"&gt;Twitch&lt;/a&gt; channel!&lt;/p&gt;&lt;/div&gt;</content>
+      </entry>
+      <entry>
+        <id>t1_m9random</id>
+        <title>/u/random_traveler on Version 7.3 Special Program Preview</title>
+        <link href="https://www.reddit.com/r/Genshin_Impact/comments/1postrss/v73_program/m9random/"/>
+        <author><name>/u/random_traveler</name></author>
+        <updated>2026-10-22T05:32:00+00:00</updated>
+        <content type="html">&lt;div class="md"&gt;&lt;p&gt;Random comment must NOT merge into OP post text.&lt;/p&gt;&lt;/div&gt;</content>
+      </entry>
+    </feed>"""
+
+    parsed_thread = parse_reddit_rss(post_rss_xml)
+    assert len(parsed_thread) == 1
+    assert "2026-11-20 at 08:00 (UTC-4)" in parsed_thread[0]["text"]
+    assert "Random comment" not in parsed_thread[0]["text"]
+    assert "https://www.twitch.tv/genshinimpactofficial" in parsed_thread[0]["links"]
+
+    class _AllRedlibDownPostRssFetcher:
+        async def get_text(self, url, **kw):
+            if url == f"https://old.reddit.com/r/Genshin_Impact/comments/1postrss/.rss?{expected_q}":
+                return post_rss_xml
+            return None
+
+        async def get_json(self, url, **kw):
+            if "arctic-shift" in url:
+                return {"data": [{"subreddit": "Genshin_Impact", "author": "[deleted]", "title": "", "selftext": "[removed]"}]}
+            return None
+
+    rc_post_rss = RedditClient(
+        _AllRedlibDownPostRssFetcher(),
+        load_settings({
+            "REDDIT_FEED_TOKEN": f"https://www.reddit.com/.rss?feed={dummy_key}&user=example_user",
+            "REDDIT_INSTANCES": "https://snoo.habedieeh.re,https://www.reddit.com,https://old.reddit.com",
+            "REDDIT_PROXIES": "https://www.vxreddit.com",
+        }),
+    )
+    resolved_post = asyncio.run(rc_post_rss.resolve_post("Genshin_Impact", "1postrss"))
+    assert resolved_post is not None and "2026-11-20 at 08:00 (UTC-4)" in resolved_post["text"]
+    sched_ext = schedule.extract(
+        GAMES["genshin"],
+        Item(
+            source="reddit",
+            game="genshin",
+            id=resolved_post["id"],
+            url=resolved_post["url"],
+            title=resolved_post["title"],
+            text=resolved_post["text"],
+            published_ts=resolved_post["ts"],
+            images=resolved_post["images"],
+            links=resolved_post["links"],
+            author=resolved_post["author"],
+        ),
+    )
+    assert sched_ext is not None and sched_ext.version == "7.3" and sched_ext.fields["program_ts"] == 1795176000
+    assert asyncio.run(rc_post_rss.resolve_post("Genshin_Impact", "1deadremoved")) is None
+
+    # 4. Maintenance standalone `_ensure_inputs_for_games` obeys zero-waste Reddit failover
+    with tempfile.TemporaryDirectory() as directory:
+        ctx_m = make_ctx(Path(directory) / "state.json", now=1792650000)
+        ctx_m.versions["genshin"] = {"live": "7.2", "pre": None}
+        reddit_m_spy = AsyncMock(return_value=[])
+        ctx_m.reddit = types.SimpleNamespace(items=reddit_m_spy, reachable=set())
+        ctx_m.x = types.SimpleNamespace(items=AsyncMock(return_value=[]), reachable={"genshinimpact"}, avatars={})
+
+        async def _ok_hoyo(probe, game, want, since):
+            probe.ok += 1
+            return []
+
+        with patch.object(hoyolab, "fetch_items", side_effect=_ok_hoyo):
+            asyncio.run(maintenance._ensure_inputs_for_games(ctx_m, [GAMES["genshin"]]))
+            assert reddit_m_spy.await_count == 0
+            ctx_m.items.clear()
+            ctx_m.x.reachable = set()
+            asyncio.run(maintenance._ensure_inputs_for_games(ctx_m, [GAMES["genshin"]]))
+            assert reddit_m_spy.await_count == 1
+
+
+def test_adversarial_real_reddit_atom_footer_summary_redaction_gallery_and_token_fuzz():
+    """Pins four genuine production bugs uncovered by adversarial wire-format & redaction fuzzing:
+    1. Public `GITHUB_STEP_SUMMARY` privacy leak (`runner._summary_text`): when `REDDIT_FEED_TOKEN`
+       stores a full URL on one host (e.g. `old.reddit.com`), runtime error strings on another host
+       (`www.reddit.com/r/<sub>/new.rss?feed=...&user=<username>`) previously redacted `feed=` while
+       leaking `&user=<username>` into the public workflow summary.
+    2. Real live `old.reddit.com` / `www.reddit.com` Atom XML footer (`submitted by /u/<Author> to
+       r/<Subreddit> <br/> [link] [comments]` + `/u/` & `/r/<sub>/` links): previously left non-empty
+       `text == 'submitted by /u/... to r/...'`, which prevented `items()` and `program_post()` from
+       resolving OP's pinned livestream comment on image-only official announcements!
+    3. Multi-image gallery posts resolved via `.rss` (`reddit.com/gallery/<id>`, `images == []`) now
+       enrich full-res gallery images via `reddit_proxies`, and `http._news_media_prefix` allowlists
+       `deltandy.me` alongside `vxreddit.com` and `embedez.com`.
+    4. `format_reddit_feed_query()` handles zero-width mobile copy-paste characters (`\\ufeff`,
+       `\\u200b`), Markdown backticks, pasted `.env` `REDDIT_FEED_TOKEN=...` lines, and reversed
+       `?user=...&feed=...` query order cleanly."""
+    from gamexpress import runner, schedule
+    from gamexpress.config import load_settings
+    from gamexpress.sources.reddit import RedditClient, format_reddit_feed_query, parse_reddit_rss
+
+    dummy = "0123456789abcdef0123456789abcdef01234567"
+    expected = f"feed={dummy}&user=example_user"
+
+    # 1. Public `GITHUB_STEP_SUMMARY` redacts BOTH `feed=` AND `user=`
+    raw_err = f"Failed https://www.reddit.com/r/Genshin_Impact/new.rss?feed={dummy}&user=private_acct_name"
+    sanitized = runner._summary_text(raw_err)
+    assert dummy not in sanitized
+    assert "private_acct_name" not in sanitized
+    assert "user=[REDACTED]" in sanitized
+
+    # 2. Invisible BOM/ZWSP, backticks, `REDDIT_FEED_TOKEN=...` prefix, and reversed `?user=...&feed=...`
+    for messy in (
+        f"https://www.reddit.com/.rss?user=example_user&feed={dummy}",
+        f"https://old.reddit.com/.rss?user=example_user&feed={dummy}",
+        f"\ufeffhttps://old.reddit.com/.rss?feed={dummy}&user=example_user\u200b",
+        f"`https://old.reddit.com/.rss?feed={dummy}&user=example_user`",
+        f"REDDIT_FEED_TOKEN=https://old.reddit.com/.rss?feed={dummy}&user=example_user",
+        f"REDDIT_FEED_TOKEN={dummy}&user=example_user",
+    ):
+        assert format_reddit_feed_query(messy) == expected, f"failed on {messy!r}"
+
+    # 3. Verbatim live `old.reddit.com/.rss` & `www.reddit.com/r/<sub>/new.rss` Atom table footer
+    real_atom = """<?xml version="1.0" encoding="UTF-8" ?>
+    <feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/"><entry>
+      <id>t3_1liveatom</id>
+      <title>Version 7.3 Special Program Preview</title>
+      <link href="https://old.reddit.com/r/Genshin_Impact/comments/1liveatom/version_73_special_program_preview/"/>
+      <author><name>/u/genshinimpact</name><uri>https://old.reddit.com/user/genshinimpact</uri></author>
+      <category term="Genshin_Impact" label="r/Genshin_Impact"/>
+      <updated>2026-10-22T06:00:00+00:00</updated>
+      <media:thumbnail url="https://b.thumbs.redditmedia.com/xyz123.jpg"/>
+      <content type="html">&lt;table&gt; &lt;tr&gt;&lt;td&gt;&lt;a href="https://old.reddit.com/r/Genshin_Impact/comments/1liveatom/version_73_special_program_preview/"&gt;&lt;img src="https://b.thumbs.redditmedia.com/xyz123.jpg" /&gt;&lt;/a&gt;&lt;/td&gt;&lt;td&gt; &amp;#32; submitted by &amp;#32; &lt;a href="https://www.reddit.com/u/genshinimpact"&gt; /u/genshinimpact &lt;/a&gt; to &lt;a href="https://old.reddit.com/r/Genshin_Impact/"&gt; r/Genshin_Impact &lt;/a&gt; &lt;br/&gt; &lt;span&gt;&lt;a href="https://www.reddit.com/gallery/1liveatom"&gt;[link]&lt;/a&gt;&lt;/span&gt; &amp;#32; &lt;span&gt;&lt;a href="https://old.reddit.com/r/Genshin_Impact/comments/1liveatom/version_73_special_program_preview/"&gt;[comments]&lt;/a&gt;&lt;/span&gt; &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</content>
+    </entry></feed>"""
+
+    parsed = parse_reddit_rss(real_atom)
+    assert len(parsed) == 1
+    assert parsed[0]["text"] == ""
+    assert parsed[0]["links"] == ["https://www.reddit.com/gallery/1liveatom"]
+
+    # End-to-end: real `to r/Genshin_Impact` image/gallery entry triggers `resolve_post()`, merges
+    # OP's pinned comment via `.rss?feed=...`, AND puts full-res gallery art ahead of 140px thumbnail!
+    thread_rss = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
+      <entry>
+        <id>t3_1liveatom</id>
+        <title>Version 7.3 Special Program Preview</title>
+        <link href="https://www.reddit.com/r/Genshin_Impact/comments/1liveatom/version_73_special_program_preview/"/>
+        <author><name>/u/genshinimpact</name></author>
+        <updated>2026-10-22T06:00:00+00:00</updated>
+        <media:thumbnail url="https://b.thumbs.redditmedia.com/xyz123.jpg"/>
+        <content type="html">&lt;td&gt; submitted by &lt;a href="https://www.reddit.com/u/genshinimpact"&gt;/u/genshinimpact&lt;/a&gt; to &lt;a href="https://www.reddit.com/r/Genshin_Impact/"&gt;r/Genshin_Impact&lt;/a&gt; &lt;br/&gt; &lt;a href="https://www.reddit.com/gallery/1liveatom"&gt;[link]&lt;/a&gt; &lt;a href="https://www.reddit.com/r/Genshin_Impact/comments/1liveatom/version_73_special_program_preview/"&gt;[comments]&lt;/a&gt; &lt;/td&gt;</content>
+      </entry>
+      <entry>
+        <id>t1_m9realop</id>
+        <title>/u/genshinimpact on Version 7.3 Special Program Preview</title>
+        <link href="https://www.reddit.com/r/Genshin_Impact/comments/1liveatom/version_73_special_program_preview/m9realop/"/>
+        <author><name>/u/genshinimpact</name></author>
+        <updated>2026-10-22T06:01:00+00:00</updated>
+        <content type="html">&lt;div class="md"&gt;&lt;p&gt;The special program for Genshin Impact's new version will premiere on 2026-11-20 at 08:00 (UTC-4)!&lt;/p&gt;&lt;/div&gt;</content>
+      </entry>
+    </feed>"""
+
+    proxy_gallery_html = """<html><head>
+      <meta property="og:title" content="Version 7.3 Special Program Preview"/>
+      <meta property="og:image" content="https://i.redd.it/gallery_full_1.jpg"/>
+    </head></html>"""
+
+    class _RealAtomEndToEndFetcher:
+        async def get_text(self, url, **kw):
+            if url == f"https://www.reddit.com/user/genshinimpact/submitted.rss?{expected}":
+                return real_atom
+            if url == f"https://www.reddit.com/r/Genshin_Impact/comments/1liveatom/.rss?{expected}":
+                return thread_rss
+            if "vxreddit.com/r/Genshin_Impact/comments/1liveatom/" in url:
+                return proxy_gallery_html
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc_real = RedditClient(
+        _RealAtomEndToEndFetcher(),
+        load_settings({
+            "REDDIT_FEED_TOKEN": f"`https://www.reddit.com/.rss?user=example_user&feed={dummy}`",
+            "REDDIT_INSTANCES": "https://www.reddit.com,https://old.reddit.com",
+            "REDDIT_PROXIES": "https://www.vxreddit.com",
+        }),
+    )
+    real_items = asyncio.run(rc_real.items(GAMES["genshin"], schedule.wants(GAMES["genshin"]), 0))
+    assert len(real_items) == 1
+    assert real_items[0].images[0] == "https://i.redd.it/gallery_full_1.jpg"
+    ext = schedule.extract(GAMES["genshin"], real_items[0])
+    assert ext is not None and ext.version == "7.3" and ext.fields["program_ts"] == 1795176000
+    assert '"deltandy.me"' in Path("gamexpress/http.py").read_text(encoding="utf-8")
+
+
+def test_reddit_json_feed_compatibility_user_fastpath_and_live_webhook_redaction():
+    """Pins `.json?feed=` compatibility (both `REDDIT_FEED_TOKEN` input & `.json` wire payload
+    parsing + circuit-broken fallback), `kind='user'` 1-request fast path on default `DEFAULT_REDDIT`,
+    and live `WebhookClient._request()` webhook path-token redaction:
+    1. `format_reddit_feed_query()` + `gamexpress validate` accept `https://old.reddit.com/.json?feed=...`,
+       `https://www.reddit.com/.json?feed=...`, `https://reddit.com/.json?feed=...`, `/r/<sub>/.json?feed=...`,
+       and `/user/<account>/submitted.json?feed=...` identically to `.rss?feed=...`.
+    2. `parse_reddit_json()` parses both Reddit `Listing` JSON (`/.json?feed=...`, `/r/<sub>/new.json`,
+       `/user/<acc>/submitted.json`) and `[post_listing, comment_listing]` single-post thread JSON
+       (`/r/<sub>/comments/<id>.json?limit=25&raw_json=1&feed=...`), extracting multi-image galleries
+       (`gallery_data` + `media_metadata`) in page order and merging OP `t1_` comments; `RedditClient`
+       keeps `.rss?feed=...` primary (`0` extra requests when `.rss` works) and falls back cleanly to
+       `.json?limit=25&raw_json=1&feed=...` with a 1-strike per-run circuit breaker when `.rss` fails.
+    3. Bug #26: On default `DEFAULT_REDDIT` (`REDDIT_INSTANCES` unset) with `REDDIT_FEED_TOKEN` set,
+       `rc.user('genshinimpact')` (`kind='user'`) hoists `[0] https://www.reddit.com` ->
+       `[1] https://old.reddit.com` and completes in a single 1-request fast path instead of fanning
+       out to 3 public Redlib HTML mirrors first.
+    4. Bug #27: `WebhookClient._request()` strips `/webhooks/<id>/<token>` across live exception logs
+       and `SendResult.error` so secret webhook path tokens inside `GE_SECRETS_JSON` can never leak into
+       logs or `state/state.json`."""
+    import aiohttp
+
+    from gamexpress import schedule
+    from gamexpress.config import load_settings
+    from gamexpress.discord import WebhookClient
+    from gamexpress.sources.reddit import RedditClient, format_reddit_feed_query, parse_reddit_json
+
+    dummy = "0123456789abcdef0123456789abcdef01234567"
+    expected = f"feed={dummy}&user=example_user"
+
+    # 1. `.json?feed=` URL variants normalize identically to `feed=<key>&user=<user>`
+    for json_link in (
+        f"https://old.reddit.com/.json?feed={dummy}&user=example_user",
+        f"https://www.reddit.com/.json?feed={dummy}&user=example_user",
+        f"https://reddit.com/.json?feed={dummy}&user=example_user",
+        f"https://old.reddit.com/.json?user=example_user&feed={dummy}",
+        f"https://www.reddit.com/.json?user=example_user&feed={dummy}",
+        f"https://www.reddit.com/r/Genshin_Impact/new.json?feed={dummy}&user=example_user",
+        f"https://old.reddit.com/user/genshinimpact/submitted.json?feed={dummy}&user=example_user",
+        f"old.reddit.com/.json?feed={dummy}&user=example_user",
+        f"www.reddit.com/.json?feed={dummy}&user=example_user",
+    ):
+        assert format_reddit_feed_query(json_link) == expected, f"failed on {json_link!r}"
+
+    # 2. Bug #26: `rc.user(...)` on DEFAULT `DEFAULT_REDDIT` hoists `www.reddit.com` to slot 0 (`1` call!)
+    user_calls: list[str] = []
+    min_atom = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom"><entry>
+      <id>t3_1fastuser</id>
+      <title>Version 7.3 Special Program Preview</title>
+      <link href="https://www.reddit.com/r/Genshin_Impact/comments/1fastuser/version_73/"/>
+      <author><name>/u/genshinimpact</name></author>
+      <updated>2026-10-22T07:00:00+00:00</updated>
+      <content type="html">&lt;div class="md"&gt;&lt;p&gt;Premieres on 2026-11-20 at 08:00 (UTC-4)!&lt;/p&gt;&lt;/div&gt;</content>
+    </entry></feed>"""
+
+    class _DefaultFleetUserFetcher:
+        async def get_text(self, url, **kw):
+            user_calls.append(url)
+            if url == f"https://www.reddit.com/user/genshinimpact/submitted.rss?{expected}":
+                return min_atom
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc_user = RedditClient(
+        _DefaultFleetUserFetcher(),
+        load_settings({"REDDIT_FEED_TOKEN": f"https://www.reddit.com/.json?feed={dummy}&user=example_user"}),
+    )
+    assert rc_user._eligible_instances(kind="user")[:2] == ["https://www.reddit.com", "https://old.reddit.com"]
+    u_entries = asyncio.run(rc_user.user("genshinimpact"))
+    assert u_entries and u_entries[0]["id"] == "1fastuser"
+    assert user_calls == [f"https://www.reddit.com/user/genshinimpact/submitted.rss?{expected}"]
+
+    # 3. `parse_reddit_json()` + zero-waste `.json?limit=25&raw_json=1&{feed_q}` fallback + circuit breaker
+    listing_json = {
+        "kind": "Listing",
+        "data": {
+            "children": [
+                {
+                    "kind": "t3",
+                    "data": {
+                        "id": "1jsongal",
+                        "subreddit": "Genshin_Impact",
+                        "author": "genshinimpact",
+                        "title": "Version 7.3 Special Program Preview",
+                        "selftext": "",
+                        "permalink": "/r/Genshin_Impact/comments/1jsongal/version_73_special_program_preview/",
+                        "created_utc": 1792652400,
+                        "is_gallery": True,
+                        "gallery_data": {"items": [{"media_id": "g1"}, {"media_id": "g2"}]},
+                        "media_metadata": {
+                            "g1": {"status": "valid", "s": {"u": "https://preview.redd.it/g1.jpg?width=1920&amp;auto=webp"}},
+                            "g2": {"status": "valid", "s": {"u": "https://preview.redd.it/g2.jpg?width=1920&amp;auto=webp"}},
+                        },
+                    },
+                }
+            ]
+        },
+    }
+    thread_json = [
+        listing_json,
+        {
+            "kind": "Listing",
+            "data": {
+                "children": [
+                    {
+                        "kind": "t1",
+                        "data": {
+                            "id": "c_op_json",
+                            "author": "genshinimpact",
+                            "body": "The special program for Genshin Impact's new version will premiere on 2026-11-20 at 08:00 (UTC-4)!\nhttps://www.youtube.com/@GenshinImpact",
+                        },
+                    },
+                    {
+                        "kind": "t1",
+                        "data": {
+                            "id": "c_fan_json",
+                            "author": "random_traveler",
+                            "body": "Can't wait for 2026-12-25 at 00:00 (UTC-4)!",
+                        },
+                    },
+                ]
+            },
+        },
+    ]
+    parsed_thread = parse_reddit_json(thread_json)
+    assert len(parsed_thread) == 1
+    assert parsed_thread[0]["images"] == [
+        "https://preview.redd.it/g1.jpg?width=1920&auto=webp",
+        "https://preview.redd.it/g2.jpg?width=1920&auto=webp",
+    ]
+    assert "2026-11-20 at 08:00 (UTC-4)" in parsed_thread[0]["text"]
+    assert "2026-12-25" not in parsed_thread[0]["text"]
+
+    json_calls: list[str] = []
+
+    class _JsonFallbackFetcher:
+        async def get_text(self, url, **kw):
+            return None
+
+        async def get_json(self, url, **kw):
+            json_calls.append(url)
+            if "/user/genshinimpact/submitted.json?" in url:
+                return listing_json
+            if "/r/Genshin_Impact/comments/1jsongal.json?" in url:
+                return thread_json
+            return None
+
+    rc_json_fb = RedditClient(
+        _JsonFallbackFetcher(),
+        load_settings({
+            "REDDIT_FEED_TOKEN": f"https://old.reddit.com/.json?feed={dummy}&user=example_user",
+            "REDDIT_INSTANCES": "https://old.reddit.com,https://www.reddit.com",
+            "REDDIT_PROXIES": "",
+        }),
+    )
+    fb_items = asyncio.run(rc_json_fb.items(GAMES["genshin"], schedule.wants(GAMES["genshin"]), 0))
+    assert len(fb_items) == 1
+    assert len(fb_items[0].images) == 2
+    ext_fb = schedule.extract(GAMES["genshin"], fb_items[0])
+    assert ext_fb is not None and ext_fb.version == "7.3" and ext_fb.fields["program_ts"] == 1795176000
+
+    # Circuit breaker: if `.json` ALSO fails (403 on cloud runner IP), `_json_feed_blocked` trips on the
+    # very first failure so subsequent calls in the same run make `0` `.json` requests!
+    blocked_json_calls: list[str] = []
+
+    class _BlockedJsonFetcher:
+        async def get_text(self, url, **kw):
+            return None
+
+        async def get_json(self, url, **kw):
+            blocked_json_calls.append(url)
+            return None
+
+    rc_blocked = RedditClient(
+        _BlockedJsonFetcher(),
+        load_settings({
+            "REDDIT_FEED_TOKEN": f"https://www.reddit.com/.json?feed={dummy}&user=example_user",
+            "REDDIT_INSTANCES": "https://www.reddit.com,https://old.reddit.com",
+        }),
+    )
+    assert asyncio.run(rc_blocked.subreddit("Genshin_Impact")) is None
+    assert asyncio.run(rc_blocked.subreddit("HonkaiStarRail")) is None
+    assert len(blocked_json_calls) == 1
+
+    # 4. Bug #27: Live `WebhookClient._request()` never leaks `/webhooks/<id>/<token>` in `SendResult.error`
+    secret_tok = "SuperSecretWebhookTokenValue_XYZ987654321"
+    hook_url = f"https://discord.com/api/webhooks/123456789012345678/{secret_tok}"
+
+    class _ExplodingSession:
+        def request(self, method, url, **kw):
+            class _Ctx:
+                async def __aenter__(self):
+                    raise aiohttp.ClientPayloadError(f"broken pipe writing to {url}")
+
+                async def __aexit__(self, *args):
+                    return False
+
+            return _Ctx()
+
+    wc = WebhookClient(_ExplodingSession(), dry_run=False)
+    res_amb = asyncio.run(
+        wc.send(
+            hook_url,
+            {"flags": 32768, "components": [{"type": 17, "components": [{"type": 10, "content": "hi"}]}]},
+            stop_on_ambiguous=True,
+        )
+    )
+    assert res_amb.ambiguous is True
+    assert secret_tok not in (res_amb.error or "")
+
+
+def test_final_pre_merge_edge_cases_and_repo_doc_consistency():
+    """Verify final pre-merge edge cases (#28-#34), full 21-secret/5-var routing, and repo docs."""
+    from types import SimpleNamespace
+    from unittest.mock import patch
+
+    from gamexpress import config, http
+    from gamexpress.__main__ import cmd_validate
+    from gamexpress.sources import reddit
+
+    # 1. Edge cases #28 & #29: HTML-escaped `<@&ROLE>` and `<:name:id>` / `<a:name:id>` values
+    p_plain = config.parse_ping("<@&123456789012345678>")
+    p_escaped = config.parse_ping("&lt;@&amp;123456789012345678&gt;")
+    assert p_plain == p_escaped and p_escaped.roles == ["123456789012345678"]
+
+    e_static = config.parse_emoji("&lt;:ananta1:1558340472525693018&gt;")
+    e_anim = config.parse_emoji("&lt;a:starward11:1439878792653832253&gt;")
+    assert e_static == {"id": "1558340472525693018", "name": "ananta1"}
+    assert e_anim == {"id": "1439878792653832253", "name": "starward11", "animated": True}
+
+    # 2. Edge cases #30 & #31: `crosspost_parent_list` body/removed inheritance & `_safe_epoch_ts`
+    xp_rows = reddit.parse_reddit_json({
+        "data": {
+            "children": [
+                {
+                    "kind": "t3",
+                    "data": {
+                        "id": "xp101",
+                        "subreddit": "Genshin_Impact",
+                        "author": "genshinimpact",
+                        "title": "Version 7.2 Special Program Announcement",
+                        "selftext": "",
+                        "permalink": "/r/Genshin_Impact/comments/xp101/version_72_special_program/",
+                        "created_utc": "1791545400.0",
+                        "crosspost_parent_list": [{
+                            "selftext": "Premieres October 23 at 20:00 (UTC+8). Redemption Code: GENSHINXP72",
+                            "images": [],
+                        }],
+                    },
+                },
+                {
+                    "kind": "t3",
+                    "data": {
+                        "id": "xp_bad_ts",
+                        "subreddit": "Genshin_Impact",
+                        "author": "genshinimpact",
+                        "title": "Removed Crosspost",
+                        "selftext": "",
+                        "permalink": "/r/Genshin_Impact/comments/xp_bad_ts/removed_crosspost/",
+                        "created_utc": "not-a-timestamp",
+                        "crosspost_parent_list": [{
+                            "selftext": "Hidden parent text",
+                            "removed_by_category": "moderator",
+                        }],
+                    },
+                },
+            ]
+        }
+    })
+    assert len(xp_rows) == 2
+    assert "GENSHINXP72" in xp_rows[0]["text"] and xp_rows[0]["ts"] == 1791545400
+    assert xp_rows[1]["text"] == "" and xp_rows[1]["ts"] == 0
+    assert reddit._safe_epoch_ts("nan") == 0 and reddit._safe_epoch_ts("inf") == 0
+    assert reddit.BROWSER_UA == http.BROWSER_UA and "/1.0" not in reddit.BROWSER_UA
+
+    # 3. Edge cases #32, #33, #34: `u_<official>` profile posts, empty-body OP-comment resolution,
+    #    and proxy-resolved `program_post()` preserving listing `ts` + `author`
+    gi = GAMES["genshin"]
+
+    class _MockRedditFetcher:
+        async def get_text(self, url, **kw):
+            if "/user/genshinimpact/submitted.rss" in url:
+                return (
+                    '<?xml version="1.0" encoding="UTF-8"?>'
+                    '<feed xmlns="http://www.w3.org/2005/Atom">'
+                    "<entry><id>t3_prof99</id>"
+                    "<author><name>/u/genshinimpact</name></author>"
+                    "<title>Version 7.2 Key Art</title>"
+                    '<link href="https://www.reddit.com/r/u_genshinimpact/comments/prof99/version_72_key_art/"/>'
+                    "<updated>2026-10-21T12:00:00+00:00</updated>"
+                    "<content type=\"html\">&lt;a href=\"https://i.redd.it/keyart72.jpg\"&gt;[link]&lt;/a&gt;</content>"
+                    "</entry>"
+                    "<entry><id>t3_prog88</id>"
+                    "<author><name>/u/genshinimpact</name></author>"
+                    "<title>Version 7.2 Special Program Announcement</title>"
+                    '<link href="https://www.reddit.com/r/Genshin_Impact/comments/prog88/version_72_special_program_announcement/"/>'
+                    "<updated>2026-10-21T11:00:00+00:00</updated>"
+                    "<content type=\"html\">&lt;a href=\"https://i.redd.it/prog88.jpg\"&gt;[link]&lt;/a&gt;</content>"
+                    "</entry>"
+                    "</feed>"
+                )
+            if "/r/u_genshinimpact/comments/prof99" in url and "/.rss" in url:
+                return (
+                    '<?xml version="1.0" encoding="UTF-8"?>'
+                    '<feed xmlns="http://www.w3.org/2005/Atom">'
+                    "<entry><id>t3_prof99</id><author><name>/u/genshinimpact</name></author>"
+                    "<title>Version 7.2 Key Art</title>"
+                    '<link href="https://www.reddit.com/r/u_genshinimpact/comments/prof99/version_72_key_art/"/>'
+                    "<updated>2026-10-21T12:00:00+00:00</updated><content type=\"html\"></content></entry>"
+                    "<entry><id>t1_c99</id><author><name>/u/genshinimpact</name></author>"
+                    "<title>Comment</title>"
+                    '<link href="https://www.reddit.com/r/u_genshinimpact/comments/prof99/version_72_key_art/c99/"/>'
+                    "<updated>2026-10-21T12:01:00+00:00</updated>"
+                    "<content type=\"html\">&lt;div class=\"md\"&gt;&lt;p&gt;Redemption Code: PROFILECODE72&lt;/p&gt;&lt;/div&gt;</content></entry>"
+                    "</feed>"
+                )
+            if "vxreddit.com/r/Genshin_Impact/comments/prog88" in url:
+                return (
+                    '<html><head>'
+                    '<meta property="og:title" content="Version 7.2 Special Program Announcement"/>'
+                    '<meta property="og:description" content="The special program for Genshin Impact\'s new version will premiere on the official Twitch and YouTube channels on October 23, 2026 at 08:00 AM (UTC-4)!"/>'
+                    '<meta property="og:image" content="https://i.redd.it/prog88_hd.jpg"/>'
+                    '</head><body>' + ("x" * 160) + '</body></html>'
+                )
+            return None
+
+        async def get_json(self, url, **kw):
+            return None
+
+    rc_full = reddit.RedditClient(
+        _MockRedditFetcher(),
+        config.load_settings({
+            "REDDIT_FEED_TOKEN": "0123456789abcdef0123456789abcdef01234567&user=example_user",
+            "REDDIT_INSTANCES": "https://www.reddit.com",
+            "REDDIT_PROXIES": "https://www.vxreddit.com",
+        }),
+    )
+    code_items = asyncio.run(rc_full.items(gi, lambda s: "redemption code" in s.lower(), 1792000000))
+    assert len(code_items) == 1 and "PROFILECODE72" in code_items[0].text
+    prog_item = asyncio.run(rc_full.program_post(gi, "7.2"))
+    assert prog_item is not None and prog_item.published_ts > 0 and prog_item.author == "genshinimpact"
+
+    # 4. Full 21-secret + 5-variable configuration validation (`validate` exit 0)
+    full_env = {
+        "BUMP_PAT": "ghp_placeholder",
+        "NITTER_RSS_TOKEN": "tok_placeholder",
+        "REDDIT_FEED_TOKEN": "0123456789abcdef0123456789abcdef01234567&user=example_user",
+        "DISCORD_WEBHOOK_SCHEDULE": "https://discord.com/api/webhooks/100000000000000000/sched_tok",
+        "AUTO_MERGE_DEPENDABOT": "yes",
+        "NEWS_ENABLED": "1",
+        "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+        "NEWS_GROUP_LONG_STRIPS": "1",
+        "PING_SCHEDULE": "<@&123456789012345678>",
+    }
+    for idx_g, gname in enumerate(("ANANTA", "GENSHIN", "HNA", "STARRAIL", "WUWA", "ZZZ"), 1):
+        full_env[f"DISCORD_WEBHOOK_CODES_{gname}"] = f"https://discord.com/api/webhooks/1000000000000000{idx_g:02d}/c_tok"
+    for idx_n, gname in enumerate(("GENSHIN", "HNA", "STARRAIL", "WUWA", "ZZZ"), 11):
+        full_env[f"DISCORD_WEBHOOK_NEWS_{gname}"] = f"https://discord.com/api/webhooks/1000000000000000{idx_n:02d}/n_tok"
+    for idx_m, gname in enumerate(("ANANTA", "GI", "HNA", "HSR", "WUWA", "ZZZ"), 21):
+        full_env[f"DISCORD_WEBHOOK_SCHEDULE_MIRROR_{gname}"] = f"https://discord.com/api/webhooks/1000000000000000{idx_m:02d}/m_tok"
+    assert len(full_env) == 26
+    with patch.dict(os.environ, full_env, clear=True):
+        assert cmd_validate(SimpleNamespace()) == 0
+
+    # 5. Repository-wide documentation & credit hygiene when docs are present (skipped cleanly in docs-free prod)
+    readme_p = ROOT / "README.md"
+    if readme_p.is_file():
+        readme_t = readme_p.read_text(encoding="utf-8")
+        credits_t = (ROOT / "docs" / "CREDITS.md").read_text(encoding="utf-8")
+        sources_t = (ROOT / "docs" / "SOURCES.md").read_text(encoding="utf-8")
+        security_t = (ROOT / "docs" / "SECURITY.md").read_text(encoding="utf-8")
+        privacy_t = (ROOT / "PRIVACY_POLICY.md").read_text(encoding="utf-8")
+        terms_t = (ROOT / "TERMS_OF_SERVICE.md").read_text(encoding="utf-8")
+        assert "https://arena.ai/company/about" in readme_t and "https://x.com/arena?lang=en" in readme_t
+        assert "https://arena.ai/company/about" in credits_t and "https://x.com/arena?lang=en" in credits_t
+        assert f"{len(config.DEFAULT_REDDIT)} entries" in readme_t
+        assert f"{len(config.DEFAULT_REDDIT_PROXIES)} proxies" in readme_t
+        assert f"{len(config.DEFAULT_REDDIT)} Reddit/Redlib entries" in security_t
+        assert "arknights" not in sources_t.lower()
+        assert "October 22, 2026" in privacy_t and "October 22, 2026" in terms_t
+
 
 if __name__ == "__main__":
     sys.exit(main())
