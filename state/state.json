@@ -2639,8 +2639,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792630219,
-          "banners_search_ts": 1792630219,
+          "banners_checked_ts": 1792641020,
+          "banners_search_ts": 1792641020,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -2687,7 +2687,7 @@
           ],
           "b_phase1": [
             100,
-            1792640720
+            1792641020
           ],
           "b_phase1_4": [
             50,
