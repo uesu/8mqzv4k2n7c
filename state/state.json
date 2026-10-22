@@ -367,7 +367,7 @@
       "OKTCHX26J57Q": {
         "first_seen": 1792482628,
         "gate": "only ennead",
-        "last_seen": 1792660519,
+        "last_seen": 1792704023,
         "rewards": [
           "Mora ×10,000",
           "Adventurer's Experience ×10",
@@ -854,7 +854,7 @@
       "DSLSPNBREASP": {
         "first_seen": 1792556421,
         "gate": "redeem-validated",
-        "last_seen": 1792660519,
+        "last_seen": 1792704023,
         "message_id": "1562351094334758915",
         "msg_codes": [
           "DSLSPNBREASP"
@@ -2742,8 +2742,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792682419,
-          "banners_search_ts": 1792682419,
+          "banners_checked_ts": 1792704023,
+          "banners_search_ts": 1792704023,
           "banners_settled": [
             "phase1",
             "phase2",
