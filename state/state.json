@@ -1935,6 +1935,88 @@
     "wuwa": "https://pbs.twimg.com/profile_images/2085696982958665728/qlgc729S_200x200.jpg",
     "zzz": "https://pbs.twimg.com/profile_images/2097499758462140416/YGW1eFcg_200x200.jpg"
   },
+  "maintenance": {
+    "genshin": {
+      "paused": false,
+      "route": "a0f2147590c35140",
+      "seeded_at": 1792665058,
+      "versions": {
+        "7.1": {
+          "maintenance": {
+            "provenance": "official",
+            "status": "seeded",
+            "ts": 1790114400
+          },
+          "preload": {
+            "provenance": "estimated",
+            "status": "seeded",
+            "ts": 1789959600
+          }
+        },
+        "7.2": {}
+      }
+    },
+    "starrail": {
+      "paused": false,
+      "route": "d6cfe8654063c7ee",
+      "seeded_at": 1792665058,
+      "versions": {
+        "4.6": {
+          "maintenance": {
+            "provenance": "official",
+            "status": "seeded",
+            "ts": 1790546400
+          },
+          "preload": {
+            "provenance": "official",
+            "status": "seeded",
+            "ts": 1790229600
+          }
+        },
+        "4.7": {}
+      }
+    },
+    "wuwa": {
+      "paused": false,
+      "route": "f7e18488aac788d3",
+      "seeded_at": 1792665058,
+      "versions": {
+        "3.7": {
+          "maintenance": {
+            "provenance": "official",
+            "status": "seeded",
+            "ts": 1790712000
+          },
+          "preload": {
+            "provenance": "official",
+            "status": "seeded",
+            "ts": 1790560800
+          }
+        },
+        "3.8": {}
+      }
+    },
+    "zzz": {
+      "paused": false,
+      "route": "5f931f917050e29a",
+      "seeded_at": 1792665058,
+      "versions": {
+        "3.3": {
+          "maintenance": {
+            "provenance": "official",
+            "status": "seeded",
+            "ts": 1792533600
+          },
+          "preload": {
+            "provenance": "official",
+            "status": "seeded",
+            "ts": 1792382400
+          }
+        },
+        "3.4": {}
+      }
+    }
+  },
   "news": {
     "genshin": {
       "cursor": [
@@ -2794,7 +2876,7 @@
               "version": "3.3"
             }
           ],
-          "ts": 1792640116
+          "ts": 1792665058
         },
         "data": {
           "announcement_locked": true,
@@ -2820,20 +2902,21 @@
               "Norma Hollowell"
             ]
           },
-          "banners_checked_ts": 1792640116,
+          "banners_checked_ts": 1792665058,
           "banners_display": {
             "Norma": "Norma Hollowell",
             "Phoenix": "Phoenix Reffaella",
             "Severian": "Severian Lowell",
             "Velina": "Velina Airgid"
           },
-          "banners_search_ts": 1792640116,
+          "banners_search_ts": 1792665058,
           "banners_settled": [
             "phase1",
             "phase1_4",
-            "phase2"
+            "phase2",
+            "reruns"
           ],
-          "calendar_ts": 1792640116,
+          "calendar_ts": 1792665058,
           "compensation": "Polychrome ×300",
           "images": [
             "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
@@ -2885,7 +2968,6 @@
           "b_phase1_by": [
             "official"
           ],
-          "b_phase1_conflict": "Phoenixis, Velinais",
           "b_phase2": [
             40,
             1791546399
