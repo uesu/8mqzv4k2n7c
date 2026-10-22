@@ -14229,7 +14229,7 @@ def test_adversarial_real_reddit_atom_footer_summary_redaction_gallery_and_token
     assert real_items[0].images[0] == "https://i.redd.it/gallery_full_1.jpg"
     ext = schedule.extract(GAMES["genshin"], real_items[0])
     assert ext is not None and ext.version == "7.3" and ext.fields["program_ts"] == 1795176000
-    assert '"deltandy.me"' in Path("gamexpress/http.py").read_text(encoding="utf-8")
+    assert '"deltandy.me"' in (ROOT / "gamexpress/http.py").read_text(encoding="utf-8")
 
 
 def test_reddit_json_feed_compatibility_user_fastpath_and_live_webhook_redaction():
@@ -14600,14 +14600,21 @@ def test_final_pre_merge_edge_cases_and_repo_doc_consistency():
         assert cmd_validate(SimpleNamespace()) == 0
 
     # 5. Repository-wide documentation & credit hygiene when docs are present (skipped cleanly in docs-free prod)
-    readme_p = ROOT / "README.md"
-    if readme_p.is_file():
-        readme_t = readme_p.read_text(encoding="utf-8")
-        credits_t = (ROOT / "docs" / "CREDITS.md").read_text(encoding="utf-8")
-        sources_t = (ROOT / "docs" / "SOURCES.md").read_text(encoding="utf-8")
-        security_t = (ROOT / "docs" / "SECURITY.md").read_text(encoding="utf-8")
-        privacy_t = (ROOT / "PRIVACY_POLICY.md").read_text(encoding="utf-8")
-        terms_t = (ROOT / "TERMS_OF_SERVICE.md").read_text(encoding="utf-8")
+    doc_paths = {
+        "readme": ROOT / "README.md",
+        "credits": ROOT / "docs" / "CREDITS.md",
+        "sources": ROOT / "docs" / "SOURCES.md",
+        "security": ROOT / "docs" / "SECURITY.md",
+        "privacy": ROOT / "PRIVACY_POLICY.md",
+        "terms": ROOT / "TERMS_OF_SERVICE.md",
+    }
+    if doc_paths["readme"].is_file() and all(p.is_file() for p in doc_paths.values()):
+        readme_t = doc_paths["readme"].read_text(encoding="utf-8")
+        credits_t = doc_paths["credits"].read_text(encoding="utf-8")
+        sources_t = doc_paths["sources"].read_text(encoding="utf-8")
+        security_t = doc_paths["security"].read_text(encoding="utf-8")
+        privacy_t = doc_paths["privacy"].read_text(encoding="utf-8")
+        terms_t = doc_paths["terms"].read_text(encoding="utf-8")
         assert "https://arena.ai/company/about" in readme_t and "https://x.com/arena?lang=en" in readme_t
         assert "https://arena.ai/company/about" in credits_t and "https://x.com/arena?lang=en" in credits_t
         assert f"{len(config.DEFAULT_REDDIT)} entries" in readme_t
@@ -14615,6 +14622,294 @@ def test_final_pre_merge_edge_cases_and_repo_doc_consistency():
         assert f"{len(config.DEFAULT_REDDIT)} Reddit/Redlib entries" in security_t
         assert "arknights" not in sources_t.lower()
         assert "October 22, 2026" in privacy_t and "October 22, 2026" in terms_t
+
+
+def test_hotfix_monitor_764_765_none_extracts_runner_isolation_ananta_hna_and_state_hardening():
+    """Reproduces the exact Monitor #764/#765 production crash and pins end-to-end resilience across:
+    1. `maintenance.resolve_version_plans()` + `schedule.merge()` / `infer_versions()` /
+       `needs_program_lookup()` when version-mentioning official items return `extract(...) -> None`
+       (e.g. 'Version 7.2 Event Calendar', 'Version 1.0 Trailer' on HNA/ANANTA).
+    2. `runner.run_once()` feature isolation + guaranteed `state.prune()`, `state.save()`, and
+       `write_summary()` even when one feature raises an unhandled exception (preventing lost
+       `message_id`s, skipped `news` runs, and blank `GITHUB_STEP_SUMMARY`).
+    3. Full `ANANTA` + `HNA` parity:
+       - `MAINTENANCE_GAMES=all` expands to all 6 games (`genshin`, `starrail`, `zzz`, `wuwa`, `hna`,
+         `ananta`) while `NEWS_GAMES=all` / default remains the 5 news-capable games (`ananta` excluded).
+       - `sample_payloads('maintenance')` generates valid Pre-Load + Maintenance cards for all 6 games
+         including `ananta` and `hna`.
+       - `http.Fetcher.verify_media` allowlists NetEase / ANANTA official media hosts (`easebar.com`,
+         `anantagame.com`, `netease.com`, `163.com`) alongside HoYoverse / Kuro / X / Reddit hosts.
+       - Official Reddit items (`u/AnantaOfficial`, `u/HonkaiNexusAnima`) carry priority `35` +
+         `'Reddit'` link label in `schedule`, attribute official codes as `'Official Reddit'`
+         (`'reddit_official'`, never `'HoYoLAB (official)'`), while community `r/AnantaOfficial` /
+         `r/HonkaiNexusAnima` hits (`'reddit'`) remain strictly unverified.
+    4. Malformed `state.json` & null/non-dict upstream API payload resilience across `State`,
+       `launcher`, `hoyolab`, `kuro`, `codes`, `bannerfeed`, and `calendarfeed` without breaking
+       `hoyolab.news_blocks()` `ValueError` hold semantics."""
+    import tempfile
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import __main__ as cli_main
+    from gamexpress import cards, codeposter, config, http, maintenance, runner, schedule
+    from gamexpress.sources import bannerfeed, calendarfeed, codes, hoyolab, kuro, launcher
+    from gamexpress.state import State
+
+    now = 1792660800
+    assert config.ALL_MAINTENANCE_GAMES == ("genshin", "starrail", "zzz", "wuwa", "hna", "ananta")
+    assert config.DEFAULT_OPTIONAL_GAMES == ("genshin", "starrail", "zzz", "wuwa", "hna")
+    assert hoyolab.pick_program([None, {"retcode": 0, "data": None}], "7.2", []) is None
+
+    # --- 1. Exact Monitor #764 / #765 crash reproduction on GI + HNA + ANANTA ---
+    non_sched_gi = Item(
+        source="hoyolab",
+        game="genshin",
+        id="47163124",
+        url="https://www.hoyolab.com/article/47163124",
+        title="Version 7.2 Character Outfit Showcase",
+        text="Check out the brand-new outfit arriving in Version 7.2!",
+        published_ts=now - 300,
+    )
+    maint_gi = Item(
+        source="hoyolab",
+        game="genshin",
+        id="47163999",
+        url="https://www.hoyolab.com/article/47163999",
+        title="Version 7.2 Update Maintenance Preview",
+        text=(
+            "Pre-installation Function Opens: 2026/11/02 12:00 (UTC+8)\n"
+            "Update Maintenance Begins: 2026/11/04 06:00 (UTC+8) and is estimated to take 5 hours."
+        ),
+        published_ts=now - 120,
+    )
+    assert schedule.extract(GAMES["genshin"], non_sched_gi) is None
+    gi_plans = maintenance.resolve_version_plans(
+        GAMES["genshin"], {}, [non_sched_gi, maint_gi], {"live": "7.1", "pre": "7.2"}, {}, now
+    )
+    assert "7.2" in gi_plans and gi_plans["7.2"]["maint_estimated"] is False
+
+    # Direct `schedule` contract hardening against `None` in `extracts` + malformed records
+    merged_none = schedule.merge(GAMES["genshin"], "7.2", [None], {"data": None, "prov": "bad"}, None, {}, now, [])
+    assert merged_none["version"] == "7.2"
+    schedule.infer_versions([None], live="7.1", records={"bad": None})
+    assert schedule.needs_program_lookup([None], {"data": None}, now, "genshin") is True
+    bad_media_state = State({"schedule": {"genshin": {"7.2": None, "7.3": {"data": None}}}})
+    assert schedule.needs_media(bad_media_state, "genshin", now) is False
+
+    # Pre-release HNA & ANANTA official Version 1.0 announcements alongside non-schedule 1.0 trailers
+    for pre_key, src_name, url_post, acct in (
+        ("hna", "reddit", "https://www.reddit.com/r/HonkaiNexusAnima/comments/1hna10/v10_launch/", "HonkaiNexusAnima"),
+        ("ananta", "reddit", "https://www.reddit.com/r/AnantaOfficial/comments/1ana10/v10_launch/", "AnantaOfficial"),
+    ):
+        trailer_it = Item(
+            source=src_name,
+            game=pre_key,
+            id=f"{pre_key}-trailer",
+            url=url_post + "trailer/",
+            title=f"{GAMES[pre_key].name} Version 1.0 Official Launch Trailer",
+            text="Watch the Version 1.0 Official Launch Trailer on YouTube!",
+            published_ts=now - 600,
+            author=acct,
+            official=True,
+        )
+        maint_it = Item(
+            source=src_name,
+            game=pre_key,
+            id=f"{pre_key}-maint",
+            url=url_post,
+            title=f"{GAMES[pre_key].name} Version 1.0 Pre-Download & Launch Maintenance Notice",
+            text=(
+                "Version 1.0 pre-download will begin on 2027/01/13 10:00 (UTC+8).\n"
+                "Maintenance Time: 2027/01/15 06:00 - 11:00 (UTC+8)"
+            ),
+            published_ts=now - 300,
+            images=["https://r.res.easebar.com/pic/20250922/4ad008f3-89e7-4475-bfa1-b50a8c76c76f.png"],
+            author=acct,
+            official=True,
+        )
+        assert schedule.extract(GAMES[pre_key], trailer_it) is None
+        pre_plans = maintenance.resolve_version_plans(GAMES[pre_key], {}, [trailer_it, maint_it], {}, {}, now)
+        assert pre_plans["1.0"]["preinstall_ts"] == 1799805600
+        assert pre_plans["1.0"]["maint_start_ts"] == 1799964000
+        assert pre_plans["1.0"]["maint_end_ts"] == 1799982000
+
+    # --- 2. ANANTA + HNA config routing, sample cards, official Reddit attribution & CDN allowlist ---
+    st_all = settings(MAINTENANCE_ENABLED="1", MAINTENANCE_GAMES="all", NEWS_ENABLED="1", NEWS_GAMES="all")
+    assert st_all.maintenance_games == {"genshin", "starrail", "zzz", "wuwa", "hna", "ananta"}
+    assert st_all.news_games == {"genshin", "starrail", "zzz", "wuwa", "hna"}
+
+    maint_samples = cli_main.sample_payloads("maintenance")
+    maint_labels = [lbl for _grp, lbl, _p in maint_samples]
+    assert "maintenance_ananta_preload" in maint_labels and "maintenance_ananta_start" in maint_labels
+    assert "maintenance_hna_preload" in maint_labels and "maintenance_hna_start" in maint_labels
+    for _grp, lbl, payload in maint_samples:
+        assert cards.validate_payload(payload) == [], lbl
+
+    # Official u/AnantaOfficial & u/HonkaiNexusAnima Reddit code drop vs unverified community Reddit hit
+    ananta_reddit_code_item = Item(
+        source="reddit",
+        game="ananta",
+        id="1anacode",
+        url="https://www.reddit.com/r/AnantaOfficial/comments/1anacode/launch_codes/",
+        title="ANANTA Official Launch Redemption Code",
+        text="Redemption Code: ANANTALAUNCH10",
+        published_ts=now,
+        author="AnantaOfficial",
+        official=True,
+    )
+    assert ananta_reddit_code_item.source_label == "Reddit"
+    assert schedule.PRIORITY["reddit"] == 38
+    assert schedule._link_label("https://www.reddit.com/r/AnantaOfficial/comments/1anacode/x/", "") == "Reddit"
+
+    off_hits = codeposter.official_hits_from_items([ananta_reddit_code_item])
+    assert len(off_hits) == 1 and off_hits[0].source == "reddit_official" and off_hits[0].verified is True
+    ok_off, why_off = codeposter.gate(codeposter.group_hits(off_hits)["ANANTALAUNCH10"], 2)
+    assert ok_off is True and why_off == "official"
+    ananta_card_json = json.dumps(
+        cards.codes_payloads(
+            GAMES["ananta"],
+            [{"code": "ANANTALAUNCH10", "sources": ["reddit_official"]}],
+            st_all,
+            st_all.ping("codes", "ananta"),
+            now,
+        )
+    )
+    assert "Official Reddit" in ananta_card_json and "HoYoLAB" not in ananta_card_json
+
+    # Community Reddit hit (`source='reddit'`, `verified=False`) MUST STILL NEVER self-confirm!
+    comm_hits = [CodeHit("ANANTACOMM99", "reddit", None, verified=False)]
+    ok_comm, _why_comm = codeposter.gate(codeposter.group_hits(comm_hits)["ANANTACOMM99"], 2)
+    assert ok_comm is False
+
+    # NetEase / ANANTA CDN hosts pass URL policy inside Fetcher._news_media_prefix
+    png_bytes = b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\x00\x00\x00\x10"
+
+    class _EasebarSession:
+        def get(self, url, **kw):
+            class _Resp:
+                status = 200
+                url = "https://r.res.easebar.com/pic/20250922/ananta_kv.png"
+                headers = {"Content-Type": "image/png"}
+
+                class content:
+                    @staticmethod
+                    async def iter_chunked(_n):
+                        yield png_bytes
+
+                async def __aenter__(self_inner):
+                    return self_inner
+
+                async def __aexit__(self_inner, *exc):
+                    return False
+
+            r = _Resp()
+            r.url = url
+            return r
+
+    easebar_fetcher = http.Fetcher(session=_EasebarSession())
+    for netease_url in (
+        "https://r.res.easebar.com/pic/20250922/4ad008f3-89e7-4475-bfa1-b50a8c76c76f.png",
+        "https://www.anantagame.com/media/v1_launch.png",
+        "https://nie.res.netease.com/r/pic/ananta_bg.png",
+    ):
+        assert asyncio.run(easebar_fetcher.verify_media(netease_url)) is True, netease_url
+
+    # --- 3. `runner.run_once()` isolates feature crashes & ALWAYS saves state + writes summary ---
+    with tempfile.TemporaryDirectory() as tmpdir:
+        state_file = Path(tmpdir) / "state.json"
+        summary_file = Path(tmpdir) / "step_summary.md"
+        news_ran = False
+
+        async def _codes_mutates_state(ctx):
+            ctx.state.code_records("genshin")["SAVEDDESPITECRASH"] = {
+                "status": "posted",
+                "posted_at": ctx.now,
+                "message_id": "msg-keep-me",
+            }
+
+        async def _maint_explodes(_ctx):
+            raise RuntimeError("boom inside maintenance")
+
+        async def _news_still_runs(_ctx):
+            nonlocal news_ran
+            news_ran = True
+
+        run_st = load_settings({
+            **BASE_ENV,
+            "MAINTENANCE_ENABLED": "1",
+            "MAINTENANCE_GAMES": "all",
+            "NEWS_ENABLED": "1",
+            "NEWS_GAMES": "genshin",
+            "DISCORD_WEBHOOK_NEWS_GENSHIN": HOOK,
+        })
+        run_st.state_path = state_file
+        with (
+            patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(summary_file)}, clear=False),
+            patch.object(runner, "gather_versions", new=AsyncMock()),
+            patch.object(runner, "gather_items", new=AsyncMock()),
+            patch.object(runner, "gather_program_media", new=AsyncMock()),
+            patch.object(runner, "gather_estimates", new=AsyncMock()),
+            patch.object(runner, "gather_banners", new=AsyncMock()),
+            patch.object(schedule, "run", new=AsyncMock()),
+            patch.object(codeposter, "run", side_effect=_codes_mutates_state),
+            patch.object(maintenance, "run", side_effect=_maint_explodes),
+            patch.object(runner, "run_news", side_effect=_news_still_runs),
+        ):
+            out_ctx = asyncio.run(runner.run_once(run_st))
+
+        assert news_ran is True
+        assert any("maintenance failed: boom inside maintenance" in e for e in out_ctx.errors)
+        saved_state = json.loads(state_file.read_text(encoding="utf-8"))
+        assert saved_state["codes"]["genshin"]["SAVEDDESPITECRASH"]["message_id"] == "msg-keep-me"
+        assert saved_state["heartbeat"] == {}
+        summary_md = summary_file.read_text(encoding="utf-8")
+        assert "maintenance failed: boom inside maintenance" in summary_md
+
+    # --- 4. Malformed `state.json` & upstream null/non-dict JSON boundaries ---
+    with tempfile.TemporaryDirectory() as tmpdir2:
+        corrupt_path = Path(tmpdir2) / "corrupt_state.json"
+        corrupt_path.write_text(
+            json.dumps({
+                "schema": "bad",
+                "schedule": {"genshin": None, "hna": "corrupt"},
+                "codes": "not-a-dict",
+                "maintenance": {"ananta": {"versions": "not-a-dict"}},
+                "news": {"hna": {"floor": "nan", "records": "bad"}},
+                "bootstrapped": None,
+                "heartbeat": [],
+            }),
+            encoding="utf-8",
+        )
+        healed = State.load(corrupt_path)
+        assert healed.schedule_record("genshin", "7.2") is None
+        assert healed.schedule_records("genshin") == {}
+        assert healed.code_records("genshin") == {}
+        assert healed.maintenance_record("ananta")["versions"] == {}
+        assert healed.news_record("hna")["records"] == {}
+        assert healed.merge_peer({"schedule": "bad", "codes": None, "maintenance": [], "news": 123}) == 0
+        healed.prune(now)
+
+    assert launcher.parse_branches(None) == {}
+    assert launcher.parse_branches({"data": {"game_branches": [None, "bad"]}}) == {}
+    assert launcher.parse_basic_info(None) == {}
+    assert kuro.parse_launcher_index(None) == {}
+    assert codes.parse_seria(None) == []
+    assert codes.parse_ennead(None) == []
+    assert codes.parse_fandom(None) == []
+    assert codes.parse_codehub(None, "genshin") == []
+    assert codes.parse_ogc(None) == []
+    assert bannerfeed.parse_hub(None, now) == {}
+    assert bannerfeed.banner_feed_for(None, now) == {}
+    assert calendarfeed.parse_banners(None) == []
+    assert calendarfeed.lineup(None, now, 3) == {}
+    from gamexpress import textutil
+
+    # And structured news blocks MUST still raise `ValueError` on unreadable JSON so `run_news` holds!
+    try:
+        textutil.news_blocks("", "{unreadable structured_content")
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("textutil.news_blocks must keep raising ValueError on unreadable JSON")
 
 
 if __name__ == "__main__":
