@@ -546,8 +546,12 @@
           1
         ],
         "posted_at": 1792761916,
-        "rewards": null,
+        "rewards": [
+          "Primogem ×60",
+          "Adventurer's Experience ×5"
+        ],
         "sources": [
+          "ennead",
           "seria"
         ],
         "status": "posted",
@@ -2170,8 +2174,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1792760102,
-        "47176929"
+        1792762505,
+        "47177975"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -2244,6 +2248,13 @@
           ],
           "status": "posted",
           "ts": 1792760102
+        },
+        "47177975": {
+          "messages": [
+            "1563184083192905780"
+          ],
+          "status": "posted",
+          "ts": 1792762505
         }
       },
       "route": "a0f2147590c35140"
