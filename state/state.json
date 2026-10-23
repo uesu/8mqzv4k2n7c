@@ -2055,7 +2055,7 @@
   "heartbeat": {
     "every_min": 1440,
     "instance": "alpha",
-    "last_success": 1792673419
+    "last_success": 1792760120
   },
   "icons": {
     "genshin": "https://pbs.twimg.com/profile_images/2102589386378686464/tS24hVO2_200x200.jpg",
@@ -2148,8 +2148,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1792759503,
-        "47176673"
+        1792760102,
+        "47176929"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -2215,6 +2215,13 @@
           ],
           "status": "posted",
           "ts": 1792759503
+        },
+        "47176929": {
+          "messages": [
+            "1563174031128002725"
+          ],
+          "status": "posted",
+          "ts": 1792760102
         }
       },
       "route": "a0f2147590c35140"
