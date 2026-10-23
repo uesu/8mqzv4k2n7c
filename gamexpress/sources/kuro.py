@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 from collections.abc import Callable
 
 from ..config import Game
@@ -26,6 +27,11 @@ DETAIL = BASE + "article/{}.json"
 LINK = "https://wutheringwaves.kurogames.com/en/main/news/detail/{}"
 LAUNCHER_INDEX = ("https://prod-alicdn-gamestarter.kurogame.com/launcher/game/G153/"
                   "50004_obOHXFrFanqsaIEOmuKroCcbZkQRBC7c/index.json")
+LAUNCHER_CONFIG = ("https://prod-alicdn-gamestarter.kurogame.com/launcher/launcher/"
+                   "50004_obOHXFrFanqsaIEOmuKroCcbZkQRBC7c/G153/index.json")
+LAUNCHER_BACKGROUND = ("https://prod-alicdn-gamestarter.kurogame.com/launcher/"
+                       "50004_obOHXFrFanqsaIEOmuKroCcbZkQRBC7c/G153/background/{}/en.json")
+_BG_HASH_RE = re.compile(r"^[A-Za-z0-9_-]{8,128}$")
 
 
 async def menu_articles(fetcher: Fetcher) -> dict[int, dict]:
@@ -153,6 +159,41 @@ def parse_launcher_index(data: dict) -> dict:
 async def launcher_versions(fetcher: Fetcher) -> dict:
     data = await fetcher.get_json(LAUNCHER_INDEX, source="kuro-launcher", retries=1)
     return parse_launcher_index(data) if data else {}
+
+
+def parse_launcher_background(data: dict, bg_hash: str = "") -> dict:
+    """Extract global launcher video/wallpaper URLs from `background/<hash>/en.json`."""
+    if not isinstance(data, dict) or data.get("functionSwitch") == 0:
+        return {}
+    bg_file = str(data.get("backgroundFile") or "").strip()
+    first_frame = str(data.get("firstFrameImage") or "").strip()
+    slogan = str(data.get("slogan") or "").strip()
+    bg_type = data.get("backgroundFileType")
+    is_video = bg_type == 2 or bg_file.split("?", 1)[0].lower().endswith((".mp4", ".webm", ".mov"))
+    video = bg_file if is_video else ""
+    artwork = first_frame if is_video else (bg_file or first_frame)
+    if not video and not artwork:
+        return {}
+    base_meta = {k: v for k, v in (("slot", "background"), ("bg_hash", bg_hash.strip()), ("slogan", slogan)) if v}
+    return {
+        "video": video,
+        "video_meta": dict(base_meta) if video else {},
+        "artwork": artwork,
+        "artwork_meta": dict(base_meta) if artwork else {},
+    }
+
+
+async def launcher_media(fetcher: Fetcher) -> dict:
+    """Lazily resolve global Kuro launcher background video + first-frame WebP."""
+    cfg = await fetcher.get_json(LAUNCHER_CONFIG, source="kuro-launcher-bg", retries=1)
+    if not isinstance(cfg, dict):
+        return {}
+    func = cfg.get("functionCode") if isinstance(cfg.get("functionCode"), dict) else {}
+    bg_hash = str(func.get("background") or "").strip()
+    if not _BG_HASH_RE.fullmatch(bg_hash):
+        return {}
+    bg = await fetcher.get_json(LAUNCHER_BACKGROUND.format(bg_hash), source="kuro-launcher-bg", retries=1)
+    return parse_launcher_background(bg, bg_hash=bg_hash) if bg else {}
 
 
 async def discover_news(fetcher: Fetcher, game: Game, since: int) -> list[dict] | None:

@@ -54,9 +54,9 @@ LATE_MEDIA_EDIT_WINDOW_S = 6 * 3600   # post-delivery check/edit window: 6h (21,
 MAX_LATE_MEDIA_ATTEMPTS = 3           # max consecutive failed PATCH attempts (`edit_attempts`, reset on res.ok)
 MAX_LATE_EDITS = 6                    # hard cap on total succeeded silent PATCH updates (`edit_count`)
 LAUNCH_MEDIA_MAX_AFTER_S = 7 * 86400  # >7d after maintenance start belongs to mid-patch / Phase II
-LAUNCH_MEDIA_MAX_BEFORE_S = 14 * 86400
+LAUNCH_MEDIA_MAX_BEFORE_S = 11 * 86400  # allows -10d Special Program Friday uploads, rejects -14d Phase II
 
-_CDN_DATE_RE = re.compile(r"/(20\d{2})[/-](0[1-9]|1[0-2])[/-](0[1-9]|[12]\d|3[01])/")
+_CDN_DATE_RE = re.compile(r"/(20\d{2})[/-]?(0[1-9]|1[0-2])[/-]?(0[1-9]|[12]\d|3[01])/")
 _VIDEO_EXT_RE = re.compile(r"\.(?:mp4|webm)(?:[?#]|$)", re.I)
 
 
@@ -97,15 +97,52 @@ def _auth_key_expiry(url: str) -> int | None:
     return None
 
 
+def _canonical_url_locator(url: str) -> str:
+    p = urlsplit(url or "")
+    if not p.scheme or not p.hostname or not p.path:
+        return ""
+    return f"{p.scheme.lower()}://{p.hostname.lower()}{p.path}"
+
+
 def _same_url_locator(url_a: str, url_b: str) -> bool:
     """True when scheme, host, and path match (necessary, NEVER sufficient on its own)."""
-    pa, pb = urlsplit(url_a or ""), urlsplit(url_b or "")
-    return bool(
-        pa.scheme
-        and pa.scheme == pb.scheme
-        and (pa.hostname or "").lower() == (pb.hostname or "").lower()
-        and pa.path == pb.path
-    )
+    loc_a = _canonical_url_locator(url_a)
+    return bool(loc_a and loc_a == _canonical_url_locator(url_b))
+
+
+def _record_seen_media(versions_state: dict | None, owner_version: str, urls: list[str]) -> bool:
+    """Record canonical asset locators observed for `owner_version` to prevent bleed into later patches."""
+    if not isinstance(versions_state, dict) or not owner_version or version_key(owner_version) == (0, 0):
+        return False
+    vstate = versions_state.setdefault(owner_version, {})
+    seen = list(vstate.get("seen_media") or [])
+    changed = False
+    for u in urls:
+        loc = _canonical_url_locator(u)
+        if loc and loc not in seen:
+            seen.append(loc)
+            changed = True
+    if changed:
+        vstate["seen_media"] = seen[-12:]
+    return changed
+
+
+def _url_used_by_prior_version(url: str, version: str, versions_state: dict | None) -> bool:
+    """Return True when `url`'s canonical locator was already locked or observed on an earlier version."""
+    if not isinstance(versions_state, dict):
+        return False
+    loc = _canonical_url_locator(url)
+    if not loc:
+        return False
+    cur_key = version_key(version)
+    for other_ver, other_state in versions_state.items():
+        if not isinstance(other_state, dict) or version_key(other_ver) >= cur_key:
+            continue
+        lock = other_state.get("launch_media") if isinstance(other_state.get("launch_media"), dict) else {}
+        for prev in (lock.get("video"), lock.get("artwork"), *(other_state.get("seen_media") or [])):
+            if prev and _canonical_url_locator(str(prev)) == loc:
+                return True
+    return False
 
 
 def _build_asset_meta(
@@ -206,7 +243,7 @@ def _is_launch_window_compatible(
     if upload_ts is not None:
         if anchor_maint and upload_ts > anchor_maint + LAUNCH_MEDIA_MAX_AFTER_S:
             return False
-        if anchor_early and upload_ts < anchor_early - LAUNCH_MEDIA_MAX_BEFORE_S:
+        if not explicit_version_link and anchor_early and upload_ts < anchor_early - LAUNCH_MEDIA_MAX_BEFORE_S:
             return False
     elif not explicit_version_link and maint_start_ts and now > maint_start_ts + LAUNCH_MEDIA_MAX_AFTER_S:
         return False
@@ -273,11 +310,20 @@ def resolve_version_plans(
     """
     plans: dict[str, dict] = {}
     maint_vers = maintenance_versions if isinstance(maintenance_versions, dict) else {}
+    live_ver = (versions_info or {}).get("live")
+    pre_ver = (versions_info or {}).get("pre")
+
+    all_extracts = [e for it in (items or []) if (e := schedule.extract(game, it)) is not None]
+    schedule.infer_versions(all_extracts, live=live_ver, records=schedule_records, pre=pre_ver)
+    if not game.released and not live_ver and not schedule_records:
+        for e in all_extracts:
+            if not e.version:
+                e.version = str(pre_ver or "1.0")
+
     by_version: dict[str, list] = {}
-    for it in items or []:
-        ver = find_version(f"{it.title}\n{it.text}")
-        if ver:
-            by_version.setdefault(ver, []).append(it)
+    for e in all_extracts:
+        if e.version:
+            by_version.setdefault(e.version, []).append(e)
 
     candidate_versions: set[str] = set()
     for ver in (schedule_records or {}):
@@ -302,13 +348,14 @@ def resolve_version_plans(
     for ver in sorted(candidate_versions, key=version_key):
         existing_rec = copy.deepcopy((schedule_records or {}).get(ver) or {})
         ov = copy.deepcopy((game_overrides or {}).get(ver) or {})
-        ver_items = by_version.get(ver, [])
+        ver_extracts = by_version.get(ver, [])
         persisted_vstate = maint_vers.get(ver) if isinstance(maint_vers.get(ver), dict) else {}
 
         raw_prev_data = existing_rec.get("data") if isinstance(existing_rec.get("data"), dict) else {}
         raw_prev_prov = existing_rec.get("prov") if isinstance(existing_rec.get("prov"), dict) else {}
         raw_prev_est = set(raw_prev_data.get("estimated") or [])
         official_min_rank = schedule.PRIORITY["reddit"]
+        countdown_min_rank = schedule.PRIORITY["countdown"]
         official_seed_data: dict = {}
         official_seed_prov: dict = {}
         for k_field in ("preinstall_ts", "maint_start_ts", "maint_end_ts", "images", "version"):
@@ -323,7 +370,6 @@ def resolve_version_plans(
 
         # Merge official items ONLY onto official provenance so prior rank-100 overrides can never
         # shadow a newly published official notice, and estimates remain cleanly separated.
-        ver_extracts = [e for e in (schedule.extract(game, it) for it in ver_items) if e is not None]
         merged_official = schedule.merge(
             game, ver, ver_extracts, official_rec, {}, {}, now, [], lead_h=lead_h
         )
@@ -358,39 +404,71 @@ def resolve_version_plans(
         # 2. Explicit overrides (beat launcher observation & cadence predictions; Official wins
         #    when published, while overrides fill missing fields or shift holiday dates).
         if isinstance(ov, dict) and ov:
-            if pre_ts is None and ov.get("preinstall_ts"):
-                pre_ts = int(ov["preinstall_ts"])
+            ov_pre = schedule._to_ts(ov.get("preinstall_ts")) if "preinstall_ts" in ov else None
+            ov_start = schedule._to_ts(ov.get("maint_start_ts")) if "maint_start_ts" in ov else None
+            ov_end = schedule._to_ts(ov.get("maint_end_ts")) if "maint_end_ts" in ov else None
+            if pre_ts is None and ov_pre:
+                pre_ts = ov_pre
                 pre_est = False
                 pre_obs = False
                 pre_prov = "override"
-            if start_ts is None and ov.get("maint_start_ts"):
-                start_ts = int(ov["maint_start_ts"])
+            if start_ts is None and ov_start:
+                start_ts = ov_start
                 maint_est = False
                 maint_prov = "override"
-                if ov.get("maint_end_ts"):
-                    end_ts = int(ov["maint_end_ts"])
+                if ov_end:
+                    end_ts = ov_end
                 elif ov.get("maint_hours"):
                     end_ts = int(start_ts + float(ov["maint_hours"]) * 3600)
                 else:
                     # Unknown maintenance end time in override must never be invented.
                     end_ts = None
             elif start_ts is not None and end_ts is None:
-                if ov.get("maint_end_ts"):
-                    end_ts = int(ov["maint_end_ts"])
+                if ov_end:
+                    end_ts = ov_end
                 elif ov.get("maint_hours"):
                     end_ts = int(start_ts + float(ov["maint_hours"]) * 3600)
 
         # 3. Launcher availability fallback: persist and reuse the FIRST-OBSERVED timestamp
         #    rather than a moving `now`, and mark provenance explicitly as `observed`.
         persisted_obs = int(persisted_vstate.get("observed_preinstall_ts") or 0)
-        if pre_ts is None and ((versions_info or {}).get("pre") == ver or persisted_obs > 0):
+        if pre_ts is None and (pre_ver == ver or persisted_obs > 0):
             pre_ts = persisted_obs if persisted_obs > 0 else int(now)
             pre_obs = True
             pre_est = False
             pre_prov = "observed"
             pre_src = "launcher observation"
 
-        # 4. Documented cadence fallback for preload when maintenance start is known and game has cadence.
+        # 4a. Non-cadence schedule estimates (e.g. countdown sites on 5w / 7w shifted patches)
+        #     beat generic +42d cadence math while remaining strictly below official/override/observed.
+        est_src_label = str((raw_prev_data.get("estimate_sources") or [""])[0] or "countdown")
+        prev_start_rank = (raw_prev_prov.get("maint_start_ts") or [0])[0]
+        if (
+            start_ts is None
+            and "maint_start_ts" not in ov
+            and countdown_min_rank <= prev_start_rank < official_min_rank
+            and raw_prev_data.get("maint_start_ts")
+        ):
+            start_ts = int(raw_prev_data["maint_start_ts"])
+            if raw_prev_data.get("maint_end_ts") and int(raw_prev_data["maint_end_ts"]) > start_ts:
+                end_ts = int(raw_prev_data["maint_end_ts"])
+            maint_est = True
+            maint_prov = "estimated"
+            maint_src = est_src_label
+        prev_pre_rank = (raw_prev_prov.get("preinstall_ts") or [0])[0]
+        if (
+            pre_ts is None
+            and "preinstall_ts" not in ov
+            and (countdown_min_rank <= prev_pre_rank < official_min_rank or (maint_est and raw_prev_data.get("preinstall_ts")))
+            and raw_prev_data.get("preinstall_ts")
+        ):
+            pre_ts = int(raw_prev_data["preinstall_ts"])
+            pre_est = True
+            pre_obs = False
+            pre_prov = "estimated"
+            pre_src = est_src_label if prev_pre_rank >= countdown_min_rank else "version cadence"
+
+        # 4b. Documented cadence fallback for preload when maintenance start is known and game has cadence.
         if (
             pre_ts is None
             and start_ts is not None
@@ -480,6 +558,8 @@ async def resolve_launch_media(
     *,
     basic_info: dict[str, list[dict]],
     program_pins: dict,
+    kuro_media: dict | None = None,
+    versions_state: dict | None = None,
     verified_cache: dict[str, bool] | None = None,
 ) -> tuple[int, str | None]:
     """Select and verify media strictly following priority, identity-lock, and renewal rules:
@@ -528,9 +608,16 @@ async def resolve_launch_media(
 
     if game.launcher.get("type") == "hoyoplay":
         gid = str(game.launcher.get("game_id") or "")
+        live_only_ver = str(vinfo.get("live") or "") if not vinfo.get("pre") else ""
         for entry in basic_info.get(gid) or []:
             links = entry.get("links") or []
             link_versions = [find_version(u) for u in links if find_version(u)]
+            if live_only_ver and (not link_versions or live_only_ver in link_versions):
+                _record_seen_media(
+                    versions_state,
+                    live_only_ver,
+                    [u for u in (entry.get("video"), entry.get("background")) if u],
+                )
             if link_versions and version not in link_versions:
                 continue
             explicit_match = version in link_versions
@@ -538,12 +625,16 @@ async def resolve_launch_media(
                 continue
             entry_id = str(entry.get("id") or "").strip()
             vid = entry.get("video") or ""
-            if vid and _is_launch_window_compatible(
-                vid,
-                now=now,
-                preinstall_ts=pre_ts,
-                maint_start_ts=start_ts,
-                explicit_version_link=explicit_match,
+            if (
+                vid
+                and (explicit_match or not _url_used_by_prior_version(vid, version, versions_state))
+                and _is_launch_window_compatible(
+                    vid,
+                    now=now,
+                    preinstall_ts=pre_ts,
+                    maint_start_ts=start_ts,
+                    explicit_version_link=explicit_match,
+                )
             ):
                 fresh_videos.append((
                     vid,
@@ -555,12 +646,16 @@ async def resolve_launch_media(
                     ),
                 ))
             art = entry.get("background") or ""
-            if art and _is_launch_window_compatible(
-                art,
-                now=now,
-                preinstall_ts=pre_ts,
-                maint_start_ts=start_ts,
-                explicit_version_link=explicit_match,
+            if (
+                art
+                and (explicit_match or not _url_used_by_prior_version(art, version, versions_state))
+                and _is_launch_window_compatible(
+                    art,
+                    now=now,
+                    preinstall_ts=pre_ts,
+                    maint_start_ts=start_ts,
+                    explicit_version_link=explicit_match,
+                )
             ):
                 fresh_artworks.append((
                     art,
@@ -572,24 +667,43 @@ async def resolve_launch_media(
                     ),
                 ))
     elif game.launcher.get("type") == "kuro":
+        slots: list[dict] = []
         for slot_key in ("pre_media", "live_media"):
             slot = vinfo.get(slot_key)
-            if not isinstance(slot, dict) or slot.get("version") != version:
+            if isinstance(slot, dict):
+                slots.append(slot)
+        live_ver_str = str(vinfo.get("live") or "").strip()
+        if isinstance(kuro_media, dict) and (kuro_media.get("video") or kuro_media.get("artwork")) and live_ver_str:
+            slots.append({"version": live_ver_str, **kuro_media})
+        for slot in slots:
+            slot_ver = str(slot.get("version") or "").strip()
+            if slot_ver and slot_ver != version:
+                _record_seen_media(
+                    versions_state,
+                    slot_ver,
+                    [u for u in (slot.get("video"), slot.get("artwork")) if u],
+                )
+                continue
+            if slot_ver != version:
                 continue
             vid = slot.get("video") or ""
             vmeta_raw = dict(slot.get("video_meta")) if isinstance(slot.get("video_meta"), dict) else {}
             if slot.get("video_md5") and not vmeta_raw.get("hash"):
                 vmeta_raw["hash"] = str(slot["video_md5"]).strip()
-            if vid and _is_launch_window_compatible(
-                vid, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts
+            if (
+                vid
+                and not _url_used_by_prior_version(vid, version, versions_state)
+                and _is_launch_window_compatible(vid, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts)
             ):
                 fresh_videos.append((vid, _build_asset_meta(vid, version, extra=vmeta_raw)))
             art = slot.get("artwork") or ""
             ameta_raw = dict(slot.get("artwork_meta")) if isinstance(slot.get("artwork_meta"), dict) else {}
             if slot.get("artwork_md5") and not ameta_raw.get("hash"):
                 ameta_raw["hash"] = str(slot["artwork_md5"]).strip()
-            if art and _is_launch_window_compatible(
-                art, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts
+            if (
+                art
+                and not _url_used_by_prior_version(art, version, versions_state)
+                and _is_launch_window_compatible(art, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts)
             ):
                 fresh_artworks.append((art, _build_asset_meta(art, version, extra=ameta_raw)))
 
@@ -616,10 +730,17 @@ async def resolve_launch_media(
         locked_aid = str(locked_ameta.get("asset_id") or "").strip()
         for cand_url, cand_meta in fresh_videos:
             cand_aid = str(cand_meta.get("asset_id") or "").strip()
-            # Reject an unrelated mid-patch carousel entry if an explicit HoYoPlay background ID
-            # was already locked at launch and the new entry neither shares that launch ID nor
-            # carries an explicit version link for `version`.
-            if locked_aid and cand_aid and cand_aid != locked_aid and not cand_meta.get("explicit_link"):
+            # Reject an unrelated undated carousel entry if an explicit version-linked HoYoPlay
+            # background was locked first; allow launch-dated shortlink ID rotations (e.g. Oct 19
+            # static .webp -> Oct 21 animated .webm inside the launch window).
+            if (
+                locked_aid
+                and cand_aid
+                and cand_aid != locked_aid
+                and locked_ameta.get("explicit_link")
+                and not cand_meta.get("explicit_link")
+                and not cand_meta.get("upload_ts")
+            ):
                 continue
             if await _verify_url(ctx.fetcher, cand_url, now, cache=verified_cache):
                 lock["version"] = version
@@ -661,6 +782,8 @@ async def resolve_launch_media(
 
     # --- Priority 3: Matching-version official X / HoYoLAB Special Program artwork ---
     program_candidates: list[str] = []
+    if ov.get("image") and not _is_video_url(str(ov["image"])):
+        program_candidates.append(upgrade(str(ov["image"]).strip()))
     pinned_entry = ((program_pins.get(game.key) or {}).get(version) or {})
     if isinstance(pinned_entry, dict) and pinned_entry.get("image"):
         program_candidates.append(twimg_orig(str(pinned_entry["image"]).strip()))
@@ -786,6 +909,7 @@ async def run(ctx) -> None:
     ephemeral = ctx.settings.dry_run or ctx.settings.test_mode
     program_pins = _program_pins()
     basic_info: dict[str, list[dict]] | None = None
+    kuro_media_cache: dict | None = None
     verified_cache: dict[str, bool] = {}
 
     async def get_basic_info() -> dict[str, list[dict]]:
@@ -794,12 +918,21 @@ async def run(ctx) -> None:
             basic_info = await launcher.hoyoplay_basic_info(ctx.fetcher)
         return basic_info
 
+    async def get_kuro_media() -> dict:
+        nonlocal kuro_media_cache
+        if kuro_media_cache is None:
+            if callable(getattr(ctx.fetcher, "get_json", None)):
+                kuro_media_cache = await kuro.launcher_media(ctx.fetcher)
+            else:
+                kuro_media_cache = {}
+        return kuro_media_cache
+
     for game, hook, fp in routed_games:
         try:
             await _run_game_maintenance(
                 ctx, game, hook, fp, ephemeral=ephemeral,
                 program_pins=program_pins, get_basic_info=get_basic_info,
-                verified_cache=verified_cache,
+                get_kuro_media=get_kuro_media, verified_cache=verified_cache,
             )
         except Exception as exc:  # noqa: BLE001 — isolate per-game maintenance execution
             log.exception("maintenance run failed for %s", game.key)
@@ -815,6 +948,7 @@ async def _run_game_maintenance(
     ephemeral: bool,
     program_pins: dict,
     get_basic_info,
+    get_kuro_media,
     verified_cache: dict[str, bool],
 ) -> None:
     for _once in (1,):
@@ -945,7 +1079,9 @@ async def _run_game_maintenance(
                             )
                             if cur_tier > 1 or cur_url_unusable or auth_ts_upgrade:
                                 binfo = await get_basic_info() if game.launcher.get("type") == "hoyoplay" else {}
+                                kmedia = await get_kuro_media() if game.launcher.get("type") == "kuro" else {}
                                 staged_vstate = copy.deepcopy(vstate)
+                                staged_all = copy.deepcopy(versions_state)
                                 new_tier, new_url = await resolve_launch_media(
                                     ctx,
                                     game,
@@ -954,8 +1090,17 @@ async def _run_game_maintenance(
                                     staged_vstate,
                                     basic_info=binfo,
                                     program_pins=program_pins,
+                                    kuro_media=kmedia,
+                                    versions_state=staged_all,
                                     verified_cache=verified_cache,
                                 )
+                                for s_ver, s_state in staged_all.items():
+                                    if isinstance(s_state, dict) and s_state.get("seen_media"):
+                                        dst = versions_state.setdefault(s_ver, {})
+                                        if dst.get("seen_media") != s_state["seen_media"]:
+                                            dst["seen_media"] = s_state["seen_media"]
+                                            if not ephemeral:
+                                                ctx.state.save()
                                 should_edit = (
                                     (bool(new_url) and new_tier < cur_tier)
                                     or (cur_url_unusable and (new_url or "") != cur_url)
@@ -1014,7 +1159,9 @@ async def _run_game_maintenance(
                     continue
 
                 binfo = await get_basic_info() if game.launcher.get("type") == "hoyoplay" else {}
+                kmedia = await get_kuro_media() if game.launcher.get("type") == "kuro" else {}
                 staged_vstate = copy.deepcopy(vstate)
+                staged_all = copy.deepcopy(versions_state)
                 media_tier, media_url = await resolve_launch_media(
                     ctx,
                     game,
@@ -1023,8 +1170,17 @@ async def _run_game_maintenance(
                     staged_vstate,
                     basic_info=binfo,
                     program_pins=program_pins,
+                    kuro_media=kmedia,
+                    versions_state=staged_all,
                     verified_cache=verified_cache,
                 )
+                seen_changed = False
+                for s_ver, s_state in staged_all.items():
+                    if isinstance(s_state, dict) and s_state.get("seen_media"):
+                        dst = versions_state.setdefault(s_ver, {})
+                        if dst.get("seen_media") != s_state["seen_media"]:
+                            dst["seen_media"] = s_state["seen_media"]
+                            seen_changed = True
                 payload = maintenance_payload(
                     game,
                     ver,
@@ -1054,6 +1210,8 @@ async def _run_game_maintenance(
                     )
                     continue
                 if not result.ok:
+                    if seen_changed and not ephemeral:
+                        ctx.state.save()
                     ctx.warnings.append(
                         f"{game.short} {ver} {kind}: Discord send failed ({result.status}); will retry within active window"
                     )

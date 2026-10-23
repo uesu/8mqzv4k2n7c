@@ -70,7 +70,7 @@ def link_button(label: str, url: str, emoji: dict | None = None) -> dict | None:
     card still posts. Keeping a broken button would fail validate_payload() and lose the whole
     announcement over a single bad field."""
     safe = safe_url(url)
-    if not safe:
+    if not safe or len(safe) > BUTTON_URL_MAX:
         log.warning("dropping button %r - unusable url %r", label, (url or "")[:120])
         return None
     b: dict[str, Any] = {"type": 2, "style": 5, "label": truncate(label, 80), "url": safe}
@@ -111,6 +111,7 @@ def _md_link_text(s: str) -> str:
 
 
 SAFE_URL_MAX = 1024
+BUTTON_URL_MAX = 512
 
 
 def safe_url(url: str | None) -> str | None:
@@ -191,9 +192,12 @@ def validate_payload(payload: dict) -> list[str]:
             ty = c.get("type")
             if ty == 2 and parent not in (1, 9):
                 problems.append("button outside an action row")
-            if ty == 1 and len(c.get("components", [])) > 5:
-                problems.append("more than 5 buttons in a row")
-            if ty == 2 and c.get("style") == 5 and not str(c.get("url", "")).startswith(("http://", "https://")):
+            if ty == 1 and not 1 <= len(c.get("components", [])) <= 5:
+                problems.append("action row needs 1-5 buttons")
+            if ty == 2 and c.get("style") == 5 and (
+                not str(c.get("url", "")).startswith(("http://", "https://"))
+                or len(str(c.get("url", ""))) > BUTTON_URL_MAX
+            ):
                 problems.append(f"link button without a valid url: {c.get('label')}")
             if ty == 10 and not c.get("content"):
                 problems.append("empty text display")
@@ -755,7 +759,7 @@ def news_payloads(
         if len(chunks) > 1:
             kids += [text(f"-# Part {index + 1}/{len(chunks)}"), sep()]
         kids += chunk
-        if index == len(chunks) - 1:
+        if index == len(chunks) - 1 and buttons["components"]:
             kids += [sep(), buttons]
         containers.append(container(kids, game.color))
     payload = {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []}, "components": containers}
@@ -768,7 +772,7 @@ def news_payloads(
 
     def page_payload(kids, final=False):
         return {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []},
-                "components": [container(kids + ([sep(), buttons] if final else []), game.color)]}
+                "components": [container(kids + ([sep(), buttons] if final and buttons["components"] else []), game.color)]}
 
     excerpt_notice = ("**Excerpt — this article exceeds Discord's single-message limits.** "
                       "Read Post opens the complete article and remaining media.")
@@ -903,7 +907,7 @@ def news_payloads(
     if body.count("**") % 2:
         body += "**"
     body += "…"
-    kids += [text(body), sep(), buttons]
+    kids += [text(body)] + ([sep(), buttons] if buttons["components"] else [])
     payload["components"] = [container(kids, game.color)]
     if validate_payload(payload):
         raise ValueError("article excerpt exceeds Discord limits")

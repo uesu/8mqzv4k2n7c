@@ -200,6 +200,12 @@ class State:
                     dst = _as_dict_slot(versions, ver)
                     if "launch_media" in vrec and "launch_media" not in dst:
                         dst["launch_media"] = copy.deepcopy(vrec["launch_media"])
+                    if isinstance(vrec.get("seen_media"), list) and vrec["seen_media"]:
+                        merged_seen = list(dst.get("seen_media") or [])
+                        for loc in vrec["seen_media"]:
+                            if isinstance(loc, str) and loc and loc not in merged_seen:
+                                merged_seen.append(loc)
+                        dst["seen_media"] = merged_seen[-12:]
                     for kind in ("preload", "maintenance"):
                         src_a = vrec.get(kind)
                         if not isinstance(src_a, dict):

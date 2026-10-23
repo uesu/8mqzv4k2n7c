@@ -136,6 +136,7 @@ async def run(ctx) -> None:
                 continue
             reachable += 1
             hits.extend(res)
+        answered_upstreams = {spec.split(":")[0] for spec, res in results.items() if res is not None}
         hits = drop_stale_copies(hits, results)
         official = official_hits_from_items(ctx.items.get(game.key, []))
         hits.extend(official)
@@ -173,16 +174,28 @@ async def run(ctx) -> None:
                     rec["rewards"] = info["best_rewards"]
                 if rec.get("status") not in ("pending", "posting"):   # posted / seeded / rejected
                     continue
+                # Carry forward prior pending witnesses ONLY when their upstream was unreachable
+                # (`None`) this run — never when that upstream answered without listing the code.
+                eff_sources = set(info["sources"])
+                eff_families = set(info["families"])
+                for prev_src in rec.get("sources", []):
+                    if prev_src not in eff_sources and prev_src.split(":")[0] not in answered_upstreams:
+                        eff_sources.add(prev_src)
+                        eff_families.add(family(prev_src))
+                eval_info = {**info, "sources": eff_sources, "families": eff_families}
             elif not bootstrapped and not s.bootstrap_post:
                 records[code] = {"status": "seeded", "first_seen": now, "last_seen": now,
                                  "sources": sorted(info["sources"]), "rewards": info["best_rewards"]}
                 continue
-            ok, why = gate(info, min_sources)
+            else:
+                eval_info = info
+            ok, why = gate(eval_info, min_sources)
             if ok:
-                to_post.append({"code": code, "rewards": info["best_rewards"], "sources": sorted(info["sources"])})
+                post_rewards = info["best_rewards"] or (rec or {}).get("rewards")
+                to_post.append({"code": code, "rewards": post_rewards, "sources": sorted(eval_info["sources"])})
                 records[code] = {**(rec or {}), "status": "posting", "first_seen": (rec or {}).get("first_seen", now),
-                                 "last_seen": now, "sources": sorted(info["sources"]),
-                                 "rewards": info["best_rewards"], "gate": why}
+                                 "last_seen": now, "sources": sorted(eval_info["sources"]),
+                                 "rewards": post_rewards, "gate": why}
             elif not rec:
                 dead = bool(info["hard_expired_by"])
                 records[code] = {"status": "rejected" if dead else "pending", "first_seen": now, "last_seen": now,
@@ -193,6 +206,8 @@ async def run(ctx) -> None:
                     waiting.append(f"{code} ({why})")
             elif info["hard_expired_by"] and rec.get("status") == "pending":
                 rec.update({"status": "rejected", "gate": why})
+            elif rec.get("status") == "pending" and rec.get("gate") != why:
+                rec["gate"] = why
         # expire stale pending codes
         for rec in list(records.values()):
             if rec.get("status") == "pending" and now - int(rec.get("first_seen") or now) > PENDING_DAYS * 86400:

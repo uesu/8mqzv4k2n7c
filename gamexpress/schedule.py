@@ -531,7 +531,18 @@ def extract_banner(item: Item) -> dict:
     if not five and not four and not four_unsure:
         return {}
     phase = 1 if PHASE1.search(item.full[:600]) else 2 if PHASE2.search(item.full[:600]) else None
-    return {"banner_five": five, "banner_four": four, "banner_four_unsure": four_unsure, "banner_phase": phase}
+    out = {"banner_five": five, "banner_four": four, "banner_four_unsure": four_unsure, "banner_phase": phase}
+    # Official Convene / Wish posts on X often omit "Version X.Y" and state only a duration window
+    # (e.g. WuWa tweet 2112740670930604168: "2026-10-22 10:00 - 2026-11-11 11:59 (server time)").
+    # Never rendered as a clock timestamp; used solely to match the active version/phase window.
+    bts = next(
+        (t.ts for t in find_datetimes(item.full, ref_ts=item.published_ts or None, default_offset=8.0)
+         if not item.published_ts or item.published_ts - 7 * 86400 <= t.ts <= item.published_ts + 45 * 86400),
+        0,
+    )
+    if TS_MIN <= bts <= TS_MAX:
+        out["banner_start_ts"] = bts
+    return out
 
 
 def extract(game: Game, item: Item) -> Extract | None:
@@ -558,18 +569,21 @@ def extract(game: Game, item: Item) -> Extract | None:
 
 
 # --------------------------------------------------------------------------- merging
-def infer_versions(extracts: list[Extract], live: str | None, records: dict) -> None:
-    """Fill missing versions (e.g. Genshin tweets say 'the new version'): match another
-    program post within 3 h, else a tracked record within 3 h, else live+0.1."""
+def infer_versions(extracts: list[Extract], live: str | None, records: dict,
+                   pre: str | None = None) -> None:
+    """Fill missing versions (e.g. Genshin tweets/notices say 'Version "Luna II"' or 'the new version'):
+    match another post, else a tracked record (`version_name` or nearby timestamp), else `pre` / `live+0.1`."""
     clean = [e for e in (extracts or []) if e is not None]
     safe_records = records if isinstance(records, dict) else {}
-    known = [e for e in clean if e.version and e.kind == "program"]
+    known_prog = [e for e in clean if e.version and e.kind == "program"]
+    known_maint = [e for e in clean if e.version and e.kind == "maintenance"]
+    known_banner = [e for e in clean if e.version and e.kind == "banner"]
     for e in clean:
         if e.version:
             continue
         pts = e.fields.get("program_ts")
         if e.kind == "program" and pts:
-            match = next((k for k in known if abs((k.fields.get("program_ts") or 0) - pts) <= 3 * 3600), None)
+            match = next((k for k in known_prog if abs((k.fields.get("program_ts") or 0) - pts) <= 3 * 3600), None)
             if match:
                 e.version = match.version
                 continue
@@ -581,6 +595,77 @@ def infer_versions(extracts: list[Extract], live: str | None, records: dict) -> 
                 continue
             if live:
                 e.version, e.version_inferred = bump_minor(live), True
+        elif e.kind == "maintenance":
+            mts = e.fields.get("maint_start_ts") or 0
+            pre_ts = e.fields.get("preinstall_ts") or 0
+            title_lc = (e.item.title or "").lower()
+            match = next(
+                (k for k in known_maint
+                 if (mts and abs((k.fields.get("maint_start_ts") or 0) - mts) <= 3 * 3600)
+                 or (pre_ts and abs((k.fields.get("preinstall_ts") or 0) - pre_ts) <= 3 * 3600)),
+                None,
+            )
+            if match:
+                e.version = match.version
+                continue
+            rec = next(
+                (v for v, r in safe_records.items()
+                 if isinstance(r, dict)
+                 for d in [r.get("data") if isinstance(r.get("data"), dict) else {}]
+                 if (d.get("version_name") and str(d["version_name"]).strip().lower() in title_lc)
+                 or (mts and d.get("maint_start_ts") and abs(int(d["maint_start_ts"]) - mts) <= 3 * 86400)
+                 or (pre_ts and d.get("preinstall_ts") and abs(int(d["preinstall_ts"]) - pre_ts) <= 3 * 86400)),
+                None,
+            )
+            if rec:
+                e.version = rec
+                continue
+            if pre:
+                e.version, e.version_inferred = str(pre), True
+            elif live:
+                e.version, e.version_inferred = bump_minor(live), True
+        elif e.kind == "banner":
+            bts = int(e.fields.get("banner_start_ts") or 0)
+            four = e.fields.get("banner_four") or []
+            head_lc = f"{e.item.title or ''}\n{(e.item.text or '')[:160]}".lower()
+            match = next(
+                (k for k in known_banner
+                 if (bts and k.fields.get("banner_start_ts")
+                     and abs(int(k.fields["banner_start_ts"]) - bts) <= 36 * 3600)
+                 or (len(four) >= 2 and _same_names(k.fields.get("banner_four"), four)
+                     and abs((k.item.published_ts or 0) - (e.item.published_ts or 0)) <= 7 * 86400)),
+                None,
+            )
+            if match:
+                e.version, e.version_inferred = match.version, True
+                if e.fields.get("banner_phase") is None and match.fields.get("banner_phase") in (1, 2):
+                    e.fields["banner_phase"] = match.fields["banner_phase"]
+                continue
+            rec_named = next(
+                (v for v, r in safe_records.items()
+                 if isinstance(r, dict)
+                 for d in [r.get("data") if isinstance(r.get("data"), dict) else {}]
+                 if d.get("version_name") and str(d["version_name"]).strip().lower() in head_lc),
+                None,
+            )
+            if rec_named:
+                e.version, e.version_inferred = rec_named, True
+                continue
+            if bts:
+                candidates: list[tuple[int, str]] = []
+                for v, r in safe_records.items():
+                    d = r.get("data") if isinstance(r, dict) and isinstance(r.get("data"), dict) else {}
+                    try:
+                        mts = int(d.get("maint_start_ts") or 0)
+                    except (TypeError, ValueError):
+                        mts = 0
+                    if mts and mts - 2 * 86400 <= bts <= mts + 35 * 86400:
+                        candidates.append((mts, v))
+                if candidates:
+                    best_mts, best_v = max(candidates, key=lambda pair: pair[0])
+                    e.version, e.version_inferred = best_v, True
+                    if e.fields.get("banner_phase") is None:
+                        e.fields["banner_phase"] = 1 if bts < best_mts + 7 * 86400 else 2
 
 
 def _to_ts(value) -> int | None:
@@ -1402,10 +1487,11 @@ def apply_program_media(data: dict, prov: dict, media: dict | None, now: int) ->
 def version_extracts(ctx, game: Game, log_missing: bool = False) -> dict[str, list[Extract]]:
     """Group this run's official extracts by version. The monitor and program lookup share this
     grouping so they can never disagree about which versions are current."""
-    live = (ctx.versions.get(game.key) or {}).get("live")
+    vinfo = ctx.versions.get(game.key) or {}
+    live = vinfo.get("live")
     records = ctx.state.schedule_records(game.key)
     extracts = [e for e in (extract(game, it) for it in ctx.items.get(game.key, [])) if e]
-    infer_versions(extracts, live, records)
+    infer_versions(extracts, live, records, pre=vinfo.get("pre"))
     by_version: dict[str, list[Extract]] = {}
     for e in extracts:
         if not e.version:
@@ -1612,15 +1698,56 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
             banners = dict(data.get("banners") or {})
             phase = f.get("banner_phase")
             if phase is None and data.get("maint_start_ts"):
-                phase = 1 if ts < int(data["maint_start_ts"]) + 7 * 86400 else 2
+                ref_ts = int(f.get("banner_start_ts") or ts)
+                phase = 1 if ref_ts < int(data["maint_start_ts"]) + 7 * 86400 else 2
             if phase in (1, 2):
                 key5, key4 = f"phase{phase}", f"phase{phase}_4"
                 five = f.get("banner_five")
-                # Re-reading the SAME post after a parser fix heals its own name (see the 4★ note below).
-                same5 = prov.get(f"b_{key5}") == [PRIORITY.get(src, 10), ts]
+                four = list(f.get("banner_four") or [])
+                # Re-reading the SAME single post after a parser fix heals its own name (see the 4★ note below).
+                same5 = (
+                    not prov.get(f"b_{key5}_multi")
+                    and prov.get(f"b_{key5}") == [PRIORITY.get(src, 10), ts]
+                    and prov.get(f"b_{key5}_id", e.item.id) == e.item.id
+                )
                 if five and _official_owned(prov, key5) and not same5:
-                    # Final. A different 5★ from a later official post is logged once, not applied.
-                    if not _same_names(banners.get(key5), five):
+                    have5 = list(banners.get(key5) or [])
+                    # Publishers split co-running banners across separate notices (e.g. Kuro puts
+                    # reruns in website Phase I/II articles and the debut 5★ in a standalone X Convene
+                    # post; HoYoverse posts Event Wish and Event Wish-2 separately). Co-running banners
+                    # in the same phase share the same boosted 4★ lineup.
+                    sibling_4s = (
+                        len(four) >= 2
+                        and not _four_star_problem(game, four, None, None)
+                        and _same_names(banners.get(key4), four)
+                    )
+                    if sibling_4s:
+                        extra = [n for n in five if not any(_same_person(n, h) for h in have5)]
+                        if extra:
+                            reruns = banners.get("reruns") or []
+                            if (
+                                reruns
+                                and all(any(_same_person(h, r) for r in reruns) for h in have5)
+                                and not any(_same_person(n, r) for n in extra for r in reruns)
+                            ):
+                                combined = extra + have5
+                            else:
+                                combined = have5 + extra
+                            cur_pri, cur_ts = prov.get(f"b_{key5}", [0, 0])
+                            banners[key5] = combined
+                            prov[f"b_{key5}"] = [max(cur_pri, PRIORITY.get(src, 10)), max(cur_ts, ts)]
+                            prov[f"b_{key5}_by"] = ["official"]
+                            prov[f"b_{key5}_multi"] = True
+                            prov.pop(f"b_{key5}_id", None)
+                            prov.pop(f"b_{key5}_conflict", None)
+                            _confirm(data, prov, key5, "official", combined, combined, banners)
+                        else:
+                            prov.pop(f"b_{key5}_conflict", None)
+                    elif prov.get(f"b_{key5}_multi") and all(
+                        any(_same_person(n, h) for h in have5) for n in five
+                    ):
+                        prov.pop(f"b_{key5}_conflict", None)
+                    elif not _same_names(have5, five):
                         conflict = ", ".join(five)
                         if prov.get(f"b_{key5}_conflict") != conflict and notes is not None:
                             notes.append(f"⚠️ {game.short} {version} phase {phase}: a later notice names "
@@ -1634,6 +1761,8 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
                         prov[f"b_{key5}_by"] = ["official"]           # a new name from the notice
                     banners[key5] = five
                     prov[f"b_{key5}"] = [PRIORITY.get(src, 10), ts]
+                    prov[f"b_{key5}_id"] = e.item.id
+                    prov.pop(f"b_{key5}_multi", None)
                     _confirm(data, prov, key5, "official", five, five, banners)   # the notice locks it
                 four = list(f.get("banner_four") or [])
                 if (four or f.get("banner_four_unsure")) and prov.get(f"b_{key4}", [0])[0] < PRIORITY["override"]:
@@ -1671,7 +1800,12 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
                         if _names(banners.get(key4)) != _names(four):
                             prov[f"b_{key4}_by"] = ["official"]
                         banners[key4] = four
-                        prov[f"b_{key4}"] = [PRIORITY.get(src, 10), ts]
+                        cur4_pri, cur4_ts = prov.get(f"b_{key4}", [0, 0])
+                        prov[f"b_{key4}"] = (
+                            [PRIORITY.get(src, 10), ts]
+                            if (same_post or not owned)
+                            else [max(cur4_pri, PRIORITY.get(src, 10)), max(cur4_ts, ts)]
+                        )
                         _confirm(data, prov, key4, "official", four, four, banners)
             data["banners"] = banners
 

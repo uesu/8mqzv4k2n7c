@@ -107,17 +107,23 @@ def _score(url: str) -> int:
         return 3
     if "pbs.twimg.com" in u:
         return 2
-    if "fastcdn.hoyoverse.com" in u or "kurogame.com" in u:
+    if any(h in u for h in ("fastcdn.hoyoverse.com", "kurogame.com", "kurogames.com", "aki-game.net", "aki-game.com")):
         return 1
     return 0
 
 
 def _same_file(url: str) -> str:
     """The URL without its size hints, so alternate renditions of one upload compare equal."""
-    return url.split("?")[0].rstrip("/").lower()
+    base, _, query = url.partition("?")
+    norm = base.rstrip("/").lower()
+    if TWIMG.match(url or "") and "/media/" in norm and "." not in norm.rsplit("/", 1)[-1]:
+        m_fmt = re.search(r"(?:^|&)format=([a-z0-9]+)(?:&|$)", query, re.I)
+        if m_fmt:
+            norm = f"{norm}.{m_fmt.group(1).lower()}"
+    return norm
 
 
-_SMALL_RENDITION = re.compile(r"resize|name=(?:small|thumb|medium)|/s_\d+|quality", re.I)
+_SMALL_RENDITION = re.compile(r"resize|name=(?:small|thumb|medium|large)|/s_\d+|quality", re.I)
 
 
 def rank(images: list[str] | None, limit: int = 4) -> list[str]:
