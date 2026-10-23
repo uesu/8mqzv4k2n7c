@@ -1783,8 +1783,11 @@
           1
         ],
         "posted_at": 1792725322,
-        "rewards": null,
+        "rewards": [
+          "Polychrome ×30"
+        ],
         "sources": [
+          "ennead",
           "reddit",
           "seria"
         ],
@@ -2770,8 +2773,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792704023,
-          "banners_search_ts": 1792704023,
+          "banners_checked_ts": 1792725914,
+          "banners_search_ts": 1792725914,
           "banners_settled": [
             "phase1",
             "phase2",
