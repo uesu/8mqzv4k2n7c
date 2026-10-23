@@ -60,16 +60,17 @@ def inline(text: str, *, _in_link: bool = False) -> str:
     text = re.sub(r"<(a?):(\w{2,32}):(\d{15,25})>",
                   lambda m: stash(_emoji_img(m.group(3), m.group(2), m.group(1) == "a")), text)
     if not _in_link:
-        text = re.sub(r"(?<![\"'=])(https?://[^\s<>()]+)",
+        text = re.sub(r"(?<![\"'=])(https?://[^\s<>()\[\]*]+)",
                       lambda m: stash(f'<a href="{html.escape(m.group(1))}" target="_blank" rel="noopener">'
                                       f'{html.escape(m.group(1))}</a>'), text)
         text = text.replace(r"\[", "[").replace(r"\]", "]")
     text = html.escape(text, quote=False)
-    text = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", text)
+    text = re.sub(r"(?<!\\)\*\*(.+?)(?<!\\)\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"__(.+?)__", r"<u>\1</u>", text)
     text = re.sub(r"~~(.+?)~~", r"<s>\1</s>", text)
-    text = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<em>\1</em>", text)
-    text = re.sub(r"(?<![\w_])_(?!\s)(.+?)(?<!\s)_(?![\w_])", r"<em>\1</em>", text)
+    text = re.sub(r"(?<![\\\w*])\*(?!\s)(.+?)(?<!\s\\)\*(?![\w*])", r"<em>\1</em>", text)
+    text = re.sub(r"(?<![\\\w_])_(?!\s)(.+?)(?<!\s)_(?![\w_])", r"<em>\1</em>", text)
+    text = text.replace(r"\*", "*")
     for _ in range(3):   # nested placeholders (links containing code etc.)
         text = re.sub(r"\x00(\d+)\x00", lambda m: keep[int(m.group(1))], text)
     return text

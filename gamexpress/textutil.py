@@ -231,6 +231,114 @@ def truncate(text: str, limit: int) -> str:
 # No image ranking/aspect-ratio dedup here: two different same-shaped pictures are not duplicates.
 MARKDOWN_LINK_INSIDE = r"(?:\[[^\[\]\n]*\]|[^\[\]\n])+"
 MARKDOWN_LINK_RE = re.compile(rf"\[({MARKDOWN_LINK_INSIDE})\]\((https?://[^)\s]+)\)")
+_BARE_HTTP_URL_RE = re.compile(r"^https?://[^\s<>\[\]]+$", re.I)
+_INLINE_HTTP_URL_RE = re.compile(r"https?://[^\s<>\[\]()]+", re.I)
+
+
+def _escape_cms_stars(text: str) -> str:
+    """Escape literal '*' in CMS/HTML prose without altering URLs or already-escaped '\\*'."""
+    if "*" not in text:
+        return text
+    out: list[str] = []
+    last = 0
+    for m in _INLINE_HTTP_URL_RE.finditer(text):
+        out.append(re.sub(r"(?<!\\)\*", r"\*", text[last:m.start()]))
+        out.append(m.group(0))
+        last = m.end()
+    out.append(re.sub(r"(?<!\\)\*", r"\*", text[last:]))
+    return "".join(out)
+
+
+def _coalesce_bold(text: str) -> str:
+    """Merge adjacent **...** runs separated only by horizontal spaces/tabs."""
+    out: list[str] = []
+    for line in text.splitlines(keepends=True):
+        line = re.sub(r"(?<!\\)\*\*([ \t]*)\*\*", r"\1", line)
+        if len(re.findall(r"(?<!\\)\*\*", line)) > 2:
+            lifted = re.sub(
+                r"\[\*\*((?:\[[^\[\]\n]*\]|[^*\[\]\n])+)\*\*\]\((https?://[^)\s]+)\)",
+                r"**[\1](\2)**",
+                line,
+            )
+            if lifted != line:
+                line = re.sub(r"(?<!\\)\*\*([ \t]*)\*\*", r"\1", lifted)
+        line = re.sub(r"~~([ \t]*)~~", r"\1", line)
+        out.append(line)
+    return "".join(out)
+
+
+def _wrap_inline_marker(text: str, marker: str) -> str:
+    """Wrap each non-empty line in marker...marker ('_' or '~~'), skipping bare URLs."""
+    if not text or not text.strip():
+        return text
+    esc_m = re.escape(marker)
+    out: list[str] = []
+    for line in text.splitlines(keepends=True):
+        m = re.match(r"^([ \t]*)(.*?)([ \t\r\n]*)$", line, re.S)
+        lead, core, tail = m.groups()
+        if not core.strip() or _BARE_HTTP_URL_RE.fullmatch(core.strip()):
+            out.append(line)
+            continue
+        pieces: list[str] = []
+        pos = 0
+        for um in _INLINE_HTTP_URL_RE.finditer(core):
+            if um.start() >= 2 and core[um.start() - 2:um.start()] == "](":
+                continue
+            seg = core[pos:um.start()]
+            if seg.strip():
+                sm = re.match(r"^([ \t]*)(.*?)([ \t]*)$", seg, re.S)
+                pieces.append(f"{sm.group(1)}{marker}{sm.group(2)}{marker}{sm.group(3)}")
+            else:
+                pieces.append(seg)
+            pieces.append(um.group(0))
+            pos = um.end()
+        rem = core[pos:]
+        if rem.strip():
+            sm = re.match(r"^([ \t]*)(.*?)([ \t]*)$", rem, re.S)
+            pieces.append(f"{sm.group(1)}{marker}{sm.group(2)}{marker}{sm.group(3)}")
+        else:
+            pieces.append(rem)
+        joined = re.sub(rf"{esc_m}([ \t]*){esc_m}", r"\1", "".join(pieces))
+        out.append(f"{lead}{joined}{tail}")
+    return "".join(out)
+
+
+def _bold_text_run(text: str) -> str:
+    """Wrap each non-empty line in **...**, keeping outer spaces/newlines and bare URLs clean."""
+    if not text or not text.strip():
+        return text
+    out: list[str] = []
+    for line in text.splitlines(keepends=True):
+        m = re.match(r"^([ \t]*)(.*?)([ \t\r\n]*)$", line, re.S)
+        lead, core, tail = m.groups()
+        core_clean = re.sub(r"(?<!\\)\*\*", "", core)
+        if not core_clean.strip():
+            out.append(line)
+            continue
+        if _BARE_HTTP_URL_RE.fullmatch(core_clean):
+            out.append(f"{lead}{core_clean}{tail}")
+            continue
+        pieces: list[str] = []
+        pos = 0
+        for um in _INLINE_HTTP_URL_RE.finditer(core_clean):
+            if um.start() >= 2 and core_clean[um.start() - 2:um.start()] == "](":
+                continue
+            seg = core_clean[pos:um.start()]
+            if seg.strip():
+                sm = re.match(r"^([ \t]*)(.*?)([ \t]*)$", seg, re.S)
+                pieces.append(f"{sm.group(1)}**{sm.group(2)}**{sm.group(3)}")
+            else:
+                pieces.append(seg)
+            pieces.append(um.group(0))
+            pos = um.end()
+        rem = core_clean[pos:]
+        if rem.strip():
+            sm = re.match(r"^([ \t]*)(.*?)([ \t]*)$", rem, re.S)
+            pieces.append(f"{sm.group(1)}**{sm.group(2)}**{sm.group(3)}")
+        else:
+            pieces.append(rem)
+        out.append(f"{lead}{_coalesce_bold(''.join(pieces))}{tail}")
+    return "".join(out)
 
 
 def news_link(label: str, url: str) -> str:
@@ -253,11 +361,15 @@ def news_link(label: str, url: str) -> str:
         valid = False
     if not valid:
         return label
-    self_labelled = label.strip() == url
+    raw_url = url
     # Parentheses terminate a Markdown destination unless escaped/encoded.
     url = url.replace("(", "%28").replace(")", "%29")
-    if self_labelled:
-        return url  # preserve bare/self-labelled URLs, matching the existing link policy
+    label_norm = _coalesce_bold(label)
+    m_ws = re.match(r"^([ \t]*)(.*?)([ \t]*)$", label_norm, re.S)
+    lead_ws, core_label, tail_ws = m_ws.groups()
+    core_unbold = re.sub(r"(?:(?<!\\)\*\*|~~)", "", core_label).strip("_ \t")
+    if core_unbold in (raw_url, url) or _BARE_HTTP_URL_RE.fullmatch(core_unbold):
+        return f"{lead_ws}{url}{tail_ws}"  # bare URL avoids broken anti-phishing masked links
     if "\n" not in label:
         stripped = MARKDOWN_LINK_RE.sub("", label)
         if stripped != label and re.fullmatch(r"(?:\\\[|\\\]|\s)*", stripped):
@@ -338,23 +450,39 @@ class _NewsHTML(HTMLParser):
         self.anchor = None
         self.bold_depth = 0
         self.bold_open = False
+        self.italic_depth = 0
+        self.italic_open = False
+        self.strike_depth = 0
+        self.strike_open = False
         self.list_prefix_pending = False
+
+    def _lift_trailing_ws(self) -> str:
+        trailing = ""
+        if self.parts:
+            last = self.parts[-1]
+            trailing = last[len(last.rstrip(" \t")):]
+            self.parts[-1] = last.rstrip(" \t")
+        return trailing
+
+    def close_inline(self):
+        if self.italic_open:
+            self.parts.append("_" + self._lift_trailing_ws())
+            self.italic_open = False
+        if self.strike_open:
+            self.parts.append("~~" + self._lift_trailing_ws())
+            self.strike_open = False
+        self.close_bold()
 
     def close_bold(self):
         if self.bold_open:
-            trailing = ""
-            if self.parts:
-                last = self.parts[-1]
-                trailing = last[len(last.rstrip(" \t")):]
-                self.parts[-1] = last.rstrip(" \t")
-            self.parts.append("**" + trailing)
+            self.parts.append("**" + self._lift_trailing_ws())
             self.bold_open = False
 
     def flush(self):
-        self.close_bold()
+        self.close_inline()
         value = clean_text("".join(self.parts))
-        # Adjacent HTML spans carrying the same emphasis form one bold run.
-        value = re.sub(r"\*\*([ \t]*)\*\*", r"\1", value)
+        # Adjacent HTML spans carrying the same emphasis form one run.
+        value = _coalesce_bold(value)
         self.parts = []
         if value:
             self.blocks.append({"kind": "text", "text": value})
@@ -365,18 +493,28 @@ class _NewsHTML(HTMLParser):
             self.skip += 1
         if self.skip:
             return
+        if tag == "hr":
+            self.close_inline()
+            self.parts.append("\n──────────\n")
+            return
         if tag in _HTMLText.BLOCK and not self.list_prefix_pending:
+            self.close_inline()
             self.parts.append("\n")
         if tag in ("b", "strong", "h1", "h2", "h3", "h4", "h5", "h6"):
+            self.close_inline()
             self.bold_depth += 1
+        elif tag in ("i", "em"):
+            self.close_inline()
+            self.italic_depth += 1
+        elif tag in ("s", "strike", "del"):
+            self.close_inline()
+            self.strike_depth += 1
         elif tag == "li":
+            self.close_inline()
             self.parts.append("- ")
             self.list_prefix_pending = True
         if tag == "a":
-            if self.bold_depth and not self.bold_open:
-                self.parts.append("**")
-                self.bold_open = True
-            self.anchor = (a.get("href"), len(self.parts))
+            self.anchor = (a.get("href"), len(self.parts), self.bold_open)
         if tag in ("img", "video", "source", "iframe"):
             url = _http_media_url(a.get("src") or a.get("data-src"))
             if url:
@@ -388,18 +526,45 @@ class _NewsHTML(HTMLParser):
         if tag in ("script", "style"):
             self.skip = max(0, self.skip - 1)
         elif not self.skip:
+            if tag in ("i", "em"):
+                self.italic_depth = max(0, self.italic_depth - 1)
+                if not self.italic_depth:
+                    self.close_inline()
+            elif tag in ("s", "strike", "del"):
+                self.strike_depth = max(0, self.strike_depth - 1)
+                if not self.strike_depth:
+                    self.close_inline()
             if tag in ("b", "strong", "h1", "h2", "h3", "h4", "h5", "h6"):
                 self.bold_depth = max(0, self.bold_depth - 1)
                 if not self.bold_depth:
-                    self.close_bold()
+                    self.close_inline()
             if tag == "a" and self.anchor:
-                url, start = self.anchor
+                url, start, was_bold_open = self.anchor
+                self.close_inline()
                 label = "".join(self.parts[start:])
-                self.parts[start:] = [news_link(label, url)]
+                rendered = news_link(label, url)
+                self.parts[start:] = []
+                self.bold_open = was_bold_open
+                if _BARE_HTTP_URL_RE.fullmatch(rendered.strip()):
+                    self.close_bold()
+                    self.parts.append(rendered)
+                elif self.bold_depth or was_bold_open:
+                    m_lead = re.match(r"^([ \t]*)(.*)$", rendered, re.S)
+                    lead_ws, rest = m_lead.groups()
+                    if lead_ws:
+                        self.parts.append(lead_ws)
+                    if not self.bold_open and rest.strip():
+                        self.parts.append("**")
+                        self.bold_open = True
+                    self.parts.append(re.sub(r"(?<!\\)\*\*", "", rest))
+                else:
+                    self.parts.append(rendered)
+                    self.bold_open = False
                 self.anchor = None
             if tag == "li":
                 self.list_prefix_pending = False
             if tag in _HTMLText.BLOCK:
+                self.close_inline()
                 self.parts.append("\n")
 
     def handle_data(self, value):
@@ -408,9 +573,26 @@ class _NewsHTML(HTMLParser):
                 if not value.strip():
                     return
                 self.list_prefix_pending = False
-            if self.bold_depth and not self.bold_open and value.strip():
-                self.parts.append("**")
-                self.bold_open = True
+            value = _escape_cms_stars(value)
+            need_open = (
+                (self.bold_depth and not self.bold_open)
+                or (self.strike_depth and not self.strike_open)
+                or (self.italic_depth and not self.italic_open)
+            )
+            if need_open and value.strip():
+                m_ws = re.match(r"^([ \t\r\n]+)(.*)$", value, re.S)
+                if m_ws:
+                    self.parts.append(m_ws.group(1))
+                    value = m_ws.group(2)
+                if self.bold_depth and not self.bold_open:
+                    self.parts.append("**")
+                    self.bold_open = True
+                if self.strike_depth and not self.strike_open:
+                    self.parts.append("~~")
+                    self.strike_open = True
+                if self.italic_depth and not self.italic_open:
+                    self.parts.append("_")
+                    self.italic_open = True
             self.parts.append(value)
 
 
@@ -426,7 +608,8 @@ def news_blocks(content: str, structured: str = "", videos: dict[str, str] | Non
             ops = ops.get("ops")
         if not isinstance(ops, list):
             raise ValueError("unrecognised article structure")
-        blocks = []
+        blocks: list[dict] = []
+        last_was_str = False
         for op in ops:
             if not isinstance(op, dict) or "insert" not in op:
                 continue
@@ -436,20 +619,42 @@ def news_blocks(content: str, structured: str = "", videos: dict[str, str] | Non
                 if value == "\n" and (attributes.get("header") or attributes.get("list")) and blocks and blocks[-1]["kind"] == "text":
                     previous = blocks[-1]["text"]
                     prefix, delimiter, line = previous.rpartition("\n")
-                    if attributes.get("header") and line and not line.startswith("**"):
-                        line = "**" + line + "**"
-                    elif attributes.get("list") and line and not line.startswith(("- ", "• ")):
-                        line = "- " + line
+                    if attributes.get("header") and line.strip():
+                        line = _bold_text_run(line)
+                    elif attributes.get("list") and line.strip() and not line.lstrip().startswith(("- ", "• ")):
+                        line = "- " + line.lstrip()
                     blocks[-1]["text"] = prefix + delimiter + line
-                elif attributes.get("bold") and value.strip():
-                    value = "**" + value.strip() + "**" + ("\n" if value.endswith("\n") else "")
-                link = attributes.get("link")
-                if link:
-                    # Never let the following newline/heading become part of the link.
-                    value = "".join(news_link(line.rstrip("\r\n"), link) + line[len(line.rstrip("\r\n")):]
-                                    if line.rstrip("\r\n") else line for line in value.splitlines(keepends=True))
-                blocks.append({"kind": "text", "text": value})
+                else:
+                    link = attributes.get("link")
+                    is_bold = bool(attributes.get("bold") and value.strip())
+                    is_italic = bool(attributes.get("italic") and value.strip())
+                    is_strike = bool(attributes.get("strike") and value.strip())
+                    value = _escape_cms_stars(value)
+                    if is_italic:
+                        value = _wrap_inline_marker(value, "_")
+                    if is_strike:
+                        value = _wrap_inline_marker(value, "~~")
+                    if link:
+                        # Never let the following newline/heading become part of the link.
+                        parts_out = []
+                        for line in value.splitlines(keepends=True):
+                            core = line.rstrip("\r\n")
+                            nl = line[len(core):]
+                            if core:
+                                linked = news_link(_bold_text_run(core) if is_bold else core, str(link))
+                                parts_out.append(linked + nl)
+                            else:
+                                parts_out.append(line)
+                        value = "".join(parts_out)
+                    elif is_bold:
+                        value = _bold_text_run(value)
+                if last_was_str and blocks and blocks[-1]["kind"] == "text":
+                    blocks[-1]["text"] += value
+                else:
+                    blocks.append({"kind": "text", "text": value})
+                last_was_str = True
             elif isinstance(value, dict):
+                last_was_str = False
                 if "divider" in value:
                     blocks.append({"kind": "text", "text": "\n──────────\n"})
                     continue
@@ -467,6 +672,9 @@ def news_blocks(content: str, structured: str = "", videos: dict[str, str] | Non
                     blocks.append({"kind": "text", "text": "\n[Embedded media unavailable — open the original article.]\n"})
                     continue
                 blocks.append({"kind": "video" if kind == "vod" else kind, "url": _http_media_url(url)})
+        for block in blocks:
+            if block["kind"] == "text":
+                block["text"] = _coalesce_bold(block["text"])
         return blocks
     if re.fullmatch(r"[a-z]{2}-[a-z]{2}", (content or "").strip()):
         raise ValueError("article body unavailable")
