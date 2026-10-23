@@ -164,7 +164,8 @@
         "sources": [
           "ennead",
           "ogc",
-          "reddit"
+          "reddit",
+          "seria"
         ],
         "status": "posted",
         "webhook_fp": "ee502f83bdf4"
@@ -508,16 +509,27 @@
       },
       "PHOTOTIME": {
         "first_seen": 1792759219,
-        "gate": "only ennead",
-        "last_seen": 1792759219,
+        "gate": "redeem-validated",
+        "last_seen": 1792759521,
+        "message_id": "1563171493708431512",
+        "msg_codes": [
+          "PHOTOTIME"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1792759521,
         "rewards": [
           "Primogem ×100",
           "Mora ×50000"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
       },
       "PLDX12KCWMJ4": {
         "first_seen": 1790840103,
@@ -2136,8 +2148,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1792759203,
-        "47176546"
+        1792759503,
+        "47176673"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -2196,6 +2208,13 @@
           ],
           "status": "posted",
           "ts": 1792759203
+        },
+        "47176673": {
+          "messages": [
+            "1563171505167409273"
+          ],
+          "status": "posted",
+          "ts": 1792759503
         }
       },
       "route": "a0f2147590c35140"
