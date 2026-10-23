@@ -1742,8 +1742,12 @@
           1
         ],
         "posted_at": 1792729837,
-        "rewards": null,
+        "rewards": [
+          "Polychrome ×20",
+          "Denny ×2222"
+        ],
         "sources": [
+          "ennead",
           "seria"
         ],
         "status": "posted",
