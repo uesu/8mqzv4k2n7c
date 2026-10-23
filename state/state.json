@@ -2542,15 +2542,15 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1792726518
+          "ts": 1792737620
         },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1792555200,
-          "banners_checked_ts": 1792726518,
-          "banners_search_ts": 1792726518,
-          "calendar_ts": 1792726518,
+          "banners_checked_ts": 1792737620,
+          "banners_search_ts": 1792737620,
+          "calendar_ts": 1792737620,
           "estimate_sources": [
             "version cadence"
           ],
