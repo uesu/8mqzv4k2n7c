@@ -1,4 +1,4 @@
-"""Reddit & Redlib frontend fleet + rich-embed proxy chain (verified live 2026-10-22).
+"""Reddit & Redlib frontend fleet + rich-embed proxy chain (verified live 2026-10-23).
 
 Three distinct jobs, each matched to the route shape upstream actually serves:
   * official posts (`game.reddit_official`, e.g. `u/genshinimpact`, `u/HonkaiStarRail`,
@@ -66,10 +66,13 @@ PROXY_BOT_UA = "Discordbot/2.0 (+https://discordapp.com)"
 TOKEN_GATED_REDDIT = frozenset({"https://redlib.miningtcup.me"})
 OFFICIAL_RSS_HOSTS = frozenset({"https://www.reddit.com", "https://old.reddit.com", "https://reddit.com"})
 EDDRIT_HOSTS = frozenset({"https://eddrit.com"})
-# Pre-#592 Redlib instances: `/r/<sub>/new` and `/user/<name>` render cleanly, while single-post
-# `/comments/<id>/` fails JSON deserialization upstream. Keep them at the tail for listings and
-# skip them when resolving an individual post by id.
+# Listing-only Redlib instances (`2026-10-23`): `/r/<sub>/new` and `/user/<name>` render `200 OK`,
+# while single-post `/comments/<id>/` fails JSON deserialization or `oauth.reddit.com` `403`
+# (`redlib#592` / `redlib#599`). Keep them in Tier 2 for listings and skip them in `resolve_post()`.
 REDDIT_LISTING_ONLY = frozenset({
+    "https://reddit.jeremyh.xyz",
+    "https://redlib.jeikobu.net",
+    "https://redlib.vanillax.me",
     "https://red.artemislena.eu",
     "https://rl.awy.one",
     "https://redlib.freedit.eu",
@@ -84,6 +87,11 @@ REDLIB_IMG_RE = re.compile(r"^https?://[^/]+/img/([^?#\s]+)", re.I)
 REDLIB_PREVIEW_RE = re.compile(r"^https?://[^/]+/preview/(external-pre|pre)/([^?#\s]+)(\?[^\s\"'<>]*)?", re.I)
 REDLIB_VID_RE = re.compile(r"^https?://[^/]+/vid/([A-Za-z0-9_-]+)/([^\s\"'<>]+)", re.I)
 UNMUXED_REDDIT_VIDEO_RE = re.compile(r"https?://v\.redd\.it/[^/?#]+/(?:DASH|CMAF)_[^/?#]+\.mp4", re.I)
+_ONION_URL_RE = re.compile(r"^https?://[^/?#\s]+\.onion(?=[/?#]|$)", re.I)
+_GATEWAY_ERROR_RE = re.compile(
+    r"\b50[234]\b[\s\S]{0,80}\b(?:bad gateway|service (?:temporarily )?unavailable|gateway time-?out)\b",
+    re.I,
+)
 
 _CHALLENGE_MARKERS = (
     "__goaway_challenge",
@@ -92,8 +100,16 @@ _CHALLENGE_MARKERS = (
     "still trying to load your page",
     "rss is disabled on this instance",
     "failed to parse page json data",
+    '<div id="error"',
+    "<div id='error'",
+    "<title>error:",
     "error: reddit error",
     "error: nothing here",
+    "reddit blocked this request",
+    "couldn't send request to reddit",
+    "the backend server is having issues",
+    "redlib on the clearnet is no longer available",
+    "rate limit exceeded",
     "502: bad gateway",
     "502 bad gateway",
 )
@@ -123,7 +139,11 @@ def is_challenge_or_error_page(body: str | None) -> bool:
     low = stripped[:4096].lower()
     if any(marker in low for marker in _CHALLENGE_MARKERS):
         return True
-    return bool('http-equiv="refresh"' in low and 'class="post' not in low and "<entry" not in low)
+    return bool(
+        'class="post' not in low
+        and "<entry" not in low
+        and ('http-equiv="refresh"' in low or _GATEWAY_ERROR_RE.search(low))
+    )
 
 
 def redlib_media_to_reddit(url: str, base_origin: str = "") -> str:
@@ -223,12 +243,23 @@ def format_reddit_feed_query(raw_token: str) -> str:
     return urlencode(pairs)
 
 
-def _is_official_subreddit_post(game: Game, entry: dict) -> bool:
+def is_verified_reddit_author(game: Game, author: str, distinguished: str = "") -> bool:
+    """True only for explicitly configured publisher/moderator accounts or mod/admin distinguished posts."""
     official_set = {a.lower() for a in game.reddit_official}
-    sub = (entry.get("subreddit") or "").lower()
-    official_set |= SUBREDDIT_OFFICIAL_AUTHORS.get(sub, frozenset())
-    author = (entry.get("author") or "").lower()
-    return bool((author and author in official_set) or _OFFICIAL_FLAIR_RE.search(entry.get("flair") or ""))
+    for sub in game.subreddits:
+        official_set |= SUBREDDIT_OFFICIAL_AUTHORS.get(sub.lower(), frozenset())
+    a = (author or "").strip().lower()
+    if a and a in official_set:
+        return True
+    dist = (distinguished or "").strip().lower()
+    return any(role in dist for role in ("moderator", "admin"))
+
+
+def _is_official_subreddit_post(game: Game, entry: dict) -> bool:
+    return bool(
+        is_verified_reddit_author(game, entry.get("author") or "", entry.get("distinguished") or "")
+        or _OFFICIAL_FLAIR_RE.search(entry.get("flair") or "")
+    )
 
 
 def _safe_epoch_ts(raw_val: object) -> int:
@@ -311,10 +342,17 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
     order: list[str] = []
 
     for open_tag, chunk in _extract_div_blocks(body, _POST_OPEN_RE):
-        tm = re.search(r'<h[12]\s+class="post_title">(.*?)</h[12]>', chunk, re.I | re.S)
-        pm = POST_LINK_RE.search(tm.group(1)) if tm else None
+        tm = re.search(r'<h[12]\s+class="post_title(?:\s+[^"]*)?"[^>]*>(.*?)</h[12]>', chunk, re.I | re.S)
+        tm_anchor = None if tm else re.search(
+            r'<a\b[^>]*\bclass="post_title(?:\s+[^"]*)?"[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+            chunk,
+            re.I | re.S,
+        )
+        pm = POST_LINK_RE.search(tm.group(1)) if tm else (POST_LINK_RE.search(tm_anchor.group(1)) if tm_anchor else None)
         if not pm:
-            cm_link = re.search(r'class="post_comments"[^>]*href="([^"]+)"', chunk, re.I)
+            cm_link = re.search(r'class="(?:[^"]*\s)?post_comments(?:\s+[^"]*)?"[^>]*href="([^"]+)"', chunk, re.I)
+            if not cm_link:
+                cm_link = re.search(r'href="([^"]+)"[^>]*class="(?:[^"]*\s)?post_comments(?:\s+[^"]*)?"', chunk, re.I)
             pm = POST_LINK_RE.search(cm_link.group(1)) if cm_link else POST_LINK_RE.search(chunk)
         id_attr = re.search(r'\bid="([^"]+)"', open_tag)
         post_id = (pm.group(2) if pm else (id_attr.group(1) if id_attr else "")).strip().lower()
@@ -347,6 +385,12 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
                 h_inner = h_inner[:fm.start()] + h_inner[fm.end():]
             h_inner = re.sub(r'<small\s+class="(?:nsfw|spoiler)"[^>]*>.*?</small>', "", h_inner, flags=re.I | re.S)
             title = _strip_tags(h_inner)
+        elif tm_anchor:
+            title = _strip_tags(tm_anchor.group(2))
+        if not flair:
+            fm_any = re.search(r'class="post_flair(?:\s+[^"]*)?"[^>]*>(.*?)</a>', chunk, re.I | re.S)
+            if fm_any:
+                flair = _strip_tags(fm_any.group(1))
 
         body_text = ""
         body_links: list[str] = []
@@ -366,6 +410,12 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
                 u = redlib_media_to_reddit(gm.group(1), base_origin)
                 if u:
                     images.append(u)
+        if not images:
+            for _, mpchunk in _extract_div_blocks(chunk, re.compile(r'<div\s+class="post_media_preview(?:\s+[^"]*)?"[^>]*>', re.I)):
+                for mpm in re.finditer(r'<img\b[^>]*\bsrc="([^"]+)"', mpchunk, re.I):
+                    u = redlib_media_to_reddit(mpm.group(1), base_origin)
+                    if u:
+                        images.append(u)
         for bi in body_imgs:
             u = redlib_media_to_reddit(bi, base_origin)
             if u:
@@ -378,9 +428,14 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
             if u:
                 videos.append(u)
 
+        if not title and not body_text and not images and not videos:
+            continue
+
         ext_links = [
             u for u in body_links
-            if u.startswith(("http://", "https://")) and not POST_LINK_RE.search(u)
+            if u.startswith(("http://", "https://"))
+            and not POST_LINK_RE.search(u)
+            and not _ONION_URL_RE.match(u)
         ]
         url = canonical_post_url(subreddit, post_id, slug_part)
         entry = {
@@ -432,7 +487,9 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
             p["comments"].append({"id": cid, "author": cauthor, "text": cbody})
             if cauthor and p["author"] and cauthor.lower() == p["author"].lower():
                 p["text"] = f"{p['text']}\n\n{cbody}".strip() if p["text"] else cbody
-                p["links"] = dedupe(p["links"] + [u for u in clinks if u.startswith(("http://", "https://"))])
+                p["links"] = dedupe(
+                    p["links"] + [u for u in clinks if u.startswith(("http://", "https://")) and not _ONION_URL_RE.match(u)]
+                )
                 p["images"] = dedupe(p["images"] + [redlib_media_to_reddit(i, base_origin) for i in cimgs if redlib_media_to_reddit(i, base_origin)])
 
     # Redlib `/user/<name>` overview renders user comments as standalone cards referencing
@@ -440,7 +497,7 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
     if profile_author and posts:
         for cm in re.finditer(
             r'<a\s+href="(/r/[A-Za-z0-9_]+/comments/([a-z0-9]{5,10})/[^"#?]*/([a-z0-9]+)/[^"]*)"[^>]*>'
-            r".*?</a>(.*?)(?=<div\s+class=\"post|<hr|<a\s+href=\"/r/[A-Za-z0-9_]+/comments/|\Z)",
+            r".*?</a>(.*?)(?=<div\s+class=\"post|<hr|<a\s+href=\"/r/[A-Za-z0-9_]+/comments/[a-z0-9]{5,10}/[^\"#?]*/[a-z0-9]+/|\Z)",
             body,
             re.I | re.S,
         ):
@@ -453,7 +510,8 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
             if ctext and ctext not in posts[pid]["text"]:
                 posts[pid]["text"] = f"{posts[pid]['text']}\n\n{ctext}".strip() if posts[pid]["text"] else ctext
                 posts[pid]["links"] = dedupe(
-                    posts[pid]["links"] + [u for u in clinks if u.startswith(("http://", "https://"))]
+                    posts[pid]["links"]
+                    + [u for u in clinks if u.startswith(("http://", "https://")) and not _ONION_URL_RE.match(u)]
                 )
                 posts[pid]["images"] = dedupe(
                     posts[pid]["images"]
@@ -918,7 +976,10 @@ class RedditClient:
             )
             if not body or is_challenge_or_error_page(body):
                 return None
-            return await asyncio.to_thread(_parse_official_feed_body, body)
+            parsed = await asyncio.to_thread(_parse_official_feed_body, body)
+            if not parsed and not re.search(r"<(?:feed|rss)\b|\"children\"\s*:", body[:4096], re.I):
+                return None
+            return parsed
 
         if inst in EDDRIT_HOSTS:
             if kind != "sub":
@@ -932,7 +993,10 @@ class RedditClient:
             )
             if not body or is_challenge_or_error_page(body):
                 return None
-            return await asyncio.to_thread(parse_reddit_rss, body)
+            parsed = await asyncio.to_thread(parse_reddit_rss, body)
+            if not parsed and not re.search(r"<(?:feed|rss)\b", body[:4096], re.I):
+                return None
+            return parsed
 
         token_q = f"?token={quote(self.settings.nitter_token)}" if inst in TOKEN_GATED_REDDIT else ""
         if inst in TOKEN_GATED_REDDIT:
@@ -951,7 +1015,10 @@ class RedditClient:
         )
         if not body or is_challenge_or_error_page(body):
             return None
-        return await asyncio.to_thread(parse_redlib_html, body, inst)
+        parsed = await asyncio.to_thread(parse_redlib_html, body, inst)
+        if not parsed and 'id="posts"' not in body[:8192].lower():
+            return None
+        return parsed
 
     async def _probe_batch(self, batch: list[str], kind: str, target: str, need: int) -> list[list[dict]]:
         tasks = [asyncio.create_task(self._fetch_listing_on(inst, kind, target)) for inst in batch]
@@ -1368,6 +1435,8 @@ class RedditClient:
                     published_ts=int(e.get("ts") or 0),
                     images=images,
                     links=links,
+                    official=(not from_sub_fallback)
+                    or is_verified_reddit_author(game, e.get("author") or "", e.get("distinguished") or ""),
                     author=e.get("author") or "",
                 ))
         return out
