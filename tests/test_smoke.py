@@ -13172,16 +13172,17 @@ def test_live_oct_2026_banner_notices_and_self_healing():
 
 
 def test_reddit_fleet_ordering_tiering_and_exclusions():
-    """Pins the 2026-10-22 verified Reddit/Redlib fleet order, proxy chain, and excluded hosts."""
+    """Pins the 2026-10-23 verified Reddit/Redlib fleet order, proxy chain, and excluded hosts."""
     from gamexpress.config import DEFAULT_REDDIT, DEFAULT_REDDIT_ARCHIVE, DEFAULT_REDDIT_PROXIES
     from gamexpress.sources.reddit import REDDIT_LISTING_ONLY, TOKEN_GATED_REDDIT, RedditClient
 
-    assert len(DEFAULT_REDDIT) == 17
+    assert len(DEFAULT_REDDIT) == 22
     assert set(TOKEN_GATED_REDDIT) == {"https://redlib.miningtcup.me"}
 
     active_healthy_tier = [
+        "https://redlib.mint.lgbt",
+        "https://reddit.idevicehacked.com",
         "https://redlib.catsarch.com",
-        "https://redlib.privacyredirect.com",
         "https://snoo.habedieeh.re",
         "https://redlib.miningtcup.me",
         "https://redlib.tiekoetter.com",
@@ -13189,20 +13190,24 @@ def test_reddit_fleet_ordering_tiering_and_exclusions():
         "https://redlib-2.privadency.com",
     ]
     partial_and_legacy_tail = [
+        "https://reddit.jeremyh.xyz",
+        "https://redlib.jeikobu.net",
+        "https://redlib.vanillax.me",
         "https://red.artemislena.eu",
         "https://rl.awy.one",
         "https://redlib.freedit.eu",
         "https://redlib.utilibre.org",
         "https://www.reddit.com",
         "https://old.reddit.com",
+        "https://redlib.privacyredirect.com",
         "https://eddrit.com",
         "https://redlib.privadency.com",
         "https://safereddit.com",
         "https://redlib.nadeko.net",
     ]
-    assert DEFAULT_REDDIT[:7] == active_healthy_tier
-    assert DEFAULT_REDDIT[7:] == partial_and_legacy_tail
-    assert frozenset(partial_and_legacy_tail[:4]) == REDDIT_LISTING_ONLY
+    assert DEFAULT_REDDIT[:8] == active_healthy_tier
+    assert DEFAULT_REDDIT[8:] == partial_and_legacy_tail
+    assert frozenset(partial_and_legacy_tail[:7]) == REDDIT_LISTING_ONLY
     assert max(DEFAULT_REDDIT.index(h) for h in active_healthy_tier) < min(
         DEFAULT_REDDIT.index(h) for h in partial_and_legacy_tail
     )
@@ -13224,7 +13229,6 @@ def test_reddit_fleet_ordering_tiering_and_exclusions():
     assert GAMES["ananta"].reddit_official == ["AnantaOfficial"]
 
     excluded_candidates = {
-        "https://reddit.idevicehacked.com",
         "https://redlib.nohost.network",
         "https://redlib.kylrth.com",
         "https://redlib-3.privadency.com",
@@ -13319,7 +13323,7 @@ def test_redlib_html_parser_merges_author_comment_and_rewrites_redd_it_media():
     class _TierFetcher:
         async def get_text(self, url, **kw):
             probed.append(url)
-            if url.startswith(("https://redlib.catsarch.com/", "https://redlib.privacyredirect.com/")):
+            if url.startswith(("https://redlib.mint.lgbt/", "https://reddit.idevicehacked.com/", "https://redlib.catsarch.com/")):
                 return user_page
             return None
 
@@ -15657,6 +15661,170 @@ def test_monitor_916_unnumbered_convene_inference_sibling_merge_and_credits_hygi
         ):
             assert expected in credits, expected
         assert not re.search(r"github\.com/[^/\s)]+/embeddit", readme + "\n" + credits, re.I)
+
+
+def test_redlib_2026_10_23_fleet_mitchross_html_error_pages_onion_filter_and_flair_spoof_guard():
+    """Pins all five 2026-10-23 live-audit fixes on `gamexpress/sources/reddit.py` & `gamexpress/config.py`:
+    1. Custom `mitchross/redlib` `v2.3.6` (`redlib.vanillax.me`) HTML template parsing: standalone
+       `<a class="post_title">`, header `<a class="post_flair">`, and `<div class="post_media_preview">`.
+    2. Disguised HTTP `200` error pages (`<div id="error">` `403 Forbidden`, split-heading `502 Bad Gateway`,
+       clearnet shutdown page, and arbitrary non-listing WAF HTML) return `None` instead of `[]` so they
+       never eat `REDDIT_WORKING` quorum slots or short-circuit `REDDIT_FEED_TOKEN` failover.
+    3. Redlib `v0.40.0` (`reddit.idevicehacked.com`) `.onion` rewrites are stripped from `links`, and
+       `/user/<account>` overview self-comments keep text past inline cross-linked Reddit threads.
+    4. `REDDIT_LISTING_ONLY` skips Tier-2 listing-only hosts on `resolve_post()` while `redlib.mint.lgbt`
+       and `reddit.idevicehacked.com` lead Tier 1 ahead of demoted `redlib.privacyredirect.com`.
+    5. Public user-selectable subreddit flairs (`Official News` on `r/WutheringWaves`) cannot spoof
+       `Item.official = True` / single-source `reddit_official` code bypass in `codeposter`, while
+       `u/WutheringWavesMod` and moderator-distinguished posts retain full `official=True` trust."""
+    from gamexpress.sources.reddit import (
+        RedditClient,
+        is_challenge_or_error_page,
+        parse_redlib_html,
+    )
+
+    # 1. Live `mitchross/redlib` v2.3.6 (`redlib.vanillax.me`) card layout
+    vanillax_html = """<!DOCTYPE html><html><head><title>r/Genshin_Impact - Redlib</title></head><body>
+    <main><div id="posts">
+      <div class="post" id="1xbd2nm">
+        <div class="post_content">
+          <div class="post_header">
+            <a class="post_subreddit" href="/r/Genshin_Impact">r/Genshin_Impact</a>
+            <a class="post_author" href="/user/genshinimpact">u/genshinimpact</a>
+            <span class="created" title="Oct 21 2026, 04:00:05 UTC">2d ago</span>
+            <a class="post_flair" href="/r/Genshin_Impact/search?q=flair_name%3A%22Official+Media%22">Official Media</a>
+          </div>
+          <a class="post_title" href="/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/">
+            Genshin Impact Version 7.2 Special Program Preview
+          </a>
+          <div class="post_media_preview">
+            <a href="/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/">
+              <img loading="lazy" decoding="async" alt="Post image" src="/preview/pre/cvcmo1xyeqwh1.jpeg?width=1080&amp;auto=webp"/>
+            </a>
+          </div>
+          <div class="post_footer">
+            <a href="/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/" class="action_pill post_comments">12 comments</a>
+          </div>
+        </div>
+      </div>
+    </div></main></body></html>"""
+
+    v_parsed = parse_redlib_html(vanillax_html, "https://redlib.vanillax.me")
+    assert len(v_parsed) == 1
+    assert v_parsed[0]["id"] == "1xbd2nm"
+    assert v_parsed[0]["title"] == "Genshin Impact Version 7.2 Special Program Preview"
+    assert v_parsed[0]["flair"] == "Official Media"
+    assert v_parsed[0]["images"] == ["https://preview.redd.it/cvcmo1xyeqwh1.jpeg?width=1080&auto=webp"]
+
+    # 2. Disguised HTTP `200` error / 502 / clearnet-shutdown / WAF HTML must be rejected (`None`), never `[]`
+    privacyredirect_err = """<!DOCTYPE html><html><head>
+      <title>Error: Reddit blocked this request (403 Forbidden).</title></head><body>
+      <main><div id="error"><svg></svg><h1>Reddit blocked this request (403 Forbidden).</h1>
+      <p>The commit from which this Redlib instance was built is at least 20 commits old.</p></div></main></body></html>"""
+    catsarch_502 = """<!DOCTYPE html><html><head><title>Bad Gateway</title></head><body>
+      <div class="box"><h2>502</h2>\n\n<h3>Bad Gateway</h3>
+      <p>The backend server is having issues. Please wait for a bit and refresh the page.</p></div></body></html>"""
+    kylrth_dead = """<!DOCTYPE html><html><head><title>Redlib</title></head><body>
+      <h1>Redlib on the clearnet is no longer available</h1><p>This clearnet frontend has shut down.</p></body></html>"""
+    unknown_waf_html = """<!DOCTYPE html><html><head><title>Access Verification</title></head><body>
+      <div class="waf-card"><p>Please verify your browser session before continuing to this service now.</p></div></body></html>"""
+
+    for err_page in (privacyredirect_err, catsarch_502, kylrth_dead):
+        assert is_challenge_or_error_page(err_page), err_page[:80]
+
+    # Prove disguised HTTP 200 error & WAF pages return `None` in `_gather_listing` instead of eating `REDDIT_WORKING`!
+    hit_hosts: list[str] = []
+
+    class _ErrorResilientFetcher:
+        async def get_text(self, url, **kw):
+            hit_hosts.append(url)
+            if "redlib.mint.lgbt" in url:
+                return privacyredirect_err
+            if "reddit.idevicehacked.com" in url:
+                return unknown_waf_html
+            if "redlib.vanillax.me" in url:
+                return vanillax_html
+            return None
+
+    rc_err = RedditClient(_ErrorResilientFetcher(), settings())
+    recovered = asyncio.run(rc_err.subreddit("Genshin_Impact"))
+    assert recovered is not None and len(recovered) == 1 and recovered[0]["title"].startswith("Genshin Impact Version 7.2")
+    assert any("redlib.vanillax.me/r/Genshin_Impact/new" in u for u in hit_hosts)
+
+    # 3. `.onion` link stripping + multi-link `/user/` overview self-comment preservation
+    overview_with_onion_and_crosslink = """<!DOCTYPE html><html><head><title>genshinimpact (u/genshinimpact) - Redlib</title></head><body>
+    <div id="posts">
+      <a href="/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/19rf0858nakdf/#context">
+        Genshin Impact Version 7.2 Special Program Preview
+      </a>
+      <div class="profile_comment"><p>in r/Genshin_Impact • 2d ago</p>
+        <p>Event recap: <a href="/r/Genshin_Impact/comments/1wttxym/previous_notice/">Previous Notice</a> and mirror <a href="http://reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion/r/Genshin_Impact">Onion</a>. Watch live on 10/23/2026 at 08:00 AM (UTC-4) on <a href="https://www.youtube.com/@GenshinImpact">YouTube</a>! Redemption Code: GENSHIN72REAL</p>
+      </div>
+      <div class="post" id="1xbd2nm">
+        <div class="post_header">
+          <a class="post_subreddit" href="/r/Genshin_Impact">r/Genshin_Impact</a>
+          <a class="post_author" href="/user/genshinimpact">u/genshinimpact</a>
+          <span class="created" title="Oct 21 2026, 04:00:05 UTC">2d ago</span>
+        </div>
+        <h2 class="post_title"><a href="/r/Genshin_Impact/comments/1xbd2nm/genshin_impact_version_72_special_program_preview/">
+          Genshin Impact Version 7.2 Special Program Preview</a></h2>
+      </div>
+    </div></body></html>"""
+
+    ov_parsed = parse_redlib_html(overview_with_onion_and_crosslink, "https://reddit.idevicehacked.com")
+    assert len(ov_parsed) == 1
+    assert "10/23/2026 at 08:00 AM (UTC-4)" in ov_parsed[0]["text"]
+    assert "GENSHIN72REAL" in ov_parsed[0]["text"]
+    assert ov_parsed[0]["links"] == ["https://www.youtube.com/@GenshinImpact"]
+    assert not any(".onion" in lnk for lnk in ov_parsed[0]["links"])
+
+    # 4 + 5: Unverified community user picking public `"Official News"` flair on `r/WutheringWaves`
+    # gets `Item.official == False` (cannot forge single-source `reddit_official` code), while
+    # `u/WutheringWavesMod` retains `Item.official == True`!
+    from gamexpress.sources.reddit import is_verified_reddit_author
+
+    assert is_verified_reddit_author(GAMES["wuwa"], "WutheringWavesMod")
+    assert is_verified_reddit_author(GAMES["wuwa"], "SomeModAccount", "moderator")
+    assert not is_verified_reddit_author(GAMES["wuwa"], "RandomTroll99", "")
+
+    wuwa_sub_mix = """<!DOCTYPE html><html><head><title>r/WutheringWaves - Redlib</title></head><body>
+    <div id="posts">
+      <div class="post" id="1spoof9">
+        <div class="post_header">
+          <a class="post_subreddit" href="/r/WutheringWaves">r/WutheringWaves</a>
+          <a class="post_author" href="/user/RandomTroll99">u/RandomTroll99</a>
+          <span class="created" title="Oct 23 2026, 05:00:00 UTC">10m ago</span>
+        </div>
+        <h2 class="post_title">
+          <a class="post_flair" href="/r/WutheringWaves/search?q=flair%3AOfficial">Official News</a>
+          <a href="/r/WutheringWaves/comments/1spoof9/wuwa_38_update/">Wuthering Waves Version 3.8 Maintenance &amp; Codes</a>
+        </h2>
+        <div class="post_body"><p>Update starts 2026-11-25 06:00 (UTC+8). Redemption code: SPOOFWUWA999</p></div>
+      </div>
+      <div class="post" id="1realmod">
+        <div class="post_header">
+          <a class="post_subreddit" href="/r/WutheringWaves">r/WutheringWaves</a>
+          <a class="post_author" href="/user/WutheringWavesMod">u/WutheringWavesMod</a>
+          <span class="created" title="Oct 23 2026, 05:05:00 UTC">5m ago</span>
+        </div>
+        <h2 class="post_title">
+          <a href="/r/WutheringWaves/comments/1realmod/wuwa_38_codes/">Wuthering Waves Version 3.8 Special Broadcast Codes</a>
+        </h2>
+        <div class="post_body"><p>Special Broadcast airs 2026-11-13 at 19:00 (UTC+8)! Redemption code: REALMODWUWA8</p></div>
+      </div>
+    </div></body></html>"""
+
+    class _WuwaFlairFetcher:
+        async def get_text(self, url, **kw):
+            return wuwa_sub_mix if "/r/WutheringWaves/new" in url else None
+
+    rc_flair = RedditClient(_WuwaFlairFetcher(), settings())
+    wuwa_items = asyncio.run(rc_flair.items(GAMES["wuwa"], schedule.wants(GAMES["wuwa"]), 0))
+    by_id = {it.id: it for it in wuwa_items}
+    assert by_id["1spoof9"].official is False
+    assert by_id["1realmod"].official is True
+    off_hits = codeposter.official_hits_from_items(wuwa_items)
+    assert [h.code for h in off_hits] == ["REALMODWUWA8"]
 
 
 if __name__ == "__main__":
