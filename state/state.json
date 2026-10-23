@@ -1770,6 +1770,16 @@
         ],
         "status": "seeded"
       },
+      "SUNBRINGER": {
+        "first_seen": 1792725020,
+        "gate": "only reddit",
+        "last_seen": 1792725020,
+        "rewards": null,
+        "sources": [
+          "reddit"
+        ],
+        "status": "pending"
+      },
       "VRELEASE31": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
