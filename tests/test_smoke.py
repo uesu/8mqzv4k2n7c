@@ -15827,5 +15827,276 @@ def test_redlib_2026_10_23_fleet_mitchross_html_error_pages_onion_filter_and_fla
     assert [h.code for h in off_hits] == ["REALMODWUWA8"]
 
 
+def test_genshin_47174982_live_quill_and_html_markdown_formatting_repro_and_fix():
+    """Exact regression test for live HoYoLAB Genshin Impact article 47174982 (run 39937163763)."""
+    import copy
+
+    from gamexpress import preview_html
+
+    banner_url = "https://upload-os-bbs.hoyolab.com/upload/2026/10/22/ed19e3bd96053210041aa5f73d2153c9_3147959789347748326.jpg"
+    raw_47174982 = {
+        "retcode": 0,
+        "message": "OK",
+        "data": {
+            "post": {
+                "post": {
+                    "game_id": GAMES["genshin"].hoyolab_gid,
+                    "post_id": "47174982",
+                    "subject": "Take part in the event and get a chance to win Intertwined Fate ×10!",
+                    "created_at": 1792749965,
+                    "content": (
+                        '<p class="ql-align-center"><strong class="ql-size-4" style="color: rgb(239, 34, 12);">'
+                        "Dear Traveler, the Version 7.2 Special Program will begin in 2 hours!</strong></p>"
+                        '<p class="ql-align-center"><br></p>'
+                        '<p class="ql-align-center"><strong class="ql-size-4">Airs on </strong>'
+                        '<strong class="ql-size-4" style="color: rgb(239, 34, 12);">10/23/2026 at 8:00 AM (UTC-4)</strong>'
+                        '<strong class="ql-size-4"> &gt;&gt;&gt;</strong></p>'
+                        '<p class="ql-align-center"><br></p>'
+                        '<p class="ql-align-center"><strong class="ql-size-4">Twitch: </strong>'
+                        '<a class="blot-link ql-size-4" href="https://hoyo.link/QnTT3DRQa" rel="noopener noreferrer" target="_blank">'
+                        "<strong>https://hoyo.link/QnTT3DRQa</strong></a></p>"
+                        '<p class="ql-align-center"><br></p>'
+                        '<p class="ql-align-center"><strong class="ql-size-4">YouTube: </strong>'
+                        '<a class="blot-link ql-size-4" href="https://hoyo.link/5MOeFCAL" rel="noopener noreferrer" target="_blank">'
+                        "<strong>https://hoyo.link/5MOeFCAL</strong></a></p>"
+                        '<p class="ql-align-center"><br></p>'
+                        '<p>This special program will feature juicy details about new game content and developments '
+                        'in the new version. It will also "drop" some redemption codes and other goodies! '
+                        "See you then, Travelers! Be there or be square!</p>"
+                        "<hr>"
+                        f'<p><img src="{banner_url}"></p>'
+                        '<h4 class="ql-align-center"><strong style="color: rgb(2, 117, 186);">'
+                        "Special Program Post Sharing Raffle Event</strong></h4>"
+                        '<p class="ql-align-center"><br></p>'
+                        '<p class="ql-align-center"><strong>Take part in the event and get a chance to win </strong>'
+                        '<strong style="color: rgb(10, 131, 237);">Intertwined Fate ×10</strong><strong>!</strong></p>'
+                        '<p class="ql-align-center"><strong>Event Duration: </strong>'
+                        '<strong style="color: rgb(10, 131, 237);">10/23/2026 – 10/27/2026 23:59 (UTC+8)</strong></p>'
+                        '<p class="ql-align-center"><strong>Results: </strong>'
+                        '<strong style="color: rgb(10, 131, 237);">10/30/2026</strong></p>'
+                        '<p class="ql-align-center"><br></p>'
+                        '<h4 class="ql-align-center"><a class="blot-link" '
+                        'href="https://x.com/GenshinImpact/status/2113571131596693821" rel="noopener noreferrer" target="_blank">'
+                        "<strong>&gt;&gt;&gt; Click Here to Participate &lt;&lt;&lt;</strong></a></h4>"
+                        '<p class="ql-align-center"><br></p>'
+                        '<p class="ql-align-center"><strong>*Only one prize can be won per Traveler. '
+                        "The prizes cannot be stacked. Please refrain from participating repeatedly.</strong></p>"
+                        '<p class="ql-align-center"><strong>*Prizes are currently being prepared and will be scheduled '
+                        "for issuance within 30 business days after the winners are announced.</strong></p>"
+                    ),
+                    "structured_content": json.dumps([
+                        {"insert": "Dear Traveler, the Version 7.2 Special Program will begin in 2 hours!",
+                         "attributes": {"bold": True, "color": "#ef220c", "size": "4"}},
+                        {"insert": "\n\n", "attributes": {"align": "center"}},
+                        {"insert": "Airs on ", "attributes": {"bold": True, "size": "4"}},
+                        {"insert": "10/23/2026 at 8:00 AM (UTC-4)",
+                         "attributes": {"bold": True, "color": "#ef220c", "size": "4"}},
+                        {"insert": " >>>", "attributes": {"bold": True, "size": "4"}},
+                        {"insert": "\n\n", "attributes": {"align": "center"}},
+                        {"insert": "Twitch: ", "attributes": {"bold": True, "size": "4"}},
+                        {"insert": "https://hoyo.link/QnTT3DRQa",
+                         "attributes": {"link": "https://hoyo.link/QnTT3DRQa", "bold": True, "size": "4"}},
+                        {"insert": "\n\n", "attributes": {"align": "center"}},
+                        {"insert": "YouTube: ", "attributes": {"bold": True, "size": "4"}},
+                        {"insert": "https://hoyo.link/5MOeFCAL",
+                         "attributes": {"link": "https://hoyo.link/5MOeFCAL", "bold": True, "size": "4"}},
+                        {"insert": "\n\n", "attributes": {"align": "center"}},
+                        {"insert": 'This special program will feature juicy details about new game content and developments '
+                                   'in the new version. It will also "drop" some redemption codes and other goodies! '
+                                   "See you then, Travelers! Be there or be square!\n"},
+                        {"insert": {"divider": "line_2"}},
+                        {"insert": {"image": banner_url},
+                         "attributes": {"align": "img-center", "height": 675, "width": 1200, "size": "126356"}},
+                        {"insert": "Special Program Post Sharing Raffle Event",
+                         "attributes": {"bold": True, "color": "#0275ba"}},
+                        {"insert": "\n", "attributes": {"header": 4, "align": "center"}},
+                        {"insert": "\n", "attributes": {"align": "center"}},
+                        {"insert": "Take part in the event and get a chance to win ", "attributes": {"bold": True}},
+                        {"insert": "Intertwined Fate ×10", "attributes": {"bold": True, "color": "#0a83ed"}},
+                        {"insert": "!", "attributes": {"bold": True}},
+                        {"insert": "\n", "attributes": {"align": "center"}},
+                        {"insert": "Event Duration: ", "attributes": {"bold": True}},
+                        {"insert": "10/23/2026 – 10/27/2026 23:59 (UTC+8)",
+                         "attributes": {"bold": True, "color": "#0a83ed"}},
+                        {"insert": "\n", "attributes": {"align": "center"}},
+                        {"insert": "Results: ", "attributes": {"bold": True}},
+                        {"insert": "10/30/2026", "attributes": {"bold": True, "color": "#0a83ed"}},
+                        {"insert": "\n\n", "attributes": {"align": "center"}},
+                        {"insert": ">>> Click Here to Participate <<<",
+                         "attributes": {"link": "https://x.com/GenshinImpact/status/2113571131596693821", "bold": True}},
+                        {"insert": "\n", "attributes": {"header": 4, "align": "center"}},
+                        {"insert": "\n", "attributes": {"align": "center"}},
+                        {"insert": "*Only one prize can be won per Traveler. The prizes cannot be stacked. "
+                                   "Please refrain from participating repeatedly.",
+                         "attributes": {"bold": True}},
+                        {"insert": "\n", "attributes": {"align": "center"}},
+                        {"insert": "*Prizes are currently being prepared and will be scheduled for issuance within "
+                                   "30 business days after the winners are announced.",
+                         "attributes": {"bold": True}},
+                        {"insert": "\n", "attributes": {"align": "center"}},
+                    ]),
+                    "images": [banner_url],
+                },
+                "user": {"nickname": "Genshin Impact Official"},
+                "cover_list": [],
+                "image_list": [{"url": banner_url}],
+                "vod_list": [],
+            }
+        },
+    }
+
+    for use_quill in (True, False):
+        doc = copy.deepcopy(raw_47174982)
+        if not use_quill:
+            doc["data"]["post"]["post"]["structured_content"] = ""
+        frozen_doc = copy.deepcopy(doc)
+        item = asyncio.run(
+            hoyolab.news_article(NewsFetcher([doc]), GAMES["genshin"], {"id": "47174982", "ts": 1792749965})
+        )
+        assert doc == frozen_doc  # raw API JSON/HTML never mutated
+        for ts_flag in (False, True):
+            for exp_flag in (False, True):
+                payloads = cards.news_payloads(
+                    GAMES["genshin"], item, timestamps=ts_flag, expand_full=exp_flag
+                )
+                assert len(payloads) == 1
+                payload = payloads[0]
+                assert cards.validate_payload(payload) == []
+                rendered = "\n".join(
+                    c["content"] for co in payload["components"] for c in co["components"] if c["type"] == 10
+                )
+                assert "**Dear Traveler, the Version 7.2 Special Program will begin in 2 hours!**\n\n" in rendered
+                if ts_flag:
+                    assert "**Airs on <t:1792756800:f> >>>**" in rendered
+                    assert "**Event Duration: 10/23/2026 – <t:1793116740:f>**" in rendered
+                else:
+                    assert "**Airs on 10/23/2026 at 8:00 AM (UTC-4) >>>**" in rendered
+                    assert "**Event Duration: 10/23/2026 – 10/27/2026 23:59 (UTC+8)**" in rendered
+                assert "**Twitch:** https://hoyo.link/QnTT3DRQa" in rendered
+                assert "**YouTube:** https://hoyo.link/5MOeFCAL" in rendered
+                assert "**Special Program Post Sharing Raffle Event**" in rendered
+                assert "**Take part in the event and get a chance to win Intertwined Fate ×10!**" in rendered
+                assert "**Results: 10/30/2026**" in rendered
+                assert "**[>>> Click Here to Participate <<<](https://x.com/GenshinImpact/status/2113571131596693821)**" in rendered
+                assert (
+                    r"**\*Only one prize can be won per Traveler. The prizes cannot be stacked. "
+                    r"Please refrain from participating repeatedly.**"
+                ) in rendered
+                assert (
+                    r"**\*Prizes are currently being prepared and will be scheduled for issuance within "
+                    r"30 business days after the winners are announced.**"
+                ) in rendered
+                assert "****" not in rendered
+                assert "[**https://" not in rendered
+                assert "**[**" not in rendered and "**]**" not in rendered
+
+                html_page = preview_html.render_page(
+                    [("Genshin Impact", "Article 47174982", payload)], title="GI 47174982"
+                ).split("<details>")[0]
+                assert "****" not in html_page and "[**" not in html_page and "**]" not in html_page
+                assert r"\*" not in html_page
+                assert 'href="https://hoyo.link/QnTT3DRQa"' in html_page
+                assert 'href="https://hoyo.link/5MOeFCAL"' in html_page
+                assert (
+                    '<strong><a href="https://x.com/GenshinImpact/status/2113571131596693821" '
+                    'target="_blank" rel="noopener">&gt;&gt;&gt; Click Here to Participate &lt;&lt;&lt;</a></strong>'
+                ) in html_page
+                assert "<strong>*Only one prize can be won per Traveler." in html_page
+                assert "<strong>*Prizes are currently being prepared" in html_page
+
+
+def test_news_markdown_all_games_multi_op_headers_lists_links_stars_and_overlaps():
+    """Verify future-proof inline/link/list/heading markdown across all 6 configured games."""
+    from gamexpress import preview_html
+    from gamexpress.sources import kuro
+    from gamexpress.textutil import news_blocks, news_link
+
+    # 1. Self-labelled and visible-URL anchors strip outer bold/emphasis to bare URLs.
+    assert news_link("**https://hoyo.link/QnTT3DRQa**", "https://hoyo.link/QnTT3DRQa") == "https://hoyo.link/QnTT3DRQa"
+    assert news_link(" **https://hoyo.link/QnTT3DRQa** ", "https://hoyo.link/QnTT3DRQa") == " https://hoyo.link/QnTT3DRQa "
+    assert news_link("**https://genshin.hoyoverse.com/en/home**", "https://hoyo.link/redirect99") == "https://hoyo.link/redirect99"
+
+    # 2. Multi-op Quill headers, multi-op bullet lists, non-header adjacent bold links,
+    #    leading-newline bold ops, italic/strikethrough, and literal '*' notes & rewards.
+    quill_ops = [
+        {"insert": "Phase 1: ", "attributes": {"color": "#ef220c"}},
+        {"insert": "Featured Event Banner", "attributes": {"bold": True}},
+        {"insert": "\n", "attributes": {"header": 3}},
+        {"insert": "Event Window: ", "attributes": {"bold": True}},
+        {"insert": "2026/10/25 10:00 (UTC+8)"},
+        {"insert": "\n", "attributes": {"list": "bullet"}},
+        {"insert": ">>> ", "attributes": {"bold": True}},
+        {"insert": "Claim [Bonus] Reward", "attributes": {"link": "https://hoyo.link/XY3DL2Pp8", "bold": True}},
+        {"insert": " <<<", "attributes": {"bold": True}},
+        {"insert": "\n\n▌Update Compensation", "attributes": {"bold": True}},
+        {"insert": "\nRewards: Primogem*60; Mora*10000 for 5* Character & 5* Weapon — https://example.com/path*star\n"},
+        {"insert": "Important note", "attributes": {"bold": True, "italic": True}},
+        {"insert": " and ", "attributes": {}},
+        {"insert": "retired rule", "attributes": {"strike": True}},
+        {"insert": "\n*First footnote line\n*Second footnote line\n"},
+    ]
+    quill_blocks = news_blocks("en-us", json.dumps(quill_ops))
+    quill_text = "".join(b["text"] for b in quill_blocks)
+    assert "**Phase 1: Featured Event Banner**\n" in quill_text
+    assert "\n- **Event Window:** 2026/10/25 10:00 (UTC+8)\n" in quill_text
+    assert "**>>> [Claim [Bonus] Reward](https://hoyo.link/XY3DL2Pp8) <<<**" in quill_text
+    assert "\n\n**▌Update Compensation**\n" in quill_text
+    assert r"Primogem\*60; Mora\*10000 for 5\* Character & 5\* Weapon — https://example.com/path*star" in quill_text
+    assert "**_Important note_** and ~~retired rule~~" in quill_text
+    assert "\\*First footnote line\n\\*Second footnote line\n" in quill_text
+
+    # 3. HTML leading-space bold, outer bold around bare URLs, cross-paragraph bold,
+    #    bracketed bold heading links, and malformed overlapping emphasis tags.
+    html_src = (
+        "<p>Event starts at<strong> 08:00 AM (UTC-4)</strong> sharp.</p>"
+        '<p><strong>Stream: <a href="https://hoyo.link/QnTT3DRQa">https://hoyo.link/QnTT3DRQa</a> — live soon!</strong></p>'
+        "<strong><p>Paragraph One Bold</p><p>Paragraph Two Bold</p></strong>"
+        '<h4><a href="https://hoyo.link/XY3DL2Pp8"><strong>[Open Event Page]</strong></a></h4>'
+        "<p><strong>Bold <em>both</strong> italic</em> and <em>Italic <strong>both</em> bold</strong></p>"
+    )
+    html_blocks = news_blocks(html_src)
+    html_text = "".join(b["text"] for b in html_blocks)
+    assert "Event starts at **08:00 AM (UTC-4)** sharp." in html_text
+    assert "**Stream:** https://hoyo.link/QnTT3DRQa **— live soon!**" in html_text
+    assert "**Paragraph One Bold**\n\n**Paragraph Two Bold**" in html_text
+    assert "**[[Open Event Page]](https://hoyo.link/XY3DL2Pp8)**" in html_text
+    assert "**Bold _both_** _italic_ and _Italic_ **_both_ bold**" in html_text
+
+    # 4. End-to-end validation across ALL 6 configured games (genshin, starrail, zzz, hna, wuwa, ananta)
+    #    covering both HoYoLAB Quill and Kuro/HTML article rendering + 2-page & expanded pagination.
+    for gkey, game in GAMES.items():
+        for blocks in (quill_blocks, html_blocks):
+            item = Item(
+                "kuro" if gkey == "wuwa" else "hoyolab",
+                gkey,
+                f"fmt-{gkey}",
+                "https://wutheringwaves.kurogames.com/en/main/news/detail/9902"
+                if gkey == "wuwa"
+                else "https://www.hoyolab.com/article/47174982",
+                f"[{game.name}] Formatting Verification",
+                "",
+                1792749965,
+                article_blocks=blocks,
+                author=game.name,
+            )
+            for ts_flag in (False, True):
+                for exp_flag in (False, True):
+                    out = cards.news_payloads(game, item, timestamps=ts_flag, expand_full=exp_flag)
+                    assert out and all(cards.validate_payload(p) == [] for p in out)
+                    page = preview_html.render_page([(game.name, f"{gkey}-{ts_flag}-{exp_flag}", p) for p in out])
+                    visible = page.split("<details>")[0]
+                    assert "****" not in visible and r"\*" not in visible
+
+    kuro_doc = {
+        "articleId": 9902,
+        "articleTitle": "[Version 3.8] Special Broadcast & Raffle",
+        "startTime": "2026-10-23 12:00:00",
+        "articleContent": html_src,
+    }
+    kuro_item = asyncio.run(kuro.news_article(NewsFetcher([kuro_doc]), GAMES["wuwa"], {"id": "9902", "ts": 1792728000}))
+    assert kuro_item is not None
+    assert cards.validate_payload(cards.news_payloads(GAMES["wuwa"], kuro_item)[0]) == []
+
+
 if __name__ == "__main__":
     sys.exit(main())
