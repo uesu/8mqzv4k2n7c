@@ -506,6 +506,19 @@
         ],
         "status": "seeded"
       },
+      "PHOTOTIME": {
+        "first_seen": 1792759219,
+        "gate": "only ennead",
+        "last_seen": 1792759219,
+        "rewards": [
+          "Primogem ×100",
+          "Mora ×50000"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
       "PLDX12KCWMJ4": {
         "first_seen": 1790840103,
         "gate": "only ennead",
@@ -2123,8 +2136,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1792756505,
-        "47175933"
+        1792759203,
+        "47176546"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -2176,6 +2189,13 @@
           ],
           "status": "posted",
           "ts": 1792756505
+        },
+        "47176546": {
+          "messages": [
+            "1563170236855877675"
+          ],
+          "status": "posted",
+          "ts": 1792759203
         }
       },
       "route": "a0f2147590c35140"
