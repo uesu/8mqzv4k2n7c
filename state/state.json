@@ -367,7 +367,7 @@
       "OKTCHX26J57Q": {
         "first_seen": 1792482628,
         "gate": "only ennead, ogc",
-        "last_seen": 1792704023,
+        "last_seen": 1792747516,
         "rewards": [
           "Mora ×10,000",
           "Adventurer's Experience ×10",
@@ -854,7 +854,7 @@
       "DSLSPNBREASP": {
         "first_seen": 1792556421,
         "gate": "redeem-validated",
-        "last_seen": 1792704023,
+        "last_seen": 1792747516,
         "message_id": "1562351094334758915",
         "msg_codes": [
           "DSLSPNBREASP"
@@ -2818,20 +2818,10 @@
         "data": {
           "announcement_locked": true,
           "banners": {
-            "four_star": [
-              "Buling",
-              "Taoqi",
-              "Youhu"
-            ],
             "phase1": [
               "Hsin",
               "Chisa",
               "Iuno"
-            ],
-            "phase1_4": [
-              "Buling",
-              "Taoqi",
-              "Youhu"
             ],
             "phase2": [
               "Suoming",
@@ -2850,8 +2840,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792725914,
-          "banners_search_ts": 1792725914,
+          "banners_checked_ts": 1792747516,
+          "banners_search_ts": 1792747516,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -2888,23 +2878,9 @@
         "first_seen": 1790323161,
         "preinstall_offset_h": 42.0,
         "prov": {
-          "b_four_star": [
-            6,
-            1791544043
-          ],
-          "b_four_star_by": [
-            "wiki"
-          ],
           "b_phase1": [
             100,
             1792647317
-          ],
-          "b_phase1_4": [
-            6,
-            1792660519
-          ],
-          "b_phase1_4_by": [
-            "wiki"
           ],
           "b_phase1_4_tba": "2 name(s) found, 3 expected",
           "b_phase2": [
