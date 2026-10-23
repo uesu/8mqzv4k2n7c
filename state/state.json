@@ -2698,15 +2698,30 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1792759818
+          "ts": 1792770619
         },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1792555200,
-          "banners_checked_ts": 1792759818,
-          "banners_search_ts": 1792759818,
-          "calendar_ts": 1792759818,
+          "banners": {
+            "phase1": [
+              "Mitya",
+              "[[Furina]] & Valeriy"
+            ],
+            "phase2": [
+              "Zibai",
+              "Linnea"
+            ],
+            "reruns": [
+              "[[Furina]] & Valeriy",
+              "Zibai",
+              "Linnea"
+            ]
+          },
+          "banners_checked_ts": 1792770619,
+          "banners_search_ts": 1792770619,
+          "calendar_ts": 1792770619,
           "estimate_sources": [
             "version cadence"
           ],
@@ -2746,12 +2761,33 @@
         ],
         "first_seen": 1792555239,
         "message_id": "1562314671103418552",
-        "mirror_hash": "ef98f33c0a38cada",
+        "mirror_hash": "935777c720ddf125",
         "mirror_message_id": "1562314676023332895",
         "mirror_webhook_fp": "ee502f83bdf4",
-        "payload_hash": "76abd3b9ef0cb207",
+        "payload_hash": "9ce9ab03a751bc49",
         "posted_at": 1792555239,
         "prov": {
+          "b_phase1": [
+            6,
+            1792770619
+          ],
+          "b_phase1_by": [
+            "wiki"
+          ],
+          "b_phase2": [
+            6,
+            1792770619
+          ],
+          "b_phase2_by": [
+            "wiki"
+          ],
+          "b_reruns": [
+            6,
+            1792770619
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
           "maint_end_ts": [
             9,
             1792555239
@@ -2774,6 +2810,7 @@
           ]
         },
         "status": "posted",
+        "updated_at": 1792770619,
         "webhook_fp": "19991534cf6d"
       }
     },
