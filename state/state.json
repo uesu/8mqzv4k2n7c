@@ -144,6 +144,19 @@
         ],
         "status": "seeded"
       },
+      "EXPERTMITYA": {
+        "first_seen": 1792758316,
+        "gate": "only ennead",
+        "last_seen": 1792758316,
+        "rewards": [
+          "Primogem ×100",
+          "Hero's Wit ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
       "EZSB8889C2BZ": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
@@ -2881,8 +2894,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792747516,
-          "banners_search_ts": 1792747516,
+          "banners_checked_ts": 1792758316,
+          "banners_search_ts": 1792758316,
           "banners_settled": [
             "phase1",
             "phase2",
