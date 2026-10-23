@@ -1,0 +1,32 @@
+{
+  "code": 200,
+  "message": "OK",
+  "tweet": {
+    "url": "https://x.com/Wuthering_Waves/status/2112740670930604168",
+    "id": "2112740670930604168",
+    "text": "[Nine Deaths, One Unbent Heart] Featured Resonator Convene\nDuring the event, 5-Star Resonator: Suoming, 4-Star Resonators: Lumi, Danjin, and Chixia receive boosted drop rates!\n\n\u2726Duration\u2726\n2026-10-22 10:00 - 2026-11-11 11:59 (server time)\n\n\u2726Eligibility\u2726\n- Reach Union Level 5.\n- Or complete the combat trial in First Resonance.\n- Or access Main Quest Fast Track Event and proceed with the Main Quest until you reach a certain point.\n\n\u2726Convene Rules\u2726\n- [Nine Deaths, One Unbent Heart] is a Featured Resonator Convene event banner. Use Radiant Tide to convene. You are guaranteed at least one 4-Star or higher rarity Resonator or Weapon every 10 attempts. \n- The guarantee count is shared among all Featured Resonator Convene events and is carried over until a 5-Star Resonator is obtained.\n- Featured Resonator Suoming is exclusive to the [Nine Deaths, One Unbent Heart] Featured Resonator Convene and will not be available by other means once the event ends.\n- Featured Resonator Suoming's Waveband will be simultaneously made available in the Afterglow Coral Store with a limit of 2 purchases, and it will be removed once the Convene event ends.\n- During the event, all the Resonators who receive boosted drop rates will become available in Ascendant Aces as Trial Resonators. Complete their Ascendant Aces challenges to obtain rewards.\n\n\u203bFor more details, please refer to the in-game Convene page.\n \n#WutheringWaves\n#Suoming",
+    "author": {
+      "screen_name": "Wuthering_Waves",
+      "name": "Wuthering Waves"
+    },
+    "created_timestamp": 1792551603,
+    "media": {
+      "all": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/HVEWZ0GbsAAbcqQ.jpg?name=orig",
+          "width": 1920,
+          "height": 1080
+        }
+      ],
+      "photos": [
+        {
+          "type": "photo",
+          "url": "https://pbs.twimg.com/media/HVEWZ0GbsAAbcqQ.jpg?name=orig",
+          "width": 1920,
+          "height": 1080
+        }
+      ]
+    }
+  }
+}

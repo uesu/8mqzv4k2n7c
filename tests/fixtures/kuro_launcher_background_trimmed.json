@@ -1,0 +1,22 @@
+{
+  "_source": "REAL WW global G153 launcher config (TomyJan/GenshinImpact-Client-Version WW/Win/Launcher/OS/20261015041838.json), REAL 3.7.0 global background URLs (TwintailTeam/game-manifests wuwa_global.json), and REAL 20260930 background.json structure (555me/game-CDN-List data/ww/launcher/background.json)",
+  "launcher_config_g153": {
+    "functionCode": {
+      "background": "dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf"
+    }
+  },
+  "background_en_3_7": {
+    "functionSwitch": 1,
+    "backgroundFile": "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/fbp4pj51dfnw2uyyzt.mp4",
+    "backgroundFileType": 2,
+    "firstFrameImage": "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/cxol3urv2yjpftavjv.webp",
+    "slogan": "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/slogan_3_7.png"
+  },
+  "background_dated_20260930": {
+    "functionSwitch": 1,
+    "backgroundFile": "https://pcdownload-huoshan.aki-game.com/launcher/game/10004/G152/bilibili/assets/background/20260930/dc839ed8df284b1fb37d03ee34f188e3.mp4",
+    "backgroundFileType": 2,
+    "firstFrameImage": "https://pcdownload-huoshan.aki-game.com/launcher/game/10004/G152/bilibili/assets/background/20260930/875d3f84219443c88065b34fe2a35a60.webp",
+    "slogan": "https://pcdownload-huoshan.aki-game.com/launcher/game/10004/G152/bilibili/assets/background/20260930/6d10bef9a08b485cac5dc946ee1145b9.png"
+  }
+}

@@ -14621,7 +14621,84 @@ def test_final_pre_merge_edge_cases_and_repo_doc_consistency():
         assert f"{len(config.DEFAULT_REDDIT_PROXIES)} proxies" in readme_t
         assert f"{len(config.DEFAULT_REDDIT)} Reddit/Redlib entries" in security_t
         assert "arknights" not in sources_t.lower()
-        assert "October 22, 2026" in privacy_t and "October 22, 2026" in terms_t
+        assert "Status: not integrated." not in sources_t
+        assert "October 23, 2026" in privacy_t and "October 23, 2026" in terms_t
+        assert "aki-game.net" in privacy_t and "easebar.com" in privacy_t
+
+        import re
+
+        # Full repository-wide Markdown link, heading-anchor, changelog-index, and prod-manifest guard:
+        # skips cleanly in docs-free production checkouts, fails immediately if any link, `#anchor`,
+        # `docs/changelog/README.md` index entry, or `PROD-REPO-SETUP.md` file count goes stale!
+        def _gh_slug(heading: str) -> str:
+            s = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", heading.strip().lower())
+            s = s.replace("`", "").replace("*", "")
+            return "".join(ch if (ch.isalnum() or ch in "-_") else ("-" if ch.isspace() else "") for ch in s)
+
+        def _strip_inline_code(line: str) -> str:
+            return re.sub(r"(`+)[^`]*?\1", "", line)
+
+        md_files = sorted(
+            p for p in ROOT.rglob("*.md")
+            if ".git" not in p.parts and ".pytest_cache" not in p.parts and ".venv" not in p.parts
+        )
+        anchors_by_file: dict[Path, set[str]] = {}
+        h2_slugs: dict[Path, list[tuple[str, str]]] = {}
+        for p in md_files:
+            seen: dict[str, int] = {}
+            anchors: set[str] = set()
+            h2s: list[tuple[str, str]] = []
+            in_fence = False
+            for raw_line in p.read_text(encoding="utf-8").splitlines():
+                if raw_line.strip().startswith("```"):
+                    in_fence = not in_fence
+                    continue
+                if in_fence:
+                    continue
+                m = re.match(r"^(#{1,6})\s+(.*)$", raw_line)
+                if m:
+                    base = _gh_slug(m.group(2))
+                    n = seen.get(base, 0)
+                    seen[base] = n + 1
+                    full_slug = base if n == 0 else f"{base}-{n}"
+                    anchors.add(full_slug)
+                    if len(m.group(1)) == 2:
+                        h2s.append((m.group(2).strip(), full_slug))
+            anchors_by_file[p.resolve()] = anchors
+            h2_slugs[p.resolve()] = h2s
+
+        for p in md_files:
+            in_fence = False
+            for lineno, raw_line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
+                if raw_line.strip().startswith("```"):
+                    in_fence = not in_fence
+                    continue
+                if in_fence:
+                    continue
+                clean_line = _strip_inline_code(raw_line)
+                for _lbl, target in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", clean_line):
+                    target = target.strip()
+                    if target.startswith(("http://", "https://", "mailto:")):
+                        continue
+                    path_part, _, frag = target.partition("#")
+                    dest = (p.parent / path_part).resolve() if path_part else p.resolve()
+                    assert dest.exists(), f"{p}:{lineno}: broken link target {target!r}"
+                    if frag and dest in anchors_by_file:
+                        assert frag in anchors_by_file[dest], f"{p}:{lineno}: missing anchor #{frag} in {dest.name}"
+
+        changelog_md = (ROOT / "docs" / "changelog" / "CHANGELOG.md").resolve()
+        changelog_idx = (ROOT / "docs" / "changelog" / "README.md").read_text(encoding="utf-8")
+        for idx_i, (title, slug) in enumerate(h2_slugs[changelog_md]):
+            assert f"(CHANGELOG.md#{slug})" in changelog_idx, f"CHANGELOG section missing from docs/changelog/README.md: {title!r} (#{slug})"
+            if idx_i > 0:
+                assert "unreleased" not in title.lower(), f"Historical shipped CHANGELOG section still marked unreleased: {title!r}"
+
+        prod_doc = (ROOT / "docs" / "PROD-REPO-SETUP.md").read_text(encoding="utf-8")
+        py_count = sum(1 for p in (ROOT / "gamexpress").rglob("*.py") if "__pycache__" not in p.parts)
+        runtime_count = py_count + 8
+        assert f"# expect {runtime_count + 2} ({runtime_count} runtime + 2 policy files)" in prod_doc
+        assert f"# {runtime_count + 4} if you also copied the two python-bump files" in prod_doc
+        assert "15 Redlib mirrors" not in (ROOT / "docs" / "TROUBLESHOOTING.md").read_text(encoding="utf-8")
 
 
 def test_hotfix_monitor_764_765_none_extracts_runner_isolation_ananta_hna_and_state_hardening():
@@ -14910,6 +14987,676 @@ def test_hotfix_monitor_764_765_none_extracts_runner_isolation_ananta_hna_and_st
         pass
     else:
         raise AssertionError("textutil.news_blocks must keep raising ValueError on unreadable JSON")
+
+
+def test_audit_fix_1_override_iso8601_and_image_tier3_precedence():
+    from gamexpress import maintenance, media
+
+    now = 1793900000
+    hsr_overrides = {
+        "4.7": {
+            "preinstall_ts": "2026-11-07T12:00:00+08:00",
+            "maint_start_ts": "2026-11-09T06:00:00+08:00",
+            "image": "https://pbs.twimg.com/media/HSR47OverrideKeyArt.jpg",
+        }
+    }
+    plans = maintenance.resolve_version_plans(GAMES["starrail"], {}, [], {}, hsr_overrides, now)
+    assert plans["4.7"]["preinstall_ts"] == 1794024000
+    assert plans["4.7"]["maint_start_ts"] == 1794175200
+    assert plans["4.7"]["maint_end_ts"] is None
+    assert plans["4.7"]["preinstall_provenance"] == "override"
+    assert plans["4.7"]["maint_provenance"] == "override"
+
+    # Malformed timestamp strings must degrade cleanly rather than raising ValueError.
+    bad_ov = {"4.7": {"maint_start_ts": "not-a-timestamp", "maint_end_ts": ""}}
+    safe_plans = maintenance.resolve_version_plans(GAMES["hna"], {}, [], {}, bad_ov, now)
+    assert safe_plans["4.7"]["maint_start_ts"] is None
+
+    # `overrides.json` `"image"` wins top Tier-3 priority ahead of `program_announcements.json` and `schedule_images`.
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = make_ctx(Path(directory) / "state.json", now=now)
+        expected_override_img = media.upgrade(hsr_overrides["4.7"]["image"])
+        pin_img = "https://pbs.twimg.com/media/StalePin47.jpg?name=orig"
+        sched_img = "https://pbs.twimg.com/media/StaleSched47.jpg?name=orig"
+        plans["4.7"]["schedule_images"] = [sched_img]
+        ctx.fetcher = types.SimpleNamespace(
+            verify_media=lambda u: asyncio.sleep(0, result=(u in {expected_override_img, pin_img, sched_img}))
+        )
+        tier, chosen = asyncio.run(
+            maintenance.resolve_launch_media(
+                ctx,
+                GAMES["starrail"],
+                "4.7",
+                plans["4.7"],
+                {},
+                basic_info={},
+                program_pins={"starrail": {"4.7": {"image": pin_img}}},
+            )
+        )
+        assert (tier, chosen) == (3, expected_override_img)
+
+
+def test_audit_fix_2_epithet_inference_prerelease_1_0_and_non_cadence_countdown_estimates():
+    from gamexpress import maintenance, models
+
+    now = 1793600000
+    # 1) Genshin epithet-only official notice ("Luna II", no numeric "7.2") resolves cleanly onto 7.2!
+    luna_notice = models.Item(
+        source="hoyolab",
+        game="genshin",
+        id="47990001",
+        url="https://www.hoyolab.com/article/47990001",
+        title='Version "Luna II" Update Maintenance Preview',
+        text=(
+            "Dear Travelers,\n"
+            "Pre-installation Function Available: 2026/11/09 12:00 (UTC+8)\n"
+            "Update maintenance begins 2026/11/11 06:00 (UTC+8) and is estimated to take 5 hours."
+        ),
+        published_ts=1793580000,
+    )
+    gi_plans = maintenance.resolve_version_plans(
+        GAMES["genshin"], {}, [luna_notice], {"live": "7.1", "pre": "7.2"}, {}, now
+    )
+    assert gi_plans["7.2"]["preinstall_ts"] == 1794196800
+    assert gi_plans["7.2"]["maint_start_ts"] == 1794348000
+    assert gi_plans["7.2"]["maint_end_ts"] == 1794366000
+    assert gi_plans["7.2"]["maint_provenance"] == "official"
+
+    # 2) Pre-release HNA & ANANTA unnumbered global launch notices ("Global Launch" without "1.0") -> "1.0"!
+    for pre_key, src_name, author_url in (
+        ("hna", "x", "https://x.com/NexusAnima_EN/status/2199990000000000001"),
+        ("ananta", "reddit", "https://www.reddit.com/r/AnantaOfficial/comments/launch1/global_launch_notice/"),
+    ):
+        launch_item = models.Item(
+            source=src_name,
+            game=pre_key,
+            id=f"{pre_key}-launch-1",
+            url=author_url,
+            title=f"{GAMES[pre_key].name} Global Launch Pre-Download & Maintenance Notice",
+            text=(
+                "Pre-download opens 2026/12/01 10:00 (UTC+8).\n"
+                "Server maintenance runs 2026/12/03 06:00 (UTC+8) - 2026/12/03 10:00 (UTC+8)."
+            ),
+            published_ts=1795900000,
+        )
+        p_plans = maintenance.resolve_version_plans(GAMES[pre_key], {}, [launch_item], {}, {}, now)
+        assert "1.0" in p_plans
+        assert p_plans["1.0"]["preinstall_ts"] == 1796090400
+        assert p_plans["1.0"]["maint_start_ts"] == 1796248800
+        assert p_plans["1.0"]["maint_end_ts"] == 1796263200
+        assert p_plans["1.0"]["maint_provenance"] == "official"
+
+    # 3) Shortened 5-week (35d) patch refined by countdown source (`rank = 10`) stays aligned with schedule!
+    zzz_records = {
+        "3.3": {
+            "status": "posted",
+            "data": {"version": "3.3", "preinstall_ts": 1792382400, "maint_start_ts": 1792533600, "maint_end_ts": 1792551600},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1], "maint_end_ts": [50, 1]},
+        },
+        "3.4": {
+            "status": "posted",
+            "data": {
+                "version": "3.4",
+                "preinstall_ts": 1795406400,
+                "maint_start_ts": 1795557600,  # +35d (5-week shortened patch) instead of +42d (1796162400)
+                "maint_end_ts": 1795575600,
+                "estimated": ["preinstall_ts", "maint_start_ts", "maint_end_ts"],
+                "estimate_sources": ["gachacountdown"],
+            },
+            "prov": {"preinstall_ts": [9, 1], "maint_start_ts": [10, 1], "maint_end_ts": [10, 1]},
+        },
+    }
+    zzz_plans = maintenance.resolve_version_plans(GAMES["zzz"], zzz_records, [], {"live": "3.3", "pre": None}, {}, now)
+    assert zzz_plans["3.4"]["maint_start_ts"] == 1795557600
+    assert zzz_plans["3.4"]["preinstall_ts"] == 1795406400
+    assert zzz_plans["3.4"]["maint_estimated"] is True
+    assert zzz_plans["3.4"]["maint_source"] == "gachacountdown"
+
+
+def test_audit_fix_3_kuro_g153_launcher_background_allowlist_and_ww_lifecycle():
+    from gamexpress import http as http_mod
+    from gamexpress import maintenance
+    from gamexpress.sources import kuro as kuro_mod
+
+    fx = json.loads((Path(__file__).resolve().parent / "fixtures" / "kuro_launcher_background_trimmed.json").read_text(encoding="utf-8"))
+    parsed_37 = kuro_mod.parse_launcher_background(
+        fx["background_en_3_7"], bg_hash=fx["launcher_config_g153"]["functionCode"]["background"]
+    )
+    assert parsed_37["video"] == "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/fbp4pj51dfnw2uyyzt.mp4"
+    assert parsed_37["artwork"] == "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/cxol3urv2yjpftavjv.webp"
+    assert parsed_37["video_meta"]["bg_hash"] == "dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf"
+
+    parsed_dated = kuro_mod.parse_launcher_background(fx["background_dated_20260930"], bg_hash="e4ea009e702a4961be86c815d87dbe68")
+    assert parsed_dated["video"].endswith("/20260930/dc839ed8df284b1fb37d03ee34f188e3.mp4")
+    assert maintenance._asset_upload_ts(parsed_dated["video"]) is not None
+
+    # Security: path traversal in `functionCode.background` is strictly rejected with 0 background fetches.
+    seen_urls: list[str] = []
+
+    class StubKuroFetcher:
+        def __init__(self, cfg_payload: dict, bg_payload: dict):
+            self.cfg_payload = cfg_payload
+            self.bg_payload = bg_payload
+
+        async def get_json(self, url: str, **_kw):
+            seen_urls.append(url)
+            if url == kuro_mod.LAUNCHER_CONFIG:
+                return self.cfg_payload
+            return self.bg_payload
+
+    assert asyncio.run(
+        kuro_mod.launcher_media(StubKuroFetcher({"functionCode": {"background": "../../etc/passwd"}}, fx["background_en_3_7"]))
+    ) == {}
+    assert seen_urls == [kuro_mod.LAUNCHER_CONFIG]
+
+    seen_urls.clear()
+    live_bg = asyncio.run(kuro_mod.launcher_media(StubKuroFetcher(fx["launcher_config_g153"], fx["background_en_3_7"])))
+    assert live_bg["video"] == parsed_37["video"] and len(seen_urls) == 2
+
+    # Allowlist: `aki-game.net` and `aki-game.com` pass `verify_media` with real MP4/WebP magic bytes!
+    mp4_header = b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom" + b"\x00" * 64
+    webp_header = b"RIFF\x24\x00\x00\x00WEBPVP8 " + b"\x00" * 64
+
+    class FakeResp:
+        def __init__(self, status: int, content_type: str, body: bytes):
+            self.status = status
+            self.headers = {"Content-Type": content_type, "Content-Range": f"bytes 0-{len(body) - 1}/1048576"}
+            self._body = body
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_a):
+            return False
+
+        @property
+        def content(self):
+            body = self._body
+
+            class Reader:
+                async def iter_chunked(self, _n):
+                    yield body
+
+            return Reader()
+
+    class FakeSession:
+        def get(self, url: str, **_kw):
+            raw = mp4_header if url.endswith(".mp4") else webp_header
+            ctype = "video/mp4" if url.endswith(".mp4") else "image/webp"
+            return FakeResp(206, ctype, raw)
+
+    f = http_mod.Fetcher(FakeSession())
+    assert asyncio.run(f.verify_media(parsed_37["video"])) is True
+    assert asyncio.run(f.verify_media(parsed_37["artwork"])) is True
+    assert asyncio.run(f.verify_media(parsed_dated["video"])) is True
+    assert asyncio.run(f.verify_media("https://evil-untrusted.example.com/launcher/clientUpload/fake.mp4")) is False
+
+    # End-to-end WW 3.7 -> 3.8 lifecycle:
+    #   * Preload (`live=3.7, pre=3.8`): records 3.7's `.mp4` on 3.7, does NOT leak 3.7 video onto 3.8, posts 3.8 key art!
+    #   * Maint T+0 (`live=3.8`, CDN `en.json` not rotated yet): STILL blocks stale 3.7 `.mp4`, posts 3.8 key art promptly!
+    #   * Maint T+15m (`en.json` rotates to 3.8's `w38_launch.mp4`): silently `PATCH`-upgrades 3.8 card to Tier 1 `.mp4`!
+    ww38_prog = "https://pbs.twimg.com/media/WW38BroadcastKeyArt.jpg?name=orig"
+    ww38_mp4 = "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/w38_launch_slug.mp4"
+    ww38_webp = "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/w38_firstframe.webp"
+    valid = {parsed_37["video"], parsed_37["artwork"], ww38_prog, ww38_mp4, ww38_webp}
+
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = make_ctx(
+            Path(directory) / "state.json",
+            now=1794100000,
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="wuwa",
+            DISCORD_WEBHOOK_MAINTENANCE_WUWA=HOOK,
+        )
+        ctx.state.schedule_records("wuwa")["3.8"] = {
+            "status": "posted",
+            "data": {"version": "3.8", "preinstall_ts": 1794196800, "maint_start_ts": 1794340800, "maint_end_ts": 1794366000, "images": [ww38_prog]},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1], "maint_end_ts": [50, 1]},
+        }
+        ctx.versions["wuwa"] = {"live": "3.7", "pre": None}
+        ctx.items["wuwa"] = []
+
+        cur_en = dict(fx["background_en_3_7"])
+
+        class LiveKuroStub:
+            async def verify_media(self, u: str) -> bool:
+                return u in valid
+
+            async def get_json(self, url: str, **_kw):
+                if url == kuro_mod.LAUNCHER_CONFIG:
+                    return fx["launcher_config_g153"]
+                return cur_en
+
+        ctx.fetcher = LiveKuroStub()
+        # 0) Seed baseline cleanly (0 webhook sends).
+        asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sent == []
+
+        # 1) WW 3.8 Pre-Load (`live=3.7, pre=3.8`): records 3.7 media, posts 3.8 Special Broadcast Key Art (Tier 3).
+        ctx.versions["wuwa"] = {"live": "3.7", "pre": "3.8"}
+        ctx.now = 1794196860
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww38-pre-msg")])
+        asyncio.run(maintenance.run(ctx))
+        pre_state = ctx.state.maintenance_record("wuwa")["versions"]["3.8"]["preload"]
+        assert pre_state["media_tier"] == 3 and pre_state["media_url"] == ww38_prog
+        assert parsed_37["video"] in ctx.state.maintenance_record("wuwa")["versions"]["3.7"]["seen_media"]
+
+        # 2) WW 3.8 Maintenance T+1m (`live=3.8`, `en.json` temporarily still serving 3.7 slug): STILL blocks stale 3.7 slug!
+        ctx.versions["wuwa"] = {"live": "3.8", "pre": None}
+        ctx.now = 1794340860
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww38-maint-msg")])
+        asyncio.run(maintenance.run(ctx))
+        maint_state = ctx.state.maintenance_record("wuwa")["versions"]["3.8"]["maintenance"]
+        assert maint_state["media_tier"] == 3 and maint_state["media_url"] == ww38_prog
+
+        # 3) WW 3.8 Maintenance T+15m (`en.json` rotates to 3.8 `.mp4` slug): silent `PATCH` upgrades card to Tier 1 `.mp4`!
+        cur_en = {
+            "functionSwitch": 1,
+            "backgroundFile": ww38_mp4,
+            "backgroundFileType": 2,
+            "firstFrameImage": ww38_webp,
+        }
+        ctx.now = 1794341760
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+        asyncio.run(maintenance.run(ctx))
+        assert len(ctx.webhook.sends) == 0 and len(ctx.webhook.edits) == 1
+        assert ctx.webhook.edits[0][0] == "ww38-maint-msg"
+        assert maint_state["media_tier"] == 1 and maint_state["media_url"] == ww38_mp4
+
+
+def test_audit_fix_4_5_twimg_dedup_shortlink_upgrade_and_6_game_live_state_zero_churn():
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance, media
+    from gamexpress.sources import kuro as kuro_mod
+    from gamexpress.sources import launcher as launcher_mod
+
+    # 1) Tweet photo query-format (`?format=jpg&name=large`) deduplicates cleanly against `.jpg?name=orig` in any order!
+    large_u = "https://pbs.twimg.com/media/HTxU4O3W4AAGolV?format=jpg&name=large"
+    orig_u = "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
+    assert media.rank([large_u, orig_u]) == [orig_u]
+    assert media.rank([orig_u, large_u]) == [orig_u]
+
+    # 2) GI 5-week shortened prior Phase II wallpaper (`-14d`) is rejected while Special Program Friday upload (`-10d`)
+    #    is accepted at Tier 2, AND opaque shortlink `bg["id"]` rotation 2 days later upgrades cleanly to Tier 1 `.webm`!
+    prior_phase2_webp = "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/26/prior_phase2.webp"
+    gi72_sp_webp = "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/30/gi72_sp_friday.webp"
+    gi72_launch_webm = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/10/gi72_animated.webm"
+    gi72_phase2_webm = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/12/02/gi72_phase2.webm"
+    valid_gi = {prior_phase2_webp, gi72_sp_webp, gi72_launch_webm, gi72_phase2_webm}
+
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = make_ctx(Path(directory) / "state.json", now=1794196900)  # 2026-11-09 Pre-Load day
+        ctx.versions["genshin"] = {"live": "7.1", "pre": "7.2"}
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=(u in valid_gi)))
+        plan_gi72 = {"preinstall_ts": 1794196800, "maint_start_ts": 1794348000, "schedule_images": [], "override": {}}
+        vstate_gi72: dict = {}
+
+        # Shortened-patch `-14d` wallpaper rejected cleanly (`(4, None)`):
+        stale_binfo = {"gopR6Cufr3": [{"id": "id-prior", "video": "", "background": prior_phase2_webp, "links": ["https://hoyo.link/oldA"]}]}
+        assert asyncio.run(
+            maintenance.resolve_launch_media(ctx, GAMES["genshin"], "7.2", plan_gi72, vstate_gi72, basic_info=stale_binfo, program_pins={})
+        ) == (4, None)
+
+        # `-10d` Special Program Friday `.webp` locks at Tier 2:
+        sp_binfo = {"gopR6Cufr3": [{"id": "id-oct30", "video": "", "background": gi72_sp_webp, "links": ["https://hoyo.link/sp72A"]}]}
+        assert asyncio.run(
+            maintenance.resolve_launch_media(ctx, GAMES["genshin"], "7.2", plan_gi72, vstate_gi72, basic_info=sp_binfo, program_pins={})
+        ) == (2, gi72_sp_webp)
+
+        # Rotated opaque shortlink + new `bg["id"]` inside launch window (`2026/11/10`) upgrades cleanly to Tier 1 `.webm`!
+        anim_binfo = {"gopR6Cufr3": [{"id": "id-nov10", "video": gi72_launch_webm, "background": gi72_sp_webp, "links": ["https://hoyo.link/anim72B"]}]}
+        assert asyncio.run(
+            maintenance.resolve_launch_media(ctx, GAMES["genshin"], "7.2", plan_gi72, vstate_gi72, basic_info=anim_binfo, program_pins={})
+        ) == (1, gi72_launch_webm)
+
+        # 3) All-6-games idle poll (`GI`, `HSR`, `ZZZ`, `WW`, `HNA`, `ANANTA`) mirroring live `uesu/8mqzv4k2n7c` state:
+        #    0 `hoyoplay_basic_info` calls, 0 `kuro.launcher_media` calls, 0 webhook calls, 0 state churn!
+        idle_path = Path(directory) / "live_shape_state.json"
+        idle_ctx = make_ctx(
+            idle_path,
+            now=1792720000,  # 2026-10-23 (mid-cycle across all 4 live games + 2 pre-release games)
+            MAINTENANCE_ENABLED="1",
+            ONLY="maintenance",
+            MAINTENANCE_GAMES="all",
+            DISCORD_WEBHOOK_MAINTENANCE_GENSHIN=HOOK,
+            DISCORD_WEBHOOK_MAINTENANCE_STARRAIL=HOOK,
+            DISCORD_WEBHOOK_MAINTENANCE_ZZZ=HOOK,
+            DISCORD_WEBHOOK_MAINTENANCE_WUWA=HOOK,
+            DISCORD_WEBHOOK_MAINTENANCE_HNA=HOOK,
+            DISCORD_WEBHOOK_MAINTENANCE_ANANTA=HOOK,
+        )
+        idle_ctx.versions = {
+            "genshin": {"live": "7.1", "pre": None},
+            "starrail": {"live": "4.6", "pre": None},
+            "zzz": {"live": "3.3", "pre": None},
+            "wuwa": {"live": "3.7", "pre": None},
+        }
+        idle_ctx.items = {g: [] for g in ("genshin", "starrail", "zzz", "wuwa", "hna", "ananta")}
+        # Seed baseline once, then assert a steady-state 5-minute poll performs 0 background HTTP calls & 0 saves!
+        asyncio.run(maintenance.run(idle_ctx))
+        snap_before = idle_path.read_text(encoding="utf-8")
+        binfo_spy = AsyncMock(return_value={})
+        kmedia_spy = AsyncMock(return_value={})
+        idle_ctx.fetcher = types.SimpleNamespace(get_json=AsyncMock(return_value={}), verify_media=AsyncMock(return_value=True))
+        with (
+            patch.object(launcher_mod, "hoyoplay_basic_info", new=binfo_spy),
+            patch.object(kuro_mod, "launcher_media", new=kmedia_spy),
+        ):
+            idle_ctx.now = 1792720300
+            asyncio.run(maintenance.run(idle_ctx))
+        assert binfo_spy.await_count == 0
+        assert kmedia_spy.await_count == 0
+        assert idle_ctx.webhook.sent == []
+        assert idle_path.read_text(encoding="utf-8") == snap_before
+
+
+def test_audit_fix_6_cards_button_512_guard_codeposter_pending_outage_and_peer_seen_media():
+    from gamexpress import cards, codeposter, models
+    from gamexpress.state import State
+
+    # 1) All 4 features: `link_button()` drops >512-char URLs (while `safe_url()` still permits <=1024-char
+    #    gallery/markdown URLs), and `validate_payload()` rejects empty action rows & >512-char button URLs.
+    url_600 = "https://www.hoyolab.com/article/47151000?utm_extra=" + ("x" * 555)
+    assert cards.safe_url(url_600) == url_600
+    assert cards.link_button("Read Post", url_600) is None
+    assert cards.validate_payload({
+        "flags": cards.IS_COMPONENTS_V2,
+        "components": [cards.container([{"type": 1, "components": []}])],
+    }) == ["action row needs 1-5 buttons"]
+
+    # News card with a 600-char article URL STILL renders validly: header markdown link works, oversized
+    # `Read Post` button drops cleanly while keeping `Citlali News` + `Donate` buttons intact!
+    long_url_item = models.Item(
+        source="hoyolab",
+        game="genshin",
+        id="47999999",
+        url=url_600,
+        title="Event Overview",
+        text="",
+        published_ts=1792720000,
+        article_blocks=[{"kind": "text", "text": "Travelers, a new event begins soon!"}],
+    )
+    rendered_news = cards.news_payloads(GAMES["genshin"], long_url_item)
+    assert len(rendered_news) == 1 and cards.validate_payload(rendered_news[0]) == []
+
+    # 2) Feature 2 (`codeposter.run`):
+    #    a) Same-family addition (`ennead` -> `ennead, ogc`, live `OKTCHX26J57Q` case) keeps `status == "pending"`
+    #       AND updates `rec["gate"]` cleanly to `"only ennead, ogc"`.
+    #    b) Transient `None` outage on first witness (`wuthering.gg` 503 on Poll 2) still corroborates cleanly when
+    #       second independent family (`ogc`) reports active AND preserves Poll 1 `rewards`!
+    #    c) Upstream answering HTTP 200 WITHOUT the code is NOT revived across polls!
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "state.json"
+        ctx = make_ctx(path, now=1792700000, DISCORD_WEBHOOK_CODES_GENSHIN=HOOK, DISCORD_WEBHOOK_CODES_WUWA=HOOK)
+        ctx.state.mark_bootstrapped("codes", "genshin")
+        ctx.state.mark_bootstrapped("codes", "wuwa")
+        ctx.items = {"genshin": [], "wuwa": []}
+
+        # Poll 1: `OKTCHX26J57Q` seen on `ennead` only; `WUWA38LIVE` seen on `wuthering.gg` with rewards;
+        #         `STALEGONE` seen on `wuthering.gg`.
+        poll1 = {
+            "ennead:genshin": [models.CodeHit("OKTCHX26J57Q", "ennead", ["Mora ×10,000"])],
+            "ogc:genshin": [],
+            "wuthering.gg": [
+                models.CodeHit("WUWA38LIVE", "wuthering.gg", ["Astrite ×100"]),
+                models.CodeHit("STALEGONE", "wuthering.gg", ["Astrite ×50"]),
+            ],
+            "ogc:wuwa": [],
+        }
+        ctx.code_sources = types.SimpleNamespace(fetch=lambda sp: asyncio.sleep(0, result=poll1.get(sp, [])))
+        asyncio.run(codeposter.run(ctx))
+        assert ctx.state.code_records("genshin")["OKTCHX26J57Q"]["gate"] == "only ennead"
+        assert ctx.state.code_records("wuwa")["WUWA38LIVE"]["status"] == "pending"
+
+        # Poll 2a: `ogc:genshin` joins (`same family`), `wuthering.gg` answers `[]` (dropped `STALEGONE`!).
+        ctx.now = 1792700300
+        poll2a = {
+            "ennead:genshin": [models.CodeHit("OKTCHX26J57Q", "ennead", ["Mora ×10,000"])],
+            "ogc:genshin": [models.CodeHit("OKTCHX26J57Q", "ogc", ["Mora ×10,000"])],
+            "wuthering.gg": [models.CodeHit("WUWA38LIVE", "wuthering.gg", ["Astrite ×100"])],
+            "ogc:wuwa": [models.CodeHit("STALEGONE", "ogc", None)],  # wuthering.gg answered WITHOUT STALEGONE -> stays pending!
+        }
+        ctx.code_sources = types.SimpleNamespace(fetch=lambda sp: asyncio.sleep(0, result=poll2a.get(sp, [])))
+        asyncio.run(codeposter.run(ctx))
+        assert ctx.state.code_records("genshin")["OKTCHX26J57Q"]["status"] == "pending"
+        assert ctx.state.code_records("genshin")["OKTCHX26J57Q"]["gate"] == "only ennead, ogc"
+        assert ctx.state.code_records("wuwa")["STALEGONE"]["status"] == "pending"
+
+        # Poll 2b: `wuthering.gg` temporarily 503s (`None`) right when `ogc:wuwa` reports `WUWA38LIVE` (rewards=None):
+        #          corroborates across `wuthering.gg + ogc` AND preserves `"Astrite ×100"` on the posted Discord card!
+        ctx.now = 1792700600
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww-code-msg-1")])
+        poll2b = {
+            "wuthering.gg": None,
+            "ogc:wuwa": [models.CodeHit("WUWA38LIVE", "ogc", None)],
+        }
+        ctx.code_sources = types.SimpleNamespace(fetch=lambda sp: asyncio.sleep(0, result=poll2b.get(sp, [])))
+        asyncio.run(codeposter.run(ctx))
+        ww_posted = ctx.state.code_records("wuwa")["WUWA38LIVE"]
+        assert ww_posted["status"] == "posted"
+        assert ww_posted["rewards"] == ["Astrite ×100"]
+        assert ww_posted["sources"] == ["ogc", "wuthering.gg"]
+        assert "Astrite ×100" in json.dumps(ctx.webhook.sends[0], ensure_ascii=False)
+
+        # 3) Standby failover (`State.merge_peer(..., include_maintenance=True)`) imports `seen_media`!
+        standby = State(Path(directory) / "standby.json")
+        standby.merge_peer(
+            {
+                "maintenance": {
+                    "wuwa": {
+                        "route": "f7e18488aac788d3",
+                        "seeded_at": 1792665058,
+                        "versions": {
+                            "3.7": {
+                                "seen_media": ["https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/fbp4pj51dfnw2uyyzt.mp4"],
+                                "maintenance": {"status": "seeded", "ts": 1790712000},
+                            }
+                        },
+                    }
+                }
+            },
+            include_maintenance=True,
+        )
+        assert standby.maintenance_record("wuwa")["versions"]["3.7"]["seen_media"] == [
+            "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/fbp4pj51dfnw2uyyzt.mp4"
+        ]
+
+
+def test_monitor_916_unnumbered_convene_inference_sibling_merge_and_credits_hygiene():
+    """Pins the exact live `Monitor #916` Wuthering Waves 3.7 Phase II split-Convene production bug
+    (`article/5668` reruns `Lucilla, Lynae` + unnumbered `@Wuthering_Waves` status `2112740670930604168`
+    debut `Suoming`), concurrent same-second Wish-1/Wish-2 sibling union, timeline age-out stability,
+    and repository credits accuracy/privacy rules."""
+    import copy
+    import logging
+    import re
+
+    from gamexpress import schedule
+    from gamexpress.sources import twitter
+    from gamexpress.state import State
+
+    fx_suoming = json.loads((ROOT / "tests" / "fixtures" / "fx_wuwa_3_7_convene_suoming.json").read_text(encoding="utf-8"))
+    kuro_5668 = json.loads((ROOT / "tests" / "fixtures" / "kuro_wuwa_5668_phase2_trimmed.json").read_text(encoding="utf-8"))
+
+    suoming_item = twitter.item_from_fx_json("wuwa", fx_suoming)
+    kuro_p2_item = Item(
+        "kuro",
+        "wuwa",
+        str(kuro_5668["articleId"]),
+        f"https://wutheringwaves.kurogames.com/en/main/news/detail/{kuro_5668['articleId']}",
+        kuro_5668["articleTitle"],
+        kuro_5668["articleContent"],
+        1792491520,
+    )
+
+    # 1) Unnumbered `2112740670930604168` resolves cleanly to `wuwa` `3.7` `phase 2` BOTH via
+    #    tracked `maint_start_ts` alone AND alongside `article/5668` with ZERO `has no version yet` logs.
+    live_wuwa_state = State(Path("/tmp/nonexistent-wuwa-state.json"))
+    live_wuwa_state.data = {
+        "schedule": {
+            "wuwa": {
+                "3.7": {
+                    "status": "seeded",
+                    "data": {
+                        "announcement_locked": True,
+                        "version": "3.7",
+                        "maint_start_ts": 1790712000,
+                        "maint_end_ts": 1790737200,
+                        "banners": {
+                            "phase1": ["Hsin", "Chisa", "Iuno"],
+                            "phase1_4": ["Buling", "Taoqi", "Youhu"],
+                            "phase2": ["Lucilla", "Lynae"],
+                            "phase2_4": ["Lumi", "Danjin", "Chixia"],
+                            "reruns": ["Chisa", "Iuno", "Lucilla", "Lynae"],
+                        },
+                        "banners_settled": ["phase1", "phase2", "phase2_4", "reruns"],
+                    },
+                    "prov": {
+                        "b_phase1": [100, 1792647317],
+                        "b_phase2": [50, 1792491520],
+                        "b_phase2_by": ["official"],
+                        "b_phase2_4": [50, 1792491520],
+                        "b_phase2_4_by": ["official"],
+                        "b_reruns": [6, 1791544043],
+                        "b_reruns_by": ["wiki"],
+                    },
+                }
+            }
+        }
+    }
+
+    records_logged: list[str] = []
+
+    class _ListHandler(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            records_logged.append(record.getMessage())
+
+    handler = _ListHandler()
+    schedule.log.addHandler(handler)
+    try:
+        ctx_solo = types.SimpleNamespace(
+            versions={"wuwa": {"live": "3.7"}},
+            state=live_wuwa_state,
+            items={"wuwa": [suoming_item]},
+        )
+        by_ver_solo = schedule.version_extracts(ctx_solo, GAMES["wuwa"], log_missing=True)
+        assert "3.7" in by_ver_solo and len(by_ver_solo["3.7"]) == 1
+        assert by_ver_solo["3.7"][0].fields["banner_phase"] == 2
+        assert not any("has no version yet" in m for m in records_logged), records_logged
+
+        ctx_both = types.SimpleNamespace(
+            versions={"wuwa": {"live": "3.7"}},
+            state=live_wuwa_state,
+            items={"wuwa": [kuro_p2_item, suoming_item]},
+        )
+        by_ver_both = schedule.version_extracts(ctx_both, GAMES["wuwa"], log_missing=True)
+        assert len(by_ver_both["3.7"]) == 2
+        assert not any("has no version yet" in m for m in records_logged), records_logged
+    finally:
+        schedule.log.removeHandler(handler)
+
+    # 2) Live `Monitor #916` healing + debut-first order + multi-poll & post-age-out zero churn:
+    rec = live_wuwa_state.schedule_records("wuwa")["3.7"]
+    notes: list[str] = []
+    rec["data"] = schedule.merge(
+        GAMES["wuwa"], "3.7", by_ver_both["3.7"], rec, {}, {}, 1792725325, notes
+    )
+    assert rec["data"]["banners"]["phase2"] == ["Suoming", "Lucilla", "Lynae"]
+    assert rec["data"]["banners"]["phase2_4"] == ["Lumi", "Danjin", "Chixia"]
+    assert "phase2" in rec["data"]["banners_settled"]
+    assert "b_phase2_conflict" not in rec["prov"]
+    assert not notes
+
+    snap_data = copy.deepcopy(rec["data"])
+    snap_prov = copy.deepcopy(rec["prov"])
+
+    # Next poll with both items present -> byte-identical data & prov
+    rec["data"] = schedule.merge(
+        GAMES["wuwa"], "3.7", by_ver_both["3.7"], rec, {}, {}, 1792725625, notes
+    )
+    assert rec["data"] == snap_data and rec["prov"] == snap_prov and not notes
+
+    # Day 5 after X tweet `2112740670930604168` ages out while Kuro `article/5668` stays in menu -> still identical!
+    only_kuro = [schedule.extract(GAMES["wuwa"], kuro_p2_item)]
+    rec["data"] = schedule.merge(
+        GAMES["wuwa"], "3.7", only_kuro, rec, {}, {}, 1793000000, notes
+    )
+    assert rec["data"] == snap_data and rec["prov"] == snap_prov and not notes
+
+    # 3) Concurrent same-second Wish-1 + Wish-2 posts on HoYoLAB (`same ts`, distinct `item.id`) union cleanly:
+    gi_w1 = Item(
+        "hoyolab",
+        "genshin",
+        "47200001",
+        "https://www.hoyolab.com/article/47200001",
+        "Version 7.2 Event Wish Notice - Phase I",
+        'During the event wish, the event-exclusive 5-star character "Starlit Vow" Skirk (Cryo) as well as '
+        'the 4-star characters Dahlia (Hydro), Candace (Hydro), and Mika (Cryo) will receive a huge drop-rate boost!',
+        1793600000,
+    )
+    gi_w2 = Item(
+        "hoyolab",
+        "genshin",
+        "47200002",
+        "https://www.hoyolab.com/article/47200002",
+        "Version 7.2 Event Wish Notice - Phase I",
+        'During the event wish, the event-exclusive 5-star character "Tasteful Excellence" Escoffier (Cryo) as well as '
+        'the 4-star characters Dahlia (Hydro), Candace (Hydro), and Mika (Cryo) will receive a huge drop-rate boost!',
+        1793600000,
+    )
+    gi_rec: dict = {}
+    gi_notes: list[str] = []
+    gi_rec["data"] = schedule.merge(
+        GAMES["genshin"],
+        "7.2",
+        [schedule.extract(GAMES["genshin"], gi_w1), schedule.extract(GAMES["genshin"], gi_w2)],
+        gi_rec,
+        {},
+        {},
+        1793600300,
+        gi_notes,
+    )
+    assert gi_rec["data"]["banners"]["phase1"] == ["Skirk", "Escoffier"]
+    assert gi_rec["data"]["banners"]["phase1_4"] == ["Dahlia", "Candace", "Mika"]
+    assert not gi_notes
+
+    # 4) Permanent / standard banner notice with no version, no duration, and no sibling 4★ stays version=None:
+    perm_item = Item(
+        "x",
+        "wuwa",
+        "9999999999999999999",
+        "https://x.com/Wuthering_Waves/status/9999999999999999999",
+        "",
+        "[Tidal Chorus] Permanent Resonator Convene\nDuring the event, 5-Star Resonator: Verina receives boosted drop rates!",
+        1792551603,
+    )
+    ex_perm = schedule.extract(GAMES["wuwa"], perm_item)
+    schedule.infer_versions([ex_perm], live="3.7", records=live_wuwa_state.schedule_records("wuwa"))
+    assert ex_perm.version is None
+
+    # 5) Credits & README footer ordering + privacy hygiene check (when docs exist in checkout):
+    if (ROOT / "docs").is_dir() and (ROOT / "README.md").is_file():
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        credits = (ROOT / "docs" / "CREDITS.md").read_text(encoding="utf-8")
+        h2s = [ln.strip() for ln in readme.splitlines() if ln.startswith("## ")]
+        assert h2s[-1] == "## 📄 Legal & credits", h2s
+        assert "https://github.com/FixTweet/FxTwitter" not in readme
+        assert "https://github.com/FixTweet/FxTwitter" not in credits
+        assert "https://github.com/FxEmbed/FxEmbed" in readme and "https://github.com/FxEmbed/FxEmbed" in credits
+        for expected in (
+            "https://github.com/torikushiii/hoyoverse-api",
+            "https://github.com/TwintailTeam/game-manifests",
+            "https://github.com/TomyJan/GenshinImpact-Client-Version",
+            "https://genshin-countdown.gengamer.in/",
+            "https://gachacountdown.online/",
+            "https://github.com/corenting/eddrit",
+            "https://github.com/dylanpdx/BetterTwitFix",
+            "https://arena.ai/company/about",
+        ):
+            assert expected in credits, expected
+        assert not re.search(r"github\.com/[^/\s)]+/embeddit", readme + "\n" + credits, re.I)
 
 
 if __name__ == "__main__":
