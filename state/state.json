@@ -261,6 +261,26 @@
         ],
         "status": "seeded"
       },
+      "HOUROFRUIN": {
+        "first_seen": 1792757115,
+        "gate": "redeem-validated",
+        "last_seen": 1792757115,
+        "message_id": "1563161402670325781",
+        "msg_codes": [
+          "HOUROFRUIN"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1792757115,
+        "rewards": null,
+        "sources": [
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
       "LEGEDILJKSGM": {
         "first_seen": 1790323430,
         "last_seen": 1791636322,
