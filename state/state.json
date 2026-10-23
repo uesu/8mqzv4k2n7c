@@ -1852,6 +1852,7 @@
         "sources": [
           "codehub",
           "ennead",
+          "fandom",
           "ogc",
           "seria"
         ],
@@ -1918,6 +1919,7 @@
         "sources": [
           "codehub",
           "ennead",
+          "fandom",
           "ogc",
           "reddit",
           "seria"
