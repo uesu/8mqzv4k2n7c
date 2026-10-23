@@ -1772,13 +1772,24 @@
       },
       "SUNBRINGER": {
         "first_seen": 1792725020,
-        "gate": "only reddit",
-        "last_seen": 1792725020,
+        "gate": "redeem-validated",
+        "last_seen": 1792725322,
+        "message_id": "1563028052320059424",
+        "msg_codes": [
+          "SUNBRINGER"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1792725322,
         "rewards": null,
         "sources": [
-          "reddit"
+          "reddit",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "db5f4f8a75a5"
       },
       "VRELEASE31": {
         "first_seen": 1790323430,
@@ -2154,8 +2165,8 @@
     },
     "zzz": {
       "cursor": [
-        1792576806,
-        "47154012"
+        1792725303,
+        "47171818"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -2271,6 +2282,13 @@
           ],
           "status": "posted",
           "ts": 1792576806
+        },
+        "47171818": {
+          "messages": [
+            "1563028079922778164"
+          ],
+          "status": "posted",
+          "ts": 1792725303
         }
       },
       "route": "5f931f917050e29a"
