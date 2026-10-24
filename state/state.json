@@ -162,6 +162,7 @@
           "Hero's Wit ×5"
         ],
         "sources": [
+          "codehub",
           "ennead",
           "ogc",
           "reddit",
@@ -305,6 +306,7 @@
           "Mystic Enhancement Ore ×10"
         ],
         "sources": [
+          "codehub",
           "ennead",
           "ogc",
           "reddit",
@@ -526,6 +528,7 @@
           "Mora ×50000"
         ],
         "sources": [
+          "codehub",
           "ennead",
           "ogc",
           "reddit",
@@ -552,6 +555,7 @@
           "Adventurer's Experience ×5"
         ],
         "sources": [
+          "codehub",
           "ennead",
           "ogc",
           "reddit",
@@ -2756,7 +2760,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1792825233
+          "ts": 1792836034
         },
         "data": {
           "announcement_locked": true,
@@ -2764,22 +2768,22 @@
           "announcement_ts": 1792555200,
           "banners": {
             "phase1": [
-              "Mitya & Valeriy",
-              "Furina & Valeriy"
+              "Mitya",
+              "Furina"
             ],
             "phase2": [
               "Zibai",
               "Linnea"
             ],
             "reruns": [
-              "Furina & Valeriy",
+              "Furina",
               "Zibai",
               "Linnea"
             ]
           },
-          "banners_checked_ts": 1792825233,
-          "banners_search_ts": 1792825233,
-          "calendar_ts": 1792825233,
+          "banners_checked_ts": 1792836034,
+          "banners_search_ts": 1792836034,
+          "calendar_ts": 1792836034,
           "estimate_sources": [
             "version cadence"
           ],
@@ -2819,15 +2823,15 @@
         ],
         "first_seen": 1792555239,
         "message_id": "1562314671103418552",
-        "mirror_hash": "8379213840b5e538",
+        "mirror_hash": "8db59dca4dc981ca",
         "mirror_message_id": "1562314676023332895",
         "mirror_webhook_fp": "ee502f83bdf4",
-        "payload_hash": "acbfddd17882965d",
+        "payload_hash": "7fb6821b428d3730",
         "posted_at": 1792555239,
         "prov": {
           "b_phase1": [
             6,
-            1792825233
+            1792836034
           ],
           "b_phase1_by": [
             "wiki"
@@ -2841,7 +2845,7 @@
           ],
           "b_reruns": [
             6,
-            1792770619
+            1792836034
           ],
           "b_reruns_by": [
             "wiki"
@@ -2868,7 +2872,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1792825233,
+        "updated_at": 1792836034,
         "webhook_fp": "19991534cf6d"
       }
     },
