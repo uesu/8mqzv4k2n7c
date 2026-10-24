@@ -667,6 +667,19 @@
         ],
         "status": "seeded"
       },
+      "QYJWQVRI39BE": {
+        "first_seen": 1792813821,
+        "gate": "only ennead",
+        "last_seen": 1792813821,
+        "rewards": [
+          "Primogem ×60",
+          "Adventurer's Experience ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
       "REKVIEM": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
