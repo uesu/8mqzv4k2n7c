@@ -194,21 +194,24 @@ DEFAULT_REDDIT = [
     # `https://www.reddit.com` leaps to slot 0 automatically on `/r/<sub>/new.rss?feed=...` when
     # `REDDIT_FEED_TOKEN` is configured; without a token, unauthenticated `reddit.com` /
     # `old.reddit.com` 403 on Azure Actions runner IPs and sit in Tier 3 below (`0` 403 waste).
-    # Fleet 17 -> 22 (`2026-10-23`): added 5 live mirrors (`redlib.mint.lgbt`,
-    # `reddit.idevicehacked.com`, `reddit.jeremyh.xyz`, `redlib.jeikobu.net`, `redlib.vanillax.me`)
-    # and demoted `redlib.privacyredirect.com` to Tier 3 (`403` error page); nothing deleted.
+    # Fleet 22 -> 24 (`2026-10-24`): added `redlib.reallyaweso.me` (Tier 1 full dual-path `200 OK`
+    # on `/new`, `/user/`, and `/comments/` with full multi-image gallery + comments) and
+    # `redlib.ducks.party` (Tier 2 `v0.40.0` `/new` listing with inline gallery carousels), and
+    # demoted `redlib.vanillax.me` to Tier 3 (`The backend server is having issues` error body);
+    # nothing deleted.
     "https://redlib.mint.lgbt",           # Redlib 0.36.0 (`0baefabf` Shreddit build), full listing + `/user/` + `/comments/`
     "https://reddit.idevicehacked.com",   # Redlib 0.40.0 (`848f3013`), full listing + inline gallery + `/user/` + `/comments/`
+    "https://redlib.reallyaweso.me",      # Redlib (`redlib.blueberry.reallyaweso.me`), full `/new` + `/user/` + `/comments/` 200 OK
     "https://redlib.catsarch.com",        # runner-proven fast `/new` & `/user/` answerer
     "https://snoo.habedieeh.re",          # Redlib v3.0.0 (#592), listing + `/user/` + 1080p CMAF
     "https://redlib.miningtcup.me",       # token-gated private Redlib (`NITTER_RSS_TOKEN`)
     "https://redlib.tiekoetter.com",      # Redlib (#592), `/new` + `/user/`
     "https://redlib-1.privadency.com",    # direct Privadency node #1 (bypasses splash wall)
     "https://redlib-2.privadency.com",    # direct Privadency node #2 (bypasses splash wall)
-    # Tier 2 — Verified `/new` + `/user/` listing-only mirrors (`REDDIT_LISTING_ONLY`; skipped on `/comments/`)
+    # Tier 2 — Verified `/new` (+ `/user/`) listing-only mirrors (`REDDIT_LISTING_ONLY`; skipped on `/comments/`)
+    "https://redlib.ducks.party",         # Redlib 0.40.0 (`848f3013`), `/r/<sub>/new` 200 OK with inline gallery carousels
     "https://reddit.jeremyh.xyz",         # Redlib 0.31.0 (`redlib-instances#118`), US direct `/new` + `/user/` 200 OK
     "https://redlib.jeikobu.net",         # Redlib 0.36.0 (`fca8b45c`), `/new` + `/user/` 200 OK
-    "https://redlib.vanillax.me",         # `mitchross/redlib` v2.3.6 (`abd6ba24`), `/new` + `/user/` 200 OK
     "https://red.artemislena.eu",         # `/new` + `/user/` 200 OK; pre-#592 on `/comments/`
     "https://rl.awy.one",                 # `/new` + `/user/` 200 OK; pre-#592 on `/comments/`
     "https://redlib.freedit.eu",          # `/new` + `/user/` 200 OK; pre-#592 on `/comments/`
@@ -216,7 +219,8 @@ DEFAULT_REDDIT = [
     # Tier 3 — Token-promoted official origins & demoted/degraded legacy tail (`0` hits while Tier 1 answers)
     "https://www.reddit.com",             # promoted to head when `REDDIT_FEED_TOKEN` is set; 403 unauth on Actions IPs
     "https://old.reddit.com",             # official RSS fallback origin (403 unauth on Actions IPs)
-    "https://redlib.privacyredirect.com", # demoted (`2026-10-23`): upstream 403 error page on `/new` & `/comments/`
+    "https://redlib.vanillax.me",         # demoted (`2026-10-24`): HTTP 200 `The backend server is having issues` error body
+    "https://redlib.privacyredirect.com", # demoted (`2026-10-23`): upstream 403 error page on `/comments/` & `/user/`
     "https://eddrit.com",                 # legacy RSS frontend (`/r/<sub>/.rss`, rate-limited)
     "https://redlib.privadency.com",      # legacy splash redirect in front of `redlib-1` / `redlib-2`
     "https://safereddit.com",             # legacy mirror (upstream 429 rate-limited)

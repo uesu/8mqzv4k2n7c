@@ -1665,6 +1665,27 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
     prov = dict(record.get("prov")) if isinstance(record.get("prov"), dict) else {}
     data = dict(prev)
     data["version"] = version
+    if isinstance(data.get("banners"), dict):
+        healed_banners: dict[str, object] = {}
+        for b_key, b_vals in data["banners"].items():
+            if isinstance(b_vals, list):
+                healed_banners[b_key] = [
+                    gachawiki.clean_name(str(v))
+                    for v in b_vals
+                    if gachawiki.clean_name(str(v))
+                ]
+            else:
+                healed_banners[b_key] = b_vals
+        if healed_banners != data["banners"]:
+            data["banners"] = healed_banners
+    if isinstance(data.get("banners_display"), dict):
+        healed_disp = {
+            gachawiki.clean_name(str(k)): gachawiki.clean_name(str(v))
+            for k, v in data["banners_display"].items()
+            if gachawiki.clean_name(str(k)) and gachawiki.clean_name(str(v))
+        }
+        if healed_disp != data["banners_display"]:
+            data["banners_display"] = healed_disp
     # A card that is already locked (by the flag, or by the legacy markers program_seen / media_from)
     # keeps its lock written down on EVERY run, including runs with no program post in the window.
     if announcement_locked(prev):

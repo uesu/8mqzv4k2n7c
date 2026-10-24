@@ -126,6 +126,7 @@ NITTER_BATCH = 4          # instances probed in parallel per round
 NITTER_TIMEOUT = 12       # seconds — a dead mirror must not stall the run
 NITTER_WORKING = 2        # merge this many instances, then stop waiting for the rest
 NITTER_GRACE = 1.5        # seconds a still-silent HIGHER-ranked mirror gets once that many answered
+NITTER_RESERVE_PARALLEL = 2  # max simultaneous in-flight requests to a batch reserve seat (idx >= needed) across concurrent games
 STATUS_RE = re.compile(r"/status(?:es)?/(\d{8,25})")
 
 
@@ -137,12 +138,13 @@ class XClient:
         self.settings = settings
         self._timelines: dict[str, list[dict] | None] = {}
         self._tweets: dict[str, dict | None] = {}
+        self._reserve_sem: dict[str, asyncio.Semaphore] = {}
         self.avatars: dict[str, str] = {}     # account (lower) -> current avatar url
         self.source_used: dict[str, int] = {}  # tweet-data service that answered, per run
         self.status_fails: dict[str, int] = {}  # failed status-feed requests per mirror, this run
         self.reachable: set[str] = set()      # accounts with >= 1 working instance this run
 
-    async def _probe(self, inst: str, account: str) -> list | None:
+    async def _probe(self, inst: str, account: str, *, reserve: bool = False) -> list | None:
         """One nitter instance -> parsed feed entries, or None (dead / bot-check / stale)."""
         url = f"{inst}/{account}/rss"
         headers = {"User-Agent": "Mozilla/5.0"}
@@ -152,8 +154,17 @@ class XClient:
                 return None
             headers = {"User-Agent": f"Mozilla/5.0 {token}", "Authorization": f"Bearer {token}"}
             url += f"?token={quote(token, safe='')}"
-        body = await self.fetcher.get_text(url, source="nitter", headers=headers, retries=0,
-                                           timeout=NITTER_TIMEOUT)
+        if reserve:
+            sem = self._reserve_sem.setdefault(inst, asyncio.Semaphore(NITTER_RESERVE_PARALLEL))
+            had_to_wait = sem.locked()
+            async with sem:
+                if had_to_wait:
+                    await asyncio.sleep(0)
+                body = await self.fetcher.get_text(url, source="nitter", headers=headers, retries=0,
+                                                   timeout=NITTER_TIMEOUT)
+        else:
+            body = await self.fetcher.get_text(url, source="nitter", headers=headers, retries=0,
+                                               timeout=NITTER_TIMEOUT)
         if not body:
             return None
         feed = await asyncio.to_thread(feedparser.parse, body)
@@ -180,7 +191,10 @@ class XClient:
         case from a full 12 s timeout into 1.5 s. Every instance in the batch is still
         requested, in parallel, in fleet order.
         """
-        tasks = {asyncio.ensure_future(self._probe(inst, account)): idx for idx, inst in enumerate(batch)}
+        tasks = {
+            asyncio.ensure_future(self._probe(inst, account, reserve=(idx >= needed))): idx
+            for idx, inst in enumerate(batch)
+        }
         answers: dict[int, list] = {}
         pending = set(tasks)
         grace_until: float | None = None

@@ -32,6 +32,7 @@ Games with no gacha data (ANANTA, Honkai: Nexus Anima) are deliberately absent f
 
 from __future__ import annotations
 
+import html
 import logging
 import re
 from dataclasses import dataclass, field
@@ -159,12 +160,11 @@ def split_names(value: str) -> list[str]:
 
 
 def clean_name(value: str) -> str:
-    """'[[Iuno]]' / '[[Pearl|Pearl]]' / '  Hsin ' -> a bare display name."""
-    value = (value or "").strip()
-    m = _LINK.fullmatch(value)
-    if m:
-        value = (m.group(2) or m.group(1)).strip()
-    return value.strip().strip("'\"").strip()
+    """'[[Iuno]]' / '[[Pearl|Pearl]]' / '[[Furina]] & Valeriy' / '  Hsin ' -> a bare display name."""
+    value = html.unescape((value or "").strip())
+    value = _LINK.sub(lambda m: (m.group(2) or m.group(1)).strip(), value)
+    value = value.replace("[[", "").replace("]]", "")
+    return re.sub(r"\s{2,}", " ", value).strip().strip("'\"").strip()
 
 
 @dataclass

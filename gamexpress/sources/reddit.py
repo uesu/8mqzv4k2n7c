@@ -66,10 +66,12 @@ PROXY_BOT_UA = "Discordbot/2.0 (+https://discordapp.com)"
 TOKEN_GATED_REDDIT = frozenset({"https://redlib.miningtcup.me"})
 OFFICIAL_RSS_HOSTS = frozenset({"https://www.reddit.com", "https://old.reddit.com", "https://reddit.com"})
 EDDRIT_HOSTS = frozenset({"https://eddrit.com"})
-# Listing-only Redlib instances (`2026-10-23`): `/r/<sub>/new` and `/user/<name>` render `200 OK`,
-# while single-post `/comments/<id>/` fails JSON deserialization or `oauth.reddit.com` `403`
-# (`redlib#592` / `redlib#599`). Keep them in Tier 2 for listings and skip them in `resolve_post()`.
+# Listing-only Redlib instances (`2026-10-24`): `/r/<sub>/new` (and `/user/<name>` except
+# `REDDIT_SUB_LISTING_ONLY`) render `200 OK`, while single-post `/comments/<id>/` fails JSON
+# deserialization, `502`, or `oauth.reddit.com` `403` (`redlib#592` / `redlib#599`). Keep them in
+# Tier 2 for listings and skip them in `resolve_post()`.
 REDDIT_LISTING_ONLY = frozenset({
+    "https://redlib.ducks.party",
     "https://reddit.jeremyh.xyz",
     "https://redlib.jeikobu.net",
     "https://redlib.vanillax.me",
@@ -77,6 +79,9 @@ REDDIT_LISTING_ONLY = frozenset({
     "https://rl.awy.one",
     "https://redlib.freedit.eu",
     "https://redlib.utilibre.org",
+})
+REDDIT_SUB_LISTING_ONLY = frozenset({
+    "https://redlib.ducks.party",
 })
 
 POST_LINK_RE = re.compile(
@@ -86,7 +91,8 @@ POST_LINK_RE = re.compile(
 REDLIB_IMG_RE = re.compile(r"^https?://[^/]+/img/([^?#\s]+)", re.I)
 REDLIB_PREVIEW_RE = re.compile(r"^https?://[^/]+/preview/(external-pre|pre)/([^?#\s]+)(\?[^\s\"'<>]*)?", re.I)
 REDLIB_VID_RE = re.compile(r"^https?://[^/]+/vid/([A-Za-z0-9_-]+)/([^\s\"'<>]+)", re.I)
-UNMUXED_REDDIT_VIDEO_RE = re.compile(r"https?://v\.redd\.it/[^/?#]+/(?:DASH|CMAF)_[^/?#]+\.mp4", re.I)
+_REDLIB_VID_SUBPATH_RE = re.compile(r"^(DASH|CMAF|HLS)/([A-Za-z0-9._-]+)", re.I)
+UNMUXED_REDDIT_VIDEO_RE = re.compile(r"https?://v\.redd\.it/[^/?#]+/(?:DASH|CMAF|HLS)_[^/?#]+\.mp4", re.I)
 _ONION_URL_RE = re.compile(r"^https?://[^/?#\s]+\.onion(?=[/?#]|$)", re.I)
 _GATEWAY_ERROR_RE = re.compile(
     r"\b50[234]\b[\s\S]{0,80}\b(?:bad gateway|service (?:temporarily )?unavailable|gateway time-?out)\b",
@@ -162,7 +168,8 @@ def redlib_media_to_reddit(url: str, base_origin: str = "") -> str:
         return f"https://{host}/{m.group(2)}{m.group(3) or ''}"
     m = REDLIB_VID_RE.match(raw)
     if m:
-        return f"https://v.redd.it/{m.group(1)}/{m.group(2)}"
+        vid_tail = _REDLIB_VID_SUBPATH_RE.sub(r"\1_\2", m.group(2))
+        return f"https://v.redd.it/{m.group(1)}/{vid_tail}"
     return raw if raw.lower().startswith(("http://", "https://")) else ""
 
 
@@ -956,6 +963,8 @@ class RedditClient:
             if inst in TOKEN_GATED_REDDIT and not self.settings.nitter_token:
                 continue
             if for_post_detail and inst in REDDIT_LISTING_ONLY:
+                continue
+            if kind == "user" and inst in REDDIT_SUB_LISTING_ONLY:
                 continue
             out.append(inst)
         if format_reddit_feed_query(self.settings.reddit_token):

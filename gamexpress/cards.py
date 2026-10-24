@@ -145,10 +145,21 @@ def _is_x_url(url: str) -> bool:
                          url or "", re.I))
 
 
+_WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
+
+
+def _clean_banner_name(s: str) -> str:
+    s = _WIKILINK_RE.sub(lambda m: (m.group(2) or m.group(1)).strip(), str(s or ""))
+    s = s.replace("[[", "").replace("]]", "").replace("&amp;", "&")
+    return re.sub(r"\s{2,}", " ", s).strip()
+
+
 def names(values: list[str] | None, disp: dict[str, str] | None = None) -> str:
-    vals = [v for v in (values or []) if v and v.strip()]
+    vals = [_clean_banner_name(v) for v in (values or []) if v and _clean_banner_name(v)]
     if disp and vals:
-        vals = [disp.get(v, v) for v in vals]     # the wiki's full display name, when it has one
+        clean_disp = {_clean_banner_name(k): _clean_banner_name(v) for k, v in disp.items()}
+        vals = [clean_disp.get(v, disp.get(v, v)) for v in vals]     # the wiki's full display name, when it has one
+        vals = [_clean_banner_name(v) for v in vals if _clean_banner_name(v)]
     return ", ".join(vals) if vals else TBA
 
 
@@ -267,19 +278,21 @@ def banners_block(game: Game, d: dict) -> str:
     v = d.get("version") or TBA
     heading = f"Version {v} Banners (STC)"
     heading = f"**[{heading}]({game.card.banners_url})**" if game.card.banners_url else f"**{heading}**"
-    lines = [heading, ""]
+    lines = [heading]
+    notes: list[str] = []
     # The early tier: the wiki knows WHO debuts in this version but no phase split exists yet
     # (the livestream has not aired). The line disappears by itself the moment real phase data
     # lands, because `confirmed` is not part of the banner key set.
     if b.get("confirmed") and not b.get("phase1"):
-        lines.append(f"※ Confirmed: {names(b.get('confirmed'), disp)}")
-    lines.append(f"※ Re-runs: {names(b.get('reruns'), disp)}")
+        notes.append(f"※ Confirmed: {names(b.get('confirmed'), disp)}")
     # The 4★ summary is the pre-notice signal (the wiki knows the full roster before any phase
     # notice exists, and often names phase 2's 4★s early); once BOTH per-phase lists are in,
     # the summary is just their union — noise — and hides on the same silent edit that filled
     # the second phase. Symmetric with the `※ Confirmed:` rule above.
     if game.card.four_star_summary and not (b.get("phase1_4") and b.get("phase2_4")):
-        lines.append(f"※ 4 Star Characters: {names(b.get('four_star'), disp)}")
+        notes.append(f"※ 4 Star Characters: {names(b.get('four_star'), disp)}")
+    if notes:
+        lines += ["", *notes]
     four = game.card.four_star_label
     lines += ["", f"✦ First Half/Phase: {names(b.get('phase1'), disp)}",
               f"- {four}: {names(b.get('phase1_4'), disp)}", "",
