@@ -2756,7 +2756,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1792814432
+          "ts": 1792825233
         },
         "data": {
           "announcement_locked": true,
@@ -2764,22 +2764,22 @@
           "announcement_ts": 1792555200,
           "banners": {
             "phase1": [
-              "Mitya",
-              "[[Furina]] & Valeriy"
+              "Mitya & Valeriy",
+              "Furina & Valeriy"
             ],
             "phase2": [
               "Zibai",
               "Linnea"
             ],
             "reruns": [
-              "[[Furina]] & Valeriy",
+              "Furina & Valeriy",
               "Zibai",
               "Linnea"
             ]
           },
-          "banners_checked_ts": 1792814432,
-          "banners_search_ts": 1792814432,
-          "calendar_ts": 1792814432,
+          "banners_checked_ts": 1792825233,
+          "banners_search_ts": 1792825233,
+          "calendar_ts": 1792825233,
           "estimate_sources": [
             "version cadence"
           ],
@@ -2819,15 +2819,15 @@
         ],
         "first_seen": 1792555239,
         "message_id": "1562314671103418552",
-        "mirror_hash": "935777c720ddf125",
+        "mirror_hash": "8379213840b5e538",
         "mirror_message_id": "1562314676023332895",
         "mirror_webhook_fp": "ee502f83bdf4",
-        "payload_hash": "9ce9ab03a751bc49",
+        "payload_hash": "acbfddd17882965d",
         "posted_at": 1792555239,
         "prov": {
           "b_phase1": [
             6,
-            1792770619
+            1792825233
           ],
           "b_phase1_by": [
             "wiki"
@@ -2868,7 +2868,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1792770619,
+        "updated_at": 1792825233,
         "webhook_fp": "19991534cf6d"
       }
     },
@@ -3275,10 +3275,10 @@
         ],
         "first_seen": 1791172831,
         "message_id": "1556516427786096744",
-        "mirror_hash": "279686aae2231489",
+        "mirror_hash": "6468669ce9c5f16d",
         "mirror_message_id": "1556585523047436341",
         "mirror_webhook_fp": "db5f4f8a75a5",
-        "payload_hash": "6b6ffd0371d44c36",
+        "payload_hash": "089da7b23455ffda",
         "posted_at": 1791172831,
         "preinstall_offset_h": 42.0,
         "prov": {
@@ -3348,7 +3348,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1792575028,
+        "updated_at": 1792825233,
         "webhook_fp": "19991534cf6d"
       }
     }
