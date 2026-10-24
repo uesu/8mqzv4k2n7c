@@ -1,0 +1,1506 @@
+https://zenless.hoyoverse.com/en-us/character
+https://zzz.nanoka.cc/diff
+https://gi.nanoka.cc/diff
+https://hsr.nanoka.cc/diff
+https://ww.nanoka.cc/diff/
+https://zzz.gachabase.net/changelog/beta
+https://nanoka.cc/
+https://gachabase.net/
+
+potential fifth feature for all games beta where it automatically posts beta changelogs or diff and Ce or creator server only on the game channels like for example gi-news, hsr-news, hna-news, zzz-news, wuwa-news (but it can be customized on the variable secret)
+
+the only thing that it's posts is a new character from the version or each patch so like for example if on 3.3 was Phoenix Reffaella and Severian Lowell then that will be the only character focused which is the new character
+
+next is on 3.4 since beta went live, the new characters were sunbringer, robin, kafka
+
+along with the new w-engines 5 star and 4 star, the disc drives if there's any
+
+though of course include if there's like buff for old characters like example potential mindscapes or in genshin, the old characters got updated kits or buffs
+
+this applies to all games
+
+as well as the photos from splash art, the artifacts, w-engine, relics, ornament, etc., is included
+
+if there's none yet for example only or none like omit to not get errors on posting
+
+but usually it can fetch on the official websites for splash arts for example: https://zenless.hoyoverse.com/en-us/character
+
+there's also a ping variable for it, off by default
+
+there's also maximum savings, calls, requests, and safety if somehow in the future blocked so like it's maximum safe, friendly to the sites?
+
+peak performance pristine and no bugs, no errors, no edge case bugs
+
+of course if it's long, there's automatic page 1, page 2 of the character
+
+honkai nexus anima and ananta is excluded for now because they are not released yet
+
+also for already resources, repository githubs for the game express which is useful too
+
+https://zenless.hoyoverse.com/en-us/character?id=166651
+https://fastcdn.hoyoverse.com/content-v2/nap/166651/01c50fc6948b875b7852ad27612e8e03_8282951897168988080.png
+
+also once this fifth feature is applied, this will go live like it would post when activated
+
+of course fifth feauture is disabled by default
+
+for the format it looks like this since gachabase got updated
+
+[Zenless Zone Zero] v3.4.1 Rev. 19834130 Update
+
+Changelog: https://zzz.gachabase.net/changelog/beta#v3.4.1-rev-19834130
+
+[Agents] Robin
+|- Chinese: - (Full (https://zzz.gachabase.net/agents/1661/robin/beta?lang=chs))
+|- English: - (Full (https://zzz.gachabase.net/agents/1661/robin/beta?lang=en))
+
+[Agents] Sunbringer
+|- Chinese: - (Full (https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=chs))
+|- English: - (Full (https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en))
+
+[W-Engines] 14160
+|- Chinese: - (Full (https://zzz.gachabase.net/w-engines/14160/14160/beta?lang=chs))
+|- English: - (Full (https://zzz.gachabase.net/w-engines/14160/14160/beta?lang=en))
+
+[W-Engines] Robin's Exclusive W-Engine
+|- Chinese: - (Full (https://zzz.gachabase.net/w-engines/14166/robins-exclusive-w-engine/beta?lang=chs))
+|- English: - (Full (https://zzz.gachabase.net/w-engines/14166/robins-exclusive-w-engine/beta?lang=en))
+
+[Drive Discs] 34300
+|- Chinese: - (Full (https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=chs))
+|- English: - (Full (https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=en))
+
+[Drive Discs] 34400
+|- Chinese: - (Full (https://zzz.gachabase.net/drive-discs/34400/34400/beta?lang=chs))
+|- English: - (Full (https://zzz.gachabase.net/drive-discs/34400/34400/beta?lang=en))
+
+this is the reference too, just a reference:
+
+# **🎮 COMPACT DIFF FORMATTING GUIDE — FINAL**
+### Genshin Impact | Honkai: Star Rail | Zenless Zone Zero | Wuthering Waves | Honkai: Nexus Anima | Ananta | Other Games
+
+> Copy-paste this entire guide into new chats. Drop your data immediately after — **JSON will be produced automatically with no extra prompt needed.**
+
+---
+
+## **📋 SCOPE**
+
+🎮 Genshin Impact — GI
+🚂 Honkai: Star Rail — HSR
+⚡ Zenless Zone Zero — ZZZ
+🌊 Wuthering Waves — WW
+💠 Honkai: Nexus Anima — HNA
+🌿 Ananta (Netease) — ANANTA
+🎲 Other Games — as labeled
+
+---
+
+## **🎯 VERY IMPORTANT**
+
+**Upon receiving data or information after this guide, skip all human-readable formatting entirely. Do NOT produce markdown patch notes, highlights, or any intermediate output. Go STRAIGHT to JSON Component V2 output immediately.**
+
+**To save time and respect the 4000-character component limit, NEVER put everything in one JSON. Always split into SEPARATE JSON messages, one per container.**
+
+**When a LINK is posted (nanoka diff, gachabase changelog, or any source), ALWAYS search, browse, scrape, and read the FULL contents of that link. Cross-reference other websites, wikis, and guides to verify accuracy before producing output. Never guess from partial data. (See Section 4B.)**
+
+**Directional tags ([BUFF]/[NERF]) require REASONING FIRST — a number going down is NOT automatically a [NERF]. Think through how the character actually plays, search/verify against community analysis, and explain. If still unsure, REMOVE the directional tag entirely. (See Section 1B.)**
+
+**When the data contains equipment/item changes (weapons, artifacts, light cones, relics, planar ornaments, W-engines, disc drives, bangboo, echo sets, and similar), the EQUIPMENT MEDIA GALLERY FORMAT (Section 8B) is MANDATORY — one media gallery (type 12) per item, placed directly above that item's text block. Never collapse everything into a single gallery.**
+
+**When the data contains CHARACTER/AGENT/RESONATOR changes, the CHARACTER MEDIA GALLERY FORMAT (Section 8C) is MANDATORY — one container per character, with the character's splash art / reveal image gallery placed directly above that character's text block. This must be followed every time without exception.**
+
+---
+
+## **🎯 CORE CONCEPT**
+
+Keep the **original full skill/ability/eidolon/constellation/resonance chain text** exactly as it is.
+**Only** mark the values or words that changed using inline strikethrough → new value.
+Add a **[TAG]** at the start of each changed line.
+Do **not** rewrite the description. Do **not** add extra bullet-point explanations unless flagged as **"this explanation"** by the user.
+Unaffected text stays **completely untouched.**
+Use `[...]` to skip long unchanged sections of text.
+When a thing is changed like this for example: **[NERF]** RES PEN type narrowed from ~~**All-Type RES PEN**~~ → **Quantum RES PEN**. *(Value remains **15%**.)* It should not be tagged as a [NERF], do [CHANGED] instead.
+
+---
+
+## **🏷️ SECTION 1 — CHANGE TAGS**
+
+Always **bold + brackets:**
+
+**[BUFF]** — Increase in power / value
+**[NERF]** — Decrease in power / value
+**[ADJUSTMENT]** — Neutral mechanical / classification change
+**[CHANGED]** — Terminology / reference / type swap with no power direction (e.g., reaction renamed, RES PEN type narrowed at same value, skill name renamed)
+**[REWORK]** — Full mechanic overhaul
+**[NEW]** — Brand new effect added
+**[NEW — Name]** — New named effect added
+**[REWORK — Name]** — Named mechanic rework
+**[TEXT FIX]** — Wording/tooltip only — no functional change
+
+---
+
+## **⚖️ SECTION 1B — TAG DIRECTION REASONING (MANDATORY — ALL GAMES)**
+
+**A raw number going DOWN is NOT automatically a [NERF], and a number going UP is NOT automatically a [BUFF]. Always reason through how the character actually plays BEFORE assigning a directional tag.**
+
+### **The Process — in order:**
+
+1. **THINK FIRST** — reason through the character's kit, rotation, resource loops, and what the value actually does in play
+2. **SEARCH/SCRAPE to verify** — cross-reference wikis, guides, community analysis (Reddit, YouTube, review sites) for how the change is actually received
+3. **TAG + EXPLAIN** — assign the correct directional tag and always attach a short explanation of WHY
+4. **UNSURE? REMOVE THE TAG** — if the direction is genuinely unclear after reasoning and searching, output the diff line with NO directional tag at all. Never guess a direction.
+
+### **Common "reduced = BUFF" cases:**
+
+| Change | Actual Direction | Why |
+|---|---|---|
+| Max Energy / Ultimate cost reduced | **[BUFF]** | Ultimate available more often — faster rotations |
+| Cooldown reduced | **[BUFF]** | More frequent usage |
+| Energy/Adrenaline/resource cost reduced or removed | **[BUFF]** | Cheaper to use |
+| Stack requirement to trigger effect reduced | **[BUFF]** | Easier trigger |
+| HP threshold for defensive trigger raised | **[BUFF]** | Triggers earlier / more safely |
+| Charge time / attack time reduced | **[BUFF]** | Faster execution |
+
+### **Correct Example (with reasoning + explanation):**
+
+```
+*   **[BUFF]** Max Energy reduced from ~~**140**~~ → **130**. *(Lower Ultimate cost — his Ultimate comes back online in fewer actions, making rotations smoother. Since his Ultimate grants a 25% SPD self-buff and his kit converts surplus SPD into Elation, more frequent Ultimates directly feed his damage scaling.)*
+```
+
+❌ **WRONG:** `**[NERF]** Max Energy reduced from ~~**140**~~ → **130**.` — this reads the number direction only, not the gameplay direction.
+
+### **Unsure Example (tag removed):**
+
+```
+*   Max Energy reduced from ~~**140**~~ → **130**.
+```
+
+No tag, plain diff line. This is always preferred over guessing a wrong direction.
+
+---
+
+## **📝 SECTION 2 — NAME & REFERENCE FORMATTING**
+
+No backticks for skill/mechanic/ability names.
+
+**Bold References — headers, labels, emphasized in-text names:**
+```
+**[Wind Energy]**
+**[EX Special Attack: Moto Slam]**
+**[Trial by Cold]**
+**[Certified Banger]**
+```
+
+**Non-Bold References — general in-text mentions:**
+```
+[Wind Energy]
+[Erosion Mark]
+[Trial by Cold]
+[Certified Banger]
+```
+
+**Parentheses References — short passive/skill references, GI style, descriptors:**
+```
+(Power Suppression)
+(Guidance of Theosis)
+(Pathfinder's Blessing)
+```
+
+**When to Use What:**
+
+Skill/mechanic name as a section **header label** → **Bold**
+Example: **Basic Attack** **[Knight Arts]:**
+
+Skill/mechanic name **emphasized in a change line** → **Bold**
+Example: **[BUFF]** [EX Special Attack: Moto Slam] loses its Adrenaline cost — **[Moto Slam]** now activates on Energy alone.
+
+Skill/mechanic name as a **general in-text mention** → Non-bold
+Example: Upon damaging a target, Erosion Field inflicts [Erosion Mark] on the target, lasting **6s**.
+
+**GI passive/skill short reference** in-text → Parentheses
+Example: (Guidance of Theosis) Elemental RES shred increased.
+
+**GI constellation full title** → Parentheses bold
+Example: **C2** **("I Will Guide You and Show You the Path"):**
+
+**Character variant / game system label** → Parentheses plain
+Example: Trailblazer (Elation), Mindscape Cinema (Constellations)
+
+**CN + EN name pair** — only include CN when needed for correction, translation, or text fix. Otherwise omit CN:
+Example with CN needed: **[Blade Spiral / 旋刃]**
+Example without CN: **[Blade Spiral]**
+
+---
+
+## **📢 SECTION 3 — INLINE DIFF FORMAT**
+
+**Numbers / Values Changed:**
+```
+*   **[BUFF]** DMG Multiplier increased from ~~**220%**~~ → **240%** of ATK.
+*   **[NERF]** CRIT Rate conversion reduced from ~~**25%**~~ → **20%**.
+*   **[BUFF]** Flat ATK bonus increased from ~~**240**~~ → **300**.
+*   **[BUFF]** Max Energy reduced from ~~**140**~~ → **130**. *(Lower Ultimate cost — faster rotations; see Section 1B)*
+*   **[NERF]** Cooldown increased from ~~**16s**~~ → **17s**.
+*   **[BUFF]** Toughness DMG (Single Target) increased from ~~**5**~~ → **10**.
+```
+
+**Unsure direction — no tag (Section 1B):**
+```
+*   Max Energy reduced from ~~**140**~~ → **130**.
+```
+
+**Words / Text Changed:**
+```
+*   **[TEXT FIX]** Wording updated from ~~"a random enemy"~~ → **"one random enemy"**.
+*   **[ADJUSTMENT]** Trigger rate now based on ~~[Hidden Punchline]~~ → **[Hidden MMR]**.
+*   **[CHANGED]** Terminology updated from ~~"Stellar-Conduct and Stellar Swirl"~~ → **"Stellar Glimmer"** (星烁).
+*   **[CHANGED]** Name updated from ~~**[Twittering Quartet]**~~ → **[Chirrup Quartet]**.
+```
+
+**New Effect Added:**
+```
+*   **[NEW]** During Enhanced Basic ATK, DMG taken by enemy targets in the Zone increases by **20%**.
+*   **[NEW — Entropy Shift Passive]:** While in Entropy Shift states, Denia gains **+60% ATK** and **+60% Fusion DMG Bonus**.
+```
+
+**[NEW] Referencing a Game Mechanic Keyword — ALWAYS include the original definition (ALL GAMES):**
+When a **[NEW]** line references a named game mechanic/keyword (Follow-Up ATK, Sheer Force, Coordinated Attack, etc.), always add the mechanic's **original in-game definition text** as an indented sub-bullet in bold parentheses:
+```
+*   **[NEW]** In solo-Elation teams, when Aventurine • Waveflair deals DMG using his Elation Skill, it is considered as launching a Follow-Up ATK.
+    *   **(Follow-Up ATK)** Unleashes an extra attack on the target. This effect is triggered automatically when requirements are met.
+```
+The definition comes from the game's own data/terminology — search/scrape if not present in the provided data.
+
+**Rework Block (Old → New):**
+```
+*   **[REWORK — Effect Name]:** *Old Effect:* ~~Ultimate additionally increases the SPD of one designated ally by **12%** for 3 turns.~~
+*   **[REWORK — Effect Name]:** *New Effect:* When using an Elation Skill, increases this unit's **CRIT DMG by 100%** for 3 turns.
+```
+
+**Reclassification / Structural Change:**
+```
+*   **[ADJUSTMENT]** Reclassified from **Special Attack** → **EX Special Attack**. *(Energy cost of 40 retained)*
+*   **[ADJUSTMENT]** Activation condition changed. *Old:* Requires [Trial by Cold]. *New:* Hold input to activate — [Trial by Cold] requirement removed.
+```
+
+**Stat Node / Ascension Node Changes — ALWAYS full explanation with total (ALL GAMES):**
+When stat nodes change type or value, always explain the change and calculate the **total** across affected nodes:
+```
+*   **[ADJUSTMENT]** Ascension 3 / 6 stat nodes changed from ~~**DEF 5% / 7.5%**~~ → **Elation 4% / 6%**.
+    *   **(Elation Boost)** Total Elation from stat nodes increases by **10%** total (4% + 6%) after the change — replacing **12.5%** total DEF (5% + 7.5%). Shifts stat node value from defense into his core Elation damage scaling.
+```
+Always show the math: `X% + Y% = Total%`
+
+---
+
+## **📖 SECTION 4 — DOCUMENT STRUCTURE**
+
+```
+## [GAME - Version/Beta] Patch Notes: Rev. XXXXXXX → XXXXXXX
+
+Resource: [gachabase](link) / [nanoka](link)
+
+- vX.X.X Rev. XXXXXXX → XXXXXXX Update — CN Build *(or label)*
+- @everyone *(if major/urgent)*
+- Characters/Agents affected: **Name1**, **Name2**
+- **Name1** one-line summary of key changes.
+- **Name2** one-line summary of key changes.
+
+---
+
+### **Highlights**
+
+**Name1** paragraph summary of all changes — buffs, nerfs, reworks, with key values called out inline.
+**Name2** paragraph summary of all changes.
+
+---
+
+## **[Character/Agent Adjustments] Name**
+**Element/Attribute:** Type | **Path/Weapon/Specialty:** Type | **Rarity:** ★★★★★
+**Faction/Ascension Stat/Max Energy/Base SPD:** Value *(include all that apply and have data)*
+
+One paragraph summarizing overall direction of changes.
+
+**Note:** [Source note about CN build / garbled text / translation source — only include when relevant]
+
+---
+
+### **Profile Changes** *(flavor text / Max Energy / base stat changes — when applicable)*
+### **Base Kit Changes**
+### **Eidolon / Constellation / Resonance Chain / Mindscape Changes**
+### **Memosprite Changes** *(HSR — when applicable)*
+### **Core Passive & Additional Ability Changes**
+### **Trace / Ascension Changes** *(HSR — when applicable)*
+### **Special Attack Reclassification** *(ZZZ — when applicable)*
+### **Text Changes** *(when applicable)*
+### **Weapon / Light Cone / W-Engine Changes** *(when applicable — uses Section 8B format)*
+### **Artifact / Relic / Disc Drive / Echo Set Changes** *(when applicable — uses Section 8B format)*
+```
+
+---
+
+## **📚 SECTION 4B — RESOURCE LINKS & SOURCE SCRAPING (MANDATORY)**
+
+### **Official Resource Links Per Game:**
+
+| Game | nanoka | gachabase |
+|---|---|---|
+| 🎮 GI | https://gi.nanoka.cc/ | https://gi.gachabase.net/?lang=en |
+| 🚂 HSR | https://hsr.nanoka.cc/ | https://hsr.gachabase.net/?lang=en |
+| ⚡ ZZZ | https://zzz.nanoka.cc/ | https://zzz.gachabase.net/?lang=en |
+| 🌊 WW | https://ww.nanoka.cc/ | — *(nanoka only)* |
+
+### **Diff / Changelog Links (before ↔ after data):**
+
+| Game | nanoka diff | gachabase changelog |
+|---|---|---|
+| 🎮 GI | https://gi.nanoka.cc/diff | https://gi.gachabase.net/changelog/beta?lang=en |
+| 🚂 HSR | https://hsr.nanoka.cc/diff | https://hsr.gachabase.net/changelog/beta?lang=en |
+| ⚡ ZZZ | https://zzz.nanoka.cc/diff | https://zzz.gachabase.net/changelog/beta?lang=en |
+| 🌊 WW | https://ww.nanoka.cc/diff | — |
+
+### **Resource Line Format (in JSON header content):**
+
+```
+GI:  Resource: [gachabase](https://gi.gachabase.net/changelog/beta?lang=en) / [nanoka](https://gi.nanoka.cc/)
+HSR: Resource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en) / [nanoka](https://hsr.nanoka.cc/)
+ZZZ: Resource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en) / [nanoka](https://zzz.nanoka.cc/)
+WW:  Resource: [nanoka](https://ww.nanoka.cc/)
+```
+
+### **Source Scraping Rules:**
+
+1. **When a link is posted** (diff page, changelog, or any source) → **always search, browse, scrape, and read the FULL contents** of that link — the diff pages contain the before/after data
+2. **Always cross-reference** other websites, information sources, guides, and wikis to verify accuracy — never rely on a single partial read
+3. **This includes verifying [BUFF]/[NERF] direction** — check community analysis, reviews, YouTube, Reddit for how changes are actually received in play (Section 1B)
+4. **nanoka diff pages** = before ↔ after revision diffs; **gachabase changelog pages** = beta changelogs with CN data and asset images
+5. If a link cannot be fully read/scraped → say so explicitly instead of guessing or fabricating data
+
+---
+
+## **📢 SECTION 5 — HIGHLIGHTS & PER-CHARACTER EXPLANATIONS**
+
+**Highlights Block (Top-Level):**
+```
+### **Highlights**
+
+**Name1** is receiving [summary of what changed — nerfs, buffs, reworks, key values called out]. **Name2** receives [summary].
+```
+
+**Per-Character Explanation Paragraph** — placed under the character header, before the note:
+```
+## **[Agent Adjustments] Starlight Billy**
+**Attribute:** Physical | **Specialty:** Rupture | **Rarity:** ★★★★★
+**Faction:** Cunning Hares
+
+Starlight Billy receives a broad numerical reduction across nearly all skill multipliers, with select compensating buffs: his CRIT DMG self-buff duration doubles from 30s to 45s, [EX Special Attack: Moto Slam] loses its Adrenaline cost, and Cinemas 2 and 6 are reworked to shift power toward his signature EX loop.
+
+**Note:** EN skill names are garbled/merged in this CN build diff on nanoka. Skill names below are translated from CN (gachabase) for accuracy.
+```
+
+**When to Include the Note:**
+- CN build with garbled/merged EN text
+- Skill names translated from CN source
+- Partial data / early datamine
+- Placeholder backend strings present
+- Values tentative / subject to change
+
+---
+
+## **📐 SECTION 5B — STAT BLOCK & VALUES RULES**
+
+**Character/Weapon/W-Engine/Lightcone Stat Block:**
+Include all stats that have available data. Omit any stat with no data — do not placeholder or guess.
+
+```
+## Rin Tohsaka
+**Element:** Quantum | **Path:** The Erudition | **Rarity:** ★★★★★
+**Max Energy:** 160 | **Base SPD:** 102 | **Ascension Stat:** CRIT DMG
+```
+
+**Stat line with inline diff** — when a base stat itself changed, show it directly in the stat line:
+```
+**Element:** Quantum | **Path:** The Elation | **Rarity:** ★★★★★ | **Max Energy:** ~~140~~ → **130**
+```
+
+For weapons / lightcones / W-engines, include the base value if data is available:
+```
+**Base ATK:** 674 | **Substat:** CRIT DMG 36.8%
+```
+If no data → do not include that line.
+
+**Stacks / Turns — Always Calculate and Show the Total:**
+When a skill description mentions stacks or turns with per-stack or per-turn multipliers, calculate the max total and show it inline.
+
+Example:
+```
+lasting for 2 turn(s) and stacking up to 3 time(s). Each stack of "Safe Escort" increases Assist Skill DMG by 25%. When "Safe Escort" reaches 3 stacks, each stack of "Safe Escort" increases Ultimate DMG by 30%.
+```
+→ Add after the relevant line:
+*(Assist Skill DMG Total at Max Stacks: 3 × 25% = **75%** | Ult DMG Total at Max Stacks: 3 × 30% = **90%**)*
+
+Always show the math explicitly: `N × X% = Total%`
+
+**Stat Node / Ascension Node Changes — Always Full Explanation with Total (ALL GAMES):**
+When Ascension stat nodes change stat type or values, always add a full explanation sub-bullet with the calculated total:
+```
+*   **[ADJUSTMENT]** Ascension 3 / 6 stat nodes changed from ~~**DEF 5% / 7.5%**~~ → **Elation 4% / 6%**.
+    *   **(Elation Boost)** Total Elation from stat nodes increases by **10%** total (4% + 6%) after the change — replacing **12.5%** total DEF (5% + 7.5%). Shifts stat node value from defense into his core Elation damage scaling.
+```
+
+---
+
+## **📢 SECTION 5C — SKILL NAME RULES**
+
+**Remove CN text from skill name headers by default** unless CN is needed for correction, translation clarification, or text fix context.
+
+**Default (no CN needed):**
+```
+*   **Assist Skill** **[Trailblaze, By Your Side]:**
+```
+
+**CN included only when needed for correction or translation:**
+```
+*   **Additional Ability** **[Icebound / 饮冰]:**
+    *   **[TEXT FIX]** Trigger condition wording updated: ~~"Ice Attribute Buildup Rate"~~ → **"Ice Anomaly Buildup Rate"**. *(CN: 冰异常积蓄效率 — aligns with standard ZZZ terminology; no functional change expected)*
+```
+
+**Ascension Node Naming — Use "Ascension" (ALL GAMES):**
+When a node/trace is tied to Ascension (HSR A2/A4/A6 traces and equivalents in other games), label it with the full word **Ascension** to avoid confusion:
+```
+*   **Ascension 4** **[Revel in Surging Waves]:**
+*   **Ascension 2** **[Trace Name]:**
+```
+✅ **Ascension 4** — ❌ not bare **A4**
+
+**Passive Ability Naming — Use correct terms:**
+When it's a passive node (not an active skill, not Ascension-tied), use P1 / P2 / P3 / P4 — not A1 / A2 / A3 / A4.
+
+```
+*   **P1** **[Passive Name]:**
+*   **P2** **[Passive Name]:**
+```
+
+Use A1/A2/A3/A4 only if the game explicitly labels them as A1/A2/A3/A4 in its own UI — and even then, prefer **Ascension X** when the game calls them Ascension abilities.
+
+---
+
+## **📢 SECTION 5D — INTRO SKILL / NEW MECHANIC CALLOUT (WW & others)**
+
+When a skill gains a brand new mechanic or behavior not previously present (e.g., Intro Skill now pulls in nearby targets), call it out explicitly with **[NEW]** and a plain-language note:
+
+```
+*   **Intro Skill** **[Clip It]:**
+    *   **[NEW]** Now pulls in nearby targets on cast.
+```
+
+This applies to any skill type — Intro, Outro, Resonance Skill, Forte Circuit, etc. — whenever a meaningfully new behavior is added that wasn't there before.
+
+**When the [NEW] mechanic references a named game keyword** (Follow-Up ATK, Coordinated Attack, Sheer Force, etc.) → always include the keyword's original in-game definition as an indented sub-bullet (see Section 3 and Section 5G).
+
+---
+
+## **📢 SECTION 5E — DISCLAIMER**
+
+When English text has been updated in the revision but may still not fully reflect the actual kit, include this disclaimer at the top of the relevant character section, after the summary paragraph:
+
+**Disclaimer:** While English has been updated this revision, it may still not be up to date with the actual kit, so double check with Chinese!
+
+---
+
+## **⚔️ SECTION 5F — EQUIPMENT / ITEM TEXT FORMAT**
+
+Applies to all equipment/item categories per game:
+
+| Game | Equipment/Item Categories |
+|---|---|
+| 🎮 GI | Weapons (Bow, Claymore, Sword, Catalyst, Polearm), Artifacts |
+| 🚂 HSR | Light Cones, Relics, Planar Ornaments |
+| ⚡ ZZZ | W-Engines, Disc Drives, Bangboo |
+| 🌊 WW | Weapons (Sword, Broadblade, Pistol, Gauntlet, Rectifier), Echo Sets |
+| 🎲 Other/Future Games | Equivalent equipment/item systems as they appear |
+
+**Item text block format:**
+```
+### **Item Name** (Rarity Type)
+**Base ATK:** 565 | **Substat:** Value    ← only if data exists; omit if no data
+*   **[TAG]** Change line with inline diff.
+*   *(Values unchanged: ...)* ← when only text/terminology changed
+```
+
+**Named item examples:**
+```
+### **Blade of Atonement** (4★ Claymore)
+### **Whitelake Frostfeather** (5★ Sword)
+```
+
+**Unnamed item — ID EXCEPTION:**
+When the item has no EN name yet, use the ID + CN name to identify it. **This is the ONLY case where IDs are allowed** — it overrides the "never include IDs" rule because the ID is the only identifier:
+```
+### **4★ Sword (ID: 11435)** — 独光的赐坠
+### **4★ Bow (ID: 15435)** — 缀夜为烛 / 悬黎千钧
+```
+
+**Artifact / Relic / Disc Drive / Echo Set format:**
+```
+### **Heart of the Furnace** (炉火融炼之心)
+*4-Piece Set:*
+*   **[CHANGED]** ...
+*   **[TEXT FIX]** ...
+*   *(Values unchanged: ...)*
+```
+
+**Section header with system-wide summary** — when multiple items share a change, state it once at the top:
+```
+## Weapon Changes — Text & Terminology Updates
+
+**System-wide:** Multiple weapons update "Stellar-Conduct/Stellar Swirl" → **"Stellar Glimmer"** (星烁) as the umbrella reaction term. Values unchanged unless noted.
+```
+
+**Stat diff on shared rebalance** — show inline in each item's stat line:
+```
+**Base ATK:** ~~454~~ → **510** | **CRIT Rate:** ~~36.8%~~ → **27.6%**
+```
+
+---
+
+## **📖 SECTION 5G — MECHANIC KEYWORD DEFINITIONS (ALL GAMES)**
+
+Whenever a change line — especially **[NEW]** and **[REWORK]** — references a **named game mechanic keyword** (Follow-Up ATK, Coordinated Attack, Sheer Force, Aftershock, Break Effect states, etc.), always include the keyword's **original in-game definition** directly beneath it as an indented sub-bullet:
+
+**Format:**
+```
+*   **[NEW]** In solo-Elation teams, when Aventurine • Waveflair deals DMG using his Elation Skill, it is considered as launching a Follow-Up ATK.
+    *   **(Follow-Up ATK)** Unleashes an extra attack on the target. This effect is triggered automatically when requirements are met.
+```
+
+**Rules:**
+1. Definition text = the game's own original wording from its data/terminology glossary
+2. If the definition is not in the provided data → **search/scrape** the game's official terminology to get it accurately (Section 4B)
+3. Format: indented sub-bullet, keyword in **bold parentheses** → **(Keyword)** followed by the plain definition text
+4. This helps readers immediately understand what the referenced mechanic does without leaving the post
+5. Applies to **all games** and all similar keyword references
+
+---
+
+## **🌐 SECTION 6 — CN TRANSLATION RULES**
+
+- **Always translate CN text to English** — accurate, not literal
+- **If EN is provided** by user → use as reference, reduce translation time
+- **If EN is not provided** → translate from CN and flag it:
+  - *(CN: 冰异常积蓄效率 — translated as "Ice Anomaly Buildup Rate")*
+- **Keep CN text alongside EN only when relevant** (correction, translation, text fix):
+
+```
+**Core Passive** **[Prometheus / 盗火]:**
+```
+
+- **Skill name format with CN (only when needed):**
+```
+**[EN Name / 中文名]**
+```
+
+- **Translated values flag:**
+```
+*(CN: 冰异常积蓄效率 — likely a text clarification; no functional change expected)*
+```
+
+---
+
+## **📌 SECTION 7 — QUICK REFERENCE**
+
+Skill name bold header → **[Knight Arts]:** ✅ — not `[Knight Arts]`: ❌
+Skill name in-text bold → **[Moto Slam]** loses its cost ✅
+Skill name in-text plain → [Erosion Mark] on the target ✅
+GI passive short ref → (Guidance of Theosis) ✅ — not [Guidance of Theosis] ❌
+GI constellation title → **C2** **("Full Name"):** ✅
+CN in skill name → only when needed for correction/translation ✅ — not by default ❌
+Inline value diff → ~~**220%**~~ → **240%** ✅ — not 220% → 240% ❌
+Inline text diff → ~~"a random enemy"~~ → **"one random enemy"** ✅
+Change tag → **[BUFF]** ✅ — not [BUFF] plain ❌
+Tag direction → reason through the KIT first, not the raw number ✅ — energy/cost/cooldown reduced = **[BUFF]** with explanation ✅ — not auto-[NERF] ❌
+Unsure direction → remove tag, plain diff line ✅ — not guess ❌
+Directional tag → always add *(why it's a buff/nerf)* explanation ✅
+Terminology/type/name swap → **[CHANGED]** ✅ — not **[NERF]** / **[BUFF]** ❌
+New effect → **[NEW]** or **[NEW — Name]:** ✅
+[NEW] with mechanic keyword → include **(Keyword)** original definition sub-bullet ✅ — not omit ❌
+Rework → **[REWORK — Name]:** *Old/New* block ✅
+Text only → **[TEXT FIX]** ✅ — not **[ADJUSTMENT]** ❌
+Reclassification → **[ADJUSTMENT]** Reclassified from X → Y ✅ — not **[NERF]** ❌
+Stat node change → full explanation + calculated total (4% + 6% = **10%** total) ✅ — not raw line only ❌
+Ascension nodes → **Ascension 4** ✅ — not bare **A4** ❌
+Source note → **Note:** ... ✅ — not > ⚠️ *Note: ...* ❌
+Character variant → Trailblazer (Elation) ✅ — not Trailblazer [Elation] ❌
+Game system label → Mindscape Cinema (Constellations) ✅
+Passive nodes → P1 / P2 / P3 / P4 ✅ — not A1 / A2 / A3 / A4 ❌ (unless game UI says A1/A2)
+Stacks/turns math → always calculate and show total ✅ — not leave raw ❌
+Stat block values → include if data exists, omit if no data ✅ — not placeholder ❌
+Base stat changed → show inline in stat line → **Max Energy:** ~~140~~ → **130** ✅
+Intro skill new mechanic → **[NEW]** callout ✅ — not silently omitted ❌
+Duplicate words → remove ✅
+IDs (e.g., ID: 23062) → never include ✅ — **EXCEPT unnamed equipment items** → **4★ Sword (ID: 11435)** ✅
+Unaffected text → keep as-is, use `[...]` to skip ✅ — not rewrite ❌
+Resource links → correct per-game links from Section 4B ✅ — not made-up/wrong URLs ❌
+Link posted → scrape/read FULL contents + cross-reference wikis ✅ — not partial read or guess ❌
+Equipment items → one media gallery (type 12) per item, above its text ✅ — not one shared gallery for all ❌
+Gallery position → image BEFORE its item's text block ✅ — not after ❌
+Artifact/Relic/Echo sets → one gallery per set (combined image allowed) ✅
+Characters → one container per character, splash art/reveal image gallery above character text ✅ (Section 8C)
+First character container → patch header block FIRST, then gallery ✅
+Continuation character containers → gallery FIRST (no patch header) ✅
+Equipment/character with no image URL yet → placeholder gallery still created ✅ — not omitted ❌
+
+---
+
+## **🗂️ SECTION 8 — JSON COMPONENT V2 RULES (discohook.app)**
+
+**Structure:**
+- Use Component V2 format (type 17 container → type 10 text / type 12 media / type 9 action row)
+- `"flags": 32768` always on the root object
+- `"accent_color": null` and `"spoiler": false` on containers
+- Image media block (type 12) stays as a placeholder with the URL structure intact — do not remove or alter image blocks
+- On separate JSONs / Split into **multiple JSON messages**, always add a placeholder image media block
+- Action row (type 9) with the Citlali News button stays at the bottom of every container
+- **Equipment/item content (weapons, artifacts, light cones, relics, planar ornaments, W-engines, disc drives, bangboo, echo sets, etc.) → MUST use the Section 8B interleaved media gallery format**
+- **Character/Agent/Resonator content → MUST use the Section 8C character media gallery format**
+
+**4000 Character Limit:**
+- Each type 10 text block cannot exceed 4000 characters
+- Separate JSONs, one per container — do not do all in one
+- If content exceeds 4000 characters, split into multiple type 17 containers, each with their own header text block, content block(s), and the action row button at the bottom
+- Number containers sequentially with incrementing IDs
+
+**Header format inside JSON content** — use the correct per-game Resource links from Section 4B:
+```
+## [GAME - X.X Beta] Patch Notes: Rev. XXXXXXX\nResource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en) / [nanoka](https://hsr.nanoka.cc/)
+```
+
+**Image placeholder format — leave exactly as-is:**
+```json
+{
+  "id": 3,
+  "type": 12,
+  "items": [
+    {
+      "media": {
+        "url": "https://media.discordapp.net/attachments/...",
+        "proxy_url": "https://media.discordapp.net/attachments/...",
+        "width": 2560,
+        "height": 1440,
+        "content_type": "image/jpeg"
+      },
+      "description": null,
+      "spoiler": false
+    }
+  ]
+}
+```
+
+**Button / action row — always at the bottom of every container:**
+```json
+{
+  "id": 6,
+  "type": 9,
+  "components": [
+    {
+      "id": 7,
+      "type": 10,
+      "content": "**Citlali News**\n-# Delivering news and official updates"
+    }
+  ],
+  "accessory": {
+    "type": 2,
+    "style": 5,
+    "label": "Citlali News",
+    "emoji": {
+      "id": "1439878792653832253",
+      "name": "starward11",
+      "animated": true
+    },
+    "url": "https://discord.gg/HyrVP9wRXu"
+  }
+}
+```
+
+---
+
+## **🖼️ SECTION 8B — EQUIPMENT MEDIA GALLERY FORMAT (MANDATORY)**
+
+**This format is MANDATORY whenever the data contains equipment/item changes** — GI weapons/artifacts, HSR light cones/relics/planar ornaments, ZZZ W-engines/disc drives/bangboo, WW weapons/echo sets, and equivalents in other/future games.
+
+### **THE RULE — Interleaved Galleries, One Per Item:**
+
+Each item gets its **OWN separate media gallery (type 12) block placed directly ABOVE its text block (type 10)**. Galleries and text blocks alternate through the container. **NEVER** merge all images into one gallery. **NEVER** place the image after the text.
+
+### **Container Anatomy:**
+
+```
+Container (type 17)
+├── Header text block (type 10)     → "## Weapon Changes — ..." + optional system-wide summary
+├── Media Gallery (type 12)         → Image of Item 1
+├── Text block (type 10)            → ### Item 1 — stats + change bullets
+├── Media Gallery (type 12)         → Image of Item 2
+├── Text block (type 10)            → ### Item 2 — stats + change bullets
+├── Media Gallery (type 12)         → Image of Item 3
+├── Text block (type 10)            → ### Item 3 — stats + change bullets
+├── ... repeat per item ...
+└── Action Row (type 9)             → Citlali News button (ALWAYS last)
+```
+
+### **Rules:**
+
+1. **One gallery per item** — each weapon/light cone/W-engine/relic/echo set/etc. gets its own type 12 block containing a single image item
+2. **Gallery BEFORE text** — the image always sits directly above the text block it belongs to
+3. **Header first** — section header text block (## Weapon Changes / ## Artifact Changes / ## Light Cone Changes / ## Echo Set Changes / etc.) at the top; include a **System-wide:** summary line when multiple items share a change
+4. **Artifact/Relic/Disc Drive/Echo sets** — one gallery per **set**; a combined image covering the set pieces is allowed
+5. **Image URLs provided by user** → insert directly into each item's gallery with `url`, `proxy_url`, `width`, `height`, `content_type` intact
+6. **Image URLs NOT provided** → still create one placeholder gallery per item so URLs can be pasted in without rebuilding structure:
+```json
+{
+  "id": 3,
+  "type": 12,
+  "items": [
+    {
+      "media": {
+        "url": "https://media.discordapp.net/attachments/placeholder",
+        "proxy_url": "https://media.discordapp.net/attachments/placeholder",
+        "width": 512,
+        "height": 1024,
+        "content_type": "image/png"
+      },
+      "description": null,
+      "spoiler": false
+    }
+  ]
+}
+```
+7. **Media item fields always present:** `"description": null`, `"spoiler": false` — full Discohook compatibility
+8. **4000-char limit still applies** per text block — if many items, split into multiple containers, each ending with the Citlali News action row
+9. **Sequential IDs** — every component gets an incrementing unique ID
+
+### **Full Equipment Example (GI Weapons — condensed):**
+
+```json
+{
+  "attachments": [],
+  "webhook_id": "1487043342578618456",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## Weapon Changes — 4★ Series with Value Changes\n\nFour unnamed 4★ weapons receive a shared stat rebalance: Base ATK raised from 454→510, CRIT Rate reduced from 36.8%→27.6%."
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.gachabase.net/gi/assets/item1.png",
+                "proxy_url": "https://cdn.gachabase.net/gi/assets/item1.png",
+                "width": 512,
+                "height": 1024,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "### **4★ Sword (ID: 11435)** — 独光的赐坠\n**Base ATK:** ~~454~~ → **510** | **CRIT Rate:** ~~36.8%~~ → **27.6%**\n* **[NERF]** Base ATK raised but CRIT Rate reduced — net stat redistribution.\n* **[NERF]** (Swift Stride) ATK bonus range reduced from ~~**20%–40%**~~ → **18%–36%**."
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.gachabase.net/gi/assets/item2.png",
+                "proxy_url": "https://cdn.gachabase.net/gi/assets/item2.png",
+                "width": 512,
+                "height": 1024,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "### **4★ Claymore (ID: 12435)** — 交奏的昼与夜 / 金律铸影\n**Base ATK:** ~~454~~ → **510** | **CRIT Rate:** ~~36.8%~~ → **27.6%**\n* **[NERF]** ATK buff reduced from ~~**20%**~~ → **18%**.\n* **[CHANGED]** Terminology updated from ~~\"Stellar-Conduct and Stellar Swirl\"~~ → **\"Stellar Glimmer\"** (星烁)."
+        },
+        {
+          "id": 7,
+          "type": 9,
+          "components": [
+            {
+              "id": 8,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### **Full Set Example (Artifacts — condensed):**
+
+```json
+{
+  "attachments": [],
+  "webhook_id": "1487043342578618456",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## Artifact Changes"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://media.discordapp.net/attachments/set1-combined.webp",
+                "proxy_url": "https://media.discordapp.net/attachments/set1-combined.webp",
+                "width": 768,
+                "height": 512,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "### **Heart of the Furnace** (炉火融炼之心)\n*4-Piece Set:*\n* **[CHANGED]** Terminology: Trigger updated from ~~\"triggers Stellar-Conduct, Stellar Swirl\"~~ → **\"triggers a Stellar Glimmer reaction.\"**\n* *(Values unchanged: +12% ATK to self, +50% Stellar reaction DMG to nearby party, 12s, off-field trigger)*"
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://media.discordapp.net/attachments/set2-combined.webp",
+                "proxy_url": "https://media.discordapp.net/attachments/set2-combined.webp",
+                "width": 768,
+                "height": 512,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "### **Scarlet Proof** (血红之证)\n*4-Piece Set:*\n* **[BUFF]** Trigger condition expanded: ~~\"after triggering Stellar Swirl\"~~ → **\"after triggering Stellar Swirl or dealing Stellar Swirl reaction DMG.\"**\n* *(Values unchanged: +16% CRIT Rate, +40% Stellar Swirl reaction DMG, 10s)*"
+        },
+        {
+          "id": 7,
+          "type": 9,
+          "components": [
+            {
+              "id": 8,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## **👤 SECTION 8C — CHARACTER MEDIA GALLERY FORMAT (MANDATORY)**
+
+**This format is MANDATORY whenever the data contains character/agent/resonator changes.** The character's **splash art or character reveal image** goes in a media gallery (type 12) placed **directly above that character's text block**.
+
+### **THE RULE — One Character Per Container, Image Above Text:**
+
+Each character gets their **OWN container (type 17)**, with their splash art / reveal image gallery sitting **directly above** their text content. The image placement differs between the FIRST container and CONTINUATION containers.
+
+### **Container Anatomy — FIRST Container (Character 1):**
+
+```
+Container (type 17)
+├── Header text block (type 10)     → "## [GAME - X.X Beta] Patch Notes: Rev. XXXXX
+│                                      Resource: [gachabase](...) / [nanoka](...)"
+├── Media Gallery (type 12)         → Character 1 splash art / reveal image
+├── Text block (type 10)            → ## **Character Name** + stat line + summary + all changes
+└── Action Row (type 9)             → Citlali News button (ALWAYS last)
+```
+
+### **Container Anatomy — CONTINUATION Containers (Character 2, 3, ...):**
+
+```
+Container (type 17)
+├── Media Gallery (type 12)         → Character splash art / reveal image (FIRST — no patch header repeat)
+├── Text block (type 10)            → ## **Character Name** + stat line + summary + all changes
+└── Action Row (type 9)             → Citlali News button (ALWAYS last)
+```
+
+### **Rules:**
+
+1. **One character per container** — never mix two characters' content in one container
+2. **Image = splash art or character reveal image** — depending on the game; if no splash art exists, use the character reveal image
+3. **Gallery directly above the character's text block** — never after, never at the bottom
+4. **Patch header block (title + Resource line) appears ONLY in the first container** — continuation containers start directly with the character's image gallery
+5. **Character text block format:** `## **Character Name**` → stat line (with inline diffs if base stats changed, e.g., **Max Energy:** ~~140~~ → **130**) → summary paragraph → change sections
+6. **Image URL provided by user or found on gachabase/nanoka assets** → insert directly; **not provided** → placeholder gallery still created so the URL can be pasted in
+7. **4000-char limit still applies** — if one character's content exceeds 4000 chars, split their text into multiple blocks/containers; the character's image gallery appears **once**, at the top of their first container
+8. **Citlali News action row at the bottom of every container** — no exceptions
+9. **Sequential IDs** — every component gets an incrementing unique ID
+
+### **Full Example — FIRST Container (Character 1 with patch header):**
+
+```json
+{
+  "attachments": [],
+  "webhook_id": "1487043342578618456",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [HSR - 4.5 Beta] Patch Notes: Rev. 15893225\nResource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en) / [nanoka](https://hsr.nanoka.cc/)"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.gachabase.net/hsr/assets/7f0b69ddaa23875f06e30758b02aca7f.png",
+                "proxy_url": "https://media.discordapp.net/attachments/placeholder",
+                "width": 2560,
+                "height": 1440,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "## **Aventurine • Waveflair**\n**Element:** Quantum | **Path:** The Elation | **Rarity:** ★★★★★ | **Max Energy:** ~~140~~ → **130**\n\nAventurine receives a meaningful solo-Elation and Eidolon-focused update: Max Energy is lowered for smoother rotations, his Ascension 4 trace gains Follow-Up ATK synergy, his Technique gets miss protection, and E2 / E6 are reworked toward faster Elation Skill looping.\n\n### **Profile Changes**\n\n*   **[BUFF]** Max Energy reduced from ~~**140**~~ → **130**. *(Lower Ultimate cost — his Ultimate comes back online in fewer actions. Since his Ultimate grants a 25% SPD self-buff and his kit converts surplus SPD into Elation, more frequent Ultimates directly feed his damage scaling.)*\n\n### **Base Kit Changes**\n\n*   **Technique** **[Stirring Waves in Still Waters]:**\n    *   **[NEW]** Technique Points are not consumed if no enemies are hit.\n\n### **Trace / Ascension Changes**\n\n*   **Ascension 4** **[Revel in Surging Waves]:**\n    *   **[NEW]** In solo-Elation teams, when Aventurine • Waveflair deals DMG using his Elation Skill, it is considered as launching a Follow-Up ATK.\n        *   **(Follow-Up ATK)** Unleashes an extra attack on the target. This effect is triggered automatically when requirements are met.\n    *   **[ADJUSTMENT]** Ascension 3 / 6 stat nodes changed from ~~**DEF 5% / 7.5%**~~ → **Elation 4% / 6%**.\n        *   **(Elation Boost)** Total Elation from stat nodes increases by **10%** total (4% + 6%) after the change — replacing **12.5%** total DEF (5% + 7.5%). Shifts stat node value from defense into his core Elation damage scaling.\n\n[remaining change sections — under 4000 chars]"
+        },
+        {
+          "id": 5,
+          "type": 9,
+          "components": [
+            {
+              "id": 6,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### **Full Example — CONTINUATION Container (Character 2 — gallery first, no header):**
+
+```json
+{
+  "attachments": [],
+  "webhook_id": "1487043342578618456",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.gachabase.net/hsr/assets/b0051284f985ddfd555a3fccbe7391c1.png",
+                "proxy_url": "https://media.discordapp.net/attachments/placeholder",
+                "width": 2560,
+                "height": 1440,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "## **Robin • Summeretto**\n**Element:** Wind | **Path:** Remembrance | **Rarity:** ★★★★★\n\nRobin receives a mostly text-heavy update, but with two important functional buffs on **[Improvised Blues]** and **E1**, plus a complete **E6** rework away from raw Memosprite Skill / CRIT DMG scaling and into Ultimate storage plus Energy cycling.\n\n### **Base Kit Changes**\n\n[change sections — under 4000 chars]"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## **✅ SECTION 9 — FULL EXAMPLE OUTPUTS**
+
+### **Example 1 — ZZZ Agent Changes (Full)**
+```
+## [ZZZ - 2.8.4 Beta] Patch Notes: Rev. 14896358 → 14985632
+
+Resource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en) / [nanoka](https://zzz.nanoka.cc/)
+
+- v2.8.4 Rev. 14896358 → 14985632 Update — CN Build
+- Agents affected: **Starlight Billy**, **Promeia**
+- **Starlight Billy** receives a sweeping numerical pass — nearly all offensive skill multipliers reduced, partially offset by extended CRIT DMG buff duration, an Adrenaline cost removal on [EX Special Attack: Moto Slam], and significant Cinema 2/6 reworks.
+- **Promeia** receives Core Passive nerfs to her Anomaly Mastery threshold and [Abloom] trigger multiplier, plus a full reclassification of her Special/EX Special Attack hierarchy.
+
+---
+
+### **Highlights**
+
+**Starlight Billy** is receiving a broad numerical rebalance this build — his Basic Attack hits 3 and 4, Dash Attack, Dodge Counter, Special Attack, Quick Assist, Chain Attack, Ultimate, EX Solo Wheel Stunt, and EX Sway Step all see multiplier reductions. Partially compensating, his (Power Suppression) CRIT DMG self-buff duration is extended from 30s to 45s, **[EX Special Attack: Moto Slam]** loses its 60-point Adrenaline cost entirely, and his Cinemas 2 and 6 are substantially reworked with the latter gaining a flat **+25% Sheer DMG** baseline. **Promeia** receives targeted nerfs — her Anomaly Mastery passive scaling threshold rises from 140 to 150, and her [Trial by Cold] [Abloom] trigger multiplier drops from 675% to 635%. Her [Blade Spiral] Basic Attack variant also drops its [Trial by Cold] activation requirement, and her core Special/EX Special skill taxonomy is reorganized, with [Execution - Merciless Judgment] promoted to EX Special Attack and [Execution - Descending Frost] / [Execution - Heavy Frost] demoted to Special Attacks.
+
+---
+
+## **[Agent Adjustments] Starlight Billy**
+**Attribute:** Physical | **Specialty:** Rupture | **Rarity:** ★★★★★
+**Faction:** Cunning Hares
+
+Starlight Billy receives a broad numerical reduction across nearly all skill multipliers, with select compensating buffs: his CRIT DMG self-buff duration doubles from 30s to 45s, [EX Special Attack: Moto Slam] loses its Adrenaline cost, and Cinemas 2 and 6 are reworked to shift power toward his signature EX loop.
+
+**Note:** EN skill names are garbled/merged in this CN build diff on nanoka. Skill names below are translated from CN (gachabase) for accuracy.
+
+---
+
+### **Base Kit Changes**
+
+*   **Basic Attack** **[Knight Arts]:**
+    *   **[NERF]** 3rd-Hit DMG Multiplier reduced from ~~**175.8%**~~ → **109.5%**.
+    *   **[NERF]** 3rd-Hit Daze Multiplier reduced from ~~**114.4%**~~ → **72.2%**.
+    *   **[NERF]** 4th-Hit DMG Multiplier reduced from ~~**441.2%**~~ → **412.8%**.
+    *   **[NERF]** 4th-Hit Daze Multiplier reduced from ~~**262.2%**~~ → **246%**.
+
+*   **Dash Attack** **[Starlight Judgment]:**
+    *   **[NERF]** DMG Multiplier reduced from ~~**118.3%**~~ → **90.2%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**47.7%**~~ → **36%**.
+
+*   **Dodge Counter** **[Duel King]:**
+    *   **[NERF]** DMG Multiplier reduced from ~~**257.2%**~~ → **239.4%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**157.4%**~~ → **146.8%**.
+
+*   **Quick Assist** **[Starlight - Bond Force]:**
+    *   **[NERF]** DMG Multiplier reduced from ~~**197.9%**~~ → **184.4%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**78.7%**~~ → **74%**.
+
+*   **Special Attack** **[Power Suppression]:**
+    *   **[NERF]** DMG Multiplier reduced from ~~**106.8%**~~ → **104.8%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**168%**~~ → **165%**.
+
+*   **EX Special Attack** **[Solo Wheel Stunt]:**
+    *   **[NERF]** [Resolve] recovery on hit reduced from ~~**10**~~ → **8** points.
+    *   **[NERF]** DMG Multiplier reduced from ~~**791%**~~ → **739%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**379.5%**~~ → **349.4%**.
+
+*   **EX Special Attack** **[Moto Slam]:**
+    *   **[BUFF]** Adrenaline Cost removed. *(Previously consumed **60** Adrenaline; now activates on Energy alone — no Adrenaline requirement)*
+
+*   **EX Special Attack** **[Sway Step]:**
+    *   **[NERF]** DMG Multiplier reduced from ~~**2039.3%**~~ → **1918.2%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**1325.7%**~~ → **1236.5%**.
+
+*   **Chain Attack** **[Knight's Stroll]:**
+    *   **[NERF]** DMG Multiplier reduced from ~~**1367.9%**~~ → **1308.7%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**427.2%**~~ → **380.7%**.
+
+*   **Ultimate** **[Knight's Flying Kick]:**
+    *   **[NERF]** DMG Multiplier reduced from ~~**3090.3%**~~ → **3013.4%**.
+    *   **[NERF]** Daze Multiplier reduced from ~~**616.5%**~~ → **569.8%**.
+
+*   **Core Passive** **[Knight's Resolve]:**
+    *   **[BUFF]** (Power Suppression) CRIT DMG self-buff duration extended from ~~**30s**~~ → **45s**. *(Repeated triggers still refresh the duration)*
+
+*   **Additional Ability** **[Blazing Starlight]:**
+    *   **[BUFF]** [Starlight] stack duration extended from ~~**30s**~~ → **45s** per stack. *(Max 2 stacks; condition and DMG bonus per stack unchanged)*
+
+---
+
+### **Mindscape Cinema Changes**
+
+*   **M2** **[Wasteland Automaton]:**
+    *   **[BUFF]** [EX Special Attack: Solo Wheel Stunt] DMG bonus newly added to the 40% DMG increase. *(Before: only [Basic Attack: Full-Throttle Starlight] and [Ultimate] received +40%; now all three do)*
+    *   **[REWORK — Turbo Boost]:** *Old Effect:* Activating [EX Special Attack: Sway Step] grants [Turbo Boost]: (Power Suppression) attack time reduced by **75%**; activating [EX Special Attack: Solo Wheel Stunt] consumes [Turbo Boost] to increase that skill's DMG by **20%**; (Power Suppression) hitting a Dazed enemy chains into [EX Special Attack: Solo Wheel Stunt].
+    *   **[REWORK — Turbo Boost]:** *New Effect:* Activating [EX Special Attack: Sway Step], [EX Special Attack: Moto Slam], **or** (Power Suppression) hitting a Dazed enemy grants [Turbo Boost]: (Power Suppression) consumes [Turbo Boost] to chain directly into [EX Special Attack: Solo Wheel Stunt], and that [EX Special Attack: Solo Wheel Stunt]'s **CRIT DMG is increased by 40%**. *(More trigger conditions; CRIT DMG bonus replaces the flat DMG buff on Solo Wheel Stunt)*
+
+*   **M4** **[Judgment Fire]:**
+    *   **[NERF]** Off-field HP recovery threshold lowered from ~~**40%**~~ → **35%** of Max HP. *(Recovery still triggers when HP drops below threshold while not active)*
+
+*   **M6** **[Starlight Knight]:**
+    *   **[NEW]** [Ultimate: Knight's Flying Kick] and [Basic Attack: Full-Throttle Starlight] Sheer DMG is increased by a flat **+25%** at all times.
+    *   **[REWORK — Starglitter]:** *Old Effect:* 4th-hit [Basic Attack: Knight Arts], [EX Special Attack: Solo Wheel Stunt], or [Chain Attack: Knight's Stroll] hitting an enemy grants 1 stack of [Starglitter] (max **6**); activating [Ultimate] or [Full-Throttle Starlight] consumes up to **3** stacks — each stack consumed increases that skill's Sheer DMG by **7%**, and the final hit deals an additional **140%** Sheer Force DMG.
+    *   **[REWORK — Starglitter]:** *New Effect:* Same grant condition and **6**-stack maximum; activating [Ultimate] or [Full-Throttle Starlight] now consumes up to **2** stacks (was 3) — each stack consumed makes that skill's **final hit** deal an additional **200%** Sheer Force DMG. *(Per-stack Sheer DMG% increase removed; all power concentrated into the final hit bonus at lower stack cost)*
+
+---
+
+## **[Agent Adjustments] Promeia**
+**Attribute:** Ice | **Specialty:** Anomaly | **Rarity:** ★★★★★
+**Faction:** Krampus Compliance Authority
+
+Promeia receives Core Passive nerfs to her Anomaly Mastery scaling threshold and [Trial by Cold] [Abloom] multiplier, alongside a full reclassification of her Special / EX Special Attack skill hierarchy. Her [Blade Spiral] activation requirement is also loosened.
+
+**Note:** Skill type reclassifications (Special Attack ↔ EX Special Attack) reflect CN gachabase data. EN nanoka text is partially garbled in this build's diff view.
+
+---
+
+### **Base Kit Changes**
+
+*   **Basic Attack** **[Blade Spiral]:**
+    *   **[ADJUSTMENT]** Activation condition changed. *Old:* Requires [Trial by Cold] to be sufficient before holding input. *New:* Simply hold input to activate — [Trial by Cold] requirement removed. *(Lower barrier to entering [Bound Absolution] via this move)*
+
+*   **Basic Attack** **[Sharp Edge Strike]:**
+    *   **[ADJUSTMENT]** 5th-hit follow-up input changed. *Old:* Press Special. *New:* Hold Special or Normal. *(Reflects that [Execution - Merciless Judgment] is now an EX Special Attack)*
+
+### **Special Attack Reclassification**
+
+The following skills have had their classification swapped between Special Attack and EX Special Attack. Stat values are unchanged; this is a functional mechanic reclassification affecting which systems interact with each skill type (e.g., Energy triggers, Additional Ability conditions, Cinema interactions).
+
+*   **[Execution - Frostbound Throat Attack]:**
+    *   **[ADJUSTMENT]** Reclassified from **Special Attack** → **EX Special Attack**. *(Energy cost of 40 retained)*
+
+*   **[Execution - Shrouded in Shadow]:**
+    *   **[ADJUSTMENT]** Updated to follow [EX Special Attack: Execution - Frostbound Throat Attack]. No functional description change.
+
+*   **[Execution - Descending Frost]:**
+    *   **[ADJUSTMENT]** Reclassified from **EX Special Attack** → **Special Attack**.
+
+*   **[Execution - Heavy Frost]:**
+    *   **[ADJUSTMENT]** Reclassified from **EX Special Attack** → **Special Attack**.
+
+*   **[Execution - Merciless Judgment]:**
+    *   **[ADJUSTMENT]** Reclassified from **Special Attack** → **EX Special Attack**.
+
+### **Core Passive & Additional Ability Changes**
+
+*   **Core Passive** **[Prometheus]:**
+    *   **[NERF]** Anomaly Mastery passive scaling threshold increased from ~~**140**~~ → **150** initial Anomaly Mastery. *(Bonus Anomaly Proficiency and [Abloom] team DMG scaling now requires a higher base stat to activate)*
+    *   **[NERF]** [Trial by Cold] [Abloom] trigger fixed DMG multiplier reduced from ~~**675%**~~ → **635%** of the corresponding Attribute Anomaly.
+    *   **[ADJUSTMENT]** [Frost Oath] follow-up chain target updated: now chains into [Special Attack: Execution - Heavy Frost] (was [EX Special Attack: Execution - Heavy Frost]). *(Reflects skill type change; functional flow unchanged)*
+    *   **[ADJUSTMENT]** [Frost Oath] activation condition updated: now correctly references [EX Special Attack: Execution - Merciless Judgment] as the trigger (was [Special Attack: Execution - Merciless Judgment]). *(Text fix consistent with reclassification)*
+
+*   **Additional Ability** **[Icebound / 饮冰]:**
+    *   **[TEXT FIX]** Trigger condition wording updated: ~~"Ice Attribute Buildup Rate"~~ → **"Ice Anomaly Buildup Rate"**. *(CN: 冰异常积蓄效率 — aligns with standard ZZZ terminology; no functional change expected)*
+```
+
+---
+
+### **Example 2 — GI Constellation (Compact Inline)**
+```
+## [GI - 6.6v2 Beta] Nicole Reeyn Changes
+
+Resource: [gachabase](https://gi.gachabase.net/changelog/beta?lang=en) / [nanoka](https://gi.nanoka.cc/)
+- @everyone
+- v6.6 Beta v2 Rev. 6.5.50 → 6.5.51 — CN Build
+- **Nicole** — C2 (Grace of Kenosis) Flat ATK bonus and (Guidance of Theosis) Elemental RES shred buffed. C4 (Pathfinder's Blessing) cooldown reduced by 1s.
+
+---
+
+## **Nicole Reeyn**
+**Element:** Pyro | **Weapon:** Catalyst | **Rarity:** 5★
+**Ascension Stat:** ATK%
+
+Nicole receives two targeted constellation buffs — C2's Elemental RES shred and Flat ATK bonus are raised, and C4's trigger cooldown is trimmed slightly.
+
+### **Constellation Changes**
+
+**C2** **("I Will Guide You and Show You the Path You Should Tread"):**
+Enhances the effects of the Elemental Skill Revelation: Uncreated Light: Grace of Kenosis increases ATK by an additional ~~**240**~~ → **300** *(which does not count toward this effect's ATK Bonus limit)*, while Guidance of Theosis decreases nearby opponents' Elemental RES against the corresponding character's Elemental Type by ~~**20%**~~ → **25%**. (Effect does not stack for the same element.)
+Additionally, when Nicole unleashes her Elemental Skill Revelation: Uncreated Light, nearby active party members will also gain a Shield of Blazing Light.
+*   **[BUFF]** (Grace of Kenosis) Flat ATK bonus: ~~**240**~~ → **300**.
+*   **[BUFF]** (Guidance of Theosis) Elemental RES shred: ~~**20%**~~ → **25%**.
+
+**C4** **("Whether Left or Right, No Matter Which Way You Turn"):**
+[...] (Pathfinder's Blessing) per-character cooldown: ~~**17s**~~ → **16s**. *(Duration of 20s and 8-hit removal condition remain unchanged)*
+*   **[BUFF]** Per-character cooldown reduced from ~~**17s**~~ → **16s**.
+```
+
+---
+
+### **Example 3 — HSR Eidolons with Stat Block & Stacks Math**
+```
+## [HSR - 4.2 Beta] Evanescia Changes
+
+Resource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en) / [nanoka](https://hsr.nanoka.cc/)
+- v4.2 Beta Rev. 4.1.53 → 4.1.54 Update
+- **Evanescia** — mixed tuning pass on Talent, Elation Skill, and early Eidolons.
+
+---
+
+## **[Character Adjustments] Evanescia**
+**Element:** Physical | **Path:** The Elation | **Rarity:** ★★★★★
+**Max Energy:** 120 | **Base SPD:** 101 | **Ascension Stat:** CRIT DMG
+
+Evanescia received a mixed pass — her passive Elation stat scaling from CRIT DMG is pulled back, but her active Elation DMG outputs are pushed higher, and her early Eidolon power is redistributed from E1 to E2.
+
+### **Base Kit Changes**
+
+**Talent** **[Youth: Halcyon Evermore]:**
+Evanescia gains Elation equal to ~~**25%**~~ → **20%** of her CRIT DMG. [...]
+Using her Ultimate deals Physical Elation DMG equal to 24% to all enemies and deals Physical Elation DMG equal to ~~**25%**~~ → **28%** to the enemy target randomly attacked by Ultimate. [Rest of text unchanged.]
+*   **[NERF]** Elation stat from CRIT DMG conversion: ~~**25%**~~ → **20%**.
+*   **[BUFF]** Ultimate Elation DMG to random enemy target: ~~**25%**~~ → **28%**.
+
+**Elation Skill** **[Scarlet: Elation or Execution]:**
+Deals Physical Elation DMG equal to ~~**100%**~~ → **110%** to all enemies and additionally gains 5 point(s) of [Certified Banger].
+*   **[BUFF]** Base Physical Elation DMG to all enemies: ~~**100%**~~ → **110%**.
+
+**Lightcone** **[Safe Escort]:**
+**Base ATK:** 582 | **Substat:** ATK 24%
+
+Increases the wearer's ATK by **40%**. If there are 2 "Trailblaze Companion" characters in the team, the wearer ignores **20%** of the target's DEF when dealing DMG. When the wearer uses an Assist Skill, they gain the "Safe Escort" state, lasting for **2** turn(s) and stacking up to **3** time(s). Each stack of "Safe Escort" increases Assist Skill DMG by **25%**. When "Safe Escort" reaches 3 stacks, each stack of "Safe Escort" increases Ultimate DMG by **30%**.
+*(Assist Skill DMG Total at Max Stacks: 3 × 25% = **75%** | Ult DMG Total at Max Stacks: 3 × 30% = **90%**)*
+
+### **Eidolon Changes**
+
+**E1** **[Home: A Prayer in Dance]:**
+Increases All-Type RES PEN by ~~**36%**~~ → **20%**. After "Master Fox" uses an attack, triggers 1 additional Elation Skill. Elation Skill grants this unit 10 additional [Certified Banger] point(s).
+*   **[NERF]** All-Type RES PEN: ~~**36%**~~ → **20%**. *(Power shifted to E2)*
+
+**E2** **[Voyage: A Wish for Everbloom]:**
+All-Type RES PEN increases by ~~**20%**~~ → **36%**. When teammates' [Certified Banger] ends, Evanescia additionally gains ~~**50%**~~ → **100%** of it as her own [Certified Banger].
+*   **[BUFF]** All-Type RES PEN: ~~**20%**~~ → **36%**.
+*   **[BUFF]** [Certified Banger] conversion when teammates' state ends: ~~**50%**~~ → **100%**.
+
+**E6** **[Maiden: A Step into Dreams]:**
+*   **[TEXT FIX]** Minor tooltip cleanup regarding "Merrymake" mechanic. No functional base value changes.
+```
+
+---
+
+### **Example 4 — HSR E6 Rework**
+```
+## [HSR - 4.2 Beta] Trailblazer (Elation) Changes
+
+Resource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en) / [nanoka](https://hsr.nanoka.cc/)
+- v4.2 Beta Rev. 4.1.53 → 4.1.54 Update
+- **Trailblazer (Elation)** — E6 reworked from ally SPD buff to personal CRIT DMG steroid.
+
+---
+
+## **[Character Adjustments] Trailblazer (Elation)**
+**Element:** Lightning | **Path:** The Elation | **Rarity:** ★★★★★
+
+Trailblazer's base kit remains untouched. Her E6 receives a complete mechanical rework, shifting from a team support tool into a powerful personal nuke steroid tied directly to her Elation Skill usage.
+
+### **Eidolon Changes**
+
+**E6** **[The Cosmic Legend Cometh!]:**
+*   **[REWORK]:** *Old Effect:* ~~Ultimate additionally increases the SPD of one designated ally by **12%** for 3 turns.~~
+*   **[REWORK]:** *New Effect:* When using an Elation Skill, increases this unit's **CRIT DMG by 100%** for 3 turns.
+```
+
+---
+
+### **Example 5 — WW Resonance Chain with Intro Skill New Mechanic**
+```
+## [WW - 3.3.2 Beta] Denia Changes
+
+Resource: [nanoka](https://ww.nanoka.cc/)
+- v3.3.2 Beta Update
+- **Denia** — Outro Skill Fusion Burst Mode amplification buffed, RC2 Tune Strain Break Boost raised, RC6 reworked with Entropy Shift passive and mode-specific Erosion Field upgrades.
+
+---
+
+## **Denia**
+**Attribute:** Fusion | **Weapon:** Rectifier | **Rarity:** ★★★★★
+
+Denia's Outro Skill Fusion Burst Mode amplification is pushed from 40% to 60%, her RC2 Tune Strain Break Boost is raised from 15 to 25, and her RC6 receives a major rework adding an Entropy Shift passive and deeply integrating [Erosion Field] into both Resonance Modes.
+
+### **Base Kit Changes**
+
+**Intro Skill** **[Unfinished Prelude]:**
+*   **[NEW]** Now pulls in nearby targets on cast.
+
+**Outro Skill** **[Unfinished Lies]:**
+*   **[BUFF]** Fusion Burst Mode — Fusion Burst DMG Amplification increased from ~~**40%**~~ → **60%** for **30s**.
+*   *Tune Strain Mode effects (15% All DMG / 40% if Tune Strain - Shifting inflicted) remain unchanged.*
+
+### **Resonance Chain Changes**
+
+**RC2** **[The Solace Yet It Brings]:**
+*   **[BUFF]** Tune Strain Mode — Tune Break Boost increase per trigger raised from ~~**15**~~ → **25** for **15s** after a team Resonator inflicts Tune Strain - Shifting. *(Makes Denia's Tune Strain Break Boost amplification meaningfully stronger)*
+*   *Fusion Burst Mode effects and Banish - Breakdown Form DMG increase (40%) remain unchanged.*
+
+**RC6** **[May You Find Your Sun in the Silence]:**
+*   **[NEW — Entropy Shift Passive]:** While in Entropy Shift states, Denia gains **+60% ATK** and **+60% Fusion DMG Bonus**.
+*   **[REWORK — Fusion Burst Mode]:** *Old Effect:* Standard Erosion Field behavior.
+*   **[REWORK — Fusion Burst Mode]:** *New Effect:* After Erosion Field deals damage, triggers Fusion Burst on the target based on max stack limit — Fusion Burst DMG gains **+200% DMG Multiplier** and does **not** remove stacks. Erosion Field inflicts [Erosion Mark] on targets, lasting **6s**; targets with [Erosion Mark] taking **Fusion Burst Crit. DMG** have that damage **Amplified by 40%**.
+*   **[REWORK — Tune Strain Mode]:** *New Effect:* Erosion Field DMG Multiplier increased by **+120%**. Team Resonators dealing Tune Break DMG to enemies under Tune Strain - Shifting inflict **1 stack of Tune Strain - Interfered**. *(Triggers once per 3s per target)*
+```
+
+---
+
+### **Example 6 — JSON Component V2 (Single Container)**
+**→ See Section 8C for the character container template — that structure (header → character image gallery → character text → button) is the standard for all character content.**
+
+### **Example 6B — JSON Component V2 (Multiple Containers when over 4000 chars)**
+**→ Same as Section 8C: first container carries the patch header; continuation containers start directly with the next character's image gallery (or "Name (cont.)" text block if it's the same character continuing — no repeated image).**
+
+### **Example 7 — Equipment/Item JSON with Interleaved Media Galleries**
+**→ See Section 8B for the two full reference examples (Weapons + Artifact Sets). That structure is the mandatory template for ALL equipment/item content: header text block → [gallery → item text] repeated per item → Citlali News action row.**
+
+### **Example 8 — Character JSON with Splash Art / Reveal Image Galleries**
+**→ See Section 8C for the two full reference examples (First Container + Continuation Container). That structure is the mandatory template for ALL character content: one character per container, image gallery directly above the character's text. The First Container example also demonstrates: [BUFF] direction reasoning with explanation, Ascension naming, mechanic keyword definition, and stat node totals.**
+
+---
+
+**END OF COMPACT DIFF FORMATTING GUIDE — FINAL**
+
+> **How to use:** Copy-paste this entire document into a new chat. Drop your raw version diff data immediately after — **no extra prompt needed. JSON Component V2 output will be produced automatically.**
+>
+> **Links:** Posting a nanoka /diff or gachabase changelog link triggers a full scrape/read of that page plus cross-referencing with wikis and guides for accuracy (Section 4B).
+>
+> **Tag direction:** [BUFF]/[NERF] tags are assigned by gameplay reasoning + verification, never by raw number direction — with explanations attached. Unsure = tag removed (Section 1B).
+>
+> **Character data:** The Section 8C character media gallery format is applied automatically — one container per character, splash art / reveal image gallery directly above the character's text. First container carries the patch header; continuation containers start with the image.
+>
+> **Equipment/item data (weapons, artifacts, light cones, relics, planar ornaments, W-engines, disc drives, bangboo, echo sets, etc.):** The Section 8B interleaved media gallery format is applied automatically — one type 12 gallery per item, directly above its text block. Paste your image URLs into the per-item galleries (or placeholders will be created for you to fill in).
+>
+> **Flagging explanations:** Mark sections in your raw data with **"this explanation"** and the output will include a proper Highlights / per-character summary paragraph inside the JSON content.
+
+
+the format component v2 example but you can restructure it no worries on your own:
+
+
+also kafka was not yet revealed on this beta update it seems but might show on the v2 or next beta update
+
+also no need to include CN on the component v2 as it is english only, but of course the CN or CHS is useful for actual changes
+
+though of course when next revision or update beta happens, no need to say NEW agents, as that is like v2, v3 until to the final beta version
+
+the only that would say new or changes, is like going to v2, v3 or the next version of it
+
+https://zenless.hoyoverse.com/en-us/character?id=167019
+
+https://fastcdn.hoyoverse.com/content-v2/nap/167019/2610c60c1a72180954cd120384f2e65a_6094319729180406790.png
+
+https://hsr.gachabase.net/characters/1511/aeon-aha/beta?lang=en
+
+essentially it's a kit overview and changes like buff, nerf, changes
+
+it has the ~~25%~~ → **35%** for example too
+
+it should show the numbers, values, data also and fetched the full texts
+
+https://zenless.hoyoverse.com/en-us/character?id=166075
+https://fastcdn.hoyoverse.com/content-v2/nap/166075/93913c7d1fa97b87c146ad1467ce1d16_8934185391506393783.png
+
+https://zzz.nanoka.cc/character/1601/
+https://static.nanoka.cc/assets/zzz/IconRole1601.webp
+https://fastcdn.hoyoverse.com/content-v2/nap/167019/2610c60c1a72180954cd120384f2e65a_6094319729180406790.png
+
+of course once it has the images updated, it locks so it doesn't monitor it endlessly
+
+we will have to update the md files, env example git ignore, privacy, terms, read me, all md files, changelog, and stuff
+
+extra final checking to check and fix, if there's fully none and fully clean now, fix edge cases bugs or bugs if there's any, must be clean, then update to (READY TO MERGE)
+
+also update the pr title and pr body and the benchmarks if there's any ONLY, if there's none to update, then none so keep it if there's nothing to update so that i can fully see the details as always
+
+also your comments or your results here should be present also in the in the PR
+
+As it helps for future also to see the full details every changes
