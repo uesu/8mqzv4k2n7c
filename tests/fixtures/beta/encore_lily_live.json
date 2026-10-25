@@ -1,0 +1,945 @@
+{
+  "Id": 1512,
+  "Name": {
+    "Title": "No Description Available",
+    "Content": "Lily"
+  },
+  "QualityId": 5,
+  "ElementName": "Spectro",
+  "WeaponTypeName": "Pistols",
+  "Skills": [
+    {
+      "SkillType": "Normal Attack",
+      "SkillName": "Mend and Cleanse",
+      "SkillDescribe": "<span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Basic Attack</span></span><br><br>Press repeatedly or hold <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> to perform up to 4 consecutive attacks, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Mid-air Attack</span></span><br><br>Consume STA to perform a Plunging Attack, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Dodge Counter</span></span><br><br>Press <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> shortly after a successful Dodge to attack the target, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>. Press <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> shortly after casting this skill to cast Basic Attack Stage 4.",
+      "SkillAttributes": [
+        {
+          "attributeId": 1512001,
+          "attributeName": "Basic Attack Stage 1 DMG",
+          "values": [
+            "37.36%",
+            "40.43%",
+            "43.49%",
+            "47.78%",
+            "50.84%",
+            "54.37%",
+            "59.27%",
+            "64.17%",
+            "69.07%",
+            "74.28%",
+            "80.41%",
+            "86.53%",
+            "92.66%",
+            "98.79%",
+            "104.92%",
+            "111.04%",
+            "117.17%",
+            "123.30%",
+            "129.42%",
+            "135.55%"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512002,
+          "attributeName": "Basic Attack Stage 2 DMG",
+          "values": [
+            "12.66%+12.66%*3",
+            "13.70%+13.70%*3",
+            "14.74%+14.74%*3",
+            "16.19%+16.19%*3",
+            "17.23%+17.23%*3",
+            "18.43%+18.43%*3",
+            "20.09%+20.09%*3",
+            "21.75%+21.75%*3",
+            "23.41%+23.41%*3",
+            "25.17%+25.17%*3",
+            "27.25%+27.25%*3",
+            "29.33%+29.33%*3",
+            "31.40%+31.40%*3",
+            "33.48%+33.48%*3",
+            "35.56%+35.56%*3",
+            "37.63%+37.63%*3",
+            "39.71%+39.71%*3",
+            "41.78%+41.78%*3",
+            "43.86%+43.86%*3",
+            "45.94%+45.94%*3"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512003,
+          "attributeName": "Basic Attack Stage 3 DMG",
+          "values": [
+            "53.36%",
+            "57.74%",
+            "62.12%",
+            "68.24%",
+            "72.62%",
+            "77.65%",
+            "84.65%",
+            "91.65%",
+            "98.65%",
+            "106.09%",
+            "114.84%",
+            "123.59%",
+            "132.34%",
+            "141.09%",
+            "149.85%",
+            "158.60%",
+            "167.35%",
+            "176.10%",
+            "184.85%",
+            "193.60%"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512004,
+          "attributeName": "Basic Attack Stage 4 DMG",
+          "values": [
+            "20.00%*3+20.00%",
+            "21.64%*3+21.64%",
+            "23.28%*3+23.28%",
+            "25.58%*3+25.58%",
+            "27.22%*3+27.22%",
+            "29.11%*3+29.11%",
+            "31.73%*3+31.73%",
+            "34.35%*3+34.35%",
+            "36.98%*3+36.98%",
+            "39.77%*3+39.77%",
+            "43.05%*3+43.05%",
+            "46.33%*3+46.33%",
+            "49.61%*3+49.61%",
+            "52.89%*3+52.89%",
+            "56.17%*3+56.17%",
+            "59.45%*3+59.45%",
+            "62.73%*3+62.73%",
+            "66.01%*3+66.01%",
+            "69.29%*3+69.29%",
+            "72.57%*3+72.57%"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512005,
+          "attributeName": "Plunging Attack DMG",
+          "values": [
+            "57.60%",
+            "62.33%",
+            "67.05%",
+            "73.66%",
+            "78.39%",
+            "83.82%",
+            "91.38%",
+            "98.93%",
+            "106.49%",
+            "114.52%",
+            "123.97%",
+            "133.41%",
+            "142.86%",
+            "152.31%",
+            "161.75%",
+            "171.20%",
+            "180.64%",
+            "190.09%",
+            "199.54%",
+            "208.98%"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512006,
+          "attributeName": "Dodge Counter DMG",
+          "values": [
+            "50.00%",
+            "54.10%",
+            "58.20%",
+            "63.94%",
+            "68.04%",
+            "72.76%",
+            "79.32%",
+            "85.88%",
+            "92.44%",
+            "99.41%",
+            "107.61%",
+            "115.81%",
+            "124.01%",
+            "132.21%",
+            "140.41%",
+            "148.61%",
+            "156.81%",
+            "165.01%",
+            "173.21%",
+            "181.41%"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512007,
+          "attributeName": "Mid-air Attack STA Cost",
+          "values": [
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30",
+            "30"
+          ],
+          "Description": ""
+        }
+      ]
+    },
+    {
+      "SkillType": "Resonance Skill",
+      "SkillName": "Dream Blend",
+      "SkillDescribe": "<span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Resonance Skill - Nightmare Blend</span></span><br><br>Lily starts with <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span> by default. When <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span> is active, press Resonance Skill to switch to <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Phantasm</span>, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span> to nearby targets.<br>This skill shares a Cooldown with <span style=\"color:#ffd12f;\" class=\"font-bold\">Resonance Skill - Reverie Blend</span>.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Resonance Skill - Reverie Blend</span></span><br><br>When <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Phantasm</span> is active, press Resonance Skill to switch to <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span>, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span> to nearby targets.<br>This skill shares a Cooldown with <span style=\"color:#ffd12f;\" class=\"font-bold\">Resonance Skill - Nightmare Blend</span>.",
+      "SkillAttributes": [
+        {
+          "attributeId": 1512008,
+          "attributeName": "Resonance Skill - Reverie Blend DMG",
+          "values": [
+            "80.00%",
+            "86.56%",
+            "93.12%",
+            "102.31%",
+            "108.87%",
+            "116.41%",
+            "126.91%",
+            "137.40%",
+            "147.90%",
+            "159.05%",
+            "172.17%",
+            "185.29%",
+            "198.41%",
+            "211.53%",
+            "224.65%",
+            "237.77%",
+            "250.89%",
+            "264.01%",
+            "277.13%",
+            "290.25%"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512009,
+          "attributeName": "Resonance Skill - Nightmare Blend DMG",
+          "values": [
+            "80.00%",
+            "86.56%",
+            "93.12%",
+            "102.31%",
+            "108.87%",
+            "116.41%",
+            "126.91%",
+            "137.40%",
+            "147.90%",
+            "159.05%",
+            "172.17%",
+            "185.29%",
+            "198.41%",
+            "211.53%",
+            "224.65%",
+            "237.77%",
+            "250.89%",
+            "264.01%",
+            "277.13%",
+            "290.25%"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512010,
+          "attributeName": "Resonance Skill - Reverie Blend/Nightmare Blend Cooldown",
+          "values": [
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5",
+            "5"
+          ],
+          "Description": "s"
+        },
+        {
+          "attributeId": 1512025,
+          "attributeName": "Resonance Skill - Reverie Blend/Nightmare Blend Concerto Regen",
+          "values": [
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8",
+            "8"
+          ],
+          "Description": ""
+        }
+      ]
+    },
+    {
+      "SkillType": "Resonance Liberation",
+      "SkillName": "Into the Dream Cradle",
+      "SkillDescribe": "Casting this skill sends Lily into <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span> and grants <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151203>Cradle Lullaby</te></span> to Resonators in the team.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Slumber</span></span><br><br>Lasts for 50s. When Lily is in <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span>, she heals the nearby active Resonator every 3s. During <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span>, use directional input to command <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambind</span> to deal <span style=\"color:#f8e56cff;\">Spectro DMG</span> to nearby targets. <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambind</span> pulls in targets within a certain range every 5s, and stops attacking 10s after movement stops. Press Resonance Liberation again during <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span> to end it early.<br>When Lily is in <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span>, when a Resonator in the team casts <span style=\"color:#ffd12f;\" class=\"font-bold\">Intro Skill</span>, targets within a certain range are pulled in.<br>Switching to another Resonator during <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span> keeps Lily on the field, and she takes no DMG while in <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span>. Lily leaves the field when <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span> ends, or earlier if she gets too far from the active Resonator.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Cradle Lullaby</span></span><br><br>Lasts for 25s. While this effect is active, each <span style=\"color:#ffd12f;\" class=\"font-bold\">Intro Skill</span> cast by a Resonator in the team grants 1 stack of <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151204>Dream Aroma</te></span>. This effect is removed when Lily is the incoming Resonator.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Dream Aroma</span></span><br><br>Each stack increases the ATK of all Resonators in the team by 7%, stacking up to 4 times. This effect is removed when Lily is the incoming Resonator or when <span style=\"color:#ffd12f;\" class=\"font-bold\">Cradle Lullaby</span> ends.",
+      "SkillAttributes": [
+        {
+          "attributeId": 1512017,
+          "attributeName": "Cooldown",
+          "values": [
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25",
+            "25"
+          ],
+          "Description": "s"
+        },
+        {
+          "attributeId": 1512018,
+          "attributeName": "Resonance Cost",
+          "values": [
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175",
+            "175"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512019,
+          "attributeName": "Concerto Regen",
+          "values": [
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20",
+            "20"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512020,
+          "attributeName": "Slumberland Healing",
+          "values": [
+            "287+0.52%",
+            "321+0.54%",
+            "359+0.56%",
+            "402+0.59%",
+            "454+0.63%",
+            "503+0.68%",
+            "511+0.75%",
+            "523+0.84%",
+            "531+0.94%",
+            "546+1.09%",
+            "591+1.18%",
+            "636+1.28%",
+            "681+1.37%",
+            "726+1.46%",
+            "771+1.55%",
+            "816+1.64%",
+            "861+1.73%",
+            "906+1.82%",
+            "951+1.91%",
+            "996+2.00%"
+          ],
+          "Description": " HP"
+        },
+        {
+          "attributeId": 1512021,
+          "attributeName": "Dreambind Continuous DMG",
+          "values": [
+            "10.00%",
+            "10.82%",
+            "11.64%",
+            "12.79%",
+            "13.61%",
+            "14.56%",
+            "15.87%",
+            "17.18%",
+            "18.49%",
+            "19.89%",
+            "21.53%",
+            "23.17%",
+            "24.81%",
+            "26.45%",
+            "28.09%",
+            "29.73%",
+            "31.37%",
+            "33.01%",
+            "34.65%",
+            "36.29%"
+          ],
+          "Description": ""
+        }
+      ]
+    },
+    {
+      "SkillType": "Inherent Skill",
+      "SkillName": "Woven Scent",
+      "SkillDescribe": "While casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Phantasm</span>, Lily additionally restores 6 points of Concerto Energy per second for 3s. This effect can be triggered once every 20s.<br>Casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span> additionally restores 10 points of Concerto Energy. This effect can be triggered once every 20s.",
+      "SkillAttributes": []
+    },
+    {
+      "SkillType": "Inherent Skill",
+      "SkillName": "Flowers for You",
+      "SkillDescribe": "While the active Resonator has 50% or more HP, Lily grants them 10% DMG Reduction.<br>When a Resonator in the team takes a fatal blow, they will not be downed and will instead gain a Shield equal to 10% of Lily's Max HP for 10s. This effect can be triggered once every 5 min.<br>Casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span> grants <span style=\"color:#ffd12f;\" class=\"font-bold\">Floral Blessing</span> to Resonators in the team.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Floral Blessing</span></span><br><br>Lasts for 60s. When a Resonator in the team takes DMG that brings their HP below 50% of their Max HP, they restore HP equal to 50% of their Max HP, and <span style=\"color:#ffd12f;\" class=\"font-bold\">Floral Blessing</span> is removed. This effect can be triggered once every 120s.",
+      "SkillAttributes": []
+    },
+    {
+      "SkillType": "Intro Skill",
+      "SkillName": "Blooming Dream",
+      "SkillDescribe": "<span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">First Bloom</span></span><br><br>Attack the target, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>. Press <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> shortly after casting this skill to cast Basic Attack Stage 3.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Eternal Bloom</span></span><br><br>After casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Resonance Liberation - Into the Dream Cradle</span>, Lily's next Intro Skill <span style=\"color:#ffd12f;\" class=\"font-bold\">First Bloom</span> is replaced with <span style=\"color:#ffd12f;\" class=\"font-bold\">Eternal Bloom</span>. When cast, it attacks the target, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>.<br>For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.<br>Press <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> shortly after casting this skill to cast Basic Attack Stage 3.",
+      "SkillAttributes": [
+        {
+          "attributeId": 1512022,
+          "attributeName": "Intro Skill - First Bloom DMG",
+          "values": [
+            "23.60%+23.60%*3",
+            "25.54%+25.54%*3",
+            "27.48%+27.48%*3",
+            "30.18%+30.18%*3",
+            "32.12%+32.12%*3",
+            "34.35%+34.35%*3",
+            "37.44%+37.44%*3",
+            "40.54%+40.54%*3",
+            "43.63%+43.63%*3",
+            "46.92%+46.92%*3",
+            "50.79%+50.79%*3",
+            "54.66%+54.66%*3",
+            "58.54%+58.54%*3",
+            "62.41%+62.41%*3",
+            "66.28%+66.28%*3",
+            "70.15%+70.15%*3",
+            "74.02%+74.02%*3",
+            "77.89%+77.89%*3",
+            "81.76%+81.76%*3",
+            "85.63%+85.63%*3"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512023,
+          "attributeName": "Intro Skill - Eternal Bloom DMG",
+          "values": [
+            "18.15%",
+            "19.64%",
+            "21.13%",
+            "23.22%",
+            "24.70%",
+            "26.42%",
+            "28.80%",
+            "31.18%",
+            "33.56%",
+            "36.09%",
+            "39.07%",
+            "42.04%",
+            "45.02%",
+            "48.00%",
+            "50.97%",
+            "53.95%",
+            "56.93%",
+            "59.90%",
+            "62.88%",
+            "65.86%"
+          ],
+          "Description": " HP"
+        },
+        {
+          "attributeId": 1512024,
+          "attributeName": "Concerto Regen",
+          "values": [
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10",
+            "10"
+          ],
+          "Description": ""
+        }
+      ]
+    },
+    {
+      "SkillType": "Forte Circuit",
+      "SkillName": "Dreamland of Flowers",
+      "SkillDescribe": "<span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Dream Perfume</span></span><br><br>Lily can hold up to 300 points.<br><span style=\"color:#ffd12f;\" class=\"font-bold\">Basic Attack</span>, <span style=\"color:#ffd12f;\" class=\"font-bold\">Mid-air Attack</span>, and <span style=\"color:#ffd12f;\" class=\"font-bold\">Dodge Counter</span> restore <span style=\"color:#ffd12f;\" class=\"font-bold\">Dream Perfume</span> on hit.<br>Casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Resonance Skill - Reverie Blend</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Resonance Skill - Nightmare Blend</span> restores <span style=\"color:#ffd12f;\" class=\"font-bold\">Dream Perfume</span>.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Heavy Attack - Woven Fairytale</span></span><br><br>When <span style=\"color:#ffd12f;\" class=\"font-bold\">Dream Perfume</span> is full, hold <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> to cast <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span>, consuming all <span style=\"color:#ffd12f;\" class=\"font-bold\">Dream Perfume</span> to pull in nearby targets, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>. During the skill, she gains 10% DMG Reduction and continuously deals <span style=\"color:#f8e56cff;\">Spectro DMG</span> to nearby targets. She also heals all Resonators in the team every second for 2s.<br>Lily continuously gains <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambell Chime</span> during the skill. When <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambell Chime</span> reaches 300 points, press or hold <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> to stop the skill immediately and cast <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span>. <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span> is automatically cast at the end of <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span>. Casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span> consumes all <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambell Chime</span>.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Heavy Attack - Fairytale's Finale</span></span><br><br>Attack targets within range, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>.<br>For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.<br>Casting the skill grants Lily <span style=\"color:#ffd12f;\" class=\"font-bold\">Sillage</span> for 6s. Casting Outro Skill consumes <span style=\"color:#ffd12f;\" class=\"font-bold\">Sillage</span> and grants <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151202>Silvered Dream</te></span> to Resonators in the team. This effect can be triggered once every 25s.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Heavy Attack - Woven Phantasm</span></span><br><br>When <span style=\"color:#ffd12f;\" class=\"font-bold\">Dream Perfume</span> is full, hold <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> to cast <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Woven Phantasm</span>, consuming all <span style=\"color:#ffd12f;\" class=\"font-bold\">Dream Perfume</span> to pull in nearby targets, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>. She also heals all Resonators in the team every second for 2s.<br>Lily continuously gains <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambell Chime</span> during the skill. When <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambell Chime</span> reaches 300 points, press or hold <span style=\"color:#ffd12f;\" class=\"font-bold\">Normal Attack</span> to stop the skill immediately and cast <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span>. <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span> is automatically cast at the end of <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Phantasm</span>. Casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span> consumes all <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambell Chime</span>.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Heavy Attack - Phantasm's End</span></span><br><br>Attack targets within range, dealing <span style=\"color:#f8e56cff;\">Spectro DMG</span>.<br>For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.<br>Casting this skill grants Lily <span style=\"color:#ffd12f;\" class=\"font-bold\">Sillage</span> for 6s. Casting Outro Skill consumes <span style=\"color:#ffd12f;\" class=\"font-bold\">Sillage</span> and grants <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151202>Silvered Dream</te></span> to Resonators in the team. This effect can be triggered once every 25s.<br><size=10></span><br><br><span class=\"font-bold font-whitney text-3xl style=\"color:aliceblue;\">Silvered Dream</span></span><br><br>Lasts for 30s.<br>When the Resonator with this effect is the Active Resonator and can trigger Unison Response, their ATK is increased by 7% for each stack of <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=131111>Unison Boon</te></span> the team has, counting up to 4 stacks of <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=131111>Unison Boon</te></span>.<br>The active Resonator's Echo Skill Crit. Rate is increased by 10%, and their Echo Skill Crit. DMG is increased by 20%.<br>All nearby Resonators in the team gain resistance to interruption.",
+      "SkillAttributes": [
+        {
+          "attributeId": 1512011,
+          "attributeName": "Heavy Attack - Woven Fairytale Healing",
+          "values": [
+            "617+1.12%",
+            "691+1.16%",
+            "771+1.21%",
+            "863+1.28%",
+            "975+1.37%",
+            "1079+1.46%",
+            "1098+1.62%",
+            "1123+1.82%",
+            "1141+2.02%",
+            "1172+2.35%",
+            "1269+2.55%",
+            "1366+2.74%",
+            "1462+2.94%",
+            "1559+3.13%",
+            "1656+3.33%",
+            "1752+3.52%",
+            "1849+3.72%",
+            "1946+3.91%",
+            "2043+4.11%",
+            "2139+4.30%"
+          ],
+          "Description": " HP"
+        },
+        {
+          "attributeId": 1512012,
+          "attributeName": "Heavy Attack - Woven Phantasm Healing",
+          "values": [
+            "617+1.12%",
+            "691+1.16%",
+            "771+1.21%",
+            "863+1.28%",
+            "975+1.37%",
+            "1079+1.46%",
+            "1098+1.62%",
+            "1123+1.82%",
+            "1141+2.02%",
+            "1172+2.35%",
+            "1269+2.55%",
+            "1366+2.74%",
+            "1462+2.94%",
+            "1559+3.13%",
+            "1656+3.33%",
+            "1752+3.52%",
+            "1849+3.72%",
+            "1946+3.91%",
+            "2043+4.11%",
+            "2139+4.30%"
+          ],
+          "Description": " HP"
+        },
+        {
+          "attributeId": 1512013,
+          "attributeName": "Heavy Attack - Woven Fairytale DMG",
+          "values": [
+            "12.50%+12.50%*19",
+            "13.53%+13.53%*19",
+            "14.55%+14.55%*19",
+            "15.99%+15.99%*19",
+            "17.01%+17.01%*19",
+            "18.19%+18.19%*19",
+            "19.83%+19.83%*19",
+            "21.47%+21.47%*19",
+            "23.11%+23.11%*19",
+            "24.86%+24.86%*19",
+            "26.91%+26.91%*19",
+            "28.96%+28.96%*19",
+            "31.01%+31.01%*19",
+            "33.06%+33.06%*19",
+            "35.11%+35.11%*19",
+            "37.16%+37.16%*19",
+            "39.21%+39.21%*19",
+            "41.26%+41.26%*19",
+            "43.31%+43.31%*19",
+            "45.36%+45.36%*19"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512014,
+          "attributeName": "Heavy Attack - Woven Phantasm DMG",
+          "values": [
+            "22.73%*11",
+            "24.60%*11",
+            "26.46%*11",
+            "29.07%*11",
+            "30.93%*11",
+            "33.08%*11",
+            "36.06%*11",
+            "39.04%*11",
+            "42.02%*11",
+            "45.19%*11",
+            "48.92%*11",
+            "52.64%*11",
+            "56.37%*11",
+            "60.10%*11",
+            "63.83%*11",
+            "67.55%*11",
+            "71.28%*11",
+            "75.01%*11",
+            "78.73%*11",
+            "82.46%*11"
+          ],
+          "Description": ""
+        },
+        {
+          "attributeId": 1512015,
+          "attributeName": "Heavy Attack - Fairytale's Finale DMG",
+          "values": [
+            "18.00%",
+            "19.48%",
+            "20.96%",
+            "23.02%",
+            "24.50%",
+            "26.20%",
+            "28.56%",
+            "30.92%",
+            "33.28%",
+            "35.79%",
+            "38.74%",
+            "41.69%",
+            "44.65%",
+            "47.60%",
+            "50.55%",
+            "53.50%",
+            "56.45%",
+            "59.41%",
+            "62.36%",
+            "65.31%"
+          ],
+          "Description": " HP"
+        },
+        {
+          "attributeId": 1512016,
+          "attributeName": "Heavy Attack - Phantasm's End DMG",
+          "values": [
+            "18.00%",
+            "19.48%",
+            "20.96%",
+            "23.02%",
+            "24.50%",
+            "26.20%",
+            "28.56%",
+            "30.92%",
+            "33.28%",
+            "35.79%",
+            "38.74%",
+            "41.69%",
+            "44.65%",
+            "47.60%",
+            "50.55%",
+            "53.50%",
+            "56.45%",
+            "59.41%",
+            "62.36%",
+            "65.31%"
+          ],
+          "Description": " HP"
+        }
+      ]
+    },
+    {
+      "SkillType": "Inherent Skill",
+      "SkillName": "Skillful Cooking",
+      "SkillDescribe": "Has a chance to produce special dishes when cooking.",
+      "SkillAttributes": []
+    },
+    {
+      "SkillType": "Outro Skill",
+      "SkillName": "Blooming Fragrance",
+      "SkillDescribe": "Resonators in the team gain 25% All DMG Amplification for 30s.",
+      "SkillAttributes": []
+    },
+    {
+      "SkillType": "Tune Break",
+      "SkillName": "Tune Break: Pistols",
+      "SkillDescribe": "When the target's <span style=\"color:#ffd12f;\" class=\"font-bold\">Off-Tune Level</span> is full, the Resonator may cast <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=100001>Tune Break</te></span> on the target.",
+      "SkillAttributes": []
+    }
+  ],
+  "SkillTree": [
+    {
+      "PropertyNodeTitle": "Healing Bonus+",
+      "PropertyNodeDescribe": "Healing Bonus increased by 1.80%."
+    },
+    {
+      "PropertyNodeTitle": "HP+",
+      "PropertyNodeDescribe": "HP increased by 1.80%."
+    },
+    {
+      "PropertyNodeTitle": "HP+",
+      "PropertyNodeDescribe": "HP increased by 1.80%."
+    },
+    {
+      "PropertyNodeTitle": "Healing Bonus+",
+      "PropertyNodeDescribe": "Healing Bonus increased by 1.80%."
+    },
+    {
+      "PropertyNodeTitle": "Healing Bonus+",
+      "PropertyNodeDescribe": "Healing Bonus increased by 4.20%."
+    },
+    {
+      "PropertyNodeTitle": "HP+",
+      "PropertyNodeDescribe": "HP increased by 4.20%."
+    },
+    {
+      "PropertyNodeTitle": "HP+",
+      "PropertyNodeDescribe": "HP increased by 4.20%."
+    },
+    {
+      "PropertyNodeTitle": "Healing Bonus+",
+      "PropertyNodeDescribe": "Healing Bonus increased by 4.20%."
+    }
+  ],
+  "ResonantChain": [
+    {
+      "GroupIndex": 1,
+      "NodeName": "Look, White Flowers from the Ruins of Dreams",
+      "AttributesDescription": "Lily is immune to interruption while channeling <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Phantasm</span>, and while casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span>.<br>While <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151203>Cradle Lullaby</te></span> is active, each <span style=\"color:#ffd12f;\" class=\"font-bold\">Intro Skill</span> cast by a Resonator in the team now grants 2 stacks of <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151204>Dream Aroma</te></span>.",
+      "AttributesDescriptionParams": []
+    },
+    {
+      "GroupIndex": 2,
+      "NodeName": "Listen, a Requiem from the Dream Cradle",
+      "AttributesDescription": "While <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151203>Cradle Lullaby</te></span> is active, when a Resonator in the team casts an <span style=\"color:#ffd12f;\" class=\"font-bold\">Intro Skill</span>, each stack of <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151204>Dream Aroma</te></span> additionally increases Crit. Rate by 2% and Crit. DMG by 6%.",
+      "AttributesDescriptionParams": [
+        "2%",
+        "6%"
+      ]
+    },
+    {
+      "GroupIndex": 3,
+      "NodeName": "May Your Soul Wander No More",
+      "AttributesDescription": "Casting <span style=\"color:#ffd12f;\" class=\"font-bold\">Intro Skill - Eternal Bloom</span> additionally grants Lily 25 points of Concerto Energy and 170 point of <span style=\"color:#ffd12f;\" class=\"font-bold\"><te href=151201>Dream Perfume</te></span>.<br>While channeling <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Phantasm</span>, Lily gains <span style=\"color:#ffd12f;\" class=\"font-bold\">Dreambell Chime</span> faster, and the healing provided is increased by 50%.",
+      "AttributesDescriptionParams": [
+        "25",
+        "170",
+        "50%"
+      ]
+    },
+    {
+      "GroupIndex": 4,
+      "NodeName": "May Your Past Sink into Silence",
+      "AttributesDescription": "While channeling <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Fairytale</span> or <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Woven Phantasm</span>, and while in <span style=\"color:#ffd12f;\" class=\"font-bold\">Slumberland</span>, healing provided is increased by 30%.",
+      "AttributesDescriptionParams": [
+        "30%"
+      ]
+    },
+    {
+      "GroupIndex": 5,
+      "NodeName": "May You Find Peace in Endless Light",
+      "AttributesDescription": "The DMG Multipliers of <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span>, <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span>, and <span style=\"color:#ffd12f;\" class=\"font-bold\">Intro Skill - Eternal Bloom</span> are increased by 40%.",
+      "AttributesDescriptionParams": [
+        "40%"
+      ]
+    },
+    {
+      "GroupIndex": 6,
+      "NodeName": "May My Reverie Never End",
+      "AttributesDescription": "The <span style=\"color:#f8e56cff;\">Spectro DMG</span> dealt by <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Fairytale's Finale</span>, <span style=\"color:#ffd12f;\" class=\"font-bold\">Heavy Attack - Phantasm's End</span>, and <span style=\"color:#ffd12f;\" class=\"font-bold\">Intro Skill - Eternal Bloom</span> is further increased by 500%.",
+      "AttributesDescriptionParams": [
+        "500%"
+      ]
+    }
+  ],
+  "Properties": [
+    {
+      "Name": "HP",
+      "BaseValue": 1337,
+      "GrowthValues": [
+        {
+          "growthId": 1,
+          "level": 1,
+          "value": 1337
+        },
+        {
+          "growthId": 96,
+          "level": 90,
+          "value": 16712.5
+        }
+      ]
+    },
+    {
+      "Name": "ATK",
+      "BaseValue": 23,
+      "GrowthValues": [
+        {
+          "growthId": 1,
+          "level": 1,
+          "value": 23
+        },
+        {
+          "growthId": 96,
+          "level": 90,
+          "value": 287.5
+        }
+      ]
+    },
+    {
+      "Name": "DEF",
+      "BaseValue": 90,
+      "GrowthValues": [
+        {
+          "growthId": 1,
+          "level": 1,
+          "value": 90
+        },
+        {
+          "growthId": 96,
+          "level": 90,
+          "value": 1099.998
+        }
+      ]
+    },
+    {
+      "Name": "Crit. Rate",
+      "BaseValue": 500,
+      "GrowthValues": [
+        {
+          "growthId": 1,
+          "level": 1,
+          "value": "5%"
+        },
+        {
+          "growthId": 96,
+          "level": 90,
+          "value": "5%"
+        }
+      ]
+    },
+    {
+      "Name": "Crit. DMG",
+      "BaseValue": 15000,
+      "GrowthValues": [
+        {
+          "growthId": 1,
+          "level": 1,
+          "value": "150%"
+        },
+        {
+          "growthId": 96,
+          "level": 90,
+          "value": "150%"
+        }
+      ]
+    },
+    {
+      "Name": "Tune Break Boost",
+      "BaseValue": 0,
+      "GrowthValues": [
+        {
+          "growthId": 1,
+          "level": 1,
+          "value": 0
+        },
+        {
+          "growthId": 96,
+          "level": 90,
+          "value": 0
+        }
+      ]
+    }
+  ],
+  "_capture": {
+    "url": "https://api-v2.encore.moe/api/en/character/1512?ver=latest&v=Beta",
+    "date": "2026-10-25",
+    "metadata": {
+      "GameVer": "3.8.0",
+      "ResVer": "3.8.1",
+      "Changelist": "9162983"
+    },
+    "fields": "Relevant fields only; stat rows retained at levels 1 and 90, skill arrays unchanged."
+  }
+}

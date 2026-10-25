@@ -1,0 +1,70 @@
+{
+  "id": 1512,
+  "rarity": 5,
+  "weapon": 3,
+  "element": 5,
+  "name": "Lily",
+  "nick_name": "",
+  "desc": "Stay tuned",
+  "tag": {
+    "3": {"name": "Concerto Efficiency", "desc": "Quick concerto energy regeneration"}
+  },
+  "stats": {
+    "0": {"1": {"life": 1337.0, "atk": 23.0, "def": 90.0}},
+    "6": {"90": {"life": 16712.5, "atk": 287.5, "def": 1099.998}}
+  },
+  "skill_trees": {
+    "1": {
+      "parent_nodes": [],
+      "node_type": 2,
+      "skill": {
+        "name": "Mend and Cleanse",
+        "desc": "Basic Attack\\n{Cus:Ipt,Touch=Tap PC=Press Gamepad=Press} repeatedly or hold Normal Attack to perform up to 4 consecutive attacks, dealing Spectro DMG.\\n\\nMid-air Attack\\nConsume STA to perform a Plunging Attack, dealing Spectro DMG.\\n\\nDodge Counter\\n{Cus:Ipt,Touch=Tap PC=Press Gamepad=Press} Normal Attack shortly after a successful Dodge to attack the target, dealing Spectro DMG.",
+        "type": "Normal Attack",
+        "level": {
+          "1": {"name": "Basic Attack Stage 1 DMG",
+                "param": [["37.36%", "40.43%", "43.49%", "47.78%", "50.84%", "54.37%", "59.27%",
+                           "64.17%", "69.07%", "74.28%"]],
+                "format": null},
+          "2": {"name": "Basic Attack Stage 2 DMG",
+                "param": [["12.66%+12.66%*3", "13.70%+13.70%*3", "14.74%+14.74%*3", "16.19%+16.19%*3",
+                           "17.23%+17.23%*3", "18.43%+18.43%*3", "20.09%+20.09%*3", "21.75%+21.75%*3",
+                           "23.41%+23.41%*3", "25.17%+25.17%*3"]],
+                "format": null}
+        }
+      }
+    },
+    "6": {
+      "parent_nodes": [],
+      "node_type": 3,
+      "skill": {
+        "name": "Blooming Dream",
+        "desc": "First Bloom\\nAttack the target, dealing Spectro DMG. {Cus:Ipt,Touch=Tap PC=Press Gamepad=Press} Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.\\n\\nEternal Bloom\\nAfter casting Resonance Liberation - Into the Dream Cradle, Lily's next Intro Skill First Bloom is replaced with Eternal Bloom. When cast, it attacks the target, dealing Spectro DMG.\\nFor every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.",
+        "type": "Intro Skill",
+        "level": {
+          "23": {"name": "Intro Skill - First Bloom DMG",
+                 "param": [["23.60%+23.60%*3", "25.54%+25.54%*3", "27.48%+27.48%*3", "30.18%+30.18%*3",
+                            "32.12%+32.12%*3", "34.35%+34.35%*3", "37.44%+37.44%*3", "40.54%+40.54%*3",
+                            "43.63%+43.63%*3", "46.92%+46.92%*3"]],
+                 "format": null}
+        }
+      }
+    },
+    "8": {
+      "parent_nodes": [],
+      "node_type": 3,
+      "skill": {
+        "name": "Blooming Fragrance",
+        "desc": "Resonators in the team gain 25% All DMG Amplification for 30s.",
+        "type": "Outro Skill",
+        "level": {}
+      }
+    }
+  },
+  "chains": {
+    "1": {"name": "Look, White Flowers from the Ruins of Dreams", "param": [],
+          "desc": "Lily is immune to interruption while channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End.\\nWhile Cradle Lullaby is active, each Intro Skill cast by a Resonator in the team now grants 2 stacks of Dream Aroma."},
+    "6": {"name": "May My Reverie Never End", "param": ["500%"],
+          "desc": "The Spectro DMG dealt by Heavy Attack - Fairytale's Finale, Heavy Attack - Phantasm's End, and Intro Skill - Eternal Bloom is further increased by {0}."}
+  }
+}

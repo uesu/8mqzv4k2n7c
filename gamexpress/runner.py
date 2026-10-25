@@ -8,11 +8,12 @@ import logging
 import os
 import re
 import time
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 
 import aiohttp
 
-from . import build_id, codeposter, maintenance, schedule
+from . import beta, build_id, codeposter, maintenance, schedule
 from .config import Game, Settings, active_games, load_games, load_overrides
 from .discord import WebhookClient, webhook_fingerprint
 from .http import BOT_UA, Fetcher, Probe
@@ -50,6 +51,10 @@ class Ctx:
     media: dict = field(default_factory=dict)       # game key -> version -> program announcement
     banners: dict = field(default_factory=dict)     # game key -> list of 5★ rate-up banners
     reddit: RedditClient | None = None
+    # Optional async collaborator for deterministic feature-delivery tests.  Production leaves
+    # it unset so feature code uses asyncio.sleep; dry-run harnesses can record the intended
+    # wait without idling a test suite.
+    sleep: Callable[[float], Awaitable[object]] | None = None
 
 
 async def gather_versions(ctx: Ctx) -> None:
@@ -268,6 +273,7 @@ async def failover_check(ctx: Ctx) -> None:
             peer,
             include_news="news" in s.features,
             include_maintenance="maintenance" in s.features,
+            include_beta="beta" in s.features,
         )
         if n:
             ctx.report.append(f"🔄 imported {n} posted key(s) from the peer instance")
@@ -351,6 +357,14 @@ async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
                 for record in (news_map.values() if isinstance(news_map, dict) else ()):
                     if isinstance(record, dict):
                         record["paused"] = True
+            if "beta" in features:
+                await _safe_step(ctx, "beta", beta.run(ctx))
+            elif ctx.active and not settings.beta_enabled:
+                # Same one-marker rule: disabling parks the records, it never discovers.
+                beta_map = state.data.get("beta")
+                for record in (beta_map.values() if isinstance(beta_map, dict) else ()):
+                    if isinstance(record, dict):
+                        record["paused"] = True
             if not features:
                 ctx.report.append("⏸️ no active features this run (ENABLED_FEATURES=none or passive standby)")
         except Exception as exc:  # noqa: BLE001 — guarantee persistence & step summary on unexpected abort
@@ -360,6 +374,7 @@ async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
             if ctx.active and features and not ctx.errors and not ephemeral:
                 state.heartbeat(settings.instance_name, settings.heartbeat_min, ctx.now)
             state.prune(ctx.now)
+            state.prune_beta()
             if not ephemeral:
                 if state.save():
                     log.info("state saved -> %s", settings.state_path)

@@ -1,0 +1,96 @@
+{
+  "id": 1661,
+  "icon": "IconRole1661",
+  "name": "Robin",
+  "code_name": "Robin",
+  "rarity": 4,
+  "weapon_type": {"5": "Defense"},
+  "element_type": {"205": "Ether"},
+  "special_element_type": {},
+  "hit_type": {"102": "Strike"},
+  "camp": {"18": "Unknown Realm"},
+  "gender": 2,
+  "stats": {
+    "attack": 108,
+    "attack_growth": 63517,
+    "break_stun": 90,
+    "crit": 500,
+    "crit_damage": 5000,
+    "defence": 57,
+    "defence_growth": 76993,
+    "element_abnormal_power": 96,
+    "element_mystery": 95,
+    "hp_growth": 955238,
+    "hp_max": 704,
+    "pen_rate": 0,
+    "sp_bar_point": 120,
+    "sp_recover": 120,
+    "sharp_critical_damage": 0
+  },
+  "level": {
+    "1": {"hp_max": 0, "attack": 0, "defence": 0, "level_max": 10, "level_min": 0},
+    "2": {"hp_max": 483, "attack": 39, "defence": 39, "level_max": 20, "level_min": 10},
+    "3": {"hp_max": 966, "attack": 77, "defence": 78, "level_max": 30, "level_min": 20},
+    "4": {"hp_max": 1449, "attack": 116, "defence": 117, "level_max": 40, "level_min": 30},
+    "5": {"hp_max": 1932, "attack": 154, "defence": 156, "level_max": 50, "level_min": 40},
+    "6": {"hp_max": 2415, "attack": 193, "defence": 195, "level_max": 60, "level_min": 50}
+  },
+  "extra_level": {
+    "1": {"max_level": 15, "extra": {
+      "11102": {"prop": 11102, "name": "HP", "format": "{0:0.#%}", "value": 600},
+      "12101": {"prop": 12101, "name": "Base ATK", "format": "{0:0.#}", "value": 0}}},
+    "6": {"max_level": 60, "extra": {
+      "11102": {"prop": 11102, "name": "HP", "format": "{0:0.#%}", "value": 1800},
+      "12101": {"prop": 12101, "name": "Base ATK", "format": "{0:0.#}", "value": 75}}}
+  },
+  "skill": {
+    "basic": {"description": [
+      {"name": "Basic Attack: Robin Attack",
+       "desc": "Press  to activate:\nUnleashes up to 3 attacks forward, dealing Ether DMG;"},
+      {"name": "Basic Attack: Robin Attack", "param": []}
+    ]},
+    "dodge": {"description": [
+      {"name": "Dodge: Robin Dodge",
+       "desc": "Press  to activate:\nA quick dash dodge.\nCharacter is invulnerable while using this skill."},
+      {"name": "Dash Attack: Robin Dash",
+       "desc": "Press  during a dodge to activate:\nPerform an attack forward, dealing Ether DMG."}
+    ]},
+    "assist": {"description": [
+      {"name": "Entry Skill: Robin Entrance",
+       "desc": "When at 100 or more [Entry Points], switching this character on field or holding  consumes 100 [Entry Points] to activate:\nUnleashes an Energy blast at enemies in front, dealing massive Ether DMG.\nActivating this skill counts as activating a [Quick Assist].\nProvides all squad members with a [Robin Shield] equal to 4% of this character's initial Max HP, lasting 20s."},
+      {"name": "Quick Assist: Robin Assist",
+       "desc": "When the active character is launched, press  to activate:\nSwing the staff to attack enemies in front, dealing Ether DMG.\nCharacter is invulnerable while using this skill."}
+    ]},
+    "special": {"description": [
+      {"name": "Special Attack: Robin Exit",
+       "desc": "Press  to activate:\nLeaps high into the air and unleashes an Energy Blast around her, dealing massive Ether DMG.\nDuring skill activation, Anti-Interrupt level increases, and DMG taken is reduced by 40%.\nAfter activation, triggers a Quick Assist. After switching out, Robin enters the [Off-Field Guard] state for 60s. Repeated triggers refresh the duration. Also grants all squad members a [Robin Shield] equal to 2% of Robin's initial Max HP, lasting 15s."},
+      {"name": "Special Attack: Aftershock",
+       "desc": "While Robin is in the [Off-Field Guard] state, this skill triggers automatically when another active character in the squad lands any attack on an enemy:\nSwings her staff to attack forward, dealing Ether DMG;\nCharacter is invulnerable while using this skill;\nUpon activation, gains 20 [Entry Points] and grants all squad members a [Robin Shield] equal to 3% of Robin's initial Max HP, lasting 15s;\n[Special Attack: Aftershock] counts as an Aftershock and can be triggered at most once every 8s."},
+      {"name": "EX Special Attack: Enhanced Aftershock",
+       "desc": "When activating [Special Attack: Aftershock], if Energy is at least 40, it is upgraded to [EX Special Attack: Enhanced Aftershock]:\nContinuously consumes a total of 40 Energy to fire a powerful laser forward, dealing massive Ether DMG;\nRobin's heavy attacks deal additional DMG equal to 55% of her Max HP;\nCharacter is invulnerable while using this skill;\nUpon activation, gains 20 [Entry Points] and grants all squad members a [Robin Shield] equal to 6% of her initial Max HP, lasting 15s;\n[EX Special Attack: Enhanced Aftershock] counts as an Aftershock."}
+    ]},
+    "chain": {"description": [
+      {"name": "Chain Attack: Robin Finale",
+       "desc": "When a Chain Attack is triggered, select the character to activate:\nUnleashes a powerful series of attacks forward, dealing massive Ether DMG.\nCharacter is invulnerable while using this skill."},
+      {"name": "Ultimate: Robin Crescendo",
+       "desc": "When the Decibel Rating is at Maximum, press  to activate:\nUnleashes a powerful series of attacks forward, dealing massive Ether DMG.\nCharacter is invulnerable while using this skill."}
+    ]},
+    "core": {"description": [
+      {"name": "Core Passive:",
+       "desc": "When Robin uses certain skills, she grants all squad members a [Robin Shield] equal to a set percentage of her initial Max HP, lasting 15s. When a character gains [Robin Shield] again, the shield value stacks and its duration is extended, up to a maximum of 60s. The shield value cannot exceed 8% of Robin's initial Max HP.\nEach time a squad member gains [Robin Shield], their DMG is increased by 25% for 15s. Repeated triggers refresh the duration."},
+      {"name": "Additional Ability:",
+       "desc": "Triggers when another character in your squad is an [Armorer] or [Stun] Character:\nUpon entering the battlefield, gain 1 [Buff Enhance Point]. In Domain Mode, this effect can trigger once every 180s."}
+    ]}
+  },
+  "talent": {
+    "1": {"level": 1, "name": "PlaceHolder",
+          "desc": "Each time Robin consumes [Enhance Buff Points], all squad members gain 20% Laceration DMG for 60s. Repeated triggers refresh the duration. When consuming [Enhance Buff Points], Robin gains 1 stack of [Feather Defense]. When the on-field character takes DMG, Robin consumes 1 stack of [Feather Defense] to make them briefly Invulnerable."},
+    "2": {"level": 2, "name": "PlaceHolder",
+          "desc": "When Robin triggers an [Aftershock], DMG dealt by all squad members ignores 12% of the enemy's RES for 15s. Repeated triggers refresh the duration. Squad members with [Robin Shield] gain increased Anti-Interrupt level."},
+    "3": {"level": 3, "name": "PlaceHolder",
+          "desc": "Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2"},
+    "4": {"level": 4, "name": "TestKey_PlaceHolder", "desc": "TestKey_PlaceHolder"},
+    "5": {"level": 5, "name": "TestKey_PlaceHolder", "desc": "TestKey_PlaceHolder"},
+    "6": {"level": 6, "name": "TestKey_PlaceHolder", "desc": "TestKey_PlaceHolder"}
+  }
+}

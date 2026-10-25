@@ -1,0 +1,135 @@
+{
+  "id": 1551,
+  "icon": "IconRole1551",
+  "name": "Pyrois",
+  "code_name": "Pyrois",
+  "rarity": 4,
+  "weapon_type": {
+    "1": "Attack"
+  },
+  "element_type": {
+    "205": "Ether"
+  },
+  "special_element_type": {},
+  "hit_type": {
+    "102": "Strike"
+  },
+  "camp": {
+    "15": "Phaethon"
+  },
+  "gender": 2,
+  "stats": {
+    "attack": 108,
+    "attack_growth": 63517,
+    "break_stun": 90,
+    "crit": 500,
+    "crit_damage": 5000,
+    "defence": 57,
+    "defence_growth": 76993,
+    "element_abnormal_power": 96,
+    "element_mystery": 95,
+    "hp_growth": 955238,
+    "hp_max": 704,
+    "pen_rate": 0,
+    "sp_bar_point": 120,
+    "sp_recover": 120,
+    "sharp_critical_damage": 0
+  },
+  "level": {
+    "1": {
+      "hp_max": 0,
+      "attack": 0,
+      "defence": 0,
+      "level_max": 10,
+      "level_min": 0
+    },
+    "2": {
+      "hp_max": 483,
+      "attack": 39,
+      "defence": 39,
+      "level_max": 20,
+      "level_min": 10
+    },
+    "3": {
+      "hp_max": 966,
+      "attack": 77,
+      "defence": 78,
+      "level_max": 30,
+      "level_min": 20
+    },
+    "4": {
+      "hp_max": 1449,
+      "attack": 116,
+      "defence": 117,
+      "level_max": 40,
+      "level_min": 30
+    },
+    "5": {
+      "hp_max": 1932,
+      "attack": 154,
+      "defence": 156,
+      "level_max": 50,
+      "level_min": 40
+    },
+    "6": {
+      "hp_max": 2415,
+      "attack": 193,
+      "defence": 195,
+      "level_max": 60,
+      "level_min": 50
+    }
+  },
+  "extra_level": {
+    "1": {
+      "max_level": 15,
+      "extra": {
+        "11102": {
+          "prop": 11102,
+          "name": "HP",
+          "format": "{0:0.#%}",
+          "value": 600
+        },
+        "12101": {
+          "prop": 12101,
+          "name": "Base ATK",
+          "format": "{0:0.#}",
+          "value": 0
+        }
+      }
+    },
+    "6": {
+      "max_level": 60,
+      "extra": {
+        "11102": {
+          "prop": 11102,
+          "name": "HP",
+          "format": "{0:0.#%}",
+          "value": 1800
+        },
+        "12101": {
+          "prop": 12101,
+          "name": "Base ATK",
+          "format": "{0:0.#}",
+          "value": 75
+        }
+      }
+    }
+  },
+  "skill": {
+    "basic": {
+      "description": [
+        {
+          "name": "Basic Attack: Celestial Light",
+          "desc": "Press  to activate:\nUnleashes up to 4 attacks forward, dealing Ether DMG."
+        }
+      ]
+    }
+  },
+  "talent": {
+    "6": {
+      "level": 6,
+      "name": "Morning Star at Dawn",
+      "desc": "When any squad member triggers [Contamination], Pyrois gains 1 stack of [Radiant Edge], stacking up to 3 times. This effect can trigger once every 0.2s. When the heavy attack of [Ultimate: Unbound Swordstorm] hits an enemy, Pyrois gains 3 stacks of [Radiant Edge]. The enhanced skill deals additional DMG equal to 510% of her ATK."
+    }
+  }
+}

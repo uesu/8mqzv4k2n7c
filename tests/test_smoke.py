@@ -36,7 +36,14 @@ from gamexpress import cards, codeposter, media, schedule  # noqa: E402
 from gamexpress import config as gconfig  # noqa: E402
 from gamexpress.config import load_games, load_overrides, load_settings, parse_emoji, parse_ping  # noqa: E402
 from gamexpress.discord import SendResult, WebhookClient, _split, webhook_fingerprint  # noqa: E402
-from gamexpress.models import CodeHit, Item  # noqa: E402
+from gamexpress.models import (  # noqa: E402
+    BetaCharacter,
+    BetaEquipment,
+    BetaPatch,
+    BetaSectionEntry,
+    CodeHit,
+    Item,
+)
 from gamexpress.runner import Ctx, failover_check  # noqa: E402
 from gamexpress.samples import CODE_SAMPLES, SCHEDULE_SAMPLES  # noqa: E402
 from gamexpress.sources import (  # noqa: E402
@@ -8898,8 +8905,84 @@ def test_reproducible_offline_benchmark_command_and_bypass_invariants():
     assert data["default_medium_messages"] == 2
     assert data["timestamp_converter_calls_when_off"] == 0
     assert data["request_counts"]["basis"] == "derived_from_rendered_payloads_not_live_http"
+    # The historic default benchmark stays exactly default-off: beta cases are opt-in so its
+    # 12 long-standing timing rows and stored news baselines remain directly comparable.
+    assert data["beta_enabled_fixture"]["enabled"] is False
+    assert data["beta_enabled_fixture"]["pipeline"] is None
+    assert data["beta_enabled_fixture"]["render_microbenchmarks"] == {}
     assert len(data["benchmarks"]) == 12
     assert all(b["median_us"] >= 0 and b["iterations"] == 20 for b in data["benchmarks"])
+
+
+def test_reproducible_beta_enabled_benchmark_covers_all_released_beta_games_offline():
+    """The opt-in benchmark runs the full enabled monitor harness entirely in memory."""
+    import contextlib
+    import io
+
+    before = os.environ.get("BETA_ENABLED")
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        rc = gxmain.main(["benchmark", "--iterations", "20", "--beta-enabled", "--json"])
+    assert rc == 0
+    assert os.environ.get("BETA_ENABLED") == before
+    data = json.loads(out.getvalue())
+    beta = data["beta_enabled_fixture"]
+    assert beta["enabled"] is True and beta["in_memory_only"] is True
+    pipeline = beta["pipeline"]
+    assert pipeline["mode"] == "deterministic BETA_ENABLED=1 full pipeline"
+    assert pipeline["settings"] == {
+        "BETA_ENABLED": "1",
+        "BETA_GAMES": ["genshin", "starrail", "zzz", "wuwa"],
+    }
+    # Source/webhook/state collaborators are deliberately exercised, but they are entirely
+    # in-memory doubles: no live monitor mutation or local state file is possible.
+    assert (pipeline["live_source_requests"], pipeline["live_webhook_posts"],
+            pipeline["physical_state_writes"]) == (0, 0, 0)
+    assert pipeline["fixture_source_calls"] > 0
+    assert pipeline["fixture_webhook_posts"] > 0
+    assert pipeline["state_save_transitions"] > 0
+    assert pipeline["payloads_validated"] is True
+    assert pipeline["dedup_replay_posts"] == 0
+
+    keys = {"genshin", "starrail", "zzz", "wuwa"}
+    assert set(pipeline["initial_full_kit"]) == keys
+    assert set(pipeline["retained_revision"]) == keys
+    for game in keys:
+        initial = pipeline["initial_full_kit"][game]
+        revised = pipeline["retained_revision"][game]
+        # The real source -> parser -> renderer -> delivery path publishes a deliberately long
+        # full kit and all three item types, then retains and diffs a later source revision.
+        assert initial["status"] == "posted" and initial["pages"] >= 2 and initial["snapshots"] >= 3
+        assert revised["status"] == "posted" and revised["pages"] >= 1
+        assert revised["retained_revisions"] >= 2
+    assert pipeline["quiet_revision"] == {
+        "game": "zzz", "posts": 0, "status": "silent", "character_detail_reads": 0,
+    }
+    pacing = pipeline["delivery_pacing"]
+    assert pacing["gap_seconds"] == 5
+    assert pacing["initial_recorded_gaps"] > 0 and pacing["revision_recorded_gaps"] > 0
+    assert pacing["failed_first_page_gaps"] == 0
+    assert pacing["ambiguous_first_page_gaps"] == 0 and pacing["ambiguous_outcome_held"] is True
+    assert pacing["ambiguous_replay_blocked"] is True
+    assert pacing["resume_started_with_send"] is True
+    assert pacing["resume_recorded_gaps"] >= 1 and pacing["resume_has_no_trailing_gap"] is True
+
+    # Renderer timings remain a supplemental microbenchmark, not the feature proof above.
+    assert set(beta["render_microbenchmarks"]) == keys
+    for game, cases in beta["render_microbenchmarks"].items():
+        assert set(cases) == {"new", "revision"}, game
+        assert cases["new"] == {
+            "payloads": 2, "validated": True, "distinct_item_galleries": 2,
+            "required_tag": "[NEW]",
+        }
+        assert cases["revision"] == {
+            "payloads": 2, "validated": True, "distinct_item_galleries": 2,
+            "required_tag": "[BUFF]",
+        }
+    beta_rows = [row for row in data["benchmarks"] if row["case"].startswith("beta_enabled_")]
+    assert len(beta_rows) == 8
+    assert len(data["benchmarks"]) == 20
+    assert all(row["iterations"] == 20 and row["median_us"] >= 0 for row in beta_rows)
 
 
 def test_webhook_ambiguous_response_auth_key_redaction_and_video_preview_html():
@@ -16345,6 +16428,1711 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         assert "python tests/test_smoke.py" in wf_text
         assert "secrets.PROD_SYNC_PAT || secrets.BUMP_PAT" in wf_text
 
+
+# ===========================================================================
+# Feature 5 — beta kit & revision-diff cards (BETA_ENABLED, off by default)
+# ===========================================================================
+#
+# Every assertion below runs OFFLINE against fixtures captured from the live
+# databases (tests/fixtures/beta/). The feature must never need a network call
+# to be *tested*, and it must never post anything until an operator opts in.
+
+BETA_FIX = FIX / "beta"
+
+
+def _beta_json(name: str) -> dict:
+    return json.loads((BETA_FIX / name).read_text(encoding="utf-8"))
+
+
+def _beta_files() -> dict:
+    """Every captured beta fixture, keyed by the URL fragment that should serve it."""
+    files: dict[str, dict | str] = {
+        "manifest.json": _beta_json("nanoka_manifest.json"),
+        "changelog/beta": (BETA_FIX / "zzz_changelog_beta.md").read_text(encoding="utf-8"),
+    }
+    for name in ("zzz_character_1661", "zzz_character_1601", "zzz_character_1551",
+                 "zzz_weapon_14166", "zzz_equipment_34300", "zzz_weapon_listing"):
+        gid = name.rsplit("_", 1)[-1]
+        if name.endswith("_listing"):
+            key = "weapon.json"
+        elif "weapon" in name:
+            key = "weapon/" + gid
+        elif "equipment" in name:
+            key = "equipment/" + gid
+        else:
+            key = "character/" + gid
+        files[key] = _beta_json(name + ".json")
+    return files
+
+
+def _beta_ctx(state_path, fetcher, now=1793000000, games=None, **env):
+    """A Ctx with the collaborators `beta.run` touches (it posts through ctx.webhook)."""
+    s = settings(**env)
+    s.state_path = Path(state_path)
+    keys = games if games is not None else [g.key for g in GAMES.values() if g.enabled]
+    return Ctx(settings=s, games=[GAMES[k] for k in keys],
+               state=State.load(Path(state_path)), fetcher=fetcher,
+               webhook=WebhookClient(None, dry_run=True), x=None,
+               code_sources=FakeCodeSources({}), overrides={}, now=now,
+               versions={}, items={})
+
+
+class _RecordingFetcher:
+    """Serves the captured fixtures and counts every call it receives."""
+
+    def __init__(self, files: dict[str, dict | str], verify: bool = True):
+        self.files = files
+        self.calls: list[str] = []
+        self.verify = verify
+
+    async def get_json(self, url, **_kw):
+        self.calls.append(url)
+        for key, value in self.files.items():
+            if key in url and isinstance(value, dict):
+                return value
+        return None
+
+    async def get_text(self, url, **_kw):
+        self.calls.append(url)
+        for key, value in self.files.items():
+            if key in url and isinstance(value, str):
+                return value
+        return None
+
+    async def verify_media(self, _url):
+        return bool(self.verify)
+
+
+def test_feature5_is_off_by_default_and_only_opt_in_turns_it_on():
+    base = settings()
+    assert base.beta_enabled is False and "beta" not in base.features
+    for falsy in ("0", "false", "no", "off", ""):
+        s = settings(BETA_ENABLED=falsy)
+        assert s.beta_enabled is False and "beta" not in s.features
+    for truthy in ("1", "true", "yes", "on"):
+        s = settings(BETA_ENABLED=truthy)
+        assert s.beta_enabled is True and "beta" in s.features
+    # Beta is independent: enabling it must not switch anything else on, and vice versa.
+    s_only = settings(BETA_ENABLED="1", ONLY="beta")
+    assert s_only.features == {"beta"}
+    assert "beta" not in settings(ENABLED_FEATURES="beta").features
+    for standby in ("none", "off", "standby", "0"):
+        assert not settings(BETA_ENABLED="1", ENABLED_FEATURES=standby).features
+    # ...and it never disturbs the two features that are on by default.
+    assert {"schedule", "codes"} <= settings(BETA_ENABLED="1").features
+
+
+def test_feature5_excludes_the_games_that_have_not_shipped():
+    """Honkai: Nexus Anima and ANANTA have no beta to watch until they launch."""
+    s = settings(BETA_ENABLED="1")
+    assert s.beta_games == {"genshin", "starrail", "zzz", "wuwa"}
+    assert "hna" not in s.beta_games and "ananta" not in s.beta_games
+    # An explicit BETA_GAMES=all must still drop the two unreleased games.
+    s_all = settings(BETA_ENABLED="1", BETA_GAMES="all")
+    assert s_all.beta_games == {"genshin", "starrail", "zzz", "wuwa"}
+    assert settings(BETA_ENABLED="1", BETA_GAMES="none").beta_games == set()
+    assert settings(BETA_ENABLED="1", BETA_GAMES="hsr,zzz,ww").beta_games == {"starrail", "zzz", "wuwa"}
+
+
+def test_feature5_routes_to_its_own_dedicated_channel_and_never_the_catch_all():
+    hook = "https://discord.com/api/webhooks/100000000000000010/beta_tok"
+    s = settings(
+        DISCORD_WEBHOOK_BETA=hook,
+        DISCORD_WEBHOOK_BETA_ZZZ="https://discord.com/api/webhooks/100000000000000097/beta_zzz",
+        DISCORD_WEBHOOK_NEWS_ZZZ="https://discord.com/api/webhooks/100000000000000098/news_zzz",
+    )
+    # Most specific first, then the shared beta hook; never the schedule/codes catch-all
+    # (`BASE_ENV` supplies DISCORD_WEBHOOK_URL, so this is a real fallback to refuse).
+    assert s.webhook("beta", "zzz") == "https://discord.com/api/webhooks/100000000000000097/beta_zzz"
+    assert s.webhook("beta", "genshin") == hook
+    s_news = settings(DISCORD_WEBHOOK_NEWS_GI="https://discord.com/api/webhooks/100000000000000096/news_gi")
+    assert s_news.webhook("beta", "genshin") == "https://discord.com/api/webhooks/100000000000000096/news_gi"
+    # With nothing beta-specific configured there is no channel — the catch-all is not one.
+    assert settings().webhook("beta", "wuwa") is None
+    assert "DISCORD_WEBHOOK_BETA" in settings().expected_webhook_names("beta", "wuwa")
+    # No mirror fan-out: beta is a dedicated feature with a single destination.
+    assert s.mirror_webhook_source("beta", "zzz") == ("", None)
+
+
+def test_feature5_ping_is_its_own_switch_and_never_inherits_the_global_role():
+    # BASE_ENV sets PING_ROLE_ID, which is exactly what must NOT leak into feature 5.
+    assert settings().ping("beta", "zzz").text == ""
+    s = settings(PING_BETA_ZZZ="1296268365593186426")
+    assert s.ping("beta", "zzz").text == "<@&1296268365593186426>"
+    # A different game with no PING_BETA_* of its own stays silent even with PING_ROLE_ID set.
+    assert s.ping("beta", "genshin").text == ""
+    assert settings(PING_BETA="1296268365593186426").ping("beta", "wuwa").text == "<@&1296268365593186426>"
+    assert settings(PING_BETA_ZZZ="none").ping("beta", "zzz").text == ""
+    assert settings(PING_BETA_ZZZ="1296268365593186426", NO_PING="1").ping("beta", "zzz").text == ""
+
+
+def test_feature5_changelog_parser_reads_revisions_sections_and_ids():
+    from gamexpress.beta import _entry_id, parse_changelog
+
+    revs = parse_changelog((BETA_FIX / "zzz_changelog_beta.md").read_text(encoding="utf-8"))
+    assert len(revs) == 2
+    top = revs[0]
+    assert top["label"] == "v3.4.1 Rev. 19834130"
+    assert top["date"] == "23rd October 2026"
+    names = [e["name"] for e in top["entries"]]
+    assert names == ["Robin", "Sunbringer", "Pyrois", "Robin's Exclusive W-Engine",
+                     "ID: 14160", "ID: 34400", "ID: 34300"]
+    assert {e["section"] for e in top["entries"]} == {"Agents", "W-Engines", "Drive Discs"}
+    assert _entry_id(top["entries"][0]) == "1661"
+    assert _entry_id(top["entries"][3]) == "14166"
+    assert _entry_id(top["entries"][6]) == "34300"
+    # Every entry of the newest revision carries its own before/after diff link.
+    assert all(e["diff"] for e in top["entries"][:6])
+    # An older revision with no "See Changes" link still parses (nothing was before it).
+    assert revs[1]["entries"][0]["diff"] == ""
+    # Garbage and empty input must not raise and must not invent entries.
+    assert parse_changelog("") == []
+    assert parse_changelog("not a changelog at all") == []
+
+
+def test_feature5_manifest_reads_new_ids_per_game():
+    from gamexpress.beta import manifest_game, manifest_new_ids
+
+    manifest = _beta_json("nanoka_manifest.json")
+    assert manifest_game(manifest, "zzz")["latest"] == "3.4.1+19836465"
+    assert manifest_new_ids(manifest, "zzz", "character") == {"1601", "1661"}
+    assert manifest_new_ids(manifest, "zzz", "weapon") == {"14160", "14166"}
+    assert manifest_new_ids(manifest, "zzz", "equipment") == {"34300", "34400"}
+    assert manifest_new_ids(manifest, "hsr", "relicset") == {"329", "330"}
+    assert manifest_new_ids(manifest, "ww", "character") == {"1512"}
+    assert manifest_new_ids(manifest, "gi", "artifact") == set()
+    assert manifest_new_ids({}, "zzz", "character") == set()
+    assert manifest_game(manifest, "nope") == {}
+    # A new beta series may restart its internal build counter; version change still advances.
+    from gamexpress.beta import _next_data_version
+    assert _next_data_version({"source_version": "3.4.1+99999999"}, {
+        "latest": "3.5.1+1", "available": ["3.5.1+1"],
+    }) == "3.5.1+1"
+
+
+def test_feature5_candidate_roles_and_snapshots_do_not_alias_same_numeric_id():
+    """An upstream numeric id is not a safe cross-kind identity by itself."""
+    from gamexpress.beta import _candidate_entries, _snapshot_key_for
+
+    entries = [
+        {"id": "42", "url": "https://gi.gachabase.net/weapons/42/harness/beta"},
+        {"id": "42", "url": "https://gi.gachabase.net/artifacts/42/harness/beta"},
+    ]
+    chars, equipment = _candidate_entries(
+        "gi", {}, entries, {}, set(), {"42"}, {"42"})
+    assert chars == []
+    assert {(entry["role"], entry["id"]) for entry in equipment} == {("weapon", "42"), ("relic", "42")}
+
+    # Existing normal records retain the compact legacy key.  The competing role gets a typed
+    # key, and a later no-changelog fallback can recover that typed snapshot's original id.
+    snapshots = {"gi:42": {"kind": "weapon", "data": {"id": "gi:42"}}}
+    assert _snapshot_key_for(snapshots, "gi", "weapon", "42") == "gi:42"
+    assert _snapshot_key_for(snapshots, "gi", "relic", "42") == "gi:relic:42"
+    snapshots["gi:relic:42"] = {"kind": "relic", "data": {"id": "gi:relic:42"}}
+    _chars, fallback_equipment = _candidate_entries("gi", {}, [], snapshots, set(), set(), set())
+    assert {(entry["role"], entry["id"]) for entry in fallback_equipment} == {("weapon", "42"), ("relic", "42")}
+
+
+def test_feature5_zzz_kit_renders_every_section_with_its_numbers():
+    from gamexpress.beta import _zzz_character
+
+    built = _zzz_character(_beta_json("zzz_character_1661.json"))
+    assert built["element"] == "Ether" and built["role"] == "Defense"
+    stats = " | ".join(built["stats_lines"])
+    # Cross-checked against the database's own rendered stat block for Robin.
+    assert "HP 8754" in stats and "ATK 750" in stats and "DEF 706" in stats
+    assert "CRIT Rate 5%" in stats and "CRIT DMG 50%" in stats
+    assert "Impact 90" in stats
+    titles = [s.title for s in built["sections"]]
+    assert "Entry Skill: Robin Entrance" in titles
+    assert "EX Special Attack: Enhanced Aftershock" in titles
+    assert "Mindscape Cinema 1" in titles
+    # Unlocalised backend keys are the database saying it has no text yet — they must
+    # never reach a card.
+    assert "Mindscape Cinema 4" not in titles          # name is "TestKey_PlaceHolder"
+    assert "Mindscape Cinema 5" not in titles
+    assert "Mindscape Cinema 6" not in titles
+    body = "\n".join(" ".join(s.lines) for s in built["sections"])
+    assert "8% of Robin's initial Max HP" in body
+    assert "{LINK#" not in body and "TestKey_" not in body
+    assert {s.category for s in built["sections"]} >= {
+        "Basic Attack", "Assist", "Special Attack & EX Special Attack",
+        "Core Passive & Additional Ability", "Mindscape Cinema"}
+    assert all(s.tag == "[NEW]" for s in built["sections"])
+    # The 2026-10-25 Sunbringer 19850203 export's Lv.12 table uses main + growth × 11.
+    # This is 8410 + 770 × 11 = 16880 -> 168.8%, matching gachabase's rendered source.
+    from gamexpress.beta import _zzz_param_rows
+    rows = _zzz_param_rows([{"name": "1st-Hit DMG Multiplier", "param": {
+        "1601101": {"main": 8410, "growth": 770, "format": "%"},
+    }}])
+    assert rows == [{"name": "1st-Hit DMG Multiplier", "value": 16880.0, "text": "168.8%"}]
+
+
+def test_feature5_hsr_kit_renders_skills_traces_eidolons_and_mechanic_glossary():
+    from gamexpress.beta import _hsr_character
+
+    built = _hsr_character(_beta_json("hsr_character_1511.json"))
+    assert built["element"] == "Quantum" and built["role"] == "Elation"
+    stats = " | ".join(built["stats_lines"])
+    assert "ATK 679" in stats and "DEF 509" in stats      # Lv. 80 = base + add x 79
+    assert "SPD 94" in stats and "CRIT Rate 5%" in stats and "CRIT DMG 50%" in stats
+    assert "Trace Stat Bonuses" in stats
+    titles = [s.title for s in built["sections"]]
+    assert "Basic ATK: Starfrost, Showtime!" in titles
+    assert "Ultimate: Aha! Let There Be Laughter" in titles
+    assert "The True Story of Aha" in titles
+    assert "Aha Instant Incoming" in titles
+    assert "E1 — Who Giggled at the Primordial Hush?" in titles
+    assert "E6 — For THEY Said: You Are Elation" in titles
+    # The kit references named mechanics; their own definition text is placed directly under
+    # the relevant skill rather than repeated in a detached appendix.
+    body = "\n".join(" ".join(s.lines) for s in built["sections"])
+    assert "Follow-Up ATK" in body and "Unleashes an extra attack" in body
+    assert "Action Advance" in body and "Elation Debt" in body
+
+
+def test_feature5_gi_kit_renders_talents_passives_and_constellations():
+    from gamexpress.beta import _gi_character
+
+    built = _gi_character(_beta_json("gi_character_10000136.json"))
+    assert built["element"] == "Electro" and built["role"] == "Catalyst"
+    titles = [s.title for s in built["sections"]]
+    assert "Chain Reaction" in titles
+    assert "Principle: Variable Detection" in titles
+    assert "Baseline Stress Test" in titles
+    assert "C1 — The Observer Seeking What Is Missing" in titles
+    body = "\n".join(" ".join(s.lines) for s in built["sections"])
+    # {LINK#…} markers are stripped, the readable label survives.
+    assert "{LINK#" not in body and "Detection Core: Overload" in body
+    # Skill attribute rows are rendered with their real values.
+    assert "Skill DMG:" in body and "CD:" in body
+    # GI's derived Lv.90 base stats are not reproducible from the export, so only the
+    # directly-stated values are shown — a wrong number is worse than no number.
+    stats = " | ".join(built["stats_lines"])
+    assert "CRIT Rate 5%" in stats and "CRIT DMG 50%" in stats and "Elemental Mastery 100" in stats
+    assert "Lv." not in stats
+    assert "Rules Set at Naught" in built["subtext"]
+
+
+def test_feature5_ww_kit_renders_skill_trees_and_resonance_chain():
+    from gamexpress.beta import _ww_character
+
+    built = _ww_character(_beta_json("ww_character_1512.json"))
+    assert built["element"] == "Spectro" and built["role"] == "Pistols"
+    stats = " | ".join(built["stats_lines"])
+    assert "HP 16712.5" in stats and "ATK 287.5" in stats and "DEF 1100" in stats
+    titles = [s.title for s in built["sections"]]
+    assert "Normal Attack: Mend and Cleanse" in titles
+    assert "Intro Skill: Blooming Dream" in titles
+    assert "Outro Skill: Blooming Fragrance" in titles
+    assert "Sequence Node 1 — Look, White Flowers from the Ruins of Dreams" in titles
+    body = "\n".join(" ".join(s.lines) for s in built["sections"])
+    assert "Basic Attack Stage 1 DMG: 74.28%" in body
+    assert "{Cus:Ipt" not in body
+
+
+def test_feature5_equipment_renders_stats_and_effects_per_game():
+    from gamexpress.beta import _equip_from_detail
+
+    w = _equip_from_detail(
+        "zzz", "weapon", _beta_json("zzz_weapon_14166.json"),
+        _beta_json("zzz_weapon_listing.json")["14166"])
+    assert w["stats_line"] == "Base ATK 713"
+    assert w["sub_type"] == "Percent HP"
+    assert w["effect_title"] == "Robin Test Engine"
+    assert w["lines"] and "Aftershock" in w["lines"][0]
+
+    d = _equip_from_detail("zzz", "equipment", _beta_json("zzz_equipment_34300.json"), {})
+    assert d["lines"] == ["2-Piece: DEF +16%.",
+                          "4-Piece: Increases the equipper's CRIT Rate by 12%. When the equipper "
+                          "deals Fire Sharp DMG, it ignores 16% of the enemy's DEF."]
+    # Unknown shapes degrade to nothing rather than raising.
+    assert _equip_from_detail("zzz", "weapon", {}, {})["lines"] == []
+
+
+def test_feature5_payloads_split_long_kits_into_valid_pages():
+    from gamexpress.cards import beta_payloads, beta_payloads_with_map
+
+    long_lines = [
+        "Deals Spectro DMG equal to 512.40% of ATK to all enemies in front of Lily.",
+        "When the target is under [Contamination], this instance of DMG is increased by 30%.",
+        "Each stack of [Radiant Edge] consumed increases this skill's CRIT DMG by 12%.",
+        "Restores 10 points of Concerto Energy. This effect can trigger once every 20s.",
+    ]
+    chars = [
+        BetaCharacter(
+            id=f"zzz:100{i}", name=f"Test Agent {i}", rarity=5, element="Ether", role="Defense",
+            subtext="-# offline test fixture",
+            stats_lines=["Lv. 60 — HP 8753 · ATK 750 · DEF 706"],
+            sections=[
+                BetaSectionEntry(title=f"Basic Attack: Test {i}", category="Basic Attack",
+                                 tag="[NEW]" if i == 0 else "[CHANGED]", meta="",
+                                 lines=list(long_lines) * 6),
+                BetaSectionEntry(title=f"Special Attack: Test {i}", category="Special Attack",
+                                 tag="[NEW]" if i == 0 else "[CHANGED]", meta="Single Target",
+                                 lines=list(long_lines) * 6),
+            ],
+            is_new=(i == 0),
+        )
+        for i in range(3)
+    ]
+    equip = [BetaEquipment(id="zzz:9001", name="Test W-Engine", category_label="W-Engines",
+                           rarity=5, tag="[NEW]", stats_line="Base ATK 713",
+                           effect_title="Test Effect", lines=["Increases ATK by 24%."])]
+    patch = BetaPatch(game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1 Rev. 19834130",
+                      rev_id="r1", characters=chars, equipment=equip)
+    payloads, cmap = beta_payloads_with_map(GAMES["zzz"], patch, None, None)
+    assert len(payloads) > 1                       # the kit really did need paging
+    assert beta_payloads(GAMES["zzz"], patch, None, None) == payloads
+    # Every page independently satisfies Discord's Components V2 limits.
+    for i, p in enumerate(payloads, 1):
+        assert cards.validate_payload(p) == [], f"page {i} invalid: {cards.validate_payload(p)}"
+        assert p["flags"] & cards.IS_COMPONENTS_V2
+        assert len(p["components"]) == 1
+    # Each character maps to the page its card starts on, in order.
+    assert cmap["zzz:1000"] == 0
+    assert cmap["zzz:1001"] > cmap["zzz:1000"]
+    assert cmap["zzz:1002"] > cmap["zzz:1001"]
+    joined = json.dumps(payloads)
+    assert "Page 1/" in joined and f"Page {len(payloads)}/{len(payloads)}" in joined
+    # The resource line names both databases, and the footer carries the community button.
+    assert "gachabase" in json.dumps(payloads[0]) and "nanoka" in json.dumps(payloads[0])
+    assert "Citlali News" in joined
+    # Only the first page may mention anyone; no ping configured means nobody is mentioned.
+    assert all(p["allowed_mentions"] == {"parse": []} for p in payloads)
+
+
+def test_feature5_payload_pings_only_on_the_first_page_and_never_when_silent():
+    from gamexpress.cards import beta_payloads
+
+    ping = parse_ping("<@&1296268365593186426>")
+    assert ping and ping.roles == ["1296268365593186426"]
+    char = BetaCharacter(
+        id="zzz:2000", name="Ping Target", rarity=5, element="Ether", role="Defense",
+        stats_lines=["Lv. 60 — HP 8754 · ATK 750 · DEF 706 · Impact 90"],
+        sections=[BetaSectionEntry(title=f"Core Passive: Part {i}", category="Core Passive",
+                                   tag="[NEW]", meta="", lines=["A" * 400] * 3)
+                  for i in range(1, 5)],
+        is_new=True)
+    patch = BetaPatch(game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1 Rev. 1",
+                      rev_id="r2", characters=[char])
+    payloads = beta_payloads(GAMES["zzz"], patch, None, ping)
+    assert len(payloads) >= 2, "fixture must produce more than one page for this assertion"
+    assert payloads[0]["allowed_mentions"]["roles"] == ["1296268365593186426"]
+    for p in payloads[1:]:
+        assert p["allowed_mentions"] == {"parse": []}
+    silent = beta_payloads(GAMES["zzz"], patch, None, ping, silent=True)
+    assert all(p["allowed_mentions"] == {"parse": []} for p in silent)
+
+
+def test_feature5_request_budget_is_bounded_and_configurable():
+    from gamexpress.beta import _budget
+
+    class Shim:
+        def __init__(self, env):
+            self.settings = type("S", (), {"env": env})()
+
+    b = _budget(Shim({}))
+    assert b == {"min_poll_min": 30, "max_chars": 4, "max_equip": 12,
+                 "max_changed": 8, "max_requests": 48}
+    tight = _budget(Shim({"BETA_MAX_CHARACTERS": "1", "BETA_MAX_REQUESTS": "6",
+                          "BETA_MIN_POLL_MINUTES": "0", "BETA_MAX_EQUIPMENT": "2",
+                          "BETA_MAX_CHANGES": "0"}))
+    assert tight == {"min_poll_min": 0, "max_chars": 1, "max_equip": 2,
+                     "max_changed": 0, "max_requests": 6}
+    # Out-of-range and non-numeric values fall back to a bounded default, never to "unbounded".
+    junk = _budget(Shim({"BETA_MAX_REQUESTS": "99999", "BETA_MAX_CHARACTERS": "abc",
+                         "BETA_MIN_POLL_MINUTES": "-5"}))
+    assert junk["max_requests"] == 120
+    assert junk["max_chars"] == 4
+    assert junk["min_poll_min"] == 0
+
+
+def test_feature5_a_published_revision_is_never_published_twice():
+    """Same revision twice -> the second build returns nothing."""
+    from gamexpress import beta as beta_mod
+
+    manifest = _beta_json("nanoka_manifest.json")
+    fetcher = _RecordingFetcher(_beta_files())
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
+        budget = {"min_poll_min": 0, "max_chars": 4, "max_changed": 8,
+                  "max_equip": 12, "max_requests": 48}
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, budget))
+        assert patch is not None
+        # Static data and a changelog can briefly be one build apart. The card names the exact
+        # static build it fetched rather than mislabelling current data with an older heading.
+        assert patch.rev_label.startswith("v3.4.1 Rev. 19836465")
+        assert patch.source_version == "3.4.1+19836465"
+        # The build suffix is stripped for display; the data fetch still uses the full string.
+        assert patch.beta_version == "3.4.1"
+        # With no matching changelog build, only manifest-new ids are safely discovered. An old
+        # changed agent is never guessed from a stale changelog entry.
+        assert {c.id for c in patch.characters} == {"zzz:1661", "zzz:1601"}
+        assert all(c.is_new for c in patch.characters)
+        assert all(s.tag == "[NEW]" for c in patch.characters for s in c.sections)
+        # Publish it by hand (delivery needs a webhook), then re-run.
+        ctx.state.beta_record("zzz")["latest_rev"] = patch.rev_id
+        before = len(fetcher.calls)
+        again = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, budget))
+        assert again is None
+        assert len(fetcher.calls) == before + 1      # only the changelog re-check
+
+
+def test_feature5_state_locks_images_so_a_finished_card_stops_generating_traffic():
+    from gamexpress import beta as beta_mod
+
+    locked = {"zzz:1661": {"url": "https://example.com/locked.png", "locked": True, "ts": 1}}
+    cache: dict[str, str] = {}
+    fetcher = _RecordingFetcher({})
+    got = asyncio.run(beta_mod._resolve_image(
+        fetcher, {"id": "zzz:1661", "image": "https://example.com/newer.png"}, locked, cache))
+    assert got == "https://example.com/locked.png"
+    assert cache["zzz:1661"] == "https://example.com/locked.png"
+    assert fetcher.calls == []          # a locked image is never re-verified
+    # A placeholder image the database itself uses is not an image.
+    fetcher2 = _RecordingFetcher({}, verify=True)
+    blank = asyncio.run(beta_mod._resolve_image(
+        fetcher2, {"id": "zzz:14166", "image": "https://cdn.gachabase.net/zzz/static/missing.webp"},
+        {}, {}))
+    assert blank == ""
+    assert fetcher2.calls == []
+    # An image the CDN will not serve is dropped rather than posted broken.
+    assert asyncio.run(beta_mod._resolve_image(
+        _RecordingFetcher({}, verify=False),
+        {"id": "zzz:1", "image": "https://example.com/dead.png"}, {}, {})) == ""
+
+
+def test_feature5_state_round_trips_and_peer_merges_beta_records():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        st = State.load(path)
+        rec = st.beta_record("zzz")
+        rec["latest_rev"] = "abc123"
+        rec["revisions"]["abc123"] = {"status": "posted", "ts": 10, "messages": ["1", "2"]}
+        rec["locked_images"]["zzz:1661"] = {"url": "https://example.com/a.png", "locked": True}
+        assert st.save() is True
+        reloaded = State.load(path)
+        assert reloaded.beta_record("zzz")["latest_rev"] == "abc123"
+        assert reloaded.beta_record("zzz")["revisions"]["abc123"]["messages"] == ["1", "2"]
+
+        # A fail-over standby adopts the primary's posted revision so it cannot double-post.
+        peer = State.load(path)
+        fresh = State.load(Path(tmp) / "state2.json")
+        imported = fresh.merge_peer(peer.data, include_beta=True)
+        assert imported >= 2
+        assert fresh.beta_record("zzz")["revisions"]["abc123"]["status"] == "posted"
+        assert fresh.beta_record("zzz")["locked_images"]["zzz:1661"]["url"] == "https://example.com/a.png"
+        # Without the flag, nothing beta-related crosses over.
+        other = State.load(Path(tmp) / "state3.json")
+        other.merge_peer(peer.data)
+        assert other.beta_record("zzz")["revisions"] == {}
+        assert other.beta_record("zzz")["locked_images"] == {}
+
+        # Bounded revision batches can be in flight on a peer. Their per-batch cursors merge
+        # monotonically; a longer prefix wins, while a conflicting prefix would hold ambiguous.
+        left = State.load(Path(tmp) / "left.json")
+        right = State.load(Path(tmp) / "right.json")
+        left.beta_record("zzz")["revisions"]["batch"] = {
+            "status": "partial", "processed": ["character:zzz:1601"],
+            "batches": {"a": {"status": "posted", "messages": ["10"]}},
+        }
+        right.beta_record("zzz")["revisions"]["batch"] = {
+            "status": "partial", "processed": ["character:zzz:1601", "weapon:zzz:14160"],
+            "batches": {"a": {"status": "posted", "messages": ["10", "11"]}},
+        }
+        left.merge_peer(right.data, include_beta=True)
+        merged = left.beta_record("zzz")["revisions"]["batch"]
+        assert merged["processed"] == ["character:zzz:1601", "weapon:zzz:14160"]
+        assert merged["batches"]["a"]["messages"] == ["10", "11"]
+        merged["batches"]["a"]["signature"] = "local-payload"
+        right.beta_record("zzz")["revisions"]["batch"]["batches"]["a"]["signature"] = "other-payload"
+        left.merge_peer(right.data, include_beta=True)
+        assert merged["status"] == "ambiguous"
+        assert merged["batches"]["a"]["ambiguous"] is True
+
+
+def test_feature5_prune_bounds_the_beta_state_file():
+    with tempfile.TemporaryDirectory() as tmp:
+        st = State.load(Path(tmp) / "state.json")
+        rec = st.beta_record("zzz")
+        for i in range(120):
+            rec["revisions"][f"rev{i}"] = {"status": "posted", "ts": i}
+            rec["snapshots"][f"snap{i}"] = {"ts": i}
+            rec["locked_images"][f"img{i}"] = {"url": "u", "locked": True}
+        st.prune_beta()
+        assert len(rec["revisions"]) == 16
+        assert len(rec["snapshots"]) == 80
+        assert len(rec["locked_images"]) == 80
+        # The newest survive; the oldest are the ones dropped.
+        assert "rev119" in rec["revisions"] and "rev0" not in rec["revisions"]
+        assert "snap119" in rec["snapshots"] and "snap0" not in rec["snapshots"]
+        # Pruning a state file with no beta block is a no-op.
+        State.load(Path(tmp) / "empty.json").prune_beta()
+
+
+def test_feature5_runs_end_to_end_without_a_webhook_and_reports_it():
+    from gamexpress import beta as beta_mod
+
+    fetcher = _RecordingFetcher(_beta_files())
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
+        asyncio.run(beta_mod.run(ctx))
+        assert ctx.errors == []
+        assert any("missing dedicated webhook" in w for w in ctx.warnings), ctx.warnings
+        assert "DISCORD_WEBHOOK_BETA_ZZZ" in " ".join(ctx.warnings)
+
+
+def test_feature5_enabled_run_delivers_one_fixture_character_for_every_released_beta_game():
+    """A manifest fallback must remain deliverable for GI/HSR/ZZZ *and* singular-path WuWa."""
+    from gamexpress import beta as beta_mod
+
+    manifest = {
+        "gi": {"latest": "7.1.53", "available": ["7.1.53"],
+               "new": {"character": [10000136], "weapon": [], "artifact": []}},
+        "hsr": {"latest": "4.6.54", "available": ["4.6.54"],
+                "new": {"character": [1511], "lightcone": [], "relicset": []}},
+        "zzz": {"latest": "3.4.1+19836465", "available": ["3.4.1+19836465"],
+                "new": {"character": [1601], "weapon": [], "equipment": []}},
+        "ww": {"latest": "3.8.1", "available": ["3.8.1"],
+               "new": {"character": [1512], "weapon": [], "echo": []}},
+    }
+    character_data = {
+        "/gi/": _beta_json("gi_character_10000136.json"),
+        "/hsr/": _beta_json("hsr_character_1511.json"),
+        "/zzz/": _beta_json("zzz_character_1601.json"),
+        "/ww/": _beta_json("ww_character_1512.json"),
+    }
+
+    class FourGameFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(("json", url))
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/character/" in url:
+                for namespace, data in character_data.items():
+                    if namespace in url:
+                        return data
+            return None
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(("text", url))
+            return ""  # no changelog entries: exercise each game's manifest fallback.
+
+        async def verify_media(self, url):
+            self.calls.append(("media", url))
+            return True
+
+    # The explicit id is authoritative for every manifest fallback role. In particular, WW's
+    # human-facing paths are singular (`/character/`, `/weapon/`), unlike the gachabase regex.
+    for role in ("character", "weapon", "relic"):
+        assert beta_mod._entry_id(beta_mod._fallback_entry("ww", role, "1512")) == "1512"
+
+    keys = ["genshin", "starrail", "zzz", "wuwa"]
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = FourGameFetcher()
+        ctx = _beta_ctx(
+            Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+            BETA_GAMES="genshin,starrail,zzz,wuwa", DISCORD_WEBHOOK_BETA=HOOK, games=keys,
+        )
+        # `_beta_ctx` deliberately supplies a dry-run webhook client. This takes the actual
+        # render/delivery/state-settlement path without a Discord request.
+        asyncio.run(beta_mod.run(ctx))
+        assert ctx.errors == []
+        assert len(ctx.report) == 4
+        assert all(any(game.short in row for row in ctx.report) for game in (GAMES[k] for k in keys))
+        for key, source_version, snapshot in (
+            ("genshin", "7.1.53", "gi:10000136"),
+            ("starrail", "4.6.54", "hsr:1511"),
+            ("zzz", "3.4.1+19836465", "zzz:1601"),
+            ("wuwa", "3.8.1", "ww:1512"),
+        ):
+            record = ctx.state.beta_record(key)
+            assert record["source_version"] == source_version
+            assert snapshot in record["snapshots"], key
+            assert record["revisions"][record["latest_rev"]]["status"] == "posted", key
+
+        # One shared manifest, three configured changelog probes, four character details and
+        # the three static-art conventions known for GI/HSR/ZZZ: bounded successful work across
+        # every released beta game. WW has no guessed art URL, so it cleanly omits the gallery.
+        assert sum(kind == "json" for kind, _url in fetcher.calls) == 5
+        assert sum(kind == "text" for kind, _url in fetcher.calls) == 3
+        assert sum(kind == "media" for kind, _url in fetcher.calls) == 3
+        assert any("/ww/3.8.1/en/character/1512.json" in url for _kind, url in fetcher.calls)
+
+
+def test_feature5_multi_page_delivery_waits_exactly_five_seconds_and_resumes_safely():
+    """The mandatory five-second beta gap is only between successful newly-sent pages."""
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import stable_hash
+
+    lines = [f"Pacing fixture line {i}: a deliberately long beta-kit description." for i in range(220)]
+    patch = BetaPatch(
+        game_key="zzz", beta_version="0.0", rev_label="v0.0 Rev. pacing", rev_id="pacing",
+        characters=[BetaCharacter(
+            id="zzz:pacing", name="Pacing Agent", rarity=5, element="Ether", role="Attack",
+            sections=[BetaSectionEntry(title="Basic Attack: Pacing", category="Basic Attack",
+                                       tag="[NEW]", lines=lines)], is_new=True,
+        )],
+        item_keys=["character:zzz:pacing"], batch_id="pacing",
+    )
+
+    class Recorder:
+        def __init__(self, responses=()):
+            self.responses = list(responses)
+            self.events = []
+            self.sent = []
+
+        async def send(self, _hook, payload, **_kw):
+            self.events.append("send")
+            self.sent.append(payload)
+            if self.responses:
+                return self.responses.pop(0)
+            return SendResult(True, 200, message_id=f"p{len(self.sent)}")
+
+    async def build_ctx(tmp_path, webhook):
+        ctx = _beta_ctx(tmp_path, _RecordingFetcher({}), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        ctx.webhook = webhook
+        gaps = []
+
+        async def sleep(seconds):
+            gaps.append(seconds)
+            webhook.events.append("sleep")
+
+        ctx.sleep = sleep
+        return ctx, gaps
+
+    with tempfile.TemporaryDirectory() as tmp:
+        # The actual renderer (not a payload stub) must give the delivery loop three or more pages.
+        probe_ctx, _probe_gaps = asyncio.run(build_ctx(Path(tmp) / "probe.json", Recorder()))
+        payloads, _ = cards.beta_payloads_with_map(GAMES["zzz"], patch, probe_ctx.settings, None)
+        assert len(payloads) >= 3
+
+        ok_webhook = Recorder()
+        ctx, gaps = asyncio.run(build_ctx(Path(tmp) / "ok.json", ok_webhook))
+        asyncio.run(beta_mod._deliver(ctx, GAMES["zzz"], patch, ctx.state.beta_record("zzz"), ephemeral=False))
+        assert len(ok_webhook.sent) == len(payloads)
+        assert gaps == [5] * (len(payloads) - 1)
+        assert ok_webhook.events == [entry for i in range(len(payloads))
+                                     for entry in (("send", "sleep") if i + 1 < len(payloads) else ("send",))]
+
+        # No successful first page -> no delay and no accidental page-two request.
+        failed_webhook = Recorder([SendResult(False, 500, error="fixture failure")])
+        failed_ctx, failed_gaps = asyncio.run(build_ctx(Path(tmp) / "failed.json", failed_webhook))
+        asyncio.run(beta_mod._deliver(failed_ctx, GAMES["zzz"], patch,
+                                      failed_ctx.state.beta_record("zzz"), ephemeral=False))
+        assert len(failed_webhook.sent) == 1 and failed_gaps == []
+
+        # A prior-run page is already durable, so page two starts immediately. The only waits are
+        # after pages this invocation sends and before another still-unsent page.
+        resume_webhook = Recorder()
+        resume_ctx, resume_gaps = asyncio.run(build_ctx(Path(tmp) / "resume.json", resume_webhook))
+        revision, batch = beta_mod._batch_record(resume_ctx.state.beta_record("zzz"), patch, resume_ctx.now)
+        batch["signature"] = stable_hash(payloads)
+        batch["messages"] = ["already-posted-page-1"]
+        revision["messages"] = ["already-posted-page-1"]
+        asyncio.run(beta_mod._deliver(resume_ctx, GAMES["zzz"], patch,
+                                      resume_ctx.state.beta_record("zzz"), ephemeral=False))
+        assert len(resume_webhook.sent) == len(payloads) - 1
+        assert resume_gaps == [5] * (len(payloads) - 2)
+        assert resume_webhook.events[0] == "send" and resume_webhook.events[-1] == "send"
+
+        # An indeterminate POST is not a normal retry. Re-entering the same monitor must hold
+        # its cursor until an operator reconciles Discord, rather than turning uncertainty into
+        # a duplicate page-one post.
+        ambiguous_webhook = Recorder([SendResult(False, 0, error="timeout after POST", ambiguous=True)])
+        ambiguous_path = Path(tmp) / "ambiguous.json"
+        ambiguous_ctx, ambiguous_gaps = asyncio.run(build_ctx(ambiguous_path, ambiguous_webhook))
+        ambiguous_record = ambiguous_ctx.state.beta_record("zzz")
+        asyncio.run(beta_mod._deliver(ambiguous_ctx, GAMES["zzz"], patch, ambiguous_record, ephemeral=False))
+        assert len(ambiguous_webhook.sent) == 1 and ambiguous_gaps == []
+        # Reload the persisted cursor as a real scheduler restart would, then prove the second
+        # process still does not re-POST the uncertain first page.
+        ambiguous_ctx.state = State.load(ambiguous_path)
+        ambiguous_record = ambiguous_ctx.state.beta_record("zzz")
+        asyncio.run(beta_mod._deliver(ambiguous_ctx, GAMES["zzz"], patch, ambiguous_record, ephemeral=False))
+        assert len(ambiguous_webhook.sent) == 1
+        assert any("prior ambiguous Discord outcome is held" in warning for warning in ambiguous_ctx.warnings)
+
+
+def test_feature5_partial_delivery_holds_changed_payload_and_batch_after_restart():
+    from gamexpress import beta
+    from gamexpress.state import stable_hash
+
+    patch = BetaPatch(
+        game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1", rev_id="resume-guard",
+        source_version="3.4.1+19836465", batch_id="first", item_keys=["character:zzz:1661"],
+        characters=[BetaCharacter(id="zzz:1661", name="Robin", rarity=5,
+            sections=[BetaSectionEntry(title="Basic Attack", category="Skill", lines=[
+                f"Line {i}: Deals 50% damage with this deliberately long attack description."
+                for i in range(100)])])],
+    )
+    class Webhook:
+        def __init__(self):
+            self.sent = []
+        async def send(self, hook, payload, **kw):
+            self.sent.append(payload)
+            return (SendResult(True, 200, message_id="confirmed") if len(self.sent) == 1
+                    else SendResult(False, 500))
+    async def sleep(_seconds):
+        pass
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        ctx = _beta_ctx(path, _RecordingFetcher({}), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        ctx.sleep = sleep
+        ctx.webhook = Webhook()
+        record = ctx.state.beta_record("zzz")
+        asyncio.run(beta._deliver(ctx, GAMES["zzz"], patch, record, False))
+        assert len(ctx.webhook.sent) == 2
+        ctx.state = State.load(path)
+        record = ctx.state.beta_record("zzz")
+        assert beta._next_data_version(record, {
+            "latest": "3.4.1+19850203", "available": [patch.source_version, "3.4.1+19850203"]
+        }) == patch.source_version
+        before = stable_hash(record)
+        patch.characters[0].sections[0].lines[0] = "Changed source text since page one."
+        asyncio.run(beta._deliver(ctx, GAMES["zzz"], patch, record, False))
+        assert len(ctx.webhook.sent) == 2
+        assert stable_hash(record) == before
+        assert any("payload changed" in warning for warning in ctx.warnings)
+        patch.batch_id = "different-items"
+        asyncio.run(beta._deliver(ctx, GAMES["zzz"], patch, record, False))
+        assert len(ctx.webhook.sent) == 2
+        assert any("unfinished batch" in warning for warning in ctx.warnings)
+
+
+def test_feature5_captured_live_equipment_schemas_render_values_without_tokens():
+    from gamexpress import beta
+    assert beta._safe_entry_name({}, {"name": "EquipmentSuit_34300_name"}, {
+        "en": {"name": "EquipmentSuit_34300_name", "desc2": "DEF +16%."}
+    }, "34300") == "ID 34300"
+    assert beta._safe_entry_name({}, {}, {"en": {"name": "Readable Set"}}, "42") == "Readable Set"
+    for ns, kind, item_id, expected in (
+        ("hsr", "lightcone", 22009, "Lv. 80 — HP 847 · ATK 476 · DEF 397"),
+        ("hsr", "relicset", 329, ""),
+        ("gi", "weapon", 14525, "Base ATK 542"),
+        ("ww", "weapon", 21030076, "ATK 412.5 · Energy Regen 77.04%"),
+    ):
+        fixture = _beta_json(f"{ns}_{kind}_{item_id}_live.json")
+        fields = beta._equip_from_detail(ns, kind, fixture["data"], fixture["listing"])
+        assert fields["stats_line"] == expected
+        body = "\n".join(fields["lines"])
+        assert "<color" not in body and "<unbreak>" not in body
+        assert "#1[i]" not in body and "{0}" not in body and "{7}" not in body
+        if ns == "hsr" and kind == "lightcone":
+            assert "6%" in body and "12%" in body
+        if ns == "hsr" and kind == "relicset":
+            assert "6%" in body and body.count("40%") == 2
+        if ns == "ww":
+            assert "12%" in body and "[value unavailable]" in body
+            assert "source data" in body
+
+
+def test_feature5_is_skipped_entirely_when_not_enabled():
+    from gamexpress import beta as beta_mod
+
+    calls: list[str] = []
+
+    class Never:
+        async def get_json(self, url, **_kw):
+            calls.append(url)
+            return {}
+
+        async def get_text(self, url, **_kw):
+            calls.append(url)
+            return ""
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", Never(), games=["zzz"])
+        asyncio.run(beta_mod.run(ctx))
+        assert calls == []
+        assert ctx.warnings == [] and ctx.errors == []
+
+
+def test_feature5_validate_flags_bad_configuration_cleanly():
+    import contextlib
+    import io
+    from unittest.mock import patch
+
+    good_env = {
+        "BETA_ENABLED": "1",
+        "BETA_GAMES": "genshin,starrail,zzz,wuwa",
+        "DISCORD_WEBHOOK_BETA_ZZZ": "https://discord.com/api/webhooks/100000000000000011/t",
+    }
+    buf = io.StringIO()
+    with patch.object(gxmain, "load_settings", return_value=settings(**good_env)), \
+            contextlib.redirect_stdout(buf):
+        assert gxmain.cmd_validate(None) == 0
+    text = buf.getvalue()
+    assert "beta=on" in text and "DISCORD_WEBHOOK_BETA_ZZZ" in text
+
+    for bad_env in (
+        {"BETA_ENABLED": "sometimes"},
+        {"BETA_GAMES": "wangyue"},
+        {"DISCORD_WEBHOOK_BETA_ZZZ": "https://example.com/not-discord"},
+        {"PING_BETA_ZZZ": "not-a-snowflake"},
+    ):
+        merged = dict(good_env)
+        merged.update(bad_env)
+        buf = io.StringIO()
+        with patch.object(gxmain, "load_settings", return_value=settings(**merged)), \
+                contextlib.redirect_stdout(buf):
+            assert gxmain.cmd_validate(None) == 1, bad_env
+        assert "!" in buf.getvalue()
+
+
+def test_feature5_sample_cards_are_valid_and_never_in_the_default_batch():
+    from gamexpress.__main__ import sample_payloads
+
+    beta_samples = sample_payloads("beta")
+    assert beta_samples
+    for _feat, name, payload in beta_samples:
+        assert cards.validate_payload(payload) == [], name
+        assert "[NEW]" in json.dumps(payload)
+    # A beta sample is preview-only: it never joins the everyday batch.
+    assert all(f != "beta" for f, _n, _p in sample_payloads("all"))
+    assert all(f != "beta" for f, _n, _p in sample_payloads("codes"))
+    # One sample per game that has a beta block.
+    games_with_beta = {g.key for g in GAMES.values() if g.beta}
+    assert {n.split("_")[1] for _f, n, _p in beta_samples} == games_with_beta
+
+
+def test_feature5_every_beta_game_declares_a_namespace_and_a_changelog():
+    """A game in BETA_GAMES with no `beta` block would be polled against nothing."""
+    from gamexpress.beta import NANOKA_KINDS
+
+    for key in ("genshin", "starrail", "zzz", "wuwa"):
+        g = GAMES[key]
+        assert g.beta, key
+        ns = g.beta.get("nanoka")
+        assert ns in NANOKA_KINDS, key
+    for key in ("genshin", "starrail", "zzz"):
+        assert str(GAMES[key].beta.get("changelog") or "").startswith("https://"), key
+    # Wuthering Waves is deliberately manifest-only: its public nanoka diff page is not a
+    # structured changelog endpoint, so polling it would only spend a request / risk a 500.
+    assert not GAMES["wuwa"].beta.get("changelog")
+    # The two unreleased games stay out of it until they ship.
+    assert not GAMES["hna"].beta
+    assert not GAMES["ananta"].beta
+
+
+def test_feature5_media_host_allowlist_covers_the_beta_databases():
+    src = (ROOT / "gamexpress" / "http.py").read_text(encoding="utf-8")
+    assert '"nanoka.cc"' in src and '"gachabase.net"' in src
+
+
+
+def test_feature5_hotfix_blank_changelog_walks_revisions_and_emits_inline_diff():
+    """The supplied ZZZ 19850203 hotfix can be detected even when its page lists no entries."""
+    from gamexpress import beta as beta_mod
+
+    previous = _beta_json("zzz_character_1601.json")
+    current = json.loads(json.dumps(previous))
+    # Real Sunbringer static-table shape from the supplied 19850203 revision: Lv. 12 is
+    # `main + growth × 11`, so 6910 + 630×11 = 138.4% becomes 8410 + 770×11 = 168.8%.
+    previous["skill"]["basic"]["description"].append({
+        "name": "Basic Attack: Thornbreaker",
+        "param": [{"name": "1st-Hit DMG Multiplier", "param": {
+            "1601101": {"main": 6910, "growth": 630, "format": "%"},
+        }}],
+    })
+    current["skill"]["basic"]["description"].append({
+        "name": "Basic Attack: Thornbreaker",
+        "param": [{"name": "1st-Hit DMG Multiplier", "param": {
+            "1601101": {"main": 8410, "growth": 770, "format": "%"},
+        }}],
+    })
+    changelog = """# CHANGELOG - v3.4.X
+
+## v3.4.1 Rev. 19850203 | 24th October 2026
+
+## v3.4.1 Rev. 19834130 | 23rd October 2026
+"""
+
+    class RevisionFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(url)
+            return changelog
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if "19834130" in url:
+                return previous
+            if "19850203" in url:
+                return current
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    manifest = {"zzz": {
+        "latest": "3.4.1+19834130",
+        "available": ["3.4.1+19834130"],
+        "new": {"character": [1601], "weapon": [], "equipment": []},
+    }}
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = RevisionFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
+        budget = beta_mod._budget(ctx)
+        initial = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, budget))
+        assert initial and initial.characters and initial.characters[0].is_new
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), initial, status="posted")
+
+        manifest["zzz"]["latest"] = "3.4.1+19850203"
+        manifest["zzz"]["available"].append("3.4.1+19850203")
+        hotfix = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, budget))
+        assert hotfix and hotfix.source_version == "3.4.1+19850203"
+        assert hotfix.rev_label.startswith("v3.4.1 Rev. 19850203")
+        assert len(hotfix.characters) == 1
+        agent = hotfix.characters[0]
+        assert agent.name == "Sunbringer" and agent.is_new is False
+        assert "19834130" in agent.diff_url and "19850203" in agent.diff_url
+        body = "\n".join(line for section in agent.sections for line in section.lines)
+        assert "~~**138.4%**~~ → **168.8%**" in body
+        assert "[BUFF]" in body                 # higher direct DMG multiplier is unambiguous
+        assert "[NEW]" not in body               # a beta hotfix is not a second reveal
+        payloads = cards.beta_payloads(GAMES["zzz"], hotfix, None, None)
+        assert payloads and all(cards.validate_payload(payload) == [] for payload in payloads)
+        rendered = json.dumps(payloads)
+        assert "Revision Changes" in rendered and "Revision diff" in rendered
+        assert "sunbringer" in rendered and "19850203" in rendered
+
+
+def test_feature5_explicit_quiet_revision_advances_without_card_or_data_reads():
+    from gamexpress import beta as beta_mod
+
+    quiet = """# CHANGELOG - v3.4.X
+
+## v3.4.1 Rev. 19851435 | 24th October 2026
+
+No tracked changes detected for this revision.
+"""
+
+    class QuietFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(url)
+            return quiet
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            raise AssertionError("an explicit quiet revision must not fetch kit data")
+
+        async def verify_media(self, _url):
+            raise AssertionError("an explicit quiet revision must not preflight media")
+
+    manifest = {"zzz": {
+        "latest": "3.4.1+19851435", "available": ["3.4.1+19850203", "3.4.1+19851435"],
+        "new": {"character": [1601, 1661], "weapon": [14160], "equipment": [34300]},
+    }}
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = QuietFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
+        # This is a later no-change micro-revision, not the first explicit opt-in. A cold
+        # start deliberately still posts the current beta's new-character overview.
+        ctx.state.beta_record("zzz")["source_version"] = "3.4.1+19850203"
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+        assert patch and patch.no_changes and not patch.characters and not patch.equipment
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), patch, status="silent")
+        record = ctx.state.beta_record("zzz")
+        assert record["source_version"] == "3.4.1+19851435"
+        assert record["revisions"][patch.rev_id]["status"] == "silent"
+        assert len(fetcher.calls) == 1 and "changelog" in fetcher.calls[0]
+
+
+def test_feature5_full_kit_substitution_and_structured_numeric_diff_are_truthful():
+    from gamexpress.beta import _hsr_character, diff_kits
+
+    built = _hsr_character(_beta_json("hsr_character_1511.json"))
+    rendered = "\n".join(line for section in built["sections"] for line in section.lines)
+    assert "Deals 50% Quantum Elation DMG" in rendered
+    assert "Deals 200% Quantum Elation DMG" in rendered
+    non_pending = "\n".join(
+        line for section in built["sections"] if section.title != "The True Story of Aha"
+        for line in section.lines)
+    assert "#1[i]" not in non_pending
+    # The database does not provide parameters for this trace: it is clearly labelled as
+    # pending, never silently fabricated.
+    assert "does not publish the numbers" in rendered
+
+    old = [BetaSectionEntry(
+        title="Core Passive: Test", category="Core Passive",
+        params=[{"name": "DMG Multiplier", "value": 200, "text": "200%"}],
+    )]
+    new = [BetaSectionEntry(
+        title="Core Passive: Test", category="Core Passive",
+        params=[{"name": "DMG Multiplier", "value": 240, "text": "240%"}],
+    )]
+    changed, untouched = diff_kits(old, new)
+    assert untouched == 0 and len(changed) == 1
+    assert "[BUFF]" in changed[0].lines[0]
+    assert "~~**200%**~~ → **240%**" in changed[0].lines[0]
+    lower, _ = diff_kits(
+        [BetaSectionEntry(title="Guard", category="Core", lines=["DMG taken is reduced by 40%."])],
+        [BetaSectionEntry(title="Guard", category="Core", lines=["DMG taken is reduced by 35%."])],
+    )
+    assert "[NERF]" in lower[0].lines[0] and "~~40~~ → **35**%" in lower[0].lines[0]
+
+
+
+def test_feature5_hard_request_budget_reserves_detail_and_media_preflight_calls():
+    """A card never crosses BETA_MAX_REQUESTS just because art is resolved after its kit."""
+    from gamexpress import beta as beta_mod
+
+    data = _beta_json("zzz_character_1601.json")
+    changelog = "## v3.4.1 Rev. 19850203 | 24th October 2026\n"
+
+    class CountedFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(("text", url))
+            return changelog
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(("json", url))
+            return data if "/character/" in url else None
+
+        async def verify_media(self, url):
+            self.calls.append(("media", url))
+            return True
+
+    manifest = {"zzz": {
+        "latest": "3.4.1+19850203", "available": ["3.4.1+19850203"],
+        "new": {"character": [1601, 1661], "weapon": [], "equipment": []},
+    }}
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = CountedFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
+        budget = {"min_poll_min": 0, "max_chars": 4, "max_changed": 8,
+                  "max_equip": 12, "max_requests": 4}
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, budget))
+        assert patch and len(patch.characters) == 1 and patch.more is True
+        # 1 changelog + 1 character JSON + 1 media preflight (plus the manifest counted before
+        # build_patch) is <= 4; the second character is deferred instead of crossing the ceiling.
+        assert len(fetcher.calls) == 3
+        assert all("1661" not in url for _kind, url in fetcher.calls)
+
+
+
+def test_feature5_request_ceiling_is_shared_across_games_not_multiplied_per_game():
+    """A 4-request cap means 4 total source calls, not 4 for GI plus 4 for ZZZ."""
+    from gamexpress import beta as beta_mod
+
+    manifest = {
+        "gi": {"latest": "7.1.53", "available": ["7.1.53"],
+               "new": {"character": [10000136], "weapon": [], "artifact": []}},
+        "zzz": {"latest": "3.4.1+19850203", "available": ["3.4.1+19850203"],
+                "new": {"character": [1601], "weapon": [], "equipment": []}},
+    }
+
+    class SharedCapFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(("json", url))
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/gi/" in url and "/character/" in url:
+                return _beta_json("gi_character_10000136.json")
+            if "/zzz/" in url and "/character/" in url:
+                return _beta_json("zzz_character_1601.json")
+            return None
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(("text", url))
+            return ""                         # force manifest fallback, no HTML/parser work
+
+        async def verify_media(self, url):
+            self.calls.append(("media", url))
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = SharedCapFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        BETA_GAMES="genshin,zzz", BETA_MAX_REQUESTS="4",
+                        games=["genshin", "zzz"])
+        asyncio.run(beta_mod.run(ctx))
+        # Manifest + GI changelog + GI kit + its art consumes the complete shared ceiling.
+        assert len(fetcher.calls) == 4
+        assert not any("/zzz/" in url for _kind, url in fetcher.calls)
+        assert any("run-wide request budget" in warning for warning in ctx.warnings)
+        # The starved game remains eligible next run instead of being marked as polled.
+        assert ctx.state.beta_record("genshin")["last_poll"] == ctx.now
+        assert not ctx.state.beta_record("zzz").get("last_poll")
+
+
+
+def test_feature5_long_snapshot_comparison_tracks_full_content_without_false_diffs():
+    """Clipped state must neither invent changes nor hide changes beyond its text limit."""
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+
+    long_text = "Unchanged description. " * 100
+    built = {"sections": [BetaSectionEntry(title="Skill", lines=[long_text])],
+             "stats_lines": ["ATK 100"]}
+    equipment = {"lines": [long_text], "stats_line": "ATK 200"}
+    files = {"changelog/beta": "", "character/1601": {"rarity": 4},
+             "weapon/14166": {"id": 14166}, "weapon.json": {"14166": {"rank": 5}}}
+    manifest = {"zzz": {"latest": "3.4.1+100", "available": ["3.4.1+100"],
+                        "new": {"character": [1601], "weapon": [14166], "equipment": []}}}
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"zzz": lambda _: built}), \
+            mock_patch.object(beta_mod, "_equip_from_detail", side_effect=lambda *_: equipment):
+        ctx = _beta_ctx(Path(tmp) / "state.json", _RecordingFetcher(files),
+                        BETA_ENABLED="1", games=["zzz"])
+        def advance(revision):
+            manifest["zzz"]["latest"] = revision
+            manifest["zzz"]["available"].append(revision)
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                   beta_mod._budget(ctx)))
+        first = advance("3.4.1+100")
+        assert first.characters and first.equipment
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), first, status="posted")
+        # Round-trip actual persisted state, not an in-memory-only digest.
+        ctx.state.save()
+        ctx.state = State.load(ctx.settings.state_path)
+        unchanged = advance("3.4.1+101")
+        assert unchanged.no_changes and not unchanged.characters and not unchanged.equipment
+        for snapshot in unchanged.snapshots.values():
+            assert snapshot["truncated"] is True
+            data = snapshot["data"]
+            lines = data.get("lines") or data["sections"][0]["lines"]
+            assert len(lines[0]) <= 1401  # existing cap plus ellipsis
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), unchanged, status="silent")
+        built["sections"][0].lines = [long_text + " Changed tail."]
+        equipment["lines"] = [long_text + " Changed tail."]
+        changed = advance("3.4.1+102")
+        assert len(changed.characters) == len(changed.equipment) == 1
+        assert "complete before/after text is unavailable" in changed.characters[0].subtext
+        assert "Changed tail." in changed.characters[0].sections[0].lines[0]
+        assert changed.equipment[0].tag == "[CHANGED]"
+        assert any("Changed tail." in line for line in changed.equipment[0].lines)
+        payloads = cards.beta_payloads(GAMES["zzz"], changed, None, None)
+        assert payloads and all(not cards.validate_payload(payload) for payload in payloads)
+        assert "~~" not in json.dumps(payloads)  # no invented before/after direction
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), changed, status="posted")
+        # Legacy clipped baselines have no trustworthy full-content digest.
+        for snapshot in ctx.state.beta_record("zzz")["snapshots"].values():
+            snapshot.pop("content_signature", None)
+            snapshot.pop("truncated", None)
+        legacy = advance("3.4.1+103")
+        assert len(legacy.characters) == len(legacy.equipment) == 1
+        assert "~~" not in json.dumps(cards.beta_payloads(GAMES["zzz"], legacy, None, None))
+
+
+def test_feature5_replaced_blocks_preserve_surplus_removed_lines():
+    from gamexpress import beta as beta_mod
+
+    previous = BetaCharacter(id="test", name="Test", stats_lines=["ATK 100", "HP 200"])
+    current = BetaCharacter(id="test", name="Test", stats_lines=["ATK 120"])
+    lines = beta_mod._stat_diff(previous, current)[0].lines
+    assert any("Removed: ~~HP 200~~" in line for line in lines)
+    previous_equipment = BetaEquipment(id="test", name="Test", lines=["ATK 100", "HP 200"])
+    current_equipment = BetaEquipment(id="test", name="Test", lines=["ATK 120"])
+    result = beta_mod._diff_equipment(previous_equipment, current_equipment)
+    assert any("Removed: ~~HP 200~~" in line for line in result.lines)
+
+
+
+def test_feature5_encore_beta_fallback_reads_matching_build_and_keeps_budget():
+    from gamexpress import beta as beta_mod
+
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.7", "3.8.1"],
+                       "new": {"character": [1512], "weapon": [21030076], "echo": []}}}
+    metadata = [{"GameVer": "3.8.0", "ResVer": "3.8.1", "Changelist": "9162983"}]
+
+    class EncoreFetcher:
+        def __init__(self, mode="matching"):
+            self.calls = []
+            self.mode = mode
+            self.meta_reads = 0
+
+        async def get_json(self, url, **_kwargs):
+            self.calls.append(url)
+            if url.startswith("https://api-v2.encore.moe/api/en"):
+                assert "v=Beta" in url
+                if "/new?" in url:
+                    self.meta_reads += 1
+                    if self.mode == "mismatch":
+                        return [{**metadata[0], "ResVer": "3.9.1"}]
+                    if self.mode == "changing" and self.meta_reads % 2 == 0:
+                        return [{**metadata[0], "Changelist": "9162984"}]
+                    if self.mode == "between_items" and self.meta_reads > 2:
+                        return [{**metadata[0], "Changelist": "9162984"}]
+                    if self.mode == "malformed":
+                        return {"message": "unavailable"}
+                    return metadata
+                raw = _beta_json("encore_lily_live.json" if "/character/" in url
+                                 else "encore_weapon_live.json")
+                if self.mode == "wrong_id":
+                    raw["Id" if "/character/" in url else "ItemId"] = 1
+                if self.mode == "bad_data":
+                    raw["Skills"] = 1
+                    raw["SkillTree"] = {}
+                    raw["ResonantChain"] = 1
+                    raw["Properties"] = 1
+                    raw["Desc"] = []
+                return raw
+            if url.endswith("/weapon.json"):
+                return {"21030076": {"en": {"name": "Stale primary name"}, "rank": 4}}
+            if self.mode == "healthy":
+                if "/character/" in url:
+                    return _beta_json("ww_character_1512.json")
+                if "/weapon/" in url:
+                    return _beta_json("ww_weapon_21030076_live.json")["data"]
+            return None
+
+        async def verify_media(self, url):
+            self.calls.append(url)
+            return False
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = EncoreFetcher()
+        ctx = _beta_ctx(Path(tmp)/"state.json", fetcher, BETA_ENABLED="1", games=["wuwa"])
+        budget = beta_mod._budget(ctx)
+        budget["_shared_requests_left"] = 20
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
+        assert len(patch.characters) == len(patch.equipment) == 1
+        assert len(fetcher.calls) == 9  # two details, one listing, two bracketed Encore reads
+        assert budget["_shared_requests_left"] == 11
+        character = patch.characters[0]
+        assert character.name == "Lily" and character.rarity == 5
+        assert "encore.moe/character/1512" in character.page_url and "v=Beta" in character.page_url
+        assert character.diff_url == "" and character.image_url == ""
+        body = "\n".join(line for section in character.sections for line in section.lines)
+        assert "74.28%" in body and "(Lv. 10)" in body
+        assert "Sequence Node 6" in "\n".join(section.title for section in character.sections)
+        assert "<span" not in body and "<size" not in body
+        weapon = patch.equipment[0]
+        assert weapon.name == "Lullaby" and "412.50" in weapon.stats_line
+        assert "77.04%" in weapon.stats_line and "Lv. 90" in weapon.stats_line
+        assert "refinements 1–5" in weapon.lines[0]
+        assert "{7}" not in "\n".join(weapon.lines) and "[value unavailable]" in "\n".join(weapon.lines)
+        assert "encore.moe/weapon/21030076" in weapon.page_url and weapon.diff_url == ""
+        assert all(snap["provider"] == "encore" for snap in patch.snapshots.values())
+        assert all(snap["provider_revision"] == ["3.8.0", "3.8.1", "9162983"]
+                   for snap in patch.snapshots.values())
+        payloads = cards.beta_payloads(GAMES["wuwa"], patch, None, None)
+        assert payloads and all(not cards.validate_payload(payload) for payload in payloads)
+        # The primary source remains sufficient: no Encore HTTP at all on the healthy path.
+        fetcher = EncoreFetcher("healthy")
+        ctx.fetcher = fetcher
+        healthy = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+        assert healthy.characters and healthy.equipment
+        assert not any("encore" in url for url in fetcher.calls)
+        # Provider switches never manufacture inline buffs/nerfs from schema differences.
+        old = next(iter(patch.snapshots.values()))
+        assert beta_mod._snapshot_comparison(old, {**old, "provider": "nanoka"}) == "snapshot"
+        for mode in ("mismatch", "changing", "malformed", "wrong_id", "bad_data"):
+            ctx.fetcher = EncoreFetcher(mode)
+            held = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+            assert held.more and not held.characters and not held.equipment, mode
+        ctx.fetcher = EncoreFetcher("between_items")
+        changing_batch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                          beta_mod._budget(ctx)))
+        assert len(changing_batch.characters) == 1 and not changing_batch.equipment
+        assert changing_batch.more
+        # Neither local nor shared request ceilings allow a partial unverified fallback.
+        for cap, shared in ((3, 20), (20, 1)):
+            ctx.fetcher = EncoreFetcher()
+            budget = {**beta_mod._budget(ctx), "max_requests": cap, "_shared_requests_left": shared}
+            held = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
+            assert held.more and not held.characters and not held.equipment
+            assert not any("encore" in url for url in ctx.fetcher.calls)
+        # Encore's current view must not reconstruct a retained older manifest build.
+        ctx.state.beta_record("wuwa")["source_version"] = "3.6"
+        old_manifest = {"ww": {**manifest["ww"], "latest": "3.8.1", "available": ["3.6", "3.7", "3.8.1"]}}
+        ctx.fetcher = EncoreFetcher()
+        held = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], old_manifest, beta_mod._budget(ctx)))
+        assert held.source_version == "3.7" and held.more and not held.characters
+        assert not any("encore" in url for url in ctx.fetcher.calls)
+
+
+def test_feature5_encore_future_beta_waits_for_matching_build_and_settles():
+    """Synthetic 4.0: source labels move, released catalog entries are not new IDs."""
+    from gamexpress import beta as beta_mod
+
+    manifest = {"ww": {"live": "3.7", "latest": "4.0.1",
+                       "available": ["3.7", "4.0.1"],
+                       "new": {"character": [1512], "weapon": [], "echo": []}}}
+
+    class Fetcher:
+        current = "3.8.1"
+
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kwargs):
+            self.calls.append(url)
+            if url.startswith(beta_mod.ENCORE_API):
+                assert "v=Beta" in url
+                if "/new?" in url:
+                    return [{"GameVer": "4.0.0", "ResVer": self.current,
+                             "Changelist": "9999999"}]
+                assert "/character/1512?" in url
+                return _beta_json("encore_lily_live.json")
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        fetcher = Fetcher()
+        ctx = _beta_ctx(path, fetcher, BETA_ENABLED="1", games=["wuwa"])
+        ctx.state.beta_record("wuwa")["source_version"] = "3.7"
+        held = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                               beta_mod._budget(ctx)))
+        assert held.source_version == "4.0.1" and held.more and not held.characters
+        assert ctx.state.beta_record("wuwa")["source_version"] == "3.7"
+        assert not any("/character/1512?" in url for url in fetcher.calls)
+        # Same manifest retries once Encore catches up; no hardcoded future version.
+        fetcher.current = "4.0.1"
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                beta_mod._budget(ctx)))
+        assert patch.source_version == "4.0.1" and not patch.more
+        assert len(patch.characters) == 1 and patch.characters[0].name == "Lily"
+        assert not any("1311" in url or "1312" in url for url in fetcher.calls)
+        payloads = cards.beta_payloads(GAMES["wuwa"], patch, None, None)
+        assert payloads and all(not cards.validate_payload(p) for p in payloads)
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), patch, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(path)
+        fetcher.calls.clear()
+        assert asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                               beta_mod._budget(ctx))) is None
+        assert fetcher.calls == []
+
+
+def _beta_encore_endpoint_fetcher(primary="unavailable", secondary="matching"):
+    """Both official endpoints share the captured, independently compared display schema."""
+    from gamexpress import beta as beta_mod
+
+    class Fetcher:
+        def __init__(self):
+            self.calls = []
+            self.metadata_reads = {}
+
+        async def get_json(self, url, **kwargs):
+            self.calls.append(url)
+            for base, mode in ((beta_mod.ENCORE_API, primary),
+                               ("https://api.encore.moe/en", secondary)):
+                if not url.startswith(base + "/"):
+                    continue
+                assert kwargs["source"] == "beta-encore" and "v=Beta" in url
+                if mode == "unavailable":
+                    return None
+                if "/new?" in url:
+                    count = self.metadata_reads.get(base, 0) + 1
+                    self.metadata_reads[base] = count
+                    if mode == "malformed":
+                        return {"error": "unavailable"}
+                    return [{"GameVer": "3.8.0",
+                             "ResVer": "3.9.1" if mode == "mismatch" else "3.8.1",
+                             "Changelist": "9162984" if (
+                                 mode == "changing" and count % 2 == 0
+                                 or mode == "between_items" and count > 2
+                             ) else "9162983"}]
+                if mode == "detail_unavailable":
+                    return None
+                character = "/character/" in url
+                raw = _beta_json("encore_lily_live.json" if character else "encore_weapon_live.json")
+                if mode == "wrong_id":
+                    raw["Id" if character else "ItemId"] = 1
+                if mode == "unreadable":
+                    raw.update(Skills=[], SkillTree=[], ResonantChain=[], Desc="")
+                return raw
+            return None
+
+        async def verify_media(self, _url):
+            raise AssertionError("Encore raw/placeholder art must not be requested")
+
+    return Fetcher()
+
+
+def test_feature5_encore_secondary_api_recovers_with_identical_cards_and_durable_settlement():
+    from gamexpress import beta as beta_mod
+
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.7", "3.8.1"],
+                       "new": {"character": [1512], "weapon": [21030076], "echo": []}}}
+    secondary = "https://api.encore.moe/en/"
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        ctx = _beta_ctx(path, _beta_encore_endpoint_fetcher(primary="matching"),
+                        BETA_ENABLED="1", games=["wuwa"])
+        primary = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+        assert not any(url.startswith(secondary) for url in ctx.fetcher.calls)
+        expected = cards.beta_payloads(GAMES["wuwa"], primary)
+        assert expected
+        for primary_mode, expected_calls in (("unavailable", 11), ("detail_unavailable", 15),
+                                             ("mismatch", 11), ("malformed", 11),
+                                             ("changing", 15), ("wrong_id", 15), ("unreadable", 15)):
+            ctx.fetcher = _beta_encore_endpoint_fetcher(primary=primary_mode)
+            budget = {**beta_mod._budget(ctx), "_shared_requests_left": 20}
+            patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
+            assert patch and not patch.more and len(patch.characters) == len(patch.equipment) == 1
+            assert len(ctx.fetcher.calls) == expected_calls
+            assert budget["_shared_requests_left"] == 5  # details/listing + two three-call reservations per item
+            fallback_calls = [url for url in ctx.fetcher.calls if url.startswith(secondary)]
+            assert len(fallback_calls) == 6
+            assert all("v=Beta" in url and "/api/" not in url for url in fallback_calls)
+            assert cards.beta_payloads(GAMES["wuwa"], patch) == expected
+            assert all(not cards.validate_payload(p) for p in expected)
+            assert patch.snapshots == primary.snapshots
+            assert ctx.warnings == []
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), patch, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(path)
+        ctx.fetcher.calls.clear()
+        assert asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx))) is None
+        assert ctx.fetcher.calls == []
+
+
+def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits():
+    from gamexpress import beta as beta_mod
+
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.7", "3.8.1"],
+                       "new": {"character": [1512], "weapon": [21030076], "echo": []}}}
+    secondary = "https://api.encore.moe/en/"
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", _beta_encore_endpoint_fetcher(),
+                        BETA_ENABLED="1", games=["wuwa"])
+        for mode in ("unavailable", "mismatch", "malformed", "changing", "wrong_id", "unreadable"):
+            # Primary metadata is valid but its detail is absent. It cannot authorize
+            # unverified secondary data or replace the secondary's own metadata reads.
+            ctx.fetcher = _beta_encore_endpoint_fetcher(primary="detail_unavailable", secondary=mode)
+            patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+            assert patch.more and not patch.characters and not patch.equipment, mode
+            assert any(url.startswith(secondary) for url in ctx.fetcher.calls), mode
+        ctx.fetcher = _beta_encore_endpoint_fetcher(secondary="between_items")
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+        assert patch.more and len(patch.characters) == 1 and not patch.equipment
+        assert not any(url.startswith(secondary + "weapon/") for url in ctx.fetcher.calls)
+        for cap, shared in ((5, 40), (48, 4)):
+            ctx.fetcher = _beta_encore_endpoint_fetcher()
+            budget = {**beta_mod._budget(ctx), "max_requests": cap, "_shared_requests_left": shared}
+            patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
+            assert patch.more and not patch.characters and not patch.equipment
+            assert not any(url.startswith(secondary) for url in ctx.fetcher.calls)
+        ctx.fetcher = _beta_encore_endpoint_fetcher()
+        budget = {**beta_mod._budget(ctx), "max_requests": 8, "_shared_requests_left": 7}
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
+        assert patch.more and len(patch.characters) == 1 and not patch.equipment
+        assert budget["_shared_requests_left"] == 0
+        ctx.state.beta_record("wuwa")["source_version"] = "3.6"
+        older = {"ww": {**manifest["ww"], "available": ["3.6", "3.7", "3.8.1"]}}
+        ctx.fetcher = _beta_encore_endpoint_fetcher()
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], older, beta_mod._budget(ctx)))
+        assert patch.source_version == "3.7" and patch.more and not patch.characters and not patch.equipment
+        assert not any("encore.moe/" in url for url in ctx.fetcher.calls)
+
+
+def test_feature5_encore_hsin_suoming_captured_beta_kits():
+    from gamexpress import beta as beta_mod
+
+    for name, item_id in (("hsin", "1311"), ("suoming", "1312")):
+        raw = _beta_json(f"encore_{name}_live.json")
+        data = beta_mod._encore_detail(raw, "character", item_id, ("3.8.0", "3.8.1", "9162983"))
+        built = beta_mod._ww_character(data)
+        assert data["name"].lower() == name
+        assert len([s for s in built["sections"] if s.category == "Resonance Chain"]) == 6
+        assert len(built["sections"]) >= 16
+        assert any(s.params for s in built["sections"])
+        assert "<span" not in str(built) and "<color" not in str(built)
+        assert any("Lv. 90" in line for line in built["stats_lines"])
+        assert beta_mod._encore_detail(raw, "character", "9999", ("3.8.0", "3.8.1", "9162983")) is None
+
+
+def test_feature5_complete_output_keeps_long_equipment_parameters_and_diff_changes():
+    from gamexpress.beta import _diff_equipment, _diff_parts, _section_lines, _stat_diff, diff_kits
+
+    params = [{"name": f"Parameter-{i:02}", "text": f"Value-{i:02}"} for i in range(24)]
+    equipment_lines = [(f"Equipment-line-{i:03}: " + "effect text " * 25).rstrip() for i in range(140)]
+    char = BetaCharacter(id="complete", name="Complete Kit", rarity=5,
+                         sections=[BetaSectionEntry(title="All values", params=params)])
+    eq = BetaEquipment(id="long", name="Long Weapon", category_label="Weapons",
+                       lines=equipment_lines, image_url="https://example.com/weapon.png",
+                       page_url="https://example.com/weapon")
+    for key in ("genshin", "starrail", "zzz", "wuwa"):
+        patch = BetaPatch(game_key=key, beta_version="1.0", rev_label="Full output",
+                          rev_id="full", characters=[char], equipment=[eq])
+        payloads = cards.beta_payloads(GAMES[key], patch)
+        joined = json.dumps(payloads)
+        assert len(payloads) > 10, "fixture must exercise a two-digit page count"
+        assert all(cards.validate_payload(payload) == [] for payload in payloads)
+        for row in params:
+            assert row["name"] in joined and row["text"] in joined
+        offsets = [joined.index(line) for line in equipment_lines]
+        assert offsets == sorted(offsets)
+        assert joined.count("https://example.com/weapon.png") == 1
+        assert "https://example.com/weapon" in joined
+        for n, payload in enumerate(payloads, 1):
+            assert f"Page {n}/{len(payloads)}" in json.dumps(payload)
+
+    previous = [BetaSectionEntry(title=f"Skill-{n:02}", category="Skills",
+                                 lines=[f"Damage-{i:02}: 100%" for i in range(12)])
+                for n in range(14)]
+    current = [BetaSectionEntry(title=section.title, category=section.category,
+                               lines=[f"Damage-{i:02}: 120%" for i in range(12)])
+               for section in previous]
+    removed = BetaSectionEntry(title="Removed skill", category="Old skills",
+                               lines=[f"Removed-line-{i:02}" for i in range(9)])
+    changes, untouched = diff_kits(previous + [removed], current)
+    assert len(changes) == 15 and untouched == 0
+    assert all(len(section.lines) == 12 for section in changes[:14])
+    assert len(changes[-1].lines) == 9
+    assert "more change(s)" not in str(changes)
+    stat_changes = _stat_diff(
+        BetaCharacter(id="stats", name="Stats", stats_lines=[f"Stat-{i}: 100" for i in range(12)]),
+        BetaCharacter(id="stats", name="Stats", stats_lines=[f"Stat-{i}: 120" for i in range(12)]))
+    assert len(stat_changes[0].lines) == 12
+    equipment_change = _diff_equipment(
+        BetaEquipment(id="diff", name="Weapon", lines=[f"Effect-{i}: 100%" for i in range(12)]),
+        BetaEquipment(id="diff", name="Weapon", lines=[f"Effect-{i}: 120%" for i in range(12)]))
+    assert equipment_change is not None and len(equipment_change.lines) == 12
+    flattened = _section_lines(BetaSectionEntry(title="Structured", params=params))
+    assert all(row["name"] in flattened[0] and row["text"] in flattened[0] for row in params)
+    replacements, _ = diff_kits([BetaSectionEntry(title="Shrink", lines=["Prior one", "Prior two"])],
+                                [BetaSectionEntry(title="Shrink", lines=["Current only"])])
+    assert "Prior two" in str(replacements)
+    old = " unchanged context between distinct effects ".join(f"old-{i:02}" for i in range(12))
+    new = " unchanged context between distinct effects ".join(f"new-{i:02}" for i in range(12))
+    rendered, parts = _diff_parts(old, new)
+    assert len(parts) == 12 and rendered.count("~~old~~") == 12
+
+
+def test_feature5_splitter_preserves_unbroken_source_text_with_bounded_chunks():
+    from gamexpress.cards import _split_beta_block
+
+    token = "Ω" * 16000
+    pieces = _split_beta_block(token, 600)
+    assert pieces and all(0 < len(piece) <= 600 for piece in pieces)
+    assert "".join(pieces) == token
+    patch = BetaPatch(game_key="wuwa", beta_version="3.8.1", rev_label="Unbroken", rev_id="unbroken",
+                      characters=[BetaCharacter(id="token", name="Unbroken",
+                                                stats_lines=["Ж" * 18000],
+                                                sections=[BetaSectionEntry(title="Token", lines=[token])])],
+                      equipment=[BetaEquipment(id="token-eq", name="Token Weapon", lines=["Ψ" * 16000])])
+    payloads, char_map = cards.beta_payloads_with_map(GAMES["wuwa"], patch)
+    assert len(payloads) > 10 and char_map == {"token": 0}
+    assert all(cards.validate_payload(payload) == [] for payload in payloads)
+    rendered = json.dumps(payloads, ensure_ascii=False)
+    for symbol, expected in (("Ω", 16000), ("Ψ", 16000), ("Ж", 18000)):
+        assert rendered.count(symbol) == expected
+
+
+def test_feature5_variable_page_counts_resume_after_ten_confirmed_pages():
+    from gamexpress import beta
+
+    ping = "<@&1296268365593186426>"
+
+    def exercise(count, tmp):
+        path = Path(tmp) / f"pages-{count}.json"
+        ctx = _beta_ctx(path, _RecordingFetcher({}), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, PING_BETA=ping, games=["wuwa"])
+        entries = [BetaEquipment(id=f"weapon-{i}", name=f"Weapon-{i}",
+                                 category_label="Weapons",
+                                 lines=[f"Page-content-{i:02}: " + "word " * 530])
+                   for i in range(count)]
+        patch = BetaPatch(game_key="wuwa", beta_version="3.8.1", rev_label="Variable pages",
+                          rev_id="variable", batch_id="variable", equipment=entries,
+                          item_keys=[f"weapon:{entry.id}" for entry in entries],
+                          snapshots={"weapon-0": {"kind": "weapon", "data": {"id": "weapon-0"}}},
+                          source_version="3.8.1", source_revision="variable")
+        payloads = cards.beta_payloads(GAMES["wuwa"], patch, ctx.settings, ctx.settings.ping("beta", "wuwa"))
+        assert len(payloads) == count
+        assert all(cards.validate_payload(payload) == [] for payload in payloads)
+        assert payloads[0]["allowed_mentions"]["roles"] == ["1296268365593186426"]
+        assert all(p["allowed_mentions"] == {"parse": []} and ping not in json.dumps(p)
+                   for p in payloads[1:])
+        successful = []
+        events = []
+        failure_at = 10 if count > 10 else None
+
+        class Recorder:
+            async def send(self, _hook, payload, **_kw):
+                durable = State.load(path).beta_record("wuwa") if path.exists() else {}
+                saved = ((durable.get("revisions") or {}).get("variable") or {})
+                batch = (saved.get("batches") or {}).get("variable") or {}
+                assert len(batch.get("messages") or []) == len(successful)
+                assert payload == payloads[len(successful)]
+                events.append("send")
+                if failure_at is not None and len(successful) == failure_at:
+                    return SendResult(False, 500, error="page eleven fixture failure")
+                successful.append(payload)
+                return SendResult(True, 200, message_id=f"page-{len(successful)}")
+
+        async def sleep(seconds):
+            assert seconds == 5
+            events.append("sleep")
+
+        ctx.webhook, ctx.sleep = Recorder(), sleep
+        asyncio.run(beta._deliver(ctx, GAMES["wuwa"], patch, ctx.state.beta_record("wuwa"), False))
+        if failure_at is not None:
+            durable = State.load(path).beta_record("wuwa")
+            revision = durable["revisions"]["variable"]
+            assert revision["status"] == "partial"
+            assert len(revision["batches"]["variable"]["messages"]) == 10
+            assert not durable.get("snapshots") and not durable.get("latest_rev")
+            assert not revision.get("processed")
+            assert len(successful) == 10 and events.count("sleep") == 10
+            ctx.state = State.load(path)
+            events.clear()
+            failure_at = None
+            asyncio.run(beta._deliver(ctx, GAMES["wuwa"], patch, ctx.state.beta_record("wuwa"), False))
+            assert events[0] == "send" and events[-1] == "send"
+            assert events.count("sleep") == count - 11
+        else:
+            assert events.count("sleep") == count - 1
+        assert successful == payloads
+        durable = State.load(path).beta_record("wuwa")
+        revision = durable["revisions"]["variable"]
+        assert revision["status"] == "posted"
+        assert revision["batches"]["variable"]["messages"] == [f"page-{n}" for n in range(1, count + 1)]
+        assert revision["characters"] == {}
+        assert revision["processed"] == sorted(patch.item_keys)
+        assert durable["latest_rev"] == patch.rev_id
+        assert durable["snapshots"] == patch.snapshots
+
+    with tempfile.TemporaryDirectory() as tmp:
+        for count in (5, 12, 21):
+            exercise(count, tmp)
+
+
+
+def test_feature5_gachabase_html_revisions_and_changed_existing_ids():
+    from gamexpress import beta
+    html = (Path(__file__).parent / "fixtures/beta/gachabase_changelog.html").read_text()
+    revisions = beta.parse_changelog(html, base_url="https://gi.gachabase.net/changelog/beta?lang=en")
+    assert [r["label"] for r in revisions] == ["v7.1.53 Rev. 48845164", "v7.1.52 Rev. 48704485", "v7.1.51 Rev. 48589389"]
+    current = revisions[0]
+    assert len(current["entries"]) == 2 and not current["no_changes"]
+    entry = current["entries"][0]
+    assert entry["name"] == "Vodyanitsa & Friend"
+    assert entry["section"] == "Characters"
+    assert entry["url"] == "https://gi.gachabase.net/characters/10000140/vodyanitsa/beta?lang=en"
+    assert "&cur=" in entry["diff"] and entry["image"].startswith("https://")
+    assert current["entries"][1]["section"] == "Weapons"
+    assert current["entries"][1]["diff"] == ""  # mismatched diff cannot attach
+    assert revisions[1]["entries"] == [] and not revisions[1]["no_changes"]
+    assert revisions[2]["no_changes"] and revisions[2]["date"] == "29th September 2026"
+    chars, _ = beta._candidate_entries("gi", beta.NANOKA_KINDS["gi"], current["entries"], {}, set(), set(), set())
+    assert [beta._entry_id(e) for e in chars] == ["10000140"]
+    assert beta.parse_changelog("<html><h1>Access denied</h1></html>") == []
 
 if __name__ == "__main__":
     sys.exit(main())

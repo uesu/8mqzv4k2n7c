@@ -1,0 +1,104 @@
+{
+  "source": "https://static.nanoka.cc/gi/7.1.53/en/weapon/14525.json",
+  "captured": "2026-10-25",
+  "data": {
+    "name": "Starsealed Edict",
+    "weapon_prop": [
+      {
+        "init_value": 44.33580017089844,
+        "prop_type": "FIGHT_PROP_BASE_ATTACK",
+        "type": "GROW_CURVE_ATTACK_304"
+      },
+      {
+        "init_value": 0.19200000166893005,
+        "prop_type": "FIGHT_PROP_CRITICAL_HURT",
+        "type": "GROW_CURVE_CRITICAL_301"
+      }
+    ],
+    "rarity": 5,
+    "refinement": {
+      "1": {
+        "name": "Dawnstar's Flowing Trail",
+        "desc": "Increases CRIT DMG by <color=#99FFFFFF>24%</color>. The equipping character gains the Crystal Compounding effect when they use their Elemental Skill, increasing Elemental Mastery by <color=#99FFFFFF>48</color> for 20s. During this time, the equipping character gains a stack of Law of Combustion when a nearby party member triggers an Elemental Reaction. Each stack increases Elemental Mastery by an additional <color=#99FFFFFF>24</color>. Max 3 stacks. These stacks last until Crystal Compounding ends or the equipping character uses their Elemental Skill again.\\n<color=#FFD780FF>Radiance: Stellar-Conduct</color>: Each Law of Combustion stack also increases the equipping character's Stellar-Conduct CRIT DMG by <color=#99FFFFFF>12%</color>.",
+        "param_list": [
+          48.0,
+          24.0,
+          0.11999999731779099,
+          20.0,
+          0.0,
+          3.0,
+          5.0,
+          0.75
+        ]
+      },
+      "2": {
+        "name": "Dawnstar's Flowing Trail",
+        "desc": "Increases CRIT DMG by <color=#99FFFFFF>30%</color>. The equipping character gains the Crystal Compounding effect when they use their Elemental Skill, increasing Elemental Mastery by <color=#99FFFFFF>60</color> for 20s. During this time, the equipping character gains a stack of Law of Combustion when a nearby party member triggers an Elemental Reaction. Each stack increases Elemental Mastery by an additional <color=#99FFFFFF>30</color>. Max 3 stacks. These stacks last until Crystal Compounding ends or the equipping character uses their Elemental Skill again.\\n<color=#FFD780FF>Radiance: Stellar-Conduct</color>: Each Law of Combustion stack also increases the equipping character's Stellar-Conduct CRIT DMG by <color=#99FFFFFF>15%</color>.",
+        "param_list": [
+          60.0,
+          30.0,
+          0.15000000596046448,
+          20.0,
+          0.0,
+          3.0,
+          5.0,
+          0.75
+        ]
+      },
+      "3": {
+        "name": "Dawnstar's Flowing Trail",
+        "desc": "Increases CRIT DMG by <color=#99FFFFFF>36%</color>. The equipping character gains the Crystal Compounding effect when they use their Elemental Skill, increasing Elemental Mastery by <color=#99FFFFFF>72</color> for 20s. During this time, the equipping character gains a stack of Law of Combustion when a nearby party member triggers an Elemental Reaction. Each stack increases Elemental Mastery by an additional <color=#99FFFFFF>36</color>. Max 3 stacks. These stacks last until Crystal Compounding ends or the equipping character uses their Elemental Skill again.\\n<color=#FFD780FF>Radiance: Stellar-Conduct</color>: Each Law of Combustion stack also increases the equipping character's Stellar-Conduct CRIT DMG by <color=#99FFFFFF>18%</color>.",
+        "param_list": [
+          72.0,
+          36.0,
+          0.18000000715255737,
+          20.0,
+          0.0,
+          3.0,
+          5.0,
+          0.75
+        ]
+      },
+      "4": {
+        "name": "Dawnstar's Flowing Trail",
+        "desc": "Increases CRIT DMG by <color=#99FFFFFF>42%</color>. The equipping character gains the Crystal Compounding effect when they use their Elemental Skill, increasing Elemental Mastery by <color=#99FFFFFF>84</color> for 20s. During this time, the equipping character gains a stack of Law of Combustion when a nearby party member triggers an Elemental Reaction. Each stack increases Elemental Mastery by an additional <color=#99FFFFFF>42</color>. Max 3 stacks. These stacks last until Crystal Compounding ends or the equipping character uses their Elemental Skill again.\\n<color=#FFD780FF>Radiance: Stellar-Conduct</color>: Each Law of Combustion stack also increases the equipping character's Stellar-Conduct CRIT DMG by <color=#99FFFFFF>21%</color>.",
+        "param_list": [
+          84.0,
+          42.0,
+          0.20999999344348907,
+          20.0,
+          0.0,
+          3.0,
+          5.0,
+          0.75
+        ]
+      },
+      "5": {
+        "name": "Dawnstar's Flowing Trail",
+        "desc": "Increases CRIT DMG by <color=#99FFFFFF>48%</color>. The equipping character gains the Crystal Compounding effect when they use their Elemental Skill, increasing Elemental Mastery by <color=#99FFFFFF>96</color> for 20s. During this time, the equipping character gains a stack of Law of Combustion when a nearby party member triggers an Elemental Reaction. Each stack increases Elemental Mastery by an additional <color=#99FFFFFF>48</color>. Max 3 stacks. These stacks last until Crystal Compounding ends or the equipping character uses their Elemental Skill again.\\n<color=#FFD780FF>Radiance: Stellar-Conduct</color>: Each Law of Combustion stack also increases the equipping character's Stellar-Conduct CRIT DMG by <color=#99FFFFFF>24%</color>.",
+        "param_list": [
+          96.0,
+          48.0,
+          0.23999999463558197,
+          20.0,
+          0.0,
+          3.0,
+          5.0,
+          0.75
+        ]
+      }
+    }
+  },
+  "listing": {
+    "icon": "UI_EquipIcon_Catalyst_Chernaya",
+    "rank": 5,
+    "type": "WEAPON_CATALYST",
+    "en": "Starsealed Edict",
+    "atk": 542,
+    "sub": "FIGHT_PROP_CRITICAL_HURT",
+    "desc": "A hefty tome containing the Royal Energy Commission's internal rules and procedures, with numerous entries dating back many years.",
+    "ko": "\ubcc4\ube5b \uacc4\uc2dc",
+    "zh": "\u79d8\u661f\u5178\u8c15",
+    "ja": "\u79d8\u661f\u306e\u8056\u5178"
+  }
+}

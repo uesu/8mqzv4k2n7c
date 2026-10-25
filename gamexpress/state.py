@@ -113,7 +113,7 @@ class State:
 
     # ------------------------------------------------------------------ peer merge
     def merge_peer(self, peer: dict, *, include_news: bool = False,
-                   include_maintenance: bool = False) -> int:
+                   include_maintenance: bool = False, include_beta: bool = False) -> int:
         """Import posted/seeded keys (and message ids) from the other instance.
         Returns how many keys were imported."""
         if not isinstance(peer, dict):
@@ -217,6 +217,110 @@ class State:
                             continue
                         dst[kind] = copy.deepcopy(src_a)
                         imported += 1
+        if include_beta:
+            peer_beta = peer.get("beta")
+            for game, other in (peer_beta.items() if isinstance(peer_beta, dict) else ()):
+                if not isinstance(other, dict):
+                    continue
+                mine = self.beta_record(game)
+                if mine.get("route") and other.get("route") and mine["route"] != other["route"]:
+                    continue
+                if other.get("route"):
+                    mine.setdefault("route", other["route"])
+                if "seeded_at" in other:
+                    mine["seeded_at"] = max(_safe_int(mine.get("seeded_at"), 0), _safe_int(other.get("seeded_at"), 0))
+                if other.get("latest_rev") and not mine.get("latest_rev"):
+                    mine["latest_rev"] = str(other["latest_rev"])
+                revs = _as_dict_slot(mine, "revisions")
+                other_revs = other.get("revisions")
+                for rev_key, rrec in (other_revs.items() if isinstance(other_revs, dict) else ()):
+                    if not isinstance(rrec, dict):
+                        continue
+                    if rrec.get("status") not in ("posted", "seeded", "partial", "ambiguous", "silent"):
+                        continue
+                    cur_r = revs.get(rev_key)
+                    if not isinstance(cur_r, dict):
+                        revs[rev_key] = copy.deepcopy(rrec)
+                        imported += 1
+                        continue
+                    # An ambiguous outcome always wins: a conflict must hold rather than make a
+                    # standby replay a possibly-delivered Discord page.
+                    if cur_r.get("status") == "ambiguous":
+                        continue
+                    if rrec.get("status") == "ambiguous":
+                        cur_r.update(copy.deepcopy(rrec))
+                        imported += 1
+                        continue
+                    if cur_r.get("status") in ("posted", "silent"):
+                        continue
+
+                    changed = False
+                    mine_processed = {str(k) for k in cur_r.get("processed", [])}
+                    peer_processed = {str(k) for k in rrec.get("processed", [])}
+                    if peer_processed - mine_processed:
+                        cur_r["processed"] = sorted(mine_processed | peer_processed)
+                        changed = True
+                    mine_batches = _as_dict_slot(cur_r, "batches")
+                    peer_batches = rrec.get("batches")
+                    for batch_key, peer_batch in (peer_batches.items()
+                                                   if isinstance(peer_batches, dict) else ()):
+                        if not isinstance(peer_batch, dict):
+                            continue
+                        local_batch = mine_batches.get(batch_key)
+                        if not isinstance(local_batch, dict):
+                            mine_batches[batch_key] = copy.deepcopy(peer_batch)
+                            changed = True
+                            continue
+                        local_msgs = list(local_batch.get("messages") or [])
+                        peer_msgs = list(peer_batch.get("messages") or [])
+                        if ((local_msgs or peer_msgs) and
+                                local_batch.get("signature") != peer_batch.get("signature")):
+                            local_batch["ambiguous"] = True
+                            cur_r["status"] = "ambiguous"
+                            changed = True
+                        elif peer_msgs[:len(local_msgs)] == local_msgs and len(peer_msgs) > len(local_msgs):
+                            local_batch.update(copy.deepcopy(peer_batch))
+                            changed = True
+                        elif local_msgs[:len(peer_msgs)] != peer_msgs:
+                            local_batch["ambiguous"] = True
+                            cur_r["status"] = "ambiguous"
+                            changed = True
+                    for field in ("label", "source_version", "source_revision", "more"):
+                        if field in rrec and (field not in cur_r or rrec.get(field) != cur_r.get(field)):
+                            cur_r[field] = copy.deepcopy(rrec[field])
+                            changed = True
+                    # A peer may finish a later batch while this instance has also processed
+                    # work the peer has never seen. Only adopt its terminal state when its
+                    # cursor covers our pre-merge cursor; otherwise remain partial and safe.
+                    peer_covers_mine = mine_processed <= peer_processed
+                    if (rrec.get("status") in ("posted", "seeded", "silent")
+                            and not rrec.get("more") and peer_covers_mine
+                            and cur_r.get("status") != "ambiguous"):
+                        cur_r["status"] = rrec["status"]
+                        changed = True
+                    if changed:
+                        imported += 1
+                if other.get("source_version") and not mine.get("source_version"):
+                    mine["source_version"] = str(other["source_version"])
+                if other.get("source_revision") and not mine.get("source_revision"):
+                    mine["source_revision"] = str(other["source_revision"])
+                snaps = _as_dict_slot(mine, "snapshots")
+                other_snaps = other.get("snapshots")
+                for skey, srec in (other_snaps.items() if isinstance(other_snaps, dict) else ()):
+                    if not isinstance(srec, dict):
+                        continue
+                    cur_s = snaps.get(skey)
+                    if not isinstance(cur_s, dict) or _safe_int(srec.get("ts"), 0) > _safe_int(cur_s.get("ts"), 0):
+                        snaps[skey] = copy.deepcopy(srec)
+                imgs = _as_dict_slot(mine, "locked_images")
+                other_imgs = other.get("locked_images")
+                for ikey, irec in (other_imgs.items() if isinstance(other_imgs, dict) else ()):
+                    if not isinstance(irec, dict):
+                        continue
+                    cur_i = imgs.get(ikey)
+                    if not isinstance(cur_i, dict) or (irec.get("locked") and not cur_i.get("locked")):
+                        imgs[ikey] = copy.deepcopy(irec)
+                        imported += 1
         return imported
 
     def prune(self, now: int, keep_versions: int = 6, code_days: int = 120) -> None:
@@ -255,6 +359,46 @@ class State:
                 from .textutil import version_key
                 for ver in sorted(versions, key=version_key)[:-keep_versions]:
                     versions.pop(ver, None)
+
+    def beta_record(self, game: str) -> dict:
+        beta = _as_dict_slot(self.data, "beta")
+        rec = _as_dict_slot(beta, game)
+        _as_dict_slot(rec, "revisions")
+        _as_dict_slot(rec, "snapshots")
+        _as_dict_slot(rec, "locked_images")
+        return rec
+
+    def prune_beta(self, keep_revisions: int = 16, keep_snapshots: int = 80) -> None:
+        beta = self.data.get("beta")
+        if not isinstance(beta, dict):
+            return
+        for game in beta.values():
+            if not isinstance(game, dict):
+                continue
+            revs = game.get("revisions")
+            if isinstance(revs, dict) and len(revs) > keep_revisions:
+                ordered = sorted(
+                    revs.keys(),
+                    key=lambda k: (_safe_int((revs.get(k) or {}).get("ts"), 0), str(k)),
+                )
+                for k in ordered[:-keep_revisions]:
+                    revs.pop(k, None)
+            snaps = game.get("snapshots")
+            if isinstance(snaps, dict) and len(snaps) > keep_snapshots:
+                ordered_s = sorted(
+                    snaps.keys(),
+                    key=lambda k: (_safe_int((snaps.get(k) or {}).get("ts"), 0), str(k)),
+                )
+                for k in ordered_s[:-keep_snapshots]:
+                    snaps.pop(k, None)
+            imgs = game.get("locked_images")
+            if isinstance(imgs, dict) and len(imgs) > keep_snapshots:
+                ordered_i = sorted(
+                    imgs.keys(),
+                    key=lambda k: (_safe_int((imgs.get(k) or {}).get("ts"), 0), str(k)),
+                )
+                for k in ordered_i[:-keep_snapshots]:
+                    imgs.pop(k, None)
 
     def news_record(self, game: str) -> dict:
         news = _as_dict_slot(self.data, "news")

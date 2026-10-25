@@ -1,0 +1,101 @@
+{
+  "name": "Aeon ★ Aha",
+  "desc": "Cries and comedy intertwine, and the deathly still cosmos awakens to daybreak in a farce.",
+  "rarity": "CombatPowerAvatarRarityType5",
+  "sp_need": 8,
+  "base_type": "Elation",
+  "damage_type": "Quantum",
+  "skills": {
+    "151101": {
+      "id": 151101,
+      "name": "Starfrost, Showtime!",
+      "desc": "Deals #1[i]% Quantum Elation DMG to one designated enemy target.",
+      "simple_desc": "Deals minor Quantum Elation DMG to one enemy target.",
+      "type": "Normal",
+      "type_name": "Basic ATK",
+      "tag": "SingleAttack",
+      "bp_add": 1,
+      "extra": {
+        "10000028": {"name": "Elation DMG",
+                     "desc": "The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\\nElation DMG is not affected by DMG Boost effects.",
+                     "param": []}
+      },
+      "level": {"6": {"level": 6, "param_list": [0.5, 1]}}
+    },
+    "151102": {
+      "id": 151102,
+      "name": "This Emanator Was Certified by Aha™",
+      "desc": "Causes one designated ally character (except this unit) to gain the \"Emanator of Elation\" state, then immediately launches a Follow-up ATK, dealing #2[i]% Quantum Elation DMG to all enemies. The \"Emanator of Elation\" state lasts for the entire battle until switching to the next target. The target with the \"Emanator of Elation\" state has their Elation stat increased by #1[i]% and, at the start of their turn, causes Aeon ★ Aha to gain #6[i] point(s) of \"Wishpower.\"",
+      "type": "BPSkill",
+      "type_name": "Skill",
+      "tag": "Support",
+      "bp_need": 1,
+      "extra": {
+        "10000004": {"name": "Follow-Up ATK",
+                     "desc": "Unleashes an extra attack on the target. This effect is triggered automatically when requirements are met.",
+                     "param": []}
+      },
+      "level": {"10": {"level": 10, "param_list": [0.2, 0.5, 0, 0, 1, 1]}}
+    },
+    "151103": {
+      "id": 151103,
+      "name": "Aha! Let There Be Laughter",
+      "desc": "Causes Aha's action to advance by #5[i]%. Aeon ★ Aha gains the \"Faces of Elation\" state, lasting for #6[i] turn(s). At the start of each Aeon ★ Aha's turn, duration decreases by 1. Deals #2[i]% Quantum Elation DMG to all enemies, then deals #3[i] instance(s) of DMG. Each instance deals #4[i]% Quantum Elation DMG to one random enemy.",
+      "type": "Ultra",
+      "type_name": "Ultimate",
+      "tag": "AoEAttack",
+      "bp_need": -1,
+      "extra": {
+        "10000026": {"name": "Aha",
+                     "desc": "When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time.",
+                     "param": []}
+      },
+      "level": {"10": {"level": 10, "param_list": [2.0, 2.0, 5, 0.6, 0.2, 3]}}
+    }
+  },
+  "points": {
+    "point13": {"1": {"point_id": 1511205, "point_name": "Elation Boost", "status_add_list": []}},
+    "point14": {"1": {"point_id": 1511206, "point_name": "CRIT Rate Boost",
+                      "status_add_list": [{"property_type": "CriticalChanceBase", "value": 0.04, "name": "CRIT Rate"}]}},
+    "point15": {"1": {"point_id": 1511207, "point_name": "CRIT DMG Boost",
+                      "status_add_list": [{"property_type": "CriticalDamageBase", "value": 0.08, "name": "CRIT DMG"}]}},
+    "point16": {"1": {"point_id": 1511208, "point_name": "SPD Boost",
+                      "status_add_list": [{"property_type": "SpeedDelta", "value": 3, "name": "SPD"}]}},
+    "point23": {"1": {"point_id": 1511601, "point_name": "The True Story of Aha",
+                      "point_desc": "When Aeon ★ Aha and teammates deal DMG, additionally deal \"Elation Debt\" effect equal to #1[i]% of DMG to the enemy target. During the enemy target's phase transition, they maintain the \"Elation Debt\" value, with a maximum not exceeding #3[i]% of the target's Max HP.",
+                      "status_add_list": [],
+                      "extra": {"10015114": {"name": "Elation Debt",
+                                             "desc": "Elation Debt occupies Max HP. If the occupied portion includes current HP, that portion of current HP is immediately lost.",
+                                             "param": []}}}}
+  },
+  "unique": {
+    "151104": {"tag": "Support", "name": "Aha Instant Incoming",
+               "desc": "Effect obtained after acquiring Aeon ★ Aha or when Aeon ★ Aha is in the current team: In combat, Aeon ★ Aha will personally lead the \"Aha Instant\" and can fast-forward the Elation Skill being used. The base SPD of \"Aha Instant\" increases from 80 to Aeon ★ Aha's base SPD.",
+               "param": [30], "extra": {}}
+  },
+  "ranks": {
+    "1": {"id": 151101, "name": "Who Giggled at the Primordial Hush?",
+          "desc": "When entering combat, immediately gains #1[i] point(s) of \"Wishpower.\" When Aeon ★ Aha is present, merrymakes Elation DMG dealt by all ally targets by #2[i]%.",
+          "param_list": [5, 0.15],
+          "extra": {"30000011": {"name": "Merrymake",
+                                 "desc": "A special effect that affects Elation DMG and can additionally boost Elation DMG dealt.",
+                                 "param": []}}},
+    "2": {"id": 151102, "name": "Between THEIR Eyes and Yours",
+          "desc": "Enhances Path of Elation Ascension effects: \\n#{series_ref_skill_desc:UIText_SeriesSkillDescFormat,151129,2}\\n",
+          "param_list": [], "extra": {}},
+    "6": {"id": 151106, "name": "For THEY Said: You Are Elation",
+          "desc": "Enemy targets always have the \"Elation Debt\" effect that is at least equal to #1[i]% of the target's Max HP. The first time Aeon ★ Aha uses THEIR Ultimate, Aha's action advances by #3[i]%, and Aha gains #2[i] Punchline(s).",
+          "param_list": [0.2, 100, 1],
+          "extra": {"10000001": {"name": "Action Advance",
+                                 "desc": "Reduces the target's waiting interval before the next action.",
+                                 "param": []}}}
+  },
+  "stats": {
+    "0": {"attack_base": 92.4, "attack_add": 4.62, "defence_base": 69.3, "defence_add": 3.465,
+          "hp_base": 142.56, "hp_add": 7.128, "speed_base": 94, "critical_chance": 0.05,
+          "critical_damage": 0.5, "base_aggro": 100},
+    "6": {"attack_base": 314.16, "attack_add": 4.62, "defence_base": 235.62, "defence_add": 3.465,
+          "hp_base": 484.704, "hp_add": 7.128, "speed_base": 94, "critical_chance": 0.05,
+          "critical_damage": 0.5, "base_aggro": 100}
+  }
+}

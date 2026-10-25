@@ -141,7 +141,9 @@ class Fetcher:
                  "mihoyocdn.com", "kurogame.com", "kurogames.com", "aki-game.net",
                  "aki-game.com", "easebar.com", "anantagame.com", "netease.com",
                  "163.com", "ytimg.com", "twimg.com", "redd.it", "redditmedia.com",
-                 "vxreddit.com", "embedez.com", "deltandy.me")
+                 "vxreddit.com", "embedez.com", "deltandy.me",
+                 # feature 5 (beta): the community databases that publish beta revisions
+                 "nanoka.cc", "gachabase.net")
         try:
             for _ in range(4):
                 parts = urlsplit(url)

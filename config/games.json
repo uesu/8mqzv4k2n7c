@@ -33,6 +33,10 @@
         "confidence": "high", "anchor_version": "7.1", "anchor_ts": 1790114400
       },
       "news_url": "https://genshin.hoyoverse.com/en/news",
+      "beta": {
+        "nanoka": "gi",
+        "changelog": "https://gi.gachabase.net/changelog/beta?lang=en"
+      },
       "youtube": "https://www.youtube.com/@GenshinImpact/videos",
       "twitch": "https://www.twitch.tv/genshinimpactofficial",
       "card": {
@@ -65,6 +69,10 @@
         "confidence": "medium", "anchor_version": "4.6", "anchor_ts": 1790546400
       },
       "news_url": "https://hsr.hoyoverse.com/en-us/news",
+      "beta": {
+        "nanoka": "hsr",
+        "changelog": "https://hsr.gachabase.net/changelog/beta?lang=en"
+      },
       "youtube": "https://www.youtube.com/@HonkaiStarRail/streams",
       "twitch": "https://www.twitch.tv/honkaistarrail",
       "card": {
@@ -96,6 +104,10 @@
         "confidence": "low", "anchor_version": "3.2", "anchor_ts": 1788904800
       },
       "news_url": "https://zenless.hoyoverse.com/en-us/news",
+      "beta": {
+        "nanoka": "zzz",
+        "changelog": "https://zzz.gachabase.net/changelog/beta?lang=en"
+      },
       "youtube": "https://www.youtube.com/@ZZZ_Official/videos",
       "twitch": "https://www.twitch.tv/zenlesszonezero",
       "card": {
@@ -128,6 +140,9 @@
         "confidence": "medium", "anchor_version": "3.7", "anchor_ts": 1790712000
       },
       "news_url": "https://wutheringwaves.kurogames.com/en/main/news",
+      "beta": {
+        "nanoka": "ww"
+      },
       "program_feeds": [
         "https://raw.githubusercontent.com/TheLovinator1/wutheringwaves/refs/heads/master/articles_latest.xml",
         "https://raw.githubusercontent.com/TheLovinator1/wutheringwaves/refs/heads/master/articles_all.xml"

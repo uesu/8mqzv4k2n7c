@@ -1,0 +1,6 @@
+{
+  "14160": {"icon": "Weapon_S_1601", "rank": 4, "type": 7, "en": "Item_Weapon_S_1601_Name",
+            "atk": 446, "desc": "Item_Weapon_S_1601_ShortDesc", "sub": "DEF"},
+  "14166": {"icon": "Weapon_S_1661", "rank": 4, "type": 5, "en": "Robin's Exclusive W-Engine",
+            "atk": 713, "desc": "Item_Weapon_S_1661_ShortDesc", "sub": "HP"}
+}

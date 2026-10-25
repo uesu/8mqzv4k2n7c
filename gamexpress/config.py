@@ -23,9 +23,10 @@ ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = ROOT / "config"
 DEFAULT_STATE_PATH = ROOT / "state" / "state.json"
 
-FEATURES = ("schedule", "codes", "news", "maintenance")
-DEDICATED_FEATURES = ("news", "maintenance")
+FEATURES = ("schedule", "codes", "news", "maintenance", "beta")
+DEDICATED_FEATURES = ("news", "maintenance", "beta")
 DEFAULT_OPTIONAL_GAMES = ("genshin", "starrail", "zzz", "wuwa", "hna")
+DEFAULT_BETA_GAMES = ("genshin", "starrail", "zzz", "wuwa")
 ALL_MAINTENANCE_GAMES = ("genshin", "starrail", "zzz", "wuwa", "hna", "ananta")
 DEFAULT_COLOR = 14922399  # the gold accent used by every reference card
 MAINTENANCE_NOTE = ("※ In the event that the maintenance is extended, the dev team will issue a "
@@ -516,6 +517,8 @@ class Settings:
     news_expand_max_media: int = 120
     maintenance_enabled: bool = False
     maintenance_games: set[str] = field(default_factory=set)
+    beta_enabled: bool = False
+    beta_games: set[str] = field(default_factory=lambda: set(DEFAULT_BETA_GAMES))
 
     # -- routing ---------------------------------------------------------------
     def _game_slugs(self, game_key: str) -> list[str]:
@@ -532,10 +535,17 @@ class Settings:
         if self.force_webhook and feature not in DEDICATED_FEATURES:
             return "FORCE_WEBHOOK", self.force_webhook
         f = slug(feature)
-        names = [f"DISCORD_WEBHOOK_{f}_{g}" for g in self._game_slugs(game_key)]
-        # Opt-in per-game features must never inherit the schedule/code catch-all or shared channel.
-        if feature not in DEDICATED_FEATURES:
-            names += [f"DISCORD_WEBHOOK_{f}", "DISCORD_WEBHOOK_URL"]
+        if feature == "beta":
+            names = [
+                *(f"DISCORD_WEBHOOK_BETA_{g}" for g in self._game_slugs(game_key)),
+                "DISCORD_WEBHOOK_BETA",
+                *(f"DISCORD_WEBHOOK_NEWS_{g}" for g in self._game_slugs(game_key)),
+            ]
+        else:
+            names = [f"DISCORD_WEBHOOK_{f}_{g}" for g in self._game_slugs(game_key)]
+            # Opt-in per-game features must never inherit the schedule/code catch-all or shared channel.
+            if feature not in DEDICATED_FEATURES:
+                names += [f"DISCORD_WEBHOOK_{f}", "DISCORD_WEBHOOK_URL"]
         for name in names:
             v = _env(self.env, name)
             if v:
@@ -571,6 +581,9 @@ class Settings:
 
     def expected_webhook_names(self, feature: str, game_key: str) -> str:
         f = slug(feature)
+        if feature == "beta":
+            s = slug(game_key)
+            return f"DISCORD_WEBHOOK_BETA_{s} (or DISCORD_WEBHOOK_BETA / DISCORD_WEBHOOK_NEWS_{s})"
         if feature in DEDICATED_FEATURES:
             return f"DISCORD_WEBHOOK_{f}_{slug(game_key)}"
         return f"DISCORD_WEBHOOK_{f}_{slug(game_key)} (or DISCORD_WEBHOOK_{f})"
@@ -582,7 +595,7 @@ class Settings:
             return Ping()
         f = slug(feature)
         names = [f"PING_{f}_{g}" for g in self._game_slugs(game_key)] + [f"PING_{f}"]
-        if feature != "maintenance":
+        if feature not in ("maintenance", "beta"):
             names.append("PING_ROLE_ID")
         for name in names:
             p = parse_ping(_env(self.env, name))
@@ -664,16 +677,20 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
     # Explicit opt-in even if a pre-existing installation asks for all features.
     features.discard("news")
     features.discard("maintenance")
+    features.discard("beta")
     if not standby and _bool(env, "NEWS_ENABLED"):
         features.add("news")
     if not standby and _bool(env, "MAINTENANCE_ENABLED"):
         features.add("maintenance")
+    if not standby and _bool(env, "BETA_ENABLED"):
+        features.add("beta")
     if only:
         only_set = {f.strip() for f in only.split(",") if f.strip() in FEATURES}
         if only_set:
             features &= only_set
     news_enabled = "news" in features
     maintenance_enabled = "maintenance" in features
+    beta_enabled = "beta" in features
     aliases = _game_aliases()
     games_filter = {g.strip().lower() for g in (_env(env, "GAMES") + "," + _env(env, "GAME")).split(",")
                     if g.strip()}
@@ -739,6 +756,10 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         maintenance_games=_game_set_env(
             env, "MAINTENANCE_GAMES", aliases, default=(), all_games=ALL_MAINTENANCE_GAMES
         ),
+        beta_enabled=beta_enabled,
+        beta_games=_game_set_env(
+            env, "BETA_GAMES", aliases, default=DEFAULT_BETA_GAMES, all_games=DEFAULT_BETA_GAMES
+        ) - {"hna", "ananta"},
     )
 
 
@@ -904,6 +925,7 @@ class Game:
     four_star_count: int | None = None   # rate-up 4★ per banner phase (GI/HSR/WW 3, ZZZ 2); other counts -> TBA
     auto_enable_on: str = ""             # YYYY-MM-DD: a prepared game switches itself on at launch
     cadence: Cadence | None = None       # release rhythm; None = never speculate for this game
+    beta: dict = field(default_factory=dict)   # feature 5: nanoka namespace + beta changelog URL
 
     @property
     def redeem_url(self) -> str:
@@ -952,6 +974,7 @@ def load_games(path: Path | None = None) -> dict[str, Game]:
             four_star_count=(int(g["four_star_count"]) if g.get("four_star_count") else None),
             auto_enable_on=str(g.get("auto_enable_on") or ""),
             cadence=_cadence(g.get("cadence")),
+            beta=(g.get("beta") if isinstance(g.get("beta"), dict) else {}),
         )
     return games
 

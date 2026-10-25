@@ -1,0 +1,88 @@
+{
+  "id": 1601,
+  "icon": "IconRole1601",
+  "name": "Sunbringer",
+  "code_name": "Sunbringer",
+  "rarity": 4,
+  "weapon_type": {
+    "7": "Armorer"
+  },
+  "element_type": {
+    "201": "Fire"
+  },
+  "special_element_type": {
+    "id": 201,
+    "name": "Genesis Flare",
+    "title": "Genesis Flare Stats"
+  },
+  "hit_type": {
+    "102": "Strike"
+  },
+  "camp": {
+    "16": "Roscaelifer"
+  },
+  "gender": 2,
+  "stats": {
+    "attack": 101,
+    "attack_growth": 58479,
+    "break_stun": 93,
+    "crit": 500,
+    "crit_damage": 5000,
+    "defence": 35,
+    "defence_growth": 48155,
+    "element_abnormal_power": 78,
+    "element_mystery": 77,
+    "hp_growth": 625913,
+    "hp_max": 461,
+    "pen_rate": 0,
+    "sp_bar_point": 120,
+    "sp_recover": 120,
+    "sharp_critical_damage": 15000
+  },
+  "level": {
+    "6": {
+      "hp_max": 1583,
+      "attack": 180,
+      "defence": 122,
+      "level_max": 60
+    }
+  },
+  "extra_level": {
+    "6": {
+      "max_level": 60,
+      "extra": {
+        "20101": {
+          "prop": 20101,
+          "name": "CRIT Rate",
+          "format": "{0:0.#%}",
+          "value": 2880
+        }
+      }
+    }
+  },
+  "skill": {
+    "basic": {
+      "description": [
+        {
+          "name": "Basic Attack: Thornbreaker",
+          "desc": "Press  to activate:\nLindverne performs up to 4 consecutive attacks forward, dealing Genesis Flare DMG.\nRepeatedly press or hold during the 4th attack to perform an extended slash against enemies.\nWhen the heavy attack of the 4th attack hits an enemy with [Gash], consume all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, trigger [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\nCharacter is invulnerable during the 4th attack.\nDuring the 3rd and 4th attacks, Anti-Interrupt Level is increased and DMG taken is reduced by 40%."
+        }
+      ]
+    },
+    "core": {
+      "description": [
+        {
+          "name": "Core Passive:",
+          "desc": "When [Kinetic Energy] is sufficient, hold  to activate:\nSwitch to Eldreda and launch an attack, dealing Genesis Flare DMG.\nCharacter is invulnerable while using this skill."
+        }
+      ]
+    }
+  },
+  "talent": {
+    "1": {
+      "level": 1,
+      "name": "PlaceHolder",
+      "desc": "Each time Sunbringer triggers [Maim], all squad members gain 12% Laceration DMG for 20s."
+    }
+  }
+}

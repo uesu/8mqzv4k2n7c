@@ -1,0 +1,19 @@
+{
+  "id": 14166,
+  "code_name": "Weapon_S_1661",
+  "name": "Robin's Exclusive W-Engine",
+  "desc": "Item_Weapon_S_1661_Desc",
+  "desc2": "Equip to increase Defense Agents' combat capabilities",
+  "desc3": "Item_Weapon_S_1661_ShortDesc",
+  "rarity": 4,
+  "icon": "Assets/NapResources/UI/Sprite/A1DynamicLoad/ItemIconWeapon/UnPacker/Weapon_S_1661.png",
+  "weapon_type": {"5": "Defense"},
+  "base_property": {"name": "Base ATK", "name2": "Base ATK", "format": "{0:0.#}", "value": 48},
+  "rand_property": {"name": "HP", "name2": "Percent HP", "format": "{0:0.#%}", "value": 1200},
+  "talents": {
+    "1": {"name": "Robin Test Engine",
+          "desc": "When the equipper applies a shield, the whole squad's DEF increases by 10% for 10s. Repeated triggers extend the duration, up to a maximum of 25s. Only one instance of this effect can exist in the same squad. When the equipper launches an Aftershock, the whole squad's DMG increases by 10% for 15s, stacking up to 2 times. Repeated triggers refresh the duration. Only one instance of this effect can exist in the same squad."},
+    "2": {"name": "Robin Test Engine",
+          "desc": "When the equipper applies a shield, the whole squad's DEF increases by 11.5% for 10s. Repeated triggers extend the duration, up to a maximum of 25s."}
+  }
+}

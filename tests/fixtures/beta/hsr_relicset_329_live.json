@@ -1,0 +1,50 @@
+{
+  "source": "https://static.nanoka.cc/hsr/4.6.54/en/relicset/329.json",
+  "captured": "2026-10-25",
+  "data": {
+    "name": "God's Moment of Joy",
+    "icon": "SpriteOutput/ItemIcon/71062.png",
+    "parts": {
+      "33295": {
+        "name": "Moment of Joy's Eternal Stage",
+        "desc": null,
+        "story": null
+      },
+      "33296": {
+        "name": "Moment of Joy's Magic Prop",
+        "desc": null,
+        "story": null
+      }
+    },
+    "require_num": {
+      "2": {
+        "desc": "Increases the wearer's SPD by <unbreak>#1[i]%</unbreak>. When the wearer's Elation reaches <unbreak>#2[i]%</unbreak> or higher, the wearer's action advances by <unbreak>#3[i]%</unbreak> immediately when entering combat.",
+        "param_list": [
+          0.06,
+          0.4,
+          0.4
+        ]
+      }
+    }
+  },
+  "listing": {
+    "icon": "SpriteOutput/ItemIcon/71062.png",
+    "en": "God's Moment of Joy",
+    "set": {
+      "2": {
+        "en": "Increases the wearer's SPD by <unbreak>#1[i]%</unbreak>. When the wearer's Elation reaches <unbreak>#2[i]%</unbreak> or higher, the wearer's action advances by <unbreak>#3[i]%</unbreak> immediately when entering combat.",
+        "ParamList": [
+          0.06,
+          0.4,
+          0.4
+        ],
+        "ko": "\uc7a5\ucc29\ud55c \uce90\ub9ad\ud130\uc758 \uc18d\ub3c4\uac00 <unbreak>#1[i]%</unbreak> \uc99d\uac00\ud55c\ub2e4. \uc7a5\ucc29\ud55c \uce90\ub9ad\ud130\uc758 \ud658\ub77d\ub3c4\uac00 <unbreak>#2[i]%</unbreak> \uc774\uc0c1\uc77c \uacbd\uc6b0 \uc804\ud22c \uc9c4\uc785 \uc2dc \uc989\uc2dc \ud589\ub3d9 \uac8c\uc774\uc9c0\uac00 <unbreak>#3[i]%</unbreak> \uc99d\uac00\ud55c\ub2e4",
+        "zh": "\u4f7f\u88c5\u5907\u8005\u7684\u901f\u5ea6\u63d0\u9ad8<unbreak>#1[i]%</unbreak>\u3002\u5f53\u88c5\u5907\u8005\u7684\u6b22\u6109\u5ea6\u5927\u4e8e\u7b49\u4e8e<unbreak>#2[i]%</unbreak>\u65f6\uff0c\u8fdb\u5165\u6218\u6597\u65f6\u7acb\u523b\u4f7f\u884c\u52a8\u63d0\u524d<unbreak>#3[i]%</unbreak>\u3002",
+        "ja": "\u88c5\u5099\u30ad\u30e3\u30e9\u306e\u901f\u5ea6+<unbreak>#1[i]%</unbreak>\u3002\u88c5\u5099\u30ad\u30e3\u30e9\u306e\u6109\u60a6\u5ea6\u304c<unbreak>#2[i]%</unbreak>\u4ee5\u4e0a\u306e\u5834\u5408\u3001\u6226\u95d8\u306b\u5165\u308b\u6642\u3001\u884c\u52d5\u9806\u304c<unbreak>#3[i]%</unbreak>\u65e9\u307e\u308b\u3002"
+      }
+    },
+    "ko": "\uc2e0\uc758 \uc21c\uac04\uc758 \ud658\ub77d",
+    "zh": "\u795e\u7684\u77ac\u606f\u6b22\u6109",
+    "ja": "\u795e\u306e\u5239\u90a3\u306e\u6109\u60a6"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "name": "Mitya",
+  "desc": "An exceptionally ingenious energy specialist and a master of the fine art of \"schedule-dodging.\"",
+  "weapon": "WEAPON_CATALYST",
+  "rarity": "QUALITY_ORANGE",
+  "element": "Electro",
+  "icon": "UI_AvatarIcon_Mitya",
+  "base_hp": 905.6539916992188,
+  "base_atk": 20.48200035095215,
+  "base_def": 61.624900817871094,
+  "crit_rate": 0.05000000074505806,
+  "crit_dmg": 0.5,
+  "elemental_mastery": 100.0,
+  "chara_info": {
+    "constellation": "Nodus Gordianus",
+    "title": "Rules Set at Naught",
+    "vision": "Electro",
+    "region": "ASSOC_TYPE_SNEZHNAYA_STAR"
+  },
+  "skills": [
+    {
+      "id": 11361,
+      "name": "Chain Reaction",
+      "desc": "Normal Attack\\nPerforms a maximum of 3 attacks that deal Electro DMG.\\n\\nCharged Attack\\nConsumes a certain amount of Stamina to deal AoE Electro DMG to the area in front after a short casting time. Mitya will instead perform the special Charged Attack Gradient Detonation, which consumes no Stamina, if a {LINK#N11360002}Detection Core: Overload{/LINK} created by Mitya is currently on the field and he has at least 1 {LINK#N11360001}Gradient Beacon{/LINK}: Deals 1 instance of AoE Electro DMG to the area in front and continuously consumes Gradient Beacons while held. Each Gradient Beacon consumed deals 1 instance of AoE Electro DMG to the area in front that is considered Stellar-Conduct reaction DMG.\\n\\nPlunging Attack\\nPlunges from mid-air to strike the ground below, damaging opponents along the path and dealing AoE Electro DMG upon impact.",
+      "promote": {
+        "10": {
+          "level": 11,
+          "icon": "Skill_A_Catalyst_MD",
+          "desc": [
+            "1-Hit DMG|{param1:F1P}",
+            "2-Hit DMG|{param2:F1P}",
+            "3-Hit DMG|{param3:F1P}",
+            "Charged Attack DMG|{param4:F1P}",
+            "Charged Attack Stamina Cost|{param5:F1}",
+            "Plunge DMG|{param6:F1P}",
+            "Low/High Plunge DMG|{param7:F1P}/{param8:F1P}",
+            "Gradient Detonation DMG|{param9:F1P}",
+            "Gradient Detonation Stellar-Conduct DMG|{param10:F1P} Elemental Mastery"
+          ],
+          "param": [1.058, 0.869, 1.242, 2.464, 50.0, 1.123, 2.246, 2.806, 3.24, 4.32]
+        }
+      }
+    },
+    {
+      "id": 11362,
+      "name": "Principle: Variable Detection",
+      "desc": "Summons a Detection Core that follows the current active character. When a nearby party member triggers an Electro-Charged, Overload, or Superconduct reaction, the Detection Core accumulates charge. Once fully charged, it converts into Detection Core: Overload, dealing AoE Electro DMG to nearby opponents.",
+      "promote": {
+        "10": {
+          "level": 11,
+          "icon": "Skill_E_Mitya_01",
+          "desc": ["Skill DMG|{param1:F1P} ATK+{param2:F1P} Elemental Mastery",
+                   "Gradient Beacons Generated|{param3:F1}",
+                   "CD|{param4:F1}s",
+                   "Energy Cost|{param5:I}"],
+          "param": [6.3384, 12.6768, 3.0, 15.0, 60.0]
+        }
+      }
+    }
+  ],
+  "passives": [
+    {"id": 1362101, "name": "Baseline Stress Test", "unlock": 1, "param_list": [30.0],
+     "desc": "The {LINK#N11360002}Detection Core{/LINK} created by the Elemental Skill Principle: Variable Detection is enhanced. Depending on the state of the Detection Core created:\\n·Steady State: All nearby party members gain 30 Elemental Mastery for each {LINK#N11360001}Gradient Beacon{/LINK} Mitya has;\\n·Overloaded: After nearby party members trigger Stellar-Conduct reactions, instead obtain 1 Gradient Beacon every 1.5s for 6s."},
+    {"id": 1362201, "name": "Explosive Reagent: Safe Limits Exceeded", "unlock": 4, "param_list": [0.05],
+     "desc": "The duration of {LINK#N11360001}Gradient Beacons{/LINK} is increased to 10s. Additionally, Mitya's CRIT Rate increases by 5% for 15s after creating a Gradient Beacon. This effect can stack up to 4 times."}
+  ],
+  "constellations": [
+    {"id": 1361, "name": "The Observer Seeking What Is Missing", "param_list": [0.4, 10.0, 8.0],
+     "desc": "The maximum number of {LINK#N11360001}Gradient Beacons{/LINK} Mitya can carry is increased to 5. Using the Elemental Skill Principle: Variable Detection additionally creates 1 Gradient Beacon.\\nWhile the {LINK#N11360002}Detection Core{/LINK} is present, your own active character's CRIT DMG is increased by 40%.\\nAdditionally, Mitya regenerates 10 Elemental Energy when a Gradient Beacon is created. This effect can be triggered once every 8s."},
+    {"id": 1363, "name": "The Knotted String of Invariant Topology", "param_list": [],
+     "desc": "Increases the Level of the Elemental Skill {LINK#S11362}Principle: Variable Detection{/LINK} by 3.\\nMaximum upgrade level is 15."}
+  ]
+}
