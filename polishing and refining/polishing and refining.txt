@@ -1,4 +1,4 @@
-looks like a success but i have changes on the format for all games
+looks like a success, it got posted to discord but i have changes on the format for all games
 
 and fix if there's any errors, bugs, edge case bugs
 
