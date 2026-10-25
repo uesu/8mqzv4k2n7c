@@ -6071,7 +6071,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1792926939
+          "ts": 1792938017
         },
         "data": {
           "announcement_locked": true,
@@ -6092,9 +6092,9 @@
               "Linnea"
             ]
           },
-          "banners_checked_ts": 1792926939,
-          "banners_search_ts": 1792926939,
-          "calendar_ts": 1792926939,
+          "banners_checked_ts": 1792938017,
+          "banners_search_ts": 1792938017,
+          "calendar_ts": 1792938017,
           "estimate_sources": [
             "version cadence"
           ],
