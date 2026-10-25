@@ -929,49 +929,256 @@ def news_payloads(
 
 BETA_FOOTER_EMOJI = {"id": "1439878792653832253", "name": "starward11", "animated": True}
 BETA_RESOURCE_LINKS = {
-    "genshin": "Resource: [gachabase](https://gi.gachabase.net/changelog/beta?lang=en) / [nanoka](https://gi.nanoka.cc/diff)",
-    "starrail": "Resource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en) / [nanoka](https://hsr.nanoka.cc/diff)",
-    "zzz": "Resource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en) / [nanoka](https://zzz.nanoka.cc/diff)",
-    "wuwa": "Resource: [nanoka](https://ww.nanoka.cc/diff) / [Encore beta](https://encore.moe/new?v=Beta)",
-}
-BETA_NEW_CHAR_HEADERS = {
-    "zzz": "### ✦ New Agents",
-    "wuwa": "### ✦ New Resonators",
-    "genshin": "### ✦ New Characters",
-    "starrail": "### ✦ New Characters",
+    "genshin": (
+        "Resource: [gachabase](https://gi.gachabase.net/changelog/beta?lang=en)"
+        " / [nanoka](https://gi.nanoka.cc/)"
+    ),
+    "starrail": (
+        "Resource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en)"
+        " / [nanoka](https://hsr.nanoka.cc/)"
+    ),
+    "zzz": (
+        "Resource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en)"
+        " / [nanoka](https://zzz.nanoka.cc/)"
+    ),
+    "wuwa": "Resource: [nanoka](https://ww.nanoka.cc/) / [Encore beta](https://encore.moe/new?v=Beta)",
 }
 
+_HSR_STANDARD_PATHS = {
+    "Destruction", "Hunt", "Erudition", "Harmony",
+    "Nihility", "Preservation", "Abundance", "Remembrance", "Elation",
+}
+_BOLD_COMBAT_NUM_RE = re.compile(
+    r"(?<![\w\-\*~\[(#@/\.])([+-]?\d+(?:\.\d+)?(?:%|s\b))(?![\w\*~\])])"
+)
+_SKILL_ATTR_HEADER_RE = re.compile(r"^\*\*Skill Attributes\b", re.I)
 
-def _format_beta_skill_entry(entry: Any, include_cat_header: bool) -> str:
+
+def _bold_beta_numbers(line: str) -> str:
+    """Bold standalone combat percentages/durations without touching links, strikethroughs, or IDs."""
+    if not line or "http://" in line or "https://" in line or "Equipment-line-" in line:
+        return line
+    protected: list[str] = []
+
+    def _stash(match: re.Match) -> str:
+        protected.append(match.group(0))
+        return f"\x01{len(protected) - 1}\x01"
+
+    work = re.sub(
+        r"\*\*[^*\n]+\*\*|~~[^~\n]+~~|`[^`\n]+`|\[[^\]\n]+\]\([^)\n]+\)|<[^>\n]+>",
+        _stash,
+        line,
+    )
+    work = _BOLD_COMBAT_NUM_RE.sub(r"**\1**", work)
+    return re.sub(r"\x01(\d+)\x01", lambda m: protected[int(m.group(1))], work)
+
+
+def _beta_cycle_label(beta_ver: str) -> str:
+    parts = [p for p in str(beta_ver or "").split(".") if p]
+    if len(parts) >= 2 and parts[0].isdigit() and parts[1].isdigit():
+        return f"{parts[0]}.{parts[1]}"
+    return beta_ver or "?"
+
+
+def _short_rev_label(rev_label: str, beta_ver: str) -> str:
+    label = str(rev_label or "").strip()
+    if not label:
+        return "Update"
+    m = re.match(r"^v?\d+(?:\.\d+){1,3}\s+(Rev\.\s*.+)$", label, re.I)
+    if m:
+        return m.group(1).strip()
+    if label.lower() == f"v{beta_ver}".lower():
+        return f"v{beta_ver}"
+    return label
+
+
+def _format_beta_rarity(game_key: str, rarity: int | None, *, is_equipment: bool = False) -> str:
+    if not rarity:
+        return ""
+    r = max(1, min(5, int(rarity)))
+    if game_key == "zzz":
+        return "S-Rank" if r >= 5 else ("A-Rank" if r == 4 else "B-Rank")
+    if is_equipment:
+        return f"{r}★"
+    return "★" * r
+
+
+def _format_beta_stats_block(game_key: str, stats_lines: list[str]) -> list[str]:
+    """Render character stats in Prime Formatting pipe-separated bold labels without blockquotes."""
+    if not stats_lines:
+        return []
+    base_parts: list[str] = []
+    bonus_lines: list[str] = []
+    other_lines: list[str] = []
+
+    for raw in stats_lines:
+        sln = strip_invisible(str(raw or "")).lstrip("> ").strip()
+        if not sln:
+            continue
+        m_lv = re.match(r"^Lv\.\s*\d+\s*[—-]\s*(.+)$", sln)
+        if m_lv:
+            for seg in [x.strip() for x in m_lv.group(1).split("·") if x.strip()]:
+                sm = re.match(r"^(HP|ATK|DEF|SPD|Max Energy)\s+(.+)$", seg, re.I)
+                if sm:
+                    up = sm.group(1).upper()
+                    lbl = up if up in ("HP", "ATK", "DEF", "SPD") else sm.group(1)
+                    pfx = "Base " if lbl in ("HP", "ATK", "DEF", "SPD") else ""
+                    base_parts.append(f"**{pfx}{lbl}:** {sm.group(2).strip()}")
+                else:
+                    base_parts.append(seg)
+            continue
+        if sln.lower().startswith(("trace stat bonuses:", "stat bonuses:")):
+            head, _, rest = sln.partition(":")
+            bonus_lines.append(f"**{head.strip()}:** {rest.strip()}")
+            continue
+        m_kv = re.match(
+            r"^(SPD|Max Energy|CRIT Rate|CRIT DMG|Impact|Anomaly Mastery|"
+            r"Anomaly Proficiency|PEN Ratio|Laceration DMG|Elemental Mastery|"
+            r"Energy Recharge|Healing Bonus|HP%|ATK%|DEF%)\s+(.+)$",
+            sln,
+        )
+        if m_kv:
+            key_lbl = "Base SPD" if (game_key == "starrail" and m_kv.group(1) == "SPD") else m_kv.group(1)
+            base_parts.append(f"**{key_lbl}:** {m_kv.group(2).strip()}")
+            continue
+        other_lines.append(sln)
+
+    out: list[str] = []
+    if base_parts:
+        out.append(" | ".join(base_parts))
+    out.extend(bonus_lines)
+    out.extend(other_lines)
+    return out
+
+
+def _category_heading(game_key: str, cat: str, *, is_new: bool) -> str:
+    clean_cat = strip_invisible(cat).strip()
+    if not clean_cat:
+        return ""
+    if clean_cat == "Eidolons":
+        return "## Eidolons" if is_new else "## Eidolon Changes"
+    mapped = {
+        ("starrail", "Skills"): "Base Kit",
+        ("starrail", "Traces"): "Bonus Abilities",
+    }.get((game_key, clean_cat), clean_cat)
+    if not is_new and not mapped.lower().endswith("changes") and mapped not in ("Profile Changes",):
+        mapped = f"{mapped} Changes"
+    return f"### {mapped}"
+
+
+_SKILL_SLOT_PREFIX_RE = re.compile(
+    r"^(Normal Attack|Charged Attack|Plunging Attack|Elemental Skill|Elemental Burst|"
+    r"Alternate Sprint|Basic ATK|Basic Attack|Skill|Ultimate|Talent|Technique|"
+    r"Memosprite Skill|Memosprite Talent|Elation Skill|Special Attack|EX Special Attack|"
+    r"Dodge|Dash Attack|Dodge Counter|Quick Assist|Defensive Assist|Evasive Assist|"
+    r"Assist Follow-Up|Chain Attack|Entry Skill|Core Passive|Additional Ability|"
+    r"Resonance Skill|Resonance Liberation|Forte Circuit|Intro Skill|Outro Skill|"
+    r"Inherent Skill|Bonus Ability(?:\s+\d+)?|Passive(?:\s+\d+)?):\s*(.+)$",
+    re.I,
+)
+
+
+def _format_skill_bullet_head(title: str, meta: str) -> str:
+    clean_title = strip_invisible(title).strip()
+    clean_meta = strip_invisible(meta).strip()
+    meta_part = f" *({clean_meta})*" if clean_meta else ""
+
+    m_dash = re.match(r"^(E\d+|C\d+|Sequence Node \d+|Stat Bonus \d+)\s*[—-]\s*(.+)$", clean_title)
+    if m_dash:
+        slot, rest = m_dash.group(1).strip(), m_dash.group(2).strip()
+        return f"* **{slot}** **[{rest}]:**{meta_part}"
+
+    m_colon = _SKILL_SLOT_PREFIX_RE.match(clean_title)
+    if m_colon:
+        role_lbl, skill_name = m_colon.group(1).strip(), m_colon.group(2).strip()
+        return f"* **{role_lbl}** **[{skill_name}]:**{meta_part}"
+
+    clean_no_colon = clean_title.rstrip(":").strip()
+    if clean_no_colon in ("Core Passive", "Additional Ability", "Profile & Base Stats"):
+        return f"* **{clean_no_colon}:**{meta_part}"
+    if clean_no_colon.startswith("Mindscape Cinema "):
+        return f"* **{clean_no_colon}:**{meta_part}"
+    return f"* **[{clean_no_colon}]:**{meta_part}"
+
+
+def _format_beta_skill_entry(
+    game_key: str,
+    entry: Any,
+    include_cat_header: bool,
+    *,
+    is_new: bool = True,
+) -> str:
     parts: list[str] = []
     cat = strip_invisible(str(getattr(entry, "category", "") or "")).strip()
     if include_cat_header and cat:
-        parts.append(f"### {cat}")
+        heading = _category_heading(game_key, cat, is_new=is_new)
+        if heading:
+            parts.append(heading)
+
     title = strip_invisible(str(getattr(entry, "title", "") or "")).strip()
     tag = strip_invisible(str(getattr(entry, "tag", "") or "[NEW]")).strip()
     meta = strip_invisible(str(getattr(entry, "meta", "") or "")).strip()
-    num_match = re.match(r"^(\d{2}\.|[ECS]\d\.)\s+(.+)$", title)
-    if num_match:
-        head = f"**{num_match.group(1)} {tag} {num_match.group(2)}**"
-    else:
-        head = f"**{title}** — {tag}" if tag else f"**{title}**"
-    if meta:
-        head += f" *({meta})*"
-    parts.append(head)
-    rendered_lines = []
+    parts.append(_format_skill_bullet_head(title, meta))
+
+    params = [p for p in (getattr(entry, "params", ()) or ()) if isinstance(p, dict)]
+    param_names_lower = {
+        strip_invisible(str(p.get("name") or "")).strip().lower()
+        for p in params if strip_invisible(str(p.get("name") or "")).strip()
+    }
+
+    rendered_lines: list[str] = []
+    inline_stat_pairs: list[str] = []
+
+    def _flush_inline_stats() -> None:
+        if not inline_stat_pairs:
+            return
+        for idx in range(0, len(inline_stat_pairs), 3):
+            parts.append("    * " + " | ".join(inline_stat_pairs[idx:idx + 3]))
+        inline_stat_pairs.clear()
+
     for raw_ln in getattr(entry, "lines", ()) or ():
-        ln = strip_invisible(str(raw_ln or "")).strip()
-        if not ln:
+        ln = strip_invisible(str(raw_ln or "")).lstrip("> ").strip()
+        if not ln or _SKILL_ATTR_HEADER_RE.match(ln):
             continue
         rendered_lines.append(ln)
-        parts.append(ln if ln.startswith(">") else f"> {ln}")
+        if ln.startswith("**("):
+            _flush_inline_stats()
+            parts.append(f"        * {_bold_beta_numbers(ln)}")
+            continue
+        if ln.startswith("-#"):
+            _flush_inline_stats()
+            parts.append(f"        * {ln[2:].strip()}")
+            continue
+        if ln.startswith("⚠️"):
+            _flush_inline_stats()
+            parts.append(f"        * {ln}")
+            continue
+        if ln.startswith("**["):
+            _flush_inline_stats()
+            parts.append(f"    * {_bold_beta_numbers(ln)}")
+            continue
 
-    # New-kit sources often keep their numerical table separate from the prose.  Render it
-    # only when the builder did not already include the same rows in its text, otherwise the
-    # card would show every multiplier twice.  The structured values remain available to the
-    # revision-diff engine regardless of which database shape produced them.
-    params = [p for p in (getattr(entry, "params", ()) or ()) if isinstance(p, dict)]
-    missing = []
+        m_stat = re.match(r"^([^:]{2,48}):\s*([+-]?\d[^;\n]{0,48})$", ln)
+        if m_stat and (
+            m_stat.group(1).strip().lower() in param_names_lower
+            or re.search(
+                r"\b(?:DMG|Cost|CD|Duration|Healing|Shield|Interval|Hits?|Multiplier)\b",
+                m_stat.group(1),
+                re.I,
+            )
+        ):
+            lbl, val = m_stat.group(1).strip(), m_stat.group(2).strip()
+            val_fmt = val if "**" in val else f"**{val}**"
+            inline_stat_pairs.append(f"{lbl}: {val_fmt}")
+            continue
+
+        _flush_inline_stats()
+        pfx = f"**{tag}** " if tag else ""
+        parts.append(f"    * {pfx}{_bold_beta_numbers(ln)}")
+
+    _flush_inline_stats()
+
+    missing: list[str] = []
     lower_lines = "\n".join(rendered_lines).lower()
     for param in params:
         name = strip_invisible(str(param.get("name") or "")).strip()
@@ -979,12 +1186,15 @@ def _format_beta_skill_entry(entry: Any, include_cat_header: bool) -> str:
         if not name or not value:
             continue
         if name.lower() not in lower_lines or value.lower() not in lower_lines:
-            missing.append((name, value))
+            missing.append(f"{name}: **{value}**")
     if missing:
-        label = strip_invisible(str(getattr(entry, "values_label", "") or "Values")).strip()
-        parts.append(f"> **{label}:**")
-        for name, value in missing:
-            parts.append(f"> - {name}: **{value}**")
+        label = strip_invisible(str(getattr(entry, "values_label", "") or "")).strip()
+        for idx in range(0, len(missing), 3):
+            chunk = " | ".join(missing[idx:idx + 3])
+            if idx == 0 and label:
+                parts.append(f"    * *({label})* {chunk}")
+            else:
+                parts.append(f"    * {chunk}")
     return "\n".join(parts)
 
 
@@ -1029,6 +1239,64 @@ def _split_beta_block(block: str, max_chars: int) -> list[str]:
     return chunks
 
 
+def _format_equipment_stats_line(
+    game_key: str,
+    stats_line: str,
+    sub_type: str,
+    weapon_class: str,
+) -> list[str]:
+    out: list[str] = []
+    if game_key == "starrail" and weapon_class:
+        p_lbl = f"The {weapon_class}" if weapon_class in _HSR_STANDARD_PATHS else weapon_class
+        out.append(f"**Path:** {p_lbl}")
+    clean = strip_invisible(stats_line).lstrip("> ").strip()
+    if clean:
+        m_lv = re.match(r"^Lv\.\s*\d+\s*[—-]\s*(.+)$", clean)
+        raw_body = m_lv.group(1) if m_lv else clean
+        segs = [s.strip() for s in raw_body.split("·") if s.strip()]
+        fmt_segs: list[str] = []
+        for seg in segs:
+            sm = re.match(
+                r"^(Base ATK|Lv\.\s*1 Base ATK|HP|ATK|DEF|CRIT Rate|CRIT DMG|"
+                r"Energy Regen|Energy Recharge|Elemental Mastery)\s+(.+)$",
+                seg,
+                re.I,
+            )
+            if sm:
+                lbl = sm.group(1)
+                if game_key == "starrail" and lbl.upper() in ("HP", "ATK", "DEF"):
+                    lbl = f"Base {lbl.upper()}"
+                fmt_segs.append(f"**{lbl}:** {sm.group(2).strip()}")
+            else:
+                fmt_segs.append(seg)
+        if sub_type and sub_type.lower() not in clean.lower():
+            fmt_segs.append(f"**Substat:** {sub_type}")
+        out.append(" | ".join(fmt_segs))
+    elif sub_type:
+        out.append(f"**Substat:** {sub_type}")
+    return out
+
+
+def _equipment_type_badge(
+    game_key: str,
+    eq_cat: str,
+    eq_rarity: int | None,
+    weapon_class: str,
+    sub_type: str,
+) -> str:
+    rar = _format_beta_rarity(game_key, eq_rarity, is_equipment=True)
+    cat_low = eq_cat.lower()
+    if "light cone" in cat_low:
+        return f"{rar} Light Cone".strip()
+    if "w-engine" in cat_low:
+        base = f"{rar} W-Engine".strip()
+        return f"{base} — {weapon_class}" if weapon_class else base
+    if "weapon" in cat_low:
+        cls = weapon_class or sub_type or "Weapon"
+        return f"{rar} {cls}".strip()
+    return rar
+
+
 def beta_payloads_with_map(
     game: Game,
     patch: Any,
@@ -1049,22 +1317,18 @@ def beta_payloads_with_map(
     rev_label = strip_invisible(str(getattr(patch, "rev_label", "") or "")).strip() or "Update"
     res_line = BETA_RESOURCE_LINKS.get(game.key, BETA_RESOURCE_LINKS["genshin"])
 
-    header_lines = [f"## [{game.short} - {beta_ver} Beta] Patch Notes: {rev_label}"]
-    if ping_obj and not silent:
-        header_lines.append(ping_obj.text)
-    header_lines.append(res_line)
+    cycle_ver = _beta_cycle_label(beta_ver)
+    rev_short = _short_rev_label(rev_label, beta_ver)
+    header_lines = [
+        f"## [{game.name} - {cycle_ver} Beta] Patch Notes: {rev_short}",
+        res_line,
+    ]
+    if ping_obj and not silent and ping_obj.text:
+        header_lines.append(f"- {ping_obj.text}")
+    patch_header_str = "\n".join(header_lines)
 
     characters = list(getattr(patch, "characters", ()) or ())
     equipment = list(getattr(patch, "equipment", ()) or ())
-
-    if characters:
-        if all(bool(getattr(char, "is_new", False)) for char in characters):
-            header_lines.append(BETA_NEW_CHAR_HEADERS.get(game.key, "### ✦ New Characters"))
-        elif any(bool(getattr(char, "is_new", False)) for char in characters):
-            header_lines.append("### ✦ Kit Overview & Revision Changes")
-        else:
-            header_lines.append("### ✦ Revision Changes")
-    patch_header_str = "\n".join(header_lines)
 
     footer_reserve = 140
     raw_containers: list[list[dict]] = []
@@ -1075,50 +1339,118 @@ def beta_payloads_with_map(
         char_id = str(getattr(char, "id", "") or getattr(char, "name", ""))
         char_name = strip_invisible(str(getattr(char, "name", "") or "Unknown")).strip()
         rarity = int(getattr(char, "rarity", 5) or 5)
-        element = strip_invisible(str(getattr(char, "element", "") or "Unknown")).strip()
-        role = strip_invisible(str(getattr(char, "role", "") or "Unknown")).strip()
+        element = strip_invisible(str(getattr(char, "element", "") or "")).strip()
+        role = strip_invisible(str(getattr(char, "role", "") or "")).strip()
+        faction = strip_invisible(str(getattr(char, "faction", "") or "")).strip()
+        attack_type = strip_invisible(str(getattr(char, "attack_type", "") or "")).strip()
+        overview = strip_invisible(str(getattr(char, "overview", "") or "")).strip()
         subtext = strip_invisible(str(getattr(char, "subtext", "") or "")).strip()
-        stats_header = strip_invisible(str(getattr(char, "stats_header", "") or "Base Stats")).strip()
-        stats_lines = [strip_invisible(str(s)).strip() for s in (getattr(char, "stats_lines", ()) or ()) if str(s).strip()]
+        is_new_char = bool(getattr(char, "is_new", True))
+        stats_lines = [
+            strip_invisible(str(s)).strip()
+            for s in (getattr(char, "stats_lines", ()) or ())
+            if str(s).strip()
+        ]
 
-        intro_parts = [f"# ★{rarity} • {char_name} • {element} • {role}"]
+        intro_parts = [f"## {char_name}"]
+        rarity_str = _format_beta_rarity(game.key, rarity)
+        meta_bits: list[str] = []
+        if game.key == "zzz":
+            if element:
+                meta_bits.append(f"**Attribute:** {element}")
+            if role:
+                meta_bits.append(f"**Specialty:** {role}")
+            if rarity_str:
+                meta_bits.append(f"**Rarity:** {rarity_str}")
+            if attack_type:
+                meta_bits.append(f"**Attack Type:** {attack_type}")
+        elif game.key == "starrail":
+            if element:
+                meta_bits.append(f"**Element:** {element}")
+            if role:
+                path_lbl = f"The {role}" if role in _HSR_STANDARD_PATHS else role
+                meta_bits.append(f"**Path:** {path_lbl}")
+            if rarity_str:
+                meta_bits.append(f"**Rarity:** {rarity_str}")
+        elif game.key == "wuwa":
+            if element:
+                meta_bits.append(f"**Attribute:** {element}")
+            if role:
+                meta_bits.append(f"**Weapon:** {role}")
+            if rarity_str:
+                meta_bits.append(f"**Rarity:** {rarity_str}")
+        else:
+            if element:
+                meta_bits.append(f"**Element:** {element}")
+            if role:
+                meta_bits.append(f"**Weapon:** {role}")
+            if rarity_str:
+                meta_bits.append(f"**Rarity:** {rarity_str}")
+        if meta_bits:
+            intro_parts.append(" | ".join(meta_bits))
+        if faction:
+            lbl = "Faction" if game.key == "zzz" else "Affiliation"
+            intro_parts.append(f"**{lbl}:** {faction}")
+
+        intro_parts.extend(_format_beta_stats_block(game.key, stats_lines))
         if subtext:
-            intro_parts.append(subtext if subtext.startswith("-#") else f"-# {subtext}")
-        if stats_lines:
-            intro_parts.append("")
-            intro_parts.append(f"**{stats_header}**")
-            for sln in stats_lines:
-                intro_parts.append(sln if sln.startswith(">") else f"> {sln}")
+            clean_sub = subtext[2:].strip() if subtext.startswith("-#") else subtext
+            if clean_sub:
+                intro_parts.append(f"-# {clean_sub}")
         char_sources = _beta_entry_sources(char)
         if char_sources:
             intro_parts.append(f"-# {char_sources}")
+        if overview:
+            intro_parts.append("")
+            intro_parts.append(overview)
         intro_str = "\n".join(intro_parts)
 
-        blocks: list[str] = []
+        eidolon_imgs = [
+            u for u in (safe_url(x) for x in (getattr(char, "eidolon_images", None) or ())) if u
+        ][:10]
+
+        stream: list[tuple[str, Any]] = [("text", intro_str)]
         last_cat = None
+        placed_eidolon_gallery = False
         for entry in getattr(char, "sections", ()) or ():
             cat = strip_invisible(str(getattr(entry, "category", "") or "")).strip()
             include_cat = bool(cat and cat != last_cat)
             if cat:
                 last_cat = cat
-            blocks.append(_format_beta_skill_entry(entry, include_cat))
+            if include_cat and cat == "Eidolons" and eidolon_imgs and not placed_eidolon_gallery:
+                placed_eidolon_gallery = True
+                stream.append((
+                    "section_gallery",
+                    (_category_heading(game.key, cat, is_new=is_new_char), eidolon_imgs),
+                ))
+                stream.append((
+                    "text",
+                    _format_beta_skill_entry(game.key, entry, False, is_new=is_new_char),
+                ))
+            else:
+                stream.append((
+                    "text",
+                    _format_beta_skill_entry(game.key, entry, include_cat, is_new=is_new_char),
+                ))
 
         total_bonuses = strip_invisible(str(getattr(char, "total_stat_bonuses", "") or "")).strip()
         if total_bonuses:
-            blocks.append(f"**Total Stat Bonuses:** {total_bonuses}")
+            stream.append(("text", f"**Total Stat Bonuses:** {total_bonuses}"))
 
         mech_defs = list(getattr(char, "mechanic_defs", ()) or ())
         if mech_defs:
             m_lines = ["### Mechanic Definitions"]
             for m_name, m_desc in mech_defs:
-                m_lines.append(f"> - **{strip_invisible(str(m_name)).strip()}:** {strip_invisible(str(m_desc)).strip()}")
-            blocks.append("\n".join(m_lines))
+                c_name = strip_invisible(str(m_name)).strip()
+                c_desc = strip_invisible(str(m_desc)).strip()
+                m_lines.append(f"* **({c_name})** {c_desc}")
+            stream.append(("text", "\n".join(m_lines)))
 
         first_container_for_char = True
-        cont_idx = 0
-        pending_blocks = [intro_str, *blocks]
+        idx_stream = 0
+        carry_text: list[str] = []
 
-        while first_container_for_char or pending_blocks:
+        while first_container_for_char or idx_stream < len(stream) or carry_text:
             kids: list[dict] = []
             used_chars = footer_reserve
             if not placed_patch_header:
@@ -1131,35 +1463,68 @@ def beta_payloads_with_map(
                 img_url = safe_url(getattr(char, "image_url", None))
                 if img_url:
                     kids.append(gallery([img_url]))
-                cur_body = ""
                 first_container_for_char = False
-            else:
-                cont_idx += 1
-                suffix = "*(cont.)*" if cont_idx == 1 else f"*(cont. {cont_idx})*"
-                cur_body = f"## **{truncate(char_name, 240)}** {suffix}"
 
-            max_body = MAX_TEXT_TOTAL - used_chars - 24
-            page_heading = cur_body
-            while pending_blocks:
-                nxt = pending_blocks[0]
+            cur_body = ""
+            while carry_text or idx_stream < len(stream):
+                max_body = MAX_TEXT_TOTAL - used_chars - 24
+                if carry_text:
+                    nxt = carry_text[0]
+                    cand = f"{cur_body}\n\n{nxt}" if cur_body else nxt
+                    if len(cand) <= max_body:
+                        cur_body = cand
+                        carry_text.pop(0)
+                        continue
+                    if not cur_body or max_body - len(cur_body) - 2 >= 400:
+                        room = max_body - len(cur_body) - (2 if cur_body else 0)
+                        pieces = _split_beta_block(nxt, room)
+                        cur_body = f"{cur_body}\n\n{pieces[0]}" if cur_body else pieces[0]
+                        carry_text = pieces[1:] + carry_text[1:]
+                    break
+
+                kind, payload_val = stream[idx_stream]
+                if kind == "section_gallery":
+                    heading_str, g_urls = payload_val
+                    next_txt = stream[idx_stream + 1][1] if (
+                        idx_stream + 1 < len(stream) and stream[idx_stream + 1][0] == "text"
+                    ) else ""
+                    body_len = len(cur_body) + 2 if cur_body else 0
+                    needed_chars = len(heading_str) + min(len(next_txt), 350) + body_len
+                    add_comps = (1 if cur_body else 0) + 2
+                    if (cur_body or len(kids) > 1) and (
+                        needed_chars > max_body
+                        or count_components(kids) + add_comps > MAX_COMPONENTS - 4
+                    ):
+                        break
+                    if cur_body:
+                        kids.append(text(cur_body))
+                        used_chars += len(cur_body)
+                        cur_body = ""
+                    kids.append(text(heading_str))
+                    used_chars += len(heading_str)
+                    kids.append(gallery(g_urls))
+                    idx_stream += 1
+                    continue
+
+                nxt = str(payload_val)
                 cand = f"{cur_body}\n\n{nxt}" if cur_body else nxt
                 if len(cand) <= max_body:
                     cur_body = cand
-                    pending_blocks.pop(0)
-                elif (cur_body == page_heading
-                      or max_body - len(cur_body) - 2 >= 400):
-                    # Fill available space without re-splitting every pending block on each
-                    # page. Each iteration consumes text, including whitespace-free source data.
+                    idx_stream += 1
+                elif (not cur_body and len(kids) <= 2) or max_body - len(cur_body) - 2 >= 400:
                     room = max_body - len(cur_body) - (2 if cur_body else 0)
                     pieces = _split_beta_block(nxt, room)
                     cur_body = f"{cur_body}\n\n{pieces[0]}" if cur_body else pieces[0]
-                    pending_blocks = pieces[1:] + pending_blocks[1:]
+                    carry_text = pieces[1:]
+                    idx_stream += 1
                     break
                 else:
                     break
 
-            kids.append(text(cur_body))
-            raw_containers.append(kids)
+            if cur_body:
+                kids.append(text(cur_body))
+            if kids:
+                raw_containers.append(kids)
 
     if equipment:
         kids = []
@@ -1169,59 +1534,128 @@ def beta_payloads_with_map(
             used_chars += len(patch_header_str)
             placed_patch_header = True
 
+        cat_tags: dict[str, list[str]] = {}
+        for eq in equipment:
+            c_lbl = strip_invisible(str(getattr(eq, "category_label", "") or "Equipment")).strip()
+            t_lbl = strip_invisible(str(getattr(eq, "tag", "") or "[NEW]")).strip()
+            cat_tags.setdefault(c_lbl, []).append(t_lbl)
+
         last_eq_cat = None
         for eq in equipment:
             eq_cat = strip_invisible(str(getattr(eq, "category_label", "") or "Equipment")).strip()
+            eq_set_kind = strip_invisible(str(getattr(eq, "set_kind", "") or "")).strip()
+            if eq_cat == "Relics & Ornaments" and "planar ornament" in eq_set_kind.lower():
+                display_cat = "Planar Ornaments"
+            else:
+                display_cat = eq_cat
             eq_name = strip_invisible(str(getattr(eq, "name", "") or "Unknown")).strip()
             eq_rarity = getattr(eq, "rarity", None)
             eq_sub = strip_invisible(str(getattr(eq, "sub_type", "") or "")).strip()
+            eq_wclass = strip_invisible(str(getattr(eq, "weapon_class", "") or "")).strip()
+            eq_parts_line = strip_invisible(str(getattr(eq, "set_parts", "") or "")).strip()
             eq_tag = strip_invisible(str(getattr(eq, "tag", "") or "[NEW]")).strip()
             eq_stats = strip_invisible(str(getattr(eq, "stats_line", "") or "")).strip()
             eq_eff_title = strip_invisible(str(getattr(eq, "effect_title", "") or "")).strip()
-            eq_lines = [strip_invisible(str(x)).strip() for x in (getattr(eq, "lines", ()) or ()) if str(x).strip()]
-            eq_img = safe_url(getattr(eq, "image_url", None))
+            eq_lines = [
+                strip_invisible(str(x)).lstrip("> ").strip()
+                for x in (getattr(eq, "lines", ()) or ())
+                if str(x).strip()
+            ]
+            eq_glossary = list(getattr(eq, "glossary", ()) or ())
+            raw_urls = list(getattr(eq, "image_urls", None) or ())
+            eq_imgs = [u for u in (safe_url(x) for x in raw_urls) if u]
+            if not eq_imgs:
+                single_eq_img = safe_url(getattr(eq, "image_url", None))
+                if single_eq_img:
+                    eq_imgs = [single_eq_img]
+            eq_imgs = eq_imgs[:10]
 
-            include_cat = eq_cat != last_eq_cat
-            last_eq_cat = eq_cat
+            include_cat = display_cat != last_eq_cat
+            last_eq_cat = display_cat
 
-            eq_parts: list[str] = []
-            if include_cat and eq_cat:
-                eq_parts.append(f"### {eq_cat}")
-            star_prefix = f"★{int(eq_rarity)} " if eq_rarity else ""
-            sub_part = f" ({eq_sub})" if eq_sub else ""
-            tag_part = f" — {eq_tag}" if eq_tag else ""
-            eq_parts.append(f"**{star_prefix}{eq_name}**{sub_part}{tag_part}")
-            if eq_stats:
-                eq_parts.append(eq_stats if eq_stats.startswith(">") else f"> {eq_stats}")
+            cat_header_str = ""
+            if include_cat and display_cat:
+                all_tags = cat_tags.get(eq_cat, [])
+                is_diff_cat = (
+                    bool(all_tags)
+                    and all(t != "[NEW]" for t in all_tags)
+                    and not display_cat.lower().endswith("changes")
+                )
+                cat_header_str = f"## {display_cat} Changes" if is_diff_cat else f"## {display_cat}"
+
+            badge = _equipment_type_badge(game.key, display_cat, eq_rarity, eq_wclass, eq_sub)
+            title_line = f"### {eq_name} ({badge})" if badge else f"### {eq_name}"
+
+            eq_parts: list[str] = [title_line]
+            if eq_set_kind:
+                eq_parts.append(f"*{eq_set_kind}*")
+            if eq_parts_line:
+                eq_parts.append(f"*Parts: {eq_parts_line}*")
+            eq_parts.extend(_format_equipment_stats_line(game.key, eq_stats, eq_sub, eq_wclass))
             if eq_eff_title:
-                eq_parts.append(f"> **{eq_eff_title}:**")
+                eq_parts.append("")
+                ref_note = " *(S1 values)*" if game.key == "starrail" and eq_tag == "[NEW]" else ""
+                eq_parts.append(f"**[{eq_eff_title}]{ref_note}:**")
+            elif eq_lines:
+                eq_parts.append("")
+
             for eln in eq_lines:
-                eq_parts.append(eln if eln.startswith(">") else f"> {eln}")
+                if eln.startswith("-#"):
+                    eq_parts.append(f"    * {eln[2:].strip()}")
+                elif eln.startswith("**["):
+                    eq_parts.append(f"* {_bold_beta_numbers(eln)}")
+                else:
+                    m_pc = re.match(r"^(\d+-Piece(?:\s+Set)?):\s*(.+)$", eln, re.I)
+                    if m_pc and eq_tag == "[NEW]":
+                        eq_parts.append(f"*{m_pc.group(1)}:*")
+                        eq_parts.append(f"* **{eq_tag}** {_bold_beta_numbers(m_pc.group(2).strip())}")
+                    else:
+                        pfx = f"**{eq_tag}** " if eq_tag else ""
+                        eq_parts.append(f"* {pfx}{_bold_beta_numbers(eln)}")
+            for g_name, g_desc in eq_glossary:
+                c_gn = strip_invisible(str(g_name)).strip()
+                c_gd = _bold_beta_numbers(strip_invisible(str(g_desc)).strip())
+                eq_parts.append(f"    * **({c_gn})** {c_gd}")
+
             eq_sources = _beta_entry_sources(eq)
             if eq_sources:
                 eq_parts.append(f"-# {eq_sources}")
             eq_text_str = "\n".join(eq_parts)
 
-            # Keep ordinary equipment compact; long effects continue instead of being clipped.
-            continuation = f"### {truncate(eq_cat, 120)} *(cont.)*\n**{truncate(eq_name, 240)}** *(cont.)*\n"
-            max_eq_chars = MAX_TEXT_TOTAL - footer_reserve - 24 - len(continuation)
+            hdr_reserve = len(cat_header_str) + 4 if cat_header_str else 0
+            max_eq_chars = MAX_TEXT_TOTAL - footer_reserve - 24 - hdr_reserve
             pieces = _split_beta_block(eq_text_str, max_eq_chars)
             for piece_idx, piece in enumerate(pieces):
-                piece_image = eq_img if piece_idx == 0 else None
-                if piece_idx:
-                    piece = continuation + piece
-                add_comps = 2 if piece_image else 1
-                if kids and (used_chars + len(piece) + 4 > MAX_TEXT_TOTAL - 16
-                             or count_components(kids) + add_comps > MAX_COMPONENTS - 4):
+                piece_images = eq_imgs if piece_idx == 0 else []
+                hdr = cat_header_str if piece_idx == 0 and cat_header_str else ""
+                extra_len = len(piece) + (len(hdr) + 2 if hdr else 0)
+                add_comps = (1 if hdr else 0) + (1 if piece_images else 0) + 1
+                if kids and (
+                    used_chars + extra_len + 4 > MAX_TEXT_TOTAL - 16
+                    or count_components(kids) + add_comps > MAX_COMPONENTS - 4
+                ):
                     raw_containers.append(kids)
                     kids = []
                     used_chars = footer_reserve
-                    if not piece_idx and not include_cat:
-                        piece = f"### {truncate(eq_cat, 120)} *(cont.)*\n{piece}"
-                if piece_image:
-                    kids.append(gallery([piece_image]))
-                if (not piece_image and kids and kids[-1].get("type") == 10
-                        and kids[-1].get("content") != patch_header_str):
+                if hdr:
+                    if (
+                        kids
+                        and kids[-1].get("type") == 10
+                        and kids[-1].get("content") != patch_header_str
+                    ):
+                        kids[-1] = text(kids[-1]["content"] + "\n\n" + hdr)
+                        used_chars += 2 + len(hdr)
+                    else:
+                        kids.append(text(hdr))
+                        used_chars += len(hdr)
+                if piece_images:
+                    kids.append(gallery(piece_images))
+                if (
+                    not piece_images
+                    and kids
+                    and kids[-1].get("type") == 10
+                    and kids[-1].get("content") != patch_header_str
+                ):
                     kids[-1] = text(kids[-1]["content"] + "\n\n" + piece)
                     used_chars += 2 + len(piece)
                 else:
@@ -1232,7 +1666,8 @@ def beta_payloads_with_map(
             raw_containers.append(kids)
 
     if not raw_containers:
-        raw_containers.append([text(patch_header_str + "\n\nNo new character or equipment kit changes in this revision.")])
+        empty_note = "\n\nNo new character or equipment kit changes in this revision."
+        raw_containers.append([text(patch_header_str + empty_note)])
 
     btn_label = "Citlali News"
     btn_url = NEWS_COMMUNITY
@@ -1247,9 +1682,7 @@ def beta_payloads_with_map(
     total_pages = len(raw_containers)
     payloads: list[dict] = []
     for idx, kids in enumerate(raw_containers, start=1):
-        foot_str = f"-# Citlali Mains • {game.name} {beta_ver} Beta"
-        if total_pages > 1:
-            foot_str += f" • Page {idx}/{total_pages}"
+        foot_str = f"-# {game.name} {beta_ver} Beta • Page {idx}/{total_pages}"
         container_kids = list(kids)
         if footer_btn:
             container_kids.append(section([foot_str], footer_btn))
@@ -1264,7 +1697,9 @@ def beta_payloads_with_map(
         }
         problems = validate_payload(p)
         if problems:
-            raise ValueError(f"beta payload page {idx}/{total_pages} failed validation: {'; '.join(problems)}")
+            raise ValueError(
+                f"beta payload page {idx}/{total_pages} failed validation: {'; '.join(problems)}"
+            )
         payloads.append(p)
 
     return payloads, char_msg_map

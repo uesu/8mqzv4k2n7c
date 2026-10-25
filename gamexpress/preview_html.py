@@ -151,7 +151,7 @@ def component(c: dict) -> str:
                 parts.append(f'<video src="{esc_url}" controls muted playsinline preload="metadata"></video>')
             else:
                 parts.append(f'<img src="{esc_url}" alt="image" loading="lazy">')
-        return f'<div class="gallery n{min(len(items), 4)}">{"".join(parts)}</div>'
+        return f'<div class="gallery n{min(len(items), 6)}">{"".join(parts)}</div>'
     if t == 11:
         return f'<img class="thumb" src="{html.escape((c.get("media") or {}).get("url") or "")}" alt="thumbnail">'
     if t == 9:
@@ -221,7 +221,7 @@ img.emoji{width:1.375em;height:1.375em;vertical-align:-.3em;object-fit:contain}
 .stexts{flex:1;min-width:0}
 .thumb{width:85px;height:85px;border-radius:8px;object-fit:cover;background:#1e1f22}
 .gallery{display:grid;gap:4px;margin-top:8px}
-.gallery.n1{grid-template-columns:1fr}.gallery.n2,.gallery.n4{grid-template-columns:1fr 1fr}.gallery.n3{grid-template-columns:1fr 1fr 1fr}
+.gallery.n1{grid-template-columns:1fr}.gallery.n2,.gallery.n4{grid-template-columns:1fr 1fr}.gallery.n3,.gallery.n5,.gallery.n6{grid-template-columns:1fr 1fr 1fr}
 .gallery img,.gallery video{width:100%;max-height:360px;object-fit:cover;border-radius:8px;background:#1e1f22;min-height:120px}
 .row{display:flex;flex-wrap:wrap;gap:8px}
 .btn{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:8px;background:#4e5058;color:#fff;

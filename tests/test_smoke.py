@@ -18135,5 +18135,415 @@ def test_feature5_gachabase_html_revisions_and_changed_existing_ids():
     assert [beta._entry_id(e) for e in chars] == ["10000140"]
     assert beta.parse_changelog("<html><h1>Access denied</h1></html>") == []
 
+
+def test_feature5_active_beta_gating_skips_live_and_past_cycles_with_zero_extra_calls():
+    """Live/finished betas (e.g. GI 7.1.53 on live 7.1, HSR 4.6.54 on live 4.6) must never post."""
+    from gamexpress import beta as beta_mod
+
+    manifest = _beta_json("nanoka_manifest.json")
+
+    class GatedFourGameFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(("json", url))
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/" in url and "/character/1601" in url:
+                return _beta_json("zzz_character_1601.json")
+            if "/zzz/" in url and "/character/1661" in url:
+                return _beta_json("zzz_character_1661.json")
+            if "/zzz/" in url and url.endswith("/weapon.json"):
+                return _beta_json("zzz_weapon_listing.json")
+            if "/zzz/" in url and "/weapon/14166" in url:
+                return _beta_json("zzz_weapon_14166.json")
+            if "/zzz/" in url and "/weapon/14160" in url:
+                return _beta_json("zzz_weapon_14166.json")
+            if "/zzz/" in url and url.endswith("/equipment.json"):
+                return {}
+            if "/zzz/" in url and "/equipment/" in url:
+                return _beta_json("zzz_equipment_34300.json")
+            if "/ww/" in url and "/character/1512" in url:
+                return _beta_json("ww_character_1512.json")
+            if "/ww/" in url and url.endswith("/weapon.json"):
+                return _beta_json("ww_weapon_21030076_live.json")["listing"]
+            if "/ww/" in url and "/weapon/21030076" in url:
+                return _beta_json("ww_weapon_21030076_live.json")["data"]
+            return None
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(("text", url))
+            return "<html><h1>Access denied</h1></html>"
+
+        async def verify_media(self, url):
+            self.calls.append(("media", url))
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = GatedFourGameFetcher()
+        ctx = _beta_ctx(
+            Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+            BETA_GAMES="genshin,starrail,zzz,wuwa", DISCORD_WEBHOOK_BETA=HOOK,
+            games=["genshin", "starrail", "zzz", "wuwa"],
+        )
+        asyncio.run(beta_mod.run(ctx))
+        # GI (7.1.53 <= live 7.1) and HSR (4.6.54 <= live 4.6) are skipped before changelog/detail probes.
+        assert not any("/gi/" in url or "gi.gachabase.net" in url for _k, url in fetcher.calls)
+        assert not any("/hsr/" in url or "hsr.gachabase.net" in url for _k, url in fetcher.calls)
+        # HTTP 403 "Access denied" on ZZZ gachabase falls back cleanly without warning spam.
+        assert ctx.warnings == []
+        # Only ZZZ (3.4.1 > live 3.3) and WuWa (3.8.1 > live 3.7) deliver beta cards.
+        assert len(ctx.report) == 2
+        assert any("ZZZ 3.4.1" in r for r in ctx.report)
+        assert any("WW 3.8.1" in r for r in ctx.report)
+
+        # Launcher `ctx.versions` and confirmed `schedule_records` also gate stale manifests lacking "live".
+        ctx.versions = {"genshin": {"live": "7.2"}}
+        assert beta_mod._live_cycle(ctx, GAMES["genshin"], {"latest": "7.2.55", "available": ["7.2.55"]}) == (7, 2)
+        assert beta_mod._available_beta_versions(
+            {"latest": "7.2.55", "available": ["7.2", "7.2.55"]}, live_cycle=(7, 2)
+        ) == []
+        assert beta_mod._available_beta_versions(
+            {"latest": "7.3.50", "available": ["7.2", "7.2.55", "7.3", "7.3.50"]}, live_cycle=(7, 2)
+        ) == ["7.3.50"]
+
+
+def test_feature5_legacy_epoch1_state_resets_once_and_preserves_route_and_ambiguous_holds():
+    """Pre-Prime-Formatting (epoch-1) state resets once so active betas repost cleanly."""
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import BETA_FORMAT_EPOCH, stable_hash
+
+    quiet_changelog = "## v3.4.1 Rev. 19851435 | 24th October 2026\n\nNo tracked changes detected.\n"
+
+    class RepostFetcher:
+        async def get_json(self, url, **_kw):
+            if url.endswith("/manifest.json"):
+                return {
+                    "gi": {"live": "7.1", "latest": "7.1.53", "available": ["7.1", "7.1.53"],
+                           "new": {"character": [10000136], "weapon": [], "artifact": []}},
+                    "zzz": {"live": "3.3", "latest": "3.4.1+19851435", "available": ["3.3", "3.4.1+19851435"],
+                            "new": {"character": [1601], "weapon": [], "equipment": []}},
+                }
+            if "/zzz/" in url and "/character/1601" in url:
+                return _beta_json("zzz_character_1601.json")
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return quiet_changelog
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        fp = stable_hash([beta_mod.webhook_fingerprint(HOOK), ""])
+        # Simulate live prod Run #1578 state.json: no format_epoch, recent last_poll, already "posted".
+        legacy_payload = {
+            "version": 3,
+            "bootstrapped": True,
+            "beta": {
+                "genshin": {
+                    "route": fp, "last_poll": 1792999900, "latest_rev": "old_gi",
+                    "source_version": "7.1.53",
+                    "revisions": {"old_gi": {"status": "posted", "ts": 1792999900, "messages": ["m1"]}},
+                    "snapshots": {"gi:10000136": {"kind": "character", "ts": 1}},
+                    "locked_images": {},
+                },
+                "zzz": {
+                    "route": fp, "last_poll": 1792999900, "latest_rev": "old_zzz",
+                    "source_version": "3.4.1+19851435",
+                    "revisions": {"old_zzz": {"status": "posted", "ts": 1792999900, "messages": ["m2"]}},
+                    "snapshots": {"zzz:1601": {"kind": "character", "ts": 1}},
+                    "locked_images": {"zzz:1601": {"url": "https://old.invalid/x.webp", "locked": True}},
+                },
+                "wuwa": {
+                    "route": fp, "last_poll": 1792999900, "latest_rev": "amb_ww",
+                    "revisions": {"amb_ww": {"status": "ambiguous", "ts": 1792999900,
+                                             "batches": {"b1": {"ambiguous": True, "messages": ["m3"]}}}},
+                    "snapshots": {}, "locked_images": {},
+                },
+            },
+        }
+        path.write_text(json.dumps(legacy_payload), encoding="utf-8")
+        ctx = _beta_ctx(
+            path, RepostFetcher(), now=1793000000, BETA_ENABLED="1",
+            BETA_GAMES="genshin,zzz", DISCORD_WEBHOOK_BETA=HOOK, games=["genshin", "zzz"],
+        )
+        sent = []
+
+        class OkWebhook:
+            async def send(self, _h, payload, **_kw):
+                sent.append(payload)
+                return SendResult(True, 200, message_id=f"new-{len(sent)}")
+
+        ctx.webhook = OkWebhook()
+        asyncio.run(beta_mod.run(ctx))
+        # ZZZ reposts cleanly despite recent legacy last_poll and "No tracked changes" on 19851435; GI is gated.
+        assert len(sent) >= 1
+        assert "Zenless Zone Zero - 3.4 Beta" in json.dumps(sent)
+        zzz_rec = ctx.state.beta_record("zzz")
+        assert zzz_rec["format_epoch"] == BETA_FORMAT_EPOCH
+        assert "old_zzz" not in zzz_rec["revisions"]
+        assert zzz_rec["route"] == fp
+        # Ambiguous holds are never wiped by epoch migration.
+        ww_rec = ctx.state.beta_record("wuwa")
+        assert beta_mod._upgrade_legacy_beta_record(ww_rec) is True
+        assert "amb_ww" in ww_rec["revisions"]
+        # Peer merge ignores legacy epoch-1 records so standby caches cannot resurrect wiped state.
+        assert ctx.state.merge_peer(legacy_payload, include_beta=True) == 0
+        assert "old_zzz" not in ctx.state.beta_record("zzz")["revisions"]
+
+
+def test_feature5_clean_strips_all_raw_game_markup_and_placeholders_across_all_games():
+    """All raw tags (<IconMap:*>, <te>, <SapTag>, LAYOUT_*, {Cus:*}, {CAL:*}) are stripped cleanly."""
+    from gamexpress import beta as beta_mod
+
+    dirty = (
+        "<IconMap:Icon_Normal>{LAYOUT_CONSOLECONTROLLER#Stick}{LAYOUT_FALLBACK#WASD} "
+        "<size=36> </size><u>Deals</u> <te href=99>Sheer DMG</te> and "
+        "<SapTag=2>Miasma</SapTag> <ruby>焔<rt>ほのお</rt></ruby> "
+        "{Cus:Ipt,Touch=Tap PC=Press Gamepad=Press} for "
+        "3 {Cus:Sap,S=instance P=instances SapTag=1} of {CAL:AvatarSkillLevel(0)*2+10}%."
+    )
+    cleaned = beta_mod._clean(dirty)
+    assert "<IconMap" not in cleaned and "<size" not in cleaned and "<u>" not in cleaned
+    assert "<te" not in cleaned and "<SapTag" not in cleaned and "<rt>" not in cleaned
+    assert "LAYOUT_" not in cleaned and "{Cus:" not in cleaned and "{CAL:" not in cleaned
+    assert "WASD" in cleaned and "Deals" in cleaned and "Sheer DMG" in cleaned
+    assert "Press for 3 instances of [TBD]%." in cleaned
+
+    # Rarity normalization across GI, HSR, ZZZ, and WuWa.
+    assert beta_mod._parse_rarity("gi", "QUALITY_ORANGE") == 5
+    assert beta_mod._parse_rarity("gi", "QUALITY_PURPLE") == 4
+    assert beta_mod._parse_rarity("hsr", "CombatPowerAvatarRarityType5") == 5
+    assert beta_mod._parse_rarity("hsr", "CombatPowerLightconeRarity4") == 4
+    assert beta_mod._parse_rarity("zzz", 4) == 5
+    assert beta_mod._parse_rarity("zzz", 3) == 4
+    assert beta_mod._parse_rarity("ww", 5) == 5
+
+    # HSR deduplicates minor stat-boost points and keyword glossaries across skills.
+    hsr_built = beta_mod._hsr_character(_beta_json("hsr_character_1511.json"))
+    titles = [s.title for s in hsr_built["sections"]]
+    assert not any("Stat Bonus:" in t or "Boost" in t for t in titles)
+    all_lines = [ln for s in hsr_built["sections"] for ln in s.lines]
+    assert sum(ln.startswith("**(Elation DMG)**") for ln in all_lines) == 1
+    assert "…" not in all_lines
+
+    # WuWa fills {0}/{1} skill parameters and aggregates minor Forte stat nodes.
+    ww_sample = {
+        "rarity": 5, "element": 5, "weapon": 3,
+        "skill_trees": {
+            "1": {"node_type": 1, "skill": {"name": "Starlight", "type": "Resonance Skill",
+                                            "desc": "Restores {0} Concerto and increases DMG by {1}.",
+                                            "param": ["15", "24%"], "level": {}}},
+            "2": {"node_type": 4, "skill": {"name": "Crit. DMG+", "type": "Stat Bonus",
+                                            "desc": "Crit. DMG increased by {0}.", "param": ["8%"]}},
+            "3": {"node_type": 4, "skill": {"name": "Crit. DMG+", "type": "Stat Bonus",
+                                            "desc": "Crit. DMG increased by {0}.", "param": ["16%"]}},
+        },
+    }
+    ww_built = beta_mod._ww_character(ww_sample)
+    assert len(ww_built["sections"]) == 1
+    assert "Restores 15 Concerto and increases DMG by 24%." in ww_built["sections"][0].lines[0]
+    assert any("Crit. DMG +24%" in s for s in ww_built["stats_lines"])
+
+
+def test_feature5_media_candidates_galleries_and_gachabase_403_fallback():
+    """Actual static.nanoka.cc splash/icon/eidolon/planar URLs resolve and lock cleanly."""
+    from gamexpress import beta as beta_mod
+
+    gi_char = _beta_json("gi_character_10000136.json")
+    assert beta_mod._data_image_candidates("gi", "character", "10000136", gi_char) == [
+        "https://static.nanoka.cc/assets/gi/UI_Gacha_AvatarImg_Mitya.webp",
+        "https://static.nanoka.cc/assets/gi/UI_AvatarIcon_Mitya.webp",
+    ]
+    gi_w = _beta_json("gi_weapon_14525_live.json")
+    assert beta_mod._data_image_candidates("gi", "weapon", "14525", gi_w["data"], gi_w["listing"]) == [
+        "https://static.nanoka.cc/assets/gi/UI_Gacha_EquipIcon_Catalyst_Chernaya.webp",
+        "https://static.nanoka.cc/assets/gi/UI_EquipIcon_Catalyst_Chernaya.webp",
+    ]
+    assert beta_mod._data_image_candidates("hsr", "weapon", "22009", {}, {})[0] == (
+        "https://static.nanoka.cc/assets/hsr/lightconemaxfigures/22009.webp"
+    )
+    hsr_rel = _beta_json("hsr_relicset_329_live.json")
+    assert beta_mod._data_gallery_candidates("hsr", "relic", "329", hsr_rel["data"], hsr_rel["listing"]) == [
+        "https://static.nanoka.cc/assets/hsr/relicfigures/IconRelic_329_5.webp",
+        "https://static.nanoka.cc/assets/hsr/relicfigures/IconRelic_329_6.webp",
+    ]
+    zzz_w = _beta_json("zzz_weapon_14166.json")
+    assert beta_mod._data_image_candidates("zzz", "weapon", "14166", zzz_w, {}) == [
+        "https://static.nanoka.cc/assets/zzz/Weapon_S_1661.webp",
+    ]
+    # Mismatched WuWa placeholder icon ID (21030056 on weapon 21030076) is rejected; matching ID is accepted.
+    ww_w = _beta_json("ww_weapon_21030076_live.json")
+    assert beta_mod._data_image_candidates("ww", "weapon", "21030076", ww_w["data"], ww_w["listing"]) == []
+    matching_ww = {"icon": "/Game/Aki/UI/IconWeapon/T_IconWeapon21030076_UI.T_IconWeapon21030076_UI"}
+    assert beta_mod._data_image_candidates("ww", "weapon", "21030076", matching_ww, {}) == [
+        "https://static.nanoka.cc/assets/ww/UI/IconWeapon/T_IconWeapon21030076_UI.webp",
+    ]
+
+    # HSR 6-Eidolon gallery renders directly below `## Eidolons` and locks across revisions.
+    hsr_c = json.loads(json.dumps(_beta_json("hsr_character_1511.json")))
+    for k in ("3", "4", "5"):
+        hsr_c["ranks"][k] = {"name": f"Rank {k}", "desc": "Ultimate Lv. +2.", "param_list": []}
+    e_urls = beta_mod._data_gallery_candidates("hsr", "character", "1511", hsr_c)
+    assert len(e_urls) == 6 and e_urls[0].endswith("/1511/1511_Rank_1.webp")
+    built = beta_mod._hsr_character(hsr_c)
+    patch = BetaPatch(
+        game_key="starrail", beta_version="4.7.51", rev_label="v1", rev_id="e6",
+        characters=[BetaCharacter(
+            id="hsr:1511", name="Aeon ★ Aha", rarity=5, element="Quantum", role="Elation",
+            image_url="https://static.nanoka.cc/assets/hsr/avatardrawcard/1511.webp",
+            eidolon_images=e_urls, stats_lines=built["stats_lines"], sections=built["sections"],
+        )],
+    )
+    payloads = cards.beta_payloads(GAMES["starrail"], patch)
+    assert all(cards.validate_payload(p) == [] for p in payloads)
+    found_eidolon_gallery = False
+    for p in payloads:
+        comps = p["components"][0]["components"]
+        for i, comp in enumerate(comps[:-1]):
+            if comp.get("type") == 10 and comp.get("content") == "## Eidolons":
+                nxt = comps[i + 1]
+                assert nxt.get("type") == 12 and len(nxt.get("items") or []) == 6
+                found_eidolon_gallery = True
+    assert found_eidolon_gallery
+
+
+def test_feature5_prime_formatting_style_overview_rework_diff_and_footer_invariants():
+    """Prime Formatting Style: no blockquotes, no *(cont.)*, clean footer, synthesized overview & [REWORK]."""
+    from gamexpress import beta as beta_mod
+
+    old_sec = [BetaSectionEntry(
+        title="Special Attack: Pursuit Slash", category="Special Attack",
+        lines=["Press or hold Special to charge a defensive upward slash while reducing DMG taken by 40%."],
+    )]
+    new_sec = [BetaSectionEntry(
+        title="Special Attack: Fire Snatch", category="Special Attack",
+        lines=["Consume [Overclock] during [Withering Bloom] to trigger [Blazing Slash] and chain into Basic 3."],
+    )]
+    diffed, _ = beta_mod.diff_kits(old_sec, new_sec)
+    assert len(diffed) == 1 and diffed[0].tag == "[REWORK]"
+    assert any("**[REWORK]** *Old:*" in ln and "→ *New:*" in ln for ln in diffed[0].lines)
+
+    rev_overview = beta_mod._synthesize_kit_overview(
+        "zzz", "Phoenix", {"rarity": 5, "element": "Fire", "role": "Anomaly"}, diffed, is_new=False
+    )
+    assert rev_overview.startswith("**Revision Changes:**") and "rework" in rev_overview
+
+    long_secs = [
+        BetaSectionEntry(
+            title=f"Skill {i}: Radiant Burst", category="Skills", tag="[NEW]",
+            lines=[f"Deals {40 + i}% Quantum DMG and grants [Starlight] for 12s." for _ in range(18)],
+        )
+        for i in range(1, 5)
+    ]
+    char = BetaCharacter(
+        id="hsr:9999", name="Prime Tester", rarity=5, element="Quantum", role="Harmony",
+        overview=beta_mod._synthesize_kit_overview(
+            "starrail", "Prime Tester", {"rarity": 5, "element": "Quantum", "role": "Harmony"},
+            long_secs, is_new=True,
+        ),
+        stats_lines=["Lv. 80 — HP 1048 · ATK 679 · DEF 509", "SPD 94"],
+        sections=long_secs,
+        image_url="https://static.nanoka.cc/assets/hsr/avatardrawcard/9999.webp",
+    )
+    patch = BetaPatch(game_key="starrail", beta_version="4.7.51", rev_label="v1", rev_id="pf", characters=[char])
+    payloads = cards.beta_payloads(GAMES["starrail"], patch)
+    assert len(payloads) >= 2
+    full_dump = json.dumps(payloads, ensure_ascii=False)
+    assert "## [Honkai: Star Rail - 4.7 Beta] Patch Notes: v1" in full_dump
+    assert "**Element:** Quantum | **Path:** The Harmony | **Rarity:** ★★★★★" in full_dump
+    assert "**Prime Tester** is a 5-Star Quantum Harmony unit" in full_dump
+    assert "Citlali Mains" not in full_dump
+    assert "*(cont." not in full_dump
+    for idx, p in enumerate(payloads, 1):
+        assert cards.validate_payload(p) == []
+        comps = p["components"][0]["components"]
+        for c in comps:
+            if c.get("type") == 10:
+                assert not any(ln.lstrip().startswith(">") for ln in c["content"].split("\n"))
+        foot = comps[-1]
+        assert foot["type"] == 9
+        assert foot["components"][0]["content"] == f"-# Honkai: Star Rail 4.7.51 Beta • Page {idx}/{len(payloads)}"
+        assert foot["accessory"]["label"] == "Citlali News"
+
+
+def test_feature5_cn_chs_crosscheck_reconciles_lagging_en_values_and_placeholders():
+    """When EN lags behind CN/CHS (stale multipliers, `/-`, `[TBD]`, or changelog warning), `/zh/` syncs it."""
+    from gamexpress import beta as beta_mod
+
+    base_en = _beta_json("zzz_character_1601.json")
+    v1_en = json.loads(json.dumps(base_en))
+    v1_en["skill"]["basic"]["description"].append({
+        "name": "Basic Attack: Thornbreaker",
+        "desc": "Deals {CAL:Formula()}% Ether DMG and 150%/- bonus DMG.",
+        "param": [{"name": "1st-Hit DMG Multiplier", "param": {
+            "1601101": {"main": 6910, "growth": 630, "format": "%"},
+        }}],
+    })
+    v1_zh = json.loads(json.dumps(v1_en))
+    v1_zh["skill"]["basic"]["description"][-1]["desc"] = "造成 85% 以太伤害，以及 150%/220% 额外伤害。"
+
+    # In v2, EN lags completely behind v1 (identical to v1_zh-synced baseline except stale 138.4%),
+    # while CN (`/zh/`) buffs 1st-Hit DMG Multiplier from 138.4% -> 168.8%!
+    v2_en = json.loads(json.dumps(v1_en))
+    v2_en["skill"]["basic"]["description"][-1]["desc"] = "Deals 85% Ether DMG and 150%/220% bonus DMG."
+    v2_zh = json.loads(json.dumps(v2_en))
+    v2_zh["skill"]["basic"]["description"][-1]["param"][0]["param"]["1601101"] = {
+        "main": 8410, "growth": 770, "format": "%",
+    }
+
+    phase = {"n": 1}
+
+    class BilingualFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(url)
+            if phase["n"] == 1:
+                return "## v3.4.1 Rev. 19834130 | 23rd October 2026\n"
+            return (
+                "## v3.4.1 Rev. 19850203 | 24th October 2026\n"
+                "While English has been updated this revision, it may still not be up to date "
+                "with the actual kit, so double check with Chinese.\n"
+            )
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if "/zh/character/1601" in url:
+                return v1_zh if phase["n"] == 1 else v2_zh
+            if "/en/character/1601" in url:
+                return v1_en if phase["n"] == 1 else v2_en
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    manifest = {"zzz": {
+        "live": "3.3", "latest": "3.4.1+19834130",
+        "available": ["3.3", "3.4.1+19834130"],
+        "new": {"character": [1601], "weapon": [], "equipment": []},
+    }}
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = BilingualFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
+        p1 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+        assert p1 and len(p1.characters) == 1
+        p1_body = "\n".join(ln for s in p1.characters[0].sections for ln in s.lines)
+        # `[TBD]%` and `150%/-` were both reconciled from `/zh/`!
+        assert "85%" in p1_body and "150%/220%" in p1_body and "CN/CHS" in p1_body
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), p1, status="posted")
+
+        phase["n"] = 2
+        manifest["zzz"]["latest"] = "3.4.1+19850203"
+        manifest["zzz"]["available"].append("3.4.1+19850203")
+        p2 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+        assert p2 and len(p2.characters) == 1 and p2.characters[0].is_new is False
+        p2_body = "\n".join(ln for s in p2.characters[0].sections for ln in s.lines)
+        assert "[BUFF]" in p2_body and "~~**138.4%**~~ → **168.8%**" in p2_body
+
 if __name__ == "__main__":
     sys.exit(main())

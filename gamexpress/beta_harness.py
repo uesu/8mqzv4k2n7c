@@ -486,8 +486,21 @@ async def run_enabled_beta_harness(games: dict[str, Game]) -> dict:
             "resume gap count is not exactly between newly sent pages")
     _assert(resume_events[-1][0] == "send", "a trailing post-final-page delay was added")
 
-    all_payloads_valid = all(validate_payload(payload) == [] for payload in webhook.sent + edge_webhook.sent)
+    all_payloads = webhook.sent + edge_webhook.sent
+    all_payloads_valid = all(validate_payload(payload) == [] for payload in all_payloads)
     _assert(all_payloads_valid, "the harness webhook accepted an invalid Components V2 payload")
+    for payload in all_payloads:
+        for child in (payload.get("components") or [{}])[0].get("components") or []:
+            if child.get("type") == 10:
+                body_txt = str(child.get("content") or "")
+                _assert(
+                    not any(ln.lstrip().startswith(">") for ln in body_txt.split("\n")),
+                    "beta payload contained a blockquote prefix",
+                )
+                _assert("*(cont." not in body_txt, "beta payload contained a continuation header")
+            elif child.get("type") == 9:
+                foot_txt = str(((child.get("components") or [{}])[0]).get("content") or "")
+                _assert("Citlali Mains" not in foot_txt, "beta footer contained Citlali Mains")
     _assert(state.disk_writes == 0 and edge_state.disk_writes == 0 and ambiguous_state.disk_writes == 0,
             "harness touched disk")
     _assert(state.save_calls > 0 and edge_state.save_calls > 0 and ambiguous_state.save_calls > 0,

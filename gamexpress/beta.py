@@ -45,6 +45,7 @@ import difflib
 import logging
 import re
 from html.parser import HTMLParser
+from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin, urlsplit
 
@@ -52,7 +53,7 @@ from .cards import beta_payloads_with_map
 from .config import Game
 from .discord import webhook_fingerprint
 from .models import BetaCharacter, BetaEquipment, BetaPatch, BetaSectionEntry
-from .state import stable_hash
+from .state import BETA_FORMAT_EPOCH, stable_hash
 from .textutil import html_to_text
 
 log = logging.getLogger("gamexpress.beta")
@@ -132,25 +133,69 @@ def _is_key(value: str) -> bool:
 
 
 def _clean(value: Any) -> str:
-    """Collapse a scraped string into one clean line (or '' when it is noise)."""
+    """Collapse a scraped string into clean readable lines (or '' when it is backend noise)."""
     if value is None or isinstance(value, (dict, list, tuple)):
         return ""
-    text = re.sub(r"</?(?:color(?:=[^>]*)?|unbreak)>", "", str(value), flags=re.I)
+    raw_str = str(value)
+    text = re.sub(r"<rt>.*?</rt>", "", raw_str, flags=re.I | re.S)
+    text = re.sub(r"<size=\d+>\s*</size>", "", text, flags=re.I)
+    text = re.sub(r"<IconMap:[^>]*>", "", text, flags=re.I)
+    text = re.sub(
+        r"</?(?:color(?:=[^>]*)?|unbreak|u|i|b|s|size(?:=[^>]*)?|te(?:\s+[^>]*)?|"
+        r"SapTag(?:=[^>]*)?|align(?:=[^>]*)?|sprite(?:\s+[^>]*)?|ruby|span(?:\s+[^>]*)?)>",
+        "",
+        text,
+        flags=re.I,
+    )
     if _is_key(text):
         return ""
-    text = text.replace("\\n", "\n").replace("\r", " ")
+    text = text.replace("\\n", "\n").replace("\r", " ").replace("\xa0", " ")
+    text = text.replace("{NON_BREAK_SPACE}", " ")
     text = re.sub(r"\{LINK#[^}]*\}([^\{]*)\{/LINK\}", r"\1", text)
     text = re.sub(r"\{(?:LINK|N|S)#\d+\}", "", text)
+    text = re.sub(
+        r"(?:\{LAYOUT_(?!FALLBACK)[A-Z0-9_]+#[^}]*\})+\{LAYOUT_FALLBACK#([^}]*)\}",
+        r"\1",
+        text,
+    )
+    text = re.sub(r"\{LAYOUT_[A-Z0-9_]+#([^}]*)\}", r"\1", text)
+    text = re.sub(r"\{Cus:Ipt[^}]*\bPC=([A-Za-z]+)[^}]*\}", r"\1", text)
     text = re.sub(r"\{Cus:Ipt[^}]*\}", "", text)
-    text = re.sub(r"\{Cus:Sap,S=[^,]*\sP=[^}\s]*\sSapTag=\d+\}", "", text)
-    text = re.sub(r"\{CAL:[^}]*\}", "", text)
-    text = re.sub(r"\{param(\d+)(?::[A-Z]\d?[PI]?)?\}", r"", text)
+    text = re.sub(r"\{Cus:Sap[^}]*\bP=([^,\s}]+)[^}]*\}", r"\1", text)
+    text = re.sub(r"\{Cus:[^}]*\}", "", text)
+    text = re.sub(r"\{CAL:[^}]*\}(%?)", lambda m: f"[TBD]{m.group(1)}", text)
+    text = re.sub(r"\{param(\d+)(?::[A-Z]\d?[PI]?)?\}", "", text)
     text = re.sub(r"\[\s*\n\s*", "[", text)
     text = re.sub(r"[ \t]+\n", "\n", text)
-    # An inline input marker ("Press {Cus:Ipt…} to activate") leaves a doubled space.
     text = re.sub(r"[ \t]{2,}", " ", text)
-    lines = [ln.rstrip() for ln in text.split("\n")]
+    lines = [ln.lstrip("·• ").rstrip() if ln.strip().startswith("·") else ln.rstrip()
+             for ln in text.split("\n")]
     return "\n".join(ln for ln in lines if ln.strip()).strip()
+
+
+def _parse_rarity(ns: str, raw: Any, fallback: int | None = 5) -> int | None:
+    """Normalize GI/HSR/ZZZ/WW rarity enums and integers into 1..5 stars."""
+    if raw is None or raw == "":
+        return fallback
+    if isinstance(raw, (int, float)) or (isinstance(raw, str) and raw.strip().isdigit()):
+        val = int(float(raw))
+        if val <= 0:
+            return fallback
+        if ns == "zzz" and val in (2, 3, 4):
+            return val + 1
+        return max(1, min(5, val))
+    s = str(raw).strip()
+    up = s.upper()
+    if "ORANGE" in up or "VERYRARE" in up or up.endswith("5"):
+        return 5
+    if "PURPLE" in up or ("RARE" in up and "SUPER" not in up) or up.endswith("4"):
+        return 4
+    if "BLUE" in up or up.endswith("3"):
+        return 3
+    m = re.search(r"(\d)\s*$", s)
+    if m:
+        return max(1, min(5, int(m.group(1))))
+    return fallback
 
 
 def _lines(value: Any) -> list[str]:
@@ -572,6 +617,11 @@ def _diff_section(prev: Any, cur: Any) -> tuple[list[str], list[str]]:
                 for old_ln, new_ln in pairs:
                     if difflib.SequenceMatcher(None, old_ln, new_ln).ratio() >= 0.45:
                         lines.append(_change_line(old_ln, new_ln))
+                    elif len(old_ln) >= 28 and len(new_ln) >= 28:
+                        lines.append((
+                            f"**[REWORK]** *Old:* {old_ln} → *New:* {new_ln}",
+                            "[REWORK]",
+                        ))
                     else:
                         lines.append((f"**[CHANGED]** {new_ln}", "[CHANGED]"))
                 for extra in cur_lines[j1 + len(pairs):j2]:
@@ -588,6 +638,24 @@ def _diff_section(prev: Any, cur: Any) -> tuple[list[str], list[str]]:
         return [], []
     tags = [tag for _line, tag in lines]
     return [line for line, _tag in lines], tags
+
+def _skill_slot_prefix(title: str) -> str:
+    """Return normalized skill-slot prefix before ':' (e.g. 'special attack', 'ultimate')."""
+    raw = str(title or "").strip()
+    if ":" not in raw:
+        return ""
+    head = _norm_title(raw.split(":", 1)[0])
+    known = {
+        "normal attack", "charged attack", "plunging attack", "elemental skill",
+        "elemental burst", "basic atk", "basic attack", "skill", "ultimate",
+        "talent", "technique", "elation skill", "special attack", "ex special attack",
+        "dodge", "dash attack", "dodge counter", "quick assist", "defensive assist",
+        "evasive assist", "assist follow up", "chain attack", "entry skill",
+        "core passive", "additional ability", "resonance skill", "resonance liberation",
+        "forte circuit", "intro skill", "outro skill",
+    }
+    return head if head in known else ""
+
 
 def diff_kits(prev_sections: list, cur_sections: list) -> tuple[list[Any], int]:
     """Compare two revisions of one kit without claiming a direction we cannot establish."""
@@ -617,6 +685,15 @@ def diff_kits(prev_sections: list, cur_sections: list) -> tuple[list[Any], int]:
             if close:
                 previous = next(candidate for candidate in pool
                                 if _norm_title(getattr(candidate, "title", "")) == close[0])
+            elif not current_slot:
+                slot_pfx = _skill_slot_prefix(getattr(section, "title", ""))
+                if slot_pfx:
+                    same_pfx = [
+                        c for c in pool
+                        if _skill_slot_prefix(getattr(c, "title", "")) == slot_pfx
+                    ]
+                    if len(same_pfx) == 1:
+                        previous = same_pfx[0]
         if previous is not None:
             used.add(id(previous))
 
@@ -639,6 +716,8 @@ def diff_kits(prev_sections: list, cur_sections: list) -> tuple[list[Any], int]:
             marker = "[NEW]"
         elif all(tag == "[ADJUSTMENT]" for tag in tags):
             marker = "[ADJUSTMENT]"
+        elif "[REWORK]" in tags:
+            marker = "[REWORK]"
         else:
             marker = "[CHANGED]"
         title = str(getattr(section, "title", ""))
@@ -740,8 +819,11 @@ class _ChangelogHTML(HTMLParser):
 
     def _finish_revision(self):
         if self.active:
+            joined = " ".join(self.body)
             self.revisions[-1]["no_changes"] = bool(re.search(
-                r"\bno tracked changes detected\b", " ".join(self.body), re.I))
+                r"\bno tracked changes detected\b", joined, re.I))
+            self.revisions[-1]["zh_check_advised"] = bool(re.search(
+                r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", joined, re.I))
         self.body = []
 
     def handle_endtag(self, tag):
@@ -835,6 +917,8 @@ def parse_changelog(markdown: str, *, base_url: str = "") -> list[dict]:
             # This is materially different from a temporarily empty / JS-truncated revision:
             # the source has explicitly said that there was nothing to post.
             "no_changes": bool(re.search(r"\bno tracked changes detected\b", block, re.I)),
+            "zh_check_advised": bool(re.search(
+                r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", block, re.I)),
         })
     return revs
 
@@ -876,10 +960,18 @@ def manifest_new_ids(manifest: dict, ns: str, key: str) -> set[str]:
 
 
 # --------------------------------------------------------------------------- detail JSON
-async def _detail(fetcher, ns: str, version: str, kind: str, item_id: str) -> dict | None:
+async def _detail(
+    fetcher,
+    ns: str,
+    version: str,
+    kind: str,
+    item_id: str,
+    *,
+    locale: str = LOCALE,
+) -> dict | None:
     if not ns or not version or not item_id:
         return None
-    url = f"{STATIC_BASE}/{ns}/{version}/{LOCALE}/{kind}/{item_id}.json"
+    url = f"{STATIC_BASE}/{ns}/{version}/{locale}/{kind}/{item_id}.json"
     data = await fetcher.get_json(url, source="beta-data", retries=1)
     return data if isinstance(data, dict) else None
 
@@ -1161,6 +1253,20 @@ def _zzz_character(data: dict) -> dict:
                     lines=prose[name], params=values[name],
                     values_label=f"Lv. {SKILL_LEVEL['zzz']}" if values[name] else "",
                 ))
+    attack_type = ""
+    for v in (data.get("hit_type") or {}).values():
+        if isinstance(v, str) and v:
+            attack_type = v
+            break
+    spec_elem = data.get("special_element_type") or {}
+    spec_elem_name = _clean(spec_elem.get("name")) if isinstance(spec_elem, dict) else ""
+
+    for sec in sections:
+        if any("[TBD]" in ln for ln in sec.lines):
+            sec.lines.append(
+                "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
+            )
+
     talent = data.get("talent") or {}
     if isinstance(talent, dict):
         for level in sorted(talent, key=lambda k: int(k) if str(k).isdigit() else 0):
@@ -1170,12 +1276,22 @@ def _zzz_character(data: dict) -> dict:
             desc = _clean(item.get("desc"))
             if not desc:
                 continue
+            t_lines = _lines(desc)
+            if any("[TBD]" in ln for ln in t_lines):
+                t_lines.append(
+                    "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
+                )
             sections.append(BetaSectionEntry(
                 title=f"Mindscape Cinema {level}", category="Mindscape Cinema",
-                tag="[NEW]", meta="", lines=_lines(desc),
+                tag="[NEW]", meta="", lines=t_lines,
             ))
     return {
-        "element": element, "role": role, "camp": camp,
+        "rarity": _parse_rarity("zzz", data.get("rarity"), 5),
+        "element": element,
+        "special_element": spec_elem_name,
+        "role": role,
+        "camp": camp,
+        "attack_type": attack_type,
         "stats_lines": _zzz_stats(data),
         "sections": sections,
     }
@@ -1278,30 +1394,28 @@ def _hsr_skill_params(item: dict) -> Any:
 def _hsr_character(data: dict) -> dict:
     sections: list[BetaSectionEntry] = []
     skills = data.get("skills") or {}
-    defs: dict[str, tuple[str, str]] = {}
+    seen_glossary: set[str] = set()
 
     def collect_extras(extra: Any) -> list[tuple[str, str]]:
         found: list[tuple[str, str]] = []
-        for eid, entry in (extra.items() if isinstance(extra, dict) else ()):
+        for _eid, entry in (extra.items() if isinstance(extra, dict) else ()):
             if not isinstance(entry, dict):
                 continue
             nm = _clean(entry.get("name"))
-            ds = _clean(entry.get("desc"))
-            if nm and ds:
-                defs[str(eid)] = (nm, ds)
-                found.append((nm, ds))
+            ds = " ".join(_clean(entry.get("desc")).split())
+            if not (nm and ds):
+                continue
+            norm = nm.lower().strip()
+            if norm in seen_glossary:
+                continue
+            seen_glossary.add(norm)
+            found.append((nm, ds))
         return found
 
     def render(text: str, params: Any) -> tuple[list[str], bool]:
-        """One description, with its `#N[i]` numbers filled in.
-
-        `pending` is True when a number is still in template form because this revision
-        does not publish the skill's parameter list yet. The marker is kept (never
-        replaced with a guess) and the block says so once.
-        """
         filled, unresolved = substitute_params(text, params)
         pending = bool(_PARAM_RE.search(filled))
-        lines = _lines(filled)
+        lines = [ln for ln in _lines(filled) if not (unresolved and ln == "…")]
         if pending:
             lines.append("-# ⚠️ This revision does not publish the numbers for this "
                          "effect yet — the raw database markers are shown as-is.")
@@ -1322,7 +1436,7 @@ def _hsr_character(data: dict) -> dict:
                          "placeholder here — the full effect is not readable yet.")
         lines.extend(f"**({nm})** {ds}" for nm, ds in glossary)
         sections.append(BetaSectionEntry(
-            title=f"{tag}: {name}" if tag else name, category=str(tag or "Skills"),
+            title=f"{tag}: {name}" if tag else name, category="Skills",
             tag="[NEW]", meta=_hsr_meta(item.get("tag")), lines=lines, defs=glossary,
         ))
 
@@ -1336,30 +1450,15 @@ def _hsr_character(data: dict) -> dict:
                 continue
             name = _clean(tier.get("point_name"))
             lines, unresolved = render(tier.get("point_desc"), tier.get("param_list"))
-            rows: list[dict] = []
-            # A stat node has no prose at all — its value IS the node.
-            for add in tier.get("status_add_list") or []:
-                if not isinstance(add, dict):
-                    continue
-                label = _clean(add.get("name"))
-                value = add.get("value")
-                try:
-                    f_value = float(value)
-                except (TypeError, ValueError):
-                    continue
-                if label:
-                    rows.append({"name": label, "value": f_value,
-                                 "text": _pct(f_value, 3) if abs(f_value) < 1 else _num(f_value, 3)})
+            if not lines:
+                break
             glossary = collect_extras(tier.get("extra"))
-            if not (name or lines or rows or glossary):
-                continue
             if unresolved:
                 lines.append("-# ⚠️ Unresolved backend placeholder in this revision's data.")
             lines.extend(f"**({nm})** {ds}" for nm, ds in glossary)
             sections.append(BetaSectionEntry(
                 title=name or "Trace", category="Traces", tag="[NEW]", meta="",
-                lines=lines + [f"{r['name']} +{r['text']}" for r in rows] if rows else lines,
-                params=rows, values_label="Trace" if rows else "", defs=glossary,
+                lines=lines, defs=glossary,
             ))
             break
 
@@ -1401,6 +1500,7 @@ def _hsr_character(data: dict) -> dict:
         ))
 
     return {
+        "rarity": _parse_rarity("hsr", data.get("rarity"), 5),
         "element": str(data.get("damage_type") or "").strip(),
         "role": str(data.get("base_type") or "").strip(),
         "camp": "",
@@ -1408,7 +1508,6 @@ def _hsr_character(data: dict) -> dict:
         "sections": sections,
         "mechanic_defs": [],
     }
-
 
 # --------------------------------------------------------------------------- GI kit
 _GI_WEAPON_LABELS = {
@@ -1509,6 +1608,7 @@ def _gi_character(data: dict) -> dict:
     sub = " · ".join(x for x in (title, (f"Constellation: {constel}" if constel else "")) if x)
 
     return {
+        "rarity": _parse_rarity("gi", data.get("rarity"), 5),
         "element": str(data.get("element") or "").strip(),
         "role": _GI_WEAPON_LABELS.get(str(data.get("weapon") or ""), ""),
         "camp": "",
@@ -1535,8 +1635,14 @@ def _ww_fill_params(text: Any, params: Any) -> str:
 
 def _ww_character(data: dict) -> dict:
     if "_encore" in data:
-        return _encore_character(data["_encore"])
+        built_enc = _encore_character(data["_encore"])
+        built_enc.setdefault("rarity", _parse_rarity("ww", data.get("rarity"), 5))
+        return built_enc
     sections: list[BetaSectionEntry] = []
+    stat_bonuses: dict[str, list[float]] = {}
+    stat_bonus_units: dict[str, str] = {}
+    stat_bonus_counts: dict[str, int] = {}
+
     trees = data.get("skill_trees") or {}
     for node_key in sorted((trees or {}), key=lambda k: int(k) if str(k).isdigit() else 0):
         node = trees[node_key]
@@ -1548,11 +1654,28 @@ def _ww_character(data: dict) -> dict:
         name = _clean(skill.get("name"))
         if not name:
             continue
+        node_type = node.get("node_type")
         stype = str(skill.get("type") or "").strip() or "Skill"
-        desc = _clean(skill.get("desc"))
+        filled_desc = _ww_fill_params(skill.get("desc"), skill.get("param"))
+        desc = _clean(filled_desc)
+        levels = skill.get("level") or {}
+
+        if node_type == 4 or (name.endswith("+") and not levels and stype in ("Skill", "Stat Bonus")):
+            stat_name = name.rstrip("+").strip()
+            m_val = re.search(r"([+-]?\d+(?:\.\d+)?)(%?)", desc)
+            if m_val and "{" not in desc:
+                try:
+                    stat_bonuses.setdefault(stat_name, []).append(float(m_val.group(1)))
+                    stat_bonus_units[stat_name] = m_val.group(2)
+                except ValueError:
+                    pass
+            elif stat_name:
+                stat_bonus_counts[stat_name] = stat_bonus_counts.get(stat_name, 0) + 1
+            continue
+
+        desc = re.sub(r"\{\d+\}", "[TBD]", desc)
         rows: list[str] = []
         param_rows: list[dict] = []
-        levels = skill.get("level") or {}
         for spec_key in sorted((levels or {}), key=lambda k: int(k) if str(k).isdigit() else 0):
             spec = levels[spec_key]
             if not isinstance(spec, dict):
@@ -1572,9 +1695,12 @@ def _ww_character(data: dict) -> dict:
                     pass
         if rows:
             rows = [f"**Skill Attributes (Lv. {SKILL_LEVEL['ww']})**"] + rows
+        s_lines = _lines(desc) + rows
+        if any("[TBD]" in ln for ln in s_lines):
+            s_lines.append("-# ⚠️ [TBD] marks an unresolved parameter in this beta build.")
         sections.append(BetaSectionEntry(
             title=f"{stype}: {name}", category=stype, tag="[NEW]", meta="",
-            lines=_lines(desc) + rows, params=param_rows,
+            lines=s_lines, params=param_rows,
             values_label=f"Lv. {SKILL_LEVEL['ww']}" if param_rows else "",
         ))
 
@@ -1584,12 +1710,15 @@ def _ww_character(data: dict) -> dict:
         if not isinstance(item, dict):
             continue
         name = _clean(item.get("name"))
-        desc = _clean(_ww_fill_params(item.get("desc"), item.get("param")))
+        desc = _clean(re.sub(r"\{\d+\}", "[TBD]", _ww_fill_params(item.get("desc"), item.get("param"))))
         if not (name or desc):
             continue
+        c_lines = _lines(desc)
+        if any("[TBD]" in ln for ln in c_lines):
+            c_lines.append("-# ⚠️ [TBD] marks an unresolved parameter in this beta build.")
         sections.append(BetaSectionEntry(
             title=f"Sequence Node {level}" + (f" — {name}" if name else ""),
-            category="Resonance Chain", tag="[NEW]", meta="", lines=_lines(desc),
+            category="Resonance Chain", tag="[NEW]", meta="", lines=c_lines,
         ))
 
     stats: list[str] = []
@@ -1605,6 +1734,15 @@ def _ww_character(data: dict) -> dict:
                 life, atk, df = lvl.get("life"), lvl.get("atk"), lvl.get("def")
                 if life is not None and atk is not None and df is not None:
                     stats.append(f"Lv. 90 — HP {_num(life)} · ATK {_num(atk)} · DEF {_num(df)}")
+    bonus_parts: list[str] = []
+    for s_name, vals in stat_bonuses.items():
+        unit = stat_bonus_units.get(s_name, "")
+        bonus_parts.append(f"{s_name} +{_num(sum(vals), 2)}{unit}")
+    for s_name, count in stat_bonus_counts.items():
+        if s_name not in stat_bonuses:
+            bonus_parts.append(f"{s_name} (×{count} nodes)")
+    if bonus_parts:
+        stats.append("Stat Bonuses: " + " | ".join(bonus_parts))
 
     element = data.get("element")
     try:
@@ -1618,13 +1756,13 @@ def _ww_character(data: dict) -> dict:
         weapon_label = ""
 
     return {
+        "rarity": _parse_rarity("ww", data.get("rarity"), 5),
         "element": element_label,
         "role": weapon_label,
         "camp": "",
         "stats_lines": stats,
         "sections": sections,
     }
-
 
 _CHARACTER_BUILDERS = {
     "zzz": _zzz_character,
@@ -1635,12 +1773,44 @@ _CHARACTER_BUILDERS = {
 
 
 # --------------------------------------------------------------------------- equipment
+_GI_FIGHT_PROP_LABELS = {
+    "FIGHT_PROP_CRITICAL": "CRIT Rate",
+    "FIGHT_PROP_CRITICAL_HURT": "CRIT DMG",
+    "FIGHT_PROP_CHARGE_EFFICIENCY": "Energy Recharge",
+    "FIGHT_PROP_ELEMENT_MASTERY": "Elemental Mastery",
+    "FIGHT_PROP_ATTACK_PERCENT": "ATK%",
+    "FIGHT_PROP_HP_PERCENT": "HP%",
+    "FIGHT_PROP_DEFENSE_PERCENT": "DEF%",
+    "FIGHT_PROP_PHYSICAL_ADD_HURT": "Physical DMG Bonus",
+}
+
+
 def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
     """Pull the display fields of one weapon / relic out of its detail JSON."""
     stats_line = ""
     effect_title = ""
     lines: list[str] = []
     sub_type = ""
+    weapon_class = ""
+    set_kind = ""
+    set_parts = ""
+    glossary: list[tuple[str, str]] = []
+    seen_gloss: set[str] = set()
+    rarity = _parse_rarity(
+        ns,
+        data.get("rarity") if data.get("rarity") not in (None, "") else listing.get("rank"),
+        None,
+    )
+
+    def add_gloss(extra: Any) -> None:
+        for _eid, entry in (extra.items() if isinstance(extra, dict) else ()):
+            if not isinstance(entry, dict):
+                continue
+            nm = _clean(entry.get("name"))
+            ds = " ".join(_clean(entry.get("desc")).split())
+            if nm and ds and nm.lower() not in seen_gloss:
+                seen_gloss.add(nm.lower())
+                glossary.append((nm, ds))
 
     if ns == "ww" and kind == "weapon" and "_encore" in data:
         raw = data["_encore"]
@@ -1650,6 +1820,8 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         effect_title = _encore_text(raw.get("ResonName"))
         lines = ["-# Effect values shown for refinements 1–5."] + _lines(_encore_text(raw.get("Desc")))
         sub_type = _encore_text(raw.get("WeaponTypeName"))
+        weapon_class = sub_type
+        rarity = rarity or _parse_rarity("ww", raw.get("QualityId"), None)
     elif ns == "zzz" and kind == "weapon":
         rp = data.get("rand_property") or {}
         atk = listing.get("atk")
@@ -1658,6 +1830,12 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         sub_name = _clean(rp.get("name2") or rp.get("name"))
         if sub_name:
             sub_type = sub_name
+        wt = data.get("weapon_type") or {}
+        if isinstance(wt, dict):
+            for v in wt.values():
+                if isinstance(v, str) and v:
+                    weapon_class = v
+                    break
         talents = data.get("talents") or {}
         first = None
         for key in sorted(talents, key=lambda k: int(k) if str(k).isdigit() else 0):
@@ -1668,12 +1846,23 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
             effect_title = _clean(first.get("name"))
             lines = _lines(first.get("desc"))
     elif ns == "zzz" and kind == "equipment":
+        set_kind = "Drive Disc Set"
         d2, d4 = _clean(data.get("desc2")), _clean(data.get("desc4"))
         if d2:
             lines.append(f"2-Piece: {d2}")
         if d4:
             lines.append(f"4-Piece: {d4}")
+        suit = data.get("suit") or {}
+        if isinstance(suit, dict):
+            p_names = [
+                _clean(suit[sk].get("name"))
+                for sk in sorted(suit, key=lambda k: int(k) if str(k).isdigit() else 0)
+                if isinstance(suit[sk], dict) and _clean(suit[sk].get("name"))
+            ]
+            if p_names:
+                set_parts = " · ".join(p_names)
     elif ns == "hsr" and kind == "lightcone":
+        weapon_class = str(data.get("base_type") or listing.get("baseType") or "").strip()
         stats_table = data.get("stats") or {}
         if isinstance(stats_table, list):
             rows = [row for row in stats_table if isinstance(row, dict)]
@@ -1688,7 +1877,6 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
             if parts:
                 stats_line = f"Lv. {level} — " + " · ".join(parts)
         else:
-            # Older fixture/export shape contains already evaluated level stats.
             last = None
             for key in sorted(stats_table, key=lambda k: int(k) if str(k).isdigit() else -1):
                 if isinstance(stats_table[key], dict):
@@ -1699,22 +1887,38 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
                     stats_line = f"Lv. 80 — HP {_num(hp)} · ATK {_num(atk)}"
                     if df is not None:
                         stats_line += f" · DEF {_num(df)}"
-        ref = data.get("refinements") or {}
+        ref = data.get("refinements") or data.get("refimements") or {}
         if isinstance(ref, dict):
             effect_title = _clean(ref.get("name"))
             params = ((ref.get("level") or {}).get("1") or {}).get("param_list")
             desc, _ = substitute_params(_clean(ref.get("desc")), params)
             lines = _lines(desc)
+            add_gloss(ref.get("extra"))
     elif ns == "hsr" and kind == "relicset":
+        parts_map = data.get("parts") or {}
+        if isinstance(parts_map, dict) and parts_map:
+            set_kind = "Planar Ornament" if len(parts_map) == 2 else "Relic Set"
+            p_names = [
+                _clean(parts_map[pk].get("name"))
+                for pk in sorted(parts_map, key=str)
+                if isinstance(parts_map[pk], dict) and _clean(parts_map[pk].get("name"))
+            ]
+            if p_names:
+                set_parts = " · ".join(p_names)
         sets = data.get("require_num") or data.get("set") or {}
         for num in sorted(sets, key=lambda k: int(k) if str(k).isdigit() else 0):
             entry = sets[num]
             desc = _clean((entry or {}).get("desc") if isinstance(entry, dict) else entry)
             if isinstance(entry, dict):
                 desc, _ = substitute_params(desc, entry.get("param_list"))
+                add_gloss(entry.get("extra"))
             if desc:
                 lines.append(f"{num}-Piece: {desc}")
     elif ns == "gi" and kind == "weapon":
+        weapon_class = _GI_WEAPON_LABELS.get(str(data.get("type") or listing.get("type") or ""), "")
+        sub_raw = str(listing.get("sub") or "").strip()
+        if sub_raw:
+            sub_type = _GI_FIGHT_PROP_LABELS.get(sub_raw, "")
         props = data.get("weapon_prop") or []
         main = None
         for prop in props:
@@ -1726,18 +1930,56 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         elif isinstance(main, dict):
             stats_line = f"Lv. 1 Base ATK {_num(main.get('init_value'))}"
         ref = (data.get("refinement") or {}).get("1") or {}
-        if isinstance(ref, dict):
+        if isinstance(ref, dict) and (ref.get("name") or ref.get("desc")):
             effect_title = _clean(ref.get("name"))
             lines = _lines(ref.get("desc"))
+        else:
+            affix = data.get("affix") or {}
+            for spec in (affix.values() if isinstance(affix, dict) else ()):
+                if isinstance(spec, dict):
+                    effect_title = _clean(spec.get("name"))
+                    up = spec.get("upgrade") or {}
+                    lines = _lines(up.get("0") if isinstance(up, dict) else "")
+                    break
     elif ns == "gi" and kind == "artifact":
+        set_kind = "Artifact Set"
+        parts_map = data.get("parts") or {}
+        if isinstance(parts_map, dict) and parts_map:
+            p_names = [
+                _clean(parts_map[pk].get("name"))
+                for pk in sorted(parts_map, key=str)
+                if isinstance(parts_map[pk], dict) and _clean(parts_map[pk].get("name"))
+            ]
+            if p_names:
+                set_parts = " · ".join(p_names)
         sets = data.get("set") or {}
-        for sid in sorted(sets, key=str):
-            entry = sets[sid] or {}
-            name = _clean((entry.get("name") or {}).get("en") if isinstance(entry.get("name"), dict) else entry.get("name"))
-            desc = _clean((entry.get("desc") or {}).get("en") if isinstance(entry.get("desc"), dict) else entry.get("desc"))
-            if desc:
-                lines.append(f"{name}: {desc}" if name else desc)
+        if isinstance(sets, dict) and sets:
+            for sid in sorted(sets, key=str):
+                entry = sets[sid] or {}
+                name = _clean(
+                    (entry.get("name") or {}).get("en")
+                    if isinstance(entry.get("name"), dict)
+                    else entry.get("name")
+                )
+                desc = _clean(
+                    (entry.get("desc") or {}).get("en")
+                    if isinstance(entry.get("desc"), dict)
+                    else entry.get("desc")
+                )
+                if desc:
+                    lines.append(f"{name}: {desc}" if name else desc)
+        elif isinstance(data.get("affix"), list):
+            for idx, raw_affix in enumerate(data["affix"][:2]):
+                desc = _clean(raw_affix)
+                if desc:
+                    lines.append(f"{2 if idx == 0 else 4}-Piece: {desc}")
     elif ns == "ww" and kind == "weapon":
+        try:
+            weapon_class = WW_WEAPONS.get(int(data.get("type") or listing.get("type")), "")
+        except (TypeError, ValueError):
+            weapon_class = ""
+        if listing.get("sub") and isinstance(listing.get("sub"), str):
+            sub_type = str(listing["sub"]).strip()
         effect_title = _clean(data.get("effect_name"))
         params = [row[0] if isinstance(row, list) and row else row
                   for row in data.get("param") or []]
@@ -1762,6 +2004,7 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
                 if parts:
                     stats_line = " · ".join(parts)
     elif ns == "ww" and kind == "echo":
+        set_kind = "Sonata Effect"
         skill = data.get("skill") or {}
         if isinstance(skill, dict):
             lines = _lines(skill.get("desc"))
@@ -1775,13 +2018,21 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
                 if desc:
                     lines.append(f"{gname} {num}-Piece: {desc}" if gname else f"{num}-Piece: {desc}")
 
-    # An incomplete upstream parameter table must not publish raw backend tokens.
     unresolved = re.compile(r"#\d+\[[A-Za-z]\]%?|\{\d+\}")
     if any(unresolved.search(line) for line in lines):
         lines = [unresolved.sub("[value unavailable]", line) for line in lines]
         lines.append("-# Some values are unavailable in this revision's source data.")
-    return {"stats_line": stats_line, "effect_title": effect_title, "lines": lines,
-            "sub_type": sub_type}
+    return {
+        "stats_line": stats_line,
+        "effect_title": effect_title,
+        "lines": lines,
+        "sub_type": sub_type,
+        "rarity": rarity,
+        "weapon_class": weapon_class,
+        "set_kind": set_kind,
+        "set_parts": set_parts,
+        "glossary": glossary,
+    }
 
 
 # --------------------------------------------------------------------------- images
@@ -1798,6 +2049,17 @@ def _usable_image(url: str) -> str:
     return u
 
 
+def _ww_asset_matches_id(item_id: str, raw_path: str) -> bool:
+    """Reject placeholder WuWa assets whose embedded numeric ID belongs to another item."""
+    if not raw_path or not item_id or not str(item_id).isdigit():
+        return True
+    stem = Path(str(raw_path)).stem
+    nums = [n for n in re.findall(r"\d{4,}", stem)]
+    if not nums:
+        return True
+    return any(n == str(item_id) or str(item_id).endswith(n) or n.endswith(str(item_id)) for n in nums)
+
+
 def _image_preflight_cost(entry: dict, locked: dict, cache: dict) -> int:
     """Maximum media GETs `_resolve_image` may issue for this item (zero for a lock/cache)."""
     key = entry.get("id") or entry.get("name") or ""
@@ -1812,12 +2074,7 @@ def _image_preflight_cost(entry: dict, locked: dict, cache: dict) -> int:
 
 
 async def _resolve_image(fetcher, entry: dict, locked: dict, cache: dict) -> str:
-    """Resolve one verified art URL once, then reuse the lock without another request.
-
-    The changelog's thumbnail is preferred.  Structured exports sometimes omit it, in which
-    case a small, known static-asset candidate list is tried.  An unavailable candidate is
-    never posted and never turns a card build into an error.
-    """
+    """Resolve one verified art URL once, then reuse the lock without another request."""
     key = entry.get("id") or entry.get("name") or ""
     if not key:
         return ""
@@ -1844,6 +2101,91 @@ async def _resolve_image(fetcher, entry: dict, locked: dict, cache: dict) -> str
             return url
     cache[key] = ""
     return ""
+
+
+async def _resolve_image_within_budget(
+    fetcher,
+    entry: dict,
+    locked: dict,
+    cache: dict,
+    budget: dict,
+    requests: int,
+) -> tuple[str, int]:
+    """Probe candidate URLs one at a time, charging only actual media requests issued."""
+    key = entry.get("id") or entry.get("name") or ""
+    if not key:
+        return "", requests
+    if key in cache:
+        return cache[key], requests
+    cached = locked.get(key)
+    if isinstance(cached, dict) and cached.get("url"):
+        cache[key] = str(cached["url"])
+        return cache[key], requests
+    urls = [entry.get("image")] + list(entry.get("candidates") or [])
+    seen: set[str] = set()
+    for raw in urls:
+        url = _usable_image(str(raw or ""))
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        if requests + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
+            return "", requests
+        requests += 1
+        try:
+            ok = await fetcher.verify_media(url)
+        except Exception:  # noqa: BLE001
+            ok = False
+        if ok:
+            cache[key] = url
+            return url, requests
+    cache[key] = ""
+    return "", requests
+
+
+async def _resolve_gallery_within_budget(
+    fetcher,
+    key: str,
+    candidates: list[str],
+    locked: dict,
+    gallery_cache: dict[str, list[str]],
+    budget: dict,
+    requests: int,
+) -> tuple[list[str], int]:
+    """Verify multi-icon gallery assets (e.g. 6 Eidolon icons or Planar Ornament pieces)."""
+    if not key or not candidates:
+        return [], requests
+    gkey = f"{key}:gallery"
+    if gkey in gallery_cache:
+        return list(gallery_cache[gkey]), requests
+    cached = locked.get(gkey)
+    if isinstance(cached, dict) and isinstance(cached.get("urls"), list) and cached["urls"]:
+        gallery_cache[gkey] = [str(u) for u in cached["urls"] if u]
+        return list(gallery_cache[gkey]), requests
+    usable = []
+    for raw in candidates:
+        u = _usable_image(raw)
+        if u and u not in usable:
+            usable.append(u)
+    if not usable or requests + len(usable) > budget["max_requests"]:
+        return [], requests
+    shared_left = budget.get("_shared_requests_left")
+    if shared_left is not None and int(shared_left) < len(usable):
+        return [], requests
+    verified: list[str] = []
+    for url in usable:
+        if not _take_shared_request(budget, 1):
+            return [], requests
+        requests += 1
+        try:
+            ok = await fetcher.verify_media(url)
+        except Exception:  # noqa: BLE001
+            ok = False
+        if not ok:
+            gallery_cache[gkey] = []
+            return [], requests
+        verified.append(url)
+    gallery_cache[gkey] = verified
+    return list(verified), requests
 
 
 # --------------------------------------------------------------------------- run
@@ -1895,17 +2237,17 @@ def _take_shared_request(budget: dict, count: int = 1) -> bool:
 
 
 async def _changelog_revisions(ctx, game: Game) -> list[dict]:
-    """Read all available beta revisions once; an unavailable changelog is non-fatal."""
+    """Read all available beta revisions once; an unavailable/403 changelog falls back cleanly."""
     ch_url = _changelog_url(game)
     if not ch_url:
         return []
     text = await ctx.fetcher.get_text(ch_url, source="beta-changelog", retries=1)
     if not text:
-        ctx.warnings.append(f"{game.short} beta: changelog unavailable; using the manifest safely")
+        log.info("%s beta: changelog unavailable (%s); using static manifest fallback", game.short, ch_url)
         return []
     revisions = parse_changelog(text, base_url=ch_url)
     if not revisions:
-        ctx.warnings.append(f"{game.short} beta: changelog unreadable; using the manifest safely")
+        log.info("%s beta: changelog unreadable/blocked (%s); using static manifest fallback", game.short, ch_url)
     return revisions
 
 
@@ -1918,43 +2260,98 @@ def _revision_build(value: str) -> int | None:
         return None
 
 
-def _available_beta_versions(m_game: dict) -> list[str]:
-    """Ordered, de-duplicated static data builds. `latest` is always the final fallback."""
+def _major_minor(version: str) -> tuple[int, int]:
+    nums = [int(n) for n in re.findall(r"\d+", _display_version(version))[:2]]
+    if len(nums) >= 2:
+        return (nums[0], nums[1])
+    return (nums[0], 0) if nums else (0, 0)
+
+
+def _is_beta_version_string(version: str) -> bool:
+    """True when `version` is a revisioned beta build (e.g. '3.4.1', '4.7.51', '3.8.0.2')."""
+    base = _display_version(version)
+    nums = [n for n in re.split(r"[^0-9]+", base) if n != ""]
+    return len(nums) >= 3
+
+
+def _live_cycle(ctx, game: Game, m_game: dict) -> tuple[int, int] | None:
+    """Determine the game's current live (major, minor) cycle to gate out finished/past betas."""
+    candidates: list[tuple[int, int]] = []
+    for m_key in ("live", "hotfix"):
+        raw = str((m_game or {}).get(m_key) or "").strip()
+        if raw and _major_minor(raw) != (0, 0):
+            candidates.append(_major_minor(raw))
+    versions = getattr(ctx, "versions", None)
+    if isinstance(versions, dict):
+        vinfo = versions.get(game.key)
+        if isinstance(vinfo, dict):
+            for k in ("live", "current"):
+                raw = str(vinfo.get(k) or "").strip()
+                if raw and _major_minor(raw) != (0, 0):
+                    candidates.append(_major_minor(raw))
+    state = getattr(ctx, "state", None)
+    if state is not None:
+        sched = state.schedule_records(game.key)
+        for ver_str, rec in (sched.items() if isinstance(sched, dict) else ()):
+            if not isinstance(rec, dict):
+                continue
+            maint_ts = int(rec.get("maint_start_ts") or 0)
+            if maint_ts and maint_ts <= int(getattr(ctx, "now", 0) or 0):
+                mm = _major_minor(str(ver_str))
+                if mm != (0, 0):
+                    candidates.append(mm)
+    return max(candidates) if candidates else None
+
+
+def _available_beta_versions(
+    m_game: dict,
+    *,
+    live_cycle: tuple[int, int] | None = None,
+) -> list[str]:
+    """Ordered, de-duplicated static data builds strictly newer than `live_cycle` when known."""
     versions: list[str] = []
     for raw in list(m_game.get("available") or []) + [m_game.get("latest")]:
         version = str(raw or "").strip()
-        if version and version not in versions:
-            versions.append(version)
+        if not version or version in versions:
+            continue
+        if live_cycle is not None and (
+            not _is_beta_version_string(version) or _major_minor(version) <= live_cycle
+        ):
+            continue
+        versions.append(version)
     return versions
 
 
-def _next_data_version(record: dict, m_game: dict) -> str:
-    """Walk a beta revision at a time; a first run intentionally starts at the current build."""
-    # Finish the durable in-flight build even if the provider publishes another one.
+def _next_data_version(
+    record: dict,
+    m_game: dict,
+    *,
+    live_cycle: tuple[int, int] | None = None,
+) -> str:
+    """Walk a beta revision at a time; never publish a beta cycle that is already live."""
     for revision in (record.get("revisions") or {}).values():
         if (isinstance(revision, dict) and revision.get("status") in ("partial", "ambiguous")
                 and revision.get("source_version")):
-            return str(revision["source_version"])
-    versions = _available_beta_versions(m_game)
-    latest = str(m_game.get("latest") or "").strip()
-    if not versions or not latest:
+            in_flight = str(revision["source_version"])
+            if live_cycle is None or _major_minor(in_flight) > live_cycle:
+                return in_flight
+    versions = _available_beta_versions(m_game, live_cycle=live_cycle)
+    if not versions:
         return ""
+    raw_latest = str(m_game.get("latest") or "").strip()
+    latest = raw_latest if raw_latest in versions else versions[-1]
     last = str(record.get("source_version") or "").strip()
     if not last:
         return latest
     if last in versions:
         pos = versions.index(last)
         return versions[pos + 1] if pos + 1 < len(versions) else ""
-    # Providers prune old builds.  The build number lets us still choose the first newer
-    # retained one instead of jumping blindly to the end.
     previous_build = _revision_build(last)
     if previous_build is not None:
         newer = [(idx, _revision_build(version), version) for idx, version in enumerate(versions)
                  if _revision_build(version) is not None and _revision_build(version) > previous_build]
         if newer:
             return min(newer, key=lambda row: (row[1], row[0]))[2]
-        # Build counters can restart on a new beta series. A changed display version is a real
-        # new source generation even when its raw build number is numerically lower.
         if _display_version(last) != _display_version(latest):
             return latest
         return ""
@@ -2015,9 +2412,6 @@ def _fallback_entry(ns: str, role: str, item_id: str) -> dict:
         url = f"https://ww.nanoka.cc/{role}/{item_id}/"
     else:
         url = f"https://{ns}.gachabase.net/{path}/{item_id}/{item_id}/beta?lang=en"
-    # Do not recover this id by reparsing the human-facing URL: WuWa intentionally uses
-    # singular `character` / `weapon` paths, whereas gachabase uses plural paths. Keeping the
-    # manifest id explicit makes every namespace's bounded fallback equally deliverable.
     return {"id": str(item_id), "name": "", "url": url, "diff": "", "image": "", "section": "",
             "role": role, "synthetic": True}
 
@@ -2027,19 +2421,11 @@ def _entry_key(ns: str, role: str, item_id: str) -> str:
 
 
 def _snapshot_key(ns: str, item_id: str) -> str:
-    # Kept compatible with the first beta implementation's state layout.
     return f"{ns}:{item_id}"
 
 
 def _typed_snapshot_key(ns: str, role: str, item_id: str) -> str:
-    """Collision-safe state key for an item whose legacy numeric key is occupied.
-
-    Most upstream ids are globally distinct, so preserving the original ``ns:id`` key keeps
-    existing state compact and backwards-compatible.  The APIs do not contractually guarantee
-    that a character, weapon, and relic can never share an integer, though.  Only the second
-    colliding role needs this typed form; it prevents one item's snapshot or locked art from
-    being mistaken for another's.
-    """
+    """Collision-safe state key for an item whose legacy numeric key is occupied."""
     return f"{ns}:{role}:{item_id}"
 
 
@@ -2047,7 +2433,6 @@ def _snapshot_key_for(snapshots: dict, ns: str, role: str, item_id: str) -> str:
     """Choose a compatible key without letting cross-kind numeric ids alias each other."""
     legacy = _snapshot_key(ns, item_id)
     typed = _typed_snapshot_key(ns, role, item_id)
-    # Once a collision was written with a typed key, keep using it even if the old key remains.
     if typed in snapshots:
         return typed
     existing = snapshots.get(legacy)
@@ -2068,9 +2453,6 @@ def _candidate_entries(ns: str, kinds: dict, entries: list[dict], snapshots: dic
                        new_relic_ids: set[str]) -> tuple[list[dict], list[dict]]:
     """Changelog entries first; if it is empty, probe only tracked/new ids, never every unit."""
     chars: dict[str, dict] = {}
-    # Weapon/relic ids are not promised to share a global namespace.  Keeping their role in
-    # this local key means a changelog or manifest with both ``weapon:42`` and ``relic:42``
-    # gets two bounded probes rather than silently dropping one.
     equipment: dict[tuple[str, str], dict] = {}
     for raw in entries:
         if not isinstance(raw, dict):
@@ -2086,9 +2468,6 @@ def _candidate_entries(ns: str, kinds: dict, entries: list[dict], snapshots: dic
         else:
             equipment.setdefault((role, item_id), copy)
 
-    # A newly revealed item is the only thing we must still discover if a changelog rendering
-    # is partial.  A snapshot is the other bounded probe: it lets an empty hotfix page still
-    # detect a change to a character that has already been posted.
     for role, ids in (
         ("character", new_char_ids),
         ("weapon", new_weapon_ids),
@@ -2309,27 +2688,119 @@ def _diff_equipment(previous: BetaEquipment, current: BetaEquipment) -> BetaEqui
         return None
     return BetaEquipment(
         id=current.id, name=current.name, category_label=current.category_label,
-        rarity=current.rarity, sub_type=current.sub_type, tag="[CHANGED]",
-        stats_line="", effect_title="", lines=changes,
-        image_url=current.image_url, diff_url=current.diff_url, page_url=current.page_url,
+        rarity=current.rarity, sub_type=current.sub_type,
+        weapon_class=current.weapon_class, set_kind=current.set_kind, set_parts=current.set_parts,
+        tag="[CHANGED]", stats_line="", effect_title="", lines=changes,
+        glossary=list(current.glossary), image_url=current.image_url,
+        image_urls=list(current.image_urls), diff_url=current.diff_url, page_url=current.page_url,
     )
 
 
-def _data_image_candidates(ns: str, role: str, item_id: str, data: dict, listing: dict | None = None) -> list[str]:
-    """Known static asset conventions, all preflighted before they are used or locked."""
+def _data_image_candidates(
+    ns: str,
+    role: str,
+    item_id: str,
+    data: dict,
+    listing: dict | None = None,
+) -> list[str]:
+    """Known static.nanoka.cc asset conventions, preflighted before use and locked after."""
+    if not item_id or "_encore" in data:
+        return []
     candidates: list[str] = []
-    icon = str(data.get("icon") or "").strip()
-    if ns == "zzz" and role == "character" and re.fullmatch(r"[A-Za-z0-9_]+", icon):
-        candidates.append(f"{STATIC_BASE}/assets/zzz/{icon}.webp")
-    if ns == "hsr" and role == "character":
-        candidates.append(f"{STATIC_BASE}/assets/hsr/avatardrawcard/{item_id}.webp")
+
+    def add(url: str) -> None:
+        if url and url not in candidates:
+            candidates.append(url)
+
+    raw_icon = str(data.get("icon") or (listing or {}).get("icon") or "").strip()
     if ns == "gi" and role == "character":
-        candidates.append(f"{STATIC_BASE}/assets/gi/avatardrawcard/{item_id}.webp")
-    if ns == "zzz" and role == "weapon":
-        listing_icon = str((listing or {}).get("icon") or "").strip()
-        if re.fullmatch(r"[A-Za-z0-9_]+", listing_icon):
-            candidates.append(f"{STATIC_BASE}/assets/zzz/{listing_icon}.webp")
+        if raw_icon:
+            suffix = raw_icon.removeprefix("UI_AvatarIcon_")
+            if suffix and suffix != raw_icon:
+                add(f"{STATIC_BASE}/assets/gi/UI_Gacha_AvatarImg_{suffix}.webp")
+            add(f"{STATIC_BASE}/assets/gi/{raw_icon}.webp")
+    elif ns == "gi" and role == "weapon":
+        if raw_icon:
+            suffix = raw_icon.removeprefix("UI_EquipIcon_")
+            if suffix and suffix != raw_icon:
+                add(f"{STATIC_BASE}/assets/gi/UI_Gacha_EquipIcon_{suffix}.webp")
+            add(f"{STATIC_BASE}/assets/gi/{raw_icon}.webp")
+    elif ns == "gi" and role == "relic":
+        parts = data.get("parts") or {}
+        if isinstance(parts, dict):
+            for pk in sorted(parts, key=str):
+                pv = parts[pk]
+                if isinstance(pv, dict) and pv.get("icon"):
+                    add(f"{STATIC_BASE}/assets/gi/{str(pv['icon']).strip()}.webp")
+                    break
+        if raw_icon:
+            add(f"{STATIC_BASE}/assets/gi/{Path(raw_icon).stem}.webp")
+    elif ns == "hsr" and role == "character":
+        add(f"{STATIC_BASE}/assets/hsr/avatardrawcard/{item_id}.webp")
+        add(f"{STATIC_BASE}/assets/hsr/avatarshopicon/{item_id}.webp")
+    elif ns == "hsr" and role == "weapon":
+        add(f"{STATIC_BASE}/assets/hsr/lightconemaxfigures/{item_id}.webp")
+        add(f"{STATIC_BASE}/assets/hsr/lightconemediumicon/{item_id}.webp")
+    elif ns == "hsr" and role == "relic":
+        if raw_icon:
+            add(f"{STATIC_BASE}/assets/hsr/itemfigures/{Path(raw_icon).stem}.webp")
+    elif ns == "zzz" and role in ("character", "weapon", "relic"):
+        if raw_icon:
+            stem = Path(raw_icon).stem
+            if re.fullmatch(r"[A-Za-z0-9_]+", stem):
+                add(f"{STATIC_BASE}/assets/zzz/{stem}.webp")
+    elif ns == "ww" and role in ("character", "weapon", "relic"):
+        for field in ("figure", "background", "icon"):
+            val = str(data.get(field) or "").strip()
+            if not val or not _ww_asset_matches_id(item_id, val):
+                continue
+            rel = val.removeprefix("/Game/Aki/").lstrip("/")
+            if "." in Path(rel).name and not rel.endswith((".webp", ".png")):
+                rel = str(Path(rel).with_suffix(".webp"))
+            elif not rel.endswith((".webp", ".png")):
+                rel = f"{rel}.webp"
+            add(f"{STATIC_BASE}/assets/ww/{rel}")
     return candidates
+
+
+def _data_gallery_candidates(
+    ns: str,
+    role: str,
+    item_id: str,
+    data: dict,
+    listing: dict | None = None,
+) -> list[str]:
+    """Multi-icon gallery URLs (6 HSR Eidolon icons, 2 Planar Ornaments, 4 Relic/Artifact pieces)."""
+    if not item_id or "_encore" in data:
+        return []
+    urls: list[str] = []
+    if ns == "hsr" and role == "character":
+        ranks = data.get("ranks") or {}
+        if isinstance(ranks, dict) and len(ranks) >= 6:
+            for idx in range(1, 7):
+                urls.append(
+                    f"{STATIC_BASE}/assets/hsr/rank/_dependencies/textures/{item_id}/{item_id}_Rank_{idx}.webp"
+                )
+    elif ns == "hsr" and role == "relic":
+        parts = data.get("parts") or {}
+        if isinstance(parts, dict) and parts:
+            slots: list[str] = []
+            for pk in sorted(parts, key=str):
+                s = str(pk).strip()
+                if s.isdigit() and s[-1] in "123456" and s[-1] not in slots:
+                    slots.append(s[-1])
+            if not slots:
+                slots = [str(i) for i in range(1, len(parts) + 1)]
+            for slot in slots:
+                urls.append(f"{STATIC_BASE}/assets/hsr/relicfigures/IconRelic_{item_id}_{slot}.webp")
+    elif ns == "gi" and role == "relic":
+        parts = data.get("parts") or {}
+        if isinstance(parts, dict) and len(parts) >= 2:
+            for pk in sorted(parts, key=str):
+                pv = parts[pk]
+                if isinstance(pv, dict) and pv.get("icon"):
+                    urls.append(f"{STATIC_BASE}/assets/gi/{str(pv['icon']).strip()}.webp")
+    return urls
 
 
 def _safe_entry_name(entry: dict, data: dict, listing: dict | None, item_id: str) -> str:
@@ -2367,14 +2838,256 @@ def _generated_diff_url(ns: str, role: str, item_id: str, name: str,
             f"?prev=beta_{before}&cur=beta_{after}&lang=en")
 
 
-async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatch | None:
-    """Build the next bounded beta card batch without guessing unavailable source data.
+def _upgrade_legacy_beta_record(record: dict) -> bool:
+    """Reset pre-Prime-Formatting beta records once so deleted old posts can be reposted cleanly."""
+    if int(record.get("format_epoch") or 0) >= BETA_FORMAT_EPOCH:
+        return False
+    kept_revisions: dict[str, dict] = {}
+    revs = record.get("revisions")
+    if isinstance(revs, dict):
+        for rev_id, rev_obj in revs.items():
+            if not isinstance(rev_obj, dict):
+                continue
+            has_ambig = rev_obj.get("status") == "ambiguous" or any(
+                isinstance(b, dict) and b.get("ambiguous")
+                for b in (rev_obj.get("batches") or {}).values()
+            )
+            if has_ambig:
+                kept_revisions[str(rev_id)] = rev_obj
+    record["revisions"] = kept_revisions
+    record["snapshots"] = {}
+    record["locked_images"] = {}
+    record["latest_rev"] = ""
+    record["source_version"] = ""
+    record["source_revision"] = ""
+    record["paused"] = False
+    record["last_poll"] = 0
+    record["format_epoch"] = BETA_FORMAT_EPOCH
+    return True
 
-    A manifest tells us the immutable/static-data revisions in order.  A gachabase changelog
-    adds source links and changed ids; when a revision is blank (the 19850203 hotfix case),
-    only new ids and already-snapshotted ids are probed.  That preserves site friendliness and
-    still detects a real kit change with an exact old baseline.
-    """
+
+def _kit_needs_zh_check(built: dict | None) -> bool:
+    """True when an EN kit shows placeholders (`???`, `[TBD]`, `/-`) or empty sections."""
+    if not built or not built.get("sections"):
+        return True
+    for sec in built["sections"]:
+        if "???" in (sec.title or "") or _is_key(sec.title):
+            return True
+        for ln in sec.lines:
+            if "???" in ln or "[TBD]" in ln or re.search(r"\d+(?:\.\d+)?%?/-(\s|$|[.,;)])", ln):
+                return True
+    return False
+
+
+def _extract_kit_numbers(lines: list[str]) -> list[str]:
+    nums: list[str] = []
+    for ln in lines:
+        if ln.startswith("-#"):
+            continue
+        nums.extend(re.findall(r"\d+(?:\.\d+)?%?", ln))
+    return nums
+
+
+def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
+    """Patch stale/broken EN numbers or missing sections using authoritative CN/CHS beta data."""
+    zh_secs: list[BetaSectionEntry] = list(zh_built.get("sections") or [])
+    if not zh_secs:
+        return False
+    en_secs: list[BetaSectionEntry] = list(en_built.get("sections") or [])
+    if not en_secs:
+        copied = _clone_sections(zh_secs, "[NEW]")
+        copied[0].lines.append("-# 🌐 Sourced from CN/CHS beta data — EN localization pending.")
+        en_built["sections"] = copied
+        return True
+
+    changed_any = False
+    for idx, en_sec in enumerate(en_secs):
+        if idx >= len(zh_secs):
+            break
+        zh_sec = zh_secs[idx]
+        sec_changed = False
+
+        if en_sec.params and zh_sec.params and len(en_sec.params) == len(zh_sec.params):
+            for p_idx, en_p in enumerate(en_sec.params):
+                zh_p = zh_sec.params[p_idx]
+                if en_p.get("value") != zh_p.get("value") and zh_p.get("text"):
+                    old_txt = str(en_p.get("text") or "")
+                    new_txt = str(zh_p["text"])
+                    en_p["value"] = zh_p.get("value")
+                    en_p["text"] = new_txt
+                    label_prefix = f"{en_p.get('name')}:"
+                    en_sec.lines = [
+                        f"{en_p.get('name')}: {new_txt}"
+                        if ln.startswith(label_prefix) and old_txt in ln
+                        else ln
+                        for ln in en_sec.lines
+                    ]
+                    sec_changed = True
+
+        updated_lines: list[str] = []
+        for l_idx, ln in enumerate(en_sec.lines):
+            if l_idx < len(zh_sec.lines):
+                zh_ln = zh_sec.lines[l_idx]
+                zh_nums = re.findall(r"\d+(?:\.\d+)?%?", zh_ln)
+                if ("[TBD]" in ln or "???" in ln) and zh_nums and "[TBD]" not in zh_ln:
+                    if "[TBD]" in ln:
+                        ln = re.sub(r"\[TBD\]%?", zh_nums[0], ln, count=1)
+                    else:
+                        ln = re.sub(r"\?\?\?%?", zh_nums[0], ln, count=1)
+                    sec_changed = True
+                if re.search(r"\d+(?:\.\d+)?%?/-(\s|$|[.,;)])", ln) and zh_nums:
+                    patched = re.sub(
+                        r"(\d+(?:\.\d+)?%?)/-(?=\s|$|[.,;)])", f"\\1/{zh_nums[-1]}", ln, count=1
+                    )
+                    if patched != ln:
+                        ln = patched
+                        sec_changed = True
+            updated_lines.append(ln)
+        if sec_changed and not any("[TBD]" in x for x in updated_lines if not x.startswith("-#")):
+            updated_lines = [
+                x for x in updated_lines
+                if not x.startswith("-# ⚠️ [TBD] marks an unresolved")
+            ]
+
+        en_nums = _extract_kit_numbers(updated_lines)
+        zh_nums = _extract_kit_numbers(zh_sec.lines)
+        if sec_changed:
+            if not any("CN/CHS" in x for x in updated_lines):
+                updated_lines.append("-# 🌐 Values synced with authoritative CN/CHS beta data.")
+            en_sec.lines = updated_lines
+            changed_any = True
+        elif zh_nums and en_nums != zh_nums and not any("CN/CHS" in x for x in updated_lines):
+            preview = ", ".join(zh_nums[:8])
+            if preview:
+                updated_lines.append(
+                    f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
+                )
+                en_sec.lines = updated_lines
+                changed_any = True
+
+    return changed_any
+
+
+def _synthesize_kit_overview(
+    game_key: str,
+    name: str,
+    built: dict,
+    sections: list[BetaSectionEntry],
+    *,
+    is_new: bool,
+) -> str:
+    """Generate a concise Prime Formatting kit overview or revision-change summary."""
+    if not sections:
+        return ""
+    if not is_new:
+        counts: dict[str, int] = {}
+        touched: list[str] = []
+        for sec in sections:
+            for ln in sec.lines:
+                m_t = re.match(r"^\*\*(\[[A-Z ]+\])\*\*", ln.strip())
+                t = m_t.group(1) if m_t else (sec.tag or "[CHANGED]")
+                counts[t] = counts.get(t, 0) + 1
+            short = sec.title.split("—")[0].split(":")[0].strip()
+            if short and short not in touched:
+                touched.append(short)
+        badge_parts: list[str] = []
+        for tag, label in (
+            ("[BUFF]", "buff"),
+            ("[NERF]", "nerf"),
+            ("[REWORK]", "rework"),
+            ("[ADJUSTMENT]", "adjustment"),
+            ("[CHANGED]", "change"),
+            ("[NEW]", "addition"),
+            ("[TEXT FIX]", "wording fix"),
+        ):
+            n = counts.get(tag, 0)
+            if n:
+                plural = "es" if label.endswith("x") and n != 1 else ("s" if n != 1 else "")
+                badge_parts.append(f"**{n}** {label}{plural}")
+        digest = ", ".join(badge_parts) if badge_parts else f"**{len(sections)}** updated block(s)"
+        scope = ", ".join(f"[{s}]" for s in touched[:5])
+        if len(touched) > 5:
+            scope += f", +{len(touched) - 5} more"
+        return f"**Revision Changes:** Touching {scope} ({digest})."
+
+    rarity = built.get("rarity")
+    element = str(built.get("element") or "").strip()
+    spec_elem = str(built.get("special_element") or "").strip()
+    elem_disp = f"{element} ({spec_elem})" if spec_elem and spec_elem != element else element
+    role = str(built.get("role") or "").strip()
+    camp = str(built.get("camp") or "").strip()
+
+    if game_key == "zzz":
+        rank_txt = "S-Rank" if rarity == 5 else ("A-Rank" if rarity == 4 else "")
+    else:
+        rank_txt = f"{rarity}-Star" if rarity else ""
+
+    lead_bits = [b for b in (rank_txt, elem_disp, role) if b]
+    lead = " ".join(lead_bits) if lead_bits else "Playable"
+    article = "an" if lead.startswith(("A-", "S-", "A ", "E", "I", "O")) else "a"
+    noun = {
+        "genshin": "character",
+        "starrail": "unit",
+        "zzz": "Agent",
+        "wuwa": "Resonator",
+    }.get(game_key, "character")
+    camp_clause = f" affiliated with **{camp}**" if camp else ""
+
+    all_text = " ".join(
+        ln for sec in sections for ln in sec.lines if not ln.startswith("-#") and not ln.startswith("**(")
+    )
+    states: list[str] = []
+    for m in re.finditer(r"\[([A-Za-z][A-Za-z0-9' -]{2,28})\]", all_text):
+        tok = m.group(1).strip()
+        if tok in ("TBD", "NEW", "BUFF", "NERF", "CHANGED", "ADJUSTMENT", "REWORK", "TEXT FIX"):
+            continue
+        if tok not in states:
+            states.append(tok)
+        if len(states) >= 3:
+            break
+    for sec in sections:
+        for nm, _ds in (sec.defs or ()):
+            if nm not in states and len(nm) <= 28:
+                states.append(nm)
+            if len(states) >= 3:
+                break
+
+    focus: list[str] = []
+    low = all_text.lower()
+    for needle, label in (
+        ("follow-up", "follow-up attacks"),
+        ("super break", "Super Break"),
+        ("break dmg", "Break DMG"),
+        ("shield", "shielding"),
+        ("restore hp", "healing"),
+        ("heals", "healing"),
+        ("crit dmg", "CRIT scaling"),
+        ("sheer", "Sheer DMG"),
+        ("miasma", "Miasma interaction"),
+        ("anomaly", "Anomaly buildup"),
+        ("daze", "Daze / Stun"),
+        ("aftershock", "Aftershock attacks"),
+        ("coordinated", "coordinated attacks"),
+        ("nightsoul", "Nightsoul mechanics"),
+        ("lunar", "Lunar reactions"),
+        ("outro skill", "Outro support"),
+    ):
+        if needle in low and label not in focus:
+            focus.append(label)
+        if len(focus) >= 3:
+            break
+
+    mech_bits: list[str] = []
+    if states:
+        mech_bits.append("revolving around " + ", ".join(f"[{s}]" for s in states[:3]))
+    if focus:
+        mech_bits.append("with " + ", ".join(focus[:3]))
+    mech_clause = (" " + " ".join(mech_bits)) if mech_bits else ""
+    return f"**{name}** is {article} {lead} {noun}{camp_clause}{mech_clause}."
+
+
+async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatch | None:
+    """Build the next bounded beta card batch without guessing unavailable source data."""
     ns = _game_ns(game)
     kinds = NANOKA_KINDS.get(ns)
     if not ns or kinds is None:
@@ -2383,7 +3096,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     if not m_game:
         return None
     record = ctx.state.beta_record(game.key)
-    version = _next_data_version(record, m_game)
+    _upgrade_legacy_beta_record(record)
+    live_cycle = _live_cycle(ctx, game, m_game)
+    version = _next_data_version(record, m_game, live_cycle=live_cycle)
     if not version:
         return None
 
@@ -2403,24 +3118,18 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         return None
 
     snapshots = record.get("snapshots") if isinstance(record.get("snapshots"), dict) else {}
-    # Include candidates staged into this patch as we build it.  That makes an uncommon
-    # character/weapon/relic numeric-id collision safe even before `_settle_beta_patch` writes
-    # the first item's baseline into the durable record.
     known_snapshots = dict(snapshots)
     patch = BetaPatch(
         game_key=game.key, beta_version=_display_version(version), rev_label=rev_label,
         rev_id=rev_id, source_url=_changelog_url(game) or f"{STATIC_BASE}/{ns}/{version}",
         source_version=version, source_revision=rev_key,
     )
-    # Source says this exact build is quiet: once a baseline exists, advance the cursor without
-    # empty-card spam. On a cold opt-in we still publish the currently-new characters' first
-    # full-kit overview — otherwise enabling the feature after a no-change micro-hotfix would
-    # permanently skip the beta reveal the operator explicitly opted into.
     if source_revision and source_revision.get("no_changes") and (
             record.get("source_version") or snapshots):
         patch.no_changes = True
         return patch
 
+    zh_advised = bool(source_revision and source_revision.get("zh_check_advised"))
     new_char_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["character"])
     new_weapon_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["weapon"])
     new_relic_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["relic"])
@@ -2434,13 +3143,12 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     equip_entries = [entry for entry in equip_entries
                      if _entry_key(ns, str(entry.get("role") or ""), _entry_id(entry)) not in processed]
     if not char_entries and not equip_entries:
-        # All bounded batches for this revision were delivered.  A no-card settlement writes
-        # the final cursor, which prevents a future scheduler run from retrying them.
         patch.no_changes = True
         return patch
 
     locked = record.get("locked_images") if isinstance(record.get("locked_images"), dict) else {}
     image_cache: dict[str, str] = {}
+    gallery_cache: dict[str, list[str]] = {}
     requests = 2 if _changelog_url(game) else 1
     char_new, char_changed, equip_count = 0, 0, 0
     listing_cache: dict[str, dict] = {}
@@ -2448,14 +3156,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
 
     async def encore_fallback(kind: str, item_id: str) -> dict | None:
         nonlocal requests, encore_revision
-        # Encore exposes a mutable current beta view, not the ordered nanoka archive.
-        # Never use it to reconstruct an older build or issue an unbudgeted request.
         if ns != "ww" or kind not in ("character", "weapon") or version != m_game.get("latest"):
             return None
         deferred_reason = ""
-        # The published legacy server uses /en, not /api/en. Each attempt must bracket
-        # its own detail read: never borrow metadata from the other server. Reserve the
-        # complete attempt even when its first request fails, keeping both budgets bounded.
         for api in (ENCORE_API, ENCORE_BACKUP_API):
             if requests + 3 > budget["max_requests"] or not _take_shared_request(budget, 3):
                 break
@@ -2494,8 +3197,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         cap = budget["max_chars"] if is_new else budget["max_changed"]
         seen = char_new if is_new else char_changed
         if (not is_new and cap == 0):
-            # Explicit operator choice: do not publish existing-character changes.  Keep the
-            # revision cursor moving rather than creating an unbounded retry loop.
             patch.item_keys.append(_entry_key(ns, "character", item_id))
             continue
         if seen >= cap or requests + 1 > budget["max_requests"]:
@@ -2504,13 +3205,32 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         if not _take_shared_request(budget):
             patch.more = True
             continue
-        data = await _detail(ctx.fetcher, ns, version, kinds["new_keys"]["character"], item_id)
+        char_detail_kind = kinds["new_keys"]["character"]
+        data = await _detail(ctx.fetcher, ns, version, char_detail_kind, item_id)
         requests += 1
         builder = _CHARACTER_BUILDERS.get(ns)
         built = builder(data) if data and builder else None
         if not built or not built.get("sections"):
-            data = await encore_fallback("character", item_id)
-            built = builder(data) if data and builder else None
+            enc_data = await encore_fallback("character", item_id)
+            if enc_data:
+                data = enc_data
+                built = builder(data) if builder else None
+        if (
+            data
+            and "_encore" not in data
+            and builder
+            and (zh_advised or _kit_needs_zh_check(built))
+            and requests + 1 <= budget["max_requests"]
+            and _take_shared_request(budget, 1)
+        ):
+            requests += 1
+            zh_data = await _detail(
+                ctx.fetcher, ns, version, char_detail_kind, item_id, locale="zh"
+            )
+            if zh_data:
+                if not built:
+                    built = {"sections": []}
+                _reconcile_en_with_zh_kit(built, builder(zh_data))
         if not data:
             ctx.warnings.append(f"{game.short} beta: no kit data for id {item_id}; deferred")
             patch.more = True
@@ -2519,11 +3239,8 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             ctx.warnings.append(f"{game.short} beta: kit data for id {item_id} is not readable yet; deferred")
             patch.more = True
             continue
-        try:
-            raw_rank = int(data.get("rarity"))
-        except (TypeError, ValueError):
-            raw_rank = 4
-        rarity = raw_rank + 1 if ns == "zzz" and raw_rank in (3, 4) else max(1, min(5, raw_rank))
+
+        rarity = _parse_rarity(ns, data.get("rarity"), built.get("rarity") or 5) or 5
         name = _safe_entry_name(entry, data, None, item_id)
         previous_revision = str((previous_snapshot or {}).get("revision") or "")
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
@@ -2533,39 +3250,76 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         if "_encore" in data:
             page_url = f"https://encore.moe/character/{item_id}?lang=en&v=Beta"
             diff_url = ""
+
         candidates = _data_image_candidates(ns, "character", item_id, data)
         image_entry = {"id": snap_key, "image": entry.get("image"), "candidates": candidates}
-        image_cost = _image_preflight_cost(image_entry, locked, image_cache)
-        image = ""
-        if (requests + image_cost <= budget["max_requests"]
-                and _take_shared_request(budget, image_cost)):
-            image = await _resolve_image(ctx.fetcher, image_entry, locked, image_cache)
-            requests += image_cost
+        image, requests = await _resolve_image_within_budget(
+            ctx.fetcher, image_entry, locked, image_cache, budget, requests
+        )
+        gal_candidates = _data_gallery_candidates(ns, "character", item_id, data)
+        eidolon_imgs, requests = await _resolve_gallery_within_budget(
+            ctx.fetcher, snap_key, gal_candidates, locked, gallery_cache, budget, requests
+        )
+
+        elem_label = str(built.get("element") or "").strip()
+        spec_elem = str(built.get("special_element") or "").strip()
+        if spec_elem and spec_elem != elem_label:
+            elem_label = f"{elem_label} ({spec_elem})" if elem_label else spec_elem
+
         full = BetaCharacter(
-            id=snap_key, name=name, rarity=rarity, element=str(built.get("element") or ""),
-            role=str(built.get("role") or ""), subtext=str(built.get("subtext") or ""),
+            id=snap_key, name=name, rarity=rarity, element=elem_label,
+            role=str(built.get("role") or ""),
+            faction=str(built.get("camp") or ""),
+            attack_type=str(built.get("attack_type") or ""),
+            subtext=str(built.get("subtext") or ""),
             stats_lines=list(built.get("stats_lines") or []),
             sections=_clone_sections(list(built.get("sections") or []), "[NEW]"),
-            # Per-skill glossary entries sit directly under their skill; do not duplicate the
-            # same definition as a separate page-end appendix.
-            mechanic_defs=[], image_url=image, diff_url=diff_url,
-            page_url=page_url, is_new=is_new,
+            mechanic_defs=[], image_url=image, eidolon_images=eidolon_imgs,
+            diff_url=diff_url, page_url=page_url, is_new=is_new,
         )
-        patch.snapshots[snap_key] = _character_snapshot(full, version, ctx.now)
+        cur_snap = _character_snapshot(full, version, ctx.now)
         if "_encore" in data:
-            patch.snapshots[snap_key].update(provider="encore", provider_revision=data["_encore_revision"])
+            cur_snap.update(provider="encore", provider_revision=data["_encore_revision"])
+
+        if (
+            previous_snapshot is not None
+            and "_encore" not in data
+            and not zh_advised
+            and not _kit_needs_zh_check(built)
+            and _snapshot_comparison(previous_snapshot, cur_snap) == "equal"
+            and builder is not None
+            and requests + 1 <= budget["max_requests"]
+            and _take_shared_request(budget, 1)
+        ):
+            requests += 1
+            zh_data = await _detail(
+                ctx.fetcher, ns, version, char_detail_kind, item_id, locale="zh"
+            )
+            if zh_data and _reconcile_en_with_zh_kit(built, builder(zh_data)):
+                full.sections = _clone_sections(list(built.get("sections") or []), "[NEW]")
+                cur_snap = _character_snapshot(full, version, ctx.now)
+
+        patch.snapshots[snap_key] = cur_snap
+        if eidolon_imgs:
+            patch.snapshots[snap_key]["gallery_urls"] = list(eidolon_imgs)
         known_snapshots[snap_key] = patch.snapshots[snap_key]
         patch.item_keys.append(_entry_key(ns, "character", item_id))
         if previous is None:
             full.sections = _clone_sections(full.sections, "[NEW]" if is_new else "[CHANGED]")
             if not is_new:
                 full.subtext = "-# Full readable kit snapshot — a prior baseline was not retained, so no direction is inferred."
+            full.overview = _synthesize_kit_overview(
+                game.key, name, built, full.sections, is_new=is_new
+            )
             patch.characters.append(full)
         elif _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key]) == "snapshot":
             full.sections = _clone_sections(full.sections, "[CHANGED]")
             full.is_new = False
             full.subtext = ("-# Full current kit — complete before/after text is unavailable; "
                             "no direction is inferred.")
+            full.overview = _synthesize_kit_overview(
+                game.key, name, built, full.sections, is_new=False
+            )
             patch.characters.append(full)
         elif _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key]) == "diff":
             diff_sections, unchanged = diff_kits(previous.sections, full.sections)
@@ -2576,6 +3330,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 old_rev = str((previous_snapshot or {}).get("revision") or "previous revision")
                 full.subtext = (f"-# Revision diff against {old_rev}"
                                 + (f" • {unchanged} unchanged block(s) omitted" if unchanged else ""))
+                full.overview = _synthesize_kit_overview(
+                    game.key, name, built, full.sections, is_new=False
+                )
                 patch.characters.append(full)
         if is_new:
             char_new += 1
@@ -2629,23 +3386,21 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 else:
                     patch.item_keys.append(_entry_key(ns, role, item_id))
                 continue
-        rarity = None
-        if isinstance(listing_entry, dict):
-            try:
-                rarity = int(listing_entry.get("rank") or 0) or None
-            except (TypeError, ValueError):
-                pass
+        rarity = fields.get("rarity")
+        if rarity is None and isinstance(listing_entry, dict):
+            rarity = _parse_rarity(ns, listing_entry.get("rank"), None)
         snap_key = _snapshot_key_for(known_snapshots, ns, role, item_id)
         previous_snapshot = known_snapshots.get(snap_key)
-        candidates = _data_image_candidates(ns, role, item_id, data,
-                                             listing_entry if isinstance(listing_entry, dict) else None)
+        l_dict = listing_entry if isinstance(listing_entry, dict) else None
+        candidates = _data_image_candidates(ns, role, item_id, data, l_dict)
         image_entry = {"id": snap_key, "image": entry.get("image"), "candidates": candidates}
-        image_cost = _image_preflight_cost(image_entry, locked, image_cache)
-        image = ""
-        if (requests + image_cost <= budget["max_requests"]
-                and _take_shared_request(budget, image_cost)):
-            image = await _resolve_image(ctx.fetcher, image_entry, locked, image_cache)
-            requests += image_cost
+        image, requests = await _resolve_image_within_budget(
+            ctx.fetcher, image_entry, locked, image_cache, budget, requests
+        )
+        gal_candidates = _data_gallery_candidates(ns, role, item_id, data, l_dict)
+        eq_gallery, requests = await _resolve_gallery_within_budget(
+            ctx.fetcher, snap_key, gal_candidates, locked, gallery_cache, budget, requests
+        )
         previous = (_equipment_from_snapshot(previous_snapshot)
                     if str((previous_snapshot or {}).get("kind") or "") == role else None)
         is_new = item_id in (new_weapon_ids if role == "weapon" else new_relic_ids) and previous is None
@@ -2661,12 +3416,20 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             rarity = data.get("rarity")
         current = BetaEquipment(
             id=snap_key, name=name, category_label=str(kinds[role]["label"]), rarity=rarity,
-            sub_type=str(fields.get("sub_type") or ""), tag="[NEW]" if is_new else "[CHANGED]",
+            sub_type=str(fields.get("sub_type") or ""),
+            weapon_class=str(fields.get("weapon_class") or ""),
+            set_kind=str(fields.get("set_kind") or ""),
+            set_parts=str(fields.get("set_parts") or ""),
+            tag="[NEW]" if is_new else "[CHANGED]",
             stats_line=str(fields.get("stats_line") or ""), effect_title=str(fields.get("effect_title") or ""),
-            lines=list(fields.get("lines") or []), image_url=image,
+            lines=list(fields.get("lines") or []),
+            glossary=list(fields.get("glossary") or []),
+            image_url=image, image_urls=eq_gallery,
             diff_url=diff_url, page_url=page_url,
         )
         patch.snapshots[snap_key] = _equipment_snapshot(current, version, ctx.now, role)
+        if eq_gallery:
+            patch.snapshots[snap_key]["gallery_urls"] = list(eq_gallery)
         if "_encore" in data:
             patch.snapshots[snap_key].update(provider="encore", provider_revision=data["_encore_revision"])
         known_snapshots[snap_key] = patch.snapshots[snap_key]
@@ -2687,11 +3450,10 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         equip_count += 1
 
     patch.batch_id = stable_hash([patch.rev_id, sorted(patch.item_keys)]) if patch.item_keys else ""
-    # A fully inspected quiet revision should advance its cursor, but it should never emit an
-    # empty Discord card.  A partially inspected one remains pending for the next bounded run.
     if not patch.characters and not patch.equipment:
         patch.no_changes = True
     return patch
+
 
 async def run(ctx) -> None:
     """Post one bounded batch per game; a successful batch resumes the next one safely."""
@@ -2701,9 +3463,6 @@ async def run(ctx) -> None:
     if not enabled:
         return
     budget = _budget(ctx)
-    # One manifest is shared by every game. The rest of the ceiling is a mutable ledger passed
-    # through every changelog/detail/listing/media call below — `BETA_MAX_REQUESTS` is truly
-    # feature-wide, not 48 requests once per game.
     shared_budget = dict(budget)
     shared_budget["_shared_requests_left"] = max(0, budget["max_requests"] - 1)
     manifest = await fetch_manifest(ctx.fetcher)
@@ -2711,24 +3470,30 @@ async def run(ctx) -> None:
         ctx.warnings.append("beta: manifest unavailable; no beta cards this run")
         return
 
+    ephemeral = ctx.settings.dry_run or ctx.settings.test_mode
     for game in ctx.games:
         if game.key not in enabled:
             continue
         record = ctx.state.beta_record(game.key)
+        if _upgrade_legacy_beta_record(record):
+            log.info("[%s] beta: migrated legacy state to format_epoch=%d", game.key, BETA_FORMAT_EPOCH)
+            if not ephemeral:
+                ctx.state.save()
         last_poll = int(record.get("last_poll") or 0)
         if budget["min_poll_min"] and ctx.now - last_poll < budget["min_poll_min"] * 60:
             continue
-        ephemeral = ctx.settings.dry_run or ctx.settings.test_mode
         before_requests = int(shared_budget.get("_shared_requests_left", 0))
+        starved_before = len(ctx.warnings)
         try:
             patch = await build_patch(ctx, game, manifest, shared_budget)
         except Exception as exc:  # noqa: BLE001 - one game must never sink the run
             log.exception("beta: %s failed to build its patch", game.key)
             ctx.warnings.append(f"{game.short} beta: {type(exc).__name__}: {exc}")
             continue
-        # Do not mark a game polled when the global ledger denied even its changelog. That
-        # prevents a low cap from starving later games for a full polling interval.
-        if patch is not None or int(shared_budget.get("_shared_requests_left", 0)) < before_requests:
+        starved = any(
+            "run-wide request budget" in w for w in ctx.warnings[starved_before:]
+        )
+        if patch is not None or int(shared_budget.get("_shared_requests_left", 0)) < before_requests or not starved:
             record["last_poll"] = ctx.now
             if not ephemeral:
                 ctx.state.save()
@@ -2755,6 +3520,7 @@ async def run(ctx) -> None:
 
 def _settle_beta_patch(ctx, record: dict, patch: BetaPatch, *, status: str) -> None:
     """Atomically retain baselines/locks after a settled delivery (or intentional no-op)."""
+    record["format_epoch"] = BETA_FORMAT_EPOCH
     revisions = record.setdefault("revisions", {})
     entry = revisions.setdefault(patch.rev_id, {"ts": ctx.now, "messages": []})
     entry["ts"] = int(entry.get("ts") or ctx.now)
@@ -2779,6 +3545,9 @@ def _settle_beta_patch(ctx, record: dict, patch: BetaPatch, *, status: str) -> N
         image = str((data or {}).get("image_url") or "") if isinstance(data, dict) else ""
         if image:
             locked[key] = {"url": image, "locked": True, "ts": ctx.now}
+        gal_urls = snapshot.get("gallery_urls")
+        if isinstance(gal_urls, list) and gal_urls:
+            locked[f"{key}:gallery"] = {"urls": list(gal_urls), "locked": True, "ts": ctx.now}
 
     if not patch.more:
         record["latest_rev"] = patch.rev_id
@@ -2798,12 +3567,7 @@ def _batch_record(record: dict, patch: BetaPatch, now: int) -> tuple[dict, dict]
 
 
 async def _wait_between_beta_pages(ctx, *, ephemeral: bool) -> None:
-    """Apply the required page hand-off without making normal dry-run tests sleep.
-
-    A real enabled monitor has no injected collaborator and therefore awaits asyncio.sleep(5).
-    Dry-run/test contexts intentionally skip a real wall-clock pause unless they supply `ctx.sleep`;
-    the deterministic feature harness supplies one and records every requested five-second gap.
-    """
+    """Apply the required page hand-off without making normal dry-run tests sleep."""
     sleeper = getattr(ctx, "sleep", None)
     if sleeper is None:
         if ephemeral:
@@ -2847,16 +3611,11 @@ async def _deliver(ctx, game: Game, patch: BetaPatch, record: dict, ephemeral: b
                 ctx.warnings.append(f"{game.short} beta: unfinished batch changed; held for reconciliation")
                 return
     revision, batch = _batch_record(record, patch, ctx.now)
-    # A timeout after Discord accepted the POST cannot be distinguished from a true failed POST.
-    # Persisting it as ambiguous is deliberately a circuit breaker, not just a label: a later
-    # scheduler invocation must not resend page one and turn uncertainty into a duplicate. An
-    # operator can reconcile the message and clear/repair this tiny batch record explicitly.
     if batch.get("ambiguous") or revision.get("status") == "ambiguous":
         ctx.warnings.append(
             f"{game.short} beta: prior ambiguous Discord outcome is held; reconcile the batch before retrying")
         return
     messages = batch.setdefault("messages", [])
-    # A corrupt/outdated state must never be allowed to skip a fresh payload by accident.
     if len(messages) > len(payloads):
         ctx.warnings.append(f"{game.short} beta: stored batch state is inconsistent; held to prevent duplicates")
         return
@@ -2883,16 +3642,11 @@ async def _deliver(ctx, game: Game, patch: BetaPatch, record: dict, ephemeral: b
         if not ephemeral:
             ctx.state.save()
         sent += 1
-        # The successful message id is durable before waiting. If a runner dies in this gap,
-        # the next pass resumes at the next page rather than duplicating this one; it also must
-        # not replay a five-second gap that already belongs to a prior invocation.
         if idx + 1 < len(payloads):
             await _wait_between_beta_pages(ctx, ephemeral=ephemeral)
 
     if not ephemeral:
         batch["status"] = "posted"
-        # Preserve the historical top-level messages list for diagnostics/readability while
-        # per-batch lists carry the actual retry cursor.
         revision.setdefault("messages", [])
         revision["messages"].extend(mid for mid in messages if mid not in revision["messages"])
         revision["characters"] = char_map

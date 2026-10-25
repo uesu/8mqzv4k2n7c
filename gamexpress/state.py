@@ -18,6 +18,7 @@ import time
 from pathlib import Path
 
 SCHEMA = 1
+BETA_FORMAT_EPOCH = 2
 
 
 def empty_state() -> dict:
@@ -227,6 +228,22 @@ class State:
                     continue
                 if other.get("route"):
                     mine.setdefault("route", other["route"])
+                other_epoch = _safe_int(other.get("format_epoch"), 0)
+                mine_epoch = _safe_int(mine.get("format_epoch"), 0)
+                if other_epoch < BETA_FORMAT_EPOCH and mine_epoch >= BETA_FORMAT_EPOCH:
+                    continue
+                if other_epoch >= BETA_FORMAT_EPOCH and mine_epoch < BETA_FORMAT_EPOCH:
+                    mine["revisions"] = {}
+                    mine["snapshots"] = {}
+                    mine["locked_images"] = {}
+                    mine.pop("latest_rev", None)
+                    mine.pop("source_version", None)
+                    mine.pop("source_revision", None)
+                    mine["last_poll"] = 0
+                    mine.pop("paused", None)
+                    mine["format_epoch"] = other_epoch
+                elif other_epoch > mine_epoch:
+                    mine["format_epoch"] = other_epoch
                 if "seeded_at" in other:
                     mine["seeded_at"] = max(_safe_int(mine.get("seeded_at"), 0), _safe_int(other.get("seeded_at"), 0))
                 if other.get("latest_rev") and not mine.get("latest_rev"):
@@ -362,7 +379,10 @@ class State:
 
     def beta_record(self, game: str) -> dict:
         beta = _as_dict_slot(self.data, "beta")
+        is_fresh = not isinstance(beta.get(game), dict)
         rec = _as_dict_slot(beta, game)
+        if is_fresh:
+            rec["format_epoch"] = BETA_FORMAT_EPOCH
         _as_dict_slot(rec, "revisions")
         _as_dict_slot(rec, "snapshots")
         _as_dict_slot(rec, "locked_images")

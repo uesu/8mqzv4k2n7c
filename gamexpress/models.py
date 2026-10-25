@@ -72,12 +72,16 @@ class BetaCharacter:
     element: str = ""
     role: str = ""
     subtext: str = ""
+    overview: str = ""
+    faction: str = ""
+    attack_type: str = ""
     stats_header: str = "Base Stats"
     stats_lines: list[str] = field(default_factory=list)
     sections: list[BetaSectionEntry] = field(default_factory=list)
     total_stat_bonuses: str = ""
     mechanic_defs: list[tuple[str, str]] = field(default_factory=list)
     image_url: str = ""
+    eidolon_images: list[str] = field(default_factory=list)
     is_new: bool = True
     diff_url: str = ""
     page_url: str = ""
@@ -92,11 +96,16 @@ class BetaEquipment:
     category_label: str = "Equipment"
     rarity: int | None = None
     sub_type: str = ""
+    weapon_class: str = ""
+    set_kind: str = ""
+    set_parts: str = ""
     tag: str = "[NEW]"
     stats_line: str = ""
     effect_title: str = ""
     lines: list[str] = field(default_factory=list)
+    glossary: list[tuple[str, str]] = field(default_factory=list)
     image_url: str = ""
+    image_urls: list[str] = field(default_factory=list)
     diff_url: str = ""
     page_url: str = ""
 
