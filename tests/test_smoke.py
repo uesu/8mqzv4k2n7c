@@ -14711,8 +14711,8 @@ def test_final_pre_merge_edge_cases_and_repo_doc_consistency():
         security_t = doc_paths["security"].read_text(encoding="utf-8")
         privacy_t = doc_paths["privacy"].read_text(encoding="utf-8")
         terms_t = doc_paths["terms"].read_text(encoding="utf-8")
-        assert "https://arena.ai/company/about" in readme_t and "https://x.com/arena?lang=en" in readme_t
-        assert "https://arena.ai/company/about" in credits_t and "https://x.com/arena?lang=en" in credits_t
+        assert "arena.ai" not in readme_t and "x.com/arena" not in readme_t
+        assert "arena.ai" not in credits_t and "x.com/arena" not in credits_t
         assert f"{len(config.DEFAULT_REDDIT)} entries" in readme_t
         assert f"{len(config.DEFAULT_REDDIT_PROXIES)} proxies" in readme_t
         assert f"{len(config.DEFAULT_REDDIT)} Reddit/Redlib entries" in security_t
@@ -15749,9 +15749,10 @@ def test_monitor_916_unnumbered_convene_inference_sibling_merge_and_credits_hygi
             "https://gachacountdown.online/",
             "https://github.com/corenting/eddrit",
             "https://github.com/dylanpdx/BetterTwitFix",
-            "https://arena.ai/company/about",
         ):
             assert expected in credits, expected
+        assert "arena.ai" not in readme and "arena.ai" not in credits
+        assert "x.com/arena" not in readme and "x.com/arena" not in credits
         assert not re.search(r"github\.com/[^/\s)]+/embeddit", readme + "\n" + credits, re.I)
 
 
