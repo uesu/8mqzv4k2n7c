@@ -7,7 +7,7 @@ and fix if there's any errors, bugs, edge case bugs
 3. remove the ">" or quotes
 4. remove or do not include like <IconMap:Icon_Normal> for example or like this <size=10></size>
 5. this searches might help: can my script for github for example there's a changelog diff but i want to write the code to make the character kit overview instead of like it's copy and pasting it
-6. i have a new format that should be followed in all games, don't mind the images as it should be put or used on actual sources, this is also a reference but i want the style to be like this
+6. i have a new format that should be followed in all games, don't mind the images as it should be put or used on actual sources, this is also a reference but i want the style, structure or design to be like this
 7. on the for example and this applies to all games: "Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 9/9" it is Citlali News, not Citlali Mains but also remove the Citlali Mains, and the only thing remains is "Zenless Zone Zero 3.4.1 Beta • Page 9/9" for example in all games and pages
 
 https://github.com/uesu/8mqzv4k2n7c/actions/runs/40190864126/job/121161391522
