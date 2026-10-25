@@ -1602,7 +1602,7 @@
         "sources": [
           "ogc"
         ],
-        "status": "pending"
+        "status": "rejected"
       },
       "MECHANISMCITY": {
         "first_seen": 1790323430,
@@ -1735,7 +1735,7 @@
         "sources": [
           "ogc"
         ],
-        "status": "pending"
+        "status": "rejected"
       },
       "STRANGEVISITORS": {
         "first_seen": 1790323430,
@@ -2348,8 +2348,8 @@
     },
     "starrail": {
       "cursor": [
-        1792728008,
-        "47172160"
+        1792900806,
+        "47197197"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -2382,6 +2382,13 @@
           ],
           "status": "posted",
           "ts": 1792728008
+        },
+        "47197197": {
+          "messages": [
+            "1563764228601421915"
+          ],
+          "status": "posted",
+          "ts": 1792900806
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -2428,8 +2435,8 @@
     },
     "zzz": {
       "cursor": [
-        1792816505,
-        "47185774"
+        1792900807,
+        "47197199"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -2629,6 +2636,13 @@
           ],
           "status": "posted",
           "ts": 1792816505
+        },
+        "47197199": {
+          "messages": [
+            "1563764244233584701"
+          ],
+          "status": "posted",
+          "ts": 1792900807
         }
       },
       "route": "5f931f917050e29a"
