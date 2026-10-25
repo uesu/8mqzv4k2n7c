@@ -1880,6 +1880,19 @@
         "status": "posted",
         "webhook_fp": "db5f4f8a75a5"
       },
+      "INKSHIFT33": {
+        "first_seen": 1792889718,
+        "gate": "only ennead",
+        "last_seen": 1792889718,
+        "rewards": [
+          "Polychrome ×20",
+          "Denny ×2222"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
       "JRNY2SKY": {
         "expired_at": 1791734437,
         "first_seen": 1791546293,
@@ -1909,6 +1922,19 @@
         ],
         "status": "posted",
         "webhook_fp": "db5f4f8a75a5"
+      },
+      "LEVELUP33": {
+        "first_seen": 1792889718,
+        "gate": "only ennead",
+        "last_seen": 1792889718,
+        "rewards": [
+          "Polychrome ×20",
+          "Denny ×2222"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
       },
       "ROSCAELIFER0617": {
         "first_seen": 1790323430,
@@ -3089,8 +3115,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792878917,
-          "banners_search_ts": 1792878917,
+          "banners_checked_ts": 1792889718,
+          "banners_search_ts": 1792889718,
           "banners_settled": [
             "phase1",
             "phase2",
