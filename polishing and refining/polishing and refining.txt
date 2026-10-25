@@ -9,10 +9,11 @@ and fix if there's any errors, bugs, edge case bugs
 5. this searches might help: can my script for github for example there's a changelog diff but i want to write the code to make the character kit overview instead of like it's copy and pasting it
 6. i have a new format that should be followed in all games, don't mind the images as it should be put or used on actual sources, this is also a reference but i want the style, structure or design to be like this
 7. on the for example and this applies to all games: "Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 9/9" it is Citlali News, not Citlali Mains but also remove the Citlali Mains, and the only thing remains is "Zenless Zone Zero 3.4.1 Beta • Page 9/9" for example in all games and pages (this keeps it to the new format style that i want)
-8. i will not delete it yet so that when applying the newest update will edit it silently so that i can see if there's more changes to it or polishing, but of course the dated beta which is done already and should not be posted is recorded, so that when things is finally taking shape and fully polished and it can be locked and done
+8. i deleted the posts you made and also delete it on the records so that it can be reposted, to see if the newest update or changes is implemented correctly so that when things is finally taking shape and fully polished and it can be locked and done
 9. remove the for example "Robin (cont. 2)" in all games, as there is already the "Zenless Zone Zero 3.4.1 Beta • Page 9/9" for example, and this applies to all games
 10. it should be smart, it should be dynamic
 11. for splash arts or only 1 photo or media content, so it's not a gallery but if it's like eidolons which is 6 in hsr, so it can be a gallery item 1 to 6, ornaments or relics also on the images
+12. on this notice: "While English has been updated this revision, it may still not be up to date with the actual kit, so double check with Chinese" you should be able to check CN / CHS then auto understand because sometimes CN or always, that CN is ahead than EN to avoid stale information
 
 https://github.com/uesu/8mqzv4k2n7c/actions/runs/40190864126/job/121161391522
 
