@@ -675,7 +675,7 @@
       "QYJWQVRI39BE": {
         "first_seen": 1792813821,
         "gate": "only ennead",
-        "last_seen": 1792857314,
+        "last_seen": 1792900521,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -3139,8 +3139,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1792889718,
-          "banners_search_ts": 1792889718,
+          "banners_checked_ts": 1792900521,
+          "banners_search_ts": 1792900521,
           "banners_settled": [
             "phase1",
             "phase2",
