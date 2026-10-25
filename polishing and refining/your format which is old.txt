@@ -1,0 +1,889 @@
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [GI - 7.1.53 Beta] Patch Notes: v7.1.53\nResource: [gachabase](https://gi.gachabase.net/changelog/beta?lang=en) / [nanoka](https://gi.nanoka.cc/diff)\n### ✦ New Characters"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "# ★4 • Mitya • Electro • Catalyst\n-# Rules Set at Naught · Constellation: Nodus Gordianus\n\n**Base Stats**\n> CRIT Rate 5%\n> CRIT DMG 50%\n> Elemental Mastery 100\n-# [Full kit](https://gi.gachabase.net/characters/10000136/mitya/beta?lang=en)\n\n### Talents\n**Chain Reaction** — [NEW]\n> Normal Attack\n> Performs a maximum of 3 attacks that deal Electro DMG.\n> Charged Attack\n> Consumes a certain amount of Stamina to deal AoE Electro DMG to the area in front after a short casting time.\n> Mitya will instead perform the special Charged Attack Gradient Detonation, which consumes no Stamina, if a Detection Core: Overload created by Mitya is currently on the field and he has at least 1 Gradient Beacon: Deals 1 instance of AoE Electro DMG to the area in front and continuously consumes Gradient Beacons while held. Each Gradient Beacon consumed deals 1 instance of AoE Electro DMG to the area in front that is considered Stellar-Conduct reaction DMG.\n> Plunging Attack\n> Plunges from mid-air to strike the ground below, damaging opponents along the path and dealing AoE Electro DMG upon impact.\n> 1-Hit DMG: 111.7%\n> 2-Hit DMG: 91.8%\n> 3-Hit DMG: 131.1%\n> Charged Attack DMG: 260.1%\n> Charged Attack Stamina Cost: 50\n> Plunge DMG: 120.3%\n> Low/High Plunge DMG: 240.5%/300.4%\n> Gradient Detonation DMG: 319.2%\n> Gradient Detonation Stellar-Conduct DMG: 425.6% Elemental Mastery\n\n**Principle: Variable Detection** — [NEW]\n> Conducts a theoretically relatively safe experiment at a theoretically relatively safe yield, dealing AoE Electro DMG and creating a Detection Core in different ways depending on whether the Skill is tapped or held.\n> Tapping the Elemental Skill Principle: Variable Detection again within 6s after using it changes the Detection Core's state. The Detection Core's state can be changed in this way every 1.5s.\n> Tap Skill DMG: 172.4%\n> Hold Skill DMG: 246.2%\n> Steady State Core DMG: 136.8%\n> Steady State Core Gradient Beacon Consumption DMG: 152% Elemental Mastery\n> Steady State Core Detonation DMG: 174.8% Elemental Mastery/Beacon\n> Detection Core Duration: 25s\n> CD: 18s\n\n**Analysis: Gradient Theory** — [NEW]\n> Let the elements burst forth like inspiration itself! Deals AoE Electro DMG and creates 3 Gradient Beacons.\n> Skill DMG: 633.8% ATK + 1267.7% Elemental Mastery\n> Gradient Beacons Generated: 3\n> CD: 15s\n> Energy Cost: 60\n\n### Passives\n**Baseline Stress Test** — [NEW]\n> The Detection Core created by the Elemental Skill Principle: Variable Detection is enhanced. Depending on the state of the Detection Core created:\n> ·Steady State: All nearby party members gain 30 Elemental Mastery for each Gradient Beacon Mitya has;\n> ·Overloaded: After nearby party members trigger Stellar-Conduct reactions, instead obtain 1 Gradient Beacon every 1.5s for 6s.\n\n**Explosive Reagent: Safe Limits Exceeded** — [NEW]\n> The duration of Gradient Beacons is increased to 10s. Additionally, Mitya's CRIT Rate increases by 5% for 15s after creating a Gradient Beacon. This effect can stack up to 4 times.\n\n**Stellar Jubilee: Top-Secret Protocol** — [NEW]\n> When party members trigger Superconduct, it will be changed to Stellar-Conduct. Stellar-Conduct reactions will no longer create Starlight Prisms, and will instead create 1 Gradient Beacon nearby every 1.5s for 3s. These Beacons can be carried by Mitya and transform the area around them into an even larger Polestar Field."
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Citlali Mains • Genshin Impact 7.1.53 Beta • Page 1/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Mitya** *(cont.)*\n\n> Additionally, the Base Stellar-Conduct DMG dealt by all nearby party members will be increased based on Mitya's Elemental Mastery: Every point of Elemental Mastery he has increases Base Stellar-Conduct DMG by 0.028%. The maximum Base DMG increase that can be gained this way is 14%. While within a Polestar Field, Mitya will also enter the Radiance: Stellar-Conduct state.\n\n**Energy Catalysis** — [NEW]\n> When destructible rocks are nearby, Detection Core: Steady State can quickly clear them.\n> Additionally, when Mitya is in the party, creating Prime Ice Construct: Basic Heat Source does not consume Kresnik Energy.\n\n### Constellations\n**C1 — The Observer Seeking What Is Missing** — [NEW]\n> The maximum number of Gradient Beacons Mitya can carry is increased to 5. Using the Elemental Skill Principle: Variable Detection additionally creates 1 Gradient Beacon.\n> While the Detection Core is present, your own active character's CRIT DMG is increased by 40%.\n> Additionally, Mitya regenerates 10 Elemental Energy when a Gradient Beacon is created. This effect can be triggered once every 8s.\n\n**C2 — The Matter That Slumbers Beyond Inertness** — [NEW]\n> While the Detection Core is present, all opponents within the Polestar Field have their Cryo RES and Electro RES decreased by 20%.\n> Additionally, if the Detection Core created is:\n> ·Steady State: All nearby party members gain 123 Elemental Mastery;\n> ·Overloaded: Your active character gains 234 Elemental Mastery.\n\n**C3 — The Knotted String of Invariant Topology** — [NEW]\n> Increases the Level of the Elemental Skill Principle: Variable Detection by 3.\n> Maximum upgrade level is 15.\n\n**C4 — The Isotopes Born of Decay** — [NEW]\n> Detection Cores created by Mitya himself deals 1 instance of AoE Electro DMG equal to 300% of Mitya's Elemental Mastery to nearby opponents for every 5 Gradient Beacons consumed while it is on the field. This DMG is considered Stellar-Conduct reaction DMG.\n\n**C5 — The Periodic Law That Orders All** — [NEW]\n> Increases the Level of Normal Attack: Chain Reaction by 3.\n> Maximum upgrade level is 15.\n\n**C6 — Elemental Transition at the Gate of Reason** — [NEW]\n> Detection Core is enhanced. If the Detection Core:\n> · Is in the Steady State: Detection Core deals 115% of its original DMG.\n> · Is Overloaded: There is a 34% chance to create 1 new Gradient Beacon whenever Mitya consumes a Gradient Beacon with the Detection Core.\n> Additionally, Stellar-Conduct reaction DMG dealt by all nearby party members is Elevated by 20%."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Genshin Impact 7.1.53 Beta • Page 2/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "# ★4 • Valeriy • Electro • Sword\n-# Fort Fulguration · Constellation: Ursus Magnus\n\n**Base Stats**\n> CRIT Rate 5%\n> CRIT DMG 50%\n-# [Full kit](https://gi.gachabase.net/characters/10000137/valeriy/beta?lang=en)\n\n### Talents\n**Guard Tactics: Sword and Shield** — [NEW]\n> Normal Attack\n> Performs up to 3 consecutive sword strikes.\n> Charged Attack\n> Consumes a certain amount of Stamina to leap forward and slam the ground, dealing Physical DMG to nearby opponents.\n> When Valeriy has at least 40 Impact Momentum, he will consume all Impact Momentum to instead perform the special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment.\n> Plunging Attack\n> Plunges from mid-air to strike the ground below, damaging opponents along the path and dealing AoE DMG upon impact.\n> 1-Hit DMG: 68.7%\n> 2-Hit DMG: 62.1%\n> 3-Hit DMG: 96.1%\n> Charged Attack DMG: 212.2%\n> Direct-Fire Mortar: Point-Blank Bombardment DMG: 435.5%\n> Charged Attack Stamina Cost: 20\n> Electro DMG Bonus: 46.2% ATK\n> Stellar-Conduct DMG Bonus: 138.6% ATK\n> Offensive Directive Stacks: 15\n> Offensive Directive Duration: 18s\n> Plunge DMG: 135.3%\n> Low/High Plunge DMG: 270.5%/337.9%\n\n**Active Defense: Bastion Charge** — [NEW]\n> Valeriy raises his shield cannon and charges forward, dealing AoE Electro DMG, gaining 40 Impact Momentum, and deploying a Supercharged Shield.\n> The Supercharged Shield's DMG Absorption scales with Valeriy's ATK, and has 250% absorption efficiency against Electro DMG.\n> Skill DMG: 315.4%\n> Shield DMG Absorption: 396.9% ATK + 3110.64\n> Shield Duration: 18s\n> CD: 10s\n\n**Focused Fire: Lightning Salvo** — [NEW]\n> Deals AoE Electro DMG to nearby opponents and fires a Thunderburst Shell high into the air. The Thunderburst Shell disperses into a barrage of projectiles that rain down, dealing AoE Electro DMG to nearby opponents.\n> Skill DMG: 256.7%\n> Thunderburst Shell DMG: 59.9%\n> Duration: 12s\n> CD: 15s\n> Energy Cost: 60\n\n### Passives\n**Advance With the Creeping Barrage** — [NEW]\n> Valeriy gains 5 Impact Momentum whenever another nearby active character in the party hits an opponent with an attack whose Elemental Type is Electro while the Thunderburst Shells from his Elemental Burst Focused Fire: Lightning Salvo are falling. He can gain up to 80 Impact Momentum in this way after each use of his Elemental Burst.\n\n**Into the Breach** — [NEW]\n> Offensive Directive is enhanced based on the amount of Impact Momentum consumed when performing his special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment. Each point consumed further increases the DMG granted by Offensive Directive. If Valeriy is:\n> ·In the Radiance: Stellar-Conduct state: Each point of Impact Momentum consumed increases this DMG by an amount equal to 0.9% of Valeriy's ATK;\n> ·Not in the Radiance: Stellar-Conduct state: Each point of Impact Momentum consumed increases this DMG by an amount equal to 0.3% of Valeriy's ATK.\n\n**Subzero Conditioning** — [NEW]\n> Valeriy enters the Radiance: Stellar-Conduct state while within a Polestar Field.\n\n**Tundra Operational Intelligence** — [NEW]\n> Gains 25% more rewards when dispatched on a Snezhnaya (not including Nod-Krai) Expedition for 20 hours.\n\n### Constellations\n**C1 — The Cadence of Suppressive Fire** — [NEW]\n> Valeriy regenerates 6 Elemental Energy after performing the special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment. For every 10 Impact Momentum consumed beyond 40 when performing this special Charged Attack, he regenerates an additional 1.5 Elemental Energy. Each time he performs Direct-Fire Mortar: Point-Blank Bombardment, he can regenerate up to 15 Elemental Energy in this way. This effect can trigger once every 15s."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Genshin Impact 7.1.53 Beta • Page 3/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Valeriy** *(cont.)*\n\n> Additionally, each time Valeriy enters combat, the first time he uses his Elemental Skill Active Defense: Bastion Charge, he gains an additional amount of Impact Momentum equal to 150% of the amount normally gained.\n\n**C2 — Ranks That Charge as One** — [NEW]\n> All nearby party members gain 100 Elemental Mastery for 18s after Valeriy uses his Elemental Skill Active Defense: Bastion Charge.\n> Additionally, while protected by a Supercharged Shield, if Valeriy is already at maximum Impact Momentum, any further Impact Momentum he would gain is instead converted into increased DMG Absorption for the shield. Each point of excess Impact Momentum increases the Supercharged Shield's DMG Absorption by an amount equal to 8% of Valeriy's ATK. Up to 20 excess Impact Momentum can be converted in this way.\n\n**C3 — Vigilance at Close Quarters** — [NEW]\n> Increases the Level of Normal Attack Guard Tactics: Sword and Shield by 3.\n> Maximum upgrade level is 15.\n\n**C4 — Fortitude Unshaken by Attrition** — [NEW]\n> Impact Momentum's limit is increased by 30, and its charging efficiency is increased by 30%.\n> Additionally, the Ascension Talent Advance With the Creeping Barrage is enhanced: The maximum amount of Impact Momentum that can be gained from this Talent after using the Elemental Burst is 104. You must unlock the Ascension Talent Advance With the Creeping Barrage to gain access to this effect.\n\n**C5 — Resolve to Divide and Destroy** — [NEW]\n> Increases the Level of the Elemental Skill Active Defense: Bastion Charge by 3.\n> Maximum upgrade level is 15.\n\n**C6 — The Strength to Breach Enemy Lines** — [NEW]\n> The special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment and Thunderburst Shells from Elemental Burst Focused Fire: Lightning Salvo are enhanced: Their DMG is increased by 100%, and opponents they hit have the CRIT Rate of Electro DMG they take increased by 10% for 7s. If the Electro DMG taken is Stellar-Conduct reaction DMG, that DMG instance's CRIT DMG is also increased by 40%."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Genshin Impact 7.1.53 Beta • Page 4/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Weapons\n**★5 Starsealed Edict** — [NEW]\n> Base ATK 542\n> **Dawnstar's Flowing Trail:**\n> Increases CRIT DMG by 24%. The equipping character gains the Crystal Compounding effect when they use their Elemental Skill, increasing Elemental Mastery by 48 for 20s. During this time, the equipping character gains a stack of Law of Combustion when a nearby party member triggers an Elemental Reaction. Each stack increases Elemental Mastery by an additional 24. Max 3 stacks. These stacks last until Crystal Compounding ends or the equipping character uses their Elemental Skill again.\n> Radiance: Stellar-Conduct: Each Law of Combustion stack also increases the equipping character's Stellar-Conduct CRIT DMG by 12%.\n-# [Full kit](https://gi.gachabase.net/weapons/14525/starsealed-edict/beta?lang=en)"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Genshin Impact 7.1.53 Beta • Page 5/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+HSR:
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [HSR - 4.6.54 Beta] Patch Notes: v4.6.54\nResource: [gachabase](https://hsr.gachabase.net/changelog/beta?lang=en) / [nanoka](https://hsr.nanoka.cc/diff)\n### ✦ New Characters"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/hsr/avatardrawcard/1511.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/CtFvvUVqqBjmbcGDmd1N7XwEJBEcka5RcRt7cXA6cPQ/https/static.nanoka.cc/assets/hsr/avatardrawcard/1511.webp",
+                "width": 2048,
+                "height": 2048,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "# ★4 • Aeon ★ Aha • Quantum • Elation\n\n**Base Stats**\n> Lv. 80 — HP 1048 · ATK 679 · DEF 509\n> SPD 94\n> Max Energy 8\n> CRIT Rate 5%\n> CRIT DMG 50%\n-# [Full kit](https://hsr.gachabase.net/characters/1511/aeon-aha/beta?lang=en)\n\n### Basic ATK\n**Basic ATK: Starfrost, Showtime!** — [NEW] *(Single Target)*\n> Deals 70% Quantum <u>Elation DMG</u> to one designated enemy target.\n> **(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.\n\n### Skill\n**Skill: This Emanator Was Certified by Aha™** — [NEW] *(Support)*\n> Causes one designated ally character (except this unit) to gain the \"Emanator of Elation\" state, then immediately launches a <u>Follow-up ATK</u>, dealing 62.5% Quantum <u>Elation DMG</u> to all enemies. The \"Emanator of Elation\" state lasts for the entire battle until switching to the next target. The target with the \"Emanator of Elation\" state has their Elation stat increased by 25% and, at the start of their turn, causes Aeon ★ Aha to gain 1 point(s) of \"Wishpower.\"\n> **(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.\n> **(Follow-Up ATK)** Unleashes an extra attack on the target. This effect is triggered automatically when requirements are met.\n\n### Ultimate\n**Ultimate: Aha! Let There Be Laughter** — [NEW] *(AoE)*\n> Causes <u>Aha</u>'s <u>action to advance</u> by 20%. Aeon ★ Aha gains the \"Faces of Elation\" state, lasting for 3 turn(s). At the start of each Aeon ★ Aha's turn, duration decreases by 1. Deals 240% Quantum <u>Elation DMG</u> to all enemies, then deals 5 instance(s) of DMG. Each instance deals 72% Quantum <u>Elation DMG</u> to one random enemy.\n> **(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed.\n> **(Action Advance)** Reduces the target's waiting interval before the next action.\n> **(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.\n\n### Talent\n**Talent: Work Wonders with THEM** — [NEW] *(Enhance)*\n> The Ultimate can be activated once \"Wishpower\" reaches 8 point(s). Wishpower can overflow until 10 after reaching its max. Aeon ★ Aha gains 1 point(s) of \"Wishpower\" after using Basic ATK, Skill, or Elation Skill. Once allies' <u>Punchline</u> reaches 40 point(s) for the first time, Aeon ★ Aha will immediately gain 1 points of \"Wishpower\" and increase all allies' CRIT DMG by 50%, lasting for 3 turn(s). This can be triggered again after <u>Aha</u>'s turn ends.\n> **(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.\n> **(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\""
+        },
+        {
+          "id": 5,
+          "type": 9,
+          "components": [
+            {
+              "id": 6,
+              "type": 10,
+              "content": "-# Citlali Mains • Honkai: Star Rail 4.6.54 Beta • Page 1/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Aeon ★ Aha** *(cont.)*\n\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed.\n\n### Skills\n**Attack** — [NEW] *(Maze Attack)*\n> Attacks an enemy, and after entering combat, reduces their Toughness of the corresponding Type.\n\n### Technique\n**Technique: ABRACADABRA!** — [NEW] *(Enhance)*\n> After using the Technique, creates a Special Dimension around this unit lasting 20 second(s). Enemies within the Special Dimension are inflicted with \"Misjudgment.\" Enemies inflicted with \"Misjudgment\" cannot detect ally targets. After entering combat, <u>Aha</u> immediately gains 1 <u>extra turn</u> that takes a fixed 20 <u>Punchline</u> into account. Only 1 dimension effect created by allies can exist at the same time.\n> **(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed.\n> **(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.\n> **(Extra Turn)** Gain 1 extra turn that won't expend your remaining turns when taking action. During this extra turn, no Ultimate can be used.\n\n### Elation Skill\n**Elation Skill: Yes Aha At Full Moon** — [NEW] *(AoE)*\n> Ignores <u>Participant ID</u> and is always used at the end of the Aha Instant. Deals Quantum <u>Elation DMG</u> equal to 75% to all enemies, then deals <u>True DMG</u> equal to 20% of total non-True DMG dealt by ally targets this Aha Instant, equally distributed among all enemies.\n> **(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.\n> **(True DMG)** Non-Type DMG that is not affected by any effects. This DMG is not considered as launching 1 attack.\n\n### Innate Trace\n**Innate Trace: Faces of Elation ★ Ex Nihilo** — [NEW] *(Enhance)*\n> While possessing the \"Faces of Elation\" state, Aeon ★ Aha causes allies' <u>Path of Elation to ascend</u>, enhancing <u>Punchline</u> and the \"<u>Certified Banger</u>\" state into <u>Bliss</u> and the \"<u>Party Trick</u>\" state. <u>Bliss</u> recovers 10% of the consumed Punchline at the end of the \"Aha Instant\" turn. During \"Faces of Elation,\" Aeon ★ Aha's CRIT Rate increases by 20%, and the DMG dealt by Aeon ★ Aha ignores 60% of the enemy target's DEF.\n> **(Path of Elation Ascension)** When Aeon ★ Aha has the \"Faces of Elation\" state, \"Punchline\" and \"Certified Banger\" are enhanced to \"Bliss\" and \"Party Trick,\" and ally characters on the Path of Elation will activate their \"Innate Trace\" effects.\n> **(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.\n> **(Certified Banger)** Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Honkai: Star Rail 4.6.54 Beta • Page 2/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Aeon ★ Aha** *(cont. 2)*\n\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently.\n> **(Bliss)** Gaining Bliss is considered the same as gaining Punchline. At the end of the \"Aha Instant\" turn, a portion of the value taken into account is regained as Bliss.\n> **(Party Trick)** When gaining the \"Party Trick\" state, it is considered the same as gaining the \"Certified Banger\" state. The \"Party Trick\" will affect the \"Innate Trace\" effects of ally Elation characters.\n\n### Talent\n**Talent: The True Story of Aha** — [NEW] *(Enhance)*\n> When Aeon ★ Aha and teammates deal DMG, additionally deal <u>\"Elation Debt\"</u> effect equal to 25% of DMG to the enemy target. During the enemy target's phase transition, they maintain the <u>\"Elation Debt\"</u> value, with a maximum not exceeding 10% of the target's Max HP.\n> **(Elation Debt)** Elation Debt occupies Max HP. If the occupied portion includes current HP, that portion of current HP is immediately lost.\n\n### Exclusive Effect\n**Aha Instant Incoming** — [NEW] *(Support)*\n> Effect obtained after acquiring Aeon ★ Aha or when Aeon ★ Aha is in the current team: In combat, Aeon ★ Aha will personally lead the \"Aha Instant\" and can fast-forward the Elation Skill being used. The base SPD of \"Aha Instant\" increases from 80 to Aeon ★ Aha's base SPD.\n\n### Eidolons\n**E1 — Who Giggled at the Primordial Hush?** — [NEW]\n> When entering combat, immediately gains 5 point(s) of \"Wishpower.\" When Aeon ★ Aha is present, <u>merrymakes</u> <u>Elation DMG</u> dealt by all ally targets by 15%.\n> **(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.\n> **(Merrymake)** A special effect that affects Elation DMG and can additionally boost Elation DMG dealt.\n\n**E2 — Between THEIR Eyes and Yours** — [NEW]\n> Enhances <u>Path of Elation Ascension</u> effects:\n> …\n> -# ⚠️ Unresolved backend placeholder in this revision's data — the enhanced effect is not readable yet.\n> **(Path of Elation Ascension)** When Aeon ★ Aha has the \"Faces of Elation\" state, \"Punchline\" and \"Certified Banger\" are enhanced to \"Bliss\" and \"Party Trick,\" and ally characters on the Path of Elation will activate their \"Innate Trace\" effects.\n> **(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.\n> **(Certified Banger)** Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently.\n> **(Bliss)** Gaining Bliss is considered the same as gaining Punchline. At the end of the \"Aha Instant\" turn, a portion of the value taken into account is regained as Bliss.\n> **(Party Trick)** When gaining the \"Party Trick\" state, it is considered the same as gaining the \"Certified Banger\" state. The \"Party Trick\" will affect the \"Innate Trace\" effects of ally Elation characters.\n\n**E3 — A Stacked Deck of Sorrow and Joy** — [NEW]\n> Ultimate Lv. +2, up to a maximum of Lv. 15.\n> Basic ATK Lv. +1, up to a maximum of Lv. 10.\n> Elation Skill Lv. +1, up to a maximum of Lv. 15."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Honkai: Star Rail 4.6.54 Beta • Page 3/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Aeon ★ Aha** *(cont. 3)*\n\n**E4 — A Joke's Fate Boxed in Black** — [NEW]\n> The multiplier of the <u>True DMG</u> dealt by Elation Skills increases by 25% of the original multiplier. When Aeon ★ Aha deals <u>Elation DMG</u>, an additional 100% of the cumulative \"<u>Certified Banger</u>\" stacks possessed by teammates will be taken into account.\n> **(True DMG)** Non-Type DMG that is not affected by any effects. This DMG is not considered as launching 1 attack.\n> **(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.\n> **(Certified Banger)** Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently.\n\n**E5 — Moi Onstage and Me Offstage** — [NEW]\n> Skill Lv. +2, up to a maximum of Lv. 15.\n> Talent Lv. +2, up to a maximum of Lv. 15.\n> Elation Skill Lv. +1, up to a maximum of Lv. 15.\n\n**E6 — For THEY Said: You Are Elation** — [NEW]\n> Enemy targets always have the <u>\"Elation Debt\"</u> effect that is at least equal to 20% of the target's Max HP. The first time Aeon ★ Aha uses THEIR Ultimate, <u>Aha</u>'s <u>action advances</u> by 100%, and Aha gains 100 <u>Punchline(s)</u>.\n> **(Elation Debt)** Elation Debt occupies Max HP. If the occupied portion includes current HP, that portion of current HP is immediately lost.\n> **(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed.\n> **(Action Advance)** Reduces the target's waiting interval before the next action.\n> **(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Honkai: Star Rail 4.6.54 Beta • Page 4/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Light Cones\n**See You at the World's End!** — [NEW]\n> Lv. 80 — HP 847 · ATK 476 · DEF 397\n> **Conspirator:**\n> For every Elation character on the team, increase the wearer's CRIT DMG by 6%. When Aeon ★ Aha is on the field, the wearer's CRIT DMG additionally increases by 12%.\n-# [Full kit](https://hsr.gachabase.net/light-cones/22009/see-you-at-the-world-s-end/beta?lang=en)\n\n**Upon the First Echo of \"Aha\"** — [NEW]\n> Lv. 80 — HP 953 · ATK 582 · DEF 529\n> **Improv Tour:**\n> Increases the wearer's base Speed by 12. When using a Skill on one other ally, gains 10 Punchline. This effect can trigger at most once every interval of 1 turn(s). Then, causes all allies to ignore 16% of the enemy target's DEF when dealing DMG during this combat. This effect cannot be stacked.\n-# [Full kit](https://hsr.gachabase.net/light-cones/23065/upon-the-first-echo-of-aha/beta?lang=en)\n\n### Relics & Ornaments\n**God's Moment of Joy** — [NEW]\n> 2-Piece: Increases the wearer's SPD by 6%. When the wearer's Elation reaches 40% or higher, the wearer's action advances by 40% immediately when entering combat.\n-# [Full kit](https://hsr.gachabase.net/relicsets/329/god-s-moment-of-joy/beta?lang=en)\n\n**Subspace ASC Center** — [NEW]\n> 2-Piece: Increases the wearer's SPD by 6%. When the wearer's SPD reaches 145 or higher, increases all allies' Break Effect by 18% after entering combat. This effect cannot stack.\n-# [Full kit](https://hsr.gachabase.net/relicsets/330/subspace-asc-center/beta?lang=en)"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Honkai: Star Rail 4.6.54 Beta • Page 5/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+ZZZ:
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [ZZZ - 3.4.1 Beta] Patch Notes: v3.4.1 Rev. 19851435\nResource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en) / [nanoka](https://zzz.nanoka.cc/diff)\n### ✦ New Agents"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/8WG5Mlo6DKGpIOvOAAI1wUlrpjsMsEy4hxTKb0lX_js/https/static.nanoka.cc/assets/zzz/IconRole1601.webp",
+                "width": 1920,
+                "height": 2588,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "# ★5 • Sunbringer • Fire • Armorer\n\n**Base Stats**\n> Lv. 60 — HP 5736 · ATK 626 · DEF 441\n> CRIT Rate 33.8%\n> CRIT DMG 50%\n> Impact 93\n> Anomaly Mastery 78\n> Anomaly Proficiency 77\n> PEN Ratio 0%\n> Laceration DMG 150%\n-# [Full kit](https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en)\n\n### Basic Attack\n**Basic Attack: Thornbreaker** — [NEW]\n> Press <IconMap:Icon_Normal> to activate:\n> Lindverne performs up to 4 consecutive attacks forward, dealing Genesis Flare DMG.\n> Repeatedly press or hold during the 4th attack to perform an extended slash against enemies.\n> When the heavy attack of the 4th attack hits an enemy with [Gash], consume all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, trigger [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n> Character is invulnerable during the 4th attack.\n> During the 3rd and 4th attacks, Anti-Interrupt Level is increased and DMG taken is reduced by 40%.\n> **Lv. 12:**\n> - 1st-Hit DMG Multiplier: **138.4%**\n> - 2nd-Hit DMG Multiplier: **194.8%**\n> - 3rd-Hit DMG Multiplier: **388.5%**\n> - 4th-Hit DMG Multiplier: **730.2%**\n> - 1st-Hit Daze Multiplier: **81.5%**\n> - 2nd-Hit Daze Multiplier: **117.7%**\n> - 3rd-Hit Daze Multiplier: **238.8%**\n> - 4th-Hit Daze Multiplier: **453.7%**\n> - Maim DMG Multiplier: **336.3%**\n\n**Basic Attack: Bannerbearer** — [NEW]\n> Press <IconMap:Icon_Normal> to activate:\n> Eldreda performs up to four consecutive attacks forward, dealing Genesis Flare DMG;\n> When the heavy attack of the fourth hit lands on an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG;\n> During the third and fourth hits, Anti-Interrupt Level is increased and DMG taken is reduced by 40%.\n> **Lv. 12:**\n> - 1st-Hit DMG Multiplier: **89.5%**\n> - 2nd-Hit DMG Multiplier: **192.6%**\n> - 3rd-Hit DMG Multiplier: **288.1%**\n> - 4th-Hit DMG Multiplier: **424.1%**\n> - 1st-Hit Daze Multiplier: **52.3%**\n> - 2nd-Hit Daze Multiplier: **115.4%**\n> - 3rd-Hit Daze Multiplier: **177.3%**\n> - 4th-Hit Daze Multiplier: **263.9%**\n> - Maim DMG Multiplier: **336.3%**\n\n**Basic Attack: Bannerbearer - Converging Edge** — [NEW]\n> When [Willpower] is sufficient, hold <IconMap:Icon_Normal> to activate:\n> Switch to Eldreda and launch an attack, dealing Genesis Flare DMG.\n> Character is invulnerable while using this skill.\n> After using this skill, gain [Chain Teeth] and [Flag Order].\n> **Lv. 12:**\n> - DMG Multiplier: **1722.5%**\n> - Daze Multiplier: **226.3%**\n\n### Dodge\n**Dodge: Phase Fold** — [NEW]\n> Press <IconMap:Icon_Evade> to activate:\n> Lindverne performs a quick dash dodge.\n> Character is invulnerable while using this skill.\n\n**Dash Attack: Void Slash Rush** — [NEW]\n> Press <IconMap:Icon_Normal> during a dodge to activate:\n> Lindverne slashes forward, dealing Genesis Flare DMG.\n> **Lv. 12:**\n> - DMG Multiplier: **72.3%**\n> - Daze Multiplier: **49.5%**\n\n**Dodge Counter: Smoldering Fire Reignition** — [NEW]\n> When [Perfect Dodge] is triggered, press <IconMap:Icon_Normal> to activate:\n> Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.\n> After using this skill, press <IconMap:Icon_Normal> to quickly chain into the 3rd hit of [Basic Attack].\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **776.2%**\n> - Daze Multiplier: **448.5%**\n\n**Dodge: Spatial Reconstruction** — [NEW]\n> Press <IconMap:Icon_Evade> to activate:\n> Eldreda performs a quick dash dodge.\n> Character is invulnerable while using this skill."
+        },
+        {
+          "id": 5,
+          "type": 9,
+          "components": [
+            {
+              "id": 6,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 1/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Sunbringer** *(cont.)*\n\n**Dash Attack: Reality Reversal** — [NEW]\n> Press <IconMap:Icon_Normal> during a dodge to activate:\n> Eldreda thrusts forward, dealing Genesis Flare DMG.\n> **Lv. 12:**\n> - DMG Multiplier: **72.4%**\n> - Daze Multiplier: **50.7%**\n\n**Dodge: Patrol** — [NEW]\n> Hold <IconMap:Icon_Evade> while moving the {LAYOUT_CONSOLECONTROLLER#stick}{LAYOUT_FALLBACK#joystick} to activate:\n> Eldreda enters the [Nightglide] state, allowing high-speed movement.\n> While in the [Nightglide] state, use the {LAYOUT_CONSOLECONTROLLER#stick}{LAYOUT_FALLBACK#joystick} to control direction. Release the {LAYOUT_CONSOLECONTROLLER#stick}{LAYOUT_FALLBACK#joystick} to stop.\n> Character is invulnerable at the moment this skill activates.\n\n**Dash Attack: Patrol - Shadow Realm Raid** — [NEW]\n> In [Nightglide] state, Press <IconMap:Icon_Normal> to activate:\n> Eldreda unleashes a quick Tail Swipe attack, dealing Genesis Flare DMG.\n> **Lv. 12:**\n> - DMG Multiplier: **228.4%**\n> - Daze Multiplier: **157.3%**\n\n**Dodge Counter: Cold Flame Returning Edge** — [NEW]\n> Press <IconMap:Icon_Normal> during a Perfect Dodge to activate:\n> Eldreda launches consecutive attacks forward, dealing Genesis Flare DMG.\n> After using this skill, press <IconMap:Icon_Normal> to follow up with the 4th hit of Basic Attack.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **708.2%**\n> - Daze Multiplier: **412.5%**\n\n### Assist\n**Quick Assist: Dauntless Aid** — [NEW]\n> When the active character is launched, press <IconMap:Icon_Switch> to activate:\n> Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.\n> After using this skill, press <IconMap:Icon_Normal> to quickly chain into the 3rd hit of [Basic Attack].\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **206.5%**\n> - Daze Multiplier: **141.8%**\n\n**Quick Assist: Path of the Gleaming Edge** — [NEW]\n> When the active character is launched, press <IconMap:Icon_Switch> to activate:\n> Eldreda unleashes a flurry of consecutive attacks forward, dealing Genesis Flare DMG.\n> After activating this skill, press <IconMap:Icon_Normal> to chain into the 4th hit of her [Basic Attack].\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **180.2%**\n> - Daze Multiplier: **124.3%**\n\n**Defensive Assist: Oath of Steadfastness** — [NEW]\n> When the on-field character is about to be attacked, press <IconMap:Icon_Switch> to activate:\n> Dracaene parries the enemy's attack, accumulating massive Daze.\n> When Lindverne or Eldreda is on field, this skill can also be activated by switching in the next character.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - Light Defensive Daze Multiplier: **407.7%**\n> - Heavy Defensive Daze Multiplier: **514.4%**\n> - Chain Defensive Daze Multiplier: **250.4%**\n\n**Counter Assist: Fortress of Hope** — [NEW]\n> When the user or the on-field Character is about to be hit by certain enemy Control Skills, press <IconMap:Icon_Switch> to activate:\n> Dracaene grapples with the monster. If she wins the struggle, she neutralizes the enemy's Control Skill and deals Genesis Flare DMG;\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1757.6%**\n> - Daze Multiplier: **919.3%**\n\n**Assist Follow-Up: Lighthouse, Towering in the Sky** — [NEW]\n> After activating a [Counter Assist], press <IconMap:Icon_Normal> to activate:\n> Dracaene unleashes an attack dealing massive Genesis Flare DMG. When the heavy attack hits an enemy, it directly applies 1 stack of [Gash] to the target.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **939.1%**\n> - Daze Multiplier: **566.9%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 2/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Sunbringer** *(cont. 2)*\n\n**Assist Follow-Up: Undying Passion** — [NEW]\n> Press <IconMap:Icon_Normal> after Dracaene performs a [Defensive Assist] to activate:\n> Lindverne unleashes a swift forward Slash, then triggers an explosion, dealing Genesis Flare DMG;\n> After activating this skill, press <IconMap:Icon_Normal> to quickly chain into the 4th hit of the [Basic Attack];\n> Repeatedly press or hold during this skill to keep slashing enemies;\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1101.6%**\n> - Daze Multiplier: **671.2%**\n\n**Assist Follow-Up: Faith Unwavering** — [NEW]\n> Press <IconMap:Icon_Normal> after Dracaene activates a Defensive Assist to activate:\n> Eldreda unleashes a swift forward slash, followed by an explosion that deals Genesis Flare DMG.\n> After using this skill, press <IconMap:Icon_Normal> to chain into the 4th hit of her Basic Attack.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1006.7%**\n> - Daze Multiplier: **609.8%**\n\n### Special Attack & EX Special Attack\n**Special Attack: Night Blaze** — [NEW]\n> Press <IconMap:Icon_Special> to activate:\n> Switch to Lindverne and launch an attack, dealing Genesis Flare DMG.\n> **Lv. 12:**\n> - DMG Multiplier: **102.8%**\n> - Daze Multiplier: **71%**\n\n**EX Special Attack: Night Blaze - Dawnrise** — [NEW]\n> When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> to activate:\n> Lindverne and Eldreda launch a Synergy attack, keeping Lindverne on the field and dealing Genesis Flare DMG.\n> When the heavy attack hits an enemy with [Gash], consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] once on the target, dealing additional AoE Genesis Flare DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1240.5%**\n> - Daze Multiplier: **743.7%**\n\n**EX Special Attack: Night Blaze - Dawnborn (Modified)** — [NEW]\n> When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> after the final hit of [Basic Attack: Thornbreaker], [Dodge Counter: Smoldering Fire Reignition], [Assist Follow-Up: Undying Passion], [Ultimate: \"By This Wish, All Things Remade\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:\n> Lindverne and Eldreda launch a coordinated attack, keeping Lindverne on the field and dealing Genesis Flare DMG.\n> When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a max of 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1247.2%**\n> - Daze Multiplier: **742.2%**\n\n**EX Special Attack: Night Blaze - End of the Long Dark** — [NEW]\n> When [Chain Teeth] is available, press <IconMap:Icon_Special> to activate:\n> Consume [Chain Teeth]. Lindverne and Eldreda unleash a high-tier Synergy attack while Lindverne remains on the field, dealing massive Genesis Flare DMG;\n> After using this skill, press <IconMap:Icon_Normal> to quickly chain into the 4th hit of [Basic Attack];\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **2690.6%**\n> - Daze Multiplier: **611.7%**\n\n**Special Attack: Kindled Lamp** — [NEW]\n> Press <IconMap:Icon_Special> to activate:\n> Switch to Eldreda and launch an attack, dealing Genesis Flare DMG.\n> **Lv. 12:**\n> - DMG Multiplier: **100.6%**\n> - Daze Multiplier: **69%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 3/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Sunbringer** *(cont. 3)*\n\n**EX Special Attack: Kindled Lamp - Gloom's End** — [NEW]\n> When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> to activate:\n> Eldreda and Lindverne launch a Synergy attack, keeping Eldreda on the field and dealing Genesis Flare DMG.\n> When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1218.2%**\n> - Daze Multiplier: **728.6%**\n\n**EX Special Attack: Kindled Lamp - Gloom's End - Revised** — [NEW]\n> When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> after the final hit of [Bannerbearer], or after using [Dodge Counter: Cold Flame Returning Edge], [Assist Follow-Up: Faith Unwavering], [Ultimate: \"Onward, Together\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:\n> Eldreda launches a Synergy attack with Lindverne and Dracaene while remaining on the field, dealing Genesis Flare DMG;\n> When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a maximum of 3. For each [Gash] stack consumed, [Maim] is triggered once on the target, dealing additional AoE Genesis Flare DMG;\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1278%**\n> - Daze Multiplier: **761.9%**\n\n**EX Special Attack: Kindled Lamp - Torch of Eternal Day** — [NEW]\n> When holding [Flag Order], press <IconMap:Icon_Special> to activate:\n> Consume [Flag Order] for Eldreda and Lindverne to unleash a high-powered Synergy attack, keeping Eldreda on the field and dealing massive Genesis Flare DMG;\n> After using this skill, press <IconMap:Icon_Normal> to chain into the 4th hit of [Basic Attack];\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **2441.1%**\n> - Daze Multiplier: **605.8%**\n\n### Chain Attack & Ultimate\n**Chain Attack: Building Dreams for All** — [NEW]\n> When a Chain Attack is triggered, select the character to activate:\n> Lindverne and Eldreda team up to unleash a powerful attack, keeping Lindverne on the field and dealing Genesis Flare DMG;\n> When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG;\n> Character is invulnerable while using this skill;\n> When Lindverne triggers a Daze Chain Attack window, Lindverne can be selected directly to activate this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1550.3%**\n> - Daze Multiplier: **407.7%**\n\n**Ultimate: \"Onward, Together\"** — [NEW]\n> When Decibel Rating is at Maximum, press <IconMap:Icon_UltimateReady> to activate:\n> Lindverne launches a Coordinated Attack with Eldreda and Dracaene and remains on the field, dealing massive Genesis Flare DMG.\n> While holding Flag Order, consumes Flag Order and converts it into Wish Core.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **3900.1%**\n> - Daze Multiplier: **476.7%**\n\n**Chain Attack: In the Name of Sunbringer** — [NEW]\n> When a Chain Attack is triggered, select the character to activate:\n> Eldreda and Lindverne team up to unleash a high-powered Synergy attack, keeping Eldreda on the field and dealing Genesis Flare DMG;\n> After using this skill, press <IconMap:Icon_Normal> to follow up with the 4th hit of the Basic Attack;\n> When the heavy attack hits an enemy with Gash, it consumes all Gash stacks on the target, up to 3 stacks. For each Gash stack consumed, triggers Maim once on the target, dealing additional AoE Genesis Flare DMG;"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 4/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Sunbringer** *(cont. 4)*\n\n> Character is invulnerable while using this skill;\n> When Eldreda triggers a Daze Chain Attack window, Eldreda can be selected directly to activate this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1550.3%**\n> - Daze Multiplier: **407.7%**\n\n**Ultimate: \"By This Wish, All Things Remade\"** — [NEW]\n> When Eldreda has [Wish Core], press <IconMap:Icon_UltimateReady> to activate:\n> Eldreda warps space in mid-air to attack, dealing Genesis Flare DMG and removing all [Ember Scar] from enemies.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **2827%**\n> - Daze Multiplier: **674.7%**\n\n### Mindscape Cinema\n**Mindscape Cinema 1** — [NEW]\n> When Sunbringer enters the battlefield, she immediately gains 120 [Willpower]. This effect can trigger once every 180s in Investigation Zone mode. The first use of [Basic Attack: Bannerbearer - Converging Edge] increases the amount of [Ember Scar] accumulated by enemies to 150% of the original amount. DMG dealt by Sunbringer's skills ignores 15% of the enemy's Fire RES.\n\n**Mindscape Cinema 2** — [NEW]\n> When Sunbringer hits an enemy with other skills and deals DMG, the target also accumulates [Ember Scar]. The amount of [Ember Scar] accumulated is equal to 12% of the actual DMG dealt by the skill. Sharp DMG dealt by Sunbringer ignores 12% of the enemy's DEF."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 5/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/tvlHFt5nNs82KwhgM2a2cRMUAoMToO8BGXMW3x7CcKw/https/static.nanoka.cc/assets/zzz/IconRole1661.webp",
+                "width": 1552,
+                "height": 2292,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "# ★5 • Robin • Ether • Defense\n\n**Base Stats**\n> Lv. 60 — HP 8754 · ATK 750 · DEF 706\n> CRIT Rate 5%\n> CRIT DMG 50%\n> Impact 90\n> Anomaly Mastery 96\n> Anomaly Proficiency 95\n> PEN Ratio 0%\n-# [Full kit](https://zzz.gachabase.net/agents/1661/robin/beta?lang=en)\n\n### Basic Attack\n**Basic Attack: Robin Attack** — [NEW]\n> Press <IconMap:Icon_Normal> to activate:\n> Unleashes up to 3 attacks forward, dealing Ether DMG;\n> **Lv. 12:**\n> - 1st-Hit DMG Multiplier: **76%**\n> - 2nd-Hit DMG Multiplier: **88%**\n> - 3rd-Hit DMG Multiplier: **230.7%**\n> - 1st-Hit Daze Multiplier: **35%**\n> - 2nd-Hit Daze Multiplier: **62.6%**\n> - 3rd-Hit Daze Multiplier: **178.1%**\n\n### Dodge\n**Dodge: Robin Dodge** — [NEW]\n> Press <IconMap:Icon_Dash> to activate:\n> A quick dash dodge.\n> Character is invulnerable while using this skill.\n\n**Dash Attack: Robin Dash** — [NEW]\n> Press <IconMap:Icon_Normal> during a dodge to activate:\n> Perform an attack forward, dealing Ether DMG.\n> **Lv. 12:**\n> - DMG Multiplier: **252.6%**\n> - Daze Multiplier: **74.9%**\n\n**Dodge Counter: Robin Counter** — [NEW]\n> Press <IconMap:Icon_Normal> during a Perfect Dodge to activate:\n> Swing the staff to attack enemies in front, dealing Ether DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **663.4%**\n> - Daze Multiplier: **338.9%**\n\n### Assist\n**Entry Skill: Robin Entrance** — [NEW]\n> When at 100 or more [Entry Points], switching this character on field or holding <IconMap:Icon_Normal> consumes 100 [Entry Points] to activate:\n> Unleashes an Energy blast at enemies in front, dealing massive Ether DMG.\n> Activating this skill counts as activating a [Quick Assist].\n> Provides all squad members with a [Robin Shield] equal to 4% of this character's initial Max HP, lasting 20s.\n> **Lv. 12:**\n> - DMG Multiplier: **2128.8%**\n> - Daze Multiplier: **264%**\n\n**Quick Assist: Robin Assist** — [NEW]\n> When the active character is launched, press <IconMap:Icon_Switch> to activate:\n> Swing the staff to attack enemies in front, dealing Ether DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **74.8%**\n> - Daze Multiplier: **44.8%**\n\n**Defensive Assist: Robin Defensive Assist** — [NEW]\n> When the on-field character is about to be attacked, press <IconMap:Icon_Switch> to activate:\n> Parries the enemy's attack, dealing massive Daze.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - Light Defensive Daze Multiplier: **407.7%**\n> - Heavy Defensive Daze Multiplier: **514.4%**\n> - Chain Defensive Daze Multiplier: **250.4%**\n\n**Assist Follow-Up: Robin Assist Follow-Up** — [NEW]\n> Press <IconMap:Icon_Normal> after a Defensive Assist to activate:\n> Swing the staff to attack enemies in front, dealing Ether DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **919.1%**\n> - Daze Multiplier: **470.6%**\n\n**Counter Assist: Robin Counter** — [NEW]\n> When you or the on-field character is about to be hit by certain enemies' Control Skills, press <IconMap:Icon_Switch> to activate:\n> Engage in a power clash with the monster. If successful, neutralize the enemy's Control Skill and deal Ether DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **268.4%**\n> - Daze Multiplier: **71%**\n\n**Assist Follow-Up: Grapple Assault** — [NEW]\n> After using a Counter Assist, press <IconMap:Icon_Normal> to activate [Assist Follow-Up], which automatically triggers:\n> Deals massive Ether DMG;\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **545.3%**\n> - Daze Multiplier: **295.2%**"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 6/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Robin** *(cont.)*\n\n**Assist Follow-Up: Grappling Synergy Strike** — [NEW]\n> Press <IconMap:Icon_Normal> after other squad members activate a Counter Assist to activate:\n> Fire a powerful laser forward, dealing massive Ether DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **660%**\n> - Daze Multiplier: **286.4%**\n\n### Special Attack & EX Special Attack\n**Special Attack: Robin Exit** — [NEW]\n> Press <IconMap:Icon_Special> to activate:\n> Leaps high into the air and unleashes an Energy Blast around her, dealing massive Ether DMG.\n> During skill activation, Anti-Interrupt level increases, and DMG taken is reduced by 40%.\n> After activation, triggers a Quick Assist. After switching out, Robin enters the [Off-Field Guard] state for 60s. Repeated triggers refresh the duration. Also grants all squad members a [Robin Shield] equal to 2% of Robin's initial Max HP, lasting 15s.\n> While Robin is in the [Off-Field Guard] state, she can only be switched in via [Chain Attack], [Entry Skill], or [Counter Assist]. Switching her in ends the [Off-Field Guard] state.\n> While [Off-Field Guard] is active, all squad members gain bonus DEF: when Robin's initial Max HP exceeds 16,000, every 1,000 additional HP grants DEF, up to a maximum of DEF. This effect lasts for another 15s after Robin's [Off-Field Guard] state ends.\n> **Lv. 12:**\n> - DMG Multiplier: **338.6%**\n> - Daze Multiplier: **200.1%**\n\n**Special Attack: Aftershock** — [NEW]\n> While Robin is in the [Off-Field Guard] state, this skill triggers automatically when another active character in the squad lands any attack on an enemy:\n> Swings her staff to attack forward, dealing Ether DMG;\n> Character is invulnerable while using this skill;\n> Upon activation, gains 20 [Entry Points] and grants all squad members a [Robin Shield] equal to 3% of Robin's initial Max HP, lasting 15s;\n> [Special Attack: Aftershock] counts as an Aftershock and can be triggered at most once every 8s.\n> **Lv. 12:**\n> - DMG Multiplier: **112.1%**\n> - Daze Multiplier: **91.3%**\n\n**EX Special Attack: Enhanced Aftershock** — [NEW]\n> When activating [Special Attack: Aftershock], if Energy is at least 40, it is upgraded to [EX Special Attack: Enhanced Aftershock]:\n> Continuously consumes a total of 40 Energy to fire a powerful laser forward, dealing massive Ether DMG;\n> Robin's heavy attacks deal additional DMG equal to % of her Max HP;\n> Character is invulnerable while using this skill;\n> Upon activation, gains 20 [Entry Points] and grants all squad members a [Robin Shield] equal to 6% of her initial Max HP, lasting 15s;\n> [EX Special Attack: Enhanced Aftershock] counts as an Aftershock.\n> **Lv. 12:**\n> - DMG Multiplier: **280.8%**\n> - Daze Multiplier: **238.8%**\n\n### Chain Attack & Ultimate\n**Chain Attack: Robin Chain Attack** — [NEW]\n> When a Chain Attack is triggered, select the character to activate:\n> Fires a powerful laser forward, dealing massive Ether DMG.\n> Character is invulnerable while using this skill.\n> **Lv. 12:**\n> - DMG Multiplier: **1379%**\n> - Daze Multiplier: **154.4%**\n\n**Ultimate: Robin Ultimate** — [NEW]\n> When Decibel Rating is at Maximum, press <IconMap:Icon_UltimateReady> to activate:\n> Channels powerful energy through song to unleash a devastating blast, dealing massive Ether DMG.\n> Character is invulnerable while using this skill.\n> Upon activation, converts 40% of each squad Agent's [Robin Shield] into their own HP.\n> **Lv. 12:**\n> - DMG Multiplier: **4564.6%**\n> - Daze Multiplier: **166.2%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 7/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Robin** *(cont. 2)*\n\n### Mindscape Cinema\n**Mindscape Cinema 1** — [NEW]\n> Each time Robin consumes [Enhance Buff Points], all squad members gain 20% Laceration DMG for 60s. Repeated triggers refresh the duration. When consuming [Enhance Buff Points], Robin gains 1 stack of [Feather Defense]. When the on-field character takes DMG, Robin consumes 1 stack of [Feather Defense] to make them briefly Invulnerable.\n\n**Mindscape Cinema 2** — [NEW]\n> When Robin triggers an [Aftershock], DMG dealt by all squad members ignores 12% of the enemy's RES for 15s. Repeated triggers refresh the duration. Squad members with [Robin Shield] gain increased Anti-Interrupt level.\n\n**Mindscape Cinema 3** — [NEW]\n> Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 8/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### W-Engines\n**★4 ID 14160** (Percent DEF) — [NEW]\n> Base ATK 446\n> CRIT Rate +20%. When the equipper uses an [EX Special Attack], the character gains [Enhance] for 25s. This effect is also gained immediately when the equipper enters combat, and repeated triggers reset the duration. While [Enhance] is active, the equipper's Fire DMG is increased by 22%, and their Fire Sharp DMG is increased by 10%.\n-# [Full kit](https://zzz.gachabase.net/w-engines/14160/id-14160/beta?lang=en)\n\n**★4 Robin's Exclusive W-Engine** (Percent HP) — [NEW]\n> Base ATK 713\n> **Robin Test Engine:**\n> When the equipper applies a shield, the whole squad's DEF increases by 10% for 10s. Repeated triggers extend the duration, up to a maximum of 25s. Only one instance of this effect can exist in the same squad. When the equipper launches an Aftershock, the whole squad's DMG increases by 10% for 15s, stacking up to 2 times. Repeated triggers refresh the duration. Only one instance of this effect can exist in the same squad.\n-# [Full kit](https://zzz.gachabase.net/w-engines/14166/robin-s-exclusive-w-engine/beta?lang=en)\n\n### Drive Discs\n**ID 34300** — [NEW]\n> 2-Piece: DEF +16%.\n> 4-Piece: Increases the equipper's CRIT Rate by 12%. When the equipper deals Fire Sharp DMG, it ignores 16% of the enemy's DEF.\n-# [Full kit](https://zzz.gachabase.net/drive-discs/34300/id-34300/beta?lang=en)\n\n**ID 34400** — [NEW]\n> 2-Piece: Energy Regen +20%.\n> 4-Piece: When the equipper's CRIT Rate is at least 50%, CRIT DMG increases by 30%, and Daze inflicted by attacks increases by 5%. When the equipper is a [Stun] Character, using an [EX Special Attack] or [Chain Attack] increases Sharp DMG dealt by all squad members by 8% for 25s, and repeated triggers reset the duration. Only one instance of this effect can exist in the same squad.\n-# [Full kit](https://zzz.gachabase.net/drive-discs/34400/id-34400/beta?lang=en)"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 9/9"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+WUWA / Wuthering Waves:
+
