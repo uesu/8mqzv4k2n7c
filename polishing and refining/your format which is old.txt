@@ -887,3 +887,222 @@ ZZZ:
 
 WUWA / Wuthering Waves:
 
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [WW - 3.8.1 Beta] Patch Notes: v3.8.1\nResource: [nanoka](https://ww.nanoka.cc/diff) / [Encore beta](https://encore.moe/new?v=Beta)\n### ✦ New Resonators"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "# ★5 • Lily • Spectro • Pistols\n\n**Base Stats**\n> Lv. 90 — HP 16712.5 · ATK 287.5 · DEF 1100\n-# [Full kit](https://ww.nanoka.cc/character/1512/)\n\n### Normal Attack\n**Normal Attack: Mend and Cleanse** — [NEW]\n> <size=40>Basic Attack</size>\n> repeatedly or hold Normal Attack to perform up to 4 consecutive attacks, dealing Spectro DMG.\n> <size=10></size>\n> <size=40>Mid-air Attack</size>\n> Consume STA to perform a Plunging Attack, dealing Spectro DMG.\n> <size=10></size>\n> <size=40>Dodge Counter</size>\n> Normal Attack shortly after a successful Dodge to attack the target, dealing Spectro DMG. Normal Attack shortly after casting this skill to cast Basic Attack Stage 4.\n> **Skill Attributes (Lv. 10)**\n> Basic Attack Stage 1 DMG: 135.55%\n> Basic Attack Stage 2 DMG: 45.94%+45.94%*3\n> Basic Attack Stage 3 DMG: 193.60%\n> Basic Attack Stage 4 DMG: 72.57%*3+72.57%\n> Plunging Attack DMG: 208.98%\n> Dodge Counter DMG: 181.41%\n> Mid-air Attack STA Cost: 30\n\n### Resonance Skill\n**Resonance Skill: Dream Blend** — [NEW]\n> <size=40>Resonance Skill - Nightmare Blend</size>\n> Lily starts with Heavy Attack - Woven Fairytale by default. When Heavy Attack - Woven Fairytale is active, Resonance Skill to switch to Heavy Attack - Woven Phantasm, dealing Spectro DMG to nearby targets.\n> This skill shares a Cooldown with Resonance Skill - Reverie Blend.\n> <size=10></size>\n> <size=40>Resonance Skill - Reverie Blend</size>\n> When Heavy Attack - Woven Phantasm is active, Resonance Skill to switch to Heavy Attack - Woven Fairytale, dealing Spectro DMG to nearby targets.\n> This skill shares a Cooldown with Resonance Skill - Nightmare Blend.\n> **Skill Attributes (Lv. 10)**\n> Resonance Skill - Reverie Blend DMG: 290.25%\n> Resonance Skill - Nightmare Blend DMG: 290.25%\n> Resonance Skill - Reverie Blend/Nightmare Blend Cooldown: 5\n> Resonance Skill - Reverie Blend/Nightmare Blend Concerto Regen: 8\n\n### Resonance Liberation\n**Resonance Liberation: Into the Dream Cradle** — [NEW]\n> Casting this skill sends Lily into Slumberland and grants <te href=151203>Cradle Lullaby</te> to Resonators in the team.\n> <size=10></size>\n> <size=40>Slumber</size>\n> Lasts for 50s. When Lily is in Slumberland, she heals the nearby active Resonator every 3s. During Slumberland, use directional input to command Dreambind to deal Spectro DMG to nearby targets. Dreambind pulls in targets within a certain range every 5s, and stops attacking 10s after movement stops. Resonance Liberation again during Slumberland to end it early.\n> When Lily is in Slumberland, when a Resonator in the team casts Intro Skill, targets within a certain range are pulled in.\n> Switching to another Resonator during Slumberland keeps Lily on the field, and she takes no DMG while in Slumberland. Lily leaves the field when Slumberland ends, or earlier if she gets too far from the active Resonator.\n> <size=10></size>\n> <size=40>Cradle Lullaby</size>\n> Lasts for 25s. While this effect is active, each Intro Skill cast by a Resonator in the team grants 1 stack of <te href=151204>Dream Aroma</te>. This effect is removed when Lily is the incoming Resonator.\n> <size=10></size>\n> <size=40>Dream Aroma</size>\n> Each stack increases the ATK of all Resonators in the team by 7%, stacking up to 4 times. This effect is removed when Lily is the incoming Resonator or when Cradle Lullaby ends.\n> **Skill Attributes (Lv. 10)**\n> Cooldown: 25\n> Resonance Cost: 175\n> Concerto Regen: 20\n> Slumberland Healing: 996+2.00%\n> Dreambind Continuous DMG: 36.29%"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Citlali Mains • Wuthering Waves 3.8.1 Beta • Page 1/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Lily** *(cont.)*\n\n### Inherent Skill\n**Inherent Skill: Woven Scent** — [NEW]\n> While casting Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, Lily additionally restores 6 points of Concerto Energy per second for 3s. This effect can be triggered once every 20s.\n> Casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End additionally restores 10 points of Concerto Energy. This effect can be triggered once every 20s.\n\n**Inherent Skill: Flowers for You** — [NEW]\n> While the active Resonator has 50% or more HP, Lily grants them 10% DMG Reduction.\n> When a Resonator in the team takes a fatal blow, they will not be downed and will instead gain a Shield equal to 10% of Lily's Max HP for 10s. This effect can be triggered once every 5 min.\n> Casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End grants Floral Blessing to Resonators in the team.\n> <size=10></size>\n> <size=40>Floral Blessing</size>\n> Lasts for 60s. When a Resonator in the team takes DMG that brings their HP below 50% of their Max HP, they restore HP equal to 50% of their Max HP, and Floral Blessing is removed. This effect can be triggered once every 120s.\n\n### Intro Skill\n**Intro Skill: Blooming Dream** — [NEW]\n> <size=40>First Bloom</size>\n> Attack the target, dealing Spectro DMG. Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.\n> <size=10></size>\n> <size=40>Eternal Bloom</size>\n> After casting Resonance Liberation - Into the Dream Cradle, Lily's next Intro Skill First Bloom is replaced with Eternal Bloom. When cast, it attacks the target, dealing Spectro DMG.\n> For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.\n> Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.\n> **Skill Attributes (Lv. 10)**\n> Intro Skill - First Bloom DMG: 85.63%+85.63%*3\n> Intro Skill - Eternal Bloom DMG: 65.86%\n> Concerto Regen: 10\n\n### Forte Circuit\n**Forte Circuit: Dreamland of Flowers** — [NEW]\n> <size=40>Dream Perfume</size>\n> Lily can hold up to 300 points.\n> Basic Attack, Mid-air Attack, and Dodge Counter restore Dream Perfume on hit.\n> Casting Resonance Skill - Reverie Blend or Resonance Skill - Nightmare Blend restores Dream Perfume.\n> <size=10></size>\n> <size=40>Heavy Attack - Woven Fairytale</size>\n> When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Fairytale, consuming all Dream Perfume to pull in nearby targets, dealing Spectro DMG. During the skill, she gains 10% DMG Reduction and continuously deals Spectro DMG to nearby targets. She also heals all Resonators in the team every second for 2s.\n> Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Fairytale's Finale. Heavy Attack - Fairytale's Finale is automatically cast at the end of Heavy Attack - Woven Fairytale. Casting Heavy Attack - Fairytale's Finale consumes all Dreambell Chime.\n> <size=10></size>\n> <size=40>Heavy Attack - Fairytale's Finale</size>\n> Attack targets within range, dealing Spectro DMG.\n> For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.\n> Casting the skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants <te href=151202>Silvered Dream</te> to Resonators in the team. This effect can be triggered once every 25s.\n> <size=10></size>\n> <size=40>Heavy Attack - Woven Phantasm</size>"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Wuthering Waves 3.8.1 Beta • Page 2/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Lily** *(cont. 2)*\n\n> When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Woven Phantasm, consuming all Dream Perfume to pull in nearby targets, dealing Spectro DMG. She also heals all Resonators in the team every second for 2s.\n> Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Phantasm's End. Heavy Attack - Phantasm's End is automatically cast at the end of Heavy Attack - Woven Phantasm. Casting Heavy Attack - Phantasm's End consumes all Dreambell Chime.\n> <size=10></size>\n> <size=40>Heavy Attack - Phantasm's End</size>\n> Attack targets within range, dealing Spectro DMG.\n> For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.\n> Casting this skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants <te href=151202>Silvered Dream</te> to Resonators in the team. This effect can be triggered once every 25s.\n> <size=10></size>\n> <size=40>Silvered Dream</size>\n> Lasts for 30s.\n> When the Resonator with this effect is the Active Resonator and can trigger Unison Response, their ATK is increased by 7% for each stack of <te href=131111>Unison Boon</te> the team has, counting up to 4 stacks of <te href=131111>Unison Boon</te>.\n> The active Resonator's Echo Skill Crit. Rate is increased by 10%, and their Echo Skill Crit. DMG is increased by 20%.\n> All nearby Resonators in the team gain resistance to interruption.\n> **Skill Attributes (Lv. 10)**\n> Heavy Attack - Woven Fairytale Healing: 2139+4.30%\n> Heavy Attack - Woven Phantasm Healing: 2139+4.30%\n> Heavy Attack - Woven Fairytale DMG: 45.36%+45.36%*19\n> Heavy Attack - Woven Phantasm DMG: 82.46%*11\n\n> Heavy Attack - Fairytale's Finale DMG: 65.31%\n> Heavy Attack - Phantasm's End DMG: 65.31%\n\n### Outro Skill\n**Outro Skill: Blooming Fragrance** — [NEW]\n> Resonators in the team gain 25% All DMG Amplification for 30s.\n\n### Skill\n**Skill: Healing Bonus+** — [NEW]\n> Healing Bonus increased by {0}.\n\n**Skill: HP+** — [NEW]\n> HP increased by {0}.\n\n**Skill: HP+** — [NEW]\n> HP increased by {0}.\n\n**Skill: Healing Bonus+** — [NEW]\n> Healing Bonus increased by {0}.\n\n**Skill: Healing Bonus+** — [NEW]\n> Healing Bonus increased by {0}.\n\n**Skill: HP+** — [NEW]\n> HP increased by {0}.\n\n**Skill: HP+** — [NEW]\n> HP increased by {0}.\n\n**Skill: Healing Bonus+** — [NEW]\n> Healing Bonus increased by {0}.\n\n### Tune Break\n**Tune Break: Tune Break: Pistols** — [NEW]\n> When the target's Off-Tune Level is full, the Resonator may cast <te href=100001>Tune Break</te> on the target.\n\n### Resonance Chain\n**Sequence Node 1 — Look, White Flowers from the Ruins of Dreams** — [NEW]\n> Lily is immune to interruption while channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End.\n> While <te href=151203>Cradle Lullaby</te> is active, each Intro Skill cast by a Resonator in the team now grants 2 stacks of <te href=151204>Dream Aroma</te>.\n\n**Sequence Node 2 — Listen, a Requiem from the Dream Cradle** — [NEW]\n> While <te href=151203>Cradle Lullaby</te> is active, when a Resonator in the team casts an Intro Skill, each stack of <te href=151204>Dream Aroma</te> additionally increases Crit. Rate by 2% and Crit. DMG by 6%."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Wuthering Waves 3.8.1 Beta • Page 3/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Lily** *(cont. 3)*\n\n**Sequence Node 3 — May Your Soul Wander No More** — [NEW]\n> Casting Intro Skill - Eternal Bloom additionally grants Lily <SapTag=0>25</SapTag> of Concerto Energy and <SapTag=1>170</SapTag> of <te href=151201>Dream Perfume</te>.\n> While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, Lily gains Dreambell Chime faster, and the healing provided is increased by 50%.\n\n**Sequence Node 4 — May Your Past Sink into Silence** — [NEW]\n> While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while in Slumberland, healing provided is increased by 30%.\n\n**Sequence Node 5 — May You Find Peace in Endless Light** — [NEW]\n> The DMG Multipliers of Heavy Attack - Fairytale's Finale, Heavy Attack - Phantasm's End, and Intro Skill - Eternal Bloom are increased by 40%.\n\n**Sequence Node 6 — May My Reverie Never End** — [NEW]\n> The Spectro DMG dealt by Heavy Attack - Fairytale's Finale, Heavy Attack - Phantasm's End, and Intro Skill - Eternal Bloom is further increased by 500%."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Wuthering Waves 3.8.1 Beta • Page 4/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Weapons\n**★5 Lullaby** — [NEW]\n> ATK 412.5 · Energy Regen 77.04%\n> **Dreamland Solace:**\n> Increases Max HP by 12%. Casting Resonance Liberation restores 8 points of Concerto Energy, triggered once every 20s. All Resonators in the team gain Soothed Soul for 30s when the wielder peforms healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16% ATK increase for [value unavailable]s. This effect is removed when Soothed Soul ends. When the wielder heals Resonators, the active Resonator also gains 24% Echo Skill DMG Bonus for 6s. Effects of the same name do not stack.\n> -# Some values are unavailable in this revision's source data.\n-# [Full kit](https://ww.nanoka.cc/weapon/21030076/)"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Citlali Mains • Wuthering Waves 3.8.1 Beta • Page 5/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
