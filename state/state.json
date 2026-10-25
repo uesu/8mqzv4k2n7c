@@ -1882,16 +1882,28 @@
       },
       "INKSHIFT33": {
         "first_seen": 1792889718,
-        "gate": "only ennead",
-        "last_seen": 1792889718,
+        "gate": "redeem-validated",
+        "last_seen": 1792896919,
+        "message_id": "1563747785272991805",
+        "msg_codes": [
+          "INKSHIFT33",
+          "LEVELUP33"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1792896919,
         "rewards": [
           "Polychrome ×20",
           "Denny ×2222"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "db5f4f8a75a5"
       },
       "JRNY2SKY": {
         "expired_at": 1791734437,
@@ -1925,16 +1937,28 @@
       },
       "LEVELUP33": {
         "first_seen": 1792889718,
-        "gate": "only ennead",
-        "last_seen": 1792889718,
+        "gate": "redeem-validated",
+        "last_seen": 1792896919,
+        "message_id": "1563747785272991805",
+        "msg_codes": [
+          "INKSHIFT33",
+          "LEVELUP33"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1792896919,
         "rewards": [
           "Polychrome ×20",
           "Denny ×2222"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "db5f4f8a75a5"
       },
       "ROSCAELIFER0617": {
         "first_seen": 1790323430,
