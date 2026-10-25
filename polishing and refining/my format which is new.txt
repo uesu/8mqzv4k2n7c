@@ -718,3 +718,454 @@ More Formats but focus only on the styling, images layout as the prime formattin
     }
   ]
 }
+
+More which is patch notes or like v2, v3 which shows changes or diff and it shows and knows and shows the information on CN which is ahead and it's auto EN too:
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Zenless Zone Zero - 3.3 Beta] Patch Notes: Rev. 19103188\nResource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en) / [nanoka](https://zzz.nanoka.cc/)"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.gachabase.net/zzz/assets/8000849831ef282230a0403845820fae.png",
+                "proxy_url": "https://media.discordapp.net/attachments/1296308518470549606/1548193336643559444/imgi_243_4348c872448455cafc24343d94207899_4986633869442220479.png?ex=6adedb67&is=6add89e7&hm=c7a0bb466642fee81ba579978ea3c626758c78fbc739f274c21839fa0261a6a8&",
+                "width": 1297,
+                "height": 1369,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "## Phoenix Reffaella\n**Attribute:** Fire | **Specialty:** Anomaly | **Rarity:** S-Rank | **Weapon Type:** Slash\n**Faction:** Krampus Compliance Authority\n\nPhoenix receives a comprehensive kit rework this revision. Her debuff [Weakened] is replaced by the stronger [Scorch], her [Embers] resource is renamed [Blazing Flame], and her entire EX Special loop is rebuilt around the new [Overclock] resource and [Withering Bloom] state. Her Ultimate now enters [Vitality Depletion] instead of [Dissolution], triggers the next character's Quick Assist, and her re-entry skill [Ultimate: Cinderfire Soul Chase] gains a new [Abloom] trigger. All skill names are finalized.\n\n**Note:** This revision contains large-scale terminology finalization alongside genuine functional reworks. Cross-check with Chinese for accuracy.\n### Basic Attack Changes\n\n*   **Basic Attack** renamed to **[Basic Attack: Life Severing]:**\n    *   **[NERF]** 1st-Hit DMG Multiplier reduced from ~~**63.1%**~~ → **39.3%**. *(Hits 1–3 redistributed downward; hit 4 unchanged at **767.2%**.)*\n    *   **[NERF]** 2nd-Hit DMG Multiplier reduced from ~~**206.6%**~~ → **190.4%**.\n    *   **[NERF]** 3rd-Hit DMG Multiplier reduced from ~~**399.5%**~~ → **356.3%**.\n    *   *(Daze adjusted: 29.7%→25.3% / 90.6%→95% / 160.4%→147%. Hit 4 Daze unchanged at 305.3%.)*\n\n*   **[Basic Attack: Hold]** renamed to **[Basic Attack: Sin Pyre]:**\n    *   **[NERF]** DMG Multiplier reduced from ~~**1365.6%**~~ → **1053.4%**. *(−22.9% relative.)*\n    *   **[NERF]** Daze Multiplier reduced from ~~**412.5%**~~ → **280.5%**.\n    *   **[NERF]** Anomaly Buildup reduced from ~~**549.96**~~ → **329.96**.\n    *   **[CHANGED]** Consumes **[Blazing Flame]** instead of ~~[Embers]~~. *(Same 90-point cost; resource renamed.)*\n\n*   **[Basic Attack: Alt Attack]** renamed to **[Basic Attack: Meltdown]:** (follows [Special Attack: Fire Snatch])\n    *   **[BUFF]** DMG Multiplier increased from ~~**441.7%**~~ → **483.8%**.\n    *   **[BUFF]** Daze Multiplier increased from ~~**184.8%**~~ → **199.3%**.\n### **Dodge Changes**\n\n*   **Dodge** renamed to **[Dodge: Sway]:** *(Stats unchanged: 204.1% / 65.1%)*\n*   **Dash Attack** renamed to **[Dash Attack: Lean]:** *(Stats unchanged)*\n*   **Dodge Counter** renamed to **[Dodge Counter: Hellfire Double Cross]:**\n    *   **[BUFF]** DMG Multiplier increased from ~~**587.1%**~~ → **593.2%**.\n    *   **[BUFF]** Daze Multiplier increased from ~~**325.2%**~~ → **328.2%**.\n    *   **[NEW]** Can chain into the 3rd hit of [Basic Attack] via pressing Normal after use."
+        },
+        {
+          "id": 5,
+          "type": 9,
+          "components": [
+            {
+              "id": 6,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 1/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## Special Attack Rework\n### Special Attack Changes\n\n*   **[REWORK — Special Attack System]:** The entire Special Attack loop is rebuilt around the new **[Overclock]** resource.\n\n*   **[Special Attack: Pursuit Slash]** → renamed **[Special Attack: Fire Snatch]:**\n    *   **[REWORK — Fire Snatch]:** *Old:* Press/hold to charge; release to launch upward; DMG taken −40% during charge.\n    *   **[REWORK — Fire Snatch]:** *New:* Press Special → backstep then quick upward slash. When **[Overclock]** is active, hold Special to charge → release activates **[EX Special Attack: Blazing Slash]**. When [Overclock] is NOT active, during [Burning Attack], press Special to skip the backstep and go directly to the upward slash. DMG taken −40% during backstep and charge. Perfect Block still applicable at launch moment.\n    *   *(Stats unchanged: 140.3% DMG / 58.4% Daze. Anomaly Buildup increased from ~~35~~ → **53.75** on the upward slash.)*\n\n*   **[EX Special Attack: Phase 1]** → renamed **[EX Special Attack: Dazzle Flame]** (press, **40 Energy**):\n    *   **[NERF]** DMG Multiplier reduced from ~~**1046.2%**~~ → **973.8%**. *(In [Withering Bloom] state, the second Dazzle Flame activation is replaced by Solar Plunge — the lower individual number feeds into a two-hit EX loop.)*\n    *   **[BUFF]** Daze Multiplier increased from ~~**504.7%**~~ → **550.6%**.\n\n*   **[EX Special Attack: Phase 2]** → renamed **[EX Special Attack: Solar Plunge]** (after Dazzle Flame, press/hold, **40 Energy**):\n    *   **[BUFF]** DMG Multiplier increased from ~~**1191.6%**~~ → **1264%**.\n    *   **[BUFF]** Daze Multiplier increased from ~~**590.5%**~~ → **636.4%**.\n    *   **[BUFF]** Anomaly Buildup increased from ~~**421.73**~~ → **449.51**.\n\n*   **[NEW — EX Special Attack: Blazing Slash]** (with [Overclock] active, during [Burning Attack], press Special):\n    *   Powerful upward slash forward, massive Fire DMG — **681.2%** DMG / **157.4%** Daze / **222.05** Anomaly Buildup.\n    *   Perfect Block applicable. Invulnerable. Chains into 3rd [Basic Attack].\n    *   Does **not** count toward [Overclock] accumulation.\n\n*   **[NEW — Overclock]** mechanic:\n    *   Gained from: [Ultimate: Deathless Revival] heavy hit hitting enemy + every **2** [EX Special Attack] activations (except [Blazing Slash]).\n    *   When active: hold Special during charge → activates [EX Special Attack: Blazing Slash].\n    *   Node 1 on entry: grants **1 [Overclock]** (once per 180s in Investigation Zone).\n\n*   **[Energize]** — mechanic and stats unchanged (**81.4%** DMG / **52%** Daze). Triggered by heavy hits from [EX Solar Plunge] / [Sin Pyre] / [Ultimate] → next heavy attack deals bonus EX Special-class Fire DMG."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 2/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## Chain Attack & Ultimate Rework\n### Chain Attack Changes\n\n*   **[Chain Attack]** renamed to **[Chain Attack: Against All Odds]:**\n    *   **[ADJUSTMENT]** Old: if in [Dissolution] state, exits it and Anomaly Buildup +30% for this Chain Attack.\n    *   **[ADJUSTMENT]** New: [Dissolution] exit mechanic removed (replaced by [Vitality Depletion] system). Counts as [Burning Attack] — unchanged.\n    *   **[NEW]** Can chain into the 3rd hit of [Basic Attack] by pressing Normal after use.\n    *   *(Stats unchanged: 1662.4% DMG / 397.2% Daze / 439.53 Anomaly Buildup.)*\n### Ultimate Changes (MAJOR REWORK)\n\n*   **[Ultimate]** renamed to **[Ultimate: Deathless Revival]:**\n    *   **[BUFF]** DMG Multiplier massively increased from ~~**2318.1%**~~ → **3669.3%**. *(+58% relative — largest single multiplier gain in this revision.)*\n    *   **[BUFF]** Daze Multiplier increased from ~~**100.2%**~~ → **295.9%**.\n    *   **[BUFF]** Anomaly Buildup increased from ~~**519.02**~~ → **918.25**.\n    *   **[NEW]** Now counts as a **[Burning Attack]**.\n    *   **[NEW]** Upon use, automatically **triggers the next character's [Quick Assist]**.\n    *   **[ADJUSTMENT]** Death state renamed from ~~[Dissolution]~~ → **[Vitality Depletion]**. In [Vitality Depletion], Phoenix **cannot actively attack**. *(Prior [Dissolution] allowed Chain Attack exit with bonus Anomaly Buildup — this is removed.)*\n    *   **[ADJUSTMENT]** Follow-up skill changed from ~~[Ultimate: Entrance]~~ → **[Ultimate: Cinderfire Soul Chase]** (press Normal after use).\n    *   *([Abloom] at 623% on Finishing Move vs enemies under Attribute Anomaly — retained; [Abloom] crit → CRIT DMG +20% — retained.)*\n\n*   **[Ultimate: Entrance]** renamed and reworked to **[Ultimate: Cinderfire Soul Chase]:**\n    *   **[ADJUSTMENT]** Activation condition changed from ~~[Dissolution]~~ → **[Vitality Depletion]** state.\n    *   **[NERF]** Raw DMG Multiplier reduced from ~~**1545.8%**~~ → **193.4%**. *(This skill now deals its primary damage via the new [Abloom] trigger below, not raw multiplier.)*\n    *   **[NERF]** Daze Multiplier reduced from ~~**67.2%**~~ → **15.9%**.\n    *   **[NEW]** Finishing Move hitting enemies under any Attribute Anomaly triggers **1× [Abloom]** at **623%** multiplier. [Abloom] crit → CRIT DMG additionally +**20%**. *(Previously, this skill only dealt raw Fire DMG + HP recovery — it now has a full [Abloom] proc matching the main Ultimate's trigger.)*\n    *   **[NEW]** Can chain into 3rd hit of [Basic Attack] by pressing Normal after use.\n    *   *(HP recovery behavior — unchanged.)*"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 3/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## Assist, Core Passive & Core Nodes\n### Assist Changes\n*   **Quick Assist** → **[Quick Assist: First Aid]:** *(Stats unchanged: 191.1% / 121.4%)* **[NEW]** Chains into 3rd hit of [Basic Attack].\n*   **Defensive Assist** → **[Defensive Assist: Practice Makes Perfect]:** *(Stats unchanged)*\n*   **Assist Follow-Up** → **[Assist Follow-Up: Regeneration Therapy]:** *(Stats unchanged: 853.3% / 470.6%)*\n### Core Passive Rework [Nirvana]:\n\n*   **[REWORK — Core Passive: Nirvana]:** *Old:* Anomaly Proficiency +**40**; [Weakened] 20s (30% CRIT Rate, 15% CRIT DMG; threshold 145 AM, +0.7%/pt); revival once per **300s**.\n*   **[REWORK — Core Passive: Nirvana]:** *New:*\n    *   **[BUFF]** Anomaly Proficiency: ~~**+40**~~ → **+85**.\n    *   **[CHANGED]** Debuff: ~~[Weakened]~~ → **[Scorch]** (same 20s duration, same 30% base CRIT Rate trigger).\n    *   **[BUFF]** [Scorch] CRIT DMG: ~~**15%**~~ → **25%**.\n    *   **[NERF]** Anomaly Mastery threshold for CRIT Rate scaling: ~~**145**~~ → **155** points.\n    *   **[NEW]** [Scorch] enemies take **periodic Fire DMG** every **8s** (counted as EX Special Attack DMG).\n    *   **[CHANGED]** Resource: ~~[Embers]~~ → **[Blazing Flame]** (same 120 max; gained from [Burning Attack]).\n    *   **[NERF]** Revival cooldown: ~~**300s**~~ → **1200s** per trigger. Renamed [Revive] from [Resurrection].\n    *   **[NEW]** Perfect Block → gains **5 [Blazing Flame]** (once per 10s). (Moved from Special Attack description into Core Passive.)\n    *   **[NEW — Withering Bloom]:** Activating any EX Special → enters [Withering Bloom] 10s; refreshed by [Burning Attack] hits. In [Withering Bloom]: after using [EX Special: Dazzle Flame], the next [Dazzle Flame] activation is replaced by **[EX Special: Solar Plunge]**.\n### Additional Ability Rework [Krampus Ace]:\n*   **[REWORK — Additional Ability]:** *Old:* 2/3 Anomaly chars → [Weakened] Anomaly CRIT DMG 25% / 40%. *New:* [Scorch] Anomaly CRIT DMG flat **+15%**. *(Simpler condition — no 2/3 split; always active with 1 qualifying squadmate.)*\n### Core Skill Node Changes\n\n*   **Node 1:**\n    *   **[CHANGED]** On-entry resource: ~~1 [Energize]~~ → **1 [Overclock]**.\n    *   **[BUFF]** [Scorch] Anomaly crit bonus CRIT DMG: ~~**+20%**~~ → **+25%**.\n    *   **[CHANGED]** Resource efficiency: ~~[Embers]~~ → **[Blazing Flame]** acquisition +15% from [Burning Attack] DMG.\n\n*   **Node 2 [REWORK]:** *Old:* EX Special → [Incineration] 10s, Anomaly Buildup Rate +15%, retain EX phase; EX Phase 2 recovers 8 Energy. *New:* [Burn] inflicted by Phoenix → duration **+3s**; DMG to [Scorch] enemies **+25%**.\n\n*   **Node 4 [REWORK]:** *Old:* [Hold Basic Attack] → 200 Decibels. *New:* [Ultimate: Cinderfire Soul Chase] or [Basic Attack: Sin Pyre] triggering [Abloom] → additionally triggers **1 special [Abloom]** at fixed **300%** multiplier of the corresponding Attribute Anomaly DMG.\n\n*   **Node 6 [REWORK]:** *Old:* Additional Ability Anomaly requirement −1; EX Finishing Move [Abloom] 250% fixed; [Abloom] ignores 40% DEF. *New:*\n    *   **[NEW]** Activating EX Special → **ATK +600** for **20s** (refreshes on re-trigger).\n    *   **[BUFF]** [Overclock] activation requirement: requires **1 fewer** [EX Special Attack] to gain.\n    *   **[CHANGED]** [Abloom] ignore: ~~**40% enemy DEF**~~ → **20% enemy DMG RES**. *(Different defensive layer targeted.)*"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 4/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.gachabase.net/zzz/assets/ad58d7caab38f652594b50aae0a1375a.png",
+                "proxy_url": "https://media.discordapp.net/attachments/1296308518470549606/1548193336232509470/imgi_174_451c194407465c0b3b8ed23155cdffe4_2820969451331990544.png?ex=6adedb67&is=6add89e7&hm=e4ed0c4bff4189da0ab2c697d888c304ee2a40ce115c0e839994cc2709585a5c&",
+                "width": 1297,
+                "height": 1369,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "## Severian Lowell\n**Attribute:** Wind | **Specialty:** Attack | **Rarity:** S-Rank | **Weapon Type:** Slash\n**Faction:** Public Security: Metropolitan Order Division\n**Base CRIT Rate:** ~~19.4%~~ → **5%** | **Base CRIT DMG:** ~~50%~~ → **78.8%**\n\nSeverian's stat identity is restructured from CRIT Rate focus to CRIT DMG focus this revision — base CRIT Rate drops to standard 5% while base CRIT DMG rises significantly, and his signature W-Engine similarly swaps from CRIT DMG to CRIT Rate as its substat. His key finisher multipliers — [Blazing Spin] and [Shadow Hunt] — receive major buffs, while EX Special combo cost is halved. Core Passive simplified: entry now grants 2 [Gleaming Shadow] stacks, [Riding the Wind] stack-multiplier bonus removed, [Flow Breath] cap reduced at base. All Core Nodes are reshuffled with new effects.\n### Profile / Stat Changes\n*   **[ADJUSTMENT]** Base CRIT Rate: ~~**19.4%**~~ → **5%** | Base CRIT DMG: ~~**50%**~~ → **78.8%**. *(Stat identity shifted from CRIT Rate to CRIT DMG baseline — pairs with signature W-Engine swap to CRIT Rate substat.)*\n*   **[ADJUSTMENT]** Core Skill Stat Node: ~~**CRIT Rate +14.4%**~~ → **CRIT DMG +28.8%**.\n### Basic Attack Changes\n\n*   **Basic Attack: Swift Edge** — Hits 1–3 unchanged:\n    *   **[NERF]** 4th-Hit DMG Multiplier reduced from ~~**600.3%**~~ → **483.6%**. *(The standard 4th hit is weaker — power shifted to the dodge variant.)*\n    *   **[BUFF]** 4th-Hit Perfect Dodge DMG Multiplier increased from ~~**1493.4%**~~ → **1726.7%**. *(Rewards active counter-dodge play; +15.6% relative.)*\n\n*   **Basic Attack: Blazing Spin** (renamed from Blazing Spin → [Basic Attack: Blazing Spiral] in EN, same CN 烈旋):\n    *   **[BUFF]** DMG Multiplier increased from ~~**1493.4%**~~ → **1726.7%**. *(Same value as the new 4th-hit dodge bonus — consistent counter reward.)*\n\n*   **Basic Attack: Shadow Hunt of the Azure Wind** (EN name also appears as [Azure Wind Shadow Hunt] / [Pale Wind Shadow Hunt] — CN 苍风影猎 is authoritative):\n    *   **[BUFF]** DMG Multiplier increased from ~~**3677.9%**~~ → **4056.1%**. *(+10.3% relative — Severian's primary finisher hits significantly harder.)*\n    *   *(Daze Multiplier unchanged at 467.9%.)*\n### Special Attack Changes\n\n*   **EX Special Attack: Instant Wind Shatter** (EN also appears as [Instant Wind Rend] this revision — CN 瞬风裂毁):\n    *   **[BUFF]** Combo Skill Energy Cost reduced from ~~**80**~~ → **40**. *(Halved — the full combo variant is now the same cost as the wind blade extension. Faster EX cycling in rotation.)*\n    *   *(Combo DMG/Daze unchanged: 1132.5% / 554.1%. Wind Blade max unchanged: 818.4% / 382.5%.)*\n### Dodge Changes\n\n*   **[Dodge: Freeform]:**\n    *   **[NERF]** Counter-attack mechanic removed. Old: hit during Freeform → consume [Gleaming Shadow] → triggers [Blazing Spin] guaranteed CRIT, CRIT DMG +10%. New: provoke only — no listed counter trigger in updated text.\n### Chain Attack Changes\n\n*   **Chain Attack: Frost Blade Reap:**\n    *   **[NERF]** [Flow Breath] accumulated after use reduced from ~~**50**~~ → **35**. *(Less resource generation per Chain Attack — partially offset by Node 1 restoring this to 50 at M1.)*\n    *   *(DMG/Daze unchanged: 1743.7% / 369%.)*"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 5/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 3,
+          "type": 10,
+          "content": "### Assist Changes\n\n*   **[TEXT FIX]** Assist Follow-Up renamed from ~~[Cease Hostility with Hostility]~~ → **[Cease Hostility]**. *(Stats unchanged: 729.9% / 367.5%.)*\n\n### **Core Passive Changes [Endless Wind]:**\n\n*   **[BUFF]** Entering the battlefield now grants ~~**1**~~ → **2** stacks of [Gleaming Shadow]. *(Two guaranteed auto-dodges from the start — significantly more defensive uptime on entry.)*\n*   **[NERF]** [Flow Breath] cap reduced from ~~**150**~~ → **120**. *(Node 1 restores this to 150 at M1.)*\n*   **[ADJUSTMENT]** [Riding the Wind] max stack cap removed — no longer explicitly stacks to 2 with a consuming-for-amplification mechanic. Now: each Perfect Dodge grants 1 stack; when active, switching to Severian or Quick Assist entry **consumes this effect** to trigger [Entry Skill]. *(Old +60%/+300% final hit DMG amplification from consuming 1/2 stacks is no longer mentioned in the updated Core Passive text.)*"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 6/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## Core Nodes & Build Recommendations\n\n### Core Skill Node Changes\n\n*   **Node 1 [REWORK]:** *Old:* Enter → 100 [Flow Breath]; Basic Attack CRIT DMG +60%.\n    *   *New:* [Flow Breath] cap increased to **150**; [Chain Attack] now accumulates **50** [Flow Breath] (restores the Chain Attack nerf); [Entry Skill: Clearing Time] → replaced with [Chain Attack] (once per **60s**, up from 20s); [Shadow Hunt] → gains **1** [Wind Riding] per use (was 2); **[BUFF]** Basic Attack DMG increased by **70%**. *(Significant flat Basic Attack multiplier — makes his entire BA chain meaningfully stronger.)*\n\n*   **Node 2 [REWORK]:** *Old:* Entry Skill → Chain Attack (20s CD); Shadow Hunt → 2 [Wind Riding]; Additional Ability trigger → +15% ATK.\n    *   *New:* Entering battlefield → restores **150 [Flow Breath]** (once per 180s in Investigation Zone); Triggering [Perfect Dodge] or using [Shadow Hunt] → **PEN Ratio +20%** for **25s**. **[BUFF]** *(Replaces pure ATK scaling with damage penetration — strong offensive uptime given how frequently Severian dodges and uses Shadow Hunt.)*\n\n*   **Node 4 [REWORK]:** *Old:* Perfect Dodge / [Shadow Hunt] → ignore **16%** enemy DEF for 15s.\n    *   *New:* Triggering Additional Ability → own **ATK +10%**; Using [Blazing Spin] or [Shadow Hunt] → **Decibel Generation Rate +10%** for **15s**. *(Shifts from DEF ignore to ATK + meter gain — pairs differently with signature.)*\n\n*   **Node 6 Changes:**\n    *   **[NERF]** [Flow Breath] cap at Node 6: cap still reaches **180**, and on-entry restore also increases to **180** — unchanged from old cap behavior.\n    *   **[NERF]** [Shadow Hunt] final hit fixed extra DMG Multiplier reduced from ~~**+900%**~~ → **+550%**. *(Significant reduction to the M6 finisher bonus — net output of Shadow Hunt's ultimate hit is lower.)*\n    *   **[ADJUSTMENT]** [Wind Rise] effect: ~~+**10** [Flow Breath]/s for **3s**~~ → **+5 [Flow Breath]/s for 5s**. *(Same total 15 Flow Breath over 5s as 50 over 3 — wait: old = 10×3=30, new = 5×5=25. Slight total reduction but longer window.)*\n\n### Recommended Drive Discs *(newly added this revision)*\n\n**Disc Slot 4:** CRIT Rate > CRIT DMG > Percent ATK\n**Disc Slot 5:** Wind DMG Bonus > Percent ATK\n**Disc Slot 6:** Percent ATK\n**Recommended Substats:** CRIT Rate / CRIT DMG / Percent ATK\n\n*   **Dawn's Bloom:** 2-pc: Basic Attack DMG +15%. 4-pc: Basic Attack DMG +20%; Attack-specialty characters using EX Special or Ultimate → Basic Attack DMG +20% for 25s (refreshes).\n*   **Woodpecker Electro:** 2-pc: CRIT Rate +8%. 4-pc: Basic Attack, Dodge Counter, or EX Special crit hit → ATK +9% for 6s (separate timers per skill type).\n*   **Branch & Blade Song:** 2-pc: CRIT DMG +16%. 4-pc: Anomaly Mastery ≥ 115 → CRIT DMG +30%; squad member applies Freeze or triggers Shatter → CRIT Rate +12% for 15s."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 7/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1483961425444733172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## W - Engine Changes"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/Weapon_S_1641.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/QzRbXPn5IOyNtslGfF_24HeO4FJOmm1ws-HRHcgkLI0/https/static.nanoka.cc/assets/zzz/Weapon_S_1641.webp",
+                "width": 400,
+                "height": 400,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "### Nirvana Plume (S-Rank W-Engine — Anomaly)\n**Exclusive:** Phoenix | **Base ATK:** 713 | **Substat:** Anomaly Mastery 30%\n\n*   **[CHANGED]** Name finalized: ~~Phoenix Test Engine~~ → **Nirvana Plume** / **涅槃初翎** *(EN: Hatch Day).*\n*   **[BUFF]** Anomaly Proficiency bonus increased from ~~**75**~~ → **90** points.\n*   *(Fire DMG trigger unchanged: any squad Attribute Anomaly crit → Fire DMG +40% for 20s, refreshes.)*"
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/Weapon_S_1631.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Sz7cDWvnbzB_g2ngkFBQPH0ObxIehhs7FzNijcf882I/https/static.nanoka.cc/assets/zzz/Weapon_S_1631.webp",
+                "width": 400,
+                "height": 400,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "### Cage of Forbidden Sins (S-Rank W-Engine — Attack)\n**Exclusive:** Severian | **Base ATK:** 713 | **Substat:** ~~CRIT DMG 24%~~ → **CRIT Rate 24%**\n\n*   **[CHANGED]** Name finalized: ~~Severian Test Engine~~ → **Cage of Forbidden Sins** / **禁罪囚笼** *(EN: Evil Hunt at Your Fingertips).*\n*   **[ADJUSTMENT]** Substat type swapped: ~~**CRIT DMG 24%**~~ → **CRIT Rate 24%**. *(Mirrors Severian's base stat identity swap — his base CRIT DMG rose while base CRIT Rate dropped; the signature compensates the missing CRIT Rate.)*\n*   **[NERF]** Basic Attack hit ATK bonus reduced from ~~**15%**~~ → **10%**.\n*   **[NERF]** Wind DMG RES ignore reduced from ~~**20%**~~ → **16%**.\n*   **[BUFF]** Wind DMG RES ignore duration extended from ~~**20s**~~ → **30s**."
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/Weapon_A_Common_22.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/_AnW8VYakjTH-CqBo-XtNmwI2jmLPguYL_dS6eI5-D0/https/static.nanoka.cc/assets/zzz/Weapon_A_Common_22.webp",
+                "width": 400,
+                "height": 400,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "### Candlelight Scheme (A-Rank W-Engine — Armorer)\n\n*   **[CHANGED]** Name finalized: ~~3.3 Event Ball / Razor Arc~~ → **Candlelight Scheme** / **烛光诡计** *(EN: Fright Time).*\n*   *(Effect unchanged: EX Special → CRIT Rate +8% for 40s; DMG to enemies below 50% Max HP +15%.)*"
+        },
+        {
+          "id": 9,
+          "type": 9,
+          "components": [
+            {
+              "id": 10,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.3.3 Beta • Page 8/8"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
