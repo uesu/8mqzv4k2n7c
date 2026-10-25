@@ -11,6 +11,7 @@ and fix if there's any errors, bugs, edge case bugs
 7. on the for example and this applies to all games: "Citlali Mains • Zenless Zone Zero 3.4.1 Beta • Page 9/9" it is Citlali News, not Citlali Mains but also remove the Citlali Mains, and the only thing remains is "Zenless Zone Zero 3.4.1 Beta • Page 9/9" for example in all games and pages (this keeps it to the new format style that i want)
 8. i will not delete it yet so that when applying the newest update will edit it silently so that i can see if there's more changes to it or polishing, but of course the dated beta which is done already and should not be posted is recorded, so that when things is finally taking shape and fully polished and it can be locked and done
 9. remove the for example "Robin (cont. 2)" in all games, as there is already the "Zenless Zone Zero 3.4.1 Beta • Page 9/9" for example, and this applies to all games
+10. it should be smart, it should be dynamic
 
 https://github.com/uesu/8mqzv4k2n7c/actions/runs/40190864126/job/121161391522
 
