@@ -3300,3 +3300,538 @@ or is it the dimensions=unverified; URL quality hint was not used as proof, audi
     }
   ]
 }
+
+Twitter Feed Monitor #10622
+
+https://github.com/uesu/wvkhabh2s22/actions/runs/40148916387/job/121036110972
+
+2026-10-25T01:00:37.0443031Z Current runner version: '2.338.0'
+2026-10-25T01:00:37.0461680Z ##[group]Runner Image Provisioner
+2026-10-25T01:00:37.0462496Z Hosted Compute Agent
+2026-10-25T01:00:37.0462888Z Version: 20261021.618
+2026-10-25T01:00:37.0463347Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-25T01:00:37.0463788Z Build Date: 2026-10-21T00:45:21Z
+2026-10-25T01:00:37.0464522Z Worker ID: {bd054011-e5dd-4993-83fd-57c3a6ec810f}
+2026-10-25T01:00:37.0465025Z Region: centralus
+2026-10-25T01:00:37.0465365Z Cloud: Azure
+2026-10-25T01:00:37.0465778Z ##[endgroup]
+2026-10-25T01:00:37.0466609Z ##[group]Operating System
+2026-10-25T01:00:37.0467133Z Ubuntu
+2026-10-25T01:00:37.0467494Z 24.04.5
+2026-10-25T01:00:37.0467874Z LTS
+2026-10-25T01:00:37.0468200Z ##[endgroup]
+2026-10-25T01:00:37.0468629Z ##[group]Runner Image
+2026-10-25T01:00:37.0469035Z Image: ubuntu-24.04
+2026-10-25T01:00:37.0469412Z Version: 20261012.334.1
+2026-10-25T01:00:37.0470245Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-25T01:00:37.0471186Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-25T01:00:37.0471769Z ##[endgroup]
+2026-10-25T01:00:37.0472785Z ##[group]GITHUB_TOKEN Permissions
+2026-10-25T01:00:37.0474315Z Contents: write
+2026-10-25T01:00:37.0474711Z Metadata: read
+2026-10-25T01:00:37.0475104Z ##[endgroup]
+2026-10-25T01:00:37.0476495Z Secret source: Actions
+2026-10-25T01:00:37.0477213Z Cache mode: write
+2026-10-25T01:00:37.0477656Z Prepare workflow directory
+2026-10-25T01:00:37.0700522Z Prepare all required actions
+2026-10-25T01:00:37.0732696Z Getting action download info
+2026-10-25T01:00:37.2815621Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-25T01:00:37.6818902Z Download action repository 'actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97' (SHA:5fda3b95a4ea91299a34e894583c3862153e4b97)
+2026-10-25T01:00:38.0041870Z Complete job name: check-twitter
+2026-10-25T01:00:38.0915143Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-25T01:00:38.0915707Z with:
+2026-10-25T01:00:38.0915985Z   repository: uesu/wvkhabh2s22
+2026-10-25T01:00:38.0918218Z   token: ***
+2026-10-25T01:00:38.0918487Z   ssh-strict: true
+2026-10-25T01:00:38.0918764Z   ssh-user: git
+2026-10-25T01:00:38.0919043Z   persist-credentials: true
+2026-10-25T01:00:38.0919349Z   clean: true
+2026-10-25T01:00:38.0919629Z   sparse-checkout-cone-mode: true
+2026-10-25T01:00:38.0919947Z   fetch-depth: 1
+2026-10-25T01:00:38.0920217Z   fetch-tags: false
+2026-10-25T01:00:38.0920502Z   show-progress: true
+2026-10-25T01:00:38.0920785Z   lfs: false
+2026-10-25T01:00:38.0921095Z   submodules: false
+2026-10-25T01:00:38.0921383Z   set-safe-directory: true
+2026-10-25T01:00:38.0921699Z   allow-unsafe-pr-checkout: false
+2026-10-25T01:00:38.0922103Z ##[endgroup]
+2026-10-25T01:00:38.1540594Z Syncing repository: uesu/wvkhabh2s22
+2026-10-25T01:00:38.1541918Z ##[group]Getting Git version info
+2026-10-25T01:00:38.1542556Z Working directory is '/home/runner/work/wvkhabh2s22/wvkhabh2s22'
+2026-10-25T01:00:38.1543204Z [command]/usr/bin/git version
+2026-10-25T01:00:38.1629135Z git version 2.55.0
+2026-10-25T01:00:38.1646034Z ##[endgroup]
+2026-10-25T01:00:38.1654777Z Temporarily overriding HOME='/home/runner/work/_temp/3efc00de-8087-4fd2-8c58-10d0071862ef' before making global git config changes
+2026-10-25T01:00:38.1659771Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-25T01:00:38.1660535Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-25T01:00:38.1947728Z Deleting the contents of '/home/runner/work/wvkhabh2s22/wvkhabh2s22'
+2026-10-25T01:00:38.1955985Z ##[group]Determining repository object format
+2026-10-25T01:00:38.1957049Z ##[endgroup]
+2026-10-25T01:00:38.1957940Z ##[group]Initializing the repository
+2026-10-25T01:00:38.1961631Z [command]/usr/bin/git init /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-25T01:00:38.2147220Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-25T01:00:38.2148190Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-25T01:00:38.2149407Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-25T01:00:38.2150118Z hint: call:
+2026-10-25T01:00:38.2150523Z hint:
+2026-10-25T01:00:38.2151044Z hint: 	git config --global init.defaultBranch <name>
+2026-10-25T01:00:38.2151645Z hint:
+2026-10-25T01:00:38.2152205Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-25T01:00:38.2153222Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-25T01:00:38.2153936Z hint:
+2026-10-25T01:00:38.2154360Z hint: 	git branch -m <name>
+2026-10-25T01:00:38.2154826Z hint:
+2026-10-25T01:00:38.2155515Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-25T01:00:38.2156500Z Initialized empty Git repository in /home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/
+2026-10-25T01:00:38.2163785Z [command]/usr/bin/git remote add origin https://github.com/uesu/wvkhabh2s22
+2026-10-25T01:00:38.3346685Z ##[endgroup]
+2026-10-25T01:00:38.3347488Z ##[group]Disabling automatic garbage collection
+2026-10-25T01:00:38.3349751Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-25T01:00:38.3942943Z ##[endgroup]
+2026-10-25T01:00:38.3943622Z ##[group]Setting up auth
+2026-10-25T01:00:38.3943990Z Removing SSH command configuration
+2026-10-25T01:00:38.3947226Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-25T01:00:38.3977053Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-25T01:00:38.4352767Z Removing HTTP extra header
+2026-10-25T01:00:38.4358073Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-25T01:00:38.4394444Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-25T01:00:38.4574173Z Removing includeIf entries pointing to credentials config files
+2026-10-25T01:00:38.4576425Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-25T01:00:38.4607681Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-25T01:00:38.4803162Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-25T01:00:38.4923600Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path /home/runner/work/_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:00:38.5025376Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:00:38.5123825Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:00:38.5224677Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:00:38.5320035Z ##[endgroup]
+2026-10-25T01:00:38.5321304Z ##[group]Fetching the repository
+2026-10-25T01:00:38.5326556Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ae891423bb8c26e5d0b5d1d63362f113791c4f27:refs/remotes/origin/main
+2026-10-25T01:00:38.9585845Z From https://github.com/uesu/wvkhabh2s22
+2026-10-25T01:00:38.9588294Z  * [new ref]         ae891423bb8c26e5d0b5d1d63362f113791c4f27 -> origin/main
+2026-10-25T01:00:38.9603782Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-25T01:00:38.9621544Z   origin/main
+2026-10-25T01:00:38.9627301Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-25T01:00:38.9648782Z ae891423bb8c26e5d0b5d1d63362f113791c4f27
+2026-10-25T01:00:38.9652700Z ##[endgroup]
+2026-10-25T01:00:38.9654219Z ##[group]Determining the checkout info
+2026-10-25T01:00:38.9655959Z ##[endgroup]
+2026-10-25T01:00:38.9656861Z [command]/usr/bin/git sparse-checkout disable
+2026-10-25T01:00:39.0401096Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-25T01:00:39.0506259Z ##[group]Checking out the ref
+2026-10-25T01:00:39.0508514Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-25T01:00:39.1095310Z Switched to a new branch 'main'
+2026-10-25T01:00:39.1099698Z branch 'main' set up to track 'origin/main'.
+2026-10-25T01:00:39.1106536Z ##[endgroup]
+2026-10-25T01:00:39.1305996Z [command]/usr/bin/git log -1 --format=%H
+2026-10-25T01:00:39.1328842Z ae891423bb8c26e5d0b5d1d63362f113791c4f27
+2026-10-25T01:00:39.1621327Z ##[group]Run git fetch origin "${CACHE_BRANCH:-main}"
+2026-10-25T01:00:39.1622592Z [36;1mgit fetch origin "${CACHE_BRANCH:-main}"[0m
+2026-10-25T01:00:39.1623479Z [36;1mgit reset --hard FETCH_HEAD[0m
+2026-10-25T01:00:39.1624539Z [36;1mecho "Now at $(git log -1 --format=%H) (live ${CACHE_BRANCH:-main} tip)."[0m
+2026-10-25T01:00:39.2035311Z shell: /usr/bin/bash -e {0}
+2026-10-25T01:00:39.2036006Z env:
+2026-10-25T01:00:39.2036554Z   CACHE_BRANCH: main
+2026-10-25T01:00:39.2037163Z ##[endgroup]
+2026-10-25T01:00:39.4481891Z From https://github.com/uesu/wvkhabh2s22
+2026-10-25T01:00:39.4483322Z  * branch            main       -> FETCH_HEAD
+2026-10-25T01:00:39.4578861Z HEAD is now at ae89142 auto: update posted_tweets.json cache
+2026-10-25T01:00:39.4598125Z Now at ae891423bb8c26e5d0b5d1d63362f113791c4f27 (live main tip).
+2026-10-25T01:00:39.5821901Z ##[group]Run actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+2026-10-25T01:00:39.5822973Z with:
+2026-10-25T01:00:39.5823511Z   python-version: 3.14.8
+2026-10-25T01:00:39.5824119Z   cache: pip
+2026-10-25T01:00:39.5824673Z   check-latest: false
+2026-10-25T01:00:39.5830077Z   token: ***
+2026-10-25T01:00:39.5830649Z   update-environment: true
+2026-10-25T01:00:39.5831295Z   allow-prereleases: false
+2026-10-25T01:00:39.5831927Z   freethreaded: false
+2026-10-25T01:00:39.5832576Z ##[endgroup]
+2026-10-25T01:00:39.6559717Z ##[group]Installed versions
+2026-10-25T01:00:39.7152331Z Successfully set up CPython (3.14.8)
+2026-10-25T01:00:39.7161211Z ##[endgroup]
+2026-10-25T01:00:39.8238761Z [command]/opt/hostedtoolcache/Python/3.14.8/x64/bin/pip cache dir
+2026-10-25T01:00:44.9441345Z /home/runner/.cache/pip
+2026-10-25T01:00:45.0949158Z Cache hit for: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.8-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-25T01:00:45.8033275Z Received 7556864 of 7556864 (100.0%), 12.8 MBs/sec
+2026-10-25T01:00:45.8034804Z Cache Size: ~7 MB (7556864 B)
+2026-10-25T01:00:45.8073599Z [command]/usr/bin/tar -xf /home/runner/work/_temp/00bdc567-0678-494b-a49e-e951511c739d/cache.tzst -P -C /home/runner/work/wvkhabh2s22/wvkhabh2s22 --use-compress-program unzstd
+2026-10-25T01:00:45.8267470Z Cache restored successfully
+2026-10-25T01:00:45.8274572Z Cache restored from key: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.8-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-25T01:00:45.8391459Z ##[group]Run python -m pip install --upgrade pip
+2026-10-25T01:00:45.8391708Z [36;1mpython -m pip install --upgrade pip[0m
+2026-10-25T01:00:45.8391899Z [36;1mpip install -r requirements.txt[0m
+2026-10-25T01:00:45.8447496Z shell: /usr/bin/bash -e {0}
+2026-10-25T01:00:45.8447669Z env:
+2026-10-25T01:00:45.8447841Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:45.8448256Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-25T01:00:45.8448536Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:45.8448789Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:45.8449013Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:45.8449240Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-25T01:00:45.8449436Z ##[endgroup]
+2026-10-25T01:00:48.7114732Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages (26.2.1)
+2026-10-25T01:00:48.8313446Z Collecting pip
+2026-10-25T01:00:48.8942679Z   Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+2026-10-25T01:00:48.9103422Z Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+2026-10-25T01:00:49.0191541Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 21.6 MB/s  0:00:00
+2026-10-25T01:00:49.5066273Z Installing collected packages: pip
+2026-10-25T01:00:49.5072837Z   Attempting uninstall: pip
+2026-10-25T01:00:49.5083535Z     Found existing installation: pip 26.2.1
+2026-10-25T01:00:49.6474904Z     Uninstalling pip-26.2.1:
+2026-10-25T01:00:49.6513280Z       Successfully uninstalled pip-26.2.1
+2026-10-25T01:00:50.4305157Z Successfully installed pip-26.2.2
+2026-10-25T01:00:51.2487213Z Collecting feedparser<7,>=6.0.14 (from -r requirements.txt (line 1))
+2026-10-25T01:00:51.2495577Z   Using cached feedparser-6.0.14-py3-none-any.whl.metadata (2.7 kB)
+2026-10-25T01:00:51.5510388Z Collecting aiohttp<4,>=3.14.3 (from -r requirements.txt (line 2))
+2026-10-25T01:00:51.6054273Z   Downloading aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+2026-10-25T01:00:51.6231598Z Collecting python-dotenv<2,>=1.2.3 (from -r requirements.txt (line 3))
+2026-10-25T01:00:51.6243523Z   Using cached python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+2026-10-25T01:00:51.6382216Z Collecting feedparser-sgmllib<3,>=2 (from feedparser<7,>=6.0.14->-r requirements.txt (line 1))
+2026-10-25T01:00:51.6389584Z   Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl.metadata (926 bytes)
+2026-10-25T01:00:51.6531273Z Collecting aiohappyeyeballs>=2.5.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:51.6539075Z   Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
+2026-10-25T01:00:51.6667024Z Collecting aiosignal>=1.4.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:51.6673790Z   Using cached aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+2026-10-25T01:00:51.6814910Z Collecting attrs>=17.3.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:51.6821876Z   Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-10-25T01:00:51.7166439Z Collecting frozenlist>=1.1.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:51.7174995Z   Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+2026-10-25T01:00:51.8490141Z Collecting multidict<8.0,>=4.5 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:51.8594340Z   Downloading multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.1 kB)
+2026-10-25T01:00:51.8993540Z Collecting propcache>=0.2.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:51.9004318Z   Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (25 kB)
+2026-10-25T01:00:52.0217815Z Collecting yarl<2.0,>=1.25.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:52.0227320Z   Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (111 kB)
+2026-10-25T01:00:52.0414558Z Collecting idna>=2.0 (from yarl<2.0,>=1.25.1->aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-25T01:00:52.0421420Z   Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-10-25T01:00:52.0470400Z Using cached feedparser-6.0.14-py3-none-any.whl (80 kB)
+2026-10-25T01:00:52.0571080Z Downloading aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+2026-10-25T01:00:52.1343900Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.9/1.9 MB 34.0 MB/s  0:00:00
+2026-10-25T01:00:52.1351129Z Using cached python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+2026-10-25T01:00:52.1357837Z Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl (11 kB)
+2026-10-25T01:00:52.1458807Z Downloading multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (506 kB)
+2026-10-25T01:00:52.1497304Z Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (117 kB)
+2026-10-25T01:00:52.1503883Z Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+2026-10-25T01:00:52.1509989Z Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+2026-10-25T01:00:52.1516132Z Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-10-25T01:00:52.1522522Z Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+2026-10-25T01:00:52.1528926Z Using cached idna-3.20-py3-none-any.whl (69 kB)
+2026-10-25T01:00:52.1535462Z Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (232 kB)
+2026-10-25T01:00:52.1960753Z Installing collected packages: python-dotenv, propcache, multidict, idna, frozenlist, feedparser-sgmllib, attrs, aiohappyeyeballs, yarl, feedparser, aiosignal, aiohttp
+2026-10-25T01:00:52.6084741Z 
+2026-10-25T01:00:52.6097817Z Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.5 aiosignal-1.4.0 attrs-26.1.0 feedparser-6.0.14 feedparser-sgmllib-2.1.0 frozenlist-1.8.0 idna-3.20 multidict-7.2.1 propcache-0.5.4 python-dotenv-1.2.4 yarl-1.25.1
+2026-10-25T01:00:52.6944027Z ##[group]Run echo "TWITTER_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+2026-10-25T01:00:52.6944349Z [36;1mecho "TWITTER_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-25T01:00:52.6944561Z [36;1mset -o pipefail[0m
+2026-10-25T01:00:52.6944703Z [36;1mset +e[0m
+2026-10-25T01:00:52.6944914Z [36;1mpython "testing area/twitter_v3.py" 2>&1 | tee twitter_monitor.log   # ← V3[0m
+2026-10-25T01:00:52.6945168Z [36;1mstatuses=("${PIPESTATUS[@]}")[0m
+2026-10-25T01:00:52.6945374Z [36;1mecho "TWITTER_END_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-25T01:00:52.6945622Z [36;1mif [ "${statuses[0]}" -ne 0 ] || [ "${statuses[1]}" -ne 0 ]; then[0m
+2026-10-25T01:00:52.6945825Z [36;1m  exit 1[0m
+2026-10-25T01:00:52.6945948Z [36;1mfi[0m
+2026-10-25T01:00:52.6998539Z shell: /usr/bin/bash -e {0}
+2026-10-25T01:00:52.6998703Z env:
+2026-10-25T01:00:52.6998871Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:52.6999178Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-25T01:00:52.6999431Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:52.6999671Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:52.6999906Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:00:52.7000137Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-25T01:00:52.7000560Z   ACCOUNTS: ***
+2026-10-25T01:00:52.7000694Z   DISCORD_WEBHOOK_URL: 
+2026-10-25T01:00:52.7001109Z   WEBHOOK_TYPEII_EN: ***
+2026-10-25T01:00:52.7001480Z   WEBHOOK_POMPOM_HONKAISR: ***
+2026-10-25T01:00:52.7001865Z   WEBHOOK_WUTHERING_WAVES: ***
+2026-10-25T01:00:52.7002207Z   WEBHOOK_HONKAINA: ***
+2026-10-25T01:00:52.7002693Z   WEBHOOK_ANANTA_EN: ***
+2026-10-25T01:00:52.7002836Z   TEST_TWEET_ID: 
+2026-10-25T01:00:52.7003037Z   NITTER_RSS_TOKEN: ***
+2026-10-25T01:00:52.7003183Z   MAX_CACHE_SIZE_PER_ACCOUNT: 
+2026-10-25T01:00:52.7003337Z   MAX_CACHE_SIZE_TOTAL: 
+2026-10-25T01:00:52.7003471Z   MEDIA_HEAL: 
+2026-10-25T01:00:52.7003604Z   MEDIA_HEAL_DELAY_SECONDS: 
+2026-10-25T01:00:52.7003755Z   MEDIA_HEAL_ATTEMPTS: 
+2026-10-25T01:00:52.7004054Z   MEDIA_HEAL_SCOPE: 
+2026-10-25T01:00:52.7004189Z ##[endgroup]
+2026-10-25T01:00:55.3617375Z 2026-10-25 01:00:55,361 [INFO] [Wuthering_Waves] feed OK via https://nitter.cf — 20 entries.
+2026-10-25T01:00:55.3617925Z 2026-10-25 01:00:55,361 [INFO] [Ananta_EN] feed OK via https://nitter.cf — 17 entries.
+2026-10-25T01:00:55.3618293Z 2026-10-25 01:00:55,361 [INFO] [PomPom_HonkaiSR] feed OK via https://nitter.cf — 20 entries.
+2026-10-25T01:00:55.4134710Z 2026-10-25 01:00:55,413 [INFO] [HonkaiNA] feed OK via https://nitter.cf — 20 entries.
+2026-10-25T01:00:55.4640526Z 2026-10-25 01:00:55,463 [INFO] [TYPEII_EN] feed OK via https://nitter.cf — 20 entries.
+2026-10-25T01:00:59.5399417Z 2026-10-25 01:00:59,539 [INFO] V3 Posted: Wuthering_Waves_2114160013434294342 (lang=en | source=fxtwitter)
+2026-10-25T01:00:59.5400086Z 2026-10-25 01:00:59,539 [INFO] MEDIA-HEAL queued for Wuthering_Waves_2114160013434294342: Discord returned 1 heal-eligible media item(s) with no dimensions/content-type (cold media proxy; scope=video).
+2026-10-25T01:01:01.0418588Z 2026-10-25 01:01:01,041 [INFO] MEDIA-HEAL: 1 message(s) posted with unresolved media — re-editing each in 45s.
+2026-10-25T01:01:46.2822133Z 2026-10-25 01:01:46,281 [INFO] MEDIA-HEAL Wuthering_Waves_2114160013434294342: media resolved after edit #1 — the media now renders.
+2026-10-25T01:01:46.2829478Z 2026-10-25 01:01:46,282 [INFO] Twitter V3 Monitor execution finished.
+2026-10-25T01:01:46.3141455Z ##[group]Run cache_result=failed
+2026-10-25T01:01:46.3141677Z [36;1mcache_result=failed[0m
+2026-10-25T01:01:46.3141862Z [36;1mecho "TWITTER_CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-25T01:01:46.3142062Z [36;1mset -o pipefail[0m
+2026-10-25T01:01:46.3142455Z [36;1mgit config --local user.email "github-actions[bot]@users.noreply.github.com"[0m
+2026-10-25T01:01:46.3142761Z [36;1mgit config --local user.name "github-actions[bot]"[0m
+2026-10-25T01:01:46.3142976Z [36;1mgit add -f posted_tweets.json[0m
+2026-10-25T01:01:46.3143132Z [36;1m[0m
+2026-10-25T01:01:46.3143283Z [36;1mif git diff --cached --quiet; then[0m
+2026-10-25T01:01:46.3143461Z [36;1m  echo "No cache changes to push."[0m
+2026-10-25T01:01:46.3143629Z [36;1m  cache_result=no-changes[0m
+2026-10-25T01:01:46.3143822Z [36;1m  echo "TWITTER_CACHE_RESULT=no-changes" >> "$GITHUB_ENV"[0m
+2026-10-25T01:01:46.3144013Z [36;1melse[0m
+2026-10-25T01:01:46.3144213Z [36;1m  if ! git commit -m "auto: update posted_tweets.json cache"; then[0m
+2026-10-25T01:01:46.3144593Z [36;1m    echo "::error::CACHE COMMIT FAILED — dedup cache was not persisted; rerun this monitor after resolving the repository state."[0m
+2026-10-25T01:01:46.3144905Z [36;1m    exit 1[0m
+2026-10-25T01:01:46.3145032Z [36;1m  fi[0m
+2026-10-25T01:01:46.3145158Z [36;1m[0m
+2026-10-25T01:01:46.3145292Z [36;1m  cache_branch="${CACHE_BRANCH:-main}"[0m
+2026-10-25T01:01:46.3145510Z [36;1m  # Round 61 (2026-10-04): save OUR freshly-written cache aside —[0m
+2026-10-25T01:01:46.3145761Z [36;1m  # the recovery below resets to the live tip and re-merges it[0m
+2026-10-25T01:01:46.3146024Z [36;1m  # SEMANTICALLY (union of dedup keys; git's line merge turned the[0m
+2026-10-25T01:01:46.3161187Z [36;1m  # 2026-10-03 Reddit collision into a fatal conflict instead).[0m
+2026-10-25T01:01:46.3161438Z [36;1m  ours_dir="$(mktemp -d)"[0m
+2026-10-25T01:01:46.3161707Z [36;1m  if [ -f posted_tweets.json ]; then cp posted_tweets.json "$ours_dir/posted_tweets.json"; fi[0m
+2026-10-25T01:01:46.3161960Z [36;1m  pushed=0[0m
+2026-10-25T01:01:46.3162097Z [36;1m  attempts=0[0m
+2026-10-25T01:01:46.3162364Z [36;1m  for attempt in 1 2 3; do[0m
+2026-10-25T01:01:46.3162603Z [36;1m    attempts="$attempt"[0m
+2026-10-25T01:01:46.3162786Z [36;1m    if git push origin "HEAD:${cache_branch}"; then[0m
+2026-10-25T01:01:46.3162973Z [36;1m      pushed=1[0m
+2026-10-25T01:01:46.3163104Z [36;1m      break[0m
+2026-10-25T01:01:46.3163225Z [36;1m    fi[0m
+2026-10-25T01:01:46.3163343Z [36;1m[0m
+2026-10-25T01:01:46.3163513Z [36;1m    # A remote cache commit landed between our sync and this push.[0m
+2026-10-25T01:01:46.3163924Z [36;1m    # Reset to the live tip, semantically merge our cache onto it,[0m
+2026-10-25T01:01:46.3164142Z [36;1m    # then retry with bounded backoff.[0m
+2026-10-25T01:01:46.3164324Z [36;1m    if [ "$attempt" -lt 3 ]; then[0m
+2026-10-25T01:01:46.3164636Z [36;1m      echo "::warning::Cache push attempt $attempt/3 failed; merging the live ${cache_branch} tip semantically before retry."[0m
+2026-10-25T01:01:46.3164988Z [36;1m      if ! git fetch origin "$cache_branch"; then[0m
+2026-10-25T01:01:46.3165321Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — could not fetch the live tip; dedup cache was not persisted."[0m
+2026-10-25T01:01:46.3165601Z [36;1m        break[0m
+2026-10-25T01:01:46.3165735Z [36;1m      fi[0m
+2026-10-25T01:01:46.3165871Z [36;1m      git reset --hard FETCH_HEAD[0m
+2026-10-25T01:01:46.3166140Z [36;1m      if ! python .github/scripts/merge_monitor_caches.py "$ours_dir" . posted_tweets.json; then[0m
+2026-10-25T01:01:46.3166516Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — semantic merge failed; dedup cache was not persisted."[0m
+2026-10-25T01:01:46.3166786Z [36;1m        break[0m
+2026-10-25T01:01:46.3166914Z [36;1m      fi[0m
+2026-10-25T01:01:46.3167050Z [36;1m      git add -f posted_tweets.json[0m
+2026-10-25T01:01:46.3167235Z [36;1m      if git diff --cached --quiet; then[0m
+2026-10-25T01:01:46.3167605Z [36;1m        echo "Live tip already contains our cache state — nothing left to push."[0m
+2026-10-25T01:01:46.3167835Z [36;1m        pushed=1[0m
+2026-10-25T01:01:46.3167973Z [36;1m        break[0m
+2026-10-25T01:01:46.3168099Z [36;1m      fi[0m
+2026-10-25T01:01:46.3168279Z [36;1m      if ! git commit -m "auto: update posted_tweets.json cache"; then[0m
+2026-10-25T01:01:46.3168606Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — merge commit failed; dedup cache was not persisted."[0m
+2026-10-25T01:01:46.3168869Z [36;1m        break[0m
+2026-10-25T01:01:46.3169005Z [36;1m      fi[0m
+2026-10-25T01:01:46.3169137Z [36;1m      sleep "$((attempt * 15))"[0m
+2026-10-25T01:01:46.3169296Z [36;1m    fi[0m
+2026-10-25T01:01:46.3169413Z [36;1m  done[0m
+2026-10-25T01:01:46.3169532Z [36;1m[0m
+2026-10-25T01:01:46.3169658Z [36;1m  if [ "$pushed" -ne 1 ]; then[0m
+2026-10-25T01:01:46.3170104Z [36;1m    echo "::error::CACHE PUSH FAILED after ${attempts}/3 attempt(s) — dedup cache was not persisted; the next run may re-post. Rerun this monitor after GitHub recovers."[0m
+2026-10-25T01:01:46.3170491Z [36;1m    exit 1[0m
+2026-10-25T01:01:46.3170615Z [36;1m  fi[0m
+2026-10-25T01:01:46.3170733Z [36;1mfi[0m
+2026-10-25T01:01:46.3170971Z [36;1mif [ "$cache_result" != "no-changes" ]; then echo "TWITTER_CACHE_RESULT=success" >> "$GITHUB_ENV"; fi[0m
+2026-10-25T01:01:46.3220778Z shell: /usr/bin/bash -e {0}
+2026-10-25T01:01:46.3220927Z env:
+2026-10-25T01:01:46.3221092Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:46.3221342Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-25T01:01:46.3221587Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:46.3221800Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:46.3222016Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:46.3222387Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-25T01:01:46.3222615Z   TWITTER_START_EPOCH: 1792890052
+2026-10-25T01:01:46.3222770Z   TWITTER_END_EPOCH: 1792890106
+2026-10-25T01:01:46.3222921Z   CACHE_BRANCH: main
+2026-10-25T01:01:46.3223054Z ##[endgroup]
+2026-10-25T01:01:46.3393019Z [main 43af467] auto: update posted_tweets.json cache
+2026-10-25T01:01:46.3393394Z  1 file changed, 2 insertions(+), 1 deletion(-)
+2026-10-25T01:01:47.5004591Z To https://github.com/uesu/wvkhabh2s22
+2026-10-25T01:01:47.5004911Z    ae89142..43af467  HEAD -> main
+2026-10-25T01:01:47.5076815Z ##[group]Run [ -f twitter_monitor.log ] || : > twitter_monitor.log
+2026-10-25T01:01:47.5077219Z [36;1m[ -f twitter_monitor.log ] || : > twitter_monitor.log[0m
+2026-10-25T01:01:47.5077517Z [36;1mcount_matches() { local pattern="$1"; grep -Ec "$pattern" twitter_monitor.log 2>/dev/null || true; }[0m
+2026-10-25T01:01:47.5078062Z [36;1mtotal_feed_entries() { local total; total=$(grep 'feed OK via' twitter_monitor.log 2>/dev/null | grep -Eo '[0-9]+ entries' | grep -Eo '[0-9]+' | awk '{ total += $1 } END { print total + 0 }' || true); printf '%s\n' "${total:-0}"; }[0m
+2026-10-25T01:01:47.5078602Z [36;1mfeed_lines() { sed -E 's/^.*\[(DEBUG|INFO|WARNING|ERROR|CRITICAL)\][[:space:]]*//' twitter_monitor.log; }[0m
+2026-10-25T01:01:47.5079014Z [36;1mfeed_failures() { feed_lines | awk '/^\[[^]]+\] NO working nitter instance this run/ { n++ } END { print n + 0 }' 2>/dev/null || true; }[0m
+2026-10-25T01:01:47.5079315Z [36;1mruntime=unavailable[0m
+2026-10-25T01:01:47.5079550Z [36;1mif [ -n "${TWITTER_START_EPOCH:-}" ] && [ -n "${TWITTER_END_EPOCH:-}" ]; then[0m
+2026-10-25T01:01:47.5079815Z [36;1m  runtime="$(( TWITTER_END_EPOCH - TWITTER_START_EPOCH ))s"[0m
+2026-10-25T01:01:47.5080011Z [36;1mfi[0m
+2026-10-25T01:01:47.5080149Z [36;1mfeeds_ok=$(count_matches 'feed OK via')[0m
+2026-10-25T01:01:47.5080328Z [36;1mfeeds_failed=$(feed_failures)[0m
+2026-10-25T01:01:47.5080538Z [36;1mfeeds_empty=$(count_matches 'skipping — no feed / 0 entries')[0m
+2026-10-25T01:01:47.5080754Z [36;1mentries_read=$(total_feed_entries)[0m
+2026-10-25T01:01:47.5080910Z [36;1m{[0m
+2026-10-25T01:01:47.5081053Z [36;1m  echo "## Twitter Feed Monitor — run summary"[0m
+2026-10-25T01:01:47.5081224Z [36;1m  echo[0m
+2026-10-25T01:01:47.5081438Z [36;1m  if [ "success" = "success" ]; then echo "**Result:** success"; else echo "**Result:** failure"; fi[0m
+2026-10-25T01:01:47.5081695Z [36;1m  echo "**Runtime:** ${runtime}"[0m
+2026-10-25T01:01:47.5081846Z [36;1m  echo[0m
+2026-10-25T01:01:47.5081975Z [36;1m  echo "### Feeds"[0m
+2026-10-25T01:01:47.5082391Z [36;1m  echo "- counts describe matching local log records, not an independent delivery/source-health audit"[0m
+2026-10-25T01:01:47.5082814Z [36;1m  if [ "$feeds_ok" -eq 0 ] && [ "$feeds_failed" -eq 0 ] && [ "$feeds_empty" -eq 0 ]; then[0m
+2026-10-25T01:01:47.5083100Z [36;1m    echo "- observation coverage: unavailable (no matching feed records)"[0m
+2026-10-25T01:01:47.5083309Z [36;1m  fi[0m
+2026-10-25T01:01:47.5083803Z [36;1m  accounts_checked=$(feed_lines | awk '/^\[[^]]+\] feed OK via/ || /^\[[^]]+\] NO working nitter instance this run/ || /^\[[^]]+\] skipping — no feed \/ 0 entries/ { account=$0; sub(/^\[/, "", account); sub(/\].*$/, "", account); print account }' 2>/dev/null | sort -u | wc -l | tr -d ' ' || true)[0m
+2026-10-25T01:01:47.5084373Z [36;1m  echo "- accounts observed in feed logs: ${accounts_checked}"[0m
+2026-10-25T01:01:47.5084597Z [36;1m  echo "- entries read: ${entries_read}"[0m
+2026-10-25T01:01:47.5084787Z [36;1m  echo "- successful feeds: ${feeds_ok}"[0m
+2026-10-25T01:01:47.5084968Z [36;1m  echo "- failed feeds: ${feeds_failed}"[0m
+2026-10-25T01:01:47.5085148Z [36;1m  echo "- empty feeds: ${feeds_empty}"[0m
+2026-10-25T01:01:47.5085307Z [36;1m  echo[0m
+2026-10-25T01:01:47.5085430Z [36;1m  echo "### Posts"[0m
+2026-10-25T01:01:47.5085629Z [36;1m  echo "- new candidates: not separately measured by this log format"[0m
+2026-10-25T01:01:47.5085880Z [36;1m  echo "- posts delivered: $(count_matches 'V3 Posted:')"[0m
+2026-10-25T01:01:47.5086104Z [36;1m  echo "- skip log lines: $(count_matches 'skipping')"[0m
+2026-10-25T01:01:47.5086346Z [36;1m  echo "- retry/fallback log lines: $(count_matches 'trying next|retry')"[0m
+2026-10-25T01:01:47.5086552Z [36;1m  echo[0m
+2026-10-25T01:01:47.5086673Z [36;1m  echo "### State"[0m
+2026-10-25T01:01:47.5086839Z [36;1m  echo "- cache: ${TWITTER_CACHE_RESULT:-failed}"[0m
+2026-10-25T01:01:47.5087229Z [36;1m  echo "- summary source: local twitter_monitor.log only; no additional requests"[0m
+2026-10-25T01:01:47.5087466Z [36;1m} >> "$GITHUB_STEP_SUMMARY"[0m
+2026-10-25T01:01:47.5138020Z shell: /usr/bin/bash -e {0}
+2026-10-25T01:01:47.5138262Z env:
+2026-10-25T01:01:47.5138422Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:47.5138666Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib/pkgconfig
+2026-10-25T01:01:47.5138902Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:47.5139116Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:47.5139327Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.8/x64
+2026-10-25T01:01:47.5139542Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.8/x64/lib
+2026-10-25T01:01:47.5139732Z   TWITTER_START_EPOCH: 1792890052
+2026-10-25T01:01:47.5139889Z   TWITTER_END_EPOCH: 1792890106
+2026-10-25T01:01:47.5140038Z   TWITTER_CACHE_RESULT: success
+2026-10-25T01:01:47.5140183Z ##[endgroup]
+2026-10-25T01:01:47.5517158Z Post job cleanup.
+2026-10-25T01:01:47.6231273Z Cache hit occurred on the primary key setup-python-Linux-x64-24.04-Ubuntu-python-3.14.8-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d, not saving cache.
+2026-10-25T01:01:47.6328421Z Post job cleanup.
+2026-10-25T01:01:47.6826876Z [command]/usr/bin/git version
+2026-10-25T01:01:47.6868220Z git version 2.55.0
+2026-10-25T01:01:47.6891852Z Temporarily overriding HOME='/home/runner/work/_temp/b0aade09-caa6-40c7-936b-be13bbfcc517' before making global git config changes
+2026-10-25T01:01:47.6892382Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-25T01:01:47.6894695Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-25T01:01:47.6918693Z Removing SSH command configuration
+2026-10-25T01:01:47.6923045Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-25T01:01:47.6948371Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-25T01:01:47.7153017Z Removing HTTP extra header
+2026-10-25T01:01:47.7153647Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-25T01:01:47.7223351Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-25T01:01:47.7446270Z Removing includeIf entries pointing to credentials config files
+2026-10-25T01:01:47.7446809Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-25T01:01:47.7466065Z includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path
+2026-10-25T01:01:47.7466717Z includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path
+2026-10-25T01:01:47.7467299Z includeif.gitdir:/github/workspace/.git.path
+2026-10-25T01:01:47.7467749Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-25T01:01:47.7472420Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path
+2026-10-25T01:01:47.7493285Z /home/runner/work/_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:01:47.7507091Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-71960036\-2b9d\-4fa6\-a497\-971f2a353628\.config
+2026-10-25T01:01:47.7535915Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path
+2026-10-25T01:01:47.7557250Z /home/runner/work/_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:01:47.7563884Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-71960036\-2b9d\-4fa6\-a497\-971f2a353628\.config
+2026-10-25T01:01:47.7598665Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-25T01:01:47.7619649Z /github/runner_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:01:47.7625141Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-71960036\-2b9d\-4fa6\-a497\-971f2a353628\.config
+2026-10-25T01:01:47.7652034Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-25T01:01:47.7672424Z /github/runner_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config
+2026-10-25T01:01:47.7676852Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-71960036\-2b9d\-4fa6\-a497\-971f2a353628\.config
+2026-10-25T01:01:47.7704729Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-25T01:01:47.7883737Z Removing credentials config '/home/runner/work/_temp/git-credentials-71960036-2b9d-4fa6-a497-971f2a353628.config'
+2026-10-25T01:01:47.8002889Z Cleaning up orphan processes
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 1942002,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Wuthering Waves](https://x.com/Wuthering_Waves) just tweeted:"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "Evening Podcast | Suoming\n\nI will lead you through winding streets, past the long bridge and lantern-lit city.\nBy then, Huating will be beautiful.\nI want you to see it for yourself.\n\n[#WutheringWaves](https://x.com/hashtag/WutheringWaves)\n[#Suoming](https://x.com/hashtag/Suoming)"
+        },
+        {
+          "id": 4,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://video.twimg.com/amplify_video/2113527400118292480/vid/avc1/1920x1080/r9Hrvwdy9EaIO6Ej.mp4?tag=29",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/D-jC2iL9iJ15ZIkmhtK4GQb6CJc9LiBSM6kdGbY9pLA/%3Ftag%3D29/https/video.twimg.com/amplify_video/2113527400118292480/vid/avc1/1920x1080/r9Hrvwdy9EaIO6Ej.mp4",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "video/mp4"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "-# 💬 1 🔁 7 ❤️ 47 👁️ 13353   •   🕐 <t:1792890001:f>"
+        },
+        {
+          "id": 7,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://fxtwitter.com/Wuthering_Waves/status/2114160013434294342"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
