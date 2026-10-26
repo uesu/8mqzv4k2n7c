@@ -151,7 +151,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
-          python-version: '3.14.8'
+          python-version: '3.14.9'
 
       # This step runs every 5 minutes (cron-job.org), so its speed is the one that actually
       # matters: uv installs the exact same packages pip would, just with a much faster resolver.

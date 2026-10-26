@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
-          python-version: '3.14.8'
+          python-version: '3.14.9'
 
       # astral-sh doesn't publish a floating major tag like v10; keep `# vX.Y.Z` bare so zizmor verifies it.
       - name: Install uv (same packages pip would install, just a much faster resolver)
@@ -91,7 +91,7 @@ jobs:
 
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
-          python-version: '3.14.8'
+          python-version: '3.14.9'
 
       - name: Known-vulnerability scan of requirements.txt (pypa/pip-audit)
         continue-on-error: true   # informational: a new advisory must never block a hot-fix
