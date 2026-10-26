@@ -15,6 +15,9 @@ YOUTUBE_ID_RE = re.compile(
     r"youtu\.be/|piped\.video/(?:watch\?(?:[^\s]*&)?v=)?)([A-Za-z0-9_-]{11})")
 
 
+_DIRECT_MEDIA_RE = re.compile(r"\.(?:mp4|webm|mov|gif|jpe?g|png|webp)(?:[?#]|$)", re.I)
+
+
 def _http_media_url(raw: str | None) -> str:
     url = html.unescape(str(raw or "")).strip()
     return url if url.lower().startswith(("http://", "https://")) else ""
@@ -29,6 +32,9 @@ class _HTMLText(HTMLParser):
         self.links: list[str] = []
         self.images: list[str] = []
         self._skip = 0
+        self._in_video = 0
+        self._video_src = ""
+        self._video_poster = ""
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -42,20 +48,50 @@ class _HTMLText(HTMLParser):
             src = _http_media_url(a.get("src"))
             if src:
                 self.images.append(src)
-        if tag in ("iframe", "video"):
+        if tag == "iframe":
             src = _http_media_url(a.get("src"))
             if src:
                 self.links.append(src)
+        if tag == "video":
+            self._in_video += 1
+            src = _http_media_url(a.get("src"))
+            poster = _http_media_url(a.get("poster"))
+            if src:
+                self.links.append(src)
+                self._video_src = src
+            if poster and not self._video_poster:
+                self._video_poster = poster
+        if tag == "source" and self._in_video:
+            src = _http_media_url(a.get("src"))
+            if src and not self._video_src:
+                self._video_src = src
 
     def handle_endtag(self, tag):
         if tag in ("script", "style") and self._skip:
             self._skip -= 1
+        if tag == "video" and self._in_video:
+            self._in_video -= 1
+            if not self._in_video:
+                pick = self._video_src or self._video_poster
+                if pick:
+                    self.images.append(pick)
+                self._video_src = ""
+                self._video_poster = ""
         if tag in self.BLOCK:
             self.parts.append("\n")
 
     def handle_data(self, data):
         if not self._skip:
             self.parts.append(data)
+
+    def close(self) -> None:
+        super().close()
+        pick = self._video_src or self._video_poster
+        if pick:
+            self.images.append(pick)
+        self._in_video = 0
+        self._video_src = ""
+        self._video_poster = ""
 
 
 def html_to_text(raw: str) -> tuple[str, list[str], list[str]]:
@@ -95,6 +131,8 @@ def structured_to_text(structured: str) -> tuple[str, list[str], list[str]]:
             vid = _http_media_url(ins.get("video"))
             if vid:
                 links.append(vid)
+                if _DIRECT_MEDIA_RE.search(vid):
+                    images.append(vid)
             lc = ins.get("link_card")
             if isinstance(lc, dict):
                 lc_url = _http_media_url(lc.get("origin_url") or lc.get("landing_url") or lc.get("url"))

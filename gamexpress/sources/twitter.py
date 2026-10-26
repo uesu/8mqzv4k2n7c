@@ -100,13 +100,27 @@ TCO_WRAPPED = re.compile(r"/t\.co/", re.I)   # nitter leaves t.co links unexpand
 X_UA = "Game-Express"
 
 
+def _fx_media(t: dict) -> list[str]:
+    media = t.get("media") if isinstance(t.get("media"), dict) else {}
+    out: list[str] = []
+    for p in media.get("photos") or []:
+        if isinstance(p, dict) and p.get("url") and sane_aspect(p.get("width"), p.get("height")):
+            out.append(p["url"])
+    for v in media.get("videos") or []:
+        if not isinstance(v, dict) or not sane_aspect(v.get("width"), v.get("height")):
+            continue
+        url = v.get("url") or v.get("thumbnail_url")
+        if url and url not in out:
+            out.append(url)
+    return out
+
+
 def _from_fx(t: dict, tweet_id: str) -> dict:
     links = [f.get("replacement") for f in ((t.get("raw_text") or {}).get("facets") or [])
              if f.get("type") == "url" and f.get("replacement")]
     return {"id": str(t.get("id") or tweet_id), "text": t.get("text") or "",
             "ts": int(t.get("created_timestamp") or 0),
-            "photos": [p.get("url") for p in ((t.get("media") or {}).get("photos") or [])
-                       if p.get("url") and sane_aspect(p.get("width"), p.get("height"))],
+            "photos": _fx_media(t),
             "links": links + [u for u in find_urls(t.get("text") or "") if u not in links],
             "author": (t.get("author") or {}).get("screen_name") or "",
             "avatar": (t.get("author") or {}).get("avatar_url") or "",
@@ -114,9 +128,21 @@ def _from_fx(t: dict, tweet_id: str) -> dict:
 
 
 def _from_vx(vx: dict, tweet_id: str) -> dict:
+    media: list[str] = []
+    for m in vx.get("media_extended") or []:
+        if isinstance(m, dict):
+            size = m.get("size") if isinstance(m.get("size"), dict) else {}
+            if not sane_aspect(size.get("width") or m.get("width"), size.get("height") or m.get("height")):
+                continue
+            u = m.get("url") or m.get("thumbnail_url")
+            if isinstance(u, str) and u.startswith(("http://", "https://")) and u not in media:
+                media.append(u)
+    for u in vx.get("mediaURLs") or []:
+        if isinstance(u, str) and u.startswith(("http://", "https://")) and u not in media:
+            media.append(u)
     return {"id": str(vx.get("tweetID") or tweet_id), "text": vx.get("text") or "",
             "ts": int(vx.get("date_epoch") or 0),
-            "photos": [u for u in (vx.get("mediaURLs") or []) if "video" not in u],
+            "photos": media,
             "links": find_urls(vx.get("text") or ""),
             "author": vx.get("user_screen_name") or "",
             "avatar": vx.get("user_profile_image_url") or "",
@@ -418,5 +444,5 @@ def item_from_fx_json(game_key: str, data: dict) -> Item:
              if f.get("type") == "url" and f.get("replacement")]
     return Item(source="x", game=game_key, id=str(t.get("id")), url=t.get("url") or "", title="",
                 text=t.get("text") or "", published_ts=int(t.get("created_timestamp") or 0),
-                images=[p["url"] for p in ((t.get("media") or {}).get("photos") or []) if p.get("url")],
+                images=_fx_media(t),
                 links=links + find_urls(t.get("text") or ""))

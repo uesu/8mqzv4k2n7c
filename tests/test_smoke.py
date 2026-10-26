@@ -19729,5 +19729,143 @@ def test_post_publish_cms_edit_heals_news_and_schedule_cards_across_all_games():
         assert d_sim["youtube_video"] == "https://www.youtube.com/watch?v=psifFhA2QAA", gkey
 
 
+def test_schedule_third_button_starwardcat_emoji_first_poster_lock_and_all_media_formats():
+    """Pins:
+    1. Every Feature 1 (schedule) third button across all games (`Watch` and `Source` / `HoYoLAB` /
+       `Official Site`) carries `<a:starwardcat:1564242587987087420>` by default (including when
+       `EMOJI_SOURCE=""` in env), while `EMOJI_SOURCE="none"` disables it cleanly.
+    2. First-poster winner (HoYoLAB 6:00 PM vs late X 6:04 PM, e.g. HSR 4.7 47210911 vs
+       2114659387977384108): HoYoLAB keeps its link AND media across gif/video/mp4/webm/jpg/png/webp
+       while still backfilling a missing `[Watch]` stream URL from a late sibling post.
+    3. Native GIF / MP4 / WebM / photo media extraction across HoYoLAB VOD (`vod_list` / `view_type=5`),
+       X (`_from_fx` `media.videos` GIF/MP4 & `_from_vx`), and Kuro HTML (`<video>` / `<source>`)."""
+    from gamexpress import media as media_mod
+    from gamexpress import textutil
+    from gamexpress.sources import hoyolab as hoyolab_mod
+    from gamexpress.sources import twitter as twitter_mod
+
+    starwardcat = {"id": "1564242587987087420", "name": "starwardcat", "animated": True}
+    s_default = settings()
+    s_blank_var = settings(EMOJI_SOURCE="")
+    s_off = settings(EMOJI_SOURCE="none")
+    assert s_default.emoji["source"] == starwardcat
+    assert s_blank_var.emoji["source"] == starwardcat
+    assert s_off.emoji["source"] is None
+
+    # 1) Third button (`Watch` AND non-X `Source`) on ALL games uses `<a:starwardcat:1564242587987087420>`:
+    for gkey, game in GAMES.items():
+        base = dict(SCHEDULE_SAMPLES.get(gkey) or {"version": "1.0", "program_ts": 1793446200})
+        # Variant A: Watch button (title points to announcement post, youtube_video points to stream)
+        d_watch = dict(
+            base,
+            title_url="https://www.hoyolab.com/article/47210911",
+            source_url="https://www.hoyolab.com/article/47210911",
+            source_label="HoYoLAB",
+            youtube_video="https://www.youtube.com/watch?v=psifFhA2QAA",
+        )
+        p_watch = cards.schedule_payload(game, d_watch, s_default, s_default.ping("schedule", gkey))
+        assert cards.validate_payload(p_watch) == [], gkey
+        rows_w = [c for c in p_watch["components"][0]["components"] if c["type"] == 1]
+        watch_btn = [b for b in rows_w[0]["components"] if b["label"] == "Watch"]
+        assert len(watch_btn) == 1 and watch_btn[0].get("emoji") == starwardcat, gkey
+
+        # Variant B: Non-X Source button (title points to YouTube stream, source_url points to HoYoLAB/Kuro)
+        d_src = dict(
+            base,
+            title_url="https://www.youtube.com/watch?v=psifFhA2QAA",
+            source_url="https://www.hoyolab.com/article/47210911",
+            source_label="HoYoLAB",
+        )
+        p_src = cards.schedule_payload(game, d_src, s_blank_var, s_blank_var.ping("schedule", gkey))
+        assert cards.validate_payload(p_src) == [], gkey
+        rows_s = [c for c in p_src["components"][0]["components"] if c["type"] == 1]
+        src_btn = [b for b in rows_s[0]["components"] if b["label"] == "HoYoLAB"]
+        assert len(src_btn) == 1 and src_btn[0].get("emoji") == starwardcat, gkey
+
+        p_off = cards.schedule_payload(game, d_watch, s_off, s_off.ping("schedule", gkey))
+        rows_off = [c for c in p_off["components"][0]["components"] if c["type"] == 1]
+        watch_off = [b for b in rows_off[0]["components"] if b["label"] == "Watch"]
+        assert len(watch_off) == 1 and "emoji" not in watch_off[0], gkey
+
+    # 2) First-poster HoYoLAB (6:00 PM = 1793008804) beats late X (6:04 PM = 1793009040, +236s)
+    #    for BOTH link and media across gif / mp4 / webm / jpg / png / webp, while still backfilling
+    #    a missing youtube_video from the 6:04 PM sibling post:
+    hsr = GAMES["starrail"]
+    hoyo_url = "https://www.hoyolab.com/article/47210911"
+    late_x_url = "https://x.com/honkaistarrail/status/2114659387977384108"
+    for ext in ("jpg", "png", "gif", "webp", "mp4", "webm"):
+        hoyo_media = f"https://upload-os-bbs.hoyolab.com/upload/2026/10/26/hsr47_keyart.{ext}"
+        hoyo_600 = Item(
+            "hoyolab", "starrail", "47210911", hoyo_url,
+            "Honkai: Star Rail Version 4.7 Special Program Preview",
+            "Hi, Trailblazers!\nThe Honkai: Star Rail Version 4.7 \"Entranced Ingenium\" Special Program will release on 2026/10/30 19:30 (UTC+8)!",
+            1793008804, [hoyo_media], [],
+        )
+        x_604 = Item(
+            "x", "starrail", "2114659387977384108", late_x_url, "",
+            "Version 4.7 \"Entranced Ingenium\" Special Program\nHi, Trailblazers! The Honkai: Star Rail Version 4.7 Special Program will release on 2026/10/30 19:30 (UTC+8)!\nYouTube: https://youtube.com/live/psifFhA2QAA",
+            1793009040, ["https://pbs.twimg.com/media/HSR47LATE.jpg?name=orig"],
+            ["https://youtube.com/live/psifFhA2QAA"],
+        )
+        rec_47: dict = {}
+        ex1 = [e for e in (schedule.extract(hsr, it) for it in [hoyo_600]) if e]
+        rec_47["data"] = schedule.merge(hsr, "4.7", ex1, rec_47, {}, {}, 1793008933)
+        assert rec_47["data"]["title_url"] == hoyo_url and rec_47["data"]["images"] == [hoyo_media], ext
+        ex2 = [e for e in (schedule.extract(hsr, it) for it in [hoyo_600, x_604]) if e]
+        merged_47 = schedule.merge(hsr, "4.7", ex2, rec_47, {}, {}, 1793009130)
+        assert merged_47["title_url"] == hoyo_url and merged_47["source_url"] == hoyo_url, ext
+        assert merged_47["announcement_source"] == "hoyolab", ext
+        assert merged_47["images"] == [hoyo_media], ext
+        assert merged_47["youtube_video"] == "https://www.youtube.com/watch?v=psifFhA2QAA", ext
+        card_47 = cards.schedule_payload(hsr, merged_47, s_default, s_default.ping("schedule", "starrail"))
+        assert cards.validate_payload(card_47) == [], ext
+
+    # 3) Source extractors preserve GIF / MP4 / WebM / photo media across HoYoLAB VOD, X, and Kuro HTML:
+    vod_wrapper = {
+        "post": {
+            "post_id": "47299999",
+            "subject": "Version 4.8 Special Program Preview",
+            "view_type": 5,
+            "content": json.dumps({"describe": "The Version 4.8 Special Program will release on 2026/12/11 19:30 (UTC+8)!"}),
+        },
+        "vod_list": [{"resolutions": [
+            {"height": 720, "bitrate": 1500, "url": "https://vod.hoyolab.com/48_720p.mp4"},
+            {"height": 1080, "bitrate": 3200, "url": "https://vod.hoyolab.com/48_1080p.webm"},
+        ]}],
+        "cover_list": [{"url": "https://upload-os-bbs.hoyolab.com/upload/48_poster.png", "width": 1920, "height": 1080}],
+    }
+    v_txt, _, _ = hoyolab_mod._post_text(vod_wrapper["post"])
+    assert "2026/12/11 19:30 (UTC+8)" in v_txt
+    assert hoyolab_mod._vod_media(vod_wrapper) == ["https://vod.hoyolab.com/48_1080p.webm"]
+
+    fx_gif = twitter_mod.item_from_fx_json("starrail", {"tweet": {
+        "id": "99",
+        "text": "Version 4.8 Special Program on 2026/12/11 19:30 (UTC+8)",
+        "created_timestamp": 1796000000,
+        "url": "https://x.com/honkaistarrail/status/99",
+        "media": {"photos": [], "videos": [{
+            "type": "gif", "width": 1280, "height": 720,
+            "url": "https://video.twimg.com/tweet_video/HSR48GIF.mp4",
+            "thumbnail_url": "https://pbs.twimg.com/tweet_video_thumb/HSR48GIF.jpg",
+        }]},
+    }})
+    assert fx_gif.images == ["https://video.twimg.com/tweet_video/HSR48GIF.mp4"]
+    assert media_mod.rank(fx_gif.images) == ["https://video.twimg.com/tweet_video/HSR48GIF.mp4"]
+
+    vx_vid = twitter_mod._from_vx({
+        "tweetID": "100", "text": "Broadcast", "date_epoch": 1796000000,
+        "mediaURLs": ["https://video.twimg.com/ext_tw_video/100/pu/vid/avc1/1280x720/clip.mp4"],
+        "user_screen_name": "Wuthering_Waves", "tweetURL": "https://x.com/Wuthering_Waves/status/100",
+    }, "100")
+    assert vx_vid["photos"] == ["https://video.twimg.com/ext_tw_video/100/pu/vid/avc1/1280x720/clip.mp4"]
+
+    _, k_links, k_imgs = textutil.html_to_text(
+        '<p>Broadcast</p><video poster="https://hw-media-cdn-mingchao.kurogame.com/poster.jpg">'
+        '<source src="https://hw-media-cdn-mingchao.kurogame.com/broadcast.webm" type="video/webm"></video>'
+    )
+    assert k_imgs == ["https://hw-media-cdn-mingchao.kurogame.com/broadcast.webm"]
+    assert k_links == []
+
+
 if __name__ == "__main__":
     sys.exit(main())

@@ -1613,7 +1613,8 @@ def _link_label(url: str, fallback: str) -> str:
     return fallback
 
 
-ANNOUNCEMENT_SKEW_S = 180  # simultaneous scheduled drops across X / HoYoLAB / Kuro can skew by seconds
+ANNOUNCEMENT_SKEW_S = 60   # literal same-minute scheduled clock skew across X / HoYoLAB / Kuro
+SIBLING_BACKFILL_S = 900   # missing youtube_video / version_name backfill from late sibling posts
 
 
 def _pin_announcement(data: dict, e: Extract, others: list[tuple[str, str]]) -> None:
@@ -1886,9 +1887,11 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
                     put(k, pinned.fields.get(k), pinned.item.source, pinned.item.published_ts)
                 if not data.get("images") and pinned.fields.get("images"):
                     data["images"] = rank(pinned.fields["images"])
-            # Simultaneous cross-platform backfill: if X won LOCK_RANK using a shortener without a
-            # direct YouTube video ID while the simultaneous HoYoLAB/Kuro post carries it (or vice
-            # versa), backfill missing youtube_video / version_name from that exact same drop.
+            # Simultaneous or shortly-delayed cross-platform backfill: if X won LOCK_RANK using a
+            # shortener without a direct YouTube video ID while HoYoLAB/Kuro carries it, OR if
+            # HoYoLAB/Kuro won at 6:00 PM without a YouTube link and X posted minutes later (e.g.
+            # 6:04 PM) carrying the stream URL, backfill ONLY missing youtube_video / version_name
+            # while keeping the winning first-poster's link and media untouched.
             if data.get("program_ts") and data.get("announcement_ts") and (
                 not data.get("youtube_video") or not data.get("version_name")
             ):
@@ -1897,7 +1900,7 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
                     head = sib.item.title if sib.item.title else (sib.item.text or "")[:HEADLINE_LEN]
                     if (
                         sib.fields.get("program_ts") == data["program_ts"]
-                        and abs(sib.item.published_ts - ann_ts) <= ANNOUNCEMENT_SKEW_S
+                        and abs(sib.item.published_ts - ann_ts) <= SIBLING_BACKFILL_S
                         and not NOT_PROGRAM_TITLE.search(head)
                     ):
                         for k in ("version_name", "youtube_video"):

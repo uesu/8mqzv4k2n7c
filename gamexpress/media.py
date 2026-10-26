@@ -101,13 +101,26 @@ def sane_aspect(width, height) -> bool:
 
 
 def _score(url: str) -> int:
-    """Program key art first: a livestream thumbnail, then a full-size tweet photo, then a cover."""
+    """Program key art first: a livestream thumbnail, then full-size X media, then official cover/VOD."""
     u = url.lower()
     if "i.ytimg.com" in u and "maxresdefault" in u:
         return 3
-    if "pbs.twimg.com" in u:
+    if "pbs.twimg.com" in u or "video.twimg.com" in u:
         return 2
-    if any(h in u for h in ("fastcdn.hoyoverse.com", "kurogame.com", "kurogames.com", "aki-game.net", "aki-game.com")):
+    if any(
+        h in u
+        for h in (
+            "fastcdn.hoyoverse.com",
+            "hoyolab.com",
+            "hoyoverse.com",
+            "mihoyo.com",
+            "miyoushe.com",
+            "kurogame.com",
+            "kurogames.com",
+            "aki-game.net",
+            "aki-game.com",
+        )
+    ):
         return 1
     return 0
 

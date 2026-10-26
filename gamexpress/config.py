@@ -38,7 +38,7 @@ DEFAULT_EMOJI = {
     "title": "ananta1:1558340472525693018",
     "youtube": "a:kurobbseventcalendar:1508619925940473966",
     "twitch": "a:hsrbbsevanescia:1508647148902813776",
-    "source": "",
+    "source": "a:starwardcat:1564242587987087420",
     "redeem": "🎁",
 }
 
@@ -701,7 +701,7 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
     community = _buttons_env(env, "COMMUNITY_BUTTONS") or list(DEFAULT_COMMUNITY_BUTTONS)
     if _env(env, "COMMUNITY_BUTTONS", "").strip().lower() in ("none", "off", "-", "0", "false"):
         community = []
-    emoji = {k: parse_emoji(_env(env, f"EMOJI_{k.upper()}", v)) for k, v in DEFAULT_EMOJI.items()}
+    emoji = {k: parse_emoji(_env(env, f"EMOJI_{k.upper()}", v) or v) for k, v in DEFAULT_EMOJI.items()}
     state_path = Path(_env(env, "STATE_PATH")) if _env(env, "STATE_PATH") else DEFAULT_STATE_PATH
     return Settings(
         env=env,

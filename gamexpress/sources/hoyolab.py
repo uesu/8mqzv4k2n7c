@@ -35,11 +35,41 @@ NEWS_TYPES = (1, 3, 2)
 
 def _post_text(post: dict) -> tuple[str, list[str], list[str]]:
     content = (post.get("content") or "").strip()
+    if post.get("view_type") == 5 and content.startswith("{"):
+        try:
+            content = str((json.loads(content) or {}).get("describe") or "").strip()
+        except (json.JSONDecodeError, TypeError, AttributeError):
+            pass
     if re.fullmatch(r"[a-z]{2}-[a-z]{2}", content) or not content:
         return structured_to_text(post.get("structured_content") or "[]")
     if "<" in content:
         return html_to_text(content)
     return content, [], []
+
+
+def _vod_media(wrapper: dict) -> list[str]:
+    """Playable direct video URLs (or cover fallback) from native HoYoLAB VOD posts."""
+    urls: list[str] = []
+    covers: list[str] = []
+    for field in ("vod_list", "video"):
+        vods = wrapper.get(field) or []
+        if isinstance(vods, dict):
+            vods = [vods]
+        for vod in vods if isinstance(vods, list) else []:
+            if not isinstance(vod, dict):
+                continue
+            resolutions = vod.get("resolutions") or vod.get("resolution") or []
+            candidates = [r for r in resolutions if isinstance(r, dict) and r.get("url")]
+            if candidates:
+                best = max(candidates, key=lambda r: (int(r.get("height") or 0), int(r.get("bitrate") or 0)))
+                u = str(best["url"]).strip()
+                if u and u not in urls:
+                    urls.append(u)
+            elif isinstance(vod.get("cover"), str) and vod["cover"].strip():
+                c = vod["cover"].strip()
+                if c not in covers:
+                    covers.append(c)
+    return urls or covers
 
 
 def _images(wrapper: dict) -> list[str]:
@@ -122,10 +152,14 @@ async def official_items(fetcher: Fetcher, game: Game, want: Callable[[str], boo
         if full:
             full_post = full.get("post") if isinstance(full.get("post"), dict) else {}
             text, links, imgs = _post_text(full_post)
-            images = _images(full) or imgs or _images(wrapper)
+            vods = _vod_media(full) or _vod_media(wrapper)
+            pics = _images(full) or imgs or _images(wrapper)
+            images = vods + [u for u in pics if u not in vods] if vods else pics
         else:  # list preview is truncated but usually holds the key sentences
             text, links, imgs = (post.get("content") or post.get("desc") or ""), [], []
-            images = _images(wrapper)
+            vods = _vod_media(wrapper)
+            pics = _images(wrapper)
+            images = vods + [u for u in pics if u not in vods] if vods else pics
         items.append(Item(source="hoyolab", game=game.key, id=pid, url=ARTICLE_URL.format(pid),
                           title=subject, text=text, published_ts=created, images=images,
                           links=links))
@@ -225,11 +259,15 @@ async def find_program(fetcher: Fetcher, game: Game, version: str | None, pages:
         return None
     pid, wrapper, post = hit
     full = await _full_post(fetcher, gid, pid)
-    images = _images(wrapper)
+    vods = _vod_media(wrapper)
+    pics = _images(wrapper)
+    images = vods + [u for u in pics if u not in vods] if vods else pics
     text, youtube = (post.get("content") or post.get("desc") or ""), None
     if full:
         text, links, imgs = _post_text(full.get("post") or {})
-        images = _images(full) or imgs or images
+        vods = _vod_media(full) or vods
+        pics = _images(full) or imgs or pics
+        images = vods + [u for u in pics if u not in vods] if vods else pics
         youtube = youtube_video_url(links, text)
     log.info("[%s] HoYoLAB program article: %s", game.key, post.get("subject"))
     return {"url": ARTICLE_URL.format(pid), "title": (post.get("subject") or "").strip(),

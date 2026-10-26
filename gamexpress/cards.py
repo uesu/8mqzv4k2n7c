@@ -361,11 +361,11 @@ def schedule_payload(game: Game, d: dict, settings: Settings, ping: Ping,
     # No "x" button. The announcement tweet is already the card's title link whenever the version
     # has no single YouTube video (GI/ZZZ), and when it does (HSR/WW) the title points there — so
     # a third button labelled "x" only ever duplicated something already on the card.
+    third_emoji = settings.emoji.get("source")
     if src and src != url and not _is_x_url(src):
-        extra += buttons_of(link_button(d.get("source_label") or "Source", src,
-                                        settings.emoji.get("source")))
+        extra += buttons_of(link_button(d.get("source_label") or "Source", src, third_emoji))
     elif d.get("youtube_video") and d.get("youtube_video") != url:
-        extra += buttons_of(link_button("Watch", d["youtube_video"], settings.emoji.get("youtube")))
+        extra += buttons_of(link_button("Watch", d["youtube_video"], third_emoji))
     buttons = _std_buttons(game, settings, extra)
     if buttons:
         children.append(action_row(buttons))
