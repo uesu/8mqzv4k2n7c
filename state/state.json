@@ -5225,7 +5225,8 @@
           "source_url": "https://www.hoyolab.com/article/47210911",
           "title_url": "https://www.hoyolab.com/article/47210911",
           "version": "4.7",
-          "version_name": "Now, Lay Laughter to All Stars"
+          "version_name": "Now, Lay Laughter to All Stars",
+          "youtube_video": "https://www.youtube.com/watch?v=psifFhA2QAA"
         },
         "estimated_reported": [
           "preinstall_ts",
@@ -5234,10 +5235,10 @@
         ],
         "first_seen": 1793008837,
         "message_id": "1564217196715057163",
-        "mirror_hash": "8749366de09de95d",
+        "mirror_hash": "a3528467bc45bde8",
         "mirror_message_id": "1564217201806942302",
         "mirror_webhook_fp": "6f8f20d42db3",
-        "payload_hash": "5968750adff2f8a0",
+        "payload_hash": "dc68f45791699dc3",
         "posted_at": 1793008837,
         "prov": {
           "b_confirmed": [
@@ -5270,9 +5271,14 @@
           "version_name": [
             50,
             1793008804
+          ],
+          "youtube_video": [
+            50,
+            1793008804
           ]
         },
         "status": "posted",
+        "updated_at": 1793013620,
         "webhook_fp": "19991534cf6d"
       }
     },
