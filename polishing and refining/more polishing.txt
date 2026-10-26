@@ -1,6 +1,6 @@
 more polishing needed and refining the words as this applies to all games
 
-1. the "Encore beta", replace it encore.moe
+1. the "Encore beta", replace it encore
 2. remove the "Full Kit" words, you can just have it on a masked link of the word of that specific character or drive disc, artifact, w-engine, ornament, relic, etc., like this for example: [Sunbringer](https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en)
 3. see the my format which is new.txt again as it is, it has more details for it
 4. on each message containers, make sure they are like fit there, so like example on: Resonance Liberation
