@@ -5182,6 +5182,10 @@
         "webhook_fp": "19991534cf6d"
       },
       "4.7": {
+        "calendar": {
+          "banners": [],
+          "ts": 1793009118
+        },
         "data": {
           "announcement_locked": true,
           "announcement_source": "hoyolab",
@@ -5192,6 +5196,8 @@
             ]
           },
           "banners_checked_ts": 1793008837,
+          "banners_search_ts": 1793009118,
+          "calendar_ts": 1793009118,
           "estimate_sources": [
             "version cadence"
           ],
