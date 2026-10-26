@@ -1,8 +1,8 @@
 {
   "beta": {
     "genshin": {
-      "format_epoch": 3,
-      "last_poll": 1792990219,
+      "format_epoch": 4,
+      "last_poll": 1792991720,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -12,8 +12,8 @@
       "source_version": ""
     },
     "starrail": {
-      "format_epoch": 3,
-      "last_poll": 1792990219,
+      "format_epoch": 4,
+      "last_poll": 1792991720,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -23,8 +23,8 @@
       "source_version": ""
     },
     "wuwa": {
-      "format_epoch": 3,
-      "last_poll": 1792990219,
+      "format_epoch": 4,
+      "last_poll": 1792991720,
       "latest_rev": "84d9a78104b696a1",
       "locked_images": {},
       "revisions": {
@@ -32,15 +32,15 @@
           "batches": {
             "2972f58bc47e09e3": {
               "messages": [
-                "1564130558320058484",
-                "1564130580562575482",
-                "1564130604419907615",
-                "1564130626611978251",
-                "1564130659931398215"
+                "1564145681130856489",
+                "1564145703821905931",
+                "1564145726210969681",
+                "1564145750307377153",
+                "1564145772155379827"
               ],
-              "signature": "9b53d5c292c77f66",
+              "signature": "5e0af9ad1b2a0409",
               "status": "posted",
-              "ts": 1792988123
+              "ts": 1792991720
             }
           },
           "characters": {
@@ -48,11 +48,11 @@
           },
           "label": "v3.8.1",
           "messages": [
-            "1564130558320058484",
-            "1564130580562575482",
-            "1564130604419907615",
-            "1564130626611978251",
-            "1564130659931398215"
+            "1564145681130856489",
+            "1564145703821905931",
+            "1564145726210969681",
+            "1564145750307377153",
+            "1564145772155379827"
           ],
           "more": false,
           "processed": [
@@ -62,7 +62,7 @@
           "source_revision": "3.8.1",
           "source_version": "3.8.1",
           "status": "posted",
-          "ts": 1792988123
+          "ts": 1792991720
         }
       },
       "route": "f7e18488aac788d3",
@@ -428,48 +428,52 @@
           "revision": "3.8.1",
           "signature": "721baf980a48da96",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         },
         "ww:21030076": {
-          "content_signature": "4b859a03790e5074",
+          "content_signature": "22ede4a8c0eb241a",
           "data": {
             "category_label": "Weapons",
             "effect_title": "Dreamland Solace",
             "id": "ww:21030076",
             "image_url": "",
+            "image_urls": [],
             "lines": [
               "Increases Max HP by 12%. Casting Resonance Liberation restores 8 points of Concerto Energy, triggered once every 20s. All Resonators in the team gain Soothed Soul for 30s when the wielder peforms healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16% ATK increase for [value unavailable]s. This effect is removed when Soothed Soul ends. When the wielder heals Resonators, the active Resonator also gains 24% Echo Skill DMG Bonus for 6s. Effects of the same name do not stack.",
-              "-# Some values are unavailable in this revision's source data."
+              "-# ⚠️ Some values are unavailable in this revision's source data."
             ],
             "name": "Lullaby",
             "page_url": "https://ww.nanoka.cc/weapon/21030076/",
             "rarity": 5,
+            "set_kind": "",
+            "set_parts": "",
             "stats_line": "ATK 412.5 · Energy Regen 77.04%",
-            "sub_type": "Energy Regen"
+            "sub_type": "Energy Regen",
+            "weapon_class": "Pistols"
           },
           "kind": "weapon",
           "revision": "3.8.1",
-          "signature": "63d1b290dc02b2b3",
+          "signature": "dd8b63730b390617",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         }
       },
       "source_revision": "3.8.1",
       "source_version": "3.8.1"
     },
     "zzz": {
-      "format_epoch": 3,
-      "last_poll": 1792990219,
+      "format_epoch": 4,
+      "last_poll": 1792991720,
       "latest_rev": "c4da864455350ab0",
       "locked_images": {
         "zzz:1601": {
           "locked": true,
-          "ts": 1792988123,
+          "ts": 1792991720,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp"
         },
         "zzz:1661": {
           "locked": true,
-          "ts": 1792988123,
+          "ts": 1792991720,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp"
         }
       },
@@ -478,36 +482,40 @@
           "batches": {
             "6e91b1690a330b9f": {
               "messages": [
-                "1564130365239459894",
-                "1564130390182985770",
-                "1564130413830606910",
-                "1564130436546957456",
-                "1564130459305246871",
-                "1564130482025930894",
-                "1564130506667466833",
-                "1564130529396400159",
-                "1564130552439640067"
+                "1564145443007365131",
+                "1564145465719783545",
+                "1564145487798345749",
+                "1564145510674333808",
+                "1564145532744499271",
+                "1564145556459233320",
+                "1564145584032583691",
+                "1564145606845538407",
+                "1564145630497083414",
+                "1564145652848394411",
+                "1564145675346771999"
               ],
-              "signature": "c99b5f58cbb0c2ed",
+              "signature": "3e26073c786f5a4e",
               "status": "posted",
-              "ts": 1792988123
+              "ts": 1792991720
             }
           },
           "characters": {
             "zzz:1601": 0,
-            "zzz:1661": 5
+            "zzz:1661": 7
           },
           "label": "v3.4.1 Rev. 19851435",
           "messages": [
-            "1564130365239459894",
-            "1564130390182985770",
-            "1564130413830606910",
-            "1564130436546957456",
-            "1564130459305246871",
-            "1564130482025930894",
-            "1564130506667466833",
-            "1564130529396400159",
-            "1564130552439640067"
+            "1564145443007365131",
+            "1564145465719783545",
+            "1564145487798345749",
+            "1564145510674333808",
+            "1564145532744499271",
+            "1564145556459233320",
+            "1564145584032583691",
+            "1564145606845538407",
+            "1564145630497083414",
+            "1564145652848394411",
+            "1564145675346771999"
           ],
           "more": false,
           "processed": [
@@ -521,57 +529,65 @@
           "source_revision": "3.4.1+19851435",
           "source_version": "3.4.1+19851435",
           "status": "posted",
-          "ts": 1792988123
+          "ts": 1792991720
         }
       },
       "route": "5f931f917050e29a",
       "snapshots": {
         "zzz:14160": {
-          "content_signature": "8d173baed8ed4755",
+          "content_signature": "33571cde89210ad6",
           "data": {
             "category_label": "W-Engines",
             "effect_title": "",
             "id": "zzz:14160",
             "image_url": "",
+            "image_urls": [],
             "lines": [
               "CRIT Rate +20%. When the equipper uses an [EX Special Attack], the character gains [Enhance] for 25s. This effect is also gained immediately when the equipper enters combat, and repeated triggers reset the duration. While [Enhance] is active, the equipper's Fire DMG is increased by 22%, and their Fire Sharp DMG is increased by 10%."
             ],
             "name": "ID 14160",
             "page_url": "https://zzz.gachabase.net/w-engines/14160/14160/beta?lang=en",
             "rarity": 5,
+            "set_kind": "",
+            "set_parts": "",
             "stats_line": "Base ATK 446",
-            "sub_type": "Percent DEF"
+            "sub_type": "DEF% 48%",
+            "weapon_class": "Armorer"
           },
           "kind": "weapon",
           "revision": "3.4.1+19851435",
-          "signature": "cdf8ceb4259cea4c",
+          "signature": "8bb86c75f7e023a7",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         },
         "zzz:14166": {
-          "content_signature": "00d1cf339364796a",
+          "content_signature": "bd43e4a3cad4e379",
           "data": {
             "category_label": "W-Engines",
             "effect_title": "Robin Test Engine",
             "id": "zzz:14166",
             "image_url": "",
+            "image_urls": [],
             "lines": [
               "When the equipper applies a shield, the whole squad's DEF increases by 10% for 10s. Repeated triggers extend the duration, up to a maximum of 25s. Only one instance of this effect can exist in the same squad. When the equipper launches an Aftershock, the whole squad's DMG increases by 10% for 15s, stacking up to 2 times. Repeated triggers refresh the duration. Only one instance of this effect can exist in the same squad."
             ],
             "name": "Robin's Exclusive W-Engine",
             "page_url": "https://zzz.gachabase.net/w-engines/14166/robin-s-exclusive-w-engine/beta?lang=en",
             "rarity": 5,
+            "set_kind": "",
+            "set_parts": "",
             "stats_line": "Base ATK 713",
-            "sub_type": "Percent HP"
+            "sub_type": "HP% 30%",
+            "weapon_class": "Defense"
           },
           "kind": "weapon",
           "revision": "3.4.1+19851435",
-          "signature": "19973caad3c630be",
+          "signature": "1294b01a65b21fb1",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         },
         "zzz:1601": {
-          "content_signature": "fb0e3910814fbb80",
+          "content_signature": "e4dcfd36da5485e7",
           "data": {
             "element": "Fire (Genesis Flare)",
             "id": "zzz:1601",
@@ -1366,6 +1382,37 @@
                 "values_label": "Lv. 12"
               },
               {
+                "category": "Core Passive & Additional Ability",
+                "defs": [],
+                "lines": [
+                  "All skills used by Sunbringer deal Sharp DMG, with DEF used as the skill DMG Multiplier. Some Sharp DMG builds up Gash. When Gash buildup is full, the enemy enters [Gash]. [Gash] stacks up to 3 times. When certain skills' heavy attacks from Sunbringer hit an enemy in the [Gash] state, 1 stack of [Gash] is consumed to deal AoE DMG once;",
+                  "When a critical hit is triggered, Sharp DMG does not benefit from CRIT DMG Bonus and uses Laceration DMG Bonus instead. If CRIT Rate exceeds 100% and a critical hit has been triggered, an additional Laceration check is made based on the excess CRIT Rate. If Laceration is triggered, Laceration DMG Bonus is applied one additional time. For every 1% of initial CRIT DMG Sunbringer has, initial CRIT Rate increases by 0.35%;",
+                  "Sunbringer recovers 60 Sharpness upon entering the battlefield. In Investigation Zone mode, this effect can trigger once every 180s;",
+                  "When Sunbringer enters combat, Sunbringer gains the [Midnight Sun] effect, increasing CRIT Rate by 40% and ignoring 20% of the target's DEF when dealing DMG. [Midnight Sun] lasts 15s, and its duration does not decrease while Eldreda and Lindverne are off field. Sunbringer regains the [Midnight Sun] effect upon using any [EX Special Attack] or [Basic Attack: Bannerbearer - Converging Edge];",
+                  "After Dracaene activates [Defensive Assist], the [Assist Follow-Up] launched by Eldreda and Lindverne gains 15% increased Gash Buildup Rate and deals 20% increased DMG;",
+                  "When any squad Agent triggers [Maim], Sunbringer gains 40 [Willpower] for each stack of [Gash] removed, up to a maximum of 160 [Willpower]. When Sunbringer has at least 120 [Willpower], 120 [Willpower] can be consumed to activate [Basic Attack: Bannerbearer - Converging Edge];",
+                  "When a teammate triggers [Maim], if Sunbringer has enough [Willpower], [Quick Assist] is triggered. When Sunbringer switches on field via [Quick Assist], 120 [Willpower] is consumed to immediately activate [Basic Attack: Bannerbearer - Converging Edge]. This effect can trigger once every 3s;",
+                  "When Sunbringer's [Basic Attack: Bannerbearer - Converging Edge], [EX Special Attack: Night Blaze - End of the Long Dark], [EX Special Attack: Kindled Lamp - Torch of Eternal Day], [Ultimate: \"Onward, Together\"], or [Ultimate: \"By This Wish, All Things Remade\"] hits an enemy and deals DMG, the target accumulates [Ember Scar] equal to 75% of the actual DMG dealt by the skill. When the Finishing Move of Eldreda's [EX Special Attack: Kindled Lamp - Torch of Eternal Day] or [Ultimate: \"By This Wish, All Things Remade\"] hits an enemy, all [Ember Scar] is cleared, directly deducting an equal amount of HP.",
+                  "When an attack hits a normal enemy, if the [Ember Scar] it holds is greater than or equal to its current HP, all of its [Ember Scar] is immediately cleared and the enemy is defeated."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Core Passive:",
+                "values_label": ""
+              },
+              {
+                "category": "Core Passive & Additional Ability",
+                "defs": [],
+                "lines": [
+                  "When another character in your squad is a [Stun] character, a [Defense] character, or an [Armorer] character:",
+                  "When Sunbringer uses any [EX Special Attack] or [Dash Attack: Patrol - Shadow Realm Raid], all [Armorer] Agents in the whole squad enter the [Unanimous Wish] state. While in the [Unanimous Wish] state, Laceration DMG increases by 25% for 45s. Re-entering the [Unanimous Wish] state refreshes the duration."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Additional Ability:",
+                "values_label": ""
+              },
+              {
                 "category": "Mindscape Cinema",
                 "defs": [],
                 "lines": [
@@ -1373,7 +1420,7 @@
                 ],
                 "meta": "",
                 "params": [],
-                "title": "Mindscape Cinema 1",
+                "title": "Mindscape Cinema 1 — The Reclusive Void Hunter",
                 "values_label": ""
               },
               {
@@ -1384,7 +1431,7 @@
                 ],
                 "meta": "",
                 "params": [],
-                "title": "Mindscape Cinema 2",
+                "title": "Mindscape Cinema 2 — The Heir's Banner of Rebellion",
                 "values_label": ""
               }
             ],
@@ -1403,12 +1450,12 @@
           },
           "kind": "character",
           "revision": "3.4.1+19851435",
-          "signature": "9d75a3b805118e76",
+          "signature": "cb8720a0d0ea26d2",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         },
         "zzz:1661": {
-          "content_signature": "9d066d4622d28736",
+          "content_signature": "8f121dcc24d0e330",
           "data": {
             "element": "Ether",
             "id": "zzz:1661",
@@ -1828,6 +1875,35 @@
                 "values_label": "Lv. 12"
               },
               {
+                "category": "Core Passive & Additional Ability",
+                "defs": [],
+                "lines": [
+                  "When Robin uses certain skills, she grants all squad members a [Robin Shield] equal to a set percentage of her initial Max HP, lasting 15s. When a character gains [Robin Shield] again, the shield value stacks and its duration is extended, up to a maximum of 60s. The shield value cannot exceed 8% of Robin's initial Max HP.",
+                  "Each time a squad member gains [Robin Shield], their DMG is increased by 25% for 15s. Repeated triggers refresh the duration.",
+                  "Using [Special Attack: Step Up] triggers a Quick Assist. After switching out, Robin enters the [Off-Field Guard] state for 60s. While in [Off-Field Guard], Robin gains [Entry Points] when her Aftershock is triggered, up to a maximum of 120 points.",
+                  "When Robin has 100 or more [Entry Points], she can be manually switched in via her [Entry Skill]. Switching in automatically consumes 100 [Entry Points] to activate the [Entry Skill] and ends the [Off-Field Guard] state.",
+                  "When Robin uses her [Entry Skill], she gains 1 [Buff Enhance Point], up to a maximum of 1.",
+                  "Upon entering the [Off-Field Guard] state, if Robin has a [Buff Enhance Point], she consumes 1 [Buff Enhance Point] to further increase the DEF bonus provided by [Off-Field Guard] and its cap by 25%.",
+                  "Each time a squad member triggers Maim, Robin recovers 15 Energy."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Core Passive:",
+                "values_label": ""
+              },
+              {
+                "category": "Core Passive & Additional Ability",
+                "defs": [],
+                "lines": [
+                  "Triggers when another character in your squad is an [Armorer] or [Stun] Character:",
+                  "Upon entering the battlefield, gain 1 [Buff Enhance Point]. In Domain Mode, this effect can trigger once every 180s."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Additional Ability:",
+                "values_label": ""
+              },
+              {
                 "category": "Mindscape Cinema",
                 "defs": [],
                 "lines": [
@@ -1875,9 +1951,9 @@
           },
           "kind": "character",
           "revision": "3.4.1+19851435",
-          "signature": "b54f02060945cef9",
+          "signature": "2c3ca9a906dadacf",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         },
         "zzz:34300": {
           "content_signature": "c1f30558e1c011ab",
@@ -1886,6 +1962,7 @@
             "effect_title": "",
             "id": "zzz:34300",
             "image_url": "",
+            "image_urls": [],
             "lines": [
               "2-Piece: DEF +16%.",
               "4-Piece: Increases the equipper's CRIT Rate by 12%. When the equipper deals Fire Sharp DMG, it ignores 16% of the enemy's DEF."
@@ -1893,14 +1970,17 @@
             "name": "ID 34300",
             "page_url": "https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=en",
             "rarity": null,
+            "set_kind": "Drive Disc Set",
+            "set_parts": "",
             "stats_line": "",
-            "sub_type": ""
+            "sub_type": "",
+            "weapon_class": ""
           },
           "kind": "relic",
           "revision": "3.4.1+19851435",
-          "signature": "1f6c86ac952ea855",
+          "signature": "39a21174e179e3e2",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         },
         "zzz:34400": {
           "content_signature": "28de989e4316aba8",
@@ -1909,6 +1989,7 @@
             "effect_title": "",
             "id": "zzz:34400",
             "image_url": "",
+            "image_urls": [],
             "lines": [
               "2-Piece: Energy Regen +20%.",
               "4-Piece: When the equipper's CRIT Rate is at least 50%, CRIT DMG increases by 30%, and Daze inflicted by attacks increases by 5%. When the equipper is a [Stun] Character, using an [EX Special Attack] or [Chain Attack] increases Sharp DMG dealt by all squad members by 8% for 25s, and repeated triggers reset the duration. Only one instance of this effect can exist in the same squad."
@@ -1916,14 +1997,17 @@
             "name": "ID 34400",
             "page_url": "https://zzz.gachabase.net/drive-discs/34400/34400/beta?lang=en",
             "rarity": null,
+            "set_kind": "Drive Disc Set",
+            "set_parts": "",
             "stats_line": "",
-            "sub_type": ""
+            "sub_type": "",
+            "weapon_class": ""
           },
           "kind": "relic",
           "revision": "3.4.1+19851435",
-          "signature": "08a6f4370c5693f6",
+          "signature": "a7c8c3b3e8c9caa1",
           "truncated": false,
-          "ts": 1792988123
+          "ts": 1792991720
         }
       },
       "source_revision": "3.4.1+19851435",
