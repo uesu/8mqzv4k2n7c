@@ -44,6 +44,7 @@ import asyncio
 import difflib
 import logging
 import re
+from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
@@ -598,6 +599,13 @@ def _diff_section(prev: Any, cur: Any) -> tuple[list[str], list[str]]:
     cur_params = [row for row in (getattr(cur, "params", ()) or ()) if isinstance(row, dict)
                   and str(row.get("text") or "") not in prose]
     lines.extend(_diff_params(prev_params, cur_params))
+    prev_title = str(getattr(prev, "title", "")).strip()
+    cur_title = str(getattr(cur, "title", "")).strip()
+    if prev_title and cur_title and _norm_title(prev_title) != _norm_title(cur_title):
+        lines.append((
+            f"**[ADJUSTMENT]** Renamed from ~~{prev_title}~~ → **{cur_title}**.",
+            "[ADJUSTMENT]",
+        ))
     if str(getattr(prev, "meta", "")) != str(getattr(cur, "meta", "")):
         lines.append((f"**[ADJUSTMENT]** Targeting/type changed from "
                       f"~~{getattr(prev, 'meta', '')}~~ → **{getattr(cur, 'meta', '')}**.",
@@ -2860,7 +2868,7 @@ def _upgrade_legacy_beta_record(record: dict) -> bool:
     record["latest_rev"] = ""
     record["source_version"] = ""
     record["source_revision"] = ""
-    record["paused"] = False
+    record.pop("paused", None)
     record["last_poll"] = 0
     record["format_epoch"] = BETA_FORMAT_EPOCH
     return True
@@ -2879,13 +2887,14 @@ def _kit_needs_zh_check(built: dict | None) -> bool:
     return False
 
 
-def _extract_kit_numbers(lines: list[str]) -> list[str]:
-    nums: list[str] = []
+def _extract_kit_percents(lines: list[str]) -> list[str]:
+    """Extract combat percentage values (order-independent across CN/EN grammar & ordinals)."""
+    pcts: list[str] = []
     for ln in lines:
         if ln.startswith("-#"):
             continue
-        nums.extend(re.findall(r"\d+(?:\.\d+)?%?", ln))
-    return nums
+        pcts.extend(re.findall(r"\d+(?:\.\d+)?%", ln))
+    return pcts
 
 
 def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
@@ -2929,15 +2938,19 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
             if l_idx < len(zh_sec.lines):
                 zh_ln = zh_sec.lines[l_idx]
                 zh_nums = re.findall(r"\d+(?:\.\d+)?%?", zh_ln)
+                zh_pcts = [n for n in zh_nums if n.endswith("%")]
                 if ("[TBD]" in ln or "???" in ln) and zh_nums and "[TBD]" not in zh_ln:
                     if "[TBD]" in ln:
-                        ln = re.sub(r"\[TBD\]%?", zh_nums[0], ln, count=1)
+                        pick = zh_pcts[0] if ("[TBD]%" in ln and zh_pcts) else zh_nums[0]
+                        ln = re.sub(r"\[TBD\]%?", pick, ln, count=1)
                     else:
-                        ln = re.sub(r"\?\?\?%?", zh_nums[0], ln, count=1)
+                        pick = zh_pcts[0] if ("???%" in ln and zh_pcts) else zh_nums[0]
+                        ln = re.sub(r"\?\?\?%?", pick, ln, count=1)
                     sec_changed = True
                 if re.search(r"\d+(?:\.\d+)?%?/-(\s|$|[.,;)])", ln) and zh_nums:
+                    pick_tail = zh_pcts[-1] if zh_pcts else zh_nums[-1]
                     patched = re.sub(
-                        r"(\d+(?:\.\d+)?%?)/-(?=\s|$|[.,;)])", f"\\1/{zh_nums[-1]}", ln, count=1
+                        r"(\d+(?:\.\d+)?%?)/-(?=\s|$|[.,;)])", f"\\1/{pick_tail}", ln, count=1
                     )
                     if patched != ln:
                         ln = patched
@@ -2949,15 +2962,20 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
                 if not x.startswith("-# ⚠️ [TBD] marks an unresolved")
             ]
 
-        en_nums = _extract_kit_numbers(updated_lines)
-        zh_nums = _extract_kit_numbers(zh_sec.lines)
+        en_pcts = _extract_kit_percents(updated_lines)
+        zh_pcts_all = _extract_kit_percents(zh_sec.lines)
         if sec_changed:
             if not any("CN/CHS" in x for x in updated_lines):
                 updated_lines.append("-# 🌐 Values synced with authoritative CN/CHS beta data.")
             en_sec.lines = updated_lines
             changed_any = True
-        elif zh_nums and en_nums != zh_nums and not any("CN/CHS" in x for x in updated_lines):
-            preview = ", ".join(zh_nums[:8])
+        elif (
+            not en_sec.params
+            and zh_pcts_all
+            and Counter(en_pcts) != Counter(zh_pcts_all)
+            and not any("CN/CHS" in x for x in updated_lines)
+        ):
+            preview = ", ".join(zh_pcts_all[:8])
             if preview:
                 updated_lines.append(
                     f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
@@ -3024,7 +3042,11 @@ def _synthesize_kit_overview(
 
     lead_bits = [b for b in (rank_txt, elem_disp, role) if b]
     lead = " ".join(lead_bits) if lead_bits else "Playable"
-    article = "an" if lead.startswith(("A-", "S-", "A ", "E", "I", "O")) else "a"
+    use_an = lead.startswith(("A-", "S-", "8")) or (
+        lead[:1].upper() in ("A", "E", "I", "O")
+        and not lead.upper().startswith(("ONE", "ONCE"))
+    )
+    article = "an" if use_an else "a"
     noun = {
         "genshin": "character",
         "starrail": "unit",
@@ -3114,7 +3136,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     if str(record.get("latest_rev") or "") == rev_id and (
             str(record.get("source_version") or "") == version or not record.get("source_version")):
         return None
-    if isinstance(saved, dict) and saved.get("status") == "posted" and not saved.get("more"):
+    if isinstance(saved, dict) and saved.get("status") in ("posted", "silent") and not saved.get("more"):
         return None
 
     snapshots = record.get("snapshots") if isinstance(record.get("snapshots"), dict) else {}
@@ -3475,10 +3497,12 @@ async def run(ctx) -> None:
         if game.key not in enabled:
             continue
         record = ctx.state.beta_record(game.key)
-        if _upgrade_legacy_beta_record(record):
-            log.info("[%s] beta: migrated legacy state to format_epoch=%d", game.key, BETA_FORMAT_EPOCH)
-            if not ephemeral:
-                ctx.state.save()
+        migrated = _upgrade_legacy_beta_record(record)
+        was_paused = bool(record.pop("paused", None))
+        if (migrated or was_paused) and not ephemeral:
+            if migrated:
+                log.info("[%s] beta: migrated legacy state to format_epoch=%d", game.key, BETA_FORMAT_EPOCH)
+            ctx.state.save()
         last_poll = int(record.get("last_poll") or 0)
         if budget["min_poll_min"] and ctx.now - last_poll < budget["min_poll_min"] * 60:
             continue
@@ -3493,11 +3517,16 @@ async def run(ctx) -> None:
         starved = any(
             "run-wide request budget" in w for w in ctx.warnings[starved_before:]
         )
-        if patch is not None or int(shared_budget.get("_shared_requests_left", 0)) < before_requests or not starved:
-            record["last_poll"] = ctx.now
-            if not ephemeral:
-                ctx.state.save()
+        should_stamp_poll = (
+            patch is not None
+            or int(shared_budget.get("_shared_requests_left", 0)) < before_requests
+            or not starved
+        )
         if patch is None:
+            if should_stamp_poll:
+                record["last_poll"] = ctx.now
+                if not ephemeral:
+                    ctx.state.save()
             continue
         if patch.no_changes and not patch.characters and not patch.equipment:
             pending = (record.get("revisions") or {}).get(patch.rev_id) or {}
@@ -3506,7 +3535,11 @@ async def run(ctx) -> None:
                 for batch in (pending.get("batches") or {}).values()
             ):
                 ctx.warnings.append(f"{game.short} beta: unfinished delivery became quiet; held for reconciliation")
+                record["last_poll"] = ctx.now
+                if not ephemeral:
+                    ctx.state.save()
                 continue
+            record["last_poll"] = ctx.now
             if not ephemeral:
                 _settle_beta_patch(ctx, record, patch, status="silent")
                 ctx.state.save()
@@ -3515,7 +3548,15 @@ async def run(ctx) -> None:
                 + ("; next bounded batch pending" if patch.more else "")
             )
             continue
+        warn_before_deliver = len(ctx.warnings)
         await _deliver(ctx, game, patch, record, ephemeral)
+        will_retry = any(
+            "; will retry" in w for w in ctx.warnings[warn_before_deliver:]
+        )
+        if not will_retry and should_stamp_poll:
+            record["last_poll"] = ctx.now
+            if not ephemeral:
+                ctx.state.save()
 
 
 def _settle_beta_patch(ctx, record: dict, patch: BetaPatch, *, status: str) -> None:

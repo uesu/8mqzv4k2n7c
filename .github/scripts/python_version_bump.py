@@ -36,12 +36,13 @@ WORKFLOW_FILES = [
     os.path.join(ROOT, ".github", "workflows", "ci.yml"),
     os.path.join(ROOT, ".github", "workflows", "monitor.yml"),
     os.path.join(ROOT, ".github", "workflows", "python_version_bump.yml"),
+    os.path.join(ROOT, ".github", "workflows", "sync_prod.yml"),
 ]
 RUFF_TOML = os.path.join(ROOT, "ruff.toml")
 # The complete set of repository files this script is permitted to modify. Nothing else is
 # opened for writing, so no README and no doc can ever be rewritten by a bump — the failure
 # mode that corrupted dated history entries in a sibling repository.
-ALLOWED_WRITES = frozenset({"ci.yml", "monitor.yml", "python_version_bump.yml", "ruff.toml"})
+ALLOWED_WRITES = frozenset({"ci.yml", "monitor.yml", "python_version_bump.yml", "ruff.toml", "sync_prod.yml"})
 MANIFEST_URL = "https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json"
 PIN_RE = re.compile(r"(python-version:\s*')(\d+\.\d+\.\d+)(')")
 RUFF_TARGET_RE = re.compile(r'(target-version\s*=\s*")py(\d+)(")')

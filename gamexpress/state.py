@@ -231,9 +231,31 @@ class State:
                 other_epoch = _safe_int(other.get("format_epoch"), 0)
                 mine_epoch = _safe_int(mine.get("format_epoch"), 0)
                 if other_epoch < BETA_FORMAT_EPOCH and mine_epoch >= BETA_FORMAT_EPOCH:
+                    revs = _as_dict_slot(mine, "revisions")
+                    other_revs = other.get("revisions")
+                    for rev_key, rrec in (other_revs.items() if isinstance(other_revs, dict) else ()):
+                        if not isinstance(rrec, dict):
+                            continue
+                        is_ambig = rrec.get("status") == "ambiguous" or any(
+                            isinstance(b, dict) and b.get("ambiguous")
+                            for b in (rrec.get("batches") or {}).values()
+                        )
+                        if is_ambig and not isinstance(revs.get(rev_key), dict):
+                            revs[rev_key] = copy.deepcopy(rrec)
+                            imported += 1
                     continue
                 if other_epoch >= BETA_FORMAT_EPOCH and mine_epoch < BETA_FORMAT_EPOCH:
-                    mine["revisions"] = {}
+                    kept_ambig: dict[str, dict] = {}
+                    cur_revs = mine.get("revisions")
+                    for rev_key, rrec in (cur_revs.items() if isinstance(cur_revs, dict) else ()):
+                        if not isinstance(rrec, dict):
+                            continue
+                        if rrec.get("status") == "ambiguous" or any(
+                            isinstance(b, dict) and b.get("ambiguous")
+                            for b in (rrec.get("batches") or {}).values()
+                        ):
+                            kept_ambig[str(rev_key)] = rrec
+                    mine["revisions"] = kept_ambig
                     mine["snapshots"] = {}
                     mine["locked_images"] = {}
                     mine.pop("latest_rev", None)

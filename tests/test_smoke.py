@@ -1351,10 +1351,13 @@ def test_every_action_is_pinned_to_a_commit_sha_with_a_readable_version_comment(
             repo, ref = m.group(1), m.group(2)
             seen.append(f"{repo}@{ref}")
             assert re.fullmatch(r"[0-9a-f]{40}", ref), f"{path.name}: {repo}@{ref} is not a SHA"
-            ver = re.search(r"#\s*(v[\w.-]+)", line)
-            assert ver, f"{path.name}: {repo} pinned without a version comment"
-            if repo.startswith("astral-sh/"):
-                assert re.fullmatch(r"v\d+\.\d+\.\d+", ver.group(1)), f"{path.name}: {ver.group(1)}"
+            ver = re.search(r"#\s*(v\d+\.\d+\.\d+)\s*$", line)
+            assert ver, (
+                f"{path.name}: {repo} must end with a bare '# vX.Y.Z' tag comment so zizmor can verify it"
+            )
+        assert "runs-on: ubuntu-latest" in path.read_text(encoding="utf-8"), (
+            f"{path.name}: keep runs-on: ubuntu-latest so runner OS updates roll forward automatically"
+        )
     assert len(seen) >= 9, seen
 
 
@@ -5117,13 +5120,29 @@ def test_a_legacy_locked_card_is_written_down_even_on_a_run_with_no_program_post
 
 
 def main() -> int:
+    import re
+
     tests = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_") and callable(f)]
     failed = 0
     for name, fn in tests:
+        buf = io.StringIO()
         try:
-            fn()
+            with contextlib.redirect_stdout(buf):
+                fn()
+            leaked = [
+                ln for ln in buf.getvalue().splitlines()
+                if re.match(r"^\s*::(?:error|warning|notice)\b", ln)
+            ]
+            if leaked:
+                raise AssertionError(
+                    f"{name} leaked uncaptured GitHub Actions command(s) to stdout: {leaked!r}"
+                )
+            if buf.getvalue():
+                sys.stdout.write(buf.getvalue())
             print(f"  PASS  {name}")
         except Exception:
+            if buf.getvalue():
+                sys.stdout.write(buf.getvalue())
             failed += 1
             print(f"  FAIL  {name}")
             traceback.print_exc()
@@ -15015,7 +15034,9 @@ def test_hotfix_monitor_764_765_none_extracts_runner_isolation_ananta_hna_and_st
             "DISCORD_WEBHOOK_NEWS_GENSHIN": HOOK,
         })
         run_st.state_path = state_file
+        captured_stdout = io.StringIO()
         with (
+            contextlib.redirect_stdout(captured_stdout),
             patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(summary_file)}, clear=False),
             patch.object(runner, "gather_versions", new=AsyncMock()),
             patch.object(runner, "gather_items", new=AsyncMock()),
@@ -15030,6 +15051,7 @@ def test_hotfix_monitor_764_765_none_extracts_runner_isolation_ananta_hna_and_st
             out_ctx = asyncio.run(runner.run_once(run_st))
 
         assert news_ran is True
+        assert "::error::maintenance failed: boom inside maintenance" in captured_stdout.getvalue()
         assert any("maintenance failed: boom inside maintenance" in e for e in out_ctx.errors)
         saved_state = json.loads(state_file.read_text(encoding="utf-8"))
         assert saved_state["codes"]["genshin"]["SAVEDDESPITECRASH"]["message_id"] == "msg-keep-me"
@@ -18544,6 +18566,172 @@ def test_feature5_cn_chs_crosscheck_reconciles_lagging_en_values_and_placeholder
         assert p2 and len(p2.characters) == 1 and p2.characters[0].is_new is False
         p2_body = "\n".join(ln for s in p2.characters[0].sections for ln in s.lines)
         assert "[BUFF]" in p2_body and "~~**138.4%**~~ → **168.8%**" in p2_body
+
+
+def test_feature5_post_merge_edge_cases_and_ci_annotation_hygiene():
+    """Cover CN/EN word-order safety, retry last_poll, Page-1 equipment packing, and epoch merges."""
+    import importlib.util
+    import re
+    import shutil
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaEquipment, BetaPatch
+
+    # 1. CN/EN clause word-order & ordinal ("1st-Hit" vs "第一段") must NOT trigger false lag notes.
+    en_b = {"sections": [BetaSectionEntry(
+        title="Core Passive",
+        lines=["1st-Hit deals 80% DMG and deals 240% Fire DMG to 3 enemies for 10s."],
+    )]}
+    zh_b_same = {"sections": [BetaSectionEntry(
+        title="核心被动",
+        lines=["在 10 秒内对 3 名敌人造成 240% 火属性伤害。第一段造成 80% 伤害。"],
+    )]}
+    assert beta_mod._reconcile_en_with_zh_kit(en_b, zh_b_same) is False
+    assert not any("CN/CHS" in ln for ln in en_b["sections"][0].lines)
+
+    zh_b_buffed = {"sections": [BetaSectionEntry(
+        title="核心被动",
+        lines=["在 10 秒内对 3 名敌人造成 300% 火属性伤害。第一段造成 80% 伤害。"],
+    )]}
+    assert beta_mod._reconcile_en_with_zh_kit(en_b, zh_b_buffed) is True
+    assert any("300%" in ln and "CN/CHS" in ln for ln in en_b["sections"][0].lines)
+
+    # 2. Pure skill-slot rename is never dropped as untouched and records the old title.
+    prev_slot = [BetaSectionEntry(
+        title="Special Attack: Pursuit Slash", category="Special Attack",
+        lines=["Unleashes a quick upward slash dealing Fire DMG."],
+    )]
+    cur_slot = [BetaSectionEntry(
+        title="Special Attack: Fire Snatch", category="Special Attack",
+        lines=["Unleashes a quick upward slash dealing Fire DMG."],
+    )]
+    renamed_diff, untouched = beta_mod.diff_kits(prev_slot, cur_slot)
+    assert untouched == 0 and len(renamed_diff) == 1
+    assert any("Renamed from ~~Special Attack: Pursuit Slash~~ → **Special Attack: Fire Snatch**" in ln
+               for ln in renamed_diff[0].lines)
+
+    # 3. Vowel-initial element without rarity ("Anemo", "Aero") gets "an", not "a".
+    ov = beta_mod._synthesize_kit_overview(
+        "genshin", "Linnea", {"element": "Anemo", "role": "Sword"}, cur_slot, is_new=True
+    )
+    assert "is an Anemo Sword character" in ov
+
+    # 4. Equipment-only long item packs onto Page 1 alongside header; HSR Planar vs Relics headings split.
+    eq_patch = BetaPatch(
+        game_key="starrail", beta_version="4.7.1", source_version="4.7.1", source_revision="4.7.1",
+        rev_id="r_eq", rev_label="v4.7.1",
+        equipment=[
+            BetaEquipment(
+                id="hsr:relic:329", name="Cavern Set", category_label="Relics & Ornaments",
+                rarity=5, set_kind="Relic Set", tag="[NEW]",
+                lines=["2-Piece: Increases SPD by 6%.", "4-Piece: " + ("Increases CRIT DMG by 24%. " * 140)],
+                image_url="https://static.nanoka.cc/assets/hsr/relicfigures/IconRelic_329_1.webp",
+            ),
+            BetaEquipment(
+                id="hsr:relic:330", name="Planar Set", category_label="Relics & Ornaments",
+                rarity=5, set_kind="Planar Ornament Set", tag="[CHANGED]",
+                lines=["**[BUFF]** 2-Piece: Increases ATK by ~~12%~~ → **16%**."],
+            ),
+        ],
+    )
+    eq_pls = cards.beta_payloads(GAMES["starrail"], eq_patch, settings())
+    p1_txt = "\n".join(c.get("content", "") for c in eq_pls[0]["components"][0]["components"] if c.get("type") == 10)
+    assert "### Cavern Set" in p1_txt and "Increases CRIT DMG" in p1_txt
+    all_eq_txt = "\n".join(
+        c.get("content", "") for p in eq_pls for c in p["components"][0]["components"] if c.get("type") == 10
+    )
+    assert "## Relics & Ornaments\n" in all_eq_txt
+    assert "## Planar Ornaments Changes" in all_eq_txt
+
+    # 5. Transient Discord 503 ("will retry") leaves last_poll unstamped AND clears paused=True.
+    manifest = {"ww": {"live": "3.7", "latest": "3.8.1", "available": ["3.7", "3.8.1"],
+                       "new": {"character": [1512], "weapon": [], "echo": []}}}
+
+    class WWFetcher:
+        async def get_json(self, url, **_kw):
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/ww/" in url and "/character/1512" in url:
+                return _beta_json("ww_character_1512.json")
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return ""
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        st_path = Path(tmp) / "state.json"
+        ctx_fail = _beta_ctx(
+            st_path, WWFetcher(), BETA_ENABLED="1", BETA_MIN_POLL_MINUTES="30",
+            DISCORD_WEBHOOK_BETA=HOOK, games=["wuwa"],
+        )
+        ctx_fail.state.beta_record("wuwa")["paused"] = True
+        ctx_fail.webhook = ScriptedWebhook([], [SendResult(False, 503, error="service unavailable")])
+        asyncio.run(beta_mod.run(ctx_fail))
+        ww_rec = ctx_fail.state.beta_record("wuwa")
+        assert "paused" not in ww_rec
+        assert not ww_rec.get("last_poll")  # must retry next 5m tick, not sleep 30m!
+
+        # 6. Peer failover preserves ambiguous holds across BETA_FORMAT_EPOCH boundaries both ways.
+        s_new = State(Path(tmp) / "s_new.json")
+        s_new.beta_record("zzz")  # epoch 2
+        peer_old = {"beta": {"zzz": {
+            "revisions": {"amb_1": {"status": "ambiguous", "batches": {"b1": {"ambiguous": True}}}},
+            "snapshots": {"zzz:1601": {"name": "Old"}},
+        }}}
+        s_new.merge_peer(peer_old, include_beta=True)
+        assert "amb_1" in s_new.beta_record("zzz")["revisions"]
+        assert "zzz:1601" not in s_new.beta_record("zzz")["snapshots"]
+
+        s_old_local = State(Path(tmp) / "s_old.json")
+        rec_old = s_old_local.beta_record("zzz")
+        rec_old["format_epoch"] = 0
+        rec_old["revisions"] = {
+            "amb_local": {"status": "ambiguous", "batches": {"b1": {"ambiguous": True}}},
+            "posted_old": {"status": "posted"},
+        }
+        peer_epoch2 = {"beta": {"zzz": {
+            "format_epoch": beta_mod.BETA_FORMAT_EPOCH,
+            "revisions": {"new_rev": {"status": "posted", "messages": ["99"]}},
+        }}}
+        s_old_local.merge_peer(peer_epoch2, include_beta=True)
+        merged_revs = s_old_local.beta_record("zzz")["revisions"]
+        assert "amb_local" in merged_revs and "new_rev" in merged_revs and "posted_old" not in merged_revs
+
+        # 7. python_version_bump.py updates sync_prod.yml when present alongside ci/monitor/bump,
+        #    and skips it cleanly in production checkouts where dev-only sync_prod.yml is absent.
+        bump_root = Path(tmp) / "bump_repo"
+        (bump_root / ".github" / "workflows").mkdir(parents=True)
+        (bump_root / ".github" / "scripts").mkdir(parents=True)
+        shutil.copy(
+            ROOT / ".github" / "scripts" / "python_version_bump.py",
+            bump_root / ".github" / "scripts" / "python_version_bump.py",
+        )
+        for wf_name in ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml"):
+            src_wf = ROOT / ".github" / "workflows" / wf_name
+            if src_wf.is_file():
+                txt = src_wf.read_text(encoding="utf-8")
+                txt = re.sub(r"(python-version:\s*')\d+\.\d+\.\d+(')", r"\g<1>3.14.8\2", txt)
+            else:
+                txt = "python-version: '3.14.8'\n"
+            (bump_root / ".github" / "workflows" / wf_name).write_text(txt, encoding="utf-8")
+        spec = importlib.util.spec_from_file_location(
+            "bump_sync_check", bump_root / ".github" / "scripts" / "python_version_bump.py"
+        )
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        rewritten = mod.bump_workflow_files("3.14.9")
+        assert ".github/workflows/sync_prod.yml" in rewritten
+        assert "'3.14.9'" in (bump_root / ".github" / "workflows" / "sync_prod.yml").read_text(encoding="utf-8")
+
+        # Production checkout (no sync_prod.yml): succeeds cleanly and rewrites the 3 synced workflows.
+        (bump_root / ".github" / "workflows" / "sync_prod.yml").unlink()
+        rewritten_prod = mod.bump_workflow_files("3.14.10")
+        assert ".github/workflows/sync_prod.yml" not in rewritten_prod
+        assert ".github/workflows/ci.yml" in rewritten_prod
+        assert "'3.14.10'" in (bump_root / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -956,7 +956,7 @@ _SKILL_ATTR_HEADER_RE = re.compile(r"^\*\*Skill Attributes\b", re.I)
 
 def _bold_beta_numbers(line: str) -> str:
     """Bold standalone combat percentages/durations without touching links, strikethroughs, or IDs."""
-    if not line or "http://" in line or "https://" in line or "Equipment-line-" in line:
+    if not line or "Equipment-line-" in line:
         return line
     protected: list[str] = []
 
@@ -965,7 +965,7 @@ def _bold_beta_numbers(line: str) -> str:
         return f"\x01{len(protected) - 1}\x01"
 
     work = re.sub(
-        r"\*\*[^*\n]+\*\*|~~[^~\n]+~~|`[^`\n]+`|\[[^\]\n]+\]\([^)\n]+\)|<[^>\n]+>",
+        r"\*\*[^*\n]+\*\*|~~[^~\n]+~~|`[^`\n]+`|\[[^\]\n]+\]\([^)\n]+\)|<[^>\n]+>|https?://\S+",
         _stash,
         line,
     )
@@ -1219,6 +1219,13 @@ def _split_beta_block(block: str, max_chars: int) -> list[str]:
     chunks: list[str] = []
     cur = ""
     for line in block.split("\n"):
+        if cur and len(cur) + 1 + len(line) > max_chars and max_chars - len(cur) - 1 >= 200:
+            room_cur = max_chars - len(cur) - 1
+            cut_cur = line.rfind(" ", 1, room_cur + 1)
+            if cut_cur >= 1:
+                chunks.append(f"{cur}\n{line[:cut_cur]}")
+                cur = ""
+                line = line[cut_cur:].lstrip(" ")
         while len(line) > max_chars:
             if cur:
                 chunks.append(cur)
@@ -1534,20 +1541,23 @@ def beta_payloads_with_map(
             used_chars += len(patch_header_str)
             placed_patch_header = True
 
+        def _eq_display_cat(item: Any) -> str:
+            c_lbl = strip_invisible(str(getattr(item, "category_label", "") or "Equipment")).strip()
+            s_kind = strip_invisible(str(getattr(item, "set_kind", "") or "")).strip()
+            if c_lbl == "Relics & Ornaments" and "planar ornament" in s_kind.lower():
+                return "Planar Ornaments"
+            return c_lbl
+
         cat_tags: dict[str, list[str]] = {}
         for eq in equipment:
-            c_lbl = strip_invisible(str(getattr(eq, "category_label", "") or "Equipment")).strip()
+            d_lbl = _eq_display_cat(eq)
             t_lbl = strip_invisible(str(getattr(eq, "tag", "") or "[NEW]")).strip()
-            cat_tags.setdefault(c_lbl, []).append(t_lbl)
+            cat_tags.setdefault(d_lbl, []).append(t_lbl)
 
         last_eq_cat = None
         for eq in equipment:
-            eq_cat = strip_invisible(str(getattr(eq, "category_label", "") or "Equipment")).strip()
             eq_set_kind = strip_invisible(str(getattr(eq, "set_kind", "") or "")).strip()
-            if eq_cat == "Relics & Ornaments" and "planar ornament" in eq_set_kind.lower():
-                display_cat = "Planar Ornaments"
-            else:
-                display_cat = eq_cat
+            display_cat = _eq_display_cat(eq)
             eq_name = strip_invisible(str(getattr(eq, "name", "") or "Unknown")).strip()
             eq_rarity = getattr(eq, "rarity", None)
             eq_sub = strip_invisible(str(getattr(eq, "sub_type", "") or "")).strip()
@@ -1575,7 +1585,7 @@ def beta_payloads_with_map(
 
             cat_header_str = ""
             if include_cat and display_cat:
-                all_tags = cat_tags.get(eq_cat, [])
+                all_tags = cat_tags.get(display_cat, [])
                 is_diff_cat = (
                     bool(all_tags)
                     and all(t != "[NEW]" for t in all_tags)
@@ -1624,7 +1634,18 @@ def beta_payloads_with_map(
 
             hdr_reserve = len(cat_header_str) + 4 if cat_header_str else 0
             max_eq_chars = MAX_TEXT_TOTAL - footer_reserve - 24 - hdr_reserve
-            pieces = _split_beta_block(eq_text_str, max_eq_chars)
+            first_room = MAX_TEXT_TOTAL - used_chars - 24 - hdr_reserve
+            if (
+                len(kids) == 1
+                and kids[0].get("content") == patch_header_str
+                and len(eq_text_str) > first_room >= 600
+            ):
+                initial = _split_beta_block(eq_text_str, first_room)
+                pieces = [initial[0]]
+                if len(initial) > 1:
+                    pieces.extend(_split_beta_block("\n".join(initial[1:]), max_eq_chars))
+            else:
+                pieces = _split_beta_block(eq_text_str, max_eq_chars)
             for piece_idx, piece in enumerate(pieces):
                 piece_images = eq_imgs if piece_idx == 0 else []
                 hdr = cat_header_str if piece_idx == 0 and cat_header_str else ""

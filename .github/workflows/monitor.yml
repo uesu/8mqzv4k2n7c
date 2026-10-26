@@ -144,19 +144,20 @@ jobs:
       - name: Check out (branch HEAD, so a queued run sees the previous run's state)
         # zizmor: ignore[artipacked] — the credentials are the point: the last step pushes
         # state/state.json back to this branch. Nothing is uploaded as an artifact.
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           ref: ${{ github.ref_name }}
 
       - name: Set up Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: '3.14.8'
 
       # This step runs every 5 minutes (cron-job.org), so its speed is the one that actually
       # matters: uv installs the exact same packages pip would, just with a much faster resolver.
+      # astral-sh doesn't publish a floating major tag like v10; keep `# vX.Y.Z` bare so zizmor verifies it.
       - name: Install uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0 # astral-sh doesn't publish a floating major tag like v10
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           # NOT the default "latest": with no version and no uv.toml/pyproject.toml, setup-uv has
           # to fetch astral-sh/versions' manifest over the network on EVERY run (0.3-4 s in runs

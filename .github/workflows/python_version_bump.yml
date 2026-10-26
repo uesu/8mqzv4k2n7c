@@ -54,11 +54,13 @@ jobs:
     steps:
       # peter-evans/create-pull-request pushes the bump branch with these credentials, so they
       # have to persist. Nothing in this job is uploaded as an artifact.
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7 # zizmor: ignore[artipacked]
+      - name: Checkout
+        # zizmor: ignore[artipacked]
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           token: ${{ secrets.BUMP_PAT }}
 
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: '3.14.8'
 
@@ -81,7 +83,7 @@ jobs:
         id: switch
         if: steps.bump.outputs.changed == 'true'
         continue-on-error: true
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: '${{ steps.bump.outputs.new_version }}'
 
@@ -133,7 +135,7 @@ jobs:
       - name: Open the PR (only when a newer stable series was found AND proved green)
         id: cpr
         if: steps.bump.outputs.changed == 'true' && steps.switch.outcome == 'success' && steps.wheels.outcome == 'success' && steps.gates.outcome == 'success'
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
         with:
           token: ${{ secrets.BUMP_PAT }}
           commit-message: "chore(python): bump to Python ${{ steps.bump.outputs.new_version }}"
