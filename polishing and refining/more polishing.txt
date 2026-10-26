@@ -20,13 +20,15 @@ the: Slumberland Healing: 996+2.00% | Dreambind Continuous DMG: 36.29% got put i
 
 5. make sure it detects new updates like for example on zenless zone zero (this applies to all games, make sure to fully access the websites, their endpoints:
 
+i saw this on the message on gachabase
+
 [Zenless Zone Zero] v3.4.1 Rev. 19850203 Hotfix Update
 
 Changelog: https://zzz.gachabase.net/changelog/beta#v3.4.1-rev-19850203
 
 [Agents] Sunbringer
-|- Chinese: Changes (https://zzz.gachabase.net/diff/agents/1601/sunbringer?prev=beta_3.4.1_19842923&cur=beta_3.4.1_19850203&lang=chs) (Full (https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=chs))
-|- English: Changes (https://zzz.gachabase.net/diff/agents/1601/sunbringer?prev=beta_3.4.1_19842923&cur=beta_3.4.1_19850203&lang=en) (Full (https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en))
+|- Chinese: Changes https://zzz.gachabase.net/diff/agents/1601/sunbringer?prev=beta_3.4.1_19842923&cur=beta_3.4.1_19850203&lang=chs Full: https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=chs
+|- English: Changes https://zzz.gachabase.net/diff/agents/1601/sunbringer?prev=beta_3.4.1_19842923&cur=beta_3.4.1_19850203&lang=en Full: https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en
 
 https://github.com/uesu/8mqzv4k2n7c/actions/runs/40258172058
 
