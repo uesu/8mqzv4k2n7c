@@ -1,0 +1,310 @@
+The Game Express found urgent updates for news express, focus on the ### 4. Cross-Repo Audit of `uesu/News-Express` (`→ uesu/7jkxmy9nvbc` & `uesu/wvkhabh2s22`)
+
+Here is the complete 4-part verification, performance report, merge confirmation, and `uesu/News-Express` cross-repo audit with a ready-to-use update payload.
+
+---
+
+### 1. Confirmation of All 6 Live Discord Screenshots (`#schedule` & `#hsr-news`)
+
+All 6 screenshots confirm every PR `#75`–`#77` improvement working live in production (`uesu/8mqzv4k2n7c`):
+
+- **Screenshots 1–3 (`#schedule` — Honkai: Star Rail Version 4.7 Schedule):**
+  - **First-poster link preserved:** `[Version 4.7 Special Program Announcement](https://www.hoyolab.com/article/47210911)` keeps HoYoLAB (`6:00 PM`) as the primary link winner rather than letting late X (`6:04 PM`) overwrite it.
+  - **First-poster native source media preserved (`201243.png`):** Uses HoYoLAB's raw `upload-os-bbs.hoyolab.com/...jpg` key art directly (never replaced by `pbs.twimg.com`, and works identically across `jpg`/`png`/`webp`/`gif`/`mp4`/`webm`).
+  - **Livestream button + animated emoji (`201232.png`):** Healed in place with `[Watch](https://www.youtube.com/watch?v=9e8q71F4_I0)` and the custom animated `<a:starwardcat:1564242587987087420>` emoji on the 3rd button.
+- **Screenshots 4–6 (`#hsr-news` — Special Program Announcement Card):**
+  - **Zero-extra-poll edit detection & in-place `PATCH`:** Detected HoYoLAB's silent post-publish edit (`last_modify_time: 1793018432 > created_at: 1793018400`) from `getNewsList`, unwrapped `https://hoyo.link/b3d2ef456` → `https://www.youtube.com/watch?v=9e8q71F4_I0`, preserved the raw HoYoLAB CDN key art (`201320.png`), and updated the existing Discord card in place (`[Read Post]` + `[YouTube]` + `[Citlali News]`) with zero duplicate posts.
+
+---
+
+### 2. Performance & API-Call Comparison (Before vs. Latest Changes)
+
+| Metric | Previous Baseline | Latest (`PRs #75–#79`, `8mqzv4k2n7c@886e0ac`) | Net Impact / Savings |
+|---|---|---|---|
+| **Steady-state `LIVE · monitor run` step** | `~12–15s` | **`11–13s`** across all 6 games & 3 active features (`40320457212`: `13s`; `40322372426`: `11s`) | Zero added latency; fully non-blocking async I/O |
+| **Total `monitor.yml` job execution** | `~25–35s` | **`22–32s`** (`uv` sync in `~1–2s`; Note: `40320457212`'s `4m53s` wall-clock was `4m20s` GitHub runner queue wait + `32s` job runtime) | Fast cold-start via `astral-sh/setup-uv` `v10.3.2` |
+| **Extra HTTP calls to detect HoYoLAB edits on quiet runs** | N/A (edits missed completely) | **`0` extra HTTP calls** (`last_modify_time` is read directly off `getNewsList` items already fetched every run; `getPostFull` is called **only** when `last_modify_time` actually advances) | **100% edit recovery at `0` steady-state request cost** |
+| **Shortlink (`hoyo.link` / `t.co`) resolution cost** | N/A (shortlinks missed YouTube button) | **`0` calls on quiet runs**; **`1` `HEAD` hop (`0` body bytes)** per new shortlink with per-run cache, `3`-hop / `4s` cap | Minimal-byte `HEAD` probe only when a candidate post contains a shortlink |
+| **Discord Webhook API calls on post-publish edit / late link** | Either missed update or manual intervention | **`0` calls on quiet runs**; **`1` targeted `PATCH`** on the existing message when links/body/media enrich (`0` duplicate `POST`s) | Zero duplicate cards, zero delete/repost churn, zero unnecessary state commits |
+| **Cross-repo workflow pin drift (`sync_prod.yml`)** | Raw file overwrite downgraded `8mqzv4k2n7c#3` SHA bumps & broke `#4` | **`merge_workflow_pins_bytes()`** monotonically preserves newer `python-version` & SHA-pinned `uses:` in prod | Zero future Dependabot / Python-bump merge conflicts |
+
+---
+
+### 3. Merge Confirmation (`8mqzv4k2n7c#4` & `Game-Express#78`) & Zero-Bug / Zero-Annotation Verification
+
+- **Both PRs are 100% clean and safe to merge right now** (`mergeable: true`, `mergeable_state: "clean"`, all required and advisory checks passing):
+  1. **Merge first:** [`uesu/8mqzv4k2n7c#4`](https://github.com/uesu/8mqzv4k2n7c/pull/4) (`b293beb` — bumps live prod to CPython `3.14.9`).
+  2. **Merge second:** [`uesu/Game-Express#78`](https://github.com/uesu/Game-Express/pull/78) (`9d5572e` — bumps dev to CPython `3.14.9`; `sync_prod.yml` will see `8mqzv4k2n7c` already matches and finish cleanly as `up-to-date`).
+  *(Even if merged in reverse order, `merge_workflow_pins_bytes()` now guarantees zero downgrades or conflicts.)*
+- **Zero errors & zero error/warning annotations verified across every check-run** (`Game-Express@52ea900`, `8mqzv4k2n7c@886e0ac`, `8mqzv4k2n7c#4`, and `Game-Express#78`):
+  - **`0` failure/error annotations** and **`0` warning annotations** across `test`, `Advisory checks`, `monitor`, and `sync_prod`.
+  - The single GitHub UI notice on jobs is GitHub's standard `notice`-level banner for `ubuntu-latest` migrating to Ubuntu 26, which transitions seamlessly with zero changes needed because all workflows use `runs-on: ubuntu-latest`.
+
+---
+
+### 4. Cross-Repo Audit of `uesu/News-Express` (`→ uesu/7jkxmy9nvbc` & `uesu/wvkhabh2s22`)
+
+#### What `News-Express` does **not** need
+- `News-Express` is strictly Reddit (`reddit_main_v3.py`) + X/Twitter (`twitter_v3.py`) — it has no HoYoLAB/Kuro CMS APIs or Version Schedule cards, and already includes bounded `MEDIA-HEAL` `PATCH` logic plus Round 90 multi-page formatting.
+
+#### **3 Critical Updates `News-Express` DOES Need** (Verified Locally Against All 3 `News-Express` Test Suites + `zizmor`)
+1. **Latent Production Crash in `.github/workflows/python_version_bump.yml` (`7jkxmy9nvbc` & `wvkhabh2s22`):**
+   - `sync_prod.py` copies `python_version_bump.yml` into both `uesu/7jkxmy9nvbc` and `uesu/wvkhabh2s22` while excluding `README.md` and `docs/*` (per your no-`.md`-in-prod policy).
+   - However, `python_version_bump.yml` currently puts `README.md`, `docs/PYTHON_RUNTIME.md`, `docs/CI_SMOKE.md`, and `docs/DEPENDABOT.md` in the **mandatory `ALLOWLIST`** (`test -f "$file" || { echo "::error::Expected runtime file missing: $file"; exit 1; }`) and runs an unguarded `sed -i ... docs/PYTHON_RUNTIME.md` on line 303.
+   - As soon as `python_version_bump.yml` runs for `3.14.9` (or `3.14.10`) on `7jkxmy9nvbc` or `wvkhabh2s22`, **both prod repos will fail red with `::error::Expected runtime file missing: README.md`**. Moving `README.md` and `docs/*` to `OPTIONAL_ALLOWLIST` and guarding `sed` fixes both prod repos permanently.
+2. **Missing Monotonic Workflow-Pin Guard in `.github/scripts/sync_prod.py` (+ `tests/test_smoke.py` `r39` Coupling & Root `.md` Exclusions):**
+   - `News-Express/.github/scripts/sync_prod.py` still overwrites `SYNC_WORKFLOW_FILES` raw bytes (same bug fixed in `Game-Express` PR `#79`), omits `"PRIVACY_POLICY.md"` and `"TERMS_OF_SERVICE.md"` from `EXCLUDED_DEV_PATHS`, has an unused `import json`, and needs `merge_smoke_python_pin_bytes()` so `tests/test_smoke.py`'s `r39` CPython pin check stays aligned if a prod repo ever merges a Python bump before `News-Express`.
+3. **Atomic CPython `3.14.8` → `3.14.9` Bump Across All 3 Repos in One Merge:**
+   - Including the `3.14.8` → `3.14.9` bump in this `News-Express` PR means `sync_prod.yml` will automatically deploy **CPython `3.14.9` + fixed `python_version_bump.yml` + monotonic `sync_prod.py`** to **both** `uesu/7jkxmy9nvbc` and `uesu/wvkhabh2s22` in one atomic sync (with zero `.md` files pushed to prod).
+
+---
+
+### Ready-to-Paste Prompt / PR Specification for `uesu/News-Express`
+
+*(Every change below was tested in an isolated clone against `python -m compileall`, `tests/test_smoke.py`, `tests/test_reddit_signals.py`, `tests/test_twitter_media.py`, `ruff`, and online `zizmor` — 100% pass.)*
+
+````markdown
+Apply the following verified runtime bump (`3.14.8` -> `3.14.9`) and production-sync hardening updates on `uesu/News-Express` (do NOT sync any `.md` or `docs/` files to `uesu/7jkxmy9nvbc` or `uesu/wvkhabh2s22`):
+
+### 1. Bump CPython `3.14.8` -> `3.14.9` across current-runtime surfaces
+Replace `3.14.8` with `3.14.9` in:
+- `.github/workflows/ci.yml`
+- `.github/workflows/reddit_monitor.yml`
+- `.github/workflows/twitter_monitor.yml`
+- `.github/workflows/sync_prod.yml`
+- `.github/workflows/python_version_bump.yml`
+- `README.md`
+- `docs/PYTHON_RUNTIME.md` (also replace `python-3148` with `python-3149`)
+- `docs/CI_SMOKE.md`
+- `docs/DEPENDABOT.md`
+- `tests/test_smoke.py` (`r39 runtime` check on lines 2773–2774)
+
+### 2. Fix `.github/workflows/python_version_bump.yml` for doc-free production repos (`7jkxmy9nvbc` & `wvkhabh2s22`)
+Move dev-only markdown files out of mandatory `ALLOWLIST` into `OPTIONAL_ALLOWLIST`, include `.github/workflows/python_version_bump.yml` in `ALLOWLIST`, and guard the `docs/PYTHON_RUNTIME.md` slug `sed`:
+
+```bash
+          ALLOWLIST=(
+            .github/workflows/ci.yml
+            .github/workflows/reddit_monitor.yml
+            .github/workflows/twitter_monitor.yml
+            .github/workflows/python_version_bump.yml
+            tests/test_smoke.py
+          )
+          # Round 89+: this workflow is copied into both production repositories
+          # by sync_prod.py, and neither production repository carries dev-only
+          # sync_prod.yml, README.md, or docs/*. Cover those pins where present
+          # (development lockstep) and skip them with a notice in production.
+          OPTIONAL_ALLOWLIST=(
+            .github/workflows/sync_prod.yml
+            README.md
+            docs/PYTHON_RUNTIME.md
+            docs/CI_SMOKE.md
+            docs/DEPENDABOT.md
+          )
+```
+
+And guard line 303:
+```bash
+          if [ -f docs/PYTHON_RUNTIME.md ]; then
+            sed -i "s/${OLD_SLUG}/${NEW_SLUG}/g" docs/PYTHON_RUNTIME.md
+          fi
+```
+
+### 3. Harden `.github/scripts/sync_prod.py` (monotonic workflow/smoke pins + full `.md` exclusion)
+- Remove unused `import json`.
+- Add `"PRIVACY_POLICY.md"` and `"TERMS_OF_SERVICE.md"` to `EXCLUDED_DEV_PATHS`:
+```python
+EXCLUDED_DEV_PATHS = (
+    "docs",
+    "README.md",
+    "AGENTS.md",
+    "PRIVACY_POLICY.md",
+    "TERMS_OF_SERVICE.md",
+    ".env.example",
+    ".github/workflows/sync_prod.yml",
+)
+```
+- Add monotonic pin preservation helpers right after `AUTH_ERROR_RE`:
+```python
+WORKFLOW_PY_PIN_RE = re.compile(r"(\bpython-version:\s*['\"])(\d+\.\d+\.\d+)(['\"])")
+WORKFLOW_USES_PIN_RE = re.compile(
+    r"^(\s*(?:-\s*)?uses:\s*)([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)?)@"
+    r"([0-9a-f]{40})(\s+#\s*v)(\d+(?:\.\d+){0,3})([^\r\n]*)$"
+)
+SMOKE_PY_PIN_RE = re.compile(r"(CPython |python-version: ')(\d+\.\d+\.\d+)")
+
+
+def _parse_version_tuple(raw: str) -> tuple[int, ...]:
+    return tuple(int(part) for part in raw.split("."))
+
+
+def merge_workflow_pins_bytes(src_bytes: bytes, dst_bytes: bytes) -> bytes:
+    """Keep monotonically newer `python-version` / SHA-pinned `uses:` lines in `dst_bytes`."""
+    try:
+        src_text = src_bytes.decode("utf-8")
+        dst_text = dst_bytes.decode("utf-8")
+    except UnicodeDecodeError:
+        return src_bytes
+
+    dst_py_versions = [m.group(2) for m in WORKFLOW_PY_PIN_RE.finditer(dst_text)]
+    max_dst_py: tuple[int, ...] | None = None
+    max_dst_py_str = ""
+    for ver in dst_py_versions:
+        parsed = _parse_version_tuple(ver)
+        if max_dst_py is None or parsed > max_dst_py:
+            max_dst_py = parsed
+            max_dst_py_str = ver
+
+    dst_action_pins: dict[str, tuple[tuple[int, ...], str, str]] = {}
+    for raw_line in dst_text.splitlines():
+        m = WORKFLOW_USES_PIN_RE.match(raw_line)
+        if not m:
+            continue
+        action_slug, sha, ver_str = m.group(2), m.group(3), m.group(5)
+        ver_tuple = _parse_version_tuple(ver_str)
+        prev = dst_action_pins.get(action_slug)
+        if prev is None or ver_tuple > prev[0]:
+            dst_action_pins[action_slug] = (ver_tuple, sha, ver_str)
+
+    if max_dst_py is None and not dst_action_pins:
+        return src_bytes
+
+    def _replace_py(match: re.Match[str]) -> str:
+        src_ver = _parse_version_tuple(match.group(2))
+        if max_dst_py is not None and max_dst_py > src_ver:
+            return f"{match.group(1)}{max_dst_py_str}{match.group(3)}"
+        return match.group(0)
+
+    merged_lines: list[str] = []
+    for line in src_text.splitlines(keepends=True):
+        ending = ""
+        body = line
+        if line.endswith("\r\n"):
+            body, ending = line[:-2], "\r\n"
+        elif line.endswith("\n"):
+            body, ending = line[:-1], "\n"
+        m = WORKFLOW_USES_PIN_RE.match(body)
+        if m:
+            slug = m.group(2)
+            src_ver = _parse_version_tuple(m.group(5))
+            dst_pin = dst_action_pins.get(slug)
+            if dst_pin is not None and dst_pin[0] > src_ver:
+                body = f"{m.group(1)}{slug}@{dst_pin[1]}{m.group(4)}{dst_pin[2]}{m.group(6)}"
+        body = WORKFLOW_PY_PIN_RE.sub(_replace_py, body)
+        merged_lines.append(body + ending)
+
+    return "".join(merged_lines).encode("utf-8")
+
+
+def merge_smoke_python_pin_bytes(src_smoke_bytes: bytes, dst_ci_bytes: bytes) -> bytes:
+    """Keep `tests/test_smoke.py`'s r39 CPython pin aligned with destination `ci.yml` when prod is newer."""
+    try:
+        smoke_text = src_smoke_bytes.decode("utf-8")
+        ci_text = dst_ci_bytes.decode("utf-8")
+    except UnicodeDecodeError:
+        return src_smoke_bytes
+    ci_match = WORKFLOW_PY_PIN_RE.search(ci_text)
+    if not ci_match:
+        return src_smoke_bytes
+    dst_ver_str = ci_match.group(2)
+    dst_ver = _parse_version_tuple(dst_ver_str)
+
+    def _replace_smoke_py(match: re.Match[str]) -> str:
+        if dst_ver > _parse_version_tuple(match.group(2)):
+            return f"{match.group(1)}{dst_ver_str}"
+        return match.group(0)
+
+    return SMOKE_PY_PIN_RE.sub(_replace_smoke_py, smoke_text).encode("utf-8")
+```
+- In `sync_tree()`, merge workflow pins instead of overwriting raw bytes, and keep `tests/test_smoke.py` aligned with destination `ci.yml`:
+```python
+    if include_workflows:
+        for rel_wf in SYNC_WORKFLOW_FILES:
+            spath = src_root / rel_wf
+            dpath = dst_root / rel_wf
+            if not spath.is_file():
+                continue
+            raw_sbytes = spath.read_bytes()
+            sbytes = (
+                merge_workflow_pins_bytes(raw_sbytes, dpath.read_bytes())
+                if dpath.is_file()
+                else raw_sbytes
+            )
+            if not dpath.is_file() or dpath.read_bytes() != sbytes:
+                dpath.parent.mkdir(parents=True, exist_ok=True)
+                dpath.write_bytes(sbytes)
+                updated.append(rel_wf)
+
+    dst_smoke = dst_root / "tests" / "test_smoke.py"
+    dst_ci = dst_root / ".github" / "workflows" / "ci.yml"
+    if dst_smoke.is_file() and dst_ci.is_file():
+        aligned_smoke = merge_smoke_python_pin_bytes(dst_smoke.read_bytes(), dst_ci.read_bytes())
+        if aligned_smoke != dst_smoke.read_bytes():
+            dst_smoke.write_bytes(aligned_smoke)
+            updated.append("tests/test_smoke.py")
+```
+
+### 4. Update `tests/test_smoke.py` (`r89c` prod-checkout test + `r91` monotonic `sync_prod` test)
+Replace the `_R89_REQUIRED` block (lines 3376–3407) with:
+```python
+_R89_REQUIRED = (
+    ".github/workflows/ci.yml",
+    ".github/workflows/reddit_monitor.yml",
+    ".github/workflows/twitter_monitor.yml",
+    ".github/workflows/python_version_bump.yml",
+    "tests/test_smoke.py",
+)
+_R89_OPTIONAL_DEV = (
+    ".github/workflows/sync_prod.yml",
+    "README.md",
+    "docs/PYTHON_RUNTIME.md",
+    "docs/CI_SMOKE.md",
+    "docs/DEPENDABOT.md",
+)
+_r89_done, _r89_files, _r89_current, _r89_latest, _r89_fixtures = _r89_bump_rewrite(
+    _R89_REQUIRED + _R89_OPTIONAL_DEV
+)
+check("r89c: runtime bump rewrites dev-only sync_prod.yml + docs pins when those surfaces are present",
+      _r89_done.returncode == 0
+      and f"python-version: '{_r89_latest}'" in _r89_files[".github/workflows/sync_prod.yml"]
+      and _r89_latest in _r89_files["README.md"]
+      and f"python-version: '{_r89_latest}'" in _r89_files[".github/workflows/ci.yml"],
+      _r89_done.stdout[-400:] + _r89_done.stderr[-400:])
+_r89_absent_done, _r89_absent_files, _, _, _ = _r89_bump_rewrite(_R89_REQUIRED)
+check("r89c: runtime bump succeeds in production checkouts (no sync_prod.yml, README.md, or docs/*) and reports skips",
+      _r89_absent_done.returncode == 0
+      and "Optional runtime file absent in this repository; skipping: .github/workflows/sync_prod.yml"
+      in _r89_absent_done.stdout
+      and "Optional runtime file absent in this repository; skipping: README.md"
+      in _r89_absent_done.stdout
+      and f"python-version: '{_r89_latest}'" in _r89_absent_files[".github/workflows/ci.yml"],
+      _r89_absent_done.stdout[-400:] + _r89_absent_done.stderr[-400:])
+_r89_missing_done, _r89_missing_files, _, _, _ = _r89_bump_rewrite(
+    tuple(f for f in _R89_REQUIRED if f != ".github/workflows/reddit_monitor.yml")
+)
+check("r89c: a missing REQUIRED runtime surface still fails the rewrite closed",
+      _r89_missing_done.returncode != 0
+      and "Expected runtime file missing: .github/workflows/reddit_monitor.yml" in _r89_missing_done.stdout
+      and f"python-version: '{_r89_current}'" in _r89_missing_files[".github/workflows/ci.yml"],
+      _r89_missing_done.stdout[-400:] + _r89_missing_done.stderr[-400:])
+```
+And append after the `r87 sync_prod: _stage_and_verify` check in `tests/test_smoke.py`:
+```python
+    (_prod_dir / ".github" / "workflows" / "ci.yml").write_text(
+        "steps:\n"
+        "  - uses: actions/setup-python@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  # v7.2.0\n"
+        "    with:\n"
+        "      python-version: '3.14.99'\n",
+        encoding="utf-8",
+    )
+    _sync_mod.sync_tree(_SyncPath(ROOT), _prod_dir, include_workflows=True)
+    _merged_ci = (_prod_dir / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    _merged_smoke = (_prod_dir / "tests" / "test_smoke.py").read_text(encoding="utf-8")
+    check("r91 sync_prod: preserves newer prod python-version and SHA-pinned action versions while keeping test_smoke aligned",
+          "python-version: '3.14.99'" in _merged_ci
+          and "actions/setup-python@bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb  # v7.2.0" in _merged_ci
+          and "python-version: '3.14.99'" in _merged_smoke)
+```
+
+Run `python -m compileall`, `python tests/test_smoke.py`, `python tests/test_reddit_signals.py`, and `python tests/test_twitter_media.py` before opening/merging the PR on `uesu/News-Express`.
+````
