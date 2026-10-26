@@ -18919,5 +18919,20 @@ def test_feature5_prime_polish_masked_links_smart_containers_and_hotfix_sync():
             assert r_after["latest_rev"] == "" and r_after["source_version"] == ""
         assert st_live.data["codes"] == {"zzz": {"ABC": 1}}
 
+        # Also clears epoch-2 beta records during `prune_beta()` even when `BETA_ENABLED=0` (paused).
+        st_paused = State(Path(tmp) / "paused_live.json")
+        for gk, ver, rid in (("zzz", "3.4.1+19851435", "c4da864455350ab0"), ("wuwa", "3.8.1", "84d9a78104b696a1")):
+            rec_p = st_paused.beta_record(gk)
+            rec_p.update({
+                "format_epoch": 2, "paused": True, "latest_rev": rid, "source_version": ver,
+                "revisions": {rid: {"status": "posted", "messages": ["123"]}},
+                "snapshots": {f"{gk}:1": {"name": "Old"}},
+            })
+        st_paused.prune_beta()
+        for gk in ("zzz", "wuwa"):
+            rp = st_paused.beta_record(gk)
+            assert rp["format_epoch"] == BETA_FORMAT_EPOCH and rp.get("paused") is True
+            assert rp["revisions"] == {} and rp["snapshots"] == {} and rp["source_version"] == ""
+
 if __name__ == "__main__":
     sys.exit(main())

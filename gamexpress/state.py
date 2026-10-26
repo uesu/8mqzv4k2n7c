@@ -417,6 +417,27 @@ class State:
         for game in beta.values():
             if not isinstance(game, dict):
                 continue
+            if _safe_int(game.get("format_epoch"), 0) < BETA_FORMAT_EPOCH:
+                kept_revs: dict[str, dict] = {}
+                old_revs = game.get("revisions")
+                if isinstance(old_revs, dict):
+                    for rev_id, rev_obj in old_revs.items():
+                        if not isinstance(rev_obj, dict):
+                            continue
+                        has_ambig = rev_obj.get("status") == "ambiguous" or any(
+                            isinstance(b, dict) and b.get("ambiguous")
+                            for b in (rev_obj.get("batches") or {}).values()
+                        )
+                        if has_ambig:
+                            kept_revs[str(rev_id)] = rev_obj
+                game["revisions"] = kept_revs
+                game["snapshots"] = {}
+                game["locked_images"] = {}
+                game["latest_rev"] = ""
+                game["source_version"] = ""
+                game["source_revision"] = ""
+                game["last_poll"] = 0
+                game["format_epoch"] = BETA_FORMAT_EPOCH
             revs = game.get("revisions")
             if isinstance(revs, dict) and len(revs) > keep_revisions:
                 ordered = sorted(
