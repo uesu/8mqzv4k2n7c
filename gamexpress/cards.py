@@ -1140,7 +1140,10 @@ def _format_skill_bullet_head(title: str, meta: str) -> str:
     clean_meta = strip_invisible(meta).strip()
     meta_part = f" *({clean_meta})*" if clean_meta else ""
 
-    m_dash = re.match(r"^(E\d+|C\d+|Sequence Node \d+|Stat Bonus \d+)\s*[—-]\s*(.+)$", clean_title)
+    m_dash = re.match(
+        r"^(E\d+|C\d+|Sequence Node \d+|Mindscape Cinema \d+|Stat Bonus \d+)\s*[—-]\s*(.+)$",
+        clean_title,
+    )
     if m_dash:
         slot, rest = m_dash.group(1).strip(), m_dash.group(2).strip()
         return f"* **{slot}** **[{rest}]:**{meta_part}"

@@ -18934,5 +18934,369 @@ def test_feature5_prime_polish_masked_links_smart_containers_and_hotfix_sync():
             assert rp["format_epoch"] == BETA_FORMAT_EPOCH and rp.get("paused") is True
             assert rp["revisions"] == {} and rp["snapshots"] == {} and rp["source_version"] == ""
 
+
+def test_feature5_zzz_passive_potential_sveltekit_hotfix_and_cn_reconciliation():
+    """Real nanoka ZZZ passive/potential/substat, SvelteKit/403 hotfix diff, CN sync & Epoch 4."""
+    import copy
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import BETA_FORMAT_EPOCH
+
+    assert BETA_FORMAT_EPOCH == 4
+    assert beta_mod._dedup_skill_title("Resonance Skill", "Woven Woven Phantasm") == (
+        "Resonance Skill: Woven Phantasm"
+    )
+
+    # 1. Real ZZZ schema: top-level `passive.level`, named Mindscapes, and `potential_detail`.
+    zzz_raw = copy.deepcopy(_beta_json("zzz_character_1661.json"))
+    zzz_raw.get("skill", {}).pop("core", None)
+    zzz_raw["passive"] = {
+        "level": {
+            "1": {"level": 1, "name": ["Core Passive: Solar Aegis", "Additional Ability"], "desc": ["Lv1 +10%.", "Team +8%."]},
+            "7": {"level": 7, "name": ["Core Passive: Solar Aegis", "Additional Ability"], "desc": ["Increases Sheer DMG by 36%.", "When another Defense Agent is in squad, Daze +18%."]},
+        }
+    }
+    zzz_raw["talent"] = {
+        "1": {"name": "Dawnbreaker", "desc": "Upon entering combat, gains 25 Energy and 15% CRIT Rate."}
+    }
+    zzz_raw["potential_detail"] = {
+        "101": {"level": 1, "name": "Radiant Overload", "level_show_name": "Lv. 1", "desc": "DMG +10%."},
+        "106": {"level": 6, "name": "Radiant Overload", "level_show_name": "Lv. 6", "desc": "DMG +32% for 12s."},
+    }
+    z_built = beta_mod._zzz_character(zzz_raw)
+    cats = [s.category for s in z_built["sections"]]
+    assert "Core Passive & Additional Ability" in cats
+    assert "Potential Awakening" in cats
+    mc_sec = next(s for s in z_built["sections"] if s.category == "Mindscape Cinema")
+    assert mc_sec.title == "Mindscape Cinema 1 — Dawnbreaker"
+
+    # ZZZ W-Engine max-modification substat scaling (`rand_property` + `stars`) + Lv.60 Base ATK.
+    zw_raw = copy.deepcopy(_beta_json("zzz_weapon_14166.json"))
+    zw_raw["base_property"] = {"name": "Base ATK", "value": 48, "format": "{0:0.#}"}
+    zw_raw["level"] = {"60": {"rate": 138800}}
+    zw_raw["stars"] = {"5": {"star_rate": 0, "rand_rate": 20000}}
+    zw_raw["rand_property"] = {"name": "HP", "name2": "Percent HP", "value": 1000, "format": "{0:0.#%}"}
+    zw_fields = beta_mod._equip_from_detail("zzz", "weapon", zw_raw, {})
+    assert zw_fields["stats_line"] == "Base ATK 714"
+    assert zw_fields["sub_type"] == "HP% 30%"
+    assert beta_mod._data_image_candidates(
+        "zzz", "relic", "34300", {"icon": "", "icon2": "Suit_34300_2.png"}, {"icon": "Suit_34300_1.png"}
+    ) == [
+        "https://static.nanoka.cc/assets/zzz/Suit_34300_2.webp",
+        "https://static.nanoka.cc/assets/zzz/Suit_34300_1.webp",
+    ]
+
+    z_patch = beta_mod.BetaPatch(
+        game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1 Rev. 19851435", rev_id="z4",
+        characters=[beta_mod.BetaCharacter(
+            id="zzz:1661", name="Sunbringer", rarity=5, element="Fire", role="Defense",
+            stats_lines=z_built["stats_lines"], sections=z_built["sections"],
+            page_url="https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en", is_new=True,
+        )],
+        equipment=[beta_mod.BetaEquipment(
+            id="zzz:weapon:14166", name="Solar Crown", category_label="W-Engines", rarity=5,
+            sub_type=zw_fields["sub_type"], weapon_class=zw_fields["weapon_class"], tag="[NEW]",
+            stats_line=zw_fields["stats_line"], effect_title=zw_fields["effect_title"], lines=zw_fields["lines"],
+            page_url="https://zzz.gachabase.net/w-engines/14166/solar-crown/beta?lang=en",
+        )],
+    )
+    z_pls = cards.beta_payloads(GAMES["zzz"], z_patch)
+    assert all(cards.validate_payload(p) == [] for p in z_pls)
+    z_dump = json.dumps(z_pls)
+    assert "* **Mindscape Cinema 1** **[Dawnbreaker]:**" in z_dump
+    assert "### Core Passive & Additional Ability" in z_dump
+    assert "### Potential Awakening" in z_dump
+    assert "**Substat:** HP% 30%" in z_dump
+
+    # 2. SvelteKit `data:{revisions:[...]}` hydration parser + zero-request CN name & slug fallback.
+    svelte_html = (
+        '<!doctype html><html><script>__sveltekit.resolve({data:{revisions:['
+        '{branch:"live",version:"3.3.4",design_revision:19304006,design_timestamp:1760000000,'
+        'agents:[{status:"added",text:"Ellen",href:"/agents/1091/ellen/live/3.3.4?lang=en"}]},'
+        '{branch:"beta",version:"3.4.1",design_revision:19851435,design_timestamp:1761436800,'
+        'agents:[{status:"modified",text:"Sunbringer",href:"/agents/1601/sunbringer/beta/3.4.1_19851435?lang=chs",'
+        'diff:"/diff/agents/1601/sunbringer?prev=beta_3.4.1_19850203&cur=beta_3.4.1_19851435&lang=chs"}],'
+        'w_engines:[{status:"removed",text:"Old",href:"/w-engines/14100/old/beta/3.4.1_19851435?lang=en"}]}'
+        ']},uses:{}});</script></html>'
+    )
+    sk_revs = beta_mod.parse_changelog(svelte_html, base_url="https://zzz.gachabase.net/?lang=en")
+    assert len(sk_revs) == 1
+    assert sk_revs[0]["label"] == "v3.4.1 Rev. 19851435" and sk_revs[0]["zh_check_advised"] is True
+    assert sk_revs[0]["entries"][0]["url"] == "https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en"
+    assert "lang=en" in sk_revs[0]["entries"][0]["diff"]
+
+    zh_fallback_name = beta_mod._safe_entry_name(
+        {}, {"name": "Weapon_S_14160_Name"}, {"en": "", "zh": "日冕遗蜕"}, "14160"
+    )
+    assert zh_fallback_name == "日冕遗蜕 (ID 14160)"
+    assert beta_mod._slug(zh_fallback_name, "14160") == "14160"
+
+    # 3. Comma-safe multi-[TBD] CN reconciliation, missing CN section recovery, and equipment CN sync.
+    en_kit = {"sections": [beta_mod.BetaSectionEntry(
+        title="Core Passive", category="Core Passive & Additional Ability",
+        lines=["At 16,000 Max HP, increases ATK by [TBD] and CRIT DMG by [TBD]%."],
+    )]}
+    zh_kit = {"sections": [
+        beta_mod.BetaSectionEntry(
+            title="核心被动", category="Core Passive & Additional Ability",
+            lines=["最大生命值达到 16,000 时，攻击力提升 1,200 点，暴击伤害提升 36%。"],
+        ),
+        beta_mod.BetaSectionEntry(
+            title="Mindscape Cinema 6 — Apex", category="Mindscape Cinema",
+            lines=["Ultimate ignores 25% Fire RES."],
+        ),
+    ]}
+    assert beta_mod._reconcile_en_with_zh_kit(en_kit, zh_kit) is True
+    assert "1200" in en_kit["sections"][0].lines[0] and "36%" in en_kit["sections"][0].lines[0]
+    assert len(en_kit["sections"]) == 2 and en_kit["sections"][1].category == "Mindscape Cinema"
+
+    eq_obj = beta_mod.BetaEquipment(
+        id="ww:weapon:21030076", name="Lullaby", category_label="Weapons", rarity=5,
+        lines=[
+            "Increases ATK by 12% and grants [value unavailable] Basic Attack DMG Bonus.",
+            "-# ⚠️ Some values are unavailable in this revision's source data.",
+        ],
+    )
+    assert beta_mod._reconcile_en_with_zh_equipment(
+        eq_obj, {"lines": ["攻击提升 12%，普攻伤害加成提升 48%。"]}
+    ) is True
+    assert "48%" in eq_obj.lines[0] and "[value unavailable]" not in eq_obj.lines[0]
+    assert not any("Some values are unavailable" in ln for ln in eq_obj.lines)
+
+    # 4. When GachaBase 403s across all endpoints on a hotfix, static `character.json` diff catches buffed old units.
+    class Hotfix403Fetcher:
+        async def get_text(self, url, **_kw):
+            return None
+
+        async def get_json(self, url, **_kw):
+            if url.endswith("/3.4.1+19850203/character.json"):
+                return {"1661": {"en": "Sunbringer", "rev": 1}, "1091": {"en": "Miyabi", "pot": 0}}
+            if url.endswith("/3.4.1+19851435/character.json"):
+                return {"1661": {"en": "Sunbringer", "rev": 1}, "1091": {"en": "Miyabi", "pot": 1}}
+            if url.endswith("/character/1661.json"):
+                return _beta_json("zzz_character_1661.json")
+            if url.endswith("/character/1091.json"):
+                d = copy.deepcopy(_beta_json("zzz_character_1661.json"))
+                d["name"] = "Miyabi"
+                d["potential_detail"] = {"1": {"level": 6, "name": "Frostbite", "desc": "Ice DMG +30%."}}
+                return d
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    with tempfile.TemporaryDirectory() as tmp:
+        st_path = Path(tmp) / "hotfix.json"
+        ctx = _beta_ctx(st_path, Hotfix403Fetcher(), BETA_ENABLED="1", games=["zzz"])
+        manifest = {
+            "zzz": {
+                "latest": "3.4.1+19850203", "live": "3.3.4",
+                "available": ["3.4.1+19850203"],
+                "new": {"character": [1661], "weapon": [], "equipment": []},
+            }
+        }
+        bgt = beta_mod._budget(ctx)
+        p1 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, bgt))
+        assert p1 and [c.name for c in p1.characters] == ["Robin"]
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), p1, status="posted")
+
+        manifest["zzz"]["latest"] = "3.4.1+19851435"
+        manifest["zzz"]["available"].append("3.4.1+19851435")
+        p2 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, bgt))
+        assert p2 and [c.name for c in p2.characters] == ["Miyabi"]
+        assert p2.characters[0].is_new is False
+
+        # Epoch-4 state prune clears Epoch-3 ZZZ Rev. 19851435 and WuWa v3.8.1 cleanly.
+        st_ep3 = State(Path(tmp) / "ep3.json")
+        for gk, ver, rid in (("zzz", "3.4.1+19851435", "c4da864455350ab0"), ("wuwa", "3.8.1", "84d9a78104b696a1")):
+            st_ep3.beta_record(gk).update({
+                "format_epoch": 3, "paused": True, "latest_rev": rid, "source_version": ver,
+                "revisions": {rid: {"status": "posted", "messages": ["999"]}},
+                "snapshots": {f"{gk}:1": {"kind": "character"}},
+            })
+        st_ep3.prune_beta()
+        for gk in ("zzz", "wuwa"):
+            rec_after = st_ep3.beta_record(gk)
+            assert rec_after["format_epoch"] == 4
+            assert rec_after["revisions"] == {} and rec_after["snapshots"] == {} and rec_after["source_version"] == ""
+
+
+def test_feature5_progressive_media_and_gallery_lifecycle_across_all_four_games():
+    """404 assets omit cleanly in v1, post visual updates when uploaded in v2, and promote icons -> splash in v3."""
+    import copy
+
+    from gamexpress import beta as beta_mod
+
+    gi_char = copy.deepcopy(_beta_json("gi_character_10000136.json"))
+    gi_weap = copy.deepcopy(_beta_json("gi_weapon_14525_live.json"))
+    gi_arti = {
+        "15045": {
+            "name": "Frostbound Crown", "rarity": 5, "affix": ["Cryo DMG +15%.", "Burst DMG +40%."],
+            "parts": {
+                f"p{i}": {"icon": f"UI_RelicIcon_15045_{i}"} for i in range(1, 6)
+            },
+        }
+    }
+    hsr_char = copy.deepcopy(_beta_json("hsr_character_1511.json"))
+    for k in ("3", "4", "5"):
+        hsr_char["ranks"][k] = {"name": f"Rank {k}", "desc": "Ultimate Lv. +2.", "param_list": []}
+    zzz_char = copy.deepcopy(_beta_json("zzz_character_1661.json"))
+    zzz_weap = copy.deepcopy(_beta_json("zzz_weapon_14166.json"))
+    ww_char = copy.deepcopy(_beta_json("ww_character_1512.json"))
+    ww_char["figure"] = "/Game/Aki/UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_1512_UI.T_IconRole_Pile_1512_UI"
+    ww_weap = copy.deepcopy(_beta_json("ww_weapon_21030076_live.json"))["data"]
+    ww_weap["name"] = "Lullaby"
+    ww_weap["desc"] = "Increases ATK by {0} for {1}s."
+    ww_weap["param"] = [["12%", "24%"], ["10", "10"]]
+    ww_weap["icon"] = "/Game/Aki/UI/IconWeapon/T_IconWeapon21030076_UI.T_IconWeapon21030076_UI"
+
+    live_media: set[str] = set()
+    media_probes: list[str] = []
+
+    class LifecycleFetcher:
+        async def get_text(self, _url, **_kw):
+            return ""
+
+        async def get_json(self, url, **_kw):
+            if "/gi/" in url:
+                if url.endswith("/character/10000136.json"):
+                    return gi_char
+                if url.endswith("/weapon.json"):
+                    return {"14525": gi_weap["listing"]}
+                if url.endswith("/weapon/14525.json"):
+                    return gi_weap["data"]
+                if url.endswith("/artifact.json"):
+                    return {"15045": {"en": "Frostbound Crown", "rank": 5}}
+                if url.endswith("/artifact/15045.json"):
+                    return gi_arti["15045"]
+            if "/hsr/" in url and url.endswith("/character/1511.json"):
+                return hsr_char
+            if "/zzz/" in url:
+                if url.endswith("/character/1661.json"):
+                    return zzz_char
+                if url.endswith("/weapon.json"):
+                    return {"14166": {"en": "Solar Crown", "rank": 4, "atk": 713}}
+                if url.endswith("/weapon/14166.json"):
+                    return zzz_weap
+            if "/ww/" in url:
+                if url.endswith("/character/1512.json"):
+                    return ww_char
+                if url.endswith("/weapon.json"):
+                    return {"21030076": {"en": "Lullaby", "rank": 5}}
+                if url.endswith("/weapon/21030076.json"):
+                    return ww_weap
+            return {}
+
+        async def verify_media(self, url):
+            media_probes.append(url)
+            return url in live_media
+
+    def _gallery_urls_in_payloads(pls: list[dict]) -> list[list[str]]:
+        out: list[list[str]] = []
+        for p in pls:
+            for comp in p["components"][0]["components"]:
+                if comp.get("type") == 12:
+                    out.append([it["media"]["url"] for it in comp.get("items") or []])
+        return out
+
+    manifest = {
+        "gi": {
+            "latest": "6.7.50", "live": "6.6.0", "available": ["6.7.50"],
+            "new": {"character": [10000136], "weapon": [14525], "artifact": [15045]},
+        },
+        "hsr": {
+            "latest": "4.7.50", "live": "4.6.0", "available": ["4.7.50"],
+            "new": {"character": [1511], "lightcone": [], "relicset": []},
+        },
+        "zzz": {
+            "latest": "3.4.1+100", "live": "3.3.0", "available": ["3.4.1+100"],
+            "new": {"character": [1661], "weapon": [14166], "equipment": []},
+        },
+        "ww": {
+            "latest": "3.8.1", "live": "3.7.0", "available": ["3.8.1"],
+            "new": {"character": [1512], "weapon": [21030076], "echo": []},
+        },
+    }
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(
+            Path(tmp) / "media_lifecycle.json", LifecycleFetcher(),
+            BETA_ENABLED="1", BETA_MAX_REQUESTS="96",
+            games=["genshin", "starrail", "zzz", "wuwa"],
+        )
+        bgt = beta_mod._budget(ctx)
+
+        # Phase 1: All media 404 -> every game posts clean text-only payloads with 0 MediaGallery items.
+        for gk, ns_k in (("genshin", "gi"), ("starrail", "hsr"), ("zzz", "zzz"), ("wuwa", "ww")):
+            p_v1 = asyncio.run(beta_mod.build_patch(ctx, GAMES[gk], manifest, dict(bgt)))
+            assert p_v1 and (p_v1.characters or p_v1.equipment), gk
+            pls_v1 = cards.beta_payloads(GAMES[gk], p_v1)
+            assert all(cards.validate_payload(pl) == [] for pl in pls_v1), gk
+            assert _gallery_urls_in_payloads(pls_v1) == [], gk
+            assert ctx.state.beta_record(gk).get("locked_images", {}) == {}
+            beta_mod._settle_beta_patch(ctx, ctx.state.beta_record(gk), p_v1, status="posted")
+            assert ctx.state.beta_record(gk).get("locked_images", {}) == {}, ns_k
+
+        # Phase 2: Assets upload with ZERO kit/weapon text changes!
+        # - GI gets fallback character icon (`UI_AvatarIcon_Mitya`), full weapon gacha splash, and 3/5 artifact icons.
+        # - HSR gets full character drawcard + all 6 Eidolon icons.
+        # - ZZZ gets agent icon + W-Engine icon.
+        # - WuWa gets Resonator pile art + Weapon icon.
+        live_media.update({
+            "https://static.nanoka.cc/assets/gi/UI_AvatarIcon_Mitya.webp",
+            "https://static.nanoka.cc/assets/gi/UI_Gacha_EquipIcon_Catalyst_Chernaya.webp",
+            *(f"https://static.nanoka.cc/assets/gi/UI_RelicIcon_15045_{i}.webp" for i in (1, 2, 3)),
+            "https://static.nanoka.cc/assets/hsr/avatardrawcard/1511.webp",
+            *(f"https://static.nanoka.cc/assets/hsr/rank/_dependencies/textures/1511/1511_Rank_{i}.webp" for i in range(1, 7)),
+            "https://static.nanoka.cc/assets/zzz/IconRole1661.webp",
+            "https://static.nanoka.cc/assets/zzz/Weapon_S_1661.webp",
+            "https://static.nanoka.cc/assets/ww/UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_1512_UI.webp",
+            "https://static.nanoka.cc/assets/ww/UI/IconWeapon/T_IconWeapon21030076_UI.webp",
+        })
+        for ns_k, v2 in (("gi", "6.7.51"), ("hsr", "4.7.51"), ("zzz", "3.4.1+200"), ("ww", "3.8.2")):
+            manifest[ns_k]["latest"] = v2
+            manifest[ns_k]["available"].append(v2)
+
+        for gk, expected_sizes in (
+            ("genshin", [[1], [1], [3]]),
+            ("starrail", [[1], [6]]),
+            ("zzz", [[1], [1]]),
+            ("wuwa", [[1], [1]]),
+        ):
+            p_v2 = asyncio.run(beta_mod.build_patch(ctx, GAMES[gk], manifest, dict(bgt)))
+            assert p_v2 and not p_v2.no_changes, gk
+            pls_v2 = cards.beta_payloads(GAMES[gk], p_v2)
+            assert all(cards.validate_payload(pl) == [] for pl in pls_v2), gk
+            got_sizes = [[len(g)] for g in _gallery_urls_in_payloads(pls_v2)]
+            assert got_sizes == expected_sizes, (gk, got_sizes)
+            beta_mod._settle_beta_patch(ctx, ctx.state.beta_record(gk), p_v2, status="posted")
+
+        # Phase 3: GI full gacha splash (`UI_Gacha_AvatarImg_Mitya`) & remaining 2 artifact icons upload!
+        # Meanwhile HSR/ZZZ/WuWa already locked top-tier splash & full galleries -> 0 media probes!
+        live_media.update({
+            "https://static.nanoka.cc/assets/gi/UI_Gacha_AvatarImg_Mitya.webp",
+            "https://static.nanoka.cc/assets/gi/UI_RelicIcon_15045_4.webp",
+            "https://static.nanoka.cc/assets/gi/UI_RelicIcon_15045_5.webp",
+        })
+        for ns_k, v3 in (("gi", "6.7.52"), ("hsr", "4.7.52"), ("zzz", "3.4.1+300"), ("ww", "3.8.3")):
+            manifest[ns_k]["latest"] = v3
+            manifest[ns_k]["available"].append(v3)
+
+        p_gi_v3 = asyncio.run(beta_mod.build_patch(ctx, GAMES["genshin"], manifest, dict(bgt)))
+        assert p_gi_v3 and len(p_gi_v3.characters) == 1 and len(p_gi_v3.equipment) == 1
+        assert p_gi_v3.characters[0].image_url.endswith("/UI_Gacha_AvatarImg_Mitya.webp")
+        assert len(p_gi_v3.equipment[0].image_urls) == 5
+        pls_gi_v3 = cards.beta_payloads(GAMES["genshin"], p_gi_v3)
+        assert all(cards.validate_payload(pl) == [] for pl in pls_gi_v3)
+        assert [[len(g)] for g in _gallery_urls_in_payloads(pls_gi_v3)] == [[1], [5]]
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("genshin"), p_gi_v3, status="posted")
+
+        media_probes.clear()
+        for gk in ("genshin", "starrail", "zzz", "wuwa"):
+            if gk != "genshin":
+                p_v3 = asyncio.run(beta_mod.build_patch(ctx, GAMES[gk], manifest, dict(bgt)))
+                assert p_v3 and p_v3.no_changes is True, gk
+        assert media_probes == []
+
 if __name__ == "__main__":
     sys.exit(main())

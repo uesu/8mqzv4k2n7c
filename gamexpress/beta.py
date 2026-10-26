@@ -45,6 +45,7 @@ import difflib
 import logging
 import re
 from collections import Counter
+from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
@@ -957,8 +958,178 @@ class _ChangelogHTML(HTMLParser):
         self._finish_revision()
 
 
+_SVELTE_ANCHOR = "data:{revisions:["
+_SVELTE_REV_META_RE = re.compile(
+    r'branch:"([^"]*)",version:"([^"]*)",design_revision:(\d+)(?:,design_timestamp:(\d+))?'
+)
+_SVELTE_HREF_ID_RE = re.compile(r'/([^/"?]+)/([^/"?]+)/(\d+)(?:[?]|$)')
+_SVELTE_DIFF_ID_RE = re.compile(r'cur=([^_&"]+)_([^_&"]+)_(\d+)')
+_SVELTE_STATUS_RE = re.compile(r'\bstatus:"(\w+)"')
+_SVELTE_HREF_RE = re.compile(r'\bhref:"([^"]*)"')
+_SVELTE_DIFF_RE = re.compile(r'\bdiff:"([^"]*)"')
+_SVELTE_TEXT_RE = re.compile(r'\btext:"((?:[^"\\]|\\.)*)"')
+
+
+def _match_balanced(text: str, pos: int, open_ch: str, close_ch: str) -> int:
+    """Return index of matching `close_ch` starting one char after `open_ch`, skipping strings."""
+    depth, n = 1, len(text)
+    i = pos
+    while i < n:
+        c = text[i]
+        if c == '"':
+            i += 1
+            while i < n:
+                if text[i] == "\\":
+                    i += 2
+                    continue
+                if text[i] == '"':
+                    break
+                i += 1
+        elif c == open_ch:
+            depth += 1
+        elif c == close_ch:
+            depth -= 1
+            if depth == 0:
+                return i
+        i += 1
+    return n
+
+
+def _svelte_top_objects(inner: str) -> list[str]:
+    out: list[str] = []
+    i, n = 0, len(inner)
+    while i < n:
+        if inner[i] == "{":
+            end = _match_balanced(inner, i + 1, "{", "}")
+            out.append(inner[i:end + 1])
+            i = end + 1
+        else:
+            i += 1
+    return out
+
+
+def _parse_sveltekit_revisions(raw: str, base_url: str = "") -> list[dict]:
+    """Extract beta revisions from SvelteKit `data:{revisions:[...]}` home/changelog hydration."""
+    idx = (raw or "").find(_SVELTE_ANCHOR)
+    if idx < 0:
+        return []
+    tail = raw[idx:]
+    end_uses = tail.find(",uses:{")
+    seg = tail[:end_uses] if end_uses > 0 else tail[:250_000]
+
+    ts_by_rev: dict[int, int] = {}
+    empty_beta_revs: dict[int, str] = {}
+    for m in _SVELTE_REV_META_RE.finditer(seg):
+        branch, ver, rev_s, ts_s = m.group(1), m.group(2), m.group(3), m.group(4)
+        rev_n = int(rev_s)
+        if ts_s:
+            ts_by_rev[rev_n] = int(ts_s)
+        if branch == "beta":
+            empty_beta_revs.setdefault(rev_n, ver)
+
+    origin = urlsplit(base_url) if base_url else None
+    base_root = f"{origin.scheme}://{origin.netloc}" if (origin and origin.netloc) else ""
+
+    grouped: dict[tuple[str, int], dict[str, dict]] = {}
+    has_chs_by_rev: set[int] = set()
+    for bm in re.finditer(r"(\w+):\[", seg):
+        bucket = bm.group(1)
+        if bucket == "revisions":
+            continue
+        arr_end = _match_balanced(seg, bm.end(), "[", "]")
+        for obj in _svelte_top_objects(seg[bm.end():arr_end]):
+            st_m = _SVELTE_STATUS_RE.search(obj)
+            if st_m is None or st_m.group(1) == "removed":
+                continue
+            href_m = _SVELTE_HREF_RE.search(obj)
+            diff_m = _SVELTE_DIFF_RE.search(obj)
+            raw_href = href_m.group(1) if href_m else ""
+            raw_diff = diff_m.group(1) if diff_m else ""
+            ident: tuple[str, str, int] | None = None
+            if raw_href:
+                hm = _SVELTE_HREF_ID_RE.search(raw_href)
+                if hm:
+                    ident = (hm.group(1), hm.group(2), int(hm.group(3)))
+            if ident is None and raw_diff:
+                dm = _SVELTE_DIFF_ID_RE.search(raw_diff)
+                if dm:
+                    ident = (dm.group(1), dm.group(2), int(dm.group(3)))
+            if ident is None or ident[0] != "beta":
+                continue
+            _, ver, rev_num = ident
+            if _url_has_chs_lang(raw_href) or _url_has_chs_lang(raw_diff):
+                has_chs_by_rev.add(rev_num)
+
+            item_path = ""
+            if raw_href:
+                p_clean = re.sub(r"/beta/\d[^?#]*$", "", urlsplit(raw_href).path).removesuffix("/beta")
+                if _ITEM_ID_RE.match(p_clean):
+                    item_path = p_clean
+            if not item_path and raw_diff:
+                p_clean = urlsplit(raw_diff).path.removeprefix("/diff")
+                if _ITEM_ID_RE.match(p_clean):
+                    item_path = p_clean
+            if not item_path:
+                continue
+
+            txt_m = _SVELTE_TEXT_RE.search(obj)
+            raw_name = txt_m.group(1) if txt_m else ""
+            if (
+                not raw_name
+                or raw_name in ("...", "…")
+                or ("{" in raw_name and "}" in raw_name)
+                or raw_name.startswith(("武器-", "Weapon-"))
+                or _is_generic_changelog_label(raw_name)
+                or _is_key(raw_name)
+            ):
+                raw_name = ""
+
+            full_url = f"{base_root}{item_path}/beta?lang=en" if base_root else f"{item_path}/beta?lang=en"
+            full_diff = ""
+            if raw_diff:
+                raw_d = urljoin(base_root + "/", raw_diff) if (base_root and raw_diff.startswith("/")) else raw_diff
+                full_diff = _normalize_gachabase_lang(raw_d)
+                if "lang=" not in full_diff and "?" in full_diff:
+                    full_diff = f"{full_diff}&lang=en"
+
+            rev_map = grouped.setdefault((ver, rev_num), {})
+            existing = rev_map.get(item_path)
+            if existing is None:
+                rev_map[item_path] = {
+                    "name": raw_name or _slug_display_name(item_path),
+                    "url": full_url,
+                    "diff": full_diff,
+                    "image": "",
+                    "section": bucket,
+                }
+            else:
+                if raw_name and (not existing["name"] or existing["name"] == _slug_display_name(item_path)):
+                    existing["name"] = raw_name
+                if full_diff and not existing["diff"]:
+                    existing["diff"] = full_diff
+
+    for rev_n, ver in empty_beta_revs.items():
+        grouped.setdefault((ver, rev_n), {})
+
+    out: list[dict] = []
+    for (ver, rev_num), by_path in sorted(grouped.items(), key=lambda kv: kv[0][1], reverse=True):
+        ts = ts_by_rev.get(rev_num, 0)
+        date_str = (
+            datetime.fromtimestamp(ts, timezone.utc).strftime("%Y-%m-%d")
+            if ts > 0 else ""
+        )
+        out.append({
+            "label": f"v{ver} Rev. {rev_num}",
+            "date": date_str,
+            "entries": list(by_path.values()),
+            "no_changes": False,
+            "zh_check_advised": rev_num in has_chs_by_rev,
+        })
+    return out
+
+
 def parse_changelog(markdown: str, *, base_url: str = "") -> list[dict]:
-    """Parse a gachabase beta changelog page into revisions.
+    """Parse a gachabase beta changelog or SvelteKit home page into revisions.
 
     -> [{'label', 'date', 'entries': [{'name', 'url', 'diff', 'image', 'section'}]}]
     Newest revision first, exactly as the page lists them.
@@ -967,7 +1138,13 @@ def parse_changelog(markdown: str, *, base_url: str = "") -> list[dict]:
         parser = _ChangelogHTML(base_url)
         parser.feed(markdown)
         parser.close()
-        return parser.revisions
+        if parser.revisions:
+            return parser.revisions
+        return _parse_sveltekit_revisions(markdown, base_url=base_url)
+    if _SVELTE_ANCHOR in (markdown or ""):
+        svelte_revs = _parse_sveltekit_revisions(markdown, base_url=base_url)
+        if svelte_revs:
+            return svelte_revs
     text = _normalize_changelog(markdown)
     if not text:
         return []
@@ -1161,7 +1338,7 @@ def _encore_text(value: Any) -> str:
 
 def _dedup_skill_title(category: str, name: str) -> str:
     cat = (category or "").strip()
-    nm = (name or "").strip()
+    nm = re.sub(r"\b([A-Za-z]{3,})\s+\1\b", r"\1", (name or "").strip())
     if not cat:
         return nm
     if nm.lower().startswith(f"{cat.lower()}:"):
@@ -1453,6 +1630,51 @@ def _zzz_character(data: dict) -> dict:
     spec_elem = data.get("special_element_type") or {}
     spec_elem_name = _clean(spec_elem.get("name")) if isinstance(spec_elem, dict) else ""
 
+    # Real static.nanoka.cc ZZZ detail JSON stores Core Passive & Additional Ability at
+    # top-level `passive.level` (max `level` = Core Skill F), rather than `skill.core`.
+    if not any(sec.category == "Core Passive & Additional Ability" for sec in sections):
+        passive_obj = data.get("passive")
+        passive_lvls = passive_obj.get("level") if isinstance(passive_obj, dict) else None
+        if isinstance(passive_lvls, dict) and passive_lvls:
+            best_passive = None
+            best_rank = (-1, -1)
+            for p_key, p_item in passive_lvls.items():
+                if not isinstance(p_item, dict):
+                    continue
+                try:
+                    lvl_n = int(p_item.get("level") or 0)
+                except (TypeError, ValueError):
+                    lvl_n = 0
+                try:
+                    id_n = int(p_key) if str(p_key).isdigit() else 0
+                except (TypeError, ValueError):
+                    id_n = 0
+                if (lvl_n, id_n) > best_rank and p_item.get("desc"):
+                    best_rank = (lvl_n, id_n)
+                    best_passive = p_item
+            if isinstance(best_passive, dict):
+                p_names = best_passive.get("name")
+                p_descs = best_passive.get("desc")
+                if isinstance(p_descs, str):
+                    p_descs = [p_descs]
+                if isinstance(p_names, str):
+                    p_names = [p_names]
+                for p_idx, raw_ds in enumerate(p_descs if isinstance(p_descs, list) else ()):
+                    ds = _clean(raw_ds)
+                    if not ds:
+                        continue
+                    default_lbl = "Core Passive" if p_idx == 0 else "Additional Ability"
+                    raw_nm = (
+                        _clean(p_names[p_idx])
+                        if isinstance(p_names, list) and p_idx < len(p_names)
+                        else ""
+                    )
+                    sections.append(BetaSectionEntry(
+                        title=raw_nm or default_lbl,
+                        category="Core Passive & Additional Ability",
+                        tag="[NEW]", meta="", lines=_lines(ds),
+                    ))
+
     for sec in sections:
         if any("[TBD]" in ln for ln in sec.lines):
             sec.lines.append(
@@ -1468,14 +1690,56 @@ def _zzz_character(data: dict) -> dict:
             desc = _clean(item.get("desc"))
             if not desc:
                 continue
+            t_name = _clean(item.get("name"))
+            if t_name and (
+                _is_key(t_name)
+                or t_name.lower() == f"mindscape cinema {level}"
+            ):
+                t_name = ""
             t_lines = _lines(desc)
             if any("[TBD]" in ln for ln in t_lines):
                 t_lines.append(
                     "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
                 )
             sections.append(BetaSectionEntry(
-                title=f"Mindscape Cinema {level}", category="Mindscape Cinema",
+                title=f"Mindscape Cinema {level}" + (f" — {t_name}" if t_name else ""),
+                category="Mindscape Cinema",
                 tag="[NEW]", meta="", lines=t_lines,
+            ))
+
+    pot_detail = data.get("potential_detail")
+    if isinstance(pot_detail, dict) and pot_detail:
+        best_pot_by_name: dict[str, tuple[int, dict]] = {}
+        pot_order: list[str] = []
+        for pot_id in sorted(pot_detail, key=lambda k: int(k) if str(k).isdigit() else 0):
+            p_entry = pot_detail[pot_id]
+            if not isinstance(p_entry, dict):
+                continue
+            p_desc = _clean(p_entry.get("desc"))
+            if not p_desc:
+                continue
+            p_name = _clean(p_entry.get("name")) or "Potential"
+            try:
+                p_lvl = int(p_entry.get("level") or 0)
+            except (TypeError, ValueError):
+                p_lvl = 0
+            if p_name not in best_pot_by_name:
+                pot_order.append(p_name)
+                best_pot_by_name[p_name] = (p_lvl, p_entry)
+            elif p_lvl >= best_pot_by_name[p_name][0]:
+                best_pot_by_name[p_name] = (p_lvl, p_entry)
+        for p_name in pot_order:
+            _, p_entry = best_pot_by_name[p_name]
+            p_lines = _lines(_clean(p_entry.get("desc")))
+            if any("[TBD]" in ln for ln in p_lines):
+                p_lines.append(
+                    "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
+                )
+            lvl_show = _clean(p_entry.get("level_show_name"))
+            sections.append(BetaSectionEntry(
+                title=f"Potential: {p_name}" if p_name != "Potential" else (lvl_show or "Potential"),
+                category="Potential Awakening",
+                tag="[NEW]", meta=lvl_show, lines=p_lines,
             ))
     return {
         "rarity": _parse_rarity("zzz", data.get("rarity"), 5),
@@ -2018,12 +2282,47 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         rarity = rarity or _parse_rarity("ww", raw.get("QualityId"), None)
     elif ns == "zzz" and kind == "weapon":
         rp = data.get("rand_property") or {}
+        bp = data.get("base_property") or {}
+        stars_map = data.get("stars") if isinstance(data.get("stars"), dict) else {}
+        lvl_map = data.get("level") if isinstance(data.get("level"), dict) else {}
+        max_star = None
+        if stars_map:
+            for sk in sorted(stars_map, key=lambda k: int(k) if str(k).isdigit() else -1):
+                if isinstance(stars_map[sk], dict):
+                    max_star = stars_map[sk]
         atk = listing.get("atk")
+        if not atk and isinstance(bp, dict) and bp.get("value") is not None and max_star and lvl_map:
+            max_lv = None
+            for lk in sorted(lvl_map, key=lambda k: int(k) if str(k).isdigit() else -1):
+                if isinstance(lvl_map[lk], dict):
+                    max_lv = lvl_map[lk]
+            if isinstance(max_lv, dict):
+                try:
+                    atk = int(
+                        float(bp["value"])
+                        * (
+                            1.0
+                            + float(max_lv.get("rate") or 0) / 10000.0
+                            + float(max_star.get("star_rate") or 0) / 10000.0
+                        )
+                    )
+                except (TypeError, ValueError):
+                    atk = None
         if atk:
             stats_line = f"Base ATK {_num(atk)}"
         sub_name = _clean(rp.get("name2") or rp.get("name"))
         if sub_name:
-            sub_type = sub_name
+            sub_disp_map = {"percent hp": "HP%", "percent atk": "ATK%", "percent def": "DEF%"}
+            disp_lbl = sub_disp_map.get(sub_name.lower(), sub_name)
+            sub_val_txt = ""
+            if isinstance(max_star, dict) and max_star.get("rand_rate") is not None and rp.get("value") is not None:
+                try:
+                    scaled = float(rp["value"]) * (1.0 + float(max_star["rand_rate"]) / 10000.0)
+                    fmt_s = str(rp.get("format") or "")
+                    sub_val_txt = f"{_fmt_value(scaled / 100.0, 'f')}%" if "%" in fmt_s else _fmt_value(scaled, "f")
+                except (TypeError, ValueError):
+                    sub_val_txt = ""
+            sub_type = f"{disp_lbl} {sub_val_txt}" if sub_val_txt else sub_name
         wt = data.get("weapon_type") or {}
         if isinstance(wt, dict):
             for v in wt.values():
@@ -2215,7 +2514,7 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
     unresolved = re.compile(r"#\d+\[[A-Za-z]\]%?|\{\d+\}")
     if any(unresolved.search(line) for line in lines):
         lines = [unresolved.sub("[value unavailable]", line) for line in lines]
-        lines.append("-# Some values are unavailable in this revision's source data.")
+        lines.append("-# ⚠️ Some values are unavailable in this revision's source data.")
     return {
         "stats_line": stats_line,
         "effect_title": effect_title,
@@ -2274,18 +2573,25 @@ async def _resolve_image(fetcher, entry: dict, locked: dict, cache: dict) -> str
         return ""
     if key in cache:
         return cache[key]
+    usable_urls: list[str] = []
+    for raw in [entry.get("image"), *(entry.get("candidates") or [])]:
+        u = _usable_image(str(raw or ""))
+        if u and u not in usable_urls:
+            usable_urls.append(u)
     cached = locked.get(key)
     if isinstance(cached, dict) and cached.get("url"):
-        cache[key] = str(cached["url"])
+        cached_url = str(cached["url"])
+        if len(usable_urls) >= 2 and cached_url in usable_urls[1:]:
+            try:
+                ok_top = await fetcher.verify_media(usable_urls[0])
+            except Exception:  # noqa: BLE001
+                ok_top = False
+            if ok_top:
+                cache[key] = usable_urls[0]
+                return usable_urls[0]
+        cache[key] = cached_url
         return cache[key]
-    urls = [entry.get("image")]
-    urls.extend(entry.get("candidates") or [])
-    seen: set[str] = set()
-    for raw in urls:
-        url = _usable_image(str(raw or ""))
-        if not url or url in seen:
-            continue
-        seen.add(url)
+    for url in usable_urls:
         try:
             ok = await fetcher.verify_media(url)
         except Exception:  # noqa: BLE001 - a preflight failure must never break a card
@@ -2311,17 +2617,33 @@ async def _resolve_image_within_budget(
         return "", requests
     if key in cache:
         return cache[key], requests
+    usable_urls: list[str] = []
+    for raw in [entry.get("image"), *(entry.get("candidates") or [])]:
+        u = _usable_image(str(raw or ""))
+        if u and u not in usable_urls:
+            usable_urls.append(u)
     cached = locked.get(key)
     if isinstance(cached, dict) and cached.get("url"):
-        cache[key] = str(cached["url"])
+        cached_url = str(cached["url"])
+        # If an earlier beta build only had the small shop/item icon (`usable_urls[1:]`),
+        # check once whether the full splash/gacha art (`usable_urls[0]`) is now live.
+        if (
+            len(usable_urls) >= 2
+            and cached_url in usable_urls[1:]
+            and requests + 1 <= budget["max_requests"]
+            and _take_shared_request(budget, 1)
+        ):
+            requests += 1
+            try:
+                ok_top = await fetcher.verify_media(usable_urls[0])
+            except Exception:  # noqa: BLE001
+                ok_top = False
+            if ok_top:
+                cache[key] = usable_urls[0]
+                return usable_urls[0], requests
+        cache[key] = cached_url
         return cache[key], requests
-    urls = [entry.get("image")] + list(entry.get("candidates") or [])
-    seen: set[str] = set()
-    for raw in urls:
-        url = _usable_image(str(raw or ""))
-        if not url or url in seen:
-            continue
-        seen.add(url)
+    for url in usable_urls:
         if requests + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
             return "", requests
         requests += 1
@@ -2345,41 +2667,54 @@ async def _resolve_gallery_within_budget(
     budget: dict,
     requests: int,
 ) -> tuple[list[str], int]:
-    """Verify multi-icon gallery assets (e.g. 6 Eidolon icons or Planar Ornament pieces)."""
+    """Verify multi-icon gallery assets (e.g. 6 Eidolon icons or Planar/Relic/Artifact pieces)."""
     if not key or not candidates:
         return [], requests
     gkey = f"{key}:gallery"
     if gkey in gallery_cache:
         return list(gallery_cache[gkey]), requests
-    cached = locked.get(gkey)
-    if isinstance(cached, dict) and isinstance(cached.get("urls"), list) and cached["urls"]:
-        gallery_cache[gkey] = [str(u) for u in cached["urls"] if u]
-        return list(gallery_cache[gkey]), requests
-    usable = []
+    usable: list[str] = []
     for raw in candidates:
         u = _usable_image(raw)
         if u and u not in usable:
             usable.append(u)
-    if not usable or requests + len(usable) > budget["max_requests"]:
+    if not usable:
         return [], requests
+    cached = locked.get(gkey)
+    cached_urls = (
+        [str(u) for u in cached["urls"] if u]
+        if isinstance(cached, dict) and isinstance(cached.get("urls"), list)
+        else []
+    )
+    if cached_urls and len(cached_urls) >= len(usable):
+        gallery_cache[gkey] = list(cached_urls)
+        return list(cached_urls), requests
+    missing = [u for u in usable if u not in cached_urls]
+    if requests + len(missing) > budget["max_requests"]:
+        gallery_cache[gkey] = list(cached_urls)
+        return list(cached_urls), requests
     shared_left = budget.get("_shared_requests_left")
-    if shared_left is not None and int(shared_left) < len(usable):
-        return [], requests
-    verified: list[str] = []
-    for url in usable:
+    if shared_left is not None and int(shared_left) < len(missing):
+        gallery_cache[gkey] = list(cached_urls)
+        return list(cached_urls), requests
+    verified: list[str] = list(cached_urls)
+    for url in missing:
         if not _take_shared_request(budget, 1):
-            return [], requests
+            break
         requests += 1
         try:
             ok = await fetcher.verify_media(url)
         except Exception:  # noqa: BLE001
             ok = False
         if not ok:
-            gallery_cache[gkey] = []
-            return [], requests
+            if not verified:
+                gallery_cache[gkey] = []
+                return [], requests
+            continue
         verified.append(url)
-    gallery_cache[gkey] = verified
-    return list(verified), requests
+    ordered = [u for u in usable if u in verified]
+    gallery_cache[gkey] = ordered
+    return list(ordered), requests
 
 
 # --------------------------------------------------------------------------- run
@@ -2446,9 +2781,25 @@ async def _fetch_changelog_revisions(
             current_requests + 1 <= budget["max_requests"] and _take_shared_request(budget, 1)
         )
         if alt_url and alt_url != ch_url and can_try_alt:
-            extra = 1
+            extra += 1
             text = await ctx.fetcher.get_text(
                 alt_url, source="beta-changelog", headers=hdrs, retries=0
+            )
+    if text is None and "gachabase.net" in ch_url.lower():
+        parsed_ch = urlsplit(ch_url)
+        home_url = f"{parsed_ch.scheme}://{parsed_ch.netloc}/?lang=en" if parsed_ch.netloc else ""
+        can_try_home = bool(home_url and home_url not in (ch_url, ch_url.split("?", 1)[0])) and (
+            budget is None
+            or (
+                budget["max_requests"] >= 8
+                and current_requests + extra + 1 <= budget["max_requests"]
+                and _take_shared_request(budget, 1)
+            )
+        )
+        if can_try_home:
+            extra += 1
+            text = await ctx.fetcher.get_text(
+                home_url, source="beta-changelog", headers=hdrs, retries=0
             )
     if not text:
         log.info("%s beta: changelog unavailable (%s); using static manifest fallback", game.short, ch_url)
@@ -2746,7 +3097,8 @@ def _section_from_snapshot(value: Any) -> BetaSectionEntry:
 
 def _snapshot_record(item, data: dict, kind: str, revision: str, now: int) -> dict:
     """Keep bounded text plus a digest of full content, excluding mutable media/links."""
-    full = {key: getattr(item, key) for key in data if key not in ("image_url", "page_url")}
+    excluded = ("image_url", "image_urls", "page_url", "weapon_class", "set_kind", "set_parts")
+    full = {key: getattr(item, key) for key in data if key not in excluded}
     if kind == "character":
         full["sections"] = [
             {key: getattr(section, key) for key in _section_snapshot(section)}
@@ -2813,8 +3165,11 @@ def _equipment_snapshot(equipment: BetaEquipment, revision: str, now: int, kind:
     data = {
         "id": equipment.id, "name": equipment.name, "category_label": equipment.category_label,
         "rarity": equipment.rarity, "sub_type": equipment.sub_type,
+        "weapon_class": equipment.weapon_class, "set_kind": equipment.set_kind,
+        "set_parts": equipment.set_parts,
         "stats_line": _clip(equipment.stats_line, 400), "effect_title": _clip(equipment.effect_title, 200),
         "lines": [_clip(line) for line in equipment.lines[:32]], "image_url": equipment.image_url,
+        "image_urls": [str(u) for u in (equipment.image_urls or [])[:10] if u],
         "page_url": equipment.page_url,
     }
     return _snapshot_record(equipment, data, kind, revision, now)
@@ -2834,10 +3189,16 @@ def _equipment_from_snapshot(snapshot: Any) -> BetaEquipment | None:
     return BetaEquipment(
         id=str(data.get("id") or ""), name=str(data.get("name") or ""),
         category_label=str(data.get("category_label") or "Equipment"), rarity=rarity,
-        sub_type=str(data.get("sub_type") or ""), stats_line=str(data.get("stats_line") or ""),
+        sub_type=str(data.get("sub_type") or ""),
+        weapon_class=str(data.get("weapon_class") or ""),
+        set_kind=str(data.get("set_kind") or ""),
+        set_parts=str(data.get("set_parts") or ""),
+        stats_line=str(data.get("stats_line") or ""),
         effect_title=str(data.get("effect_title") or ""),
         lines=[str(line) for line in data.get("lines") or []],
-        image_url=str(data.get("image_url") or ""), page_url=str(data.get("page_url") or ""),
+        image_url=str(data.get("image_url") or ""),
+        image_urls=[str(u) for u in (data.get("image_urls") or snapshot.get("gallery_urls") or []) if u],
+        page_url=str(data.get("page_url") or ""),
     )
 
 
@@ -2958,10 +3319,16 @@ def _data_image_candidates(
         if raw_icon:
             add(f"{STATIC_BASE}/assets/hsr/itemfigures/{Path(raw_icon).stem}.webp")
     elif ns == "zzz" and role in ("character", "weapon", "relic"):
-        if raw_icon:
-            stem = Path(raw_icon).stem
-            if re.fullmatch(r"[A-Za-z0-9_]+", stem):
-                add(f"{STATIC_BASE}/assets/zzz/{stem}.webp")
+        for z_raw in (
+            data.get("icon"),
+            data.get("icon2"),
+            (listing or {}).get("icon") if isinstance(listing, dict) else "",
+        ):
+            z_str = str(z_raw or "").strip()
+            if z_str:
+                stem = Path(z_str).stem
+                if re.fullmatch(r"[A-Za-z0-9_]+", stem):
+                    add(f"{STATIC_BASE}/assets/zzz/{stem}.webp")
     elif ns == "ww" and role in ("character", "weapon", "relic"):
         for field in ("figure", "background", "icon"):
             val = str(data.get(field) or "").strip()
@@ -3016,7 +3383,13 @@ def _data_gallery_candidates(
     return urls
 
 
-def _safe_entry_name(entry: dict, data: dict, listing: dict | None, item_id: str) -> str:
+def _safe_entry_name(
+    entry: dict,
+    data: dict,
+    listing: dict | None,
+    item_id: str,
+    zh_data: dict | None = None,
+) -> str:
     if "_encore" in data:
         return _clean(data.get("name")) or f"ID {item_id}"
     entry_name = str(entry.get("name") or "").strip()
@@ -3028,13 +3401,28 @@ def _safe_entry_name(entry: dict, data: dict, listing: dict | None, item_id: str
         entry_name = ""
     localized = (listing or {}).get("en") if isinstance(listing, dict) else ""
     listing_name = _clean(localized.get("name") if isinstance(localized, dict) else localized)
+    if _is_key(listing_name):
+        listing_name = ""
     data_name = _clean(data.get("name")) if isinstance(data, dict) else ""
-    return entry_name or listing_name or data_name or f"ID {item_id}"
+    if _is_key(data_name):
+        data_name = ""
+    resolved = entry_name or listing_name or data_name
+    if resolved:
+        return resolved
+    zh_localized = (listing or {}).get("zh") if isinstance(listing, dict) else ""
+    zh_listing_name = _clean(
+        zh_localized.get("name") if isinstance(zh_localized, dict) else zh_localized
+    )
+    zh_detail_name = _clean(zh_data.get("name")) if isinstance(zh_data, dict) else ""
+    for zh_cand in (zh_listing_name, zh_detail_name):
+        if zh_cand and not _is_key(zh_cand):
+            return f"{zh_cand} (ID {item_id})"
+    return f"ID {item_id}"
 
 
 def _slug(value: str, fallback_id: str = "") -> str:
     """Gachabase's stable URL fallback; source-provided URLs always win."""
-    raw = str(value or "").strip()
+    raw = re.sub(r"\s*\(ID\s*\d+\)\s*$", "", str(value or "").strip(), flags=re.I)
     m_id = re.fullmatch(r"id\s*:?\s*(\d+)", raw, re.I)
     if m_id:
         return m_id.group(1)
@@ -3118,6 +3506,49 @@ def _extract_kit_percents(lines: list[str]) -> list[str]:
     return tokens
 
 
+def _extract_numeric_tokens_clean(text: str) -> list[str]:
+    """Extract numeric tokens (`1000`, `24%`, `12.5%`), normalizing thousands commas (`1,000`)."""
+    norm = re.sub(r"(?<=\d),(?=\d{3}\b)", "", text or "")
+    return re.findall(r"\d+(?:\.\d+)?%?", norm)
+
+
+def _patch_placeholder_line_from_zh(en_ln: str, zh_ln: str, placeholder_re: str) -> tuple[str, bool]:
+    """Fill `[TBD]`, `???`, or `[value unavailable]` tokens from aligned CN line."""
+    if not zh_ln or any(tok in zh_ln for tok in ("[TBD]", "???", "[value unavailable]")):
+        return en_ln, False
+    zh_nums = _extract_numeric_tokens_clean(zh_ln)
+    if not zh_nums:
+        return en_ln, False
+    en_without = re.sub(placeholder_re, " ", en_ln)
+    existing_counts = Counter(_extract_numeric_tokens_clean(en_without))
+    unmatched: list[str] = []
+    for n in zh_nums:
+        if existing_counts.get(n, 0) > 0:
+            existing_counts[n] -= 1
+        else:
+            unmatched.append(n)
+    pool = unmatched if unmatched else zh_nums
+    pct_pool = [n for n in pool if n.endswith("%")]
+    changed = False
+    out = en_ln
+    while re.search(placeholder_re, out) and pool:
+        m = re.search(placeholder_re, out)
+        if m is None:
+            break
+        wants_pct = m.group(0).endswith("%")
+        if wants_pct and pct_pool:
+            pick = pct_pool.pop(0)
+            if pick in pool:
+                pool.remove(pick)
+        else:
+            pick = pool.pop(0)
+            if pick in pct_pool:
+                pct_pool.remove(pick)
+        out = out[:m.start()] + pick + out[m.end():]
+        changed = True
+    return out, changed
+
+
 def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
     """Patch stale/broken EN numbers or missing sections using authoritative CN/CHS beta data."""
     zh_secs: list[BetaSectionEntry] = list(zh_built.get("sections") or [])
@@ -3130,11 +3561,48 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
         en_built["sections"] = copied
         return True
 
+    # Align EN and CN sections by (category_occurrence, slot/positional_index) so missing
+    # intermediate sections in EN never misalign later skills or constellations/mindscapes.
+    def _group_by_cat(secs: list[BetaSectionEntry]) -> tuple[list[str], dict[str, list[BetaSectionEntry]]]:
+        order: list[str] = []
+        by_cat: dict[str, list[BetaSectionEntry]] = {}
+        for s in secs:
+            ck = (s.category or "").strip()
+            if ck not in by_cat:
+                order.append(ck)
+                by_cat[ck] = []
+            by_cat[ck].append(s)
+        return order, by_cat
+
+    en_cats, en_by_cat = _group_by_cat(en_secs)
+    zh_cats, zh_by_cat = _group_by_cat(zh_secs)
+    matched_zh_ids: set[int] = set()
+    pairs_to_sync: list[tuple[BetaSectionEntry, BetaSectionEntry]] = []
+
+    if en_cats == zh_cats or (set(en_cats) & set(zh_cats)):
+        for ck in en_cats:
+            en_list = en_by_cat[ck]
+            zh_list = zh_by_cat.get(ck) or []
+            if not zh_list:
+                continue
+            zh_slots = {_numbered_slot(zs): zs for zs in zh_list if _numbered_slot(zs) is not None}
+            for pos, es in enumerate(en_list):
+                es_slot = _numbered_slot(es)
+                zs = zh_slots.get(es_slot) if es_slot is not None else None
+                if zs is None and pos < len(zh_list) and id(zh_list[pos]) not in matched_zh_ids:
+                    zs = zh_list[pos]
+                if zs is not None:
+                    matched_zh_ids.add(id(zs))
+                    pairs_to_sync.append((es, zs))
+    else:
+        for idx, es in enumerate(en_secs):
+            if idx >= len(zh_secs):
+                break
+            matched_zh_ids.add(id(zh_secs[idx]))
+            pairs_to_sync.append((es, zh_secs[idx]))
+
     changed_any = False
-    for idx, en_sec in enumerate(en_secs):
-        if idx >= len(zh_secs):
-            break
-        zh_sec = zh_secs[idx]
+    for en_sec, zh_sec in pairs_to_sync:
         sec_changed = False
 
         if en_sec.params and zh_sec.params:
@@ -3166,16 +3634,14 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
         for l_idx, ln in enumerate(en_sec.lines):
             if l_idx < len(zh_sec.lines):
                 zh_ln = zh_sec.lines[l_idx]
-                zh_nums = re.findall(r"\d+(?:\.\d+)?%?", zh_ln)
+                zh_nums = _extract_numeric_tokens_clean(zh_ln)
                 zh_pcts = [n for n in zh_nums if n.endswith("%")]
-                if ("[TBD]" in ln or "???" in ln) and zh_nums and "[TBD]" not in zh_ln:
-                    if "[TBD]" in ln:
-                        pick = zh_pcts[0] if ("[TBD]%" in ln and zh_pcts) else zh_nums[0]
-                        ln = re.sub(r"\[TBD\]%?", pick, ln, count=1)
-                    else:
-                        pick = zh_pcts[0] if ("???%" in ln and zh_pcts) else zh_nums[0]
-                        ln = re.sub(r"\?\?\?%?", pick, ln, count=1)
-                    sec_changed = True
+                if "[TBD]" in ln:
+                    ln, did = _patch_placeholder_line_from_zh(ln, zh_ln, r"\[TBD\]%?")
+                    sec_changed = sec_changed or did
+                if "???" in ln:
+                    ln, did = _patch_placeholder_line_from_zh(ln, zh_ln, r"\?\?\?%?")
+                    sec_changed = sec_changed or did
                 if re.search(r"\d+(?:\.\d+)?%?/-(\s|$|[.,;)])", ln) and zh_nums:
                     pick_tail = zh_pcts[-1] if zh_pcts else zh_nums[-1]
                     patched = re.sub(
@@ -3211,7 +3677,80 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
                 en_sec.lines = updated_lines
                 changed_any = True
 
+    # Recover any non-empty CN sections whose category/slot was completely missing in EN.
+    if set(en_cats) & set(zh_cats) or len(zh_secs) > len(en_secs):
+        for zs in zh_secs:
+            if id(zs) in matched_zh_ids:
+                continue
+            z_cat = (zs.category or "").strip()
+            if z_cat and z_cat in en_by_cat:
+                es_slots = {_numbered_slot(s) for s in en_by_cat[z_cat] if _numbered_slot(s) is not None}
+                zs_slot = _numbered_slot(zs)
+                if zs_slot is None and len(en_by_cat[z_cat]) >= len(zh_by_cat.get(z_cat) or ()):
+                    continue
+                if zs_slot is not None and zs_slot in es_slots:
+                    continue
+            cloned = _clone_sections([zs], "[NEW]")[0]
+            if not any("CN/CHS" in x for x in cloned.lines):
+                cloned.lines.append("-# 🌐 Sourced from CN/CHS beta data — EN localization pending.")
+            en_secs.append(cloned)
+            changed_any = True
+        if changed_any:
+            en_built["sections"] = en_secs
+
     return changed_any
+
+
+def _reconcile_en_with_zh_equipment(current: BetaEquipment, zh_fields: dict) -> bool:
+    """Resolve `[value unavailable]` / `[TBD]` / `???` or numeric lag on equipment via `/zh/`."""
+    zh_lines = list(zh_fields.get("lines") or [])
+    if not zh_lines:
+        return False
+    changed = False
+    updated: list[str] = []
+    zh_content = [ln for ln in zh_lines if not ln.startswith("-#")]
+    en_content_idx = 0
+    for ln in current.lines:
+        if ln.startswith("-#"):
+            updated.append(ln)
+            continue
+        zh_ln = zh_content[en_content_idx] if en_content_idx < len(zh_content) else ""
+        en_content_idx += 1
+        if zh_ln:
+            for ph_re, needle in (
+                (r"\[value unavailable\]%?", "[value unavailable]"),
+                (r"\[TBD\]%?", "[TBD]"),
+                (r"\?\?\?%?", "???"),
+            ):
+                if needle in ln:
+                    ln, did = _patch_placeholder_line_from_zh(ln, zh_ln, ph_re)
+                    changed = changed or did
+        updated.append(ln)
+    if changed and not any("[value unavailable]" in x for x in updated if not x.startswith("-#")):
+        updated = [
+            x for x in updated
+            if "Some values are unavailable in this revision's source data" not in x
+        ]
+    en_eq_toks = _extract_kit_percents(updated)
+    zh_eq_toks = _extract_kit_percents(zh_lines)
+    if changed:
+        if not any("CN/CHS" in x for x in updated):
+            updated.append("-# 🌐 Values synced with authoritative CN/CHS beta data.")
+        current.lines = updated
+        return True
+    if (
+        zh_eq_toks
+        and Counter(en_eq_toks) != Counter(zh_eq_toks)
+        and not any("CN/CHS" in x for x in updated)
+    ):
+        preview = ", ".join(zh_eq_toks[:8])
+        if preview:
+            updated.append(
+                f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
+            )
+            current.lines = updated
+            return True
+    return False
 
 
 def _synthesize_kit_overview(
@@ -3384,6 +3923,30 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     new_weapon_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["weapon"])
     new_relic_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["relic"])
     source_entries = list(source_revision.get("entries") or []) if source_revision else []
+    requests = (2 + extra_ch_reqs) if _changelog_url(game) else 1
+    previous_ver = str(record.get("source_version") or "").strip()
+    # When GachaBase changelog failed (`extra_ch_reqs >= 1`) during an intra-cycle beta hotfix,
+    # diff static.nanoka.cc's `character.json` across the two builds so non-new buffed/reworked
+    # characters (e.g. Potential Awakening updates) are discovered without GachaBase HTML.
+    if (
+        not source_entries
+        and extra_ch_reqs >= 1
+        and previous_ver
+        and previous_ver != version
+        and _major_minor(previous_ver) == _major_minor(version)
+        and budget["max_requests"] >= 12
+        and requests + 2 <= budget["max_requests"]
+        and _take_shared_request(budget, 2)
+    ):
+        requests += 2
+        char_list_kind = kinds["new_keys"]["character"]
+        prev_c_idx = await _listing(ctx.fetcher, ns, previous_ver, char_list_kind)
+        cur_c_idx = await _listing(ctx.fetcher, ns, version, char_list_kind)
+        if prev_c_idx and cur_c_idx:
+            for cid, cval in cur_c_idx.items():
+                if str(cid).isdigit() and prev_c_idx.get(cid) != cval:
+                    source_entries.append(_fallback_entry(ns, "character", str(cid)))
+
     char_entries, equip_entries = _candidate_entries(
         ns, kinds, source_entries, snapshots, new_char_ids, new_weapon_ids, new_relic_ids)
 
@@ -3399,7 +3962,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     locked = record.get("locked_images") if isinstance(record.get("locked_images"), dict) else {}
     image_cache: dict[str, str] = {}
     gallery_cache: dict[str, list[str]] = {}
-    requests = (2 + extra_ch_reqs) if _changelog_url(game) else 1
     char_new, char_changed, equip_count = 0, 0, 0
     listing_cache: dict[str, dict] = {}
     encore_revision = None
@@ -3465,6 +4027,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             if enc_data:
                 data = enc_data
                 built = builder(data) if builder else None
+        zh_data: dict | None = None
         if (
             data
             and "_encore" not in data
@@ -3491,7 +4054,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             continue
 
         rarity = _parse_rarity(ns, data.get("rarity"), built.get("rarity") or 5) or 5
-        name = _safe_entry_name(entry, data, None, item_id)
+        name = _safe_entry_name(entry, data, None, item_id, zh_data=zh_data)
         previous_revision = str((previous_snapshot or {}).get("revision") or "")
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
             _item_page_url(ns, "character", item_id, name)
@@ -3549,11 +4112,30 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 full.sections = _clone_sections(list(built.get("sections") or []), "[NEW]")
                 cur_snap = _character_snapshot(full, version, ctx.now)
 
+        prev_char_img = str(((previous_snapshot or {}).get("data") or {}).get("image_url") or "")
+        prev_char_gal = [
+            str(u) for u in (
+                (previous_snapshot or {}).get("gallery_urls")
+                or (((previous_snapshot or {}).get("data") or {}).get("eidolon_images"))
+                or []
+            )
+            if u
+        ]
+        new_char_img_added = bool(previous_snapshot is not None and image and image != prev_char_img)
+        new_char_gal_added = bool(
+            previous_snapshot is not None and eidolon_imgs and len(eidolon_imgs) > len(prev_char_gal)
+        )
+
         patch.snapshots[snap_key] = cur_snap
         if eidolon_imgs:
             patch.snapshots[snap_key]["gallery_urls"] = list(eidolon_imgs)
         known_snapshots[snap_key] = patch.snapshots[snap_key]
         patch.item_keys.append(_entry_key(ns, "character", item_id))
+        cmp_mode = (
+            _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key])
+            if previous_snapshot is not None
+            else "new"
+        )
         if previous is None:
             full.sections = _clone_sections(full.sections, "[NEW]" if is_new else "[CHANGED]")
             if not is_new:
@@ -3562,7 +4144,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 game.key, name, built, full.sections, is_new=is_new
             )
             patch.characters.append(full)
-        elif _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key]) == "snapshot":
+        elif cmp_mode == "snapshot":
             full.sections = _clone_sections(full.sections, "[CHANGED]")
             full.is_new = False
             full.subtext = ("-# Full current kit — complete before/after text is unavailable; "
@@ -3571,9 +4153,14 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 game.key, name, built, full.sections, is_new=False
             )
             patch.characters.append(full)
-        elif _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key]) == "diff":
+        elif cmp_mode == "diff":
             diff_sections, unchanged = diff_kits(previous.sections, full.sections)
             diff_sections = _stat_diff(previous, full) + diff_sections
+            if new_char_gal_added and not any(s.category == "Eidolons" for s in diff_sections):
+                diff_sections.append(BetaSectionEntry(
+                    title="Eidolon Icons", category="Eidolons", tag="[NEW]",
+                    lines=["**[NEW]** Official Eidolon icons added in this beta revision."],
+                ))
             if diff_sections:
                 full.sections = diff_sections
                 full.is_new = False
@@ -3584,6 +4171,46 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     game.key, name, built, full.sections, is_new=False
                 )
                 patch.characters.append(full)
+            elif new_char_img_added or new_char_gal_added:
+                vis_secs: list[BetaSectionEntry] = []
+                if new_char_img_added:
+                    vis_secs.append(BetaSectionEntry(
+                        title="Splash & Character Art", category="Visual Assets", tag="[NEW]",
+                        lines=["**[NEW]** Official beta character artwork added in this revision."],
+                    ))
+                if new_char_gal_added:
+                    vis_secs.append(BetaSectionEntry(
+                        title="Eidolon Icons", category="Eidolons", tag="[NEW]",
+                        lines=["**[NEW]** Official Eidolon icons added in this beta revision."],
+                    ))
+                full.sections = vis_secs
+                full.is_new = False
+                old_rev = str((previous_snapshot or {}).get("revision") or "previous revision")
+                full.subtext = f"-# Visual assets added against {old_rev} • kit text unchanged"
+                full.overview = _synthesize_kit_overview(
+                    game.key, name, built, full.sections, is_new=False
+                )
+                patch.characters.append(full)
+        elif cmp_mode == "equal" and (new_char_img_added or new_char_gal_added):
+            vis_secs = []
+            if new_char_img_added:
+                vis_secs.append(BetaSectionEntry(
+                    title="Splash & Character Art", category="Visual Assets", tag="[NEW]",
+                    lines=["**[NEW]** Official beta character artwork added in this revision."],
+                ))
+            if new_char_gal_added:
+                vis_secs.append(BetaSectionEntry(
+                    title="Eidolon Icons", category="Eidolons", tag="[NEW]",
+                    lines=["**[NEW]** Official Eidolon icons added in this beta revision."],
+                ))
+            full.sections = vis_secs
+            full.is_new = False
+            old_rev = str((previous_snapshot or {}).get("revision") or "previous revision")
+            full.subtext = f"-# Visual assets added against {old_rev} • kit text unchanged"
+            full.overview = _synthesize_kit_overview(
+                game.key, name, built, full.sections, is_new=False
+            )
+            patch.characters.append(full)
         if is_new:
             char_new += 1
         else:
@@ -3678,10 +4305,16 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             diff_url=diff_url, page_url=page_url,
         )
         eq_snap = _equipment_snapshot(current, version, ctx.now, role)
+        eq_needs_zh = any(
+            tok in ln
+            for ln in current.lines
+            for tok in ("[value unavailable]", "[TBD]", "???")
+        ) or name.startswith("ID ")
         if (
             "_encore" not in data
             and (
                 zh_advised
+                or eq_needs_zh
                 or (
                     previous_snapshot is not None
                     and _snapshot_comparison(previous_snapshot, eq_snap) == "equal"
@@ -3695,22 +4328,35 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 ctx.fetcher, ns, version, detail_kind, item_id, locale="zh"
             )
             if zh_eq_data:
+                if name.startswith("ID "):
+                    zh_resolved_name = _safe_entry_name(
+                        entry, data, listing_entry, item_id, zh_data=zh_eq_data
+                    )
+                    if zh_resolved_name != name:
+                        name = zh_resolved_name
+                        current.name = name
                 zh_fields = _equip_from_detail(
                     ns, detail_kind, zh_eq_data,
                     listing_entry if isinstance(listing_entry, dict) else {},
                 )
-                en_eq_toks = _extract_kit_percents(current.lines)
-                zh_eq_toks = _extract_kit_percents(list(zh_fields.get("lines") or []))
-                if (
-                    zh_eq_toks
-                    and Counter(en_eq_toks) != Counter(zh_eq_toks)
-                    and not any("CN/CHS" in x for x in current.lines)
-                ):
-                    preview = ", ".join(zh_eq_toks[:8])
-                    current.lines.append(
-                        f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
-                    )
+                did_zh_eq = _reconcile_en_with_zh_equipment(current, zh_fields)
+                if did_zh_eq or eq_snap["data"].get("name") != current.name:
                     eq_snap = _equipment_snapshot(current, version, ctx.now, role)
+
+        prev_eq_img = str(((previous_snapshot or {}).get("data") or {}).get("image_url") or "")
+        prev_eq_gal = [
+            str(u) for u in (
+                (previous_snapshot or {}).get("gallery_urls")
+                or (((previous_snapshot or {}).get("data") or {}).get("image_urls"))
+                or []
+            )
+            if u
+        ]
+        eq_media_added = bool(
+            previous_snapshot is not None
+            and ((image and image != prev_eq_img) or (eq_gallery and len(eq_gallery) > len(prev_eq_gal)))
+        )
+
         patch.snapshots[snap_key] = eq_snap
         if eq_gallery:
             patch.snapshots[snap_key]["gallery_urls"] = list(eq_gallery)
@@ -3718,19 +4364,46 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             patch.snapshots[snap_key].update(provider="encore", provider_revision=data["_encore_revision"])
         known_snapshots[snap_key] = patch.snapshots[snap_key]
         patch.item_keys.append(_entry_key(ns, role, item_id))
+        eq_cmp = (
+            _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key])
+            if previous_snapshot is not None
+            else "new"
+        )
         if previous is None:
             patch.equipment.append(current)
-        elif _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key]) == "snapshot":
+        elif eq_cmp == "snapshot":
             current.tag = "[CHANGED]"
             current.lines = [
                 "-# Full current snapshot — complete before/after text is unavailable; "
                 "no direction is inferred.", *current.lines,
             ]
             patch.equipment.append(current)
-        elif _snapshot_comparison(previous_snapshot, patch.snapshots[snap_key]) == "diff":
+        elif eq_cmp == "diff":
             changed = _diff_equipment(previous, current)
             if changed:
                 patch.equipment.append(changed)
+            elif eq_media_added:
+                patch.equipment.append(BetaEquipment(
+                    id=current.id, name=current.name, category_label=current.category_label,
+                    rarity=current.rarity, sub_type=current.sub_type,
+                    weapon_class=current.weapon_class, set_kind=current.set_kind,
+                    set_parts=current.set_parts, tag="[NEW]",
+                    stats_line=current.stats_line, effect_title="",
+                    lines=["**[NEW]** Official beta visual assets added in this revision."],
+                    glossary=[], image_url=current.image_url, image_urls=list(current.image_urls),
+                    diff_url=current.diff_url, page_url=current.page_url,
+                ))
+        elif eq_cmp == "equal" and eq_media_added:
+            patch.equipment.append(BetaEquipment(
+                id=current.id, name=current.name, category_label=current.category_label,
+                rarity=current.rarity, sub_type=current.sub_type,
+                weapon_class=current.weapon_class, set_kind=current.set_kind,
+                set_parts=current.set_parts, tag="[NEW]",
+                stats_line=current.stats_line, effect_title="",
+                lines=["**[NEW]** Official beta visual assets added in this revision."],
+                glossary=[], image_url=current.image_url, image_urls=list(current.image_urls),
+                diff_url=current.diff_url, page_url=current.page_url,
+            ))
         equip_count += 1
 
     patch.batch_id = stable_hash([patch.rev_id, sorted(patch.item_keys)]) if patch.item_keys else ""
