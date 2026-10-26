@@ -4176,7 +4176,7 @@
   "heartbeat": {
     "every_min": 1440,
     "instance": "alpha",
-    "last_success": 1792933232
+    "last_success": 1793019656
   },
   "icons": {
     "genshin": "https://pbs.twimg.com/profile_images/2102589386378686464/tS24hVO2_200x200.jpg",
@@ -5200,11 +5200,11 @@
           "announcement_source": "hoyolab",
           "announcement_ts": 1793008804,
           "banners": {
-            "confirmed": [
+            "phase1": [
               "Aeon ★ Aha"
             ]
           },
-          "banners_checked_ts": 1793008837,
+          "banners_checked_ts": 1793019656,
           "banners_search_ts": 1793009118,
           "calendar_ts": 1793009118,
           "estimate_sources": [
@@ -5244,17 +5244,17 @@
         ],
         "first_seen": 1793008837,
         "message_id": "1564217196715057163",
-        "mirror_hash": "d54609135c69f69c",
+        "mirror_hash": "9b3cb55bea64e6b5",
         "mirror_message_id": "1564217201806942302",
         "mirror_webhook_fp": "6f8f20d42db3",
-        "payload_hash": "e9336598ce154f7e",
+        "payload_hash": "4771bee54d8300b6",
         "posted_at": 1793008837,
         "prov": {
-          "b_confirmed": [
+          "b_phase1": [
             6,
-            1793008837
+            1793019656
           ],
-          "b_confirmed_by": [
+          "b_phase1_by": [
             "wiki"
           ],
           "maint_end_ts": [
@@ -5287,7 +5287,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1793016317,
+        "updated_at": 1793019656,
         "webhook_fp": "19991534cf6d"
       }
     },
