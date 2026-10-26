@@ -1460,7 +1460,11 @@ def apply_program_media(data: dict, prov: dict, media: dict | None, now: int) ->
             data.pop("estimate_sources", None)
     if locked:
         # The announcement that opened this card is locked: a later lookup may still fill an
-        # air time that was only a countdown estimate, but it never moves the link or the key art.
+        # air time that was only a countdown estimate, or backfill a missing stream URL added to
+        # the exact same announcement post, without ever moving the link or the key art.
+        if media.get("youtube") and not data.get("youtube_video") and media.get("url") == data.get("source_url"):
+            data["youtube_video"] = media["youtube"]
+            changed.append("youtube_video")
         return changed
     label = media.get("source") or "Official News"
     # The title links the ANNOUNCEMENT itself. `media["youtube"] or media["url"]` made the card
@@ -1609,6 +1613,9 @@ def _link_label(url: str, fallback: str) -> str:
     return fallback
 
 
+ANNOUNCEMENT_SKEW_S = 180  # simultaneous scheduled drops across X / HoYoLAB / Kuro can skew by seconds
+
+
 def _pin_announcement(data: dict, e: Extract, others: list[tuple[str, str]]) -> None:
     """Point the card's link, source buttons and key art at ONE program post, and remember which
     post that was (source and time) so a later, better-ranked post can upgrade it once."""
@@ -1616,6 +1623,8 @@ def _pin_announcement(data: dict, e: Extract, others: list[tuple[str, str]]) -> 
     data["title_url"] = item.url                   # the announcement, never the stream it mentions
     data["source_url"] = item.url
     data["source_label"] = item.source_label
+    if lf.get("youtube_video") and not data.get("youtube_video"):
+        data["youtube_video"] = lf["youtube_video"]
     if lf.get("images"):
         data["images"] = rank(lf["images"])
     elif data.get("youtube_video"):
@@ -1629,21 +1638,30 @@ def _pin_announcement(data: dict, e: Extract, others: list[tuple[str, str]]) -> 
     data["announcement_ts"] = item.published_ts
 
 
-def _upgrade_announcement(data: dict, program_items: list) -> None:
-    """A card locked to HoYoLAB (because X was down when the card was first seen) moves to X ONCE,
-    and only when X's post is the same announcement: same air time, and published no later than the
-    post the card is locked to. A giveaway repeating the air time is always published later, so it
-    can never take the card -- the incident this lock exists to stop."""
+def _upgrade_announcement(data: dict, program_items: list, put=None) -> None:
+    """A card locked to HoYoLAB/Kuro (because X was down or arrived seconds later in the same
+    scheduled drop) moves to X ONCE, and only when X's post is the same announcement: same air
+    time, non-giveaway headline, and published within ANNOUNCEMENT_SKEW_S of the locked post.
+    A giveaway or reminder repeating the air time later can never take the card -- the incident
+    this lock exists to stop."""
     cur_rank = LOCK_RANK.get(data.get("announcement_source"), 0)
     cur_ts = data.get("announcement_ts")
     if "announcement_source" not in data or not cur_ts or not data.get("program_ts"):
         return                                     # legacy record, or no air time to match on
-    better = [e for e in program_items
-              if LOCK_RANK.get(e.item.source, 0) > cur_rank
-              and e.item.published_ts <= cur_ts
-              and e.fields.get("program_ts") == data.get("program_ts")]
+    better = [
+        e for e in program_items
+        if LOCK_RANK.get(e.item.source, 0) > cur_rank
+        and e.item.published_ts <= cur_ts + ANNOUNCEMENT_SKEW_S
+        and e.fields.get("program_ts") == data.get("program_ts")
+        and not NOT_PROGRAM_TITLE.search(
+            e.item.title if e.item.title else (e.item.text or "")[:HEADLINE_LEN]
+        )
+    ]
     if better:
         best = sorted(better, key=lambda e: (-LOCK_RANK.get(e.item.source, 0), e.item.published_ts))[0]
+        if put is not None:
+            for k in ("version_name", "youtube_video"):
+                put(k, best.fields.get(k), best.item.source, best.item.published_ts)
         _pin_announcement(data, best, [(e.item.source_label, e.item.url) for e in program_items])
         log.info("announcement upgraded to %s: %s", best.item.source, best.item.url)
 
@@ -1853,7 +1871,38 @@ def merge(game: Game, version: str, extracts: list[Extract], record: dict, overr
             _pin_announcement(data, lock, [(e.item.source_label, e.item.url) for e in program_items])
             data["announcement_locked"] = bool(timed)
         elif data.get("announcement_locked"):
-            _upgrade_announcement(data, program_items)
+            _upgrade_announcement(data, program_items, put)
+        if announcement_locked(data):
+            # Same-post CMS edit backfill: when an official post is edited shortly after going
+            # live (e.g. HSR 4.7 HoYoLAB 47210911 adding the YouTube stream URL ~1-2 min after
+            # publication), fill missing/updated version_name & youtube_video without unlocking
+            # or moving title_url / key art.
+            pinned = next(
+                (e for e in program_items if data.get("source_url") and e.item.url == data.get("source_url")),
+                None,
+            )
+            if pinned is not None:
+                for k in ("version_name", "youtube_video"):
+                    put(k, pinned.fields.get(k), pinned.item.source, pinned.item.published_ts)
+                if not data.get("images") and pinned.fields.get("images"):
+                    data["images"] = rank(pinned.fields["images"])
+            # Simultaneous cross-platform backfill: if X won LOCK_RANK using a shortener without a
+            # direct YouTube video ID while the simultaneous HoYoLAB/Kuro post carries it (or vice
+            # versa), backfill missing youtube_video / version_name from that exact same drop.
+            if data.get("program_ts") and data.get("announcement_ts") and (
+                not data.get("youtube_video") or not data.get("version_name")
+            ):
+                ann_ts = int(data["announcement_ts"])
+                for sib in program_items:
+                    head = sib.item.title if sib.item.title else (sib.item.text or "")[:HEADLINE_LEN]
+                    if (
+                        sib.fields.get("program_ts") == data["program_ts"]
+                        and abs(sib.item.published_ts - ann_ts) <= ANNOUNCEMENT_SKEW_S
+                        and not NOT_PROGRAM_TITLE.search(head)
+                    ):
+                        for k in ("version_name", "youtube_video"):
+                            if not data.get(k) and sib.fields.get(k):
+                                put(k, sib.fields[k], sib.item.source, sib.item.published_ts)
     else:
         # nobody in the lookback window announced the program: look the article up on the
         # official news page / HoYoLAB news list (link + full-size key art + air time).

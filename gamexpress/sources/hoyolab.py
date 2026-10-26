@@ -237,6 +237,15 @@ async def find_program(fetcher: Fetcher, game: Game, version: str | None, pages:
             "ts": int(post.get("created_at") or 0), "source": "HoYoLAB"}
 
 
+def _int_ts(raw: object) -> int:
+    if isinstance(raw, bool):
+        return 0
+    if isinstance(raw, int):
+        return raw if raw > 0 else 0
+    s = str(raw or "").strip()
+    return int(s) if s.isdigit() else 0
+
+
 async def discover_news(fetcher: Fetcher, game: Game, since: int) -> list[dict] | None:
     """Official news lists only, never keyword/community search. Partial failure is not a baseline.
 
@@ -270,8 +279,15 @@ async def discover_news(fetcher: Fetcher, game: Game, since: int) -> list[dict] 
                     continue
                 if not pid.isdigit() or not str(created).isdigit():
                     return None
-                if int(created) >= since:
-                    picked[pid] = {"id": pid, "ts": int(created)}
+                created_ts = int(created)
+                if created_ts >= since:
+                    mod_ts = max(_int_ts(wrapper.get("last_modify_time")), _int_ts(post.get("updated_at")))
+                    prev_mod = _int_ts(picked[pid].get("modified_ts")) if pid in picked else 0
+                    best_mod = max(mod_ts, prev_mod)
+                    entry: dict[str, int | str] = {"id": pid, "ts": created_ts}
+                    if best_mod > created_ts:
+                        entry["modified_ts"] = best_mod
+                    picked[pid] = entry
             # Lists are newest-first (pinned entries can lead). Use the trailing row,
             # not the minimum timestamp, to decide the requested window is covered.
             tail = rows[-1].get("post") if rows and isinstance(rows[-1], dict) else None
@@ -342,8 +358,14 @@ async def news_article(fetcher: Fetcher, game: Game, row: dict) -> Item | None:
     if not blocks:
         return None  # never publish a truncated list preview as a full article
     user = full.get("user") or {}
+    mod_ts = max(
+        _int_ts(row.get("modified_ts")),
+        _int_ts(full.get("last_modify_time")),
+        _int_ts(post.get("updated_at")),
+    )
     return Item(source="hoyolab", game=game.key, id=row["id"], url=ARTICLE_URL.format(row["id"]),
                 title=post["subject"], text="", published_ts=row["ts"], article_blocks=blocks,
                 author=str(user.get("nickname") or game.name),
                 images=[entry["url"] for entry in (full.get("cover_list") or [])
-                        if isinstance(entry, dict) and entry.get("url")][:1])
+                        if isinstance(entry, dict) and entry.get("url")][:1],
+                modified_ts=mod_ts if mod_ts > row["ts"] else 0)

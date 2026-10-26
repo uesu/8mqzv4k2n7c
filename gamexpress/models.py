@@ -21,6 +21,7 @@ class Item:
     # Only the news feature uses ordered content blocks; existing source consumers stay unchanged.
     article_blocks: list[dict] = field(default_factory=list)
     author: str = ""
+    modified_ts: int = 0
 
     @property
     def full(self) -> str:

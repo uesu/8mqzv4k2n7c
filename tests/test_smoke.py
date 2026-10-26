@@ -19298,5 +19298,376 @@ def test_feature5_progressive_media_and_gallery_lifecycle_across_all_four_games(
                 assert p_v3 and p_v3.no_changes is True, gk
         assert media_probes == []
 
+
+def test_post_publish_cms_edit_heals_news_and_schedule_cards_across_all_games():
+    """End-to-end regression for post-publish CMS edits (Monitor #1717 / HoYoLAB 47210911):
+    1. An official HoYoLAB / Kuro post caught seconds after publication (before the editor adds a
+       YouTube livestream URL) is silently PATCH-healed in BOTH Feature 3 (game news) AND Feature 1
+       (#schedule + game-news mirror [Watch] button) on the next poll once edited.
+    2. Unedited steady-state runs make 0 extra getPostFull / detail.json calls and 0 Discord edits;
+       comment bumps (HoYoLAB reply_time) never trigger news re-fetches.
+    3. Simultaneous scheduled cross-platform drops (X landing seconds after HoYoLAB/Kuro within
+       ANNOUNCEMENT_SKEW_S) upgrade to X cleanly and backfill sibling youtube_video, while later
+       giveaways/reminders remain strictly blocked across all games."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import runner, textutil
+    from gamexpress.sources import hoyolab as hoyolab_mod
+    from gamexpress.sources import kuro as kuro_mod
+
+    # --- 1) Quill link_card support in both structured_to_text (schedule) and news_blocks (news) ---
+    quill_with_link_card = json.dumps([
+        {"insert": "Hi, Trailblazers!\nThe Honkai: Star Rail Version 4.7 Special Program will release on 2026/10/30 19:30 (UTC+8)!\n"},
+        {
+            "insert": {
+                "backup_text": "[Link]",
+                "link_card": {
+                    "origin_url": "https://youtube.com/live/psifFhA2QAA",
+                    "title": "Version 4.7 Special Program Livestream",
+                },
+            }
+        },
+        {"insert": {"mystery": "unknown"}},
+    ])
+    st_text, st_links, _ = textutil.structured_to_text(quill_with_link_card)
+    assert "Version 4.7 Special Program Livestream" in st_text
+    assert "https://youtube.com/live/psifFhA2QAA" in st_links
+    assert textutil.youtube_video_url(st_links, st_text) == "https://www.youtube.com/watch?v=psifFhA2QAA"
+
+    lc_blocks = textutil.news_blocks("en-us", quill_with_link_card)
+    lc_flat = "".join(b.get("text", "") for b in lc_blocks)
+    assert "[Version 4.7 Special Program Livestream](https://youtube.com/live/psifFhA2QAA)" in lc_flat
+    assert "[Unsupported embedded content" in lc_flat
+
+    # --- 2) HoYoLAB discover_news: reply_time ignored; last_modify_time > created_at surfaced ---
+    def _hoyo_list_resp(mod_ts: int = 0, reply_ts: int = 0) -> dict:
+        wrap: dict = {
+            "post": {
+                "post_id": "47210911",
+                "game_id": 6,
+                "created_at": 1793008804,
+                "reply_time": reply_ts,
+                "subject": "Honkai: Star Rail Version 4.7 Special Program Preview",
+            }
+        }
+        if mod_ts:
+            wrap["last_modify_time"] = mod_ts
+        return {"retcode": 0, "data": {"list": [wrap]}}
+
+    # Comment bumps (reply_time >> created_at, last_modify_time == 0) emit NO modified_ts:
+    f_unmod = NewsFetcher([
+        _hoyo_list_resp(mod_ts=0, reply_ts=1793099999),
+        {"retcode": 0, "data": {"list": []}},
+        {"retcode": 0, "data": {"list": []}},
+    ])
+    rows_unmod = asyncio.run(hoyolab_mod.discover_news(f_unmod, GAMES["starrail"], 1793000000))
+    assert rows_unmod == [{"id": "47210911", "ts": 1793008804}]
+
+    # Official CMS edit (last_modify_time > created_at) emits modified_ts and keeps max across categories:
+    f_mod = NewsFetcher([
+        _hoyo_list_resp(mod_ts=1793008910, reply_ts=1793099999),
+        _hoyo_list_resp(mod_ts=0, reply_ts=1793099999),
+        {"retcode": 0, "data": {"list": []}},
+    ])
+    rows_mod = asyncio.run(hoyolab_mod.discover_news(f_mod, GAMES["starrail"], 1793000000))
+    assert rows_mod == [{"id": "47210911", "ts": 1793008804, "modified_ts": 1793008910}]
+
+    # --- 3) Exact Monitor #1717 HSR 4.7 (47210911) simulation: t+35s initial publish -> t+5m edit -> steady state ---
+    hsr_img = "https://upload-os-bbs.hoyolab.com/upload/2026/10/25/hsr_47_program_keyart.jpg"
+    ops_initial = [
+        {"insert": "Hi, Trailblazers!\nThe Honkai: Star Rail Version 4.7 \"Crepuscular Tide\" Special Program will release on 2026/10/30 19:30 (UTC+8)!\n\nFollow our official channels to stay tuned for the latest news about Version 4.7!\n"},
+        {"insert": "Twitch: "},
+        {"insert": "https://www.twitch.tv/honkaistarrail", "attributes": {"link": "https://www.twitch.tv/honkaistarrail"}},
+        {"insert": "\n"},
+    ]
+    ops_edited = ops_initial[:-2] + [
+        {"insert": "https://www.twitch.tv/honkaistarrail", "attributes": {"link": "https://www.twitch.tv/honkaistarrail"}},
+        {"insert": "\nYouTube: "},
+        {"insert": "https://youtube.com/live/psifFhA2QAA", "attributes": {"link": "https://youtube.com/live/psifFhA2QAA"}},
+        {"insert": "\n"},
+    ]
+
+    def _hsr_full_resp(ops: list[dict], mod_ts: int = 0) -> dict:
+        post_wrap: dict = {
+            "post": {
+                "post_id": "47210911",
+                "game_id": 6,
+                "created_at": 1793008804,
+                "subject": "Honkai: Star Rail Version 4.7 Special Program Preview",
+                "content": "en-us",
+                "structured_content": json.dumps(ops),
+            },
+            "user": {"nickname": "Honkai: Star Rail"},
+            "cover_list": [{"url": hsr_img, "width": 1920, "height": 1080}],
+            "image_list": [{"url": hsr_img, "width": 1920, "height": 1080}],
+        }
+        if mod_ts:
+            post_wrap["last_modify_time"] = mod_ts
+        return {"retcode": 0, "data": {"post": post_wrap}}
+
+    sched_hook = "https://discord.com/api/webhooks/100001/token-sched"
+    mirror_hook = "https://discord.com/api/webhooks/100002/token-hsr-mirror"
+    news_hook = "https://discord.com/api/webhooks/100003/token-hsr-news"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        sp = Path(tmp) / "state.json"
+
+        def _build_ctx(now_ts: int, sched_items: list[Item]) -> Ctx:
+            c = make_ctx(
+                sp,
+                items={"starrail": sched_items},
+                versions={"starrail": {"live": "4.6", "pre": None}},
+                now=now_ts,
+                DISCORD_WEBHOOK_SCHEDULE=sched_hook,
+                DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR=mirror_hook,
+                NEWS_ENABLED="1",
+                NEWS_GAMES="starrail",
+                DISCORD_WEBHOOK_NEWS_HSR=news_hook,
+            )
+            c.fetcher = types.SimpleNamespace(
+                verify_media=AsyncMock(return_value=True),
+                get_json=AsyncMock(return_value=None),
+                get_text=AsyncMock(return_value=None),
+            )
+            return c
+
+        # Seed bootstrap baseline at 1793008500 (before 47210911 goes live at 1793008804):
+        seed_ctx = _build_ctx(1793008500, [])
+        with patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[])):
+            asyncio.run(schedule.run(seed_ctx))
+            asyncio.run(runner.run_news(seed_ctx))
+        seed_ctx.state.save()
+
+        # Run #1717 (t = 1793008839, +35s after publish): YouTube link NOT yet in 47210911!
+        txt0, links0, _ = textutil.structured_to_text(json.dumps(ops_initial))
+        sched_item_v0 = Item(
+            "hoyolab", "starrail", "47210911", "https://www.hoyolab.com/article/47210911",
+            "Honkai: Star Rail Version 4.7 Special Program Preview", txt0, 1793008804, [hsr_img], links0,
+        )
+        news_art_v0 = asyncio.run(
+            hoyolab_mod.news_article(NewsFetcher([_hsr_full_resp(ops_initial, mod_ts=0)]), GAMES["starrail"], {"id": "47210911", "ts": 1793008804})
+        )
+        assert news_art_v0 is not None and news_art_v0.modified_ts == 0
+
+        ctx1 = _build_ctx(1793008839, [sched_item_v0])
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[{"id": "47210911", "ts": 1793008804}])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=news_art_v0)) as mock_art1,
+        ):
+            asyncio.run(schedule.run(ctx1))
+            asyncio.run(runner.run_news(ctx1))
+        ctx1.state.save()
+
+        from gamexpress.discord import webhook_fingerprint
+
+        posts1 = [x for x in ctx1.webhook.sent if x["method"] == "POST"]
+        assert [x["fp"] for x in posts1] == [
+            webhook_fingerprint(sched_hook),
+            webhook_fingerprint(mirror_hook),
+            webhook_fingerprint(news_hook),
+        ]
+        assert "psifFhA2QAA" not in json.dumps(posts1)
+        assert mock_art1.await_count == 1
+        # Unedited record keeps exact compact 3-key shape:
+        assert set(ctx1.state.news_record("starrail")["records"]["47210911"].keys()) == {"status", "ts", "messages"}
+
+        # Run #1718 (t = 1793009139, 5m later): HoYoLAB CMS added YouTube link (last_modify_time = 1793008910)!
+        txt1, links1, _ = textutil.structured_to_text(json.dumps(ops_edited))
+        sched_item_v1 = Item(
+            "hoyolab", "starrail", "47210911", "https://www.hoyolab.com/article/47210911",
+            "Honkai: Star Rail Version 4.7 Special Program Preview", txt1, 1793008804, [hsr_img], links1,
+        )
+        news_art_v1 = asyncio.run(
+            hoyolab_mod.news_article(
+                NewsFetcher([_hsr_full_resp(ops_edited, mod_ts=1793008910)]),
+                GAMES["starrail"],
+                {"id": "47210911", "ts": 1793008804, "modified_ts": 1793008910},
+            )
+        )
+        assert news_art_v1 is not None and news_art_v1.modified_ts == 1793008910
+
+        ctx2 = _build_ctx(1793009139, [sched_item_v1])
+        with (
+            patch.object(
+                hoyolab_mod,
+                "discover_news",
+                new=AsyncMock(return_value=[{"id": "47210911", "ts": 1793008804, "modified_ts": 1793008910}]),
+            ),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=news_art_v1)) as mock_art2,
+        ):
+            asyncio.run(schedule.run(ctx2))
+            asyncio.run(runner.run_news(ctx2))
+        ctx2.state.save()
+
+        # Zero new POSTs; silent in-place PATCH on #schedule, #hsr-news mirror, AND #hsr-news article!
+        assert [x for x in ctx2.webhook.sent if x["method"] == "POST"] == []
+        patches2 = [x for x in ctx2.webhook.sent if x["method"] == "PATCH"]
+        assert len(patches2) == 3
+        assert {x["fp"] for x in patches2[:2]} == {
+            webhook_fingerprint(sched_hook),
+            webhook_fingerprint(mirror_hook),
+        }
+        assert patches2[2]["fp"] == webhook_fingerprint(news_hook)
+        for p_call in patches2:
+            assert p_call["payload"]["allowed_mentions"] == {"parse": []}
+            assert cards.validate_payload(p_call["payload"]) == []
+        # Both #schedule and mirror now carry the [Watch] button -> https://www.youtube.com/watch?v=psifFhA2QAA:
+        for sched_patch in patches2[:2]:
+            action_rows = [c for c in sched_patch["payload"]["components"][0]["components"] if c["type"] == 1]
+            assert len(action_rows) == 1
+            btns = action_rows[0]["components"]
+            watch_btns = [b for b in btns if b.get("label") == "Watch"]
+            assert len(watch_btns) == 1 and watch_btns[0]["url"] == "https://www.youtube.com/watch?v=psifFhA2QAA"
+        # #hsr-news full card now carries YouTube: https://youtube.com/live/psifFhA2QAA:
+        assert "YouTube: https://youtube.com/live/psifFhA2QAA" in json.dumps(patches2[2]["payload"])
+        assert mock_art2.await_count == 1
+        assert ctx2.state.news_record("starrail")["records"]["47210911"]["modified_ts"] == 1793008910
+        assert any("edited 47210911" in line for line in ctx2.report)
+
+        # Run #1719 (t = 1793009439, steady state): 0 getPostFull calls and 0 Discord calls!
+        ctx3 = _build_ctx(1793009439, [sched_item_v1])
+        with (
+            patch.object(
+                hoyolab_mod,
+                "discover_news",
+                new=AsyncMock(return_value=[{"id": "47210911", "ts": 1793008804, "modified_ts": 1793008910}]),
+            ),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=news_art_v1)) as mock_art3,
+        ):
+            asyncio.run(schedule.run(ctx3))
+            asyncio.run(runner.run_news(ctx3))
+        assert mock_art3.await_count == 0
+        assert ctx3.webhook.sent == []
+
+        # Metadata-only CMS touch (modified_ts bumps to 1793009500, rendered card identical) -> 1 fetch, 0 PATCHes!
+        ctx4 = _build_ctx(1793009739, [sched_item_v1])
+        with (
+            patch.object(
+                hoyolab_mod,
+                "discover_news",
+                new=AsyncMock(return_value=[{"id": "47210911", "ts": 1793008804, "modified_ts": 1793009500}]),
+            ),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=news_art_v1)) as mock_art4,
+        ):
+            asyncio.run(runner.run_news(ctx4))
+        assert mock_art4.await_count == 1
+        assert ctx4.webhook.sent == []
+        assert ctx4.state.news_record("starrail")["records"]["47210911"]["modified_ts"] == 1793009500
+
+        # Peer sync propagates newer modified_ts + edit_sig idempotently:
+        standby = State(Path(tmp) / "standby.json")
+        standby.news_record("starrail").update(
+            floor=1793008500,
+            route=ctx4.state.news_record("starrail")["route"],
+            records={"47210911": {"status": "posted", "ts": 1793008804, "messages": list(ctx1.state.news_record("starrail")["records"]["47210911"]["messages"])}},
+        )
+        assert standby.merge_peer({"news": ctx4.state.data["news"]}, include_news=True) == 1
+        assert standby.news_record("starrail")["records"]["47210911"]["modified_ts"] == 1793009500
+        assert standby.merge_peer({"news": ctx4.state.data["news"]}, include_news=True) == 0
+
+    # --- 4) Kuro (WuWa) updateTime edit healing + 503 transient retry + 404 deleted-message resilience ---
+    menu_base, detail_base = _captured_kuro_lucilla_5626()
+    menu_edited = json.loads(json.dumps(menu_base))
+    menu_edited["article"][1]["updateTime"] = "2026-10-19 17:02:30"
+    kuro_rows = asyncio.run(kuro_mod.discover_news(NewsFetcher([menu_edited]), GAMES["wuwa"], 1792395922))
+    assert kuro_rows == [{"id": "5626", "ts": 1792400400, "title": detail_base["articleTitle"], "modified_ts": 1792400550}]
+
+    with tempfile.TemporaryDirectory() as tmp_k:
+        kp = Path(tmp_k) / "kuro_edit.json"
+        kctx = make_ctx(kp, now=1792400450, NEWS_ENABLED="1", NEWS_GAMES="wuwa", DISCORD_WEBHOOK_NEWS_WUWA=HOOK)
+        kctx.state.news_record("wuwa").update(
+            floor=1792400000,
+            records={"5626": {"status": "posted", "ts": 1792400400, "messages": ["wuwa-msg-1"]}},
+        )
+        kctx.fetcher = types.SimpleNamespace(verify_media=AsyncMock(return_value=True))
+        edited_detail = dict(detail_base, articleContent=detail_base["articleContent"] + "<p>Watch: https://youtu.be/psifFhA2QAA</p>")
+        edited_kuro_item = asyncio.run(kuro_mod.news_article(NewsFetcher([edited_detail]), GAMES["wuwa"], kuro_rows[0]))
+
+        # Transient 503 on PATCH holds without advancing modified_ts, then 200 succeeds on retry:
+        kctx.webhook = ScriptedWebhook([SendResult(False, 503, error="discord 503")], [])
+        with (
+            patch.object(kuro_mod, "discover_news", new=AsyncMock(return_value=kuro_rows)),
+            patch.object(kuro_mod, "news_article", new=AsyncMock(return_value=edited_kuro_item)),
+        ):
+            asyncio.run(runner.run_news(kctx))
+        assert "modified_ts" not in kctx.state.news_record("wuwa")["records"]["5626"]
+        assert any("Discord edit failed (503)" in w for w in kctx.warnings)
+
+        kctx.warnings.clear()
+        kctx.webhook = ScriptedWebhook([SendResult(True, 200, "wuwa-msg-1")], [])
+        with (
+            patch.object(kuro_mod, "discover_news", new=AsyncMock(return_value=kuro_rows)),
+            patch.object(kuro_mod, "news_article", new=AsyncMock(return_value=edited_kuro_item)),
+        ):
+            asyncio.run(runner.run_news(kctx))
+        assert len(kctx.webhook.edits) == 1
+        assert "https://youtu.be/psifFhA2QAA" in json.dumps(kctx.webhook.edits[0][1])
+        assert kctx.state.news_record("wuwa")["records"]["5626"]["modified_ts"] == 1792400550
+
+        # Deleted message (404) on subsequent edit advances modified_ts cleanly without infinite retry:
+        kuro_rows_v2 = [{"id": "5626", "ts": 1792400400, "title": detail_base["articleTitle"], "modified_ts": 1792400900}]
+        edited_kuro_v2 = Item(
+            "kuro", "wuwa", "5626", edited_kuro_item.url, edited_kuro_item.title, "", 1792400400,
+            article_blocks=[{"kind": "text", "text": "Updated text v2"}], author="Kuro Games", modified_ts=1792400900,
+        )
+        kctx.webhook = ScriptedWebhook([SendResult(False, 404, error=UNKNOWN_MESSAGE)], [])
+        with (
+            patch.object(kuro_mod, "discover_news", new=AsyncMock(return_value=kuro_rows_v2)),
+            patch.object(kuro_mod, "news_article", new=AsyncMock(return_value=edited_kuro_v2)) as mock_k404,
+        ):
+            asyncio.run(runner.run_news(kctx))
+            asyncio.run(runner.run_news(kctx))
+        assert mock_k404.await_count == 1
+        assert kctx.state.news_record("wuwa")["records"]["5626"]["modified_ts"] == 1792400900
+
+    # --- 5) Simultaneous cross-platform drop skew + sibling youtube_video backfill across ALL games ---
+    for gkey, game in GAMES.items():
+        if not game.enabled:
+            continue
+        word = game.program_patterns[0].title()
+        lower_src = "kuro" if gkey == "wuwa" else "hoyolab"
+        lower_url = f"https://example.com/{gkey}/official-ann-88"
+        x_url = f"https://x.com/{gkey}/status/8800000000000000001"
+        gw_url = f"https://x.com/{gkey}/status/8800000000000000002"
+        # Official article lands at t=1000 with direct YouTube livestream URL;
+        # X lands 9s later (t=1009, inside ANNOUNCEMENT_SKEW_S) using a shortener without YouTube ID!
+        ann_lower = Item(
+            lower_src, gkey, "88", lower_url, f"{game.short} Version 8.8 {word} Preview",
+            f"The Version 8.8 \"Starlight\" {word} will begin on October 30 at 19:30 (UTC+8)!\nYouTube: https://youtube.com/live/psifFhA2QAA",
+            1793001000, ["https://upload-os-bbs.hoyolab.com/upload/lower.jpg"], ["https://youtube.com/live/psifFhA2QAA"],
+        )
+        ann_x = Item(
+            "x", gkey, "8800000000000000001", x_url, "",
+            f"{game.short} Version 8.8 \"Starlight\" {word} Announcement\nThe Version 8.8 {word} will begin on October 30 at 19:30 (UTC+8)!\nStream: https://hoyo.link/short",
+            1793001009, ["https://pbs.twimg.com/media/XKEY.jpg?name=orig"], ["https://hoyo.link/short"],
+        )
+        gw_fast = Item(
+            "x", gkey, "8800000000000000002", gw_url, "",
+            f"Prize Event Giveaway! The Version 8.8 {word} will begin on October 30 at 19:30 (UTC+8)! Participate to win!",
+            1793001015, ["https://pbs.twimg.com/media/GIVE.jpg?name=orig"],
+        )
+
+        # (a) Giveaway even 15s later NEVER upgrades a HoYoLAB/Kuro lock:
+        rec_gw: dict = {}
+        exs_a1 = [e for e in (schedule.extract(game, it) for it in [ann_lower]) if e]
+        rec_gw["data"] = schedule.merge(game, "8.8", exs_a1, rec_gw, {}, {}, 1793001020)
+        exs_a2 = [e for e in (schedule.extract(game, it) for it in [ann_lower, gw_fast]) if e]
+        d_gw = schedule.merge(game, "8.8", exs_a2, rec_gw, {}, {}, 1793001050)
+        assert d_gw["title_url"] == lower_url and d_gw["announcement_source"] == lower_src, gkey
+
+        # (b) Simultaneous X announcement (+9s) upgrades HoYoLAB/Kuro -> X AND preserves youtube_video:
+        exs_b = [e for e in (schedule.extract(game, it) for it in [ann_lower, ann_x]) if e]
+        d_up = schedule.merge(game, "8.8", exs_b, rec_gw, {}, {}, 1793001060)
+        assert d_up["title_url"] == x_url and d_up["announcement_source"] == "x", gkey
+        assert d_up["images"] == ["https://pbs.twimg.com/media/XKEY.jpg?name=orig"], gkey
+        assert d_up["youtube_video"] == "https://www.youtube.com/watch?v=psifFhA2QAA", gkey
+
+        # (c) When both arrive on the very first run, X wins LOCK_RANK AND backfills youtube_video from sibling:
+        rec_sim: dict = {}
+        d_sim = schedule.merge(game, "8.8", exs_b, rec_sim, {}, {}, 1793001060)
+        assert d_sim["title_url"] == x_url and d_sim["announcement_source"] == "x", gkey
+        assert d_sim["youtube_video"] == "https://www.youtube.com/watch?v=psifFhA2QAA", gkey
+
+
 if __name__ == "__main__":
     sys.exit(main())

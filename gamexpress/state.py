@@ -171,6 +171,15 @@ class State:
                         continue
                     current = records.get(key)
                     if isinstance(current, dict) and current.get("status") == "posted":
+                        if (
+                            rec.get("status") == "posted"
+                            and current.get("messages") == rec.get("messages")
+                            and _safe_int(rec.get("modified_ts"), 0) > _safe_int(current.get("modified_ts"), 0)
+                        ):
+                            current["modified_ts"] = _safe_int(rec.get("modified_ts"), 0)
+                            if isinstance(rec.get("edit_sig"), str) and rec["edit_sig"]:
+                                current["edit_sig"] = rec["edit_sig"]
+                            imported += 1
                         continue
                     if isinstance(current, dict) and current.get("ambiguous") and not rec.get("ambiguous"):
                         continue

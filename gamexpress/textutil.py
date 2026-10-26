@@ -95,6 +95,14 @@ def structured_to_text(structured: str) -> tuple[str, list[str], list[str]]:
             vid = _http_media_url(ins.get("video"))
             if vid:
                 links.append(vid)
+            lc = ins.get("link_card")
+            if isinstance(lc, dict):
+                lc_url = _http_media_url(lc.get("origin_url") or lc.get("landing_url") or lc.get("url"))
+                lc_title = str(lc.get("title") or ins.get("backup_text") or "").strip()
+                if lc_title:
+                    parts.append(f"\n{lc_title}\n")
+                if lc_url:
+                    links.append(lc_url)
     return clean_text("".join(parts)), dedupe(links), dedupe(images)
 
 
@@ -657,6 +665,15 @@ def news_blocks(content: str, structured: str = "", videos: dict[str, str] | Non
                 last_was_str = False
                 if "divider" in value:
                     blocks.append({"kind": "text", "text": "\n──────────\n"})
+                    continue
+                if isinstance(value.get("link_card"), dict):
+                    lc = value["link_card"]
+                    lc_url = _http_media_url(lc.get("origin_url") or lc.get("landing_url") or lc.get("url"))
+                    if not lc_url:
+                        blocks.append({"kind": "text", "text": "\n[Embedded media unavailable — open the original article.]\n"})
+                        continue
+                    lc_label = clean_text(str(lc.get("title") or value.get("backup_text") or "")).replace("\n", " ").strip()
+                    blocks.append({"kind": "text", "text": f"\n{news_link(lc_label or lc_url, lc_url)}\n"})
                     continue
                 kind = next((k for k in ("image", "video", "vod") if k in value), None)
                 if not kind:

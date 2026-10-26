@@ -218,7 +218,13 @@ async def discover_news(fetcher: Fetcher, game: Game, since: int) -> list[dict] 
             # Use publication time for freshness; retain legacy menus without it.
             ts = parse_kuro_time(article.get("startTime") or article.get("createTime") or "") or 0
             if aid.isdigit() and ts >= since:
-                picked[aid] = {"id": aid, "ts": ts, "title": str(article.get("articleTitle") or "")}
+                mod_ts = parse_kuro_time(article.get("updateTime") or article.get("modifyTime") or "") or 0
+                prev_mod = int(picked[aid].get("modified_ts") or 0) if aid in picked else 0
+                best_mod = max(mod_ts, prev_mod)
+                entry: dict[str, int | str] = {"id": aid, "ts": ts, "title": str(article.get("articleTitle") or "")}
+                if best_mod > ts:
+                    entry["modified_ts"] = best_mod
+                picked[aid] = entry
     return sorted(picked.values(), key=lambda row: (row["ts"], row["id"]))
 
 
@@ -234,5 +240,10 @@ async def news_article(fetcher: Fetcher, game: Game, row: dict) -> Item | None:
     title = detail.get("articleTitle") or row.get("title")
     if not blocks or not title:
         return None
+    mod_ts = max(
+        int(row.get("modified_ts") or 0),
+        parse_kuro_time(detail.get("updateTime") or detail.get("modifyTime") or "") or 0,
+    )
     return Item(source="kuro", game=game.key, id=row["id"], url=LINK.format(row["id"]),
-                title=title, text="", published_ts=row["ts"], article_blocks=blocks, author="Kuro Games")
+                title=title, text="", published_ts=row["ts"], article_blocks=blocks, author="Kuro Games",
+                modified_ts=mod_ts if mod_ts > row["ts"] else 0)

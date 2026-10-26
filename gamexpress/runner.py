@@ -460,6 +460,52 @@ async def run_news(ctx: Ctx) -> None:
         if key not in ctx.settings.news_games:
             record["paused"] = True
     ephemeral = ctx.settings.dry_run or ctx.settings.test_mode
+
+    async def _render_article(src, gm: Game, cand: dict) -> tuple[Item, list[dict], str, int]:
+        art = await src.news_article(ctx.fetcher, gm, cand)
+        if art is None:
+            raise ValueError("full article unavailable/mismatched")
+        pls = news_payloads(
+            gm,
+            art,
+            timestamps=ctx.settings.news_timestamps,
+            expand_full=ctx.settings.news_expand_full,
+            max_pages=ctx.settings.news_expand_max_pages,
+            max_chars=ctx.settings.news_expand_max_chars,
+            max_media=ctx.settings.news_expand_max_media,
+        )
+        from .media import group_news_media, news_media_available
+
+        media_cap = ctx.settings.news_expand_max_media if ctx.settings.news_expand_full else 40
+        if not await news_media_available(ctx.fetcher, pls, max_urls=media_cap):
+            # One fresh official full response can supply a corrected/renewed URL.
+            fresh = await src.news_article(ctx.fetcher, gm, cand)
+            if fresh is None or fresh.title != art.title:
+                raise ValueError("media unavailable; fresh official article mismatched")
+            art = fresh
+            pls = news_payloads(
+                gm,
+                art,
+                timestamps=ctx.settings.news_timestamps,
+                expand_full=ctx.settings.news_expand_full,
+                max_pages=ctx.settings.news_expand_max_pages,
+                max_chars=ctx.settings.news_expand_max_chars,
+                max_media=ctx.settings.news_expand_max_media,
+            )
+            if not await news_media_available(ctx.fetcher, pls, max_urls=media_cap):
+                raise ValueError("media unavailable after official refresh; held for retry, not posted")
+        pls = await group_news_media(
+            ctx.fetcher,
+            pls,
+            enabled=ctx.settings.news_group_long_strips,
+            max_urls=media_cap,
+        )
+        mod = max(
+            int(cand.get("modified_ts") or 0),
+            int(getattr(art, "modified_ts", 0) or 0),
+        )
+        return art, pls, stable_hash(pls), mod
+
     for game in ctx.games:
         if game.key not in ctx.settings.news_games:
             continue
@@ -499,7 +545,7 @@ async def run_news(ctx: Ctx) -> None:
         records = record.setdefault("records", {})
         eligible = [row for row in rows if record["floor"] < row["ts"] <= ctx.now
                     and row["ts"] >= ctx.now - 48 * 3600]
-        failures = attempted = delivered = 0
+        failures = attempted = delivered = edited = 0
         # Finish known partial deliveries even if the discovery page/window has moved on.
         for key, rec in records.items():
             if not isinstance(rec, dict) or rec.get("status") != "partial":
@@ -519,6 +565,63 @@ async def run_news(ctx: Ctx) -> None:
         for row in eligible:
             rec = records.get(row["id"])
             if rec and rec.get("status") == "posted":
+                msgs = rec.get("messages")
+                row_mod = int(row.get("modified_ts") or 0)
+                prev_mod = max(int(rec.get("ts") or 0), int(rec.get("modified_ts") or 0))
+                if (
+                    rec.get("excluded")
+                    or row_mod <= prev_mod
+                    or not isinstance(msgs, list)
+                    or not msgs
+                    or any(not isinstance(m, str) or not m for m in msgs)
+                ):
+                    continue
+                try:
+                    # Silent in-place edit healer: when an official post is modified after initial
+                    # publication (e.g. HoYoLAB last_modify_time > created_at adding a livestream
+                    # URL), re-fetch that post once and PATCH the existing Discord message(s) with
+                    # allowed_mentions={"parse": []} so subscribers are never re-pinged.
+                    item, payloads, signature, eff_mod = await _render_article(source, game, row)
+                    eff_mod = max(eff_mod, row_mod)
+                    if rec.get("edit_sig") == signature:
+                        rec["modified_ts"] = eff_mod
+                        rec["edit_sig"] = signature
+                        if not ephemeral:
+                            ctx.state.save()
+                        continue
+                    if len(payloads) != len(msgs):
+                        rec["modified_ts"] = eff_mod
+                        if not ephemeral:
+                            ctx.state.save()
+                        ctx.warnings.append(
+                            f"{game.short} news {row['id']}: edited page count changed "
+                            f"({len(msgs)} -> {len(payloads)}); skipped in-place edit"
+                        )
+                        continue
+                    deleted_404 = False
+                    for mid, payload in zip(msgs, payloads):
+                        res = await ctx.webhook.edit(hook, mid, payload)
+                        if res.status == 404:
+                            deleted_404 = True
+                            ctx.warnings.append(
+                                f"{game.short} news {row['id']}: message {mid} deleted on Discord (404); skipped edit"
+                            )
+                            break
+                        if not res.ok:
+                            raise ValueError(f"Discord edit failed ({res.status}); retry required")
+                    rec["modified_ts"] = eff_mod
+                    if not deleted_404:
+                        rec["edit_sig"] = signature
+                        edited += 1
+                        ctx.report.append(
+                            f"✏️ {game.short} news: edited {item.id} ({len(payloads)} message(s), "
+                            f"{sum(len(p['components']) for p in payloads)} container(s))"
+                        )
+                    if not ephemeral:
+                        ctx.state.save()
+                except Exception as exc:  # noqa: BLE001 — hold single edit retry without aborting remaining news
+                    failures += 1
+                    ctx.warnings.append(f"{game.short} news {row['id']} edit: {type(exc).__name__}: {exc}")
                 continue
             attempted += 1
             if rec is None and len(records) >= 500:
@@ -526,51 +629,13 @@ async def run_news(ctx: Ctx) -> None:
                 break
             record["cursor"] = [row["ts"], row["id"]]
             try:
-                item = await source.news_article(ctx.fetcher, game, row)
-                if item is None:
-                    raise ValueError("full article unavailable/mismatched")
                 # Official news delivery is strictly independent of schedule, schedule mirrors,
                 # codes, and preload/maintenance started alerts (Monitor #456 / GI 47151000).
                 # Schedule classification or mirror routing never suppresses an eligible official
                 # article. Previously persisted legacy entries carrying {"status": "posted",
                 # "excluded": "schedule"} stay marked "posted" above so historical articles are
                 # never mass-reposted on rollout without separate operator authorization.
-                payloads = news_payloads(
-                    game,
-                    item,
-                    timestamps=ctx.settings.news_timestamps,
-                    expand_full=ctx.settings.news_expand_full,
-                    max_pages=ctx.settings.news_expand_max_pages,
-                    max_chars=ctx.settings.news_expand_max_chars,
-                    max_media=ctx.settings.news_expand_max_media,
-                )
-                from .media import group_news_media, news_media_available
-
-                media_cap = ctx.settings.news_expand_max_media if ctx.settings.news_expand_full else 40
-                if not await news_media_available(ctx.fetcher, payloads, max_urls=media_cap):
-                    # One fresh official full response can supply a corrected/renewed URL.
-                    fresh = await source.news_article(ctx.fetcher, game, row)
-                    if fresh is None or fresh.title != item.title:
-                        raise ValueError("media unavailable; fresh official article mismatched")
-                    item = fresh
-                    payloads = news_payloads(
-                        game,
-                        item,
-                        timestamps=ctx.settings.news_timestamps,
-                        expand_full=ctx.settings.news_expand_full,
-                        max_pages=ctx.settings.news_expand_max_pages,
-                        max_chars=ctx.settings.news_expand_max_chars,
-                        max_media=ctx.settings.news_expand_max_media,
-                    )
-                    if not await news_media_available(ctx.fetcher, payloads, max_urls=media_cap):
-                        raise ValueError("media unavailable after official refresh; held for retry, not posted")
-                payloads = await group_news_media(
-                    ctx.fetcher,
-                    payloads,
-                    enabled=ctx.settings.news_group_long_strips,
-                    max_urls=media_cap,
-                )
-                signature = stable_hash(payloads)
+                item, payloads, signature, eff_mod = await _render_article(source, game, row)
                 if rec is not None:
                     if rec.get("ambiguous"):
                         raise ValueError(
@@ -605,6 +670,9 @@ async def run_news(ctx: Ctx) -> None:
                     if not ephemeral:
                         ctx.state.save()
                 rec["status"] = "posted"
+                if eff_mod > int(rec.get("ts") or 0):
+                    rec["modified_ts"] = eff_mod
+                    rec["edit_sig"] = signature
                 rec.pop("row", None)
                 rec.pop("signature", None)
                 if not ephemeral:
@@ -615,5 +683,6 @@ async def run_news(ctx: Ctx) -> None:
             except Exception as exc:  # noqa: BLE001 — hold single article without aborting remaining news
                 failures += 1
                 ctx.warnings.append(f"{game.short} news {row['id']}: {type(exc).__name__}: {exc}")
+        extra_edit = f", edited={edited}" if edited else ""
         ctx.report.append(f"📰 {game.short} news: discovered={len(rows)}, eligible={len(eligible)}, "
-                          f"attempted={attempted}, delivered={delivered}, deferred/error={failures}")
+                          f"attempted={attempted}, delivered={delivered}, deferred/error={failures}{extra_edit}")
