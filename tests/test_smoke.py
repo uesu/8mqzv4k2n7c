@@ -19565,6 +19565,66 @@ def test_post_publish_cms_edit_heals_news_and_schedule_cards_across_all_games():
         assert standby.news_record("starrail")["records"]["47210911"]["modified_ts"] == 1793009500
         assert standby.merge_peer({"news": ctx4.state.data["news"]}, include_news=True) == 0
 
+    # --- 3b) Silent backstage CMS edit WITHOUT last_modify_time / updateTime (verified live on 47210911) ---
+    with tempfile.TemporaryDirectory() as tmp_silent:
+        ssp = Path(tmp_silent) / "silent_cms.json"
+        sctx = make_ctx(
+            ssp,
+            now=1793008839,
+            NEWS_ENABLED="1",
+            NEWS_GAMES="starrail",
+            DISCORD_WEBHOOK_NEWS_HSR=news_hook,
+        )
+        sctx.fetcher = types.SimpleNamespace(verify_media=AsyncMock(return_value=True))
+        sctx.state.news_record("starrail").update(floor=1793008500, records={})
+
+        # Initial delivery at t+35s (1793008839), row has NO modified_ts:
+        sctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "hsr-live-47210911")])
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[{"id": "47210911", "ts": 1793008804}])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=news_art_v0)),
+        ):
+            asyncio.run(runner.run_news(sctx))
+        assert sctx.state.news_record("starrail")["records"]["47210911"] == {
+            "status": "posted",
+            "ts": 1793008804,
+            "messages": ["hsr-live-47210911"],
+        }
+
+        # At t+5m (1793009140), getNewsList STILL has NO modified_ts, yet getPostFull now has YouTube link!
+        news_art_silent = asyncio.run(
+            hoyolab_mod.news_article(NewsFetcher([_hsr_full_resp(ops_edited, mod_ts=0)]), GAMES["starrail"], {"id": "47210911", "ts": 1793008804})
+        )
+        assert news_art_silent is not None and news_art_silent.modified_ts == 0
+        sctx.now = 1793009140
+        sctx.webhook = ScriptedWebhook([SendResult(True, 200, "hsr-live-47210911")], [])
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[{"id": "47210911", "ts": 1793008804}])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=news_art_silent)) as mock_s1,
+        ):
+            asyncio.run(runner.run_news(sctx))
+            # Immediate next poll at t+10m (still stage 1): 0 fetches, 0 edits!
+            sctx.now = 1793009440
+            asyncio.run(runner.run_news(sctx))
+        assert mock_s1.await_count == 1
+        assert len(sctx.webhook.edits) == 1
+        assert "YouTube: https://youtube.com/live/psifFhA2QAA" in json.dumps(sctx.webhook.edits[0][1])
+
+        # At t+26m (stage 2 checkpoint), article is unchanged -> 1 verification GET, 0 Discord PATCHes, then 0 GETs forever:
+        sctx.now = 1793010400
+        sctx.webhook = ScriptedWebhook([], [])
+        with (
+            patch.object(hoyolab_mod, "discover_news", new=AsyncMock(return_value=[{"id": "47210911", "ts": 1793008804}])),
+            patch.object(hoyolab_mod, "news_article", new=AsyncMock(return_value=news_art_silent)) as mock_s2,
+        ):
+            asyncio.run(runner.run_news(sctx))
+            sctx.now = 1793010700
+            asyncio.run(runner.run_news(sctx))
+            sctx.now = 1793025000
+            asyncio.run(runner.run_news(sctx))
+        assert mock_s2.await_count == 1
+        assert sctx.webhook.edits == []
+
     # --- 4) Kuro (WuWa) updateTime edit healing + 503 transient retry + 404 deleted-message resilience ---
     menu_base, detail_base = _captured_kuro_lucilla_5626()
     menu_edited = json.loads(json.dumps(menu_base))

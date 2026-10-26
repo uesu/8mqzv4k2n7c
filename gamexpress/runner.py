@@ -560,37 +560,77 @@ async def run_news(ctx: Ctx) -> None:
             if not any(row["id"] == key for row in eligible):
                 eligible.append(saved_row)
         eligible.sort(key=lambda value: (value["ts"], value["id"]))
+        sched_game = (ctx.state.data.get("schedule") or {}).get(game.key)
+        sched_url_updated: dict[str, int] = {}
+        if isinstance(sched_game, dict):
+            for srec in sched_game.values():
+                if not isinstance(srec, dict):
+                    continue
+                sdata = srec.get("data")
+                surl = str(sdata.get("source_url") or "") if isinstance(sdata, dict) else ""
+                supd = int(srec.get("updated_at") or 0)
+                if surl and supd > 0:
+                    sched_url_updated[surl] = max(sched_url_updated.get(surl, 0), supd)
+
         # Process every discovered eligible row in publication order. The stored
         # cursor remains diagnostic only, never a floor or delivery checkpoint.
         for row in eligible:
             rec = records.get(row["id"])
             if rec and rec.get("status") == "posted":
                 msgs = rec.get("messages")
+                rec_ts = int(rec.get("ts") or row["ts"])
+                prev_mod = max(rec_ts, int(rec.get("modified_ts") or 0))
+                art_url = (
+                    hoyolab.ARTICLE_URL.format(row["id"])
+                    if source is hoyolab
+                    else kuro.LINK.format(row["id"])
+                )
+                # Official HoYoLAB / Kuro backstage CMS edits can update getPostFull / detail.json
+                # shortly after publication without bumping getNewsList.last_modify_time or
+                # MainMenu.updateTime (verified live on HSR 4.7 / 47210911). Every newly delivered
+                # article records [delivered_at, stage, sig] in record["rechecks"] for two bounded
+                # post-delivery checks (t+5m and t+25m within 3h), while row_mod > prev_mod covers
+                # explicit edits and schedule-detected post updates across the 48h window.
+                rechecks = record.get("rechecks") if isinstance(record.get("rechecks"), dict) else {}
+                rc_entry = rechecks.get(row["id"])
                 row_mod = int(row.get("modified_ts") or 0)
-                prev_mod = max(int(rec.get("ts") or 0), int(rec.get("modified_ts") or 0))
+                if not row_mod and not isinstance(rc_entry, list):
+                    row_mod = sched_url_updated.get(art_url, 0)
+                if isinstance(rc_entry, list) and len(rc_entry) == 3:
+                    deliv_at = int(rc_entry[0] or 0)
+                    cur_stage = int(rc_entry[1] or 0)
+                    rc_sig = str(rc_entry[2] or "")
+                    elapsed = ctx.now - deliv_at if deliv_at > 0 else 0
+                    target_stage = 2 if 1500 <= elapsed <= 10800 else (1 if 300 <= elapsed < 1500 else 0)
+                    need_recheck = target_stage > cur_stage
+                else:
+                    deliv_at, cur_stage, rc_sig, target_stage, need_recheck = 0, 0, "", 0, False
                 if (
                     rec.get("excluded")
-                    or row_mod <= prev_mod
+                    or (row_mod <= prev_mod and not need_recheck)
                     or not isinstance(msgs, list)
                     or not msgs
                     or any(not isinstance(m, str) or not m for m in msgs)
                 ):
                     continue
                 try:
-                    # Silent in-place edit healer: when an official post is modified after initial
-                    # publication (e.g. HoYoLAB last_modify_time > created_at adding a livestream
-                    # URL), re-fetch that post once and PATCH the existing Discord message(s) with
-                    # allowed_mentions={"parse": []} so subscribers are never re-pinged.
                     item, payloads, signature, eff_mod = await _render_article(source, game, row)
                     eff_mod = max(eff_mod, row_mod)
-                    if rec.get("edit_sig") == signature:
-                        rec["modified_ts"] = eff_mod
-                        rec["edit_sig"] = signature
+                    known_sig = rc_sig or rec.get("edit_sig")
+                    next_stage = max(cur_stage, target_stage)
+                    if known_sig == signature:
+                        if eff_mod > prev_mod:
+                            rec["modified_ts"] = eff_mod
+                        if deliv_at > 0:
+                            record.setdefault("rechecks", {})[row["id"]] = [deliv_at, next_stage, signature]
                         if not ephemeral:
                             ctx.state.save()
                         continue
                     if len(payloads) != len(msgs):
-                        rec["modified_ts"] = eff_mod
+                        if eff_mod > prev_mod:
+                            rec["modified_ts"] = eff_mod
+                        if deliv_at > 0:
+                            record.setdefault("rechecks", {})[row["id"]] = [deliv_at, next_stage, signature]
                         if not ephemeral:
                             ctx.state.save()
                         ctx.warnings.append(
@@ -609,14 +649,19 @@ async def run_news(ctx: Ctx) -> None:
                             break
                         if not res.ok:
                             raise ValueError(f"Discord edit failed ({res.status}); retry required")
-                    rec["modified_ts"] = eff_mod
+                    if eff_mod > rec_ts:
+                        rec["modified_ts"] = eff_mod
                     if not deleted_404:
-                        rec["edit_sig"] = signature
+                        record.setdefault("rechecks", {})[row["id"]] = [deliv_at or ctx.now, next_stage or 2, signature]
+                        if eff_mod > rec_ts:
+                            rec["edit_sig"] = signature
                         edited += 1
                         ctx.report.append(
                             f"✏️ {game.short} news: edited {item.id} ({len(payloads)} message(s), "
                             f"{sum(len(p['components']) for p in payloads)} container(s))"
                         )
+                    elif deliv_at > 0:
+                        record.setdefault("rechecks", {})[row["id"]] = [deliv_at, next_stage or 2, rc_sig]
                     if not ephemeral:
                         ctx.state.save()
                 except Exception as exc:  # noqa: BLE001 — hold single edit retry without aborting remaining news
@@ -670,6 +715,7 @@ async def run_news(ctx: Ctx) -> None:
                     if not ephemeral:
                         ctx.state.save()
                 rec["status"] = "posted"
+                record.setdefault("rechecks", {})[row["id"]] = [ctx.now, 0, signature]
                 if eff_mod > int(rec.get("ts") or 0):
                     rec["modified_ts"] = eff_mod
                     rec["edit_sig"] = signature

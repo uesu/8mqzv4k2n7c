@@ -190,6 +190,18 @@ class State:
                     if key in records or len(records) < 500:
                         records[key] = copy.deepcopy(rec)
                         imported += 1
+                other_rechecks = other.get("rechecks") if isinstance(other.get("rechecks"), dict) else {}
+                if other_rechecks:
+                    my_rechecks = _as_dict_slot(mine, "rechecks")
+                    for key in list(records.keys()):
+                        oval = other_rechecks.get(key)
+                        if not (isinstance(oval, list) and len(oval) == 3):
+                            continue
+                        mval = my_rechecks.get(key)
+                        ostage = _safe_int(oval[1], 0)
+                        mstage = _safe_int(mval[1], -1) if isinstance(mval, list) and len(mval) == 3 else -1
+                        if ostage > mstage:
+                            my_rechecks[key] = list(oval)
         if include_maintenance:
             peer_maint = peer.get("maintenance")
             for game, other in (peer_maint.items() if isinstance(peer_maint, dict) else ()):
@@ -513,3 +525,12 @@ class State:
                     if rec.get("status") == "posted" and rec_ts < now - 48 * 3600:
                         game["floor"] = max(_safe_int(game.get("floor"), 0), rec_ts)
                         records.pop(key)
+            rechecks = game.get("rechecks")
+            if isinstance(rechecks, dict):
+                for key in list(rechecks.keys()):
+                    rec = records.get(key)
+                    if not isinstance(rec, dict) or _safe_int(rec.get("ts"), now) < now - 48 * 3600:
+                        rechecks.pop(key, None)
+                if not rechecks:
+                    game.pop("rechecks", None)
+            game.pop("sigs", None)
