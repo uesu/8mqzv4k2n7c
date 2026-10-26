@@ -4383,8 +4383,8 @@
     },
     "starrail": {
       "cursor": [
-        1792987207,
-        "47208258"
+        1793008804,
+        "47210911"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -4431,6 +4431,13 @@
           ],
           "status": "posted",
           "ts": 1792987207
+        },
+        "47210911": {
+          "messages": [
+            "1564217224015781991"
+          ],
+          "status": "posted",
+          "ts": 1793008804
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -5172,6 +5179,94 @@
         },
         "status": "posted",
         "updated_at": 1790489775,
+        "webhook_fp": "19991534cf6d"
+      },
+      "4.7": {
+        "data": {
+          "announcement_locked": true,
+          "announcement_source": "hoyolab",
+          "announcement_ts": 1793008804,
+          "banners": {
+            "confirmed": [
+              "Aeon ★ Aha"
+            ]
+          },
+          "banners_checked_ts": 1793008837,
+          "estimate_sources": [
+            "version cadence"
+          ],
+          "estimated": [
+            "preinstall_ts",
+            "maint_start_ts",
+            "maint_end_ts"
+          ],
+          "images": [
+            "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/912136c7e29f14fa90de342c20b66402_1404716023942940674.jpg"
+          ],
+          "maint_end_ts": 1794366000,
+          "maint_start_ts": 1794348000,
+          "preinstall_ts": 1794204000,
+          "program_name": "Special Program",
+          "program_seen": true,
+          "program_ts": 1793359800,
+          "source_label": "HoYoLAB",
+          "source_links": [
+            [
+              "HoYoLAB",
+              "https://www.hoyolab.com/article/47210911"
+            ]
+          ],
+          "source_url": "https://www.hoyolab.com/article/47210911",
+          "title_url": "https://www.hoyolab.com/article/47210911",
+          "version": "4.7",
+          "version_name": "Now, Lay Laughter to All Stars"
+        },
+        "estimated_reported": [
+          "preinstall_ts",
+          "maint_start_ts",
+          "maint_end_ts"
+        ],
+        "first_seen": 1793008837,
+        "message_id": "1564217196715057163",
+        "mirror_hash": "8749366de09de95d",
+        "mirror_message_id": "1564217201806942302",
+        "mirror_webhook_fp": "6f8f20d42db3",
+        "payload_hash": "5968750adff2f8a0",
+        "posted_at": 1793008837,
+        "prov": {
+          "b_confirmed": [
+            6,
+            1793008837
+          ],
+          "b_confirmed_by": [
+            "wiki"
+          ],
+          "maint_end_ts": [
+            9,
+            1793008837
+          ],
+          "maint_start_ts": [
+            9,
+            1793008837
+          ],
+          "preinstall_ts": [
+            9,
+            1793008837
+          ],
+          "program_name": [
+            50,
+            1793008804
+          ],
+          "program_ts": [
+            50,
+            1793008804
+          ],
+          "version_name": [
+            50,
+            1793008804
+          ]
+        },
+        "status": "posted",
         "webhook_fp": "19991534cf6d"
       }
     },
