@@ -2,10 +2,9 @@
   "beta": {
     "genshin": {
       "format_epoch": 3,
-      "last_poll": 0,
+      "last_poll": 1792988123,
       "latest_rev": "",
       "locked_images": {},
-      "paused": true,
       "revisions": {},
       "route": "a0f2147590c35140",
       "snapshots": {},
@@ -14,10 +13,9 @@
     },
     "starrail": {
       "format_epoch": 3,
-      "last_poll": 0,
+      "last_poll": 1792988123,
       "latest_rev": "",
       "locked_images": {},
-      "paused": true,
       "revisions": {},
       "route": "d6cfe8654063c7ee",
       "snapshots": {},
@@ -26,27 +24,1910 @@
     },
     "wuwa": {
       "format_epoch": 3,
-      "last_poll": 0,
-      "latest_rev": "",
+      "last_poll": 1792988123,
+      "latest_rev": "84d9a78104b696a1",
       "locked_images": {},
-      "paused": true,
-      "revisions": {},
+      "revisions": {
+        "84d9a78104b696a1": {
+          "batches": {
+            "2972f58bc47e09e3": {
+              "messages": [
+                "1564130558320058484",
+                "1564130580562575482",
+                "1564130604419907615",
+                "1564130626611978251",
+                "1564130659931398215"
+              ],
+              "signature": "9b53d5c292c77f66",
+              "status": "posted",
+              "ts": 1792988123
+            }
+          },
+          "characters": {
+            "ww:1512": 0
+          },
+          "label": "v3.8.1",
+          "messages": [
+            "1564130558320058484",
+            "1564130580562575482",
+            "1564130604419907615",
+            "1564130626611978251",
+            "1564130659931398215"
+          ],
+          "more": false,
+          "processed": [
+            "character:ww:1512",
+            "weapon:ww:21030076"
+          ],
+          "source_revision": "3.8.1",
+          "source_version": "3.8.1",
+          "status": "posted",
+          "ts": 1792988123
+        }
+      },
       "route": "f7e18488aac788d3",
-      "snapshots": {},
-      "source_revision": "",
-      "source_version": ""
+      "snapshots": {
+        "ww:1512": {
+          "content_signature": "aed317f408fdcb21",
+          "data": {
+            "element": "Spectro",
+            "id": "ww:1512",
+            "image_url": "",
+            "mechanic_defs": [],
+            "name": "Lily",
+            "page_url": "https://ww.nanoka.cc/character/1512/",
+            "rarity": 5,
+            "role": "Pistols",
+            "sections": [
+              {
+                "category": "Normal Attack",
+                "defs": [],
+                "lines": [
+                  "Basic Attack",
+                  "Press repeatedly or hold Normal Attack to perform up to 4 consecutive attacks, dealing Spectro DMG.",
+                  "Mid-air Attack",
+                  "Consume STA to perform a Plunging Attack, dealing Spectro DMG.",
+                  "Dodge Counter",
+                  "Press Normal Attack shortly after a successful Dodge to attack the target, dealing Spectro DMG. Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 4.",
+                  "**Skill Attributes (Lv. 10)**",
+                  "Basic Attack Stage 1 DMG: 135.55%",
+                  "Basic Attack Stage 2 DMG: 45.94%+45.94%*3",
+                  "Basic Attack Stage 3 DMG: 193.60%",
+                  "Basic Attack Stage 4 DMG: 72.57%*3+72.57%",
+                  "Plunging Attack DMG: 208.98%",
+                  "Dodge Counter DMG: 181.41%",
+                  "Mid-air Attack STA Cost: 30"
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "Basic Attack Stage 1 DMG",
+                    "text": "135.55%",
+                    "value": 135.55
+                  },
+                  {
+                    "name": "Basic Attack Stage 3 DMG",
+                    "text": "193.60%",
+                    "value": 193.6
+                  },
+                  {
+                    "name": "Plunging Attack DMG",
+                    "text": "208.98%",
+                    "value": 208.98
+                  },
+                  {
+                    "name": "Dodge Counter DMG",
+                    "text": "181.41%",
+                    "value": 181.41
+                  },
+                  {
+                    "name": "Mid-air Attack STA Cost",
+                    "text": "30",
+                    "value": 30.0
+                  }
+                ],
+                "title": "Normal Attack: Mend and Cleanse",
+                "values_label": "Lv. 10"
+              },
+              {
+                "category": "Resonance Skill",
+                "defs": [],
+                "lines": [
+                  "Resonance Skill - Nightmare Blend",
+                  "Lily starts with Heavy Attack - Woven Fairytale by default. When Heavy Attack - Woven Fairytale is active, press Resonance Skill to switch to Heavy Attack - Woven Phantasm, dealing Spectro DMG to nearby targets.",
+                  "This skill shares a Cooldown with Resonance Skill - Reverie Blend.",
+                  "Resonance Skill - Reverie Blend",
+                  "When Heavy Attack - Woven Phantasm is active, press Resonance Skill to switch to Heavy Attack - Woven Fairytale, dealing Spectro DMG to nearby targets.",
+                  "This skill shares a Cooldown with Resonance Skill - Nightmare Blend.",
+                  "**Skill Attributes (Lv. 10)**",
+                  "Resonance Skill - Reverie Blend DMG: 290.25%",
+                  "Resonance Skill - Nightmare Blend DMG: 290.25%",
+                  "Resonance Skill - Reverie Blend/Nightmare Blend Cooldown: 5",
+                  "Resonance Skill - Reverie Blend/Nightmare Blend Concerto Regen: 8"
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "Resonance Skill - Reverie Blend DMG",
+                    "text": "290.25%",
+                    "value": 290.25
+                  },
+                  {
+                    "name": "Resonance Skill - Nightmare Blend DMG",
+                    "text": "290.25%",
+                    "value": 290.25
+                  },
+                  {
+                    "name": "Resonance Skill - Reverie Blend/Nightmare Blend Cooldown",
+                    "text": "5",
+                    "value": 5.0
+                  },
+                  {
+                    "name": "Resonance Skill - Reverie Blend/Nightmare Blend Concerto Regen",
+                    "text": "8",
+                    "value": 8.0
+                  }
+                ],
+                "title": "Resonance Skill: Dream Blend",
+                "values_label": "Lv. 10"
+              },
+              {
+                "category": "Resonance Liberation",
+                "defs": [],
+                "lines": [
+                  "Casting this skill sends Lily into Slumberland and grants Cradle Lullaby to Resonators in the team.",
+                  "Slumber",
+                  "Lasts for 50s. When Lily is in Slumberland, she heals the nearby active Resonator every 3s. During Slumberland, use directional input to command Dreambind to deal Spectro DMG to nearby targets. Dreambind pulls in targets within a certain range every 5s, and stops attacking 10s after movement stops. Press Resonance Liberation again during Slumberland to end it early.",
+                  "When Lily is in Slumberland, when a Resonator in the team casts Intro Skill, targets within a certain range are pulled in.",
+                  "Switching to another Resonator during Slumberland keeps Lily on the field, and she takes no DMG while in Slumberland. Lily leaves the field when Slumberland ends, or earlier if she gets too far from the active Resonator.",
+                  "Cradle Lullaby",
+                  "Lasts for 25s. While this effect is active, each Intro Skill cast by a Resonator in the team grants 1 stack of Dream Aroma. This effect is removed when Lily is the incoming Resonator.",
+                  "Dream Aroma",
+                  "Each stack increases the ATK of all Resonators in the team by 7%, stacking up to 4 times. This effect is removed when Lily is the incoming Resonator or when Cradle Lullaby ends.",
+                  "**Skill Attributes (Lv. 10)**",
+                  "Cooldown: 25",
+                  "Resonance Cost: 175",
+                  "Concerto Regen: 20",
+                  "Slumberland Healing: 996+2.00%",
+                  "Dreambind Continuous DMG: 36.29%"
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "Cooldown",
+                    "text": "25",
+                    "value": 25.0
+                  },
+                  {
+                    "name": "Resonance Cost",
+                    "text": "175",
+                    "value": 175.0
+                  },
+                  {
+                    "name": "Concerto Regen",
+                    "text": "20",
+                    "value": 20.0
+                  },
+                  {
+                    "name": "Dreambind Continuous DMG",
+                    "text": "36.29%",
+                    "value": 36.29
+                  }
+                ],
+                "title": "Resonance Liberation: Into the Dream Cradle",
+                "values_label": "Lv. 10"
+              },
+              {
+                "category": "Inherent Skill",
+                "defs": [],
+                "lines": [
+                  "While casting Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, Lily additionally restores 6 points of Concerto Energy per second for 3s. This effect can be triggered once every 20s.",
+                  "Casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End additionally restores 10 points of Concerto Energy. This effect can be triggered once every 20s."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Inherent Skill: Woven Scent",
+                "values_label": ""
+              },
+              {
+                "category": "Inherent Skill",
+                "defs": [],
+                "lines": [
+                  "While the active Resonator has 50% or more HP, Lily grants them 10% DMG Reduction.",
+                  "When a Resonator in the team takes a fatal blow, they will not be downed and will instead gain a Shield equal to 10% of Lily's Max HP for 10s. This effect can be triggered once every 5 min.",
+                  "Casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End grants Floral Blessing to Resonators in the team.",
+                  "Floral Blessing",
+                  "Lasts for 60s. When a Resonator in the team takes DMG that brings their HP below 50% of their Max HP, they restore HP equal to 50% of their Max HP, and Floral Blessing is removed. This effect can be triggered once every 120s."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Inherent Skill: Flowers for You",
+                "values_label": ""
+              },
+              {
+                "category": "Intro Skill",
+                "defs": [],
+                "lines": [
+                  "First Bloom",
+                  "Attack the target, dealing Spectro DMG. Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.",
+                  "Eternal Bloom",
+                  "After casting Resonance Liberation - Into the Dream Cradle, Lily's next Intro Skill First Bloom is replaced with Eternal Bloom. When cast, it attacks the target, dealing Spectro DMG.",
+                  "For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.",
+                  "Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.",
+                  "**Skill Attributes (Lv. 10)**",
+                  "Intro Skill - First Bloom DMG: 85.63%+85.63%*3",
+                  "Intro Skill - Eternal Bloom DMG: 65.86%",
+                  "Concerto Regen: 10"
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "Intro Skill - Eternal Bloom DMG",
+                    "text": "65.86%",
+                    "value": 65.86
+                  },
+                  {
+                    "name": "Concerto Regen",
+                    "text": "10",
+                    "value": 10.0
+                  }
+                ],
+                "title": "Intro Skill: Blooming Dream",
+                "values_label": "Lv. 10"
+              },
+              {
+                "category": "Forte Circuit",
+                "defs": [],
+                "lines": [
+                  "Dream Perfume",
+                  "Lily can hold up to 300 points.",
+                  "Basic Attack, Mid-air Attack, and Dodge Counter restore Dream Perfume on hit.",
+                  "Casting Resonance Skill - Reverie Blend or Resonance Skill - Nightmare Blend restores Dream Perfume.",
+                  "Heavy Attack - Woven Fairytale",
+                  "When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Fairytale, consuming all Dream Perfume to pull in nearby targets, dealing Spectro DMG. During the skill, she gains 10% DMG Reduction and continuously deals Spectro DMG to nearby targets. She also heals all Resonators in the team every second for 2s.",
+                  "Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Fairytale's Finale. Heavy Attack - Fairytale's Finale is automatically cast at the end of Heavy Attack - Woven Fairytale. Casting Heavy Attack - Fairytale's Finale consumes all Dreambell Chime.",
+                  "Heavy Attack - Fairytale's Finale",
+                  "Attack targets within range, dealing Spectro DMG.",
+                  "For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.",
+                  "Casting the skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants Silvered Dream to Resonators in the team. This effect can be triggered once every 25s.",
+                  "Heavy Attack - Woven Phantasm",
+                  "When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Woven Phantasm, consuming all Dream Perfume to pull in nearby targets, dealing Spectro DMG. She also heals all Resonators in the team every second for 2s.",
+                  "Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Phantasm's End. Heavy Attack - Phantasm's End is automatically cast at the end of Heavy Attack - Woven Phantasm. Casting Heavy Attack - Phantasm's End consumes all Dreambell Chime.",
+                  "Heavy Attack - Phantasm's End",
+                  "Attack targets within range, dealing Spectro DMG.",
+                  "For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.",
+                  "Casting this skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants Silvered Dream to Resonators in the team. This effect can be triggered once every 25s.",
+                  "Silvered Dream",
+                  "Lasts for 30s.",
+                  "When the Resonator with this effect is the Active Resonator and can trigger Unison Response, their ATK is increased by 7% for each stack of Unison Boon the team has, counting up to 4 stacks of Unison Boon.",
+                  "The active Resonator's Echo Skill Crit. Rate is increased by 10%, and their Echo Skill Crit. DMG is increased by 20%.",
+                  "All nearby Resonators in the team gain resistance to interruption.",
+                  "**Skill Attributes (Lv. 10)**",
+                  "Heavy Attack - Woven Fairytale Healing: 2139+4.30%",
+                  "Heavy Attack - Woven Phantasm Healing: 2139+4.30%",
+                  "Heavy Attack - Woven Fairytale DMG: 45.36%+45.36%*19",
+                  "Heavy Attack - Woven Phantasm DMG: 82.46%*11",
+                  "Heavy Attack - Fairytale's Finale DMG: 65.31%",
+                  "Heavy Attack - Phantasm's End DMG: 65.31%"
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "Heavy Attack - Fairytale's Finale DMG",
+                    "text": "65.31%",
+                    "value": 65.31
+                  },
+                  {
+                    "name": "Heavy Attack - Phantasm's End DMG",
+                    "text": "65.31%",
+                    "value": 65.31
+                  }
+                ],
+                "title": "Forte Circuit: Dreamland of Flowers",
+                "values_label": "Lv. 10"
+              },
+              {
+                "category": "Outro Skill",
+                "defs": [],
+                "lines": [
+                  "Resonators in the team gain 25% All DMG Amplification for 30s."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Outro Skill: Blooming Fragrance",
+                "values_label": ""
+              },
+              {
+                "category": "Tune Break",
+                "defs": [],
+                "lines": [
+                  "When the target's Off-Tune Level is full, the Resonator may cast Tune Break on the target."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Tune Break: Pistols",
+                "values_label": ""
+              },
+              {
+                "category": "Resonance Chain",
+                "defs": [],
+                "lines": [
+                  "Lily is immune to interruption while channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End.",
+                  "While Cradle Lullaby is active, each Intro Skill cast by a Resonator in the team now grants 2 stacks of Dream Aroma."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Sequence Node 1 — Look, White Flowers from the Ruins of Dreams",
+                "values_label": ""
+              },
+              {
+                "category": "Resonance Chain",
+                "defs": [],
+                "lines": [
+                  "While Cradle Lullaby is active, when a Resonator in the team casts an Intro Skill, each stack of Dream Aroma additionally increases Crit. Rate by 2% and Crit. DMG by 6%."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Sequence Node 2 — Listen, a Requiem from the Dream Cradle",
+                "values_label": ""
+              },
+              {
+                "category": "Resonance Chain",
+                "defs": [],
+                "lines": [
+                  "Casting Intro Skill - Eternal Bloom additionally grants Lily 25 points of Concerto Energy and 170 points of Dream Perfume.",
+                  "While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, Lily gains Dreambell Chime faster, and the healing provided is increased by 50%."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Sequence Node 3 — May Your Soul Wander No More",
+                "values_label": ""
+              },
+              {
+                "category": "Resonance Chain",
+                "defs": [],
+                "lines": [
+                  "While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while in Slumberland, healing provided is increased by 30%."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Sequence Node 4 — May Your Past Sink into Silence",
+                "values_label": ""
+              },
+              {
+                "category": "Resonance Chain",
+                "defs": [],
+                "lines": [
+                  "The DMG Multipliers of Heavy Attack - Fairytale's Finale, Heavy Attack - Phantasm's End, and Intro Skill - Eternal Bloom are increased by 40%."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Sequence Node 5 — May You Find Peace in Endless Light",
+                "values_label": ""
+              },
+              {
+                "category": "Resonance Chain",
+                "defs": [],
+                "lines": [
+                  "The Spectro DMG dealt by Heavy Attack - Fairytale's Finale, Heavy Attack - Phantasm's End, and Intro Skill - Eternal Bloom is further increased by 500%."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Sequence Node 6 — May My Reverie Never End",
+                "values_label": ""
+              }
+            ],
+            "stats_header": "Base Stats",
+            "stats_lines": [
+              "Lv. 90 — HP 16712.5 · ATK 287.5 · DEF 1100",
+              "Stat Bonuses: Healing Bonus +12% | HP +12%"
+            ],
+            "subtext": ""
+          },
+          "kind": "character",
+          "revision": "3.8.1",
+          "signature": "721baf980a48da96",
+          "truncated": false,
+          "ts": 1792988123
+        },
+        "ww:21030076": {
+          "content_signature": "4b859a03790e5074",
+          "data": {
+            "category_label": "Weapons",
+            "effect_title": "Dreamland Solace",
+            "id": "ww:21030076",
+            "image_url": "",
+            "lines": [
+              "Increases Max HP by 12%. Casting Resonance Liberation restores 8 points of Concerto Energy, triggered once every 20s. All Resonators in the team gain Soothed Soul for 30s when the wielder peforms healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16% ATK increase for [value unavailable]s. This effect is removed when Soothed Soul ends. When the wielder heals Resonators, the active Resonator also gains 24% Echo Skill DMG Bonus for 6s. Effects of the same name do not stack.",
+              "-# Some values are unavailable in this revision's source data."
+            ],
+            "name": "Lullaby",
+            "page_url": "https://ww.nanoka.cc/weapon/21030076/",
+            "rarity": 5,
+            "stats_line": "ATK 412.5 · Energy Regen 77.04%",
+            "sub_type": "Energy Regen"
+          },
+          "kind": "weapon",
+          "revision": "3.8.1",
+          "signature": "63d1b290dc02b2b3",
+          "truncated": false,
+          "ts": 1792988123
+        }
+      },
+      "source_revision": "3.8.1",
+      "source_version": "3.8.1"
     },
     "zzz": {
       "format_epoch": 3,
-      "last_poll": 0,
-      "latest_rev": "",
-      "locked_images": {},
-      "paused": true,
-      "revisions": {},
+      "last_poll": 1792988123,
+      "latest_rev": "c4da864455350ab0",
+      "locked_images": {
+        "zzz:1601": {
+          "locked": true,
+          "ts": 1792988123,
+          "url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp"
+        },
+        "zzz:1661": {
+          "locked": true,
+          "ts": 1792988123,
+          "url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp"
+        }
+      },
+      "revisions": {
+        "c4da864455350ab0": {
+          "batches": {
+            "6e91b1690a330b9f": {
+              "messages": [
+                "1564130365239459894",
+                "1564130390182985770",
+                "1564130413830606910",
+                "1564130436546957456",
+                "1564130459305246871",
+                "1564130482025930894",
+                "1564130506667466833",
+                "1564130529396400159",
+                "1564130552439640067"
+              ],
+              "signature": "c99b5f58cbb0c2ed",
+              "status": "posted",
+              "ts": 1792988123
+            }
+          },
+          "characters": {
+            "zzz:1601": 0,
+            "zzz:1661": 5
+          },
+          "label": "v3.4.1 Rev. 19851435",
+          "messages": [
+            "1564130365239459894",
+            "1564130390182985770",
+            "1564130413830606910",
+            "1564130436546957456",
+            "1564130459305246871",
+            "1564130482025930894",
+            "1564130506667466833",
+            "1564130529396400159",
+            "1564130552439640067"
+          ],
+          "more": false,
+          "processed": [
+            "character:zzz:1601",
+            "character:zzz:1661",
+            "relic:zzz:34300",
+            "relic:zzz:34400",
+            "weapon:zzz:14160",
+            "weapon:zzz:14166"
+          ],
+          "source_revision": "3.4.1+19851435",
+          "source_version": "3.4.1+19851435",
+          "status": "posted",
+          "ts": 1792988123
+        }
+      },
       "route": "5f931f917050e29a",
-      "snapshots": {},
-      "source_revision": "",
-      "source_version": ""
+      "snapshots": {
+        "zzz:14160": {
+          "content_signature": "8d173baed8ed4755",
+          "data": {
+            "category_label": "W-Engines",
+            "effect_title": "",
+            "id": "zzz:14160",
+            "image_url": "",
+            "lines": [
+              "CRIT Rate +20%. When the equipper uses an [EX Special Attack], the character gains [Enhance] for 25s. This effect is also gained immediately when the equipper enters combat, and repeated triggers reset the duration. While [Enhance] is active, the equipper's Fire DMG is increased by 22%, and their Fire Sharp DMG is increased by 10%."
+            ],
+            "name": "ID 14160",
+            "page_url": "https://zzz.gachabase.net/w-engines/14160/14160/beta?lang=en",
+            "rarity": 5,
+            "stats_line": "Base ATK 446",
+            "sub_type": "Percent DEF"
+          },
+          "kind": "weapon",
+          "revision": "3.4.1+19851435",
+          "signature": "cdf8ceb4259cea4c",
+          "truncated": false,
+          "ts": 1792988123
+        },
+        "zzz:14166": {
+          "content_signature": "00d1cf339364796a",
+          "data": {
+            "category_label": "W-Engines",
+            "effect_title": "Robin Test Engine",
+            "id": "zzz:14166",
+            "image_url": "",
+            "lines": [
+              "When the equipper applies a shield, the whole squad's DEF increases by 10% for 10s. Repeated triggers extend the duration, up to a maximum of 25s. Only one instance of this effect can exist in the same squad. When the equipper launches an Aftershock, the whole squad's DMG increases by 10% for 15s, stacking up to 2 times. Repeated triggers refresh the duration. Only one instance of this effect can exist in the same squad."
+            ],
+            "name": "Robin's Exclusive W-Engine",
+            "page_url": "https://zzz.gachabase.net/w-engines/14166/robin-s-exclusive-w-engine/beta?lang=en",
+            "rarity": 5,
+            "stats_line": "Base ATK 713",
+            "sub_type": "Percent HP"
+          },
+          "kind": "weapon",
+          "revision": "3.4.1+19851435",
+          "signature": "19973caad3c630be",
+          "truncated": false,
+          "ts": 1792988123
+        },
+        "zzz:1601": {
+          "content_signature": "fb0e3910814fbb80",
+          "data": {
+            "element": "Fire (Genesis Flare)",
+            "id": "zzz:1601",
+            "image_url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp",
+            "mechanic_defs": [],
+            "name": "Sunbringer",
+            "page_url": "https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en",
+            "rarity": 5,
+            "role": "Armorer",
+            "sections": [
+              {
+                "category": "Basic Attack",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Lindverne performs up to 4 consecutive attacks forward, dealing Genesis Flare DMG.",
+                  "Repeatedly press or hold during the 4th attack to perform an extended slash against enemies.",
+                  "When the heavy attack of the 4th attack hits an enemy with [Gash], consume all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, trigger [Maim] on the target once, dealing additional AoE Genesis Flare DMG.",
+                  "Character is invulnerable during the 4th attack.",
+                  "During the 3rd and 4th attacks, Anti-Interrupt Level is increased and DMG taken is reduced by 40%."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "1st-Hit DMG Multiplier",
+                    "text": "138.4%",
+                    "value": 13840.0
+                  },
+                  {
+                    "name": "2nd-Hit DMG Multiplier",
+                    "text": "194.8%",
+                    "value": 19480.0
+                  },
+                  {
+                    "name": "3rd-Hit DMG Multiplier",
+                    "text": "388.5%",
+                    "value": 38850.0
+                  },
+                  {
+                    "name": "4th-Hit DMG Multiplier",
+                    "text": "730.2%",
+                    "value": 73020.0
+                  },
+                  {
+                    "name": "1st-Hit Daze Multiplier",
+                    "text": "81.5%",
+                    "value": 8150.0
+                  },
+                  {
+                    "name": "2nd-Hit Daze Multiplier",
+                    "text": "117.7%",
+                    "value": 11770.0
+                  },
+                  {
+                    "name": "3rd-Hit Daze Multiplier",
+                    "text": "238.8%",
+                    "value": 23880.0
+                  },
+                  {
+                    "name": "4th-Hit Daze Multiplier",
+                    "text": "453.7%",
+                    "value": 45370.0
+                  },
+                  {
+                    "name": "Maim DMG Multiplier",
+                    "text": "336.3%",
+                    "value": 33630.0
+                  }
+                ],
+                "title": "Basic Attack: Thornbreaker",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Basic Attack",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Eldreda performs up to four consecutive attacks forward, dealing Genesis Flare DMG;",
+                  "When the heavy attack of the fourth hit lands on an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG;",
+                  "During the third and fourth hits, Anti-Interrupt Level is increased and DMG taken is reduced by 40%."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "1st-Hit DMG Multiplier",
+                    "text": "89.5%",
+                    "value": 8950.0
+                  },
+                  {
+                    "name": "2nd-Hit DMG Multiplier",
+                    "text": "192.6%",
+                    "value": 19260.0
+                  },
+                  {
+                    "name": "3rd-Hit DMG Multiplier",
+                    "text": "288.1%",
+                    "value": 28810.0
+                  },
+                  {
+                    "name": "4th-Hit DMG Multiplier",
+                    "text": "424.1%",
+                    "value": 42410.0
+                  },
+                  {
+                    "name": "1st-Hit Daze Multiplier",
+                    "text": "52.3%",
+                    "value": 5230.0
+                  },
+                  {
+                    "name": "2nd-Hit Daze Multiplier",
+                    "text": "115.4%",
+                    "value": 11540.0
+                  },
+                  {
+                    "name": "3rd-Hit Daze Multiplier",
+                    "text": "177.3%",
+                    "value": 17730.0
+                  },
+                  {
+                    "name": "4th-Hit Daze Multiplier",
+                    "text": "263.9%",
+                    "value": 26390.0
+                  },
+                  {
+                    "name": "Maim DMG Multiplier",
+                    "text": "336.3%",
+                    "value": 33630.0
+                  }
+                ],
+                "title": "Basic Attack: Bannerbearer",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Basic Attack",
+                "defs": [],
+                "lines": [
+                  "When [Willpower] is sufficient, hold to activate:",
+                  "Switch to Eldreda and launch an attack, dealing Genesis Flare DMG.",
+                  "Character is invulnerable while using this skill.",
+                  "After using this skill, gain [Chain Teeth] and [Flag Order]."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1722.5%",
+                    "value": 172250.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "226.3%",
+                    "value": 22630.0
+                  }
+                ],
+                "title": "Basic Attack: Bannerbearer - Converging Edge",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Lindverne performs a quick dash dodge.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Dodge: Phase Fold",
+                "values_label": ""
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press during a dodge to activate:",
+                  "Lindverne slashes forward, dealing Genesis Flare DMG."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "72.3%",
+                    "value": 7230.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "49.5%",
+                    "value": 4950.0
+                  }
+                ],
+                "title": "Dash Attack: Void Slash Rush",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "When [Perfect Dodge] is triggered, press to activate:",
+                  "Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.",
+                  "After using this skill, press to quickly chain into the 3rd hit of [Basic Attack].",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "776.2%",
+                    "value": 77620.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "448.5%",
+                    "value": 44850.0
+                  }
+                ],
+                "title": "Dodge Counter: Smoldering Fire Reignition",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Eldreda performs a quick dash dodge.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Dodge: Spatial Reconstruction",
+                "values_label": ""
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press during a dodge to activate:",
+                  "Eldreda thrusts forward, dealing Genesis Flare DMG."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "72.4%",
+                    "value": 7240.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "50.7%",
+                    "value": 5070.0
+                  }
+                ],
+                "title": "Dash Attack: Reality Reversal",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Hold while moving the joystick to activate:",
+                  "Eldreda enters the [Nightglide] state, allowing high-speed movement.",
+                  "While in the [Nightglide] state, use the joystick to control direction. Release the joystick to stop.",
+                  "Character is invulnerable at the moment this skill activates."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Dodge: Patrol",
+                "values_label": ""
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "In [Nightglide] state, Press to activate:",
+                  "Eldreda unleashes a quick Tail Swipe attack, dealing Genesis Flare DMG."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "228.4%",
+                    "value": 22840.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "157.3%",
+                    "value": 15730.0
+                  }
+                ],
+                "title": "Dash Attack: Patrol - Shadow Realm Raid",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press during a Perfect Dodge to activate:",
+                  "Eldreda launches consecutive attacks forward, dealing Genesis Flare DMG.",
+                  "After using this skill, press to follow up with the 4th hit of Basic Attack.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "708.2%",
+                    "value": 70820.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "412.5%",
+                    "value": 41250.0
+                  }
+                ],
+                "title": "Dodge Counter: Cold Flame Returning Edge",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When the active character is launched, press to activate:",
+                  "Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.",
+                  "After using this skill, press to quickly chain into the 3rd hit of [Basic Attack].",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "206.5%",
+                    "value": 20650.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "141.8%",
+                    "value": 14180.0
+                  }
+                ],
+                "title": "Quick Assist: Dauntless Aid",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When the active character is launched, press to activate:",
+                  "Eldreda unleashes a flurry of consecutive attacks forward, dealing Genesis Flare DMG.",
+                  "After activating this skill, press to chain into the 4th hit of her [Basic Attack].",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "180.2%",
+                    "value": 18020.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "124.3%",
+                    "value": 12430.0
+                  }
+                ],
+                "title": "Quick Assist: Path of the Gleaming Edge",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When the on-field character is about to be attacked, press to activate:",
+                  "Dracaene parries the enemy's attack, accumulating massive Daze.",
+                  "When Lindverne or Eldreda is on field, this skill can also be activated by switching in the next character.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "Light Defensive Daze Multiplier",
+                    "text": "407.7%",
+                    "value": 40770.0
+                  },
+                  {
+                    "name": "Heavy Defensive Daze Multiplier",
+                    "text": "514.4%",
+                    "value": 51440.0
+                  },
+                  {
+                    "name": "Chain Defensive Daze Multiplier",
+                    "text": "250.4%",
+                    "value": 25040.0
+                  }
+                ],
+                "title": "Defensive Assist: Oath of Steadfastness",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When the user or the on-field Character is about to be hit by certain enemy Control Skills, press to activate:",
+                  "Dracaene grapples with the monster. If she wins the struggle, she neutralizes the enemy's Control Skill and deals Genesis Flare DMG;",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1757.6%",
+                    "value": 175760.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "919.3%",
+                    "value": 91930.0
+                  }
+                ],
+                "title": "Counter Assist: Fortress of Hope",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "After activating a [Counter Assist], press to activate:",
+                  "Dracaene unleashes an attack dealing massive Genesis Flare DMG. When the heavy attack hits an enemy, it directly applies 1 stack of [Gash] to the target.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "939.1%",
+                    "value": 93910.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "566.9%",
+                    "value": 56690.0
+                  }
+                ],
+                "title": "Assist Follow-Up: Lighthouse, Towering in the Sky",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "Press after Dracaene performs a [Defensive Assist] to activate:",
+                  "Lindverne unleashes a swift forward Slash, then triggers an explosion, dealing Genesis Flare DMG;",
+                  "After activating this skill, press to quickly chain into the 4th hit of the [Basic Attack];",
+                  "Repeatedly press or hold during this skill to keep slashing enemies;",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1101.6%",
+                    "value": 110160.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "671.2%",
+                    "value": 67120.0
+                  }
+                ],
+                "title": "Assist Follow-Up: Undying Passion",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "Press after Dracaene activates a Defensive Assist to activate:",
+                  "Eldreda unleashes a swift forward slash, followed by an explosion that deals Genesis Flare DMG.",
+                  "After using this skill, press to chain into the 4th hit of her Basic Attack.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1006.7%",
+                    "value": 100670.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "609.8%",
+                    "value": 60980.0
+                  }
+                ],
+                "title": "Assist Follow-Up: Faith Unwavering",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Switch to Lindverne and launch an attack, dealing Genesis Flare DMG."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "102.8%",
+                    "value": 10280.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "71%",
+                    "value": 7100.0
+                  }
+                ],
+                "title": "Special Attack: Night Blaze",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "When Sharpness is sufficient, press to activate:",
+                  "Lindverne and Eldreda launch a Synergy attack, keeping Lindverne on the field and dealing Genesis Flare DMG.",
+                  "When the heavy attack hits an enemy with [Gash], consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] once on the target, dealing additional AoE Genesis Flare DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1240.5%",
+                    "value": 124050.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "743.7%",
+                    "value": 74370.0
+                  }
+                ],
+                "title": "EX Special Attack: Night Blaze - Dawnrise",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "When Sharpness is sufficient, press after the final hit of [Basic Attack: Thornbreaker], [Dodge Counter: Smoldering Fire Reignition], [Assist Follow-Up: Undying Passion], [Ultimate: \"By This Wish, All Things Remade\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:",
+                  "Lindverne and Eldreda launch a coordinated attack, keeping Lindverne on the field and dealing Genesis Flare DMG.",
+                  "When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a max of 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1247.2%",
+                    "value": 124720.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "742.2%",
+                    "value": 74220.0
+                  }
+                ],
+                "title": "EX Special Attack: Night Blaze - Dawnborn (Modified)",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "When [Chain Teeth] is available, press to activate:",
+                  "Consume [Chain Teeth]. Lindverne and Eldreda unleash a high-tier Synergy attack while Lindverne remains on the field, dealing massive Genesis Flare DMG;",
+                  "After using this skill, press to quickly chain into the 4th hit of [Basic Attack];",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "2690.6%",
+                    "value": 269060.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "611.7%",
+                    "value": 61170.0
+                  }
+                ],
+                "title": "EX Special Attack: Night Blaze - End of the Long Dark",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Switch to Eldreda and launch an attack, dealing Genesis Flare DMG."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "100.6%",
+                    "value": 10060.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "69%",
+                    "value": 6900.0
+                  }
+                ],
+                "title": "Special Attack: Kindled Lamp",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "When Sharpness is sufficient, press to activate:",
+                  "Eldreda and Lindverne launch a Synergy attack, keeping Eldreda on the field and dealing Genesis Flare DMG.",
+                  "When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1218.2%",
+                    "value": 121820.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "728.6%",
+                    "value": 72860.0
+                  }
+                ],
+                "title": "EX Special Attack: Kindled Lamp - Gloom's End",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "When Sharpness is sufficient, press after the final hit of [Bannerbearer], or after using [Dodge Counter: Cold Flame Returning Edge], [Assist Follow-Up: Faith Unwavering], [Ultimate: \"Onward, Together\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:",
+                  "Eldreda launches a Synergy attack with Lindverne and Dracaene while remaining on the field, dealing Genesis Flare DMG;",
+                  "When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a maximum of 3. For each [Gash] stack consumed, [Maim] is triggered once on the target, dealing additional AoE Genesis Flare DMG;",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1278%",
+                    "value": 127800.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "761.9%",
+                    "value": 76190.0
+                  }
+                ],
+                "title": "EX Special Attack: Kindled Lamp - Gloom's End - Revised",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "When holding [Flag Order], press to activate:",
+                  "Consume [Flag Order] for Eldreda and Lindverne to unleash a high-powered Synergy attack, keeping Eldreda on the field and dealing massive Genesis Flare DMG;",
+                  "After using this skill, press to chain into the 4th hit of [Basic Attack];",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "2441.1%",
+                    "value": 244110.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "605.8%",
+                    "value": 60580.0
+                  }
+                ],
+                "title": "EX Special Attack: Kindled Lamp - Torch of Eternal Day",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Chain Attack & Ultimate",
+                "defs": [],
+                "lines": [
+                  "When a Chain Attack is triggered, select the character to activate:",
+                  "Lindverne and Eldreda team up to unleash a powerful attack, keeping Lindverne on the field and dealing Genesis Flare DMG;",
+                  "When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG;",
+                  "Character is invulnerable while using this skill;",
+                  "When Lindverne triggers a Daze Chain Attack window, Lindverne can be selected directly to activate this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1550.3%",
+                    "value": 155030.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "407.7%",
+                    "value": 40770.0
+                  }
+                ],
+                "title": "Chain Attack: Building Dreams for All",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Chain Attack & Ultimate",
+                "defs": [],
+                "lines": [
+                  "When Decibel Rating is at Maximum, press to activate:",
+                  "Lindverne launches a Coordinated Attack with Eldreda and Dracaene and remains on the field, dealing massive Genesis Flare DMG.",
+                  "While holding Flag Order, consumes Flag Order and converts it into Wish Core.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "3900.1%",
+                    "value": 390010.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "476.7%",
+                    "value": 47670.0
+                  }
+                ],
+                "title": "Ultimate: \"Onward, Together\"",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Chain Attack & Ultimate",
+                "defs": [],
+                "lines": [
+                  "When a Chain Attack is triggered, select the character to activate:",
+                  "Eldreda and Lindverne team up to unleash a high-powered Synergy attack, keeping Eldreda on the field and dealing Genesis Flare DMG;",
+                  "After using this skill, press to follow up with the 4th hit of the Basic Attack;",
+                  "When the heavy attack hits an enemy with Gash, it consumes all Gash stacks on the target, up to 3 stacks. For each Gash stack consumed, triggers Maim once on the target, dealing additional AoE Genesis Flare DMG;",
+                  "Character is invulnerable while using this skill;",
+                  "When Eldreda triggers a Daze Chain Attack window, Eldreda can be selected directly to activate this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1550.3%",
+                    "value": 155030.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "407.7%",
+                    "value": 40770.0
+                  }
+                ],
+                "title": "Chain Attack: In the Name of Sunbringer",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Chain Attack & Ultimate",
+                "defs": [],
+                "lines": [
+                  "When Eldreda has [Wish Core], press to activate:",
+                  "Eldreda warps space in mid-air to attack, dealing Genesis Flare DMG and removing all [Ember Scar] from enemies.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "2827%",
+                    "value": 282700.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "674.7%",
+                    "value": 67470.0
+                  }
+                ],
+                "title": "Ultimate: \"By This Wish, All Things Remade\"",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Mindscape Cinema",
+                "defs": [],
+                "lines": [
+                  "When Sunbringer enters the battlefield, she immediately gains 120 [Willpower]. This effect can trigger once every 180s in Investigation Zone mode. The first use of [Basic Attack: Bannerbearer - Converging Edge] increases the amount of [Ember Scar] accumulated by enemies to 150% of the original amount. DMG dealt by Sunbringer's skills ignores 15% of the enemy's Fire RES."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Mindscape Cinema 1",
+                "values_label": ""
+              },
+              {
+                "category": "Mindscape Cinema",
+                "defs": [],
+                "lines": [
+                  "When Sunbringer hits an enemy with other skills and deals DMG, the target also accumulates [Ember Scar]. The amount of [Ember Scar] accumulated is equal to 12% of the actual DMG dealt by the skill. Sharp DMG dealt by Sunbringer ignores 12% of the enemy's DEF."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Mindscape Cinema 2",
+                "values_label": ""
+              }
+            ],
+            "stats_header": "Base Stats",
+            "stats_lines": [
+              "Lv. 60 — HP 5736 · ATK 626 · DEF 441",
+              "CRIT Rate 33.8%",
+              "CRIT DMG 50%",
+              "Impact 93",
+              "Anomaly Mastery 78",
+              "Anomaly Proficiency 77",
+              "PEN Ratio 0%",
+              "Laceration DMG 150%"
+            ],
+            "subtext": ""
+          },
+          "kind": "character",
+          "revision": "3.4.1+19851435",
+          "signature": "9d75a3b805118e76",
+          "truncated": false,
+          "ts": 1792988123
+        },
+        "zzz:1661": {
+          "content_signature": "9d066d4622d28736",
+          "data": {
+            "element": "Ether",
+            "id": "zzz:1661",
+            "image_url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp",
+            "mechanic_defs": [],
+            "name": "Robin",
+            "page_url": "https://zzz.gachabase.net/agents/1661/robin/beta?lang=en",
+            "rarity": 5,
+            "role": "Defense",
+            "sections": [
+              {
+                "category": "Basic Attack",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Unleashes up to 3 attacks forward, dealing Ether DMG;"
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "1st-Hit DMG Multiplier",
+                    "text": "76%",
+                    "value": 7600.0
+                  },
+                  {
+                    "name": "2nd-Hit DMG Multiplier",
+                    "text": "88%",
+                    "value": 8800.0
+                  },
+                  {
+                    "name": "3rd-Hit DMG Multiplier",
+                    "text": "230.7%",
+                    "value": 23070.0
+                  },
+                  {
+                    "name": "1st-Hit Daze Multiplier",
+                    "text": "35%",
+                    "value": 3500.0
+                  },
+                  {
+                    "name": "2nd-Hit Daze Multiplier",
+                    "text": "62.6%",
+                    "value": 6260.0
+                  },
+                  {
+                    "name": "3rd-Hit Daze Multiplier",
+                    "text": "178.1%",
+                    "value": 17810.0
+                  }
+                ],
+                "title": "Basic Attack: Robin Attack",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "A quick dash dodge.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Dodge: Robin Dodge",
+                "values_label": ""
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press during a dodge to activate:",
+                  "Perform an attack forward, dealing Ether DMG."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "252.6%",
+                    "value": 25260.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "74.9%",
+                    "value": 7490.0
+                  }
+                ],
+                "title": "Dash Attack: Robin Dash",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Dodge",
+                "defs": [],
+                "lines": [
+                  "Press during a Perfect Dodge to activate:",
+                  "Swing the staff to attack enemies in front, dealing Ether DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "663.4%",
+                    "value": 66340.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "338.9%",
+                    "value": 33890.0
+                  }
+                ],
+                "title": "Dodge Counter: Robin Counter",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When at 100 or more [Entry Points], switching this character on field or holding consumes 100 [Entry Points] to activate:",
+                  "Unleashes an Energy blast at enemies in front, dealing massive Ether DMG.",
+                  "Activating this skill counts as activating a [Quick Assist].",
+                  "Provides all squad members with a [Robin Shield] equal to 4% of this character's initial Max HP, lasting 20s."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "2128.8%",
+                    "value": 212880.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "264%",
+                    "value": 26400.0
+                  }
+                ],
+                "title": "Entry Skill: Robin Entrance",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When the active character is launched, press to activate:",
+                  "Swing the staff to attack enemies in front, dealing Ether DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "74.8%",
+                    "value": 7480.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "44.8%",
+                    "value": 4480.0
+                  }
+                ],
+                "title": "Quick Assist: Robin Assist",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When the on-field character is about to be attacked, press to activate:",
+                  "Parries the enemy's attack, dealing massive Daze.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "Light Defensive Daze Multiplier",
+                    "text": "407.7%",
+                    "value": 40770.0
+                  },
+                  {
+                    "name": "Heavy Defensive Daze Multiplier",
+                    "text": "514.4%",
+                    "value": 51440.0
+                  },
+                  {
+                    "name": "Chain Defensive Daze Multiplier",
+                    "text": "250.4%",
+                    "value": 25040.0
+                  }
+                ],
+                "title": "Defensive Assist: Robin Defensive Assist",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "Press after a Defensive Assist to activate:",
+                  "Swing the staff to attack enemies in front, dealing Ether DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "919.1%",
+                    "value": 91910.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "470.6%",
+                    "value": 47060.0
+                  }
+                ],
+                "title": "Assist Follow-Up: Robin Assist Follow-Up",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "When you or the on-field character is about to be hit by certain enemies' Control Skills, press to activate:",
+                  "Engage in a power clash with the monster. If successful, neutralize the enemy's Control Skill and deal Ether DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "268.4%",
+                    "value": 26840.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "71%",
+                    "value": 7100.0
+                  }
+                ],
+                "title": "Counter Assist: Robin Counter",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "After using a Counter Assist, press to activate [Assist Follow-Up], which automatically triggers:",
+                  "Deals massive Ether DMG;",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "545.3%",
+                    "value": 54530.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "295.2%",
+                    "value": 29520.0
+                  }
+                ],
+                "title": "Assist Follow-Up: Grapple Assault",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Assist",
+                "defs": [],
+                "lines": [
+                  "Press after other squad members activate a Counter Assist to activate:",
+                  "Fire a powerful laser forward, dealing massive Ether DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "660%",
+                    "value": 66000.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "286.4%",
+                    "value": 28640.0
+                  }
+                ],
+                "title": "Assist Follow-Up: Grappling Synergy Strike",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "Press to activate:",
+                  "Leaps high into the air and unleashes an Energy Blast around her, dealing massive Ether DMG.",
+                  "During skill activation, Anti-Interrupt level increases, and DMG taken is reduced by 40%.",
+                  "After activation, triggers a Quick Assist. After switching out, Robin enters the [Off-Field Guard] state for 60s. Repeated triggers refresh the duration. Also grants all squad members a [Robin Shield] equal to 2% of Robin's initial Max HP, lasting 15s.",
+                  "While Robin is in the [Off-Field Guard] state, she can only be switched in via [Chain Attack], [Entry Skill], or [Counter Assist]. Switching her in ends the [Off-Field Guard] state.",
+                  "While [Off-Field Guard] is active, all squad members gain bonus DEF: when Robin's initial Max HP exceeds 16,000, every 1,000 additional HP grants [TBD] DEF, up to a maximum of [TBD] DEF. This effect lasts for another 15s after Robin's [Off-Field Guard] state ends.",
+                  "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "338.6%",
+                    "value": 33860.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "200.1%",
+                    "value": 20010.0
+                  }
+                ],
+                "title": "Special Attack: Robin Exit",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "While Robin is in the [Off-Field Guard] state, this skill triggers automatically when another active character in the squad lands any attack on an enemy:",
+                  "Swings her staff to attack forward, dealing Ether DMG;",
+                  "Character is invulnerable while using this skill;",
+                  "Upon activation, gains 20 [Entry Points] and grants all squad members a [Robin Shield] equal to 3% of Robin's initial Max HP, lasting 15s;",
+                  "[Special Attack: Aftershock] counts as an Aftershock and can be triggered at most once every 8s."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "112.1%",
+                    "value": 11210.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "91.3%",
+                    "value": 9130.0
+                  }
+                ],
+                "title": "Special Attack: Aftershock",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Special Attack & EX Special Attack",
+                "defs": [],
+                "lines": [
+                  "When activating [Special Attack: Aftershock], if Energy is at least 40, it is upgraded to [EX Special Attack: Enhanced Aftershock]:",
+                  "Continuously consumes a total of 40 Energy to fire a powerful laser forward, dealing massive Ether DMG;",
+                  "Robin's heavy attacks deal additional DMG equal to [TBD]% of her Max HP;",
+                  "Character is invulnerable while using this skill;",
+                  "Upon activation, gains 20 [Entry Points] and grants all squad members a [Robin Shield] equal to 6% of her initial Max HP, lasting 15s;",
+                  "[EX Special Attack: Enhanced Aftershock] counts as an Aftershock.",
+                  "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "280.8%",
+                    "value": 28080.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "238.8%",
+                    "value": 23880.0
+                  }
+                ],
+                "title": "EX Special Attack: Enhanced Aftershock",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Chain Attack & Ultimate",
+                "defs": [],
+                "lines": [
+                  "When a Chain Attack is triggered, select the character to activate:",
+                  "Fires a powerful laser forward, dealing massive Ether DMG.",
+                  "Character is invulnerable while using this skill."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "1379%",
+                    "value": 137900.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "154.4%",
+                    "value": 15440.0
+                  }
+                ],
+                "title": "Chain Attack: Robin Chain Attack",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Chain Attack & Ultimate",
+                "defs": [],
+                "lines": [
+                  "When Decibel Rating is at Maximum, press to activate:",
+                  "Channels powerful energy through song to unleash a devastating blast, dealing massive Ether DMG.",
+                  "Character is invulnerable while using this skill.",
+                  "Upon activation, converts 40% of each squad Agent's [Robin Shield] into their own HP."
+                ],
+                "meta": "",
+                "params": [
+                  {
+                    "name": "DMG Multiplier",
+                    "text": "4564.6%",
+                    "value": 456460.0
+                  },
+                  {
+                    "name": "Daze Multiplier",
+                    "text": "166.2%",
+                    "value": 16620.0
+                  }
+                ],
+                "title": "Ultimate: Robin Ultimate",
+                "values_label": "Lv. 12"
+              },
+              {
+                "category": "Mindscape Cinema",
+                "defs": [],
+                "lines": [
+                  "Each time Robin consumes [Enhance Buff Points], all squad members gain 20% Laceration DMG for 60s. Repeated triggers refresh the duration. When consuming [Enhance Buff Points], Robin gains 1 stack of [Feather Defense]. When the on-field character takes DMG, Robin consumes 1 stack of [Feather Defense] to make them briefly Invulnerable."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Mindscape Cinema 1",
+                "values_label": ""
+              },
+              {
+                "category": "Mindscape Cinema",
+                "defs": [],
+                "lines": [
+                  "When Robin triggers an [Aftershock], DMG dealt by all squad members ignores 12% of the enemy's RES for 15s. Repeated triggers refresh the duration. Squad members with [Robin Shield] gain increased Anti-Interrupt level."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Mindscape Cinema 2",
+                "values_label": ""
+              },
+              {
+                "category": "Mindscape Cinema",
+                "defs": [],
+                "lines": [
+                  "Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2"
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Mindscape Cinema 3",
+                "values_label": ""
+              }
+            ],
+            "stats_header": "Base Stats",
+            "stats_lines": [
+              "Lv. 60 — HP 8754 · ATK 750 · DEF 706",
+              "CRIT Rate 5%",
+              "CRIT DMG 50%",
+              "Impact 90",
+              "Anomaly Mastery 96",
+              "Anomaly Proficiency 95",
+              "PEN Ratio 0%"
+            ],
+            "subtext": ""
+          },
+          "kind": "character",
+          "revision": "3.4.1+19851435",
+          "signature": "b54f02060945cef9",
+          "truncated": false,
+          "ts": 1792988123
+        },
+        "zzz:34300": {
+          "content_signature": "c1f30558e1c011ab",
+          "data": {
+            "category_label": "Drive Discs",
+            "effect_title": "",
+            "id": "zzz:34300",
+            "image_url": "",
+            "lines": [
+              "2-Piece: DEF +16%.",
+              "4-Piece: Increases the equipper's CRIT Rate by 12%. When the equipper deals Fire Sharp DMG, it ignores 16% of the enemy's DEF."
+            ],
+            "name": "ID 34300",
+            "page_url": "https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=en",
+            "rarity": null,
+            "stats_line": "",
+            "sub_type": ""
+          },
+          "kind": "relic",
+          "revision": "3.4.1+19851435",
+          "signature": "1f6c86ac952ea855",
+          "truncated": false,
+          "ts": 1792988123
+        },
+        "zzz:34400": {
+          "content_signature": "28de989e4316aba8",
+          "data": {
+            "category_label": "Drive Discs",
+            "effect_title": "",
+            "id": "zzz:34400",
+            "image_url": "",
+            "lines": [
+              "2-Piece: Energy Regen +20%.",
+              "4-Piece: When the equipper's CRIT Rate is at least 50%, CRIT DMG increases by 30%, and Daze inflicted by attacks increases by 5%. When the equipper is a [Stun] Character, using an [EX Special Attack] or [Chain Attack] increases Sharp DMG dealt by all squad members by 8% for 25s, and repeated triggers reset the duration. Only one instance of this effect can exist in the same squad."
+            ],
+            "name": "ID 34400",
+            "page_url": "https://zzz.gachabase.net/drive-discs/34400/34400/beta?lang=en",
+            "rarity": null,
+            "stats_line": "",
+            "sub_type": ""
+          },
+          "kind": "relic",
+          "revision": "3.4.1+19851435",
+          "signature": "08a6f4370c5693f6",
+          "truncated": false,
+          "ts": 1792988123
+        }
+      },
+      "source_revision": "3.4.1+19851435",
+      "source_version": "3.4.1+19851435"
     }
   },
   "bootstrapped": {
