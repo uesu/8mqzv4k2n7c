@@ -151,6 +151,68 @@ def merge_program_announcements_bytes(src_bytes: bytes, dst_bytes: bytes | None)
     return (json.dumps(merged, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
 
 
+WORKFLOW_PY_PIN_RE = re.compile(r"(python-version:\s*')(\d+\.\d+\.\d+)(')")
+WORKFLOW_USES_PIN_RE = re.compile(
+    r"(uses:\s*([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)?)@)"
+    r"([0-9a-f]{40})"
+    r"([ \t]+#[ \t]*v(\d+(?:\.\d+){1,2}))"
+    r"(?=[ \t]*(?:—|--|$|\r|\n))"
+)
+
+
+def _semver_tuple(raw: str) -> tuple[int, ...]:
+    parts = [int(p) for p in raw.split(".")]
+    while len(parts) < 3:
+        parts.append(0)
+    return tuple(parts[:3])
+
+
+def merge_workflow_pins_bytes(src_bytes: bytes, dst_bytes: bytes | None) -> bytes:
+    """Never downgrade newer `python-version:` or SHA-pinned `uses:` pins already merged in prod."""
+    if not dst_bytes:
+        return src_bytes
+    try:
+        src_text = src_bytes.decode("utf-8")
+        dst_text = dst_bytes.decode("utf-8")
+    except UnicodeDecodeError:
+        return src_bytes
+
+    dst_py_pins = [_semver_tuple(m.group(2)) for m in WORKFLOW_PY_PIN_RE.finditer(dst_text)]
+    best_dst_py = max(dst_py_pins) if dst_py_pins else None
+
+    dst_uses: dict[str, tuple[tuple[int, ...], str, str]] = {}
+    for m in WORKFLOW_USES_PIN_RE.finditer(dst_text):
+        action = m.group(2).lower()
+        ver = _semver_tuple(m.group(5))
+        sha, comment = m.group(3), m.group(4)
+        cur = dst_uses.get(action)
+        if cur is None or ver > cur[0]:
+            dst_uses[action] = (ver, sha, comment)
+
+    out_text = src_text
+    if best_dst_py is not None:
+        best_py_str = ".".join(str(p) for p in best_dst_py)
+
+        def _up_py(match: re.Match[str]) -> str:
+            if _semver_tuple(match.group(2)) < best_dst_py:
+                return f"{match.group(1)}{best_py_str}{match.group(3)}"
+            return match.group(0)
+
+        out_text = WORKFLOW_PY_PIN_RE.sub(_up_py, out_text)
+
+    if dst_uses:
+        def _up_uses(match: re.Match[str]) -> str:
+            action = match.group(2).lower()
+            cand = dst_uses.get(action)
+            if cand is not None and _semver_tuple(match.group(5)) < cand[0]:
+                return f"{match.group(1)}{cand[1]}{cand[2]}"
+            return match.group(0)
+
+        out_text = WORKFLOW_USES_PIN_RE.sub(_up_uses, out_text)
+
+    return out_text.encode("utf-8") if out_text != src_text else src_bytes
+
+
 def sync_tree(
     src_root: Path,
     dst_root: Path,
@@ -226,9 +288,11 @@ def sync_tree(
             if not spath.is_file():
                 continue
             sbytes = spath.read_bytes()
-            if not dpath.is_file() or dpath.read_bytes() != sbytes:
+            dbytes = dpath.read_bytes() if dpath.is_file() else None
+            merged_wf = merge_workflow_pins_bytes(sbytes, dbytes)
+            if dbytes != merged_wf:
                 dpath.parent.mkdir(parents=True, exist_ok=True)
-                dpath.write_bytes(sbytes)
+                dpath.write_bytes(merged_wf)
                 updated.append(rel_wf)
         for dev_wf in DEV_ONLY_WORKFLOW_FILES:
             dpath = dst_root / dev_wf

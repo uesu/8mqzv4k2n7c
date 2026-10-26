@@ -16416,6 +16416,40 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         assert res_idempotent["updated"] == [] and res_idempotent["removed"] == []
         assert (prod_root / "state" / "state.json").read_bytes() == live_state_payload
 
+        # Monotonic workflow pin guard: newer prod Dependabot / python_version_bump pins
+        # (e.g. Python 3.14.99 or a newer SHA-pinned action) are NEVER downgraded by dev -> prod sync,
+        # while older prod pins ARE upgraded to dev's newer pins.
+        import re
+
+        prod_mon_wf = prod_root / ".github" / "workflows" / "monitor.yml"
+        newer_sha = "f" * 40
+        older_sha = "1" * 40
+        bumped_mon = prod_mon_wf.read_text(encoding="utf-8")
+        bumped_mon = re.sub(r"(python-version:\s*')\d+\.\d+\.\d+(')", r"\g<1>3.99.1\2", bumped_mon)
+        bumped_mon = re.sub(
+            r"(uses:\s*astral-sh/setup-uv@)[0-9a-f]{40}([ \t]+#[ \t]*v)\d+(?:\.\d+){1,2}",
+            rf"\g<1>{newer_sha}\g<2>99.9.9",
+            bumped_mon,
+        )
+        prod_mon_wf.write_text(bumped_mon, encoding="utf-8")
+        res_keep_newer = sync_mod.sync_tree(ROOT, prod_root, include_workflows=True)
+        assert ".github/workflows/monitor.yml" not in res_keep_newer["updated"]
+        kept_text = prod_mon_wf.read_text(encoding="utf-8")
+        assert "python-version: '3.99.1'" in kept_text
+        assert f"astral-sh/setup-uv@{newer_sha}  # v99.9.9" in kept_text
+
+        downgraded_mon = re.sub(r"(python-version:\s*')\d+\.\d+\.\d+(')", r"\g<1>3.1.0\2", kept_text)
+        downgraded_mon = re.sub(
+            r"(uses:\s*astral-sh/setup-uv@)[0-9a-f]{40}([ \t]+#[ \t]*v)\d+(?:\.\d+){1,2}",
+            rf"\g<1>{older_sha}\g<2>1.0.0",
+            downgraded_mon,
+        )
+        prod_mon_wf.write_text(downgraded_mon, encoding="utf-8")
+        res_upgrade_older = sync_mod.sync_tree(ROOT, prod_root, include_workflows=True)
+        assert ".github/workflows/monitor.yml" in res_upgrade_older["updated"]
+        assert "python-version: '3.1.0'" not in prod_mon_wf.read_text(encoding="utf-8")
+        assert f"astral-sh/setup-uv@{older_sha}" not in prod_mon_wf.read_text(encoding="utf-8")
+
         # Git staging seatbelt: _stage_and_verify never stages state/state.json or sync_prod.yml
         sync_mod._run_git(["init", "-q"], cwd=prod_root)
         sync_mod._run_git(["config", "user.name", "test"], cwd=prod_root)
