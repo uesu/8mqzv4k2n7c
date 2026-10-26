@@ -941,7 +941,7 @@ BETA_RESOURCE_LINKS = {
         "Resource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en)"
         " / [nanoka](https://zzz.nanoka.cc/)"
     ),
-    "wuwa": "Resource: [nanoka](https://ww.nanoka.cc/) / [Encore beta](https://encore.moe/new?v=Beta)",
+    "wuwa": "Resource: [nanoka](https://ww.nanoka.cc/) / [encore](https://encore.moe/new?v=Beta)",
 }
 
 _HSR_STANDARD_PATHS = {
@@ -949,7 +949,11 @@ _HSR_STANDARD_PATHS = {
     "Nihility", "Preservation", "Abundance", "Remembrance", "Elation",
 }
 _BOLD_COMBAT_NUM_RE = re.compile(
-    r"(?<![\w\-\*~\[(#@/\.])([+-]?\d+(?:\.\d+)?(?:%|s\b))(?![\w\*~\])])"
+    r"(?<![\w\-\*~\[(#@/\.])("
+    r"[+-]?\d+(?:\.\d+)?%(?:/[+-]?\d+(?:\.\d+)?%)+"
+    r"|\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?){2,}"
+    r"|[+-]?\d+(?:\.\d+)?(?:%|s\b)"
+    r")(?![\w\*~\])])"
 )
 _SKILL_ATTR_HEADER_RE = re.compile(r"^\*\*Skill Attributes\b", re.I)
 
@@ -1018,12 +1022,26 @@ def _format_beta_stats_block(game_key: str, stats_lines: list[str]) -> list[str]
         m_lv = re.match(r"^Lv\.\s*\d+\s*[—-]\s*(.+)$", sln)
         if m_lv:
             for seg in [x.strip() for x in m_lv.group(1).split("·") if x.strip()]:
-                sm = re.match(r"^(HP|ATK|DEF|SPD|Max Energy)\s+(.+)$", seg, re.I)
+                sm = re.match(
+                    r"^(HP|ATK|DEF|SPD|Max Energy|Crit\.?\s*Rate|Crit\.?\s*DMG|"
+                    r"Energy Regen|Energy Recharge|Healing Bonus|Tune Break Boost)\s+(.+)$",
+                    seg,
+                    re.I,
+                )
                 if sm:
-                    up = sm.group(1).upper()
-                    lbl = up if up in ("HP", "ATK", "DEF", "SPD") else sm.group(1)
-                    pfx = "Base " if lbl in ("HP", "ATK", "DEF", "SPD") else ""
-                    base_parts.append(f"**{pfx}{lbl}:** {sm.group(2).strip()}")
+                    raw_k = sm.group(1).strip()
+                    val_s = sm.group(2).strip()
+                    if raw_k.lower() == "tune break boost" and re.fullmatch(r"0(?:\.0+)?%?", val_s):
+                        continue
+                    up = raw_k.upper()
+                    if up in ("HP", "ATK", "DEF", "SPD"):
+                        base_parts.append(f"**Base {up}:** {val_s}")
+                    elif re.match(r"^crit\.?\s*rate$", raw_k, re.I):
+                        base_parts.append(f"**CRIT Rate:** {val_s}")
+                    elif re.match(r"^crit\.?\s*dmg$", raw_k, re.I):
+                        base_parts.append(f"**CRIT DMG:** {val_s}")
+                    else:
+                        base_parts.append(f"**{raw_k}:** {val_s}")
                 else:
                     base_parts.append(seg)
             continue
@@ -1067,15 +1085,54 @@ def _category_heading(game_key: str, cat: str, *, is_new: bool) -> str:
 
 
 _SKILL_SLOT_PREFIX_RE = re.compile(
-    r"^(Normal Attack|Charged Attack|Plunging Attack|Elemental Skill|Elemental Burst|"
-    r"Alternate Sprint|Basic ATK|Basic Attack|Skill|Ultimate|Talent|Technique|"
+    r"^(Normal Attack|Charged Attack|Plunging Attack|Heavy Attack|Mid-air Attack|"
+    r"Elemental Skill|Elemental Burst|Alternate Sprint|Basic ATK|Basic Attack|"
+    r"Enhanced Basic ATK|Enhanced Skill|Skill|Ultimate|Talent|Technique|"
     r"Memosprite Skill|Memosprite Talent|Elation Skill|Special Attack|EX Special Attack|"
     r"Dodge|Dash Attack|Dodge Counter|Quick Assist|Defensive Assist|Evasive Assist|"
-    r"Assist Follow-Up|Chain Attack|Entry Skill|Core Passive|Additional Ability|"
-    r"Resonance Skill|Resonance Liberation|Forte Circuit|Intro Skill|Outro Skill|"
-    r"Inherent Skill|Bonus Ability(?:\s+\d+)?|Passive(?:\s+\d+)?):\s*(.+)$",
+    r"Counter Assist|Assist Follow-Up|Chain Attack|Entry Skill|Core Passive|"
+    r"Additional Ability|Resonance Skill|Resonance Liberation|Forte Circuit|"
+    r"Intro Skill|Outro Skill|Tune Break|Inherent Skill|Joint Attack|Summon|"
+    r"Passive Skill|Bonus Ability(?:\s+\d+)?|Passive(?:\s+\d+)?):\s*(.+)$",
     re.I,
 )
+_IMPERATIVE_SUBHEAD_STOP_RE = re.compile(
+    r"^(?:Press|Hold|Tap|Cast|Casting|Consume|Consumes|Attack|Attacks|Deals|Deal|"
+    r"Switch|Gain|Gains|Increases|Increase|Restores|Restore|Summons|Summon|"
+    r"Unleashes|Triggers|Trigger|Enters|Enter|While|When|After|During|Every|"
+    r"Each|Character|All|For|Upon)\b",
+    re.I,
+)
+_STAT_ROW_KEYWORD_RE = re.compile(
+    r"\b(?:DMG|Cost|CD|Cooldown|Duration|Healing|Shield|Interval|Hits?|Multiplier|"
+    r"Regen|Energy|Perfume|Chime|Limit|Stacks?|Consume|Consumption|STA|Daze|Anomaly)\b",
+    re.I,
+)
+
+
+def _beta_masked_title(name: str, url: str | None) -> str:
+    clean_name = strip_invisible(str(name or "Unknown")).strip() or "Unknown"
+    safe = safe_url(url)
+    if not safe:
+        return clean_name
+    return f"[{_md_link_text(clean_name)}]({safe})"
+
+
+def _is_skill_subheading(ln: str, next_ln: str | None, tag: str) -> bool:
+    """True when `ln` is an internal mode/sub-skill header (e.g. WuWa 'Slumber', GI 'Charged Attack')."""
+    if tag not in ("[NEW]", "[CHANGED]") or not next_ln:
+        return False
+    if not (2 <= len(ln) <= 48) or len(ln.split()) > 6:
+        return False
+    if not ln[0].isupper() or not (ln[-1].isalnum() or ln[-1] in ("'", ")")):
+        return False
+    if re.search(r"[\d%\.\!\?:;,\[\]\*~→]", ln):
+        return False
+    if _IMPERATIVE_SUBHEAD_STOP_RE.match(ln):
+        return False
+    if next_ln.startswith(("**(", "-#", "⚠️", "**[")):
+        return False
+    return len(next_ln) > len(ln) or next_ln.endswith((".", "!", ")"))
 
 
 def _format_skill_bullet_head(title: str, meta: str) -> str:
@@ -1091,6 +1148,8 @@ def _format_skill_bullet_head(title: str, meta: str) -> str:
     m_colon = _SKILL_SLOT_PREFIX_RE.match(clean_title)
     if m_colon:
         role_lbl, skill_name = m_colon.group(1).strip(), m_colon.group(2).strip()
+        if skill_name.lower().startswith(f"{role_lbl.lower()}:"):
+            skill_name = skill_name[len(role_lbl) + 1:].strip()
         return f"* **{role_lbl}** **[{skill_name}]:**{meta_part}"
 
     clean_no_colon = clean_title.rstrip(":").strip()
@@ -1126,8 +1185,16 @@ def _format_beta_skill_entry(
         for p in params if strip_invisible(str(p.get("name") or "")).strip()
     }
 
+    cleaned_lines = [
+        ln
+        for raw_ln in (getattr(entry, "lines", ()) or ())
+        if (ln := strip_invisible(str(raw_ln or "")).lstrip("> ").strip())
+        and not _SKILL_ATTR_HEADER_RE.match(ln)
+    ]
+
     rendered_lines: list[str] = []
     inline_stat_pairs: list[str] = []
+    in_subhead = False
 
     def _flush_inline_stats() -> None:
         if not inline_stat_pairs:
@@ -1136,10 +1203,7 @@ def _format_beta_skill_entry(
             parts.append("    * " + " | ".join(inline_stat_pairs[idx:idx + 3]))
         inline_stat_pairs.clear()
 
-    for raw_ln in getattr(entry, "lines", ()) or ():
-        ln = strip_invisible(str(raw_ln or "")).lstrip("> ").strip()
-        if not ln or _SKILL_ATTR_HEADER_RE.match(ln):
-            continue
+    for line_idx, ln in enumerate(cleaned_lines):
         rendered_lines.append(ln)
         if ln.startswith("**("):
             _flush_inline_stats()
@@ -1155,26 +1219,31 @@ def _format_beta_skill_entry(
             continue
         if ln.startswith("**["):
             _flush_inline_stats()
+            in_subhead = False
             parts.append(f"    * {_bold_beta_numbers(ln)}")
             continue
 
-        m_stat = re.match(r"^([^:]{2,48}):\s*([+-]?\d[^;\n]{0,48})$", ln)
+        m_stat = re.match(r"^([^:]{2,96}):\s*([+-]?\d[^;\n]{0,64})$", ln)
         if m_stat and (
             m_stat.group(1).strip().lower() in param_names_lower
-            or re.search(
-                r"\b(?:DMG|Cost|CD|Duration|Healing|Shield|Interval|Hits?|Multiplier)\b",
-                m_stat.group(1),
-                re.I,
-            )
+            or _STAT_ROW_KEYWORD_RE.search(m_stat.group(1))
         ):
+            in_subhead = False
             lbl, val = m_stat.group(1).strip(), m_stat.group(2).strip()
             val_fmt = val if "**" in val else f"**{val}**"
             inline_stat_pairs.append(f"{lbl}: {val_fmt}")
             continue
 
         _flush_inline_stats()
+        next_ln = cleaned_lines[line_idx + 1] if line_idx + 1 < len(cleaned_lines) else None
+        if _is_skill_subheading(ln, next_ln, tag):
+            in_subhead = True
+            parts.append(f"    * **{ln}:**")
+            continue
+
         pfx = f"**{tag}** " if tag else ""
-        parts.append(f"    * {pfx}{_bold_beta_numbers(ln)}")
+        indent = "        * " if in_subhead else "    * "
+        parts.append(f"{indent}{pfx}{_bold_beta_numbers(ln)}")
 
     _flush_inline_stats()
 
@@ -1199,51 +1268,143 @@ def _format_beta_skill_entry(
 
 
 def _beta_entry_sources(item: Any) -> str:
-    """A short, safe source line for one card item (the link is source data too)."""
-    full = safe_url(getattr(item, "page_url", ""))
+    """Revision-diff link when present; full-kit URLs are mask-linked on the item's own title."""
     diff = safe_url(getattr(item, "diff_url", ""))
-    links = []
-    if full:
-        links.append(f"[Full kit]({full})")
-    if diff:
-        links.append(f"[Revision diff]({diff})")
-    return " · ".join(links)
+    return f"[Revision diff]({diff})" if diff else ""
 
 
-def _split_beta_block(block: str, max_chars: int) -> list[str]:
-    """Split at line/word boundaries, hard-splitting an oversized token to ensure progress."""
+def _normalize_continuation_indent(block: str) -> str:
+    """Promote leading 4-space sub-bullets to top-level `* ` so Discord never renders code blocks."""
+    lines = block.split("\n")
+    out: list[str] = []
+    promoting = True
+    for ln in lines:
+        if promoting:
+            if ln.startswith("    * ") or ln.startswith("        * "):
+                out.append(ln[4:])
+                continue
+            if ln.strip():
+                promoting = False
+        out.append(ln)
+    return "\n".join(out)
+
+
+def _is_header_only_line(ln: str) -> bool:
+    s = ln.strip()
+    if s.startswith("#"):
+        return True
+    return bool(s.startswith("* **") and s.endswith(":**"))
+
+
+def _split_one_oversized_line(line: str, room: int) -> tuple[str, str]:
+    """Split a single line longer than `room` cleanly at a word boundary after any bullet prefix."""
+    m_bul = re.match(r"^(\s*\*\s+)", line)
+    prefix_len = len(m_bul.group(1)) if m_bul and len(m_bul.group(1)) < room // 3 else (
+        len(line) - len(line.lstrip(" "))
+    )
+    cont_prefix = m_bul.group(1) if m_bul and len(m_bul.group(1)) < room // 3 else ""
+    min_cut = max(prefix_len + 1, room // 3)
+    cut = line.rfind(" ", min_cut, room + 1)
+    if cut < min_cut:
+        cut = room
+    head_part = line[:cut].rstrip(" ")
+    tail_raw = line[cut:].lstrip(" ")
+    if not tail_raw:
+        return head_part, ""
+    return head_part, cont_prefix + tail_raw
+
+
+def _split_beta_once(block: str, max_chars: int) -> tuple[str, str]:
+    """Split off one clean container-fitting prefix and return `(head, tail_remainder)`.
+
+    Never strands an orphan heading at the end of `head`, avoids leaving 1-2 lonely
+    stat/bullet lines in `tail_remainder` when balanced lines can move together, and
+    never slices inside leading bullet indentation spaces.
+    """
     if max_chars < 1:
         raise ValueError("beta text capacity must be positive")
     if len(block) <= max_chars:
-        return [block]
+        return block, ""
+
+    lines = block.split("\n")
+    if len(lines) == 1 or len(lines[0]) > max_chars:
+        head_line, rest_first = _split_one_oversized_line(lines[0], max_chars)
+        rest_lines = ([rest_first] if rest_first else []) + lines[1:]
+        return head_line, _normalize_continuation_indent("\n".join(rest_lines))
+
+    acc_len = 0
+    k = 0
+    for idx, ln in enumerate(lines):
+        cand_len = acc_len + (1 if idx > 0 else 0) + len(ln)
+        if cand_len > max_chars:
+            break
+        acc_len = cand_len
+        k = idx + 1
+
+    if k == 0:
+        head_line, rest_first = _split_one_oversized_line(lines[0], max_chars)
+        rest_lines = ([rest_first] if rest_first else []) + lines[1:]
+        return head_line, _normalize_continuation_indent("\n".join(rest_lines))
+
+    rem_room = max_chars - acc_len - 1
+    if k < len(lines) and len(lines[k]) > max_chars and rem_room >= 200:
+        h_part, r_part = _split_one_oversized_line(lines[k], rem_room)
+        head_lines = lines[:k] + [h_part]
+        tail_lines = ([r_part] if r_part else []) + lines[k + 1:]
+        return "\n".join(head_lines), _normalize_continuation_indent("\n".join(tail_lines))
+
+    head_lines = lines[:k]
+    tail_lines = lines[k:]
+
+    while len(head_lines) > 1 and (
+        not head_lines[-1].strip() or _is_header_only_line(head_lines[-1])
+    ):
+        moved = head_lines.pop()
+        if moved.strip():
+            tail_lines.insert(0, moved)
+
+    while (
+        tail_lines
+        and (len(tail_lines) <= 2 or sum(len(x) for x in tail_lines) < 220)
+        and len(head_lines) >= 5
+    ):
+        candidate_move = head_lines[-1]
+        if not candidate_move.strip() or _is_header_only_line(candidate_move):
+            break
+        if len(head_lines) >= 2 and _is_header_only_line(head_lines[-2]):
+            break
+        tail_lines.insert(0, head_lines.pop())
+
+    while len(head_lines) > 1 and (
+        not head_lines[-1].strip() or _is_header_only_line(head_lines[-1])
+    ):
+        moved = head_lines.pop()
+        if moved.strip():
+            tail_lines.insert(0, moved)
+
+    return "\n".join(head_lines), _normalize_continuation_indent("\n".join(tail_lines))
+
+
+def _split_beta_block(block: str, max_chars: int) -> list[str]:
+    """Split an oversized block into clean sequential container chunks."""
+    if max_chars < 1:
+        raise ValueError("beta text capacity must be positive")
     chunks: list[str] = []
-    cur = ""
-    for line in block.split("\n"):
-        if cur and len(cur) + 1 + len(line) > max_chars and max_chars - len(cur) - 1 >= 200:
-            room_cur = max_chars - len(cur) - 1
-            cut_cur = line.rfind(" ", 1, room_cur + 1)
-            if cut_cur >= 1:
-                chunks.append(f"{cur}\n{line[:cut_cur]}")
-                cur = ""
-                line = line[cut_cur:].lstrip(" ")
-        while len(line) > max_chars:
-            if cur:
-                chunks.append(cur)
-                cur = ""
-            cut = line.rfind(" ", 1, max_chars + 1)
-            if cut < 1:
-                cut = max_chars
-            chunks.append(line[:cut])
-            line = line[cut:].lstrip(" ")
-        candidate = f"{cur}\n{line}" if cur else line
-        if len(candidate) > max_chars:
-            chunks.append(cur)
-            cur = line
-        else:
-            cur = candidate
-    if cur:
-        chunks.append(cur)
+    rem = block
+    while rem:
+        if len(rem) <= max_chars:
+            chunks.append(rem)
+            break
+        head, rem = _split_beta_once(rem, max_chars)
+        chunks.append(head)
     return chunks
+
+
+_ZZZ_SUBSTAT_DISPLAY = {
+    "percent hp": "HP%",
+    "percent atk": "ATK%",
+    "percent def": "DEF%",
+}
 
 
 def _format_equipment_stats_line(
@@ -1257,6 +1418,10 @@ def _format_equipment_stats_line(
         p_lbl = f"The {weapon_class}" if weapon_class in _HSR_STANDARD_PATHS else weapon_class
         out.append(f"**Path:** {p_lbl}")
     clean = strip_invisible(stats_line).lstrip("> ").strip()
+    sub_disp = _ZZZ_SUBSTAT_DISPLAY.get(sub_type.strip().lower(), sub_type.strip())
+    is_redundant_wclass = bool(
+        sub_disp and weapon_class and sub_disp.lower() == weapon_class.strip().lower()
+    )
     if clean:
         m_lv = re.match(r"^Lv\.\s*\d+\s*[—-]\s*(.+)$", clean)
         raw_body = m_lv.group(1) if m_lv else clean
@@ -1276,11 +1441,11 @@ def _format_equipment_stats_line(
                 fmt_segs.append(f"**{lbl}:** {sm.group(2).strip()}")
             else:
                 fmt_segs.append(seg)
-        if sub_type and sub_type.lower() not in clean.lower():
-            fmt_segs.append(f"**Substat:** {sub_type}")
+        if sub_disp and not is_redundant_wclass and sub_disp.lower().rstrip("%") not in clean.lower():
+            fmt_segs.append(f"**Substat:** {sub_disp}")
         out.append(" | ".join(fmt_segs))
-    elif sub_type:
-        out.append(f"**Substat:** {sub_type}")
+    elif sub_disp and not is_redundant_wclass:
+        out.append(f"**Substat:** {sub_disp}")
     return out
 
 
@@ -1359,7 +1524,8 @@ def beta_payloads_with_map(
             if str(s).strip()
         ]
 
-        intro_parts = [f"## {char_name}"]
+        char_title = _beta_masked_title(char_name, getattr(char, "page_url", None))
+        intro_parts = [f"## {char_title}"]
         rarity_str = _format_beta_rarity(game.key, rarity)
         meta_bits: list[str] = []
         if game.key == "zzz":
@@ -1400,13 +1566,17 @@ def beta_payloads_with_map(
             intro_parts.append(f"**{lbl}:** {faction}")
 
         intro_parts.extend(_format_beta_stats_block(game.key, stats_lines))
-        if subtext:
-            clean_sub = subtext[2:].strip() if subtext.startswith("-#") else subtext
-            if clean_sub:
-                intro_parts.append(f"-# {clean_sub}")
-        char_sources = _beta_entry_sources(char)
-        if char_sources:
-            intro_parts.append(f"-# {char_sources}")
+        char_diff = safe_url(getattr(char, "diff_url", ""))
+        clean_sub = subtext[2:].strip() if subtext.startswith("-#") else subtext
+        if clean_sub:
+            if char_diff and "Revision diff" in clean_sub:
+                clean_sub = clean_sub.replace(
+                    "Revision diff", f"[Revision diff]({char_diff})", 1
+                )
+                char_diff = None
+            intro_parts.append(f"-# {clean_sub}")
+        if char_diff:
+            intro_parts.append(f"-# [Revision diff]({char_diff})")
         if overview:
             intro_parts.append("")
             intro_parts.append(overview)
@@ -1453,6 +1623,7 @@ def beta_payloads_with_map(
                 m_lines.append(f"* **({c_name})** {c_desc}")
             stream.append(("text", "\n".join(m_lines)))
 
+        fresh_max_body = MAX_TEXT_TOTAL - footer_reserve - 24
         first_container_for_char = True
         idx_stream = 0
         carry_text: list[str] = []
@@ -1482,11 +1653,10 @@ def beta_payloads_with_map(
                         cur_body = cand
                         carry_text.pop(0)
                         continue
-                    if not cur_body or max_body - len(cur_body) - 2 >= 400:
-                        room = max_body - len(cur_body) - (2 if cur_body else 0)
-                        pieces = _split_beta_block(nxt, room)
-                        cur_body = f"{cur_body}\n\n{pieces[0]}" if cur_body else pieces[0]
-                        carry_text = pieces[1:] + carry_text[1:]
+                    if not cur_body:
+                        head, rem = _split_beta_once(nxt, max_body)
+                        cur_body = head
+                        carry_text = ([rem] if rem else []) + carry_text[1:]
                     break
 
                 kind, payload_val = stream[idx_stream]
@@ -1496,7 +1666,12 @@ def beta_payloads_with_map(
                         idx_stream + 1 < len(stream) and stream[idx_stream + 1][0] == "text"
                     ) else ""
                     body_len = len(cur_body) + 2 if cur_body else 0
-                    needed_chars = len(heading_str) + min(len(next_txt), 350) + body_len
+                    first_entry_need = (
+                        len(next_txt)
+                        if len(heading_str) + len(next_txt) <= fresh_max_body
+                        else min(len(next_txt), 600)
+                    )
+                    needed_chars = len(heading_str) + first_entry_need + body_len
                     add_comps = (1 if cur_body else 0) + 2
                     if (cur_body or len(kids) > 1) and (
                         needed_chars > max_body
@@ -1518,11 +1693,22 @@ def beta_payloads_with_map(
                 if len(cand) <= max_body:
                     cur_body = cand
                     idx_stream += 1
-                elif (not cur_body and len(kids) <= 2) or max_body - len(cur_body) - 2 >= 400:
-                    room = max_body - len(cur_body) - (2 if cur_body else 0)
-                    pieces = _split_beta_block(nxt, room)
-                    cur_body = f"{cur_body}\n\n{pieces[0]}" if cur_body else pieces[0]
-                    carry_text = pieces[1:]
+                elif not cur_body:
+                    # Single block exceeds this container even when empty: split cleanly once.
+                    head, rem = _split_beta_once(nxt, max_body)
+                    cur_body = head
+                    carry_text = [rem] if rem else []
+                    idx_stream += 1
+                    break
+                elif len(nxt) <= fresh_max_body:
+                    # Smart container fit: keep the entire skill/section block intact on the
+                    # next container instead of stranding trailing stat or prose lines.
+                    break
+                elif max_body - len(cur_body) - 2 >= 900:
+                    room = max_body - len(cur_body) - 2
+                    head, rem = _split_beta_once(nxt, room)
+                    cur_body = f"{cur_body}\n\n{head}"
+                    carry_text = [rem] if rem else []
                     idx_stream += 1
                     break
                 else:
@@ -1594,7 +1780,8 @@ def beta_payloads_with_map(
                 cat_header_str = f"## {display_cat} Changes" if is_diff_cat else f"## {display_cat}"
 
             badge = _equipment_type_badge(game.key, display_cat, eq_rarity, eq_wclass, eq_sub)
-            title_line = f"### {eq_name} ({badge})" if badge else f"### {eq_name}"
+            eq_title = _beta_masked_title(eq_name, getattr(eq, "page_url", None))
+            title_line = f"### {eq_title} ({badge})" if badge else f"### {eq_title}"
 
             eq_parts: list[str] = [title_line]
             if eq_set_kind:
@@ -1609,12 +1796,19 @@ def beta_payloads_with_map(
             elif eq_lines:
                 eq_parts.append("")
 
+            has_eq_bullet = False
             for eln in eq_lines:
                 if eln.startswith("-#"):
-                    eq_parts.append(f"    * {eln[2:].strip()}")
+                    note_txt = eln[2:].strip()
+                    if has_eq_bullet:
+                        eq_parts.append(f"    * {note_txt}")
+                    else:
+                        eq_parts.append(f"-# {note_txt}")
                 elif eln.startswith("**["):
+                    has_eq_bullet = True
                     eq_parts.append(f"* {_bold_beta_numbers(eln)}")
                 else:
+                    has_eq_bullet = True
                     m_pc = re.match(r"^(\d+-Piece(?:\s+Set)?):\s*(.+)$", eln, re.I)
                     if m_pc and eq_tag == "[NEW]":
                         eq_parts.append(f"*{m_pc.group(1)}:*")
@@ -1638,12 +1832,11 @@ def beta_payloads_with_map(
             if (
                 len(kids) == 1
                 and kids[0].get("content") == patch_header_str
-                and len(eq_text_str) > first_room >= 600
+                and len(eq_text_str) > max_eq_chars
+                and first_room >= 600
             ):
-                initial = _split_beta_block(eq_text_str, first_room)
-                pieces = [initial[0]]
-                if len(initial) > 1:
-                    pieces.extend(_split_beta_block("\n".join(initial[1:]), max_eq_chars))
+                head_eq, rem_eq = _split_beta_once(eq_text_str, first_room)
+                pieces = [head_eq] + (_split_beta_block(rem_eq, max_eq_chars) if rem_eq else [])
             else:
                 pieces = _split_beta_block(eq_text_str, max_eq_chars)
             for piece_idx, piece in enumerate(pieces):

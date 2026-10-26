@@ -757,8 +757,10 @@ def diff_kits(prev_sections: list, cur_sections: list) -> tuple[list[Any], int]:
 _ENTRY_RE = re.compile(
     r"\[!\[[^\]]*\]\((?P<img>[^)]*)\)"
     r"(?P<name>[^\]]*)\]\((?P<url>[^)]*)\)"
-    r"(?:\s*\[See Changes\]\((?P<diff>[^)]*)\))?"
+    r"(?:\s*\[(?:See\s+)?Changes\]\((?P<diff>[^)]*)\))?",
+    re.I,
 )
+_MD_LINK_RE = re.compile(r"(?<!!)\[(?P<text>[^\]]+)\]\((?P<href>https?://[^)\s]+|/[^)\s]+)\)")
 # A changelog entry wraps across three lines — the image markdown, a blank separator and
 # the display name — so the entry regex has to run over the block, never line by line.
 _REV_RE = re.compile(r"^##\s+(?P<label>v?[0-9][^\n|]*?)(?:\s*\|\s*(?P<date>[^\n]+))?\s*$", re.M)
@@ -766,6 +768,41 @@ _SECTION_RE = re.compile(r"^###[ \t]+(?P<name>[^\n]+?)[ \t]*$", re.M)
 _ITEM_ID_RE = re.compile(r"/(?:agents|characters|resonators|w-engines|weapons|light-cones|"
                          r"lightcones|relics|relicsets|planar-ornaments|drive-discs|artifacts|"
                          r"echoes|echo)/(\d+)")
+_GENERIC_CHANGELOG_LABELS = frozenset({
+    "full", "full kit", "changes", "see changes", "diff",
+    "chinese", "english", "cn", "chs", "cht", "en", "jp", "kr",
+    "beta", "view", "details",
+})
+_GACHABASE_HEADERS = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Cache-Control": "no-cache",
+}
+
+
+def _is_generic_changelog_label(value: str) -> bool:
+    cleaned = re.sub(r"[\s:()\[\]•·|-]+", " ", str(value or "")).strip().lower()
+    return not cleaned or cleaned in _GENERIC_CHANGELOG_LABELS
+
+
+def _url_has_chs_lang(url: str) -> bool:
+    return bool(re.search(r"(?:[?&])lang=(?:chs|cht|zh|cn)\b", str(url or ""), re.I))
+
+
+def _normalize_gachabase_lang(url: str) -> str:
+    u = str(url or "").strip()
+    if not u or "gachabase.net" not in u.lower():
+        return u
+    if re.search(r"([?&])lang=[^&#]*", u, re.I):
+        return re.sub(r"([?&])lang=[^&#]*", r"\1lang=en", u, flags=re.I)
+    return u
+
+
+def _slug_display_name(item_path: str) -> str:
+    slug = item_path.rstrip("/").rsplit("/", 1)[-1].split("?")[0].strip()
+    if not slug or slug.isdigit() or re.fullmatch(r"id-\d+", slug, re.I):
+        return ""
+    return slug.replace("-", " ").title()
 
 
 def _normalize_changelog(markdown: str) -> str:
@@ -792,6 +829,9 @@ class _ChangelogHTML(HTMLParser):
         self.hidden = 0
         self.body: list[str] = []
         self.active = False
+        self._entries_by_path: dict[str, dict] = {}
+        self._pending_diffs: dict[str, str] = {}
+        self._has_chs_link = False
 
     def _link(self, href: str) -> str:
         try:
@@ -827,12 +867,32 @@ class _ChangelogHTML(HTMLParser):
 
     def _finish_revision(self):
         if self.active:
+            entries = self.revisions[-1]["entries"]
+            if not entries and self._pending_diffs:
+                for item_path, diff_url in self._pending_diffs.items():
+                    q = urlsplit(diff_url).query
+                    if "prev=" in q and "cur=" in q and _ITEM_ID_RE.match(item_path):
+                        origin = urlsplit(self.base_url)
+                        base_root = f"{origin.scheme}://{origin.netloc}" if origin.netloc else ""
+                        beta_url = f"{base_root}{item_path}/beta?lang=en" if base_root else ""
+                        entries.append({
+                            "name": _slug_display_name(item_path),
+                            "url": beta_url,
+                            "diff": diff_url,
+                            "image": "",
+                            "section": self.section,
+                        })
             joined = " ".join(self.body)
             self.revisions[-1]["no_changes"] = bool(re.search(
                 r"\bno tracked changes detected\b", joined, re.I))
-            self.revisions[-1]["zh_check_advised"] = bool(re.search(
-                r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", joined, re.I))
+            self.revisions[-1]["zh_check_advised"] = (
+                self._has_chs_link
+                or bool(re.search(r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", joined, re.I))
+            )
         self.body = []
+        self._entries_by_path = {}
+        self._pending_diffs = {}
+        self._has_chs_link = False
 
     def handle_endtag(self, tag):
         if tag in {"script", "style"} and self.hidden:
@@ -853,15 +913,44 @@ class _ChangelogHTML(HTMLParser):
         elif tag == "h3":
             self.section = text
         elif tag == "a" and self.active and self.href:
-            path = urlsplit(self.href).path
+            if _url_has_chs_lang(self.href):
+                self._has_chs_link = True
+            norm_href = _normalize_gachabase_lang(self.href)
+            path = urlsplit(norm_href).path
             entries = self.revisions[-1]["entries"]
             if path.startswith("/diff/"):
-                # Pair only the same item/category; an unrelated link must not poison a card.
-                if entries and path.removeprefix("/diff") == urlsplit(entries[-1]["url"]).path.removesuffix("/beta"):
-                    entries[-1]["diff"] = self.href
-            elif _ITEM_ID_RE.match(path) and path.endswith("/beta") and text:
-                entries.append({"name": text, "url": self.href, "diff": "",
-                                "image": self.image, "section": self.section})
+                item_path = path.removeprefix("/diff")
+                if not _ITEM_ID_RE.match(item_path):
+                    return
+                existing = self._entries_by_path.get(item_path)
+                if existing is not None:
+                    if not existing["diff"] or not _url_has_chs_lang(self.href):
+                        existing["diff"] = norm_href
+                elif item_path not in self._pending_diffs or not _url_has_chs_lang(self.href):
+                    self._pending_diffs[item_path] = norm_href
+            elif _ITEM_ID_RE.match(path) and path.endswith("/beta"):
+                item_path = path.removesuffix("/beta")
+                clean_name = "" if _is_generic_changelog_label(text) else text
+                existing = self._entries_by_path.get(item_path)
+                if existing is not None:
+                    if clean_name and (not existing["name"] or existing["name"] == _slug_display_name(item_path)):
+                        existing["name"] = clean_name
+                    if not _url_has_chs_lang(self.href):
+                        existing["url"] = norm_href
+                    if self.image and not existing["image"]:
+                        existing["image"] = self.image
+                    if item_path in self._pending_diffs and not existing["diff"]:
+                        existing["diff"] = self._pending_diffs[item_path]
+                elif clean_name or text:
+                    entry = {
+                        "name": clean_name or _slug_display_name(item_path),
+                        "url": norm_href,
+                        "diff": self._pending_diffs.get(item_path, ""),
+                        "image": self.image,
+                        "section": self.section,
+                    }
+                    entries.append(entry)
+                    self._entries_by_path[item_path] = entry
 
     def close(self):
         super().close()
@@ -894,12 +983,21 @@ def parse_changelog(markdown: str, *, base_url: str = "") -> list[dict]:
         block = text[start:end]
         sections = [(m.start(), m.group("name").strip()) for m in _SECTION_RE.finditer(block)]
         entries: list[dict] = []
+        entries_by_path: dict[str, dict] = {}
+        pending_diffs: dict[str, str] = {}
+        has_chs_link = False
         for m in _ENTRY_RE.finditer(block):
-            url = (m.group("url") or "").strip()
+            raw_url = (m.group("url") or "").strip()
+            raw_diff = (m.group("diff") or "").strip()
+            if _url_has_chs_lang(raw_url) or _url_has_chs_lang(raw_diff):
+                has_chs_link = True
+            url = _normalize_gachabase_lang(raw_url)
+            diff_u = _normalize_gachabase_lang(raw_diff)
             name = re.sub(r"\s+", " ", (m.group("name") or "")).strip(" \n\t\\")
+            if _is_generic_changelog_label(name):
+                name = ""
             if not name and url:
-                slug = url.rstrip("/").rsplit("/", 1)[-1].split("?")[0].replace("-", " ")
-                name = slug.title()
+                name = _slug_display_name(urlsplit(url).path.removesuffix("/beta"))
             if not name and not url:
                 continue
             section = ""
@@ -908,13 +1006,67 @@ def parse_changelog(markdown: str, *, base_url: str = "") -> list[dict]:
                     section = sname
                 else:
                     break
-            entries.append({
+            entry = {
                 "name": name,
                 "url": url,
-                "diff": (m.group("diff") or "").strip(),
+                "diff": diff_u,
                 "image": (m.group("img") or "").strip(),
                 "section": section,
-            })
+            }
+            entries.append(entry)
+            item_path = urlsplit(url).path.removesuffix("/beta")
+            if item_path:
+                entries_by_path[item_path] = entry
+
+        # Also support bilingual/plain-link hotfix rows (e.g. `Chinese: [Changes](...) [Full](...)`
+        # + `English: [Changes](...) [Full](...)` without inline image markdown).
+        for m in _MD_LINK_RE.finditer(block):
+            raw_href = (m.group("href") or "").strip()
+            if base_url and raw_href.startswith("/"):
+                raw_href = urljoin(base_url, raw_href)
+            if _url_has_chs_lang(raw_href):
+                has_chs_link = True
+            norm_href = _normalize_gachabase_lang(raw_href)
+            path = urlsplit(norm_href).path
+            link_txt = re.sub(r"\s+", " ", (m.group("text") or "")).strip()
+            section = ""
+            for pos, sname in sections:
+                if pos < m.start():
+                    section = sname
+                else:
+                    break
+            if path.startswith("/diff/"):
+                item_path = path.removeprefix("/diff")
+                if not _ITEM_ID_RE.match(item_path):
+                    continue
+                existing = entries_by_path.get(item_path)
+                if existing is not None:
+                    if not existing["diff"] or not _url_has_chs_lang(raw_href):
+                        existing["diff"] = norm_href
+                elif item_path not in pending_diffs or not _url_has_chs_lang(raw_href):
+                    pending_diffs[item_path] = norm_href
+            elif _ITEM_ID_RE.match(path) and path.endswith("/beta"):
+                item_path = path.removesuffix("/beta")
+                clean_name = "" if _is_generic_changelog_label(link_txt) else link_txt
+                existing = entries_by_path.get(item_path)
+                if existing is not None:
+                    if clean_name and (not existing["name"] or existing["name"] == _slug_display_name(item_path)):
+                        existing["name"] = clean_name
+                    if not _url_has_chs_lang(raw_href):
+                        existing["url"] = norm_href
+                    if item_path in pending_diffs and not existing["diff"]:
+                        existing["diff"] = pending_diffs[item_path]
+                else:
+                    entry = {
+                        "name": clean_name or _slug_display_name(item_path),
+                        "url": norm_href,
+                        "diff": pending_diffs.get(item_path, ""),
+                        "image": "",
+                        "section": section,
+                    }
+                    entries.append(entry)
+                    entries_by_path[item_path] = entry
+
         # The page escapes the `|` separator (`\|`), so the date arrives with a stray
         # backslash hanging off the end.
         date = (head.group("date") or "").strip().rstrip("\\").strip()
@@ -925,8 +1077,10 @@ def parse_changelog(markdown: str, *, base_url: str = "") -> list[dict]:
             # This is materially different from a temporarily empty / JS-truncated revision:
             # the source has explicitly said that there was nothing to post.
             "no_changes": bool(re.search(r"\bno tracked changes detected\b", block, re.I)),
-            "zh_check_advised": bool(re.search(
-                r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", block, re.I)),
+            "zh_check_advised": (
+                has_chs_link
+                or bool(re.search(r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", block, re.I))
+            ),
         })
     return revs
 
@@ -1002,7 +1156,18 @@ def _encore_text(value: Any) -> str:
         value = value.get("Content")
     if not isinstance(value, str):
         return ""
-    return _clean(html_to_text(value)[0])
+    return _clean(html_to_text(_clean(value))[0])
+
+
+def _dedup_skill_title(category: str, name: str) -> str:
+    cat = (category or "").strip()
+    nm = (name or "").strip()
+    if not cat:
+        return nm
+    if nm.lower().startswith(f"{cat.lower()}:"):
+        rest = nm[len(cat) + 1:].strip()
+        return f"{cat}: {rest}" if rest else cat
+    return f"{cat}: {nm}"
 
 
 def _encore_metadata(value: Any) -> tuple[str, str, str] | None:
@@ -1063,16 +1228,28 @@ def _encore_character(data: dict) -> dict:
             if re.fullmatch(r"-?\d+(?:\.\d+)?%?", shown):
                 params.append({"name": label, "value": float(shown.rstrip("%")), "text": shown})
         if lines:
-            sections.append(BetaSectionEntry(title=f"{category}: {name}", category=category,
-                                             lines=lines, params=params,
+            sections.append(BetaSectionEntry(title=_dedup_skill_title(category, name),
+                                             category=category, lines=lines, params=params,
                                              values_label=f"Lv. {SKILL_LEVEL['ww']}" if params else ""))
+    stat_bonuses: dict[str, list[float]] = {}
+    stat_bonus_units: dict[str, str] = {}
     for index, node in enumerate(_encore_rows(data.get("SkillTree")), 1):
         if not isinstance(node, dict):
             continue
         name = _encore_text(node.get("PropertyNodeTitle"))
         desc = _encore_text(node.get("PropertyNodeDescribe"))
-        if name and desc:
-            sections.append(BetaSectionEntry(title=f"Stat Bonus {index} — {name}", category="Stat Bonus", lines=_lines(desc)))
+        if not (name and desc):
+            continue
+        m_val = re.search(r"([+-]?\d+(?:\.\d+)?)(%?)", desc)
+        if name.endswith("+") and m_val and "{" not in desc:
+            stat_name = name.rstrip("+").strip()
+            try:
+                stat_bonuses.setdefault(stat_name, []).append(float(m_val.group(1)))
+                stat_bonus_units[stat_name] = m_val.group(2)
+                continue
+            except ValueError:
+                pass
+        sections.append(BetaSectionEntry(title=f"Stat Bonus {index} — {name}", category="Stat Bonus", lines=_lines(desc)))
     for node in _encore_rows(data.get("ResonantChain")):
         if not isinstance(node, dict):
             continue
@@ -1086,9 +1263,16 @@ def _encore_character(data: dict) -> dict:
             sections.append(BetaSectionEntry(title=f"Sequence Node {index} — {name}",
                                              category="Resonance Chain", lines=_lines(desc)))
     stats = _encore_properties(data)
+    stats_lines = [f"Lv. 90 — {' · '.join(stats)}"] if stats else []
+    if stat_bonuses:
+        bonus_parts = [
+            f"{s_name} +{_num(sum(vals), 2)}{stat_bonus_units.get(s_name, '')}"
+            for s_name, vals in stat_bonuses.items()
+        ]
+        stats_lines.append("Stat Bonuses: " + " | ".join(bonus_parts))
     return {"element": _encore_text(data.get("ElementName")),
             "role": _encore_text(data.get("WeaponTypeName")), "sections": sections,
-            "stats_lines": [f"Lv. 90 — {' · '.join(stats)}"] if stats else []}
+            "stats_lines": stats_lines}
 
 
 def _encore_detail(data: Any, kind: str, item_id: str, revision: tuple[str, str, str]) -> dict | None:
@@ -1707,7 +1891,7 @@ def _ww_character(data: dict) -> dict:
         if any("[TBD]" in ln for ln in s_lines):
             s_lines.append("-# ⚠️ [TBD] marks an unresolved parameter in this beta build.")
         sections.append(BetaSectionEntry(
-            title=f"{stype}: {name}", category=stype, tag="[NEW]", meta="",
+            title=_dedup_skill_title(stype, name), category=stype, tag="[NEW]", meta="",
             lines=s_lines, params=param_rows,
             values_label=f"Lv. {SKILL_LEVEL['ww']}" if param_rows else "",
         ))
@@ -1826,7 +2010,9 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         if stats_line:
             stats_line = f"Lv. 90 — {stats_line}"
         effect_title = _encore_text(raw.get("ResonName"))
-        lines = ["-# Effect values shown for refinements 1–5."] + _lines(_encore_text(raw.get("Desc")))
+        raw_desc = _encore_text(raw.get("Desc"))
+        clean_desc = re.sub(r"\b(\d+(?:\.\d+)?%?)(?:/\1){2,}", r"\1", raw_desc)
+        lines = ["-# Effect values shown for refinements 1–5."] + _lines(clean_desc)
         sub_type = _encore_text(raw.get("WeaponTypeName"))
         weapon_class = sub_type
         rarity = rarity or _parse_rarity("ww", raw.get("QualityId"), None)
@@ -2244,18 +2430,37 @@ def _take_shared_request(budget: dict, count: int = 1) -> bool:
     return True
 
 
-async def _changelog_revisions(ctx, game: Game) -> list[dict]:
+async def _fetch_changelog_revisions(
+    ctx, game: Game, budget: dict | None = None, current_requests: int = 2
+) -> tuple[list[dict], int]:
     """Read all available beta revisions once; an unavailable/403 changelog falls back cleanly."""
     ch_url = _changelog_url(game)
     if not ch_url:
-        return []
-    text = await ctx.fetcher.get_text(ch_url, source="beta-changelog", retries=1)
+        return [], 0
+    hdrs = dict(_GACHABASE_HEADERS) if "gachabase.net" in ch_url.lower() else None
+    text = await ctx.fetcher.get_text(ch_url, source="beta-changelog", headers=hdrs, retries=1)
+    extra = 0
+    if text is None and "?" in ch_url:
+        alt_url = ch_url.split("?", 1)[0]
+        can_try_alt = budget is None or (
+            current_requests + 1 <= budget["max_requests"] and _take_shared_request(budget, 1)
+        )
+        if alt_url and alt_url != ch_url and can_try_alt:
+            extra = 1
+            text = await ctx.fetcher.get_text(
+                alt_url, source="beta-changelog", headers=hdrs, retries=0
+            )
     if not text:
         log.info("%s beta: changelog unavailable (%s); using static manifest fallback", game.short, ch_url)
-        return []
+        return [], extra
     revisions = parse_changelog(text, base_url=ch_url)
     if not revisions:
         log.info("%s beta: changelog unreadable/blocked (%s); using static manifest fallback", game.short, ch_url)
+    return revisions, extra
+
+
+async def _changelog_revisions(ctx, game: Game) -> list[dict]:
+    revisions, _ = await _fetch_changelog_revisions(ctx, game)
     return revisions
 
 
@@ -2815,7 +3020,11 @@ def _safe_entry_name(entry: dict, data: dict, listing: dict | None, item_id: str
     if "_encore" in data:
         return _clean(data.get("name")) or f"ID {item_id}"
     entry_name = str(entry.get("name") or "").strip()
-    if entry_name.lower().startswith("id:") or _is_key(entry_name):
+    if (
+        entry_name.lower().startswith("id:")
+        or _is_key(entry_name)
+        or _is_generic_changelog_label(entry_name)
+    ):
         entry_name = ""
     localized = (listing or {}).get("en") if isinstance(listing, dict) else ""
     listing_name = _clean(localized.get("name") if isinstance(localized, dict) else localized)
@@ -2823,16 +3032,23 @@ def _safe_entry_name(entry: dict, data: dict, listing: dict | None, item_id: str
     return entry_name or listing_name or data_name or f"ID {item_id}"
 
 
-def _slug(value: str) -> str:
+def _slug(value: str, fallback_id: str = "") -> str:
     """Gachabase's stable URL fallback; source-provided URLs always win."""
-    slug = re.sub(r"[^a-z0-9]+", "-", str(value or "").lower()).strip("-")
-    return slug or "item"
+    raw = str(value or "").strip()
+    m_id = re.fullmatch(r"id\s*:?\s*(\d+)", raw, re.I)
+    if m_id:
+        return m_id.group(1)
+    slug = re.sub(r"[^a-z0-9]+", "-", raw.lower()).strip("-")
+    return slug or str(fallback_id or "").strip() or "item"
 
 
 def _item_page_url(ns: str, role: str, item_id: str, name: str) -> str:
     if ns == "ww":
         return f"https://ww.nanoka.cc/{role}/{item_id}/"
-    return f"https://{ns}.gachabase.net/{_public_path(ns, role)}/{item_id}/{_slug(name)}/beta?lang=en"
+    return (
+        f"https://{ns}.gachabase.net/{_public_path(ns, role)}/"
+        f"{item_id}/{_slug(name, item_id)}/beta?lang=en"
+    )
 
 
 def _generated_diff_url(ns: str, role: str, item_id: str, name: str,
@@ -2842,8 +3058,11 @@ def _generated_diff_url(ns: str, role: str, item_id: str, name: str,
         return ""
     before = str(previous_version).replace("+", "_")
     after = str(current_version).replace("+", "_")
-    return (f"https://{ns}.gachabase.net/diff/{_public_path(ns, role)}/{item_id}/{_slug(name)}"
-            f"?prev=beta_{before}&cur=beta_{after}&lang=en")
+    return (
+        f"https://{ns}.gachabase.net/diff/{_public_path(ns, role)}/"
+        f"{item_id}/{_slug(name, item_id)}"
+        f"?prev=beta_{before}&cur=beta_{after}&lang=en"
+    )
 
 
 def _upgrade_legacy_beta_record(record: dict) -> bool:
@@ -2888,13 +3107,15 @@ def _kit_needs_zh_check(built: dict | None) -> bool:
 
 
 def _extract_kit_percents(lines: list[str]) -> list[str]:
-    """Extract combat percentage values (order-independent across CN/EN grammar & ordinals)."""
-    pcts: list[str] = []
+    """Extract combat percentage and explicit duration values (ordinal-immune across CN/EN)."""
+    tokens: list[str] = []
     for ln in lines:
         if ln.startswith("-#"):
             continue
-        pcts.extend(re.findall(r"\d+(?:\.\d+)?%", ln))
-    return pcts
+        tokens.extend(re.findall(r"\d+(?:\.\d+)?%", ln))
+        for dur in re.findall(r"(?<![A-Za-z0-9.])(\d+(?:\.\d+)?)\s*(?:s\b|sec(?:ond)?s?\b|秒)", ln, re.I):
+            tokens.append(f"{dur}s")
+    return tokens
 
 
 def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
@@ -2916,8 +3137,10 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
         zh_sec = zh_secs[idx]
         sec_changed = False
 
-        if en_sec.params and zh_sec.params and len(en_sec.params) == len(zh_sec.params):
-            for p_idx, en_p in enumerate(en_sec.params):
+        if en_sec.params and zh_sec.params:
+            pair_len = min(len(en_sec.params), len(zh_sec.params))
+            for p_idx in range(pair_len):
+                en_p = en_sec.params[p_idx]
                 zh_p = zh_sec.params[p_idx]
                 if en_p.get("value") != zh_p.get("value") and zh_p.get("text"):
                     old_txt = str(en_p.get("text") or "")
@@ -2932,6 +3155,12 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
                         for ln in en_sec.lines
                     ]
                     sec_changed = True
+            if len(zh_sec.params) > len(en_sec.params):
+                for zh_extra in zh_sec.params[len(en_sec.params):]:
+                    if zh_extra.get("name") and zh_extra.get("text"):
+                        en_sec.params.append(dict(zh_extra))
+                        en_sec.lines.append(f"{zh_extra['name']}: {zh_extra['text']}")
+                        sec_changed = True
 
         updated_lines: list[str] = []
         for l_idx, ln in enumerate(en_sec.lines):
@@ -2962,20 +3191,19 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
                 if not x.startswith("-# ⚠️ [TBD] marks an unresolved")
             ]
 
-        en_pcts = _extract_kit_percents(updated_lines)
-        zh_pcts_all = _extract_kit_percents(zh_sec.lines)
+        en_tokens = _extract_kit_percents(updated_lines)
+        zh_tokens = _extract_kit_percents(zh_sec.lines)
         if sec_changed:
             if not any("CN/CHS" in x for x in updated_lines):
                 updated_lines.append("-# 🌐 Values synced with authoritative CN/CHS beta data.")
             en_sec.lines = updated_lines
             changed_any = True
         elif (
-            not en_sec.params
-            and zh_pcts_all
-            and Counter(en_pcts) != Counter(zh_pcts_all)
+            zh_tokens
+            and Counter(en_tokens) != Counter(zh_tokens)
             and not any("CN/CHS" in x for x in updated_lines)
         ):
-            preview = ", ".join(zh_pcts_all[:8])
+            preview = ", ".join(zh_tokens[:8])
             if preview:
                 updated_lines.append(
                     f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
@@ -3127,7 +3355,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     if _changelog_url(game) and not _take_shared_request(budget):
         ctx.warnings.append(f"{game.short} beta: run-wide request budget reached before changelog; deferred")
         return None
-    revisions = await _changelog_revisions(ctx, game)
+    revisions, extra_ch_reqs = await _fetch_changelog_revisions(ctx, game, budget, 2)
     source_revision = _changelog_for_version(revisions, version)
     rev_label, rev_key = _revision_label(source_revision, version)
     rev_id = stable_hash([game.key, version])
@@ -3171,7 +3399,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     locked = record.get("locked_images") if isinstance(record.get("locked_images"), dict) else {}
     image_cache: dict[str, str] = {}
     gallery_cache: dict[str, list[str]] = {}
-    requests = 2 if _changelog_url(game) else 1
+    requests = (2 + extra_ch_reqs) if _changelog_url(game) else 1
     char_new, char_changed, equip_count = 0, 0, 0
     listing_cache: dict[str, dict] = {}
     encore_revision = None
@@ -3449,7 +3677,41 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             image_url=image, image_urls=eq_gallery,
             diff_url=diff_url, page_url=page_url,
         )
-        patch.snapshots[snap_key] = _equipment_snapshot(current, version, ctx.now, role)
+        eq_snap = _equipment_snapshot(current, version, ctx.now, role)
+        if (
+            "_encore" not in data
+            and (
+                zh_advised
+                or (
+                    previous_snapshot is not None
+                    and _snapshot_comparison(previous_snapshot, eq_snap) == "equal"
+                )
+            )
+            and requests + 1 <= budget["max_requests"]
+            and _take_shared_request(budget, 1)
+        ):
+            requests += 1
+            zh_eq_data = await _detail(
+                ctx.fetcher, ns, version, detail_kind, item_id, locale="zh"
+            )
+            if zh_eq_data:
+                zh_fields = _equip_from_detail(
+                    ns, detail_kind, zh_eq_data,
+                    listing_entry if isinstance(listing_entry, dict) else {},
+                )
+                en_eq_toks = _extract_kit_percents(current.lines)
+                zh_eq_toks = _extract_kit_percents(list(zh_fields.get("lines") or []))
+                if (
+                    zh_eq_toks
+                    and Counter(en_eq_toks) != Counter(zh_eq_toks)
+                    and not any("CN/CHS" in x for x in current.lines)
+                ):
+                    preview = ", ".join(zh_eq_toks[:8])
+                    current.lines.append(
+                        f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
+                    )
+                    eq_snap = _equipment_snapshot(current, version, ctx.now, role)
+        patch.snapshots[snap_key] = eq_snap
         if eq_gallery:
             patch.snapshots[snap_key]["gallery_urls"] = list(eq_gallery)
         if "_encore" in data:

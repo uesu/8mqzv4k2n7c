@@ -18733,5 +18733,191 @@ def test_feature5_post_merge_edge_cases_and_ci_annotation_hygiene():
         assert ".github/workflows/ci.yml" in rewritten_prod
         assert "'3.14.10'" in (bump_root / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
 
+
+def test_feature5_prime_polish_masked_links_smart_containers_and_hotfix_sync():
+    """Verify Prime Formatting polish: masked links, zero 'Full kit', smart container fit,
+    bilingual CN/EN hotfix changelog parsing, 403 canonical fallback, and epoch-3 reset."""
+    import copy
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import BETA_FORMAT_EPOCH, State
+
+    assert BETA_FORMAT_EPOCH >= 3
+    assert "[encore](" in cards.BETA_RESOURCE_LINKS["wuwa"]
+    assert "Encore beta" not in cards.BETA_RESOURCE_LINKS["wuwa"]
+
+    # 1. Masked entity links across all 4 games & zero 'Full kit' text; unnamed slug uses numeric ID.
+    assert beta_mod._item_page_url("zzz", "relic", "34300", "ID 34300") == (
+        "https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=en"
+    )
+    assert beta_mod._item_page_url("zzz", "weapon", "14161", "") == (
+        "https://zzz.gachabase.net/w-engines/14161/14161/beta?lang=en"
+    )
+    sun_raw = _beta_json("zzz_character_1601.json")
+    sun_built = beta_mod._zzz_character(sun_raw)
+    sun = beta_mod.BetaCharacter(
+        id="zzz:1601", name="Sunbringer", rarity=5, element="Fire (Genesis Flare)",
+        role="Armorer", faction="Roscaelifer", attack_type="Strike",
+        subtext="-# Revision diff against 3.4.1+19836465 • 2 unchanged block(s) omitted",
+        stats_lines=sun_built["stats_lines"],
+        sections=beta_mod._clone_sections(sun_built["sections"], "[CHANGED]"),
+        page_url="https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en",
+        diff_url="https://zzz.gachabase.net/diff/agents/1601/sunbringer?prev=beta_3.4.1_19836465&cur=beta_3.4.1_19850203&lang=en",
+        is_new=False,
+    )
+    w_raw = _beta_json("zzz_weapon_14166.json")
+    w_list = _beta_json("zzz_weapon_listing.json")["14166"]
+    wf = beta_mod._equip_from_detail("zzz", "weapon", w_raw, w_list)
+    w_eq = beta_mod.BetaEquipment(
+        id="zzz:14166", name="Robin's Exclusive W-Engine", category_label="W-Engines",
+        rarity=5, sub_type=wf["sub_type"], weapon_class=wf["weapon_class"], tag="[NEW]",
+        stats_line=wf["stats_line"], effect_title=wf["effect_title"], lines=wf["lines"],
+        page_url="https://zzz.gachabase.net/w-engines/14166/robins-exclusive-w-engine/beta?lang=en",
+    )
+    d_eq = beta_mod.BetaEquipment(
+        id="zzz:34300", name="ID 34300", category_label="Drive Discs", rarity=5,
+        set_kind="Drive Disc Set", tag="[NEW]", lines=["2-Piece: DEF +16%."],
+        page_url=beta_mod._item_page_url("zzz", "relic", "34300", "ID 34300"),
+    )
+    zzz_pls = cards.beta_payloads(
+        GAMES["zzz"],
+        beta_mod.BetaPatch(
+            game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1 Rev. 19850203",
+            rev_id="r", characters=[sun], equipment=[w_eq, d_eq],
+        ),
+    )
+    zzz_dump = json.dumps(zzz_pls, ensure_ascii=False)
+    assert all(not cards.validate_payload(p) for p in zzz_pls)
+    assert "## [Sunbringer](https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en)" in zzz_dump
+    assert "### [Robin's Exclusive W-Engine](https://zzz.gachabase.net/w-engines/14166/robins-exclusive-w-engine/beta?lang=en)" in zzz_dump
+    assert "### [ID 34300](https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=en)" in zzz_dump
+    assert "[Revision diff](https://zzz.gachabase.net/diff/agents/1601/sunbringer" in zzz_dump
+    assert "**Substat:** HP%" in zzz_dump
+    assert "Full kit" not in zzz_dump and "Full Kit" not in zzz_dump
+
+    # 2. Smart dynamic container fit on Encore Lily + Lullaby: zero orphan stat lines across pages.
+    enc_raw = _beta_json("encore_lily_live.json")
+    enc_norm = beta_mod._encore_detail(enc_raw, "character", "1512", ("3.8.0", "3.8.1", "9162983"))
+    enc_built = beta_mod._ww_character(enc_norm)
+    lily = beta_mod.BetaCharacter(
+        id="ww:1512", name="Lily", rarity=5, element=enc_built["element"],
+        role=enc_built["role"], stats_lines=enc_built["stats_lines"],
+        sections=beta_mod._clone_sections(enc_built["sections"], "[NEW]"),
+        page_url="https://encore.moe/character/1512?lang=en&v=Beta", is_new=True,
+    )
+    ew_raw = _beta_json("encore_weapon_live.json")
+    ew_norm = beta_mod._encore_detail(ew_raw, "weapon", "21030076", ("3.8.0", "3.8.1", "9162983"))
+    ewf = beta_mod._equip_from_detail("ww", "weapon", ew_norm, {})
+    lullaby = beta_mod.BetaEquipment(
+        id="ww:21030076", name="Lullaby", category_label="Weapons", rarity=5,
+        sub_type=ewf["sub_type"], weapon_class=ewf["weapon_class"], tag="[NEW]",
+        stats_line=ewf["stats_line"], effect_title=ewf["effect_title"], lines=ewf["lines"],
+        page_url="https://encore.moe/weapon/21030076?lang=en&v=Beta",
+    )
+    ww_pls = cards.beta_payloads(
+        GAMES["wuwa"],
+        beta_mod.BetaPatch(
+            game_key="wuwa", beta_version="3.8.1", rev_label="v3.8.1",
+            rev_id="r", characters=[lily], equipment=[lullaby],
+        ),
+    )
+    assert all(not cards.validate_payload(p) for p in ww_pls)
+    page_texts = [
+        "\n".join(c["content"] for c in p["components"][0]["components"] if c["type"] == 10)
+        for p in ww_pls
+    ]
+    lib_pages = [i for i, t in enumerate(page_texts) if "[Into the Dream Cradle]" in t]
+    heal_pages = [i for i, t in enumerate(page_texts) if "Slumberland Healing" in t]
+    assert lib_pages and lib_pages == heal_pages  # Liberation heading & stat lines stay on one page
+    ww_joined = "\n".join(page_texts)
+    assert "Full kit" not in ww_joined and "Tune Break: Tune Break" not in ww_joined
+    assert "* **Tune Break** **[Pistols]:**" in ww_joined
+    assert "**Substat:** Pistols" not in ww_joined
+    assert "**12%/15%/18%/21%/24%**" in ww_joined and "20/20/20/20/20" not in ww_joined
+    assert "    * Effect values shown" not in ww_joined
+    assert "-# Effect values shown for refinements 1–5." in ww_joined
+
+    # 3. Bilingual CN/EN hotfix HTML & Markdown changelog parsing + generic label rejection.
+    bilingual_html = """<!doctype html>
+    <h2>v3.4.1 Rev. 19850203 | 24th October 2026</h2>
+    <h3>Agents</h3>
+    <div>Sunbringer</div>
+    <a href="/diff/agents/1601/sunbringer?prev=beta_3.4.1_19836465&amp;cur=beta_3.4.1_19850203&amp;lang=chs">Changes</a>
+    <a href="/agents/1601/sunbringer/beta?lang=chs">Full</a>
+    <a href="/diff/agents/1601/sunbringer?prev=beta_3.4.1_19836465&amp;cur=beta_3.4.1_19850203&amp;lang=en">Changes</a>
+    <a href="/agents/1601/sunbringer/beta?lang=en">Full</a>
+    <h3>W-Engines</h3>
+    <a href="/diff/w-engines/14161/14161?prev=beta_3.4.1_19836465&amp;cur=beta_3.4.1_19850203&amp;lang=chs">Changes</a>
+    <a href="/w-engines/14161/14161/beta?lang=chs">Full</a>
+    """
+    revs = beta_mod.parse_changelog(
+        bilingual_html, base_url="https://zzz.gachabase.net/changelog/beta?lang=en"
+    )
+    assert len(revs) == 1 and revs[0]["zh_check_advised"] is True
+    ents = revs[0]["entries"]
+    assert len(ents) == 2
+    assert ents[0]["name"] == "Sunbringer"
+    assert ents[0]["url"].endswith("/agents/1601/sunbringer/beta?lang=en")
+    assert "lang=en" in ents[0]["diff"] and "/diff/agents/1601/sunbringer" in ents[0]["diff"]
+    assert ents[1]["name"] == ""
+    assert ents[1]["url"].endswith("/w-engines/14161/14161/beta?lang=en")
+    assert "lang=en" in ents[1]["diff"]
+    assert beta_mod._safe_entry_name({"name": "Full"}, {"name": "Sunbringer"}, None, "1601") == "Sunbringer"
+
+    # 4. Canonical changelog URL fallback on HTTP 403 (`None`) + CN duration reconciliation with params.
+    en_b = {"sections": [beta_mod.BetaSectionEntry(
+        title="EX Special", category="Special", lines=["Deals 120% DMG; buff lasts 10s.", "DMG: 120%"],
+        params=[{"name": "DMG", "value": 120.0, "text": "120%"}],
+    )]}
+    zh_b = {"sections": [beta_mod.BetaSectionEntry(
+        title="强化特殊技", category="Special", lines=["造成 120% 伤害，增益持续 15 秒。", "伤害: 120%"],
+        params=[{"name": "伤害", "value": 120.0, "text": "120%"}],
+    )]}
+    assert beta_mod._reconcile_en_with_zh_kit(en_b, zh_b) is True
+    assert any("15s" in ln and "CN/CHS" in ln for ln in en_b["sections"][0].lines)
+
+    class Fallback403Fetcher:
+        def __init__(self):
+            self.text_urls = []
+
+        async def get_text(self, url, **kw):
+            self.text_urls.append((url, kw.get("headers")))
+            if "?" in url:
+                return None  # Simulate HTTP 403 on `?lang=en`
+            return bilingual_html
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fb = Fallback403Fetcher()
+        ctx = _beta_ctx(Path(tmp) / "st.json", fb, BETA_ENABLED="1", games=["zzz"])
+        bud = {"max_requests": 10, "_shared_requests_left": 10}
+        got_revs, extra_n = asyncio.run(
+            beta_mod._fetch_changelog_revisions(ctx, GAMES["zzz"], bud, 2)
+        )
+        assert extra_n == 1 and len(got_revs) == 1
+        assert fb.text_urls[0][0].endswith("/changelog/beta?lang=en")
+        assert fb.text_urls[0][1] and "text/html" in fb.text_urls[0][1]["Accept"]
+        assert fb.text_urls[1][0].endswith("/changelog/beta")
+
+        # 5. Epoch-3 reset clears epoch-2 ZZZ (rev 19851435) and WuWa (v3.8.1) while keeping features 1-4.
+        st_live = State(Path(tmp) / "live.json")
+        st_live.data["codes"] = {"zzz": {"ABC": 1}}
+        for gk, ver, rid in (("zzz", "3.4.1+19851435", "c4da864455350ab0"), ("wuwa", "3.8.1", "84d9a78104b696a1")):
+            rec = st_live.beta_record(gk)
+            rec.update({
+                "format_epoch": 2, "latest_rev": rid, "source_version": ver,
+                "revisions": {rid: {"status": "posted", "messages": ["123"]}},
+                "snapshots": {f"{gk}:1": {"name": "Old"}},
+            })
+        peer_copy = copy.deepcopy(st_live.data)
+        for gk in ("zzz", "wuwa"):
+            assert beta_mod._upgrade_legacy_beta_record(st_live.beta_record(gk)) is True
+        st_live.merge_peer(peer_copy, include_beta=True)
+        for gk in ("zzz", "wuwa"):
+            r_after = st_live.beta_record(gk)
+            assert r_after["format_epoch"] == BETA_FORMAT_EPOCH
+            assert r_after["revisions"] == {} and r_after["snapshots"] == {}
+            assert r_after["latest_rev"] == "" and r_after["source_version"] == ""
+        assert st_live.data["codes"] == {"zzz": {"ABC": 1}}
+
 if __name__ == "__main__":
     sys.exit(main())

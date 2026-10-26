@@ -18,7 +18,7 @@ import time
 from pathlib import Path
 
 SCHEMA = 1
-BETA_FORMAT_EPOCH = 2
+BETA_FORMAT_EPOCH = 3
 
 
 def empty_state() -> dict:
