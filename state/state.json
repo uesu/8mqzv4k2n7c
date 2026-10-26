@@ -1,1260 +1,46 @@
 {
   "beta": {
     "genshin": {
-      "last_poll": 1792929316,
-      "latest_rev": "adcea61d0cea6719",
+      "format_epoch": 2,
+      "last_poll": 1792980923,
+      "latest_rev": "",
       "locked_images": {},
-      "paused": true,
-      "revisions": {
-        "adcea61d0cea6719": {
-          "batches": {
-            "a90c9ade567ec126": {
-              "messages": [
-                "1563883710409998368",
-                "1563883737362726983",
-                "1563883760741777431",
-                "1563883784779202701",
-                "1563883808028102787"
-              ],
-              "signature": "f5f2c60cbf4f3f86",
-              "status": "posted",
-              "ts": 1792929316
-            }
-          },
-          "characters": {
-            "gi:10000136": 0,
-            "gi:10000137": 2
-          },
-          "label": "v7.1.53",
-          "messages": [
-            "1563883710409998368",
-            "1563883737362726983",
-            "1563883760741777431",
-            "1563883784779202701",
-            "1563883808028102787"
-          ],
-          "more": false,
-          "processed": [
-            "character:gi:10000136",
-            "character:gi:10000137",
-            "weapon:gi:14525",
-            "weapon:gi:224101",
-            "weapon:gi:224102"
-          ],
-          "source_revision": "7.1.53",
-          "source_version": "7.1.53",
-          "status": "posted",
-          "ts": 1792929316
-        }
-      },
+      "revisions": {},
       "route": "a0f2147590c35140",
-      "snapshots": {
-        "gi:10000136": {
-          "content_signature": "0cdf2fd5adec0b21",
-          "data": {
-            "element": "Electro",
-            "id": "gi:10000136",
-            "image_url": "",
-            "mechanic_defs": [],
-            "name": "Mitya",
-            "page_url": "https://gi.gachabase.net/characters/10000136/mitya/beta?lang=en",
-            "rarity": 4,
-            "role": "Catalyst",
-            "sections": [
-              {
-                "category": "Talents",
-                "defs": [],
-                "lines": [
-                  "Normal Attack",
-                  "Performs a maximum of 3 attacks that deal Electro DMG.",
-                  "Charged Attack",
-                  "Consumes a certain amount of Stamina to deal AoE Electro DMG to the area in front after a short casting time.",
-                  "Mitya will instead perform the special Charged Attack Gradient Detonation, which consumes no Stamina, if a Detection Core: Overload created by Mitya is currently on the field and he has at least 1 Gradient Beacon: Deals 1 instance of AoE Electro DMG to the area in front and continuously consumes Gradient Beacons while held. Each Gradient Beacon consumed deals 1 instance of AoE Electro DMG to the area in front that is considered Stellar-Conduct reaction DMG.",
-                  "Plunging Attack",
-                  "Plunges from mid-air to strike the ground below, damaging opponents along the path and dealing AoE Electro DMG upon impact.",
-                  "1-Hit DMG: 111.7%",
-                  "2-Hit DMG: 91.8%",
-                  "3-Hit DMG: 131.1%",
-                  "Charged Attack DMG: 260.1%",
-                  "Charged Attack Stamina Cost: 50",
-                  "Plunge DMG: 120.3%",
-                  "Low/High Plunge DMG: 240.5%/300.4%",
-                  "Gradient Detonation DMG: 319.2%",
-                  "Gradient Detonation Stellar-Conduct DMG: 425.6% Elemental Mastery"
-                ],
-                "meta": "",
-                "params": [
-                  {
-                    "name": "1-Hit DMG",
-                    "text": "111.7%",
-                    "value": 1.117169976234436
-                  },
-                  {
-                    "name": "2-Hit DMG",
-                    "text": "91.8%",
-                    "value": 0.9177150130271912
-                  },
-                  {
-                    "name": "3-Hit DMG",
-                    "text": "131.1%",
-                    "value": 1.311426043510437
-                  },
-                  {
-                    "name": "Charged Attack DMG",
-                    "text": "260.1%",
-                    "value": 2.600719928741455
-                  },
-                  {
-                    "name": "Charged Attack Stamina Cost",
-                    "text": "50",
-                    "value": 50.0
-                  },
-                  {
-                    "name": "Plunge DMG",
-                    "text": "120.3%",
-                    "value": 1.2026560306549072
-                  },
-                  {
-                    "name": "Low/High Plunge DMG",
-                    "text": "240.5%",
-                    "value": 2.404802083969116
-                  },
-                  {
-                    "name": "Gradient Detonation DMG",
-                    "text": "319.2%",
-                    "value": 3.191999912261963
-                  },
-                  {
-                    "name": "Gradient Detonation Stellar-Conduct DMG",
-                    "text": "425.6%",
-                    "value": 4.25600004196167
-                  }
-                ],
-                "title": "Chain Reaction",
-                "values_label": "Lv. 10"
-              },
-              {
-                "category": "Talents",
-                "defs": [],
-                "lines": [
-                  "Conducts a theoretically relatively safe experiment at a theoretically relatively safe yield, dealing AoE Electro DMG and creating a Detection Core in different ways depending on whether the Skill is tapped or held.",
-                  "Tapping the Elemental Skill Principle: Variable Detection again within 6s after using it changes the Detection Core's state. The Detection Core's state can be changed in this way every 1.5s.",
-                  "Tap Skill DMG: 172.4%",
-                  "Hold Skill DMG: 246.2%",
-                  "Steady State Core DMG: 136.8%",
-                  "Steady State Core Gradient Beacon Consumption DMG: 152% Elemental Mastery",
-                  "Steady State Core Detonation DMG: 174.8% Elemental Mastery/Beacon",
-                  "Detection Core Duration: 25s",
-                  "CD: 18s"
-                ],
-                "meta": "",
-                "params": [
-                  {
-                    "name": "Tap Skill DMG",
-                    "text": "172.4%",
-                    "value": 1.723680019378662
-                  },
-                  {
-                    "name": "Hold Skill DMG",
-                    "text": "246.2%",
-                    "value": 2.462399959564209
-                  },
-                  {
-                    "name": "Steady State Core DMG",
-                    "text": "136.8%",
-                    "value": 1.3680000305175781
-                  },
-                  {
-                    "name": "Steady State Core Gradient Beacon Consumption DMG",
-                    "text": "152%",
-                    "value": 1.5199999809265137
-                  },
-                  {
-                    "name": "Steady State Core Detonation DMG",
-                    "text": "174.8%",
-                    "value": 1.7480000257492065
-                  },
-                  {
-                    "name": "Detection Core Duration",
-                    "text": "25",
-                    "value": 25.0
-                  },
-                  {
-                    "name": "CD",
-                    "text": "18",
-                    "value": 18.0
-                  }
-                ],
-                "title": "Principle: Variable Detection",
-                "values_label": "Lv. 10"
-              },
-              {
-                "category": "Talents",
-                "defs": [],
-                "lines": [
-                  "Let the elements burst forth like inspiration itself! Deals AoE Electro DMG and creates 3 Gradient Beacons.",
-                  "Skill DMG: 633.8% ATK + 1267.7% Elemental Mastery",
-                  "Gradient Beacons Generated: 3",
-                  "CD: 15s",
-                  "Energy Cost: 60"
-                ],
-                "meta": "",
-                "params": [
-                  {
-                    "name": "Skill DMG",
-                    "text": "633.8%",
-                    "value": 6.338399887084961
-                  },
-                  {
-                    "name": "Gradient Beacons Generated",
-                    "text": "3",
-                    "value": 3.0
-                  },
-                  {
-                    "name": "CD",
-                    "text": "15",
-                    "value": 15.0
-                  },
-                  {
-                    "name": "Energy Cost",
-                    "text": "60",
-                    "value": 60.0
-                  }
-                ],
-                "title": "Analysis: Gradient Theory",
-                "values_label": "Lv. 10"
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "The Detection Core created by the Elemental Skill Principle: Variable Detection is enhanced. Depending on the state of the Detection Core created:",
-                  "·Steady State: All nearby party members gain 30 Elemental Mastery for each Gradient Beacon Mitya has;",
-                  "·Overloaded: After nearby party members trigger Stellar-Conduct reactions, instead obtain 1 Gradient Beacon every 1.5s for 6s."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Baseline Stress Test",
-                "values_label": ""
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "The duration of Gradient Beacons is increased to 10s. Additionally, Mitya's CRIT Rate increases by 5% for 15s after creating a Gradient Beacon. This effect can stack up to 4 times."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Explosive Reagent: Safe Limits Exceeded",
-                "values_label": ""
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "When party members trigger Superconduct, it will be changed to Stellar-Conduct. Stellar-Conduct reactions will no longer create Starlight Prisms, and will instead create 1 Gradient Beacon nearby every 1.5s for 3s. These Beacons can be carried by Mitya and transform the area around them into an even larger Polestar Field.",
-                  "Additionally, the Base Stellar-Conduct DMG dealt by all nearby party members will be increased based on Mitya's Elemental Mastery: Every point of Elemental Mastery he has increases Base Stellar-Conduct DMG by 0.028%. The maximum Base DMG increase that can be gained this way is 14%. While within a Polestar Field, Mitya will also enter the Radiance: Stellar-Conduct state."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Stellar Jubilee: Top-Secret Protocol",
-                "values_label": ""
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "When destructible rocks are nearby, Detection Core: Steady State can quickly clear them.",
-                  "Additionally, when Mitya is in the party, creating Prime Ice Construct: Basic Heat Source does not consume Kresnik Energy."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Energy Catalysis",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "The maximum number of Gradient Beacons Mitya can carry is increased to 5. Using the Elemental Skill Principle: Variable Detection additionally creates 1 Gradient Beacon.",
-                  "While the Detection Core is present, your own active character's CRIT DMG is increased by 40%.",
-                  "Additionally, Mitya regenerates 10 Elemental Energy when a Gradient Beacon is created. This effect can be triggered once every 8s."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C1 — The Observer Seeking What Is Missing",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "While the Detection Core is present, all opponents within the Polestar Field have their Cryo RES and Electro RES decreased by 20%.",
-                  "Additionally, if the Detection Core created is:",
-                  "·Steady State: All nearby party members gain 123 Elemental Mastery;",
-                  "·Overloaded: Your active character gains 234 Elemental Mastery."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C2 — The Matter That Slumbers Beyond Inertness",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Increases the Level of the Elemental Skill Principle: Variable Detection by 3.",
-                  "Maximum upgrade level is 15."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C3 — The Knotted String of Invariant Topology",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Detection Cores created by Mitya himself deals 1 instance of AoE Electro DMG equal to 300% of Mitya's Elemental Mastery to nearby opponents for every 5 Gradient Beacons consumed while it is on the field. This DMG is considered Stellar-Conduct reaction DMG."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C4 — The Isotopes Born of Decay",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Increases the Level of Normal Attack: Chain Reaction by 3.",
-                  "Maximum upgrade level is 15."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C5 — The Periodic Law That Orders All",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Detection Core is enhanced. If the Detection Core:",
-                  "· Is in the Steady State: Detection Core deals 115% of its original DMG.",
-                  "· Is Overloaded: There is a 34% chance to create 1 new Gradient Beacon whenever Mitya consumes a Gradient Beacon with the Detection Core.",
-                  "Additionally, Stellar-Conduct reaction DMG dealt by all nearby party members is Elevated by 20%."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C6 — Elemental Transition at the Gate of Reason",
-                "values_label": ""
-              }
-            ],
-            "stats_header": "Base Stats",
-            "stats_lines": [
-              "CRIT Rate 5%",
-              "CRIT DMG 50%",
-              "Elemental Mastery 100"
-            ],
-            "subtext": "-# Rules Set at Naught · Constellation: Nodus Gordianus"
-          },
-          "kind": "character",
-          "revision": "7.1.53",
-          "signature": "7e9f096e193a3bba",
-          "truncated": false,
-          "ts": 1792929316
-        },
-        "gi:10000137": {
-          "content_signature": "1509bca2727bbd3d",
-          "data": {
-            "element": "Electro",
-            "id": "gi:10000137",
-            "image_url": "",
-            "mechanic_defs": [],
-            "name": "Valeriy",
-            "page_url": "https://gi.gachabase.net/characters/10000137/valeriy/beta?lang=en",
-            "rarity": 4,
-            "role": "Sword",
-            "sections": [
-              {
-                "category": "Talents",
-                "defs": [],
-                "lines": [
-                  "Normal Attack",
-                  "Performs up to 3 consecutive sword strikes.",
-                  "Charged Attack",
-                  "Consumes a certain amount of Stamina to leap forward and slam the ground, dealing Physical DMG to nearby opponents.",
-                  "When Valeriy has at least 40 Impact Momentum, he will consume all Impact Momentum to instead perform the special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment.",
-                  "Plunging Attack",
-                  "Plunges from mid-air to strike the ground below, damaging opponents along the path and dealing AoE DMG upon impact.",
-                  "1-Hit DMG: 68.7%",
-                  "2-Hit DMG: 62.1%",
-                  "3-Hit DMG: 96.1%",
-                  "Charged Attack DMG: 212.2%",
-                  "Direct-Fire Mortar: Point-Blank Bombardment DMG: 435.5%",
-                  "Charged Attack Stamina Cost: 20",
-                  "Electro DMG Bonus: 46.2% ATK",
-                  "Stellar-Conduct DMG Bonus: 138.6% ATK",
-                  "Offensive Directive Stacks: 15",
-                  "Offensive Directive Duration: 18s",
-                  "Plunge DMG: 135.3%",
-                  "Low/High Plunge DMG: 270.5%/337.9%"
-                ],
-                "meta": "",
-                "params": [
-                  {
-                    "name": "1-Hit DMG",
-                    "text": "68.7%",
-                    "value": 0.6874499917030334
-                  },
-                  {
-                    "name": "2-Hit DMG",
-                    "text": "62.1%",
-                    "value": 0.6206200122833252
-                  },
-                  {
-                    "name": "3-Hit DMG",
-                    "text": "96.1%",
-                    "value": 0.9611600041389465
-                  },
-                  {
-                    "name": "Charged Attack DMG",
-                    "text": "212.2%",
-                    "value": 2.122119903564453
-                  },
-                  {
-                    "name": "Direct-Fire Mortar: Point-Blank Bombardment DMG",
-                    "text": "435.5%",
-                    "value": 4.354800224304199
-                  },
-                  {
-                    "name": "Charged Attack Stamina Cost",
-                    "text": "20",
-                    "value": 20.0
-                  },
-                  {
-                    "name": "Electro DMG Bonus",
-                    "text": "46.2%",
-                    "value": 0.4620800018310547
-                  },
-                  {
-                    "name": "Stellar-Conduct DMG Bonus",
-                    "text": "138.6%",
-                    "value": 1.386240005493164
-                  },
-                  {
-                    "name": "Offensive Directive Stacks",
-                    "text": "15",
-                    "value": 15.0
-                  },
-                  {
-                    "name": "Offensive Directive Duration",
-                    "text": "18",
-                    "value": 18.0
-                  },
-                  {
-                    "name": "Plunge DMG",
-                    "text": "135.3%",
-                    "value": 1.3529880046844482
-                  },
-                  {
-                    "name": "Low/High Plunge DMG",
-                    "text": "270.5%",
-                    "value": 2.7054030895233154
-                  }
-                ],
-                "title": "Guard Tactics: Sword and Shield",
-                "values_label": "Lv. 10"
-              },
-              {
-                "category": "Talents",
-                "defs": [],
-                "lines": [
-                  "Valeriy raises his shield cannon and charges forward, dealing AoE Electro DMG, gaining 40 Impact Momentum, and deploying a Supercharged Shield.",
-                  "The Supercharged Shield's DMG Absorption scales with Valeriy's ATK, and has 250% absorption efficiency against Electro DMG.",
-                  "Skill DMG: 315.4%",
-                  "Shield DMG Absorption: 396.9% ATK + 3110.64",
-                  "Shield Duration: 18s",
-                  "CD: 10s"
-                ],
-                "meta": "",
-                "params": [
-                  {
-                    "name": "Skill DMG",
-                    "text": "315.4%",
-                    "value": 3.1540000438690186
-                  },
-                  {
-                    "name": "Shield DMG Absorption",
-                    "text": "396.9%",
-                    "value": 3.9690239429473877
-                  },
-                  {
-                    "name": "Shield Duration",
-                    "text": "18",
-                    "value": 18.0
-                  },
-                  {
-                    "name": "CD",
-                    "text": "10",
-                    "value": 10.0
-                  }
-                ],
-                "title": "Active Defense: Bastion Charge",
-                "values_label": "Lv. 10"
-              },
-              {
-                "category": "Talents",
-                "defs": [],
-                "lines": [
-                  "Deals AoE Electro DMG to nearby opponents and fires a Thunderburst Shell high into the air. The Thunderburst Shell disperses into a barrage of projectiles that rain down, dealing AoE Electro DMG to nearby opponents.",
-                  "Skill DMG: 256.7%",
-                  "Thunderburst Shell DMG: 59.9%",
-                  "Duration: 12s",
-                  "CD: 15s",
-                  "Energy Cost: 60"
-                ],
-                "meta": "",
-                "params": [
-                  {
-                    "name": "Skill DMG",
-                    "text": "256.7%",
-                    "value": 2.5672800540924072
-                  },
-                  {
-                    "name": "Thunderburst Shell DMG",
-                    "text": "59.9%",
-                    "value": 0.5988799929618835
-                  },
-                  {
-                    "name": "Duration",
-                    "text": "12",
-                    "value": 12.0
-                  },
-                  {
-                    "name": "CD",
-                    "text": "15",
-                    "value": 15.0
-                  },
-                  {
-                    "name": "Energy Cost",
-                    "text": "60",
-                    "value": 60.0
-                  }
-                ],
-                "title": "Focused Fire: Lightning Salvo",
-                "values_label": "Lv. 10"
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "Valeriy gains 5 Impact Momentum whenever another nearby active character in the party hits an opponent with an attack whose Elemental Type is Electro while the Thunderburst Shells from his Elemental Burst Focused Fire: Lightning Salvo are falling. He can gain up to 80 Impact Momentum in this way after each use of his Elemental Burst."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Advance With the Creeping Barrage",
-                "values_label": ""
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "Offensive Directive is enhanced based on the amount of Impact Momentum consumed when performing his special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment. Each point consumed further increases the DMG granted by Offensive Directive. If Valeriy is:",
-                  "·In the Radiance: Stellar-Conduct state: Each point of Impact Momentum consumed increases this DMG by an amount equal to 0.9% of Valeriy's ATK;",
-                  "·Not in the Radiance: Stellar-Conduct state: Each point of Impact Momentum consumed increases this DMG by an amount equal to 0.3% of Valeriy's ATK."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Into the Breach",
-                "values_label": ""
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "Valeriy enters the Radiance: Stellar-Conduct state while within a Polestar Field."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Subzero Conditioning",
-                "values_label": ""
-              },
-              {
-                "category": "Passives",
-                "defs": [],
-                "lines": [
-                  "Gains 25% more rewards when dispatched on a Snezhnaya (not including Nod-Krai) Expedition for 20 hours."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Tundra Operational Intelligence",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Valeriy regenerates 6 Elemental Energy after performing the special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment. For every 10 Impact Momentum consumed beyond 40 when performing this special Charged Attack, he regenerates an additional 1.5 Elemental Energy. Each time he performs Direct-Fire Mortar: Point-Blank Bombardment, he can regenerate up to 15 Elemental Energy in this way. This effect can trigger once every 15s.",
-                  "Additionally, each time Valeriy enters combat, the first time he uses his Elemental Skill Active Defense: Bastion Charge, he gains an additional amount of Impact Momentum equal to 150% of the amount normally gained."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C1 — The Cadence of Suppressive Fire",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "All nearby party members gain 100 Elemental Mastery for 18s after Valeriy uses his Elemental Skill Active Defense: Bastion Charge.",
-                  "Additionally, while protected by a Supercharged Shield, if Valeriy is already at maximum Impact Momentum, any further Impact Momentum he would gain is instead converted into increased DMG Absorption for the shield. Each point of excess Impact Momentum increases the Supercharged Shield's DMG Absorption by an amount equal to 8% of Valeriy's ATK. Up to 20 excess Impact Momentum can be converted in this way."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C2 — Ranks That Charge as One",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Increases the Level of Normal Attack Guard Tactics: Sword and Shield by 3.",
-                  "Maximum upgrade level is 15."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C3 — Vigilance at Close Quarters",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Impact Momentum's limit is increased by 30, and its charging efficiency is increased by 30%.",
-                  "Additionally, the Ascension Talent Advance With the Creeping Barrage is enhanced: The maximum amount of Impact Momentum that can be gained from this Talent after using the Elemental Burst is 104. You must unlock the Ascension Talent Advance With the Creeping Barrage to gain access to this effect."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C4 — Fortitude Unshaken by Attrition",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "Increases the Level of the Elemental Skill Active Defense: Bastion Charge by 3.",
-                  "Maximum upgrade level is 15."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C5 — Resolve to Divide and Destroy",
-                "values_label": ""
-              },
-              {
-                "category": "Constellations",
-                "defs": [],
-                "lines": [
-                  "The special Charged Attack Direct-Fire Mortar: Point-Blank Bombardment and Thunderburst Shells from Elemental Burst Focused Fire: Lightning Salvo are enhanced: Their DMG is increased by 100%, and opponents they hit have the CRIT Rate of Electro DMG they take increased by 10% for 7s. If the Electro DMG taken is Stellar-Conduct reaction DMG, that DMG instance's CRIT DMG is also increased by 40%."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "C6 — The Strength to Breach Enemy Lines",
-                "values_label": ""
-              }
-            ],
-            "stats_header": "Base Stats",
-            "stats_lines": [
-              "CRIT Rate 5%",
-              "CRIT DMG 50%"
-            ],
-            "subtext": "-# Fort Fulguration · Constellation: Ursus Magnus"
-          },
-          "kind": "character",
-          "revision": "7.1.53",
-          "signature": "92889f27f43e28c6",
-          "truncated": false,
-          "ts": 1792929316
-        },
-        "gi:14525": {
-          "content_signature": "aac669af4cd7b25e",
-          "data": {
-            "category_label": "Weapons",
-            "effect_title": "Dawnstar's Flowing Trail",
-            "id": "gi:14525",
-            "image_url": "",
-            "lines": [
-              "Increases CRIT DMG by 24%. The equipping character gains the Crystal Compounding effect when they use their Elemental Skill, increasing Elemental Mastery by 48 for 20s. During this time, the equipping character gains a stack of Law of Combustion when a nearby party member triggers an Elemental Reaction. Each stack increases Elemental Mastery by an additional 24. Max 3 stacks. These stacks last until Crystal Compounding ends or the equipping character uses their Elemental Skill again.",
-              "Radiance: Stellar-Conduct: Each Law of Combustion stack also increases the equipping character's Stellar-Conduct CRIT DMG by 12%."
-            ],
-            "name": "Starsealed Edict",
-            "page_url": "https://gi.gachabase.net/weapons/14525/starsealed-edict/beta?lang=en",
-            "rarity": 5,
-            "stats_line": "Base ATK 542",
-            "sub_type": ""
-          },
-          "kind": "weapon",
-          "revision": "7.1.53",
-          "signature": "b4f9778cfd985bef",
-          "truncated": false,
-          "ts": 1792929316
-        }
-      },
-      "source_revision": "7.1.53",
-      "source_version": "7.1.53"
+      "snapshots": {},
+      "source_revision": "",
+      "source_version": ""
     },
     "starrail": {
-      "last_poll": 1792929316,
-      "latest_rev": "0c3f02dd97c76eee",
-      "locked_images": {
-        "hsr:1511": {
-          "locked": true,
-          "ts": 1792929316,
-          "url": "https://static.nanoka.cc/assets/hsr/avatardrawcard/1511.webp"
-        }
-      },
-      "paused": true,
-      "revisions": {
-        "0c3f02dd97c76eee": {
-          "batches": {
-            "b4c24ea740ac62db": {
-              "messages": [
-                "1563883815733174286",
-                "1563883841385402520",
-                "1563883863896498230",
-                "1563883887099256833",
-                "1563883909308096593"
-              ],
-              "signature": "bb2ea872edca9d6e",
-              "status": "posted",
-              "ts": 1792929316
-            }
-          },
-          "characters": {
-            "hsr:1511": 0
-          },
-          "label": "v4.6.54",
-          "messages": [
-            "1563883815733174286",
-            "1563883841385402520",
-            "1563883863896498230",
-            "1563883887099256833",
-            "1563883909308096593"
-          ],
-          "more": false,
-          "processed": [
-            "character:hsr:1511",
-            "relic:hsr:329",
-            "relic:hsr:330",
-            "weapon:hsr:22009",
-            "weapon:hsr:23065"
-          ],
-          "source_revision": "4.6.54",
-          "source_version": "4.6.54",
-          "status": "posted",
-          "ts": 1792929316
-        }
-      },
+      "format_epoch": 2,
+      "last_poll": 1792980923,
+      "latest_rev": "",
+      "locked_images": {},
+      "revisions": {},
       "route": "d6cfe8654063c7ee",
-      "snapshots": {
-        "hsr:1511": {
-          "content_signature": "052928c63947ff8e",
-          "data": {
-            "element": "Quantum",
-            "id": "hsr:1511",
-            "image_url": "https://static.nanoka.cc/assets/hsr/avatardrawcard/1511.webp",
-            "mechanic_defs": [],
-            "name": "Aeon ★ Aha",
-            "page_url": "https://hsr.gachabase.net/characters/1511/aeon-aha/beta?lang=en",
-            "rarity": 4,
-            "role": "Elation",
-            "sections": [
-              {
-                "category": "Basic ATK",
-                "defs": [
-                  [
-                    "Elation DMG",
-                    "The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                  ]
-                ],
-                "lines": [
-                  "Deals 70% Quantum <u>Elation DMG</u> to one designated enemy target.",
-                  "**(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                ],
-                "meta": "Single Target",
-                "params": [],
-                "title": "Basic ATK: Starfrost, Showtime!",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [
-                  [
-                    "Elation DMG",
-                    "The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                  ],
-                  [
-                    "Follow-Up ATK",
-                    "Unleashes an extra attack on the target. This effect is triggered automatically when requirements are met."
-                  ]
-                ],
-                "lines": [
-                  "Causes one designated ally character (except this unit) to gain the \"Emanator of Elation\" state, then immediately launches a <u>Follow-up ATK</u>, dealing 62.5% Quantum <u>Elation DMG</u> to all enemies. The \"Emanator of Elation\" state lasts for the entire battle until switching to the next target. The target with the \"Emanator of Elation\" state has their Elation stat increased by 25% and, at the start of their turn, causes Aeon ★ Aha to gain 1 point(s) of \"Wishpower.\"",
-                  "**(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.",
-                  "**(Follow-Up ATK)** Unleashes an extra attack on the target. This effect is triggered automatically when requirements are met."
-                ],
-                "meta": "Support",
-                "params": [],
-                "title": "Skill: This Emanator Was Certified by Aha™",
-                "values_label": ""
-              },
-              {
-                "category": "Ultimate",
-                "defs": [
-                  [
-                    "Aha",
-                    "When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed."
-                  ],
-                  [
-                    "Action Advance",
-                    "Reduces the target's waiting interval before the next action."
-                  ],
-                  [
-                    "Elation DMG",
-                    "The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                  ]
-                ],
-                "lines": [
-                  "Causes <u>Aha</u>'s <u>action to advance</u> by 20%. Aeon ★ Aha gains the \"Faces of Elation\" state, lasting for 3 turn(s). At the start of each Aeon ★ Aha's turn, duration decreases by 1. Deals 240% Quantum <u>Elation DMG</u> to all enemies, then deals 5 instance(s) of DMG. Each instance deals 72% Quantum <u>Elation DMG</u> to one random enemy.",
-                  "**(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed.",
-                  "**(Action Advance)** Reduces the target's waiting interval before the next action.",
-                  "**(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                ],
-                "meta": "AoE",
-                "params": [],
-                "title": "Ultimate: Aha! Let There Be Laughter",
-                "values_label": ""
-              },
-              {
-                "category": "Talent",
-                "defs": [
-                  [
-                    "Punchline",
-                    "Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG."
-                  ],
-                  [
-                    "Aha",
-                    "When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed."
-                  ]
-                ],
-                "lines": [
-                  "The Ultimate can be activated once \"Wishpower\" reaches 8 point(s). Wishpower can overflow until 10 after reaching its max. Aeon ★ Aha gains 1 point(s) of \"Wishpower\" after using Basic ATK, Skill, or Elation Skill. Once allies' <u>Punchline</u> reaches 40 point(s) for the first time, Aeon ★ Aha will immediately gain 1 points of \"Wishpower\" and increase all allies' CRIT DMG by 50%, lasting for 3 turn(s). This can be triggered again after <u>Aha</u>'s turn ends.",
-                  "**(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.",
-                  "**(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed."
-                ],
-                "meta": "Enhance",
-                "params": [],
-                "title": "Talent: Work Wonders with THEM",
-                "values_label": ""
-              },
-              {
-                "category": "Skills",
-                "defs": [],
-                "lines": [
-                  "Attacks an enemy, and after entering combat, reduces their Toughness of the corresponding Type."
-                ],
-                "meta": "Maze Attack",
-                "params": [],
-                "title": "Attack",
-                "values_label": ""
-              },
-              {
-                "category": "Technique",
-                "defs": [
-                  [
-                    "Aha",
-                    "When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed."
-                  ],
-                  [
-                    "Punchline",
-                    "Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG."
-                  ],
-                  [
-                    "Extra Turn",
-                    "Gain 1 extra turn that won't expend your remaining turns when taking action. During this extra turn, no Ultimate can be used."
-                  ]
-                ],
-                "lines": [
-                  "After using the Technique, creates a Special Dimension around this unit lasting 20 second(s). Enemies within the Special Dimension are inflicted with \"Misjudgment.\" Enemies inflicted with \"Misjudgment\" cannot detect ally targets. After entering combat, <u>Aha</u> immediately gains 1 <u>extra turn</u> that takes a fixed 20 <u>Punchline</u> into account. Only 1 dimension effect created by allies can exist at the same time.",
-                  "**(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed.",
-                  "**(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.",
-                  "**(Extra Turn)** Gain 1 extra turn that won't expend your remaining turns when taking action. During this extra turn, no Ultimate can be used."
-                ],
-                "meta": "Enhance",
-                "params": [],
-                "title": "Technique: ABRACADABRA!",
-                "values_label": ""
-              },
-              {
-                "category": "Elation Skill",
-                "defs": [
-                  [
-                    "Elation DMG",
-                    "The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                  ],
-                  [
-                    "True DMG",
-                    "Non-Type DMG that is not affected by any effects. This DMG is not considered as launching 1 attack."
-                  ]
-                ],
-                "lines": [
-                  "Ignores <u>Participant ID</u> and is always used at the end of the Aha Instant. Deals Quantum <u>Elation DMG</u> equal to 75% to all enemies, then deals <u>True DMG</u> equal to 20% of total non-True DMG dealt by ally targets this Aha Instant, equally distributed among all enemies.",
-                  "**(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.",
-                  "**(True DMG)** Non-Type DMG that is not affected by any effects. This DMG is not considered as launching 1 attack."
-                ],
-                "meta": "AoE",
-                "params": [],
-                "title": "Elation Skill: Yes Aha At Full Moon",
-                "values_label": ""
-              },
-              {
-                "category": "Innate Trace",
-                "defs": [
-                  [
-                    "Path of Elation Ascension",
-                    "When Aeon ★ Aha has the \"Faces of Elation\" state, \"Punchline\" and \"Certified Banger\" are enhanced to \"Bliss\" and \"Party Trick,\" and ally characters on the Path of Elation will activate their \"Innate Trace\" effects."
-                  ],
-                  [
-                    "Punchline",
-                    "Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG."
-                  ],
-                  [
-                    "Certified Banger",
-                    "Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently."
-                  ],
-                  [
-                    "Bliss",
-                    "Gaining Bliss is considered the same as gaining Punchline. At the end of the \"Aha Instant\" turn, a portion of the value taken into account is regained as Bliss."
-                  ],
-                  [
-                    "Party Trick",
-                    "When gaining the \"Party Trick\" state, it is considered the same as gaining the \"Certified Banger\" state. The \"Party Trick\" will affect the \"Innate Trace\" effects of ally Elation characters."
-                  ]
-                ],
-                "lines": [
-                  "While possessing the \"Faces of Elation\" state, Aeon ★ Aha causes allies' <u>Path of Elation to ascend</u>, enhancing <u>Punchline</u> and the \"<u>Certified Banger</u>\" state into <u>Bliss</u> and the \"<u>Party Trick</u>\" state. <u>Bliss</u> recovers 10% of the consumed Punchline at the end of the \"Aha Instant\" turn. During \"Faces of Elation,\" Aeon ★ Aha's CRIT Rate increases by 20%, and the DMG dealt by Aeon ★ Aha ignores 60% of the enemy target's DEF.",
-                  "**(Path of Elation Ascension)** When Aeon ★ Aha has the \"Faces of Elation\" state, \"Punchline\" and \"Certified Banger\" are enhanced to \"Bliss\" and \"Party Trick,\" and ally characters on the Path of Elation will activate their \"Innate Trace\" effects.",
-                  "**(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.",
-                  "**(Certified Banger)** Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently.",
-                  "**(Bliss)** Gaining Bliss is considered the same as gaining Punchline. At the end of the \"Aha Instant\" turn, a portion of the value taken into account is regained as Bliss.",
-                  "**(Party Trick)** When gaining the \"Party Trick\" state, it is considered the same as gaining the \"Certified Banger\" state. The \"Party Trick\" will affect the \"Innate Trace\" effects of ally Elation characters."
-                ],
-                "meta": "Enhance",
-                "params": [],
-                "title": "Innate Trace: Faces of Elation ★ Ex Nihilo",
-                "values_label": ""
-              },
-              {
-                "category": "Talent",
-                "defs": [
-                  [
-                    "Elation Debt",
-                    "Elation Debt occupies Max HP. If the occupied portion includes current HP, that portion of current HP is immediately lost."
-                  ]
-                ],
-                "lines": [
-                  "When Aeon ★ Aha and teammates deal DMG, additionally deal <u>\"Elation Debt\"</u> effect equal to 25% of DMG to the enemy target. During the enemy target's phase transition, they maintain the <u>\"Elation Debt\"</u> value, with a maximum not exceeding 10% of the target's Max HP.",
-                  "**(Elation Debt)** Elation Debt occupies Max HP. If the occupied portion includes current HP, that portion of current HP is immediately lost."
-                ],
-                "meta": "Enhance",
-                "params": [],
-                "title": "Talent: The True Story of Aha",
-                "values_label": ""
-              },
-              {
-                "category": "Exclusive Effect",
-                "defs": [],
-                "lines": [
-                  "Effect obtained after acquiring Aeon ★ Aha or when Aeon ★ Aha is in the current team: In combat, Aeon ★ Aha will personally lead the \"Aha Instant\" and can fast-forward the Elation Skill being used. The base SPD of \"Aha Instant\" increases from 80 to Aeon ★ Aha's base SPD."
-                ],
-                "meta": "Support",
-                "params": [],
-                "title": "Aha Instant Incoming",
-                "values_label": ""
-              },
-              {
-                "category": "Eidolons",
-                "defs": [
-                  [
-                    "Elation DMG",
-                    "The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                  ],
-                  [
-                    "Merrymake",
-                    "A special effect that affects Elation DMG and can additionally boost Elation DMG dealt."
-                  ]
-                ],
-                "lines": [
-                  "When entering combat, immediately gains 5 point(s) of \"Wishpower.\" When Aeon ★ Aha is present, <u>merrymakes</u> <u>Elation DMG</u> dealt by all ally targets by 15%.",
-                  "**(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.",
-                  "**(Merrymake)** A special effect that affects Elation DMG and can additionally boost Elation DMG dealt."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "E1 — Who Giggled at the Primordial Hush?",
-                "values_label": ""
-              },
-              {
-                "category": "Eidolons",
-                "defs": [
-                  [
-                    "Path of Elation Ascension",
-                    "When Aeon ★ Aha has the \"Faces of Elation\" state, \"Punchline\" and \"Certified Banger\" are enhanced to \"Bliss\" and \"Party Trick,\" and ally characters on the Path of Elation will activate their \"Innate Trace\" effects."
-                  ],
-                  [
-                    "Punchline",
-                    "Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG."
-                  ],
-                  [
-                    "Certified Banger",
-                    "Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently."
-                  ],
-                  [
-                    "Bliss",
-                    "Gaining Bliss is considered the same as gaining Punchline. At the end of the \"Aha Instant\" turn, a portion of the value taken into account is regained as Bliss."
-                  ],
-                  [
-                    "Party Trick",
-                    "When gaining the \"Party Trick\" state, it is considered the same as gaining the \"Certified Banger\" state. The \"Party Trick\" will affect the \"Innate Trace\" effects of ally Elation characters."
-                  ]
-                ],
-                "lines": [
-                  "Enhances <u>Path of Elation Ascension</u> effects:",
-                  "…",
-                  "-# ⚠️ Unresolved backend placeholder in this revision's data — the enhanced effect is not readable yet.",
-                  "**(Path of Elation Ascension)** When Aeon ★ Aha has the \"Faces of Elation\" state, \"Punchline\" and \"Certified Banger\" are enhanced to \"Bliss\" and \"Party Trick,\" and ally characters on the Path of Elation will activate their \"Innate Trace\" effects.",
-                  "**(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG.",
-                  "**(Certified Banger)** Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently.",
-                  "**(Bliss)** Gaining Bliss is considered the same as gaining Punchline. At the end of the \"Aha Instant\" turn, a portion of the value taken into account is regained as Bliss.",
-                  "**(Party Trick)** When gaining the \"Party Trick\" state, it is considered the same as gaining the \"Certified Banger\" state. The \"Party Trick\" will affect the \"Innate Trace\" effects of ally Elation characters."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "E2 — Between THEIR Eyes and Yours",
-                "values_label": ""
-              },
-              {
-                "category": "Eidolons",
-                "defs": [],
-                "lines": [
-                  "Ultimate Lv. +2, up to a maximum of Lv. 15.",
-                  "Basic ATK Lv. +1, up to a maximum of Lv. 10.",
-                  "Elation Skill Lv. +1, up to a maximum of Lv. 15."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "E3 — A Stacked Deck of Sorrow and Joy",
-                "values_label": ""
-              },
-              {
-                "category": "Eidolons",
-                "defs": [
-                  [
-                    "True DMG",
-                    "Non-Type DMG that is not affected by any effects. This DMG is not considered as launching 1 attack."
-                  ],
-                  [
-                    "Elation DMG",
-                    "The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects."
-                  ],
-                  [
-                    "Certified Banger",
-                    "Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently."
-                  ]
-                ],
-                "lines": [
-                  "The multiplier of the <u>True DMG</u> dealt by Elation Skills increases by 25% of the original multiplier. When Aeon ★ Aha deals <u>Elation DMG</u>, an additional 100% of the cumulative \"<u>Certified Banger</u>\" stacks possessed by teammates will be taken into account.",
-                  "**(True DMG)** Non-Type DMG that is not affected by any effects. This DMG is not considered as launching 1 attack.",
-                  "**(Elation DMG)** The more Punchline taken into account, and the higher the Elation and Character Level, the greater the Elation DMG dealt.\nElation DMG is not affected by DMG Boost effects.",
-                  "**(Certified Banger)** Characters participating in the Aha Instant gain the \"Certified Banger\" state. And the Punchline points from the current Aha Instant are taken into account for this state, lasting for 2 turns. Ability effects and Elation DMG produced by the \"Certified Banger\" state are calculated based on the Punchline points taken into account.\nPunchline points taken into account for multiple \"Certified Banger\" states are combined for the calculation.\nThe duration of each \"Certified Banger\" state is tracked independently."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "E4 — A Joke's Fate Boxed in Black",
-                "values_label": ""
-              },
-              {
-                "category": "Eidolons",
-                "defs": [],
-                "lines": [
-                  "Skill Lv. +2, up to a maximum of Lv. 15.",
-                  "Talent Lv. +2, up to a maximum of Lv. 15.",
-                  "Elation Skill Lv. +1, up to a maximum of Lv. 15."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "E5 — Moi Onstage and Me Offstage",
-                "values_label": ""
-              },
-              {
-                "category": "Eidolons",
-                "defs": [
-                  [
-                    "Elation Debt",
-                    "Elation Debt occupies Max HP. If the occupied portion includes current HP, that portion of current HP is immediately lost."
-                  ],
-                  [
-                    "Aha",
-                    "When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed."
-                  ],
-                  [
-                    "Action Advance",
-                    "Reduces the target's waiting interval before the next action."
-                  ],
-                  [
-                    "Punchline",
-                    "Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG."
-                  ]
-                ],
-                "lines": [
-                  "Enemy targets always have the <u>\"Elation Debt\"</u> effect that is at least equal to 20% of the target's Max HP. The first time Aeon ★ Aha uses THEIR Ultimate, <u>Aha</u>'s <u>action advances</u> by 100%, and Aha gains 100 <u>Punchline(s)</u>.",
-                  "**(Elation Debt)** Elation Debt occupies Max HP. If the occupied portion includes current HP, that portion of current HP is immediately lost.",
-                  "**(Aha)** When taking action, triggers an Aha Instant and causes units capable of using Elation Skills to each use their Elation Skill 1 time. If there are no units capable of using Elation Skills when Aha takes action, Aha will use \"Let There Be Laughter.\"\nThe Aha Instant lasts until the final Elation Skill finishes this time.\nWhen the Aha Instant ends, participating characters gain the \"Certified Banger\" state for the Punchline points taken into account this time, lasting for 2 turns. After Aha takes action, all Punchlines will be consumed.",
-                  "**(Action Advance)** Reduces the target's waiting interval before the next action.",
-                  "**(Punchline)** Punchline is shared by the whole team. When dealing Elation DMG, the more Punchline taken into account, the higher the Elation DMG."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "E6 — For THEY Said: You Are Elation",
-                "values_label": ""
-              }
-            ],
-            "stats_header": "Base Stats",
-            "stats_lines": [
-              "Lv. 80 — HP 1048 · ATK 679 · DEF 509",
-              "SPD 94",
-              "Max Energy 8",
-              "CRIT Rate 5%",
-              "CRIT DMG 50%"
-            ],
-            "subtext": ""
-          },
-          "kind": "character",
-          "revision": "4.6.54",
-          "signature": "65628b76f5c0c245",
-          "truncated": false,
-          "ts": 1792929316
-        },
-        "hsr:22009": {
-          "content_signature": "a7e558db53c43c05",
-          "data": {
-            "category_label": "Light Cones",
-            "effect_title": "Conspirator",
-            "id": "hsr:22009",
-            "image_url": "",
-            "lines": [
-              "For every Elation character on the team, increase the wearer's CRIT DMG by 6%. When Aeon ★ Aha is on the field, the wearer's CRIT DMG additionally increases by 12%."
-            ],
-            "name": "See You at the World's End!",
-            "page_url": "https://hsr.gachabase.net/light-cones/22009/see-you-at-the-world-s-end/beta?lang=en",
-            "rarity": null,
-            "stats_line": "Lv. 80 — HP 847 · ATK 476 · DEF 397",
-            "sub_type": ""
-          },
-          "kind": "weapon",
-          "revision": "4.6.54",
-          "signature": "3fdb268bdf868b38",
-          "truncated": false,
-          "ts": 1792929316
-        },
-        "hsr:23065": {
-          "content_signature": "dfad8dd75b35bef5",
-          "data": {
-            "category_label": "Light Cones",
-            "effect_title": "Improv Tour",
-            "id": "hsr:23065",
-            "image_url": "",
-            "lines": [
-              "Increases the wearer's base Speed by 12. When using a Skill on one other ally, gains 10 Punchline. This effect can trigger at most once every interval of 1 turn(s). Then, causes all allies to ignore 16% of the enemy target's DEF when dealing DMG during this combat. This effect cannot be stacked."
-            ],
-            "name": "Upon the First Echo of \"Aha\"",
-            "page_url": "https://hsr.gachabase.net/light-cones/23065/upon-the-first-echo-of-aha/beta?lang=en",
-            "rarity": null,
-            "stats_line": "Lv. 80 — HP 953 · ATK 582 · DEF 529",
-            "sub_type": ""
-          },
-          "kind": "weapon",
-          "revision": "4.6.54",
-          "signature": "6f3a03595a5c59fd",
-          "truncated": false,
-          "ts": 1792929316
-        },
-        "hsr:329": {
-          "content_signature": "ccaaaf48e2892b68",
-          "data": {
-            "category_label": "Relics & Ornaments",
-            "effect_title": "",
-            "id": "hsr:329",
-            "image_url": "",
-            "lines": [
-              "2-Piece: Increases the wearer's SPD by 6%. When the wearer's Elation reaches 40% or higher, the wearer's action advances by 40% immediately when entering combat."
-            ],
-            "name": "God's Moment of Joy",
-            "page_url": "https://hsr.gachabase.net/relicsets/329/god-s-moment-of-joy/beta?lang=en",
-            "rarity": null,
-            "stats_line": "",
-            "sub_type": ""
-          },
-          "kind": "relic",
-          "revision": "4.6.54",
-          "signature": "92f92d7bbbd5b36a",
-          "truncated": false,
-          "ts": 1792929316
-        },
-        "hsr:330": {
-          "content_signature": "2adf802ca348385f",
-          "data": {
-            "category_label": "Relics & Ornaments",
-            "effect_title": "",
-            "id": "hsr:330",
-            "image_url": "",
-            "lines": [
-              "2-Piece: Increases the wearer's SPD by 6%. When the wearer's SPD reaches 145 or higher, increases all allies' Break Effect by 18% after entering combat. This effect cannot stack."
-            ],
-            "name": "Subspace ASC Center",
-            "page_url": "https://hsr.gachabase.net/relicsets/330/subspace-asc-center/beta?lang=en",
-            "rarity": null,
-            "stats_line": "",
-            "sub_type": ""
-          },
-          "kind": "relic",
-          "revision": "4.6.54",
-          "signature": "824d6a1479239fc2",
-          "truncated": false,
-          "ts": 1792929316
-        }
-      },
-      "source_revision": "4.6.54",
-      "source_version": "4.6.54"
+      "snapshots": {},
+      "source_revision": "",
+      "source_version": ""
     },
     "wuwa": {
-      "last_poll": 1792929316,
+      "format_epoch": 2,
+      "last_poll": 1792980923,
       "latest_rev": "84d9a78104b696a1",
       "locked_images": {},
-      "paused": true,
       "revisions": {
         "84d9a78104b696a1": {
           "batches": {
             "2972f58bc47e09e3": {
               "messages": [
-                "1563884105060454522",
-                "1563884128733102213",
-                "1563884153189961759",
-                "1563884175470235875",
-                "1563884207954993165"
+                "1564100346337558649",
+                "1564100369292853399",
+                "1564100391745093704",
+                "1564100414511644826",
+                "1564100436762300547"
               ],
-              "signature": "05fa39e4b06d038d",
+              "signature": "5cfae408efecc078",
               "status": "posted",
-              "ts": 1792929316
+              "ts": 1792980923
             }
           },
           "characters": {
@@ -1262,11 +48,11 @@
           },
           "label": "v3.8.1",
           "messages": [
-            "1563884105060454522",
-            "1563884128733102213",
-            "1563884153189961759",
-            "1563884175470235875",
-            "1563884207954993165"
+            "1564100346337558649",
+            "1564100369292853399",
+            "1564100391745093704",
+            "1564100414511644826",
+            "1564100436762300547"
           ],
           "more": false,
           "processed": [
@@ -1276,13 +62,13 @@
           "source_revision": "3.8.1",
           "source_version": "3.8.1",
           "status": "posted",
-          "ts": 1792929316
+          "ts": 1792980923
         }
       },
       "route": "f7e18488aac788d3",
       "snapshots": {
         "ww:1512": {
-          "content_signature": "4bc40c7417008854",
+          "content_signature": "c95d0f3c11c7170a",
           "data": {
             "element": "Spectro",
             "id": "ww:1512",
@@ -1297,14 +83,12 @@
                 "category": "Normal Attack",
                 "defs": [],
                 "lines": [
-                  "<size=40>Basic Attack</size>",
-                  "repeatedly or hold Normal Attack to perform up to 4 consecutive attacks, dealing Spectro DMG.",
-                  "<size=10></size>",
-                  "<size=40>Mid-air Attack</size>",
+                  "Basic Attack",
+                  "Press repeatedly or hold Normal Attack to perform up to 4 consecutive attacks, dealing Spectro DMG.",
+                  "Mid-air Attack",
                   "Consume STA to perform a Plunging Attack, dealing Spectro DMG.",
-                  "<size=10></size>",
-                  "<size=40>Dodge Counter</size>",
-                  "Normal Attack shortly after a successful Dodge to attack the target, dealing Spectro DMG. Normal Attack shortly after casting this skill to cast Basic Attack Stage 4.",
+                  "Dodge Counter",
+                  "Press Normal Attack shortly after a successful Dodge to attack the target, dealing Spectro DMG. Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 4.",
                   "**Skill Attributes (Lv. 10)**",
                   "Basic Attack Stage 1 DMG: 135.55%",
                   "Basic Attack Stage 2 DMG: 45.94%+45.94%*3",
@@ -1349,12 +133,11 @@
                 "category": "Resonance Skill",
                 "defs": [],
                 "lines": [
-                  "<size=40>Resonance Skill - Nightmare Blend</size>",
-                  "Lily starts with Heavy Attack - Woven Fairytale by default. When Heavy Attack - Woven Fairytale is active, Resonance Skill to switch to Heavy Attack - Woven Phantasm, dealing Spectro DMG to nearby targets.",
+                  "Resonance Skill - Nightmare Blend",
+                  "Lily starts with Heavy Attack - Woven Fairytale by default. When Heavy Attack - Woven Fairytale is active, press Resonance Skill to switch to Heavy Attack - Woven Phantasm, dealing Spectro DMG to nearby targets.",
                   "This skill shares a Cooldown with Resonance Skill - Reverie Blend.",
-                  "<size=10></size>",
-                  "<size=40>Resonance Skill - Reverie Blend</size>",
-                  "When Heavy Attack - Woven Phantasm is active, Resonance Skill to switch to Heavy Attack - Woven Fairytale, dealing Spectro DMG to nearby targets.",
+                  "Resonance Skill - Reverie Blend",
+                  "When Heavy Attack - Woven Phantasm is active, press Resonance Skill to switch to Heavy Attack - Woven Fairytale, dealing Spectro DMG to nearby targets.",
                   "This skill shares a Cooldown with Resonance Skill - Nightmare Blend.",
                   "**Skill Attributes (Lv. 10)**",
                   "Resonance Skill - Reverie Blend DMG: 290.25%",
@@ -1392,17 +175,14 @@
                 "category": "Resonance Liberation",
                 "defs": [],
                 "lines": [
-                  "Casting this skill sends Lily into Slumberland and grants <te href=151203>Cradle Lullaby</te> to Resonators in the team.",
-                  "<size=10></size>",
-                  "<size=40>Slumber</size>",
-                  "Lasts for 50s. When Lily is in Slumberland, she heals the nearby active Resonator every 3s. During Slumberland, use directional input to command Dreambind to deal Spectro DMG to nearby targets. Dreambind pulls in targets within a certain range every 5s, and stops attacking 10s after movement stops. Resonance Liberation again during Slumberland to end it early.",
+                  "Casting this skill sends Lily into Slumberland and grants Cradle Lullaby to Resonators in the team.",
+                  "Slumber",
+                  "Lasts for 50s. When Lily is in Slumberland, she heals the nearby active Resonator every 3s. During Slumberland, use directional input to command Dreambind to deal Spectro DMG to nearby targets. Dreambind pulls in targets within a certain range every 5s, and stops attacking 10s after movement stops. Press Resonance Liberation again during Slumberland to end it early.",
                   "When Lily is in Slumberland, when a Resonator in the team casts Intro Skill, targets within a certain range are pulled in.",
                   "Switching to another Resonator during Slumberland keeps Lily on the field, and she takes no DMG while in Slumberland. Lily leaves the field when Slumberland ends, or earlier if she gets too far from the active Resonator.",
-                  "<size=10></size>",
-                  "<size=40>Cradle Lullaby</size>",
-                  "Lasts for 25s. While this effect is active, each Intro Skill cast by a Resonator in the team grants 1 stack of <te href=151204>Dream Aroma</te>. This effect is removed when Lily is the incoming Resonator.",
-                  "<size=10></size>",
-                  "<size=40>Dream Aroma</size>",
+                  "Cradle Lullaby",
+                  "Lasts for 25s. While this effect is active, each Intro Skill cast by a Resonator in the team grants 1 stack of Dream Aroma. This effect is removed when Lily is the incoming Resonator.",
+                  "Dream Aroma",
                   "Each stack increases the ATK of all Resonators in the team by 7%, stacking up to 4 times. This effect is removed when Lily is the incoming Resonator or when Cradle Lullaby ends.",
                   "**Skill Attributes (Lv. 10)**",
                   "Cooldown: 25",
@@ -1456,8 +236,7 @@
                   "While the active Resonator has 50% or more HP, Lily grants them 10% DMG Reduction.",
                   "When a Resonator in the team takes a fatal blow, they will not be downed and will instead gain a Shield equal to 10% of Lily's Max HP for 10s. This effect can be triggered once every 5 min.",
                   "Casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End grants Floral Blessing to Resonators in the team.",
-                  "<size=10></size>",
-                  "<size=40>Floral Blessing</size>",
+                  "Floral Blessing",
                   "Lasts for 60s. When a Resonator in the team takes DMG that brings their HP below 50% of their Max HP, they restore HP equal to 50% of their Max HP, and Floral Blessing is removed. This effect can be triggered once every 120s."
                 ],
                 "meta": "",
@@ -1469,13 +248,12 @@
                 "category": "Intro Skill",
                 "defs": [],
                 "lines": [
-                  "<size=40>First Bloom</size>",
-                  "Attack the target, dealing Spectro DMG. Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.",
-                  "<size=10></size>",
-                  "<size=40>Eternal Bloom</size>",
+                  "First Bloom",
+                  "Attack the target, dealing Spectro DMG. Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.",
+                  "Eternal Bloom",
                   "After casting Resonance Liberation - Into the Dream Cradle, Lily's next Intro Skill First Bloom is replaced with Eternal Bloom. When cast, it attacks the target, dealing Spectro DMG.",
                   "For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.",
-                  "Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.",
+                  "Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.",
                   "**Skill Attributes (Lv. 10)**",
                   "Intro Skill - First Bloom DMG: 85.63%+85.63%*3",
                   "Intro Skill - Eternal Bloom DMG: 65.86%",
@@ -1501,38 +279,36 @@
                 "category": "Forte Circuit",
                 "defs": [],
                 "lines": [
-                  "<size=40>Dream Perfume</size>",
+                  "Dream Perfume",
                   "Lily can hold up to 300 points.",
                   "Basic Attack, Mid-air Attack, and Dodge Counter restore Dream Perfume on hit.",
                   "Casting Resonance Skill - Reverie Blend or Resonance Skill - Nightmare Blend restores Dream Perfume.",
-                  "<size=10></size>",
-                  "<size=40>Heavy Attack - Woven Fairytale</size>",
+                  "Heavy Attack - Woven Fairytale",
                   "When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Fairytale, consuming all Dream Perfume to pull in nearby targets, dealing Spectro DMG. During the skill, she gains 10% DMG Reduction and continuously deals Spectro DMG to nearby targets. She also heals all Resonators in the team every second for 2s.",
-                  "Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Fairytale's Finale. Heavy Attack - Fairytale's Finale is automatically cast at the end of Heavy Attack - Woven Fairytale. Casting Heavy Attack - Fairytale's Finale consumes all Dreambell Chime.",
-                  "<size=10></size>",
-                  "<size=40>Heavy Attack - Fairytale's Finale</size>",
+                  "Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Fairytale's Finale. Heavy Attack - Fairytale's Finale is automatically cast at the end of Heavy Attack - Woven Fairytale. Casting Heavy Attack - Fairytale's Finale consumes all Dreambell Chime.",
+                  "Heavy Attack - Fairytale's Finale",
                   "Attack targets within range, dealing Spectro DMG.",
                   "For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.",
-                  "Casting the skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants <te href=151202>Silvered Dream</te> to Resonators in the team. This effect can be triggered once every 25s.",
-                  "<size=10></size>",
-                  "<size=40>Heavy Attack - Woven Phantasm</size>",
+                  "Casting the skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants Silvered Dream to Resonators in the team. This effect can be triggered once every 25s.",
+                  "Heavy Attack - Woven Phantasm",
                   "When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Woven Phantasm, consuming all Dream Perfume to pull in nearby targets, dealing Spectro DMG. She also heals all Resonators in the team every second for 2s.",
-                  "Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Phantasm's End. Heavy Attack - Phantasm's End is automatically cast at the end of Heavy Attack - Woven Phantasm. Casting Heavy Attack - Phantasm's End consumes all Dreambell Chime.",
-                  "<size=10></size>",
-                  "<size=40>Heavy Attack - Phantasm's End</size>",
+                  "Lily continuously gains Dreambell Chime during the skill. When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Phantasm's End. Heavy Attack - Phantasm's End is automatically cast at the end of Heavy Attack - Woven Phantasm. Casting Heavy Attack - Phantasm's End consumes all Dreambell Chime.",
+                  "Heavy Attack - Phantasm's End",
                   "Attack targets within range, dealing Spectro DMG.",
                   "For every 1% of Lily's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate, up to 80%, and an additional 1% Crit. DMG, up to 160%.",
-                  "Casting this skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants <te href=151202>Silvered Dream</te> to Resonators in the team. This effect can be triggered once every 25s.",
-                  "<size=10></size>",
-                  "<size=40>Silvered Dream</size>",
+                  "Casting this skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants Silvered Dream to Resonators in the team. This effect can be triggered once every 25s.",
+                  "Silvered Dream",
                   "Lasts for 30s.",
-                  "When the Resonator with this effect is the Active Resonator and can trigger Unison Response, their ATK is increased by 7% for each stack of <te href=131111>Unison Boon</te> the team has, counting up to 4 stacks of <te href=131111>Unison Boon</te>.",
+                  "When the Resonator with this effect is the Active Resonator and can trigger Unison Response, their ATK is increased by 7% for each stack of Unison Boon the team has, counting up to 4 stacks of Unison Boon.",
                   "The active Resonator's Echo Skill Crit. Rate is increased by 10%, and their Echo Skill Crit. DMG is increased by 20%.",
                   "All nearby Resonators in the team gain resistance to interruption.",
                   "**Skill Attributes (Lv. 10)**",
                   "Heavy Attack - Woven Fairytale Healing: 2139+4.30%",
                   "Heavy Attack - Woven Phantasm Healing: 2139+4.30%",
-                  "Heavy Attack - Woven Fairytale DMG: 45.36%+45.36%*19"
+                  "Heavy Attack - Woven Fairytale DMG: 45.36%+45.36%*19",
+                  "Heavy Attack - Woven Phantasm DMG: 82.46%*11",
+                  "Heavy Attack - Fairytale's Finale DMG: 65.31%",
+                  "Heavy Attack - Phantasm's End DMG: 65.31%"
                 ],
                 "meta": "",
                 "params": [
@@ -1562,98 +338,10 @@
                 "values_label": ""
               },
               {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "Healing Bonus increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: Healing Bonus+",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "HP increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: HP+",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "HP increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: HP+",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "Healing Bonus increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: Healing Bonus+",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "Healing Bonus increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: Healing Bonus+",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "HP increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: HP+",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "HP increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: HP+",
-                "values_label": ""
-              },
-              {
-                "category": "Skill",
-                "defs": [],
-                "lines": [
-                  "Healing Bonus increased by {0}."
-                ],
-                "meta": "",
-                "params": [],
-                "title": "Skill: Healing Bonus+",
-                "values_label": ""
-              },
-              {
                 "category": "Tune Break",
                 "defs": [],
                 "lines": [
-                  "When the target's Off-Tune Level is full, the Resonator may cast <te href=100001>Tune Break</te> on the target."
+                  "When the target's Off-Tune Level is full, the Resonator may cast Tune Break on the target."
                 ],
                 "meta": "",
                 "params": [],
@@ -1665,7 +353,7 @@
                 "defs": [],
                 "lines": [
                   "Lily is immune to interruption while channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End.",
-                  "While <te href=151203>Cradle Lullaby</te> is active, each Intro Skill cast by a Resonator in the team now grants 2 stacks of <te href=151204>Dream Aroma</te>."
+                  "While Cradle Lullaby is active, each Intro Skill cast by a Resonator in the team now grants 2 stacks of Dream Aroma."
                 ],
                 "meta": "",
                 "params": [],
@@ -1676,7 +364,7 @@
                 "category": "Resonance Chain",
                 "defs": [],
                 "lines": [
-                  "While <te href=151203>Cradle Lullaby</te> is active, when a Resonator in the team casts an Intro Skill, each stack of <te href=151204>Dream Aroma</te> additionally increases Crit. Rate by 2% and Crit. DMG by 6%."
+                  "While Cradle Lullaby is active, when a Resonator in the team casts an Intro Skill, each stack of Dream Aroma additionally increases Crit. Rate by 2% and Crit. DMG by 6%."
                 ],
                 "meta": "",
                 "params": [],
@@ -1687,7 +375,7 @@
                 "category": "Resonance Chain",
                 "defs": [],
                 "lines": [
-                  "Casting Intro Skill - Eternal Bloom additionally grants Lily <SapTag=0>25</SapTag> of Concerto Energy and <SapTag=1>170</SapTag> of <te href=151201>Dream Perfume</te>.",
+                  "Casting Intro Skill - Eternal Bloom additionally grants Lily 25 points of Concerto Energy and 170 points of Dream Perfume.",
                   "While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, Lily gains Dreambell Chime faster, and the healing provided is increased by 50%."
                 ],
                 "meta": "",
@@ -1731,18 +419,19 @@
             ],
             "stats_header": "Base Stats",
             "stats_lines": [
-              "Lv. 90 — HP 16712.5 · ATK 287.5 · DEF 1100"
+              "Lv. 90 — HP 16712.5 · ATK 287.5 · DEF 1100",
+              "Stat Bonuses: Healing Bonus +12% | HP +12%"
             ],
             "subtext": ""
           },
           "kind": "character",
           "revision": "3.8.1",
-          "signature": "72111fd6d703b0d7",
-          "truncated": true,
-          "ts": 1792929316
+          "signature": "f3de06fc051300c9",
+          "truncated": false,
+          "ts": 1792980923
         },
         "ww:21030076": {
-          "content_signature": "8fff7a11e963b5a7",
+          "content_signature": "4b859a03790e5074",
           "data": {
             "category_label": "Weapons",
             "effect_title": "Dreamland Solace",
@@ -1756,52 +445,52 @@
             "page_url": "https://ww.nanoka.cc/weapon/21030076/",
             "rarity": 5,
             "stats_line": "ATK 412.5 · Energy Regen 77.04%",
-            "sub_type": ""
+            "sub_type": "Energy Regen"
           },
           "kind": "weapon",
           "revision": "3.8.1",
-          "signature": "94bf8f4668fcece7",
+          "signature": "63d1b290dc02b2b3",
           "truncated": false,
-          "ts": 1792929316
+          "ts": 1792980923
         }
       },
       "source_revision": "3.8.1",
       "source_version": "3.8.1"
     },
     "zzz": {
-      "last_poll": 1792929316,
+      "format_epoch": 2,
+      "last_poll": 1792980923,
       "latest_rev": "c4da864455350ab0",
       "locked_images": {
         "zzz:1601": {
           "locked": true,
-          "ts": 1792929316,
+          "ts": 1792980923,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp"
         },
         "zzz:1661": {
           "locked": true,
-          "ts": 1792929316,
+          "ts": 1792980923,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp"
         }
       },
-      "paused": true,
       "revisions": {
         "c4da864455350ab0": {
           "batches": {
             "6e91b1690a330b9f": {
               "messages": [
-                "1563883918774505645",
-                "1563883942380048399",
-                "1563883964492414980",
-                "1563883986944655474",
-                "1563884009476329553",
-                "1563884031547015211",
-                "1563884055420993567",
-                "1563884077629575290",
-                "1563884099846934619"
+                "1564100153168892026",
+                "1564100181983756381",
+                "1564100204649779344",
+                "1564100226782994455",
+                "1564100250023493674",
+                "1564100272513613828",
+                "1564100296303579197",
+                "1564100318667612253",
+                "1564100341350535239"
               ],
-              "signature": "4d1cf7686dbbafa1",
+              "signature": "0970f86fd97f91b1",
               "status": "posted",
-              "ts": 1792929316
+              "ts": 1792980923
             }
           },
           "characters": {
@@ -1810,15 +499,15 @@
           },
           "label": "v3.4.1 Rev. 19851435",
           "messages": [
-            "1563883918774505645",
-            "1563883942380048399",
-            "1563883964492414980",
-            "1563883986944655474",
-            "1563884009476329553",
-            "1563884031547015211",
-            "1563884055420993567",
-            "1563884077629575290",
-            "1563884099846934619"
+            "1564100153168892026",
+            "1564100181983756381",
+            "1564100204649779344",
+            "1564100226782994455",
+            "1564100250023493674",
+            "1564100272513613828",
+            "1564100296303579197",
+            "1564100318667612253",
+            "1564100341350535239"
           ],
           "more": false,
           "processed": [
@@ -1832,13 +521,13 @@
           "source_revision": "3.4.1+19851435",
           "source_version": "3.4.1+19851435",
           "status": "posted",
-          "ts": 1792929316
+          "ts": 1792980923
         }
       },
       "route": "5f931f917050e29a",
       "snapshots": {
         "zzz:14160": {
-          "content_signature": "c5c6bde9e8db74e9",
+          "content_signature": "8d173baed8ed4755",
           "data": {
             "category_label": "W-Engines",
             "effect_title": "",
@@ -1849,18 +538,18 @@
             ],
             "name": "ID 14160",
             "page_url": "https://zzz.gachabase.net/w-engines/14160/id-14160/beta?lang=en",
-            "rarity": 4,
+            "rarity": 5,
             "stats_line": "Base ATK 446",
             "sub_type": "Percent DEF"
           },
           "kind": "weapon",
           "revision": "3.4.1+19851435",
-          "signature": "631fc3506851c5a9",
+          "signature": "8baf6e9dc758deb5",
           "truncated": false,
-          "ts": 1792929316
+          "ts": 1792980923
         },
         "zzz:14166": {
-          "content_signature": "0f575d7d000b317b",
+          "content_signature": "00d1cf339364796a",
           "data": {
             "category_label": "W-Engines",
             "effect_title": "Robin Test Engine",
@@ -1871,20 +560,20 @@
             ],
             "name": "Robin's Exclusive W-Engine",
             "page_url": "https://zzz.gachabase.net/w-engines/14166/robin-s-exclusive-w-engine/beta?lang=en",
-            "rarity": 4,
+            "rarity": 5,
             "stats_line": "Base ATK 713",
             "sub_type": "Percent HP"
           },
           "kind": "weapon",
           "revision": "3.4.1+19851435",
-          "signature": "4b192bc6b0cef78b",
+          "signature": "19973caad3c630be",
           "truncated": false,
-          "ts": 1792929316
+          "ts": 1792980923
         },
         "zzz:1601": {
-          "content_signature": "bfdbfcd8de00d7a0",
+          "content_signature": "fb0e3910814fbb80",
           "data": {
-            "element": "Fire",
+            "element": "Fire (Genesis Flare)",
             "id": "zzz:1601",
             "image_url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp",
             "mechanic_defs": [],
@@ -1897,7 +586,7 @@
                 "category": "Basic Attack",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> to activate:",
+                  "Press to activate:",
                   "Lindverne performs up to 4 consecutive attacks forward, dealing Genesis Flare DMG.",
                   "Repeatedly press or hold during the 4th attack to perform an extended slash against enemies.",
                   "When the heavy attack of the 4th attack hits an enemy with [Gash], consume all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, trigger [Maim] on the target once, dealing additional AoE Genesis Flare DMG.",
@@ -1959,7 +648,7 @@
                 "category": "Basic Attack",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> to activate:",
+                  "Press to activate:",
                   "Eldreda performs up to four consecutive attacks forward, dealing Genesis Flare DMG;",
                   "When the heavy attack of the fourth hit lands on an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG;",
                   "During the third and fourth hits, Anti-Interrupt Level is increased and DMG taken is reduced by 40%."
@@ -2019,7 +708,7 @@
                 "category": "Basic Attack",
                 "defs": [],
                 "lines": [
-                  "When [Willpower] is sufficient, hold <IconMap:Icon_Normal> to activate:",
+                  "When [Willpower] is sufficient, hold to activate:",
                   "Switch to Eldreda and launch an attack, dealing Genesis Flare DMG.",
                   "Character is invulnerable while using this skill.",
                   "After using this skill, gain [Chain Teeth] and [Flag Order]."
@@ -2044,7 +733,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Evade> to activate:",
+                  "Press to activate:",
                   "Lindverne performs a quick dash dodge.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2057,7 +746,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> during a dodge to activate:",
+                  "Press during a dodge to activate:",
                   "Lindverne slashes forward, dealing Genesis Flare DMG."
                 ],
                 "meta": "",
@@ -2080,9 +769,9 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "When [Perfect Dodge] is triggered, press <IconMap:Icon_Normal> to activate:",
+                  "When [Perfect Dodge] is triggered, press to activate:",
                   "Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.",
-                  "After using this skill, press <IconMap:Icon_Normal> to quickly chain into the 3rd hit of [Basic Attack].",
+                  "After using this skill, press to quickly chain into the 3rd hit of [Basic Attack].",
                   "Character is invulnerable while using this skill."
                 ],
                 "meta": "",
@@ -2105,7 +794,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Evade> to activate:",
+                  "Press to activate:",
                   "Eldreda performs a quick dash dodge.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2118,7 +807,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> during a dodge to activate:",
+                  "Press during a dodge to activate:",
                   "Eldreda thrusts forward, dealing Genesis Flare DMG."
                 ],
                 "meta": "",
@@ -2141,9 +830,9 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Hold <IconMap:Icon_Evade> while moving the {LAYOUT_CONSOLECONTROLLER#stick}{LAYOUT_FALLBACK#joystick} to activate:",
+                  "Hold while moving the joystick to activate:",
                   "Eldreda enters the [Nightglide] state, allowing high-speed movement.",
-                  "While in the [Nightglide] state, use the {LAYOUT_CONSOLECONTROLLER#stick}{LAYOUT_FALLBACK#joystick} to control direction. Release the {LAYOUT_CONSOLECONTROLLER#stick}{LAYOUT_FALLBACK#joystick} to stop.",
+                  "While in the [Nightglide] state, use the joystick to control direction. Release the joystick to stop.",
                   "Character is invulnerable at the moment this skill activates."
                 ],
                 "meta": "",
@@ -2155,7 +844,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "In [Nightglide] state, Press <IconMap:Icon_Normal> to activate:",
+                  "In [Nightglide] state, Press to activate:",
                   "Eldreda unleashes a quick Tail Swipe attack, dealing Genesis Flare DMG."
                 ],
                 "meta": "",
@@ -2178,9 +867,9 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> during a Perfect Dodge to activate:",
+                  "Press during a Perfect Dodge to activate:",
                   "Eldreda launches consecutive attacks forward, dealing Genesis Flare DMG.",
-                  "After using this skill, press <IconMap:Icon_Normal> to follow up with the 4th hit of Basic Attack.",
+                  "After using this skill, press to follow up with the 4th hit of Basic Attack.",
                   "Character is invulnerable while using this skill."
                 ],
                 "meta": "",
@@ -2203,9 +892,9 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When the active character is launched, press <IconMap:Icon_Switch> to activate:",
+                  "When the active character is launched, press to activate:",
                   "Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.",
-                  "After using this skill, press <IconMap:Icon_Normal> to quickly chain into the 3rd hit of [Basic Attack].",
+                  "After using this skill, press to quickly chain into the 3rd hit of [Basic Attack].",
                   "Character is invulnerable while using this skill."
                 ],
                 "meta": "",
@@ -2228,9 +917,9 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When the active character is launched, press <IconMap:Icon_Switch> to activate:",
+                  "When the active character is launched, press to activate:",
                   "Eldreda unleashes a flurry of consecutive attacks forward, dealing Genesis Flare DMG.",
-                  "After activating this skill, press <IconMap:Icon_Normal> to chain into the 4th hit of her [Basic Attack].",
+                  "After activating this skill, press to chain into the 4th hit of her [Basic Attack].",
                   "Character is invulnerable while using this skill."
                 ],
                 "meta": "",
@@ -2253,7 +942,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When the on-field character is about to be attacked, press <IconMap:Icon_Switch> to activate:",
+                  "When the on-field character is about to be attacked, press to activate:",
                   "Dracaene parries the enemy's attack, accumulating massive Daze.",
                   "When Lindverne or Eldreda is on field, this skill can also be activated by switching in the next character.",
                   "Character is invulnerable while using this skill."
@@ -2283,7 +972,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When the user or the on-field Character is about to be hit by certain enemy Control Skills, press <IconMap:Icon_Switch> to activate:",
+                  "When the user or the on-field Character is about to be hit by certain enemy Control Skills, press to activate:",
                   "Dracaene grapples with the monster. If she wins the struggle, she neutralizes the enemy's Control Skill and deals Genesis Flare DMG;",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2307,7 +996,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "After activating a [Counter Assist], press <IconMap:Icon_Normal> to activate:",
+                  "After activating a [Counter Assist], press to activate:",
                   "Dracaene unleashes an attack dealing massive Genesis Flare DMG. When the heavy attack hits an enemy, it directly applies 1 stack of [Gash] to the target.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2331,9 +1020,9 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> after Dracaene performs a [Defensive Assist] to activate:",
+                  "Press after Dracaene performs a [Defensive Assist] to activate:",
                   "Lindverne unleashes a swift forward Slash, then triggers an explosion, dealing Genesis Flare DMG;",
-                  "After activating this skill, press <IconMap:Icon_Normal> to quickly chain into the 4th hit of the [Basic Attack];",
+                  "After activating this skill, press to quickly chain into the 4th hit of the [Basic Attack];",
                   "Repeatedly press or hold during this skill to keep slashing enemies;",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2357,9 +1046,9 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> after Dracaene activates a Defensive Assist to activate:",
+                  "Press after Dracaene activates a Defensive Assist to activate:",
                   "Eldreda unleashes a swift forward slash, followed by an explosion that deals Genesis Flare DMG.",
-                  "After using this skill, press <IconMap:Icon_Normal> to chain into the 4th hit of her Basic Attack.",
+                  "After using this skill, press to chain into the 4th hit of her Basic Attack.",
                   "Character is invulnerable while using this skill."
                 ],
                 "meta": "",
@@ -2382,7 +1071,7 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Special> to activate:",
+                  "Press to activate:",
                   "Switch to Lindverne and launch an attack, dealing Genesis Flare DMG."
                 ],
                 "meta": "",
@@ -2405,7 +1094,7 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> to activate:",
+                  "When Sharpness is sufficient, press to activate:",
                   "Lindverne and Eldreda launch a Synergy attack, keeping Lindverne on the field and dealing Genesis Flare DMG.",
                   "When the heavy attack hits an enemy with [Gash], consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] once on the target, dealing additional AoE Genesis Flare DMG.",
                   "Character is invulnerable while using this skill."
@@ -2430,7 +1119,7 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> after the final hit of [Basic Attack: Thornbreaker], [Dodge Counter: Smoldering Fire Reignition], [Assist Follow-Up: Undying Passion], [Ultimate: \"By This Wish, All Things Remade\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:",
+                  "When Sharpness is sufficient, press after the final hit of [Basic Attack: Thornbreaker], [Dodge Counter: Smoldering Fire Reignition], [Assist Follow-Up: Undying Passion], [Ultimate: \"By This Wish, All Things Remade\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:",
                   "Lindverne and Eldreda launch a coordinated attack, keeping Lindverne on the field and dealing Genesis Flare DMG.",
                   "When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a max of 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.",
                   "Character is invulnerable while using this skill."
@@ -2455,9 +1144,9 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "When [Chain Teeth] is available, press <IconMap:Icon_Special> to activate:",
+                  "When [Chain Teeth] is available, press to activate:",
                   "Consume [Chain Teeth]. Lindverne and Eldreda unleash a high-tier Synergy attack while Lindverne remains on the field, dealing massive Genesis Flare DMG;",
-                  "After using this skill, press <IconMap:Icon_Normal> to quickly chain into the 4th hit of [Basic Attack];",
+                  "After using this skill, press to quickly chain into the 4th hit of [Basic Attack];",
                   "Character is invulnerable while using this skill."
                 ],
                 "meta": "",
@@ -2480,7 +1169,7 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Special> to activate:",
+                  "Press to activate:",
                   "Switch to Eldreda and launch an attack, dealing Genesis Flare DMG."
                 ],
                 "meta": "",
@@ -2503,7 +1192,7 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> to activate:",
+                  "When Sharpness is sufficient, press to activate:",
                   "Eldreda and Lindverne launch a Synergy attack, keeping Eldreda on the field and dealing Genesis Flare DMG.",
                   "When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.",
                   "Character is invulnerable while using this skill."
@@ -2528,7 +1217,7 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "When Sharpness is sufficient, press <IconMap:Icon_SpecialReady_Ep> after the final hit of [Bannerbearer], or after using [Dodge Counter: Cold Flame Returning Edge], [Assist Follow-Up: Faith Unwavering], [Ultimate: \"Onward, Together\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:",
+                  "When Sharpness is sufficient, press after the final hit of [Bannerbearer], or after using [Dodge Counter: Cold Flame Returning Edge], [Assist Follow-Up: Faith Unwavering], [Ultimate: \"Onward, Together\"], or [EX Special Attack: Night Blaze - Dawnborn (Modified)] to activate:",
                   "Eldreda launches a Synergy attack with Lindverne and Dracaene while remaining on the field, dealing Genesis Flare DMG;",
                   "When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a maximum of 3. For each [Gash] stack consumed, [Maim] is triggered once on the target, dealing additional AoE Genesis Flare DMG;",
                   "Character is invulnerable while using this skill."
@@ -2553,9 +1242,9 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "When holding [Flag Order], press <IconMap:Icon_Special> to activate:",
+                  "When holding [Flag Order], press to activate:",
                   "Consume [Flag Order] for Eldreda and Lindverne to unleash a high-powered Synergy attack, keeping Eldreda on the field and dealing massive Genesis Flare DMG;",
-                  "After using this skill, press <IconMap:Icon_Normal> to chain into the 4th hit of [Basic Attack];",
+                  "After using this skill, press to chain into the 4th hit of [Basic Attack];",
                   "Character is invulnerable while using this skill."
                 ],
                 "meta": "",
@@ -2604,7 +1293,7 @@
                 "category": "Chain Attack & Ultimate",
                 "defs": [],
                 "lines": [
-                  "When Decibel Rating is at Maximum, press <IconMap:Icon_UltimateReady> to activate:",
+                  "When Decibel Rating is at Maximum, press to activate:",
                   "Lindverne launches a Coordinated Attack with Eldreda and Dracaene and remains on the field, dealing massive Genesis Flare DMG.",
                   "While holding Flag Order, consumes Flag Order and converts it into Wish Core.",
                   "Character is invulnerable while using this skill."
@@ -2631,7 +1320,7 @@
                 "lines": [
                   "When a Chain Attack is triggered, select the character to activate:",
                   "Eldreda and Lindverne team up to unleash a high-powered Synergy attack, keeping Eldreda on the field and dealing Genesis Flare DMG;",
-                  "After using this skill, press <IconMap:Icon_Normal> to follow up with the 4th hit of the Basic Attack;",
+                  "After using this skill, press to follow up with the 4th hit of the Basic Attack;",
                   "When the heavy attack hits an enemy with Gash, it consumes all Gash stacks on the target, up to 3 stacks. For each Gash stack consumed, triggers Maim once on the target, dealing additional AoE Genesis Flare DMG;",
                   "Character is invulnerable while using this skill;",
                   "When Eldreda triggers a Daze Chain Attack window, Eldreda can be selected directly to activate this skill."
@@ -2656,7 +1345,7 @@
                 "category": "Chain Attack & Ultimate",
                 "defs": [],
                 "lines": [
-                  "When Eldreda has [Wish Core], press <IconMap:Icon_UltimateReady> to activate:",
+                  "When Eldreda has [Wish Core], press to activate:",
                   "Eldreda warps space in mid-air to attack, dealing Genesis Flare DMG and removing all [Ember Scar] from enemies.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2714,12 +1403,12 @@
           },
           "kind": "character",
           "revision": "3.4.1+19851435",
-          "signature": "c5836a0bb411d09e",
+          "signature": "9d75a3b805118e76",
           "truncated": false,
-          "ts": 1792929316
+          "ts": 1792980923
         },
         "zzz:1661": {
-          "content_signature": "924219099a258a3b",
+          "content_signature": "9d066d4622d28736",
           "data": {
             "element": "Ether",
             "id": "zzz:1661",
@@ -2734,7 +1423,7 @@
                 "category": "Basic Attack",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> to activate:",
+                  "Press to activate:",
                   "Unleashes up to 3 attacks forward, dealing Ether DMG;"
                 ],
                 "meta": "",
@@ -2777,7 +1466,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Dash> to activate:",
+                  "Press to activate:",
                   "A quick dash dodge.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2790,7 +1479,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> during a dodge to activate:",
+                  "Press during a dodge to activate:",
                   "Perform an attack forward, dealing Ether DMG."
                 ],
                 "meta": "",
@@ -2813,7 +1502,7 @@
                 "category": "Dodge",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> during a Perfect Dodge to activate:",
+                  "Press during a Perfect Dodge to activate:",
                   "Swing the staff to attack enemies in front, dealing Ether DMG.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2837,7 +1526,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When at 100 or more [Entry Points], switching this character on field or holding <IconMap:Icon_Normal> consumes 100 [Entry Points] to activate:",
+                  "When at 100 or more [Entry Points], switching this character on field or holding consumes 100 [Entry Points] to activate:",
                   "Unleashes an Energy blast at enemies in front, dealing massive Ether DMG.",
                   "Activating this skill counts as activating a [Quick Assist].",
                   "Provides all squad members with a [Robin Shield] equal to 4% of this character's initial Max HP, lasting 20s."
@@ -2862,7 +1551,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When the active character is launched, press <IconMap:Icon_Switch> to activate:",
+                  "When the active character is launched, press to activate:",
                   "Swing the staff to attack enemies in front, dealing Ether DMG.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2886,7 +1575,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When the on-field character is about to be attacked, press <IconMap:Icon_Switch> to activate:",
+                  "When the on-field character is about to be attacked, press to activate:",
                   "Parries the enemy's attack, dealing massive Daze.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2915,7 +1604,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> after a Defensive Assist to activate:",
+                  "Press after a Defensive Assist to activate:",
                   "Swing the staff to attack enemies in front, dealing Ether DMG.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2939,7 +1628,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "When you or the on-field character is about to be hit by certain enemies' Control Skills, press <IconMap:Icon_Switch> to activate:",
+                  "When you or the on-field character is about to be hit by certain enemies' Control Skills, press to activate:",
                   "Engage in a power clash with the monster. If successful, neutralize the enemy's Control Skill and deal Ether DMG.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2963,7 +1652,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "After using a Counter Assist, press <IconMap:Icon_Normal> to activate [Assist Follow-Up], which automatically triggers:",
+                  "After using a Counter Assist, press to activate [Assist Follow-Up], which automatically triggers:",
                   "Deals massive Ether DMG;",
                   "Character is invulnerable while using this skill."
                 ],
@@ -2987,7 +1676,7 @@
                 "category": "Assist",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Normal> after other squad members activate a Counter Assist to activate:",
+                  "Press after other squad members activate a Counter Assist to activate:",
                   "Fire a powerful laser forward, dealing massive Ether DMG.",
                   "Character is invulnerable while using this skill."
                 ],
@@ -3011,12 +1700,13 @@
                 "category": "Special Attack & EX Special Attack",
                 "defs": [],
                 "lines": [
-                  "Press <IconMap:Icon_Special> to activate:",
+                  "Press to activate:",
                   "Leaps high into the air and unleashes an Energy Blast around her, dealing massive Ether DMG.",
                   "During skill activation, Anti-Interrupt level increases, and DMG taken is reduced by 40%.",
                   "After activation, triggers a Quick Assist. After switching out, Robin enters the [Off-Field Guard] state for 60s. Repeated triggers refresh the duration. Also grants all squad members a [Robin Shield] equal to 2% of Robin's initial Max HP, lasting 15s.",
                   "While Robin is in the [Off-Field Guard] state, she can only be switched in via [Chain Attack], [Entry Skill], or [Counter Assist]. Switching her in ends the [Off-Field Guard] state.",
-                  "While [Off-Field Guard] is active, all squad members gain bonus DEF: when Robin's initial Max HP exceeds 16,000, every 1,000 additional HP grants DEF, up to a maximum of DEF. This effect lasts for another 15s after Robin's [Off-Field Guard] state ends."
+                  "While [Off-Field Guard] is active, all squad members gain bonus DEF: when Robin's initial Max HP exceeds 16,000, every 1,000 additional HP grants [TBD] DEF, up to a maximum of [TBD] DEF. This effect lasts for another 15s after Robin's [Off-Field Guard] state ends.",
+                  "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
                 ],
                 "meta": "",
                 "params": [
@@ -3066,10 +1756,11 @@
                 "lines": [
                   "When activating [Special Attack: Aftershock], if Energy is at least 40, it is upgraded to [EX Special Attack: Enhanced Aftershock]:",
                   "Continuously consumes a total of 40 Energy to fire a powerful laser forward, dealing massive Ether DMG;",
-                  "Robin's heavy attacks deal additional DMG equal to % of her Max HP;",
+                  "Robin's heavy attacks deal additional DMG equal to [TBD]% of her Max HP;",
                   "Character is invulnerable while using this skill;",
                   "Upon activation, gains 20 [Entry Points] and grants all squad members a [Robin Shield] equal to 6% of her initial Max HP, lasting 15s;",
-                  "[EX Special Attack: Enhanced Aftershock] counts as an Aftershock."
+                  "[EX Special Attack: Enhanced Aftershock] counts as an Aftershock.",
+                  "-# ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build."
                 ],
                 "meta": "",
                 "params": [
@@ -3115,7 +1806,7 @@
                 "category": "Chain Attack & Ultimate",
                 "defs": [],
                 "lines": [
-                  "When Decibel Rating is at Maximum, press <IconMap:Icon_UltimateReady> to activate:",
+                  "When Decibel Rating is at Maximum, press to activate:",
                   "Channels powerful energy through song to unleash a devastating blast, dealing massive Ether DMG.",
                   "Character is invulnerable while using this skill.",
                   "Upon activation, converts 40% of each squad Agent's [Robin Shield] into their own HP."
@@ -3184,9 +1875,9 @@
           },
           "kind": "character",
           "revision": "3.4.1+19851435",
-          "signature": "04ad926a1b140d22",
+          "signature": "b54f02060945cef9",
           "truncated": false,
-          "ts": 1792929316
+          "ts": 1792980923
         },
         "zzz:34300": {
           "content_signature": "c1f30558e1c011ab",
@@ -3209,7 +1900,7 @@
           "revision": "3.4.1+19851435",
           "signature": "bc6f8e5dcc9bc236",
           "truncated": false,
-          "ts": 1792929316
+          "ts": 1792980923
         },
         "zzz:34400": {
           "content_signature": "28de989e4316aba8",
@@ -3232,7 +1923,7 @@
           "revision": "3.4.1+19851435",
           "signature": "f8cffbcf9ebea5da",
           "truncated": false,
-          "ts": 1792929316
+          "ts": 1792980923
         }
       },
       "source_revision": "3.4.1+19851435",
