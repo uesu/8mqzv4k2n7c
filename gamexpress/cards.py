@@ -1050,9 +1050,9 @@ def _format_beta_stats_block(game_key: str, stats_lines: list[str]) -> list[str]
             bonus_lines.append(f"**{head.strip()}:** {rest.strip()}")
             continue
         m_kv = re.match(
-            r"^(SPD|Max Energy|CRIT Rate|CRIT DMG|Impact|Anomaly Mastery|"
+            r"^(SPD|Max Energy|CRIT Rate|CRIT DMG|Impact|Sheer Force|Anomaly Mastery|"
             r"Anomaly Proficiency|PEN Ratio|Laceration DMG|Elemental Mastery|"
-            r"Energy Recharge|Healing Bonus|HP%|ATK%|DEF%)\s+(.+)$",
+            r"Energy Regen|Energy Recharge|Healing Bonus|HP%|ATK%|DEF%)\s+(.+)$",
             sln,
         )
         if m_kv:
@@ -1180,7 +1180,7 @@ def _format_beta_skill_entry(
     title = strip_invisible(str(getattr(entry, "title", "") or "")).strip()
     tag = strip_invisible(str(getattr(entry, "tag", "") or "[NEW]")).strip()
     meta = strip_invisible(str(getattr(entry, "meta", "") or "")).strip()
-    parts.append(_format_skill_bullet_head(title, meta))
+    entry_vlabel = strip_invisible(str(getattr(entry, "values_label", "") or "")).strip()
 
     params = [p for p in (getattr(entry, "params", ()) or ()) if isinstance(p, dict)]
     param_names_lower = {
@@ -1195,35 +1195,43 @@ def _format_beta_skill_entry(
         and not _SKILL_ATTR_HEADER_RE.match(ln)
     ]
 
+    body_parts: list[str] = []
     rendered_lines: list[str] = []
     inline_stat_pairs: list[str] = []
     in_subhead = False
+    vlabel_emitted = False
 
     def _flush_inline_stats() -> None:
+        nonlocal vlabel_emitted
         if not inline_stat_pairs:
             return
         for idx in range(0, len(inline_stat_pairs), 3):
-            parts.append("    * " + " | ".join(inline_stat_pairs[idx:idx + 3]))
+            chunk = " | ".join(inline_stat_pairs[idx:idx + 3])
+            if idx == 0 and entry_vlabel and not vlabel_emitted:
+                body_parts.append(f"    * *({entry_vlabel})* {chunk}")
+                vlabel_emitted = True
+            else:
+                body_parts.append(f"    * {chunk}")
         inline_stat_pairs.clear()
 
     for line_idx, ln in enumerate(cleaned_lines):
         rendered_lines.append(ln)
         if ln.startswith("**("):
             _flush_inline_stats()
-            parts.append(f"        * {_bold_beta_numbers(ln)}")
+            body_parts.append(f"        * {_bold_beta_numbers(ln)}")
             continue
         if ln.startswith("-#"):
             _flush_inline_stats()
-            parts.append(f"        * {ln[2:].strip()}")
+            body_parts.append(f"        * {ln[2:].strip()}")
             continue
         if ln.startswith("⚠️"):
             _flush_inline_stats()
-            parts.append(f"        * {ln}")
+            body_parts.append(f"        * {ln}")
             continue
         if ln.startswith("**["):
             _flush_inline_stats()
             in_subhead = False
-            parts.append(f"    * {_bold_beta_numbers(ln)}")
+            body_parts.append(f"    * {_bold_beta_numbers(ln)}")
             continue
 
         m_stat = re.match(r"^([^:]{2,96}):\s*([+-]?\d[^;\n]{0,64})$", ln)
@@ -1241,12 +1249,12 @@ def _format_beta_skill_entry(
         next_ln = cleaned_lines[line_idx + 1] if line_idx + 1 < len(cleaned_lines) else None
         if _is_skill_subheading(ln, next_ln, tag):
             in_subhead = True
-            parts.append(f"    * **{ln}:**")
+            body_parts.append(f"    * **{ln}:**")
             continue
 
         pfx = f"**{tag}** " if tag else ""
         indent = "        * " if in_subhead else "    * "
-        parts.append(f"{indent}{pfx}{_bold_beta_numbers(ln)}")
+        body_parts.append(f"{indent}{pfx}{_bold_beta_numbers(ln)}")
 
     _flush_inline_stats()
 
@@ -1260,13 +1268,21 @@ def _format_beta_skill_entry(
         if name.lower() not in lower_lines or value.lower() not in lower_lines:
             missing.append(f"{name}: **{value}**")
     if missing:
-        label = strip_invisible(str(getattr(entry, "values_label", "") or "")).strip()
         for idx in range(0, len(missing), 3):
             chunk = " | ".join(missing[idx:idx + 3])
-            if idx == 0 and label:
-                parts.append(f"    * *({label})* {chunk}")
+            if idx == 0 and entry_vlabel and not vlabel_emitted:
+                body_parts.append(f"    * *({entry_vlabel})* {chunk}")
+                vlabel_emitted = True
             else:
-                parts.append(f"    * {chunk}")
+                body_parts.append(f"    * {chunk}")
+
+    effective_meta = (
+        (f"{entry_vlabel} · {meta}" if meta else entry_vlabel)
+        if (entry_vlabel and not vlabel_emitted and tag == "[NEW]")
+        else meta
+    )
+    parts.append(_format_skill_bullet_head(title, effective_meta))
+    parts.extend(body_parts)
     return "\n".join(parts)
 
 

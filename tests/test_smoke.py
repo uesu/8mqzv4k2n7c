@@ -19901,5 +19901,341 @@ def test_schedule_third_button_starwardcat_emoji_first_poster_lock_and_all_media
     assert k_links == []
 
 
+def test_beta_skill_caps_units_and_card_level_badges_across_all_games():
+    import copy
+
+    from gamexpress import beta as beta_mod
+
+    # 1) WuWa (Nanoka + Encore): Lv. 10 cap (never Lv. 20 col[-1]), unit suffixes (`s`, ` HP`, ` DEF`),
+    # and single `*(Lv. 10)*` badge per leveled skill in rendered Discord V2 cards.
+    ww_raw = json.loads((FIX / "beta" / "ww_character_1512.json").read_text(encoding="utf-8"))
+    ww_custom = copy.deepcopy(ww_raw)
+    # Inject a 20-level HP-scaling row + 20-level cooldown row with `format` templates
+    ww_custom["skill_trees"]["6"]["skill"]["level"]["99"] = {
+        "name": "Intro Skill - Eternal Bloom DMG",
+        "param": [[
+            "18.50%", "20.02%", "21.54%", "23.67%", "25.19%",
+            "26.94%", "29.37%", "31.80%", "34.23%", "36.09%",
+            "39.07%", "42.05%", "45.03%", "48.01%", "50.99%",
+            "53.97%", "56.95%", "59.93%", "62.91%", "65.86%",
+        ]],
+        "format": "{0} HP",
+    }
+    ww_custom["skill_trees"]["6"]["skill"]["level"]["100"] = {
+        "name": "Cooldown",
+        "param": [["5"] * 20],
+        "format": "{0}s",
+    }
+    ww_built = beta_mod._ww_character(ww_custom)
+    ww_text = "\n".join(ln for s in ww_built["sections"] for ln in s.lines)
+    assert "36.09% HP" in ww_text and "65.86%" not in ww_text
+    assert "Cooldown: 5s" in ww_text
+
+    enc_lily = json.loads((FIX / "beta" / "encore_lily_live.json").read_text(encoding="utf-8"))
+    enc_built = beta_mod._encore_character(enc_lily)
+    enc_text = "\n".join(ln for s in enc_built["sections"] for ln in s.lines)
+    assert "36.09% HP" in enc_text and "65.86%" not in enc_text
+    assert "159.05%" in enc_text and "290.25%" not in enc_text
+    assert "546+1.09% HP" in enc_text and "996+2.00%" not in enc_text
+    assert "Cooldown: 5s" in enc_text and "Cooldown: 25s" in enc_text
+
+    ww_char = beta_mod.BetaCharacter(
+        id="ww:1512", name="Lily", rarity=5, element="Spectro", role="Pistols",
+        subtext=" Overview.", stats_lines=enc_built["stats_lines"], sections=enc_built["sections"],
+        page_url="https://ww.nanoka.cc/character/1512",
+    )
+    ww_patch = beta_mod.BetaPatch(
+        game_key="wuwa", beta_version="3.8.1", rev_label="v3.8.1", rev_id="r1",
+        source_url="https://ww.nanoka.cc/", characters=[ww_char],
+    )
+    ww_payloads = cards.beta_payloads(GAMES["wuwa"], ww_patch, None, None)
+    assert ww_payloads and all(not cards.validate_payload(p) for p in ww_payloads)
+    ww_rendered = "\n".join(
+        c["content"] for p in ww_payloads for c in p["components"][0]["components"] if c["type"] == 10
+    )
+    # 5 leveled skills (Normal, Skill, Liberation, Intro, Forte) -> exactly 5 `*(Lv. 10)*` badges
+    assert ww_rendered.count("*(Lv. 10)*") == 5
+    assert "**36.09% HP**" in ww_rendered and "**5s**" in ww_rendered
+
+    # 2) ZZZ: M0 Lv. 12 combat skills, Core Skill F flat-vs-percent ATK guard (`12101` vs `12102`),
+    # clean Core Passive / Additional Ability titles (no double colons), and Day-0 enum fallbacks.
+    zzz_raw = json.loads((FIX / "beta" / "zzz_character_1661.json").read_text(encoding="utf-8"))
+    zzz_pct_atk = copy.deepcopy(zzz_raw)
+    zzz_pct_atk["element_type"] = {"204": ""}
+    zzz_pct_atk["weapon_type"] = {"7": ""}
+    zzz_pct_atk["special_element_type"] = {"id": 300, "name": ""}
+    zzz_pct_atk["extra_level"]["6"]["extra"] = {
+        "12102": {"prop": 12102, "name": "ATK", "format": "{0:0.#%}", "value": 1800},
+        "12101": {"prop": 12101, "name": "Base ATK", "format": "{0:0.#}", "value": 75},
+        "21101": {"prop": 21101, "name": "CRIT DMG", "format": "{0:0.#%}", "value": 2880},
+    }
+    zzz_stats = beta_mod._zzz_stats(zzz_pct_atk)
+    assert "ATK 750" in zzz_stats[0] and "2550" not in zzz_stats[0]
+    assert "CRIT DMG 78.8%" in zzz_stats
+    zzz_built = beta_mod._zzz_character(zzz_pct_atk)
+    assert zzz_built["element"] == "Wind"
+    assert zzz_built["role"] == "Armorer"
+    assert zzz_built["special_element"] == "Lumiflux"
+    core_titles = [s.title for s in zzz_built["sections"] if s.category == "Core Passive & Additional Ability"]
+    assert all(not t.endswith(":") for t in core_titles)
+
+    # 3) HSR: E0 caps (Lv. 6 Basic/Memosprite, Lv. 10 Skill/Ult/Talent/Elation/Assist, Lv. 1 Technique),
+    # EN + CN `/zh/` parity, `#n[f1]`/`[f2]` float formatters, and `{RUBY_*}` furigana stripping.
+    hsr_synth = {
+        "rarity": "CombatPowerAvatarRarityType5",
+        "damage_type": "Ice",
+        "avatar_base_type": "Memory",
+        "skills": {
+            "101": {
+                "name": "{RUBY_B#Furigana}Frostblade{RUBY_E#}",
+                "type_name": "Basic ATK",
+                "effect_name": "Single Target",
+                "desc": "Deals #1[f1]% Ice DMG.",
+                "level": {str(i): {"param_list": [0.5 + 0.1 * (i - 1)]} for i in range(1, 11)},
+            },
+            "102": {
+                "name": "Sprite Slash",
+                "type_name": "忆灵技",
+                "effect_name": "Blast",
+                "desc": "Deals #1[f2]% Ice DMG.",
+                "level": {str(i): {"param_list": [0.405 + 0.05 * (i - 1)]} for i in range(1, 11)},
+            },
+            "103": {
+                "name": "Glacial Ult",
+                "type_name": "Ultimate",
+                "effect_name": "AoE",
+                "desc": "Deals #1[i]% Ice DMG.",
+                "level": {str(i): {"param_list": [1.2 + 0.1 * (i - 1)]} for i in range(1, 16)},
+            },
+            "104": {
+                "name": "Ambush",
+                "type_name": "秘技",
+                "effect_name": "Enhance",
+                "desc": "Advances action by #1[i]%.",
+                "level": {"1": {"param_list": [0.25]}},
+            },
+        },
+    }
+    hsr_built = beta_mod._hsr_character(hsr_synth)
+    by_t = {s.title: s for s in hsr_built["sections"]}
+    # Basic ATK at Lv. 6 = 0.5 + 0.5 = 100%, NOT Lv. 10 (140%)
+    basic_sec = next(s for t, s in by_t.items() if "Frostblade" in t)
+    assert "RUBY" not in basic_sec.title and basic_sec.values_label == "Lv. 6"
+    assert "100%" in basic_sec.lines[0] and "140%" not in basic_sec.lines[0]
+    # Memosprite CN `忆灵技` at Lv. 6 = 0.405 + 0.25 = 65.5%, NOT Lv. 10 (85.5%)
+    memo_sec = next(s for t, s in by_t.items() if "Sprite Slash" in t)
+    assert memo_sec.values_label == "Lv. 6" and "65.5%" in memo_sec.lines[0]
+    # Ultimate at Lv. 10 = 1.2 + 0.9 = 210%, NOT Lv. 15 (260%)
+    ult_sec = next(s for t, s in by_t.items() if "Glacial Ult" in t)
+    assert ult_sec.values_label == "Lv. 10" and "210%" in ult_sec.lines[0] and "260%" not in ult_sec.lines[0]
+    # Technique CN `秘技` at Lv. 1 has empty values_label
+    tech_sec = next(s for t, s in by_t.items() if "Ambush" in t)
+    assert tech_sec.values_label == "" and "25%" in tech_sec.lines[0]
+
+    # 4) GI: C0 Lv. 10 cap on real 0-indexed `promote` (`"9"` -> `level: 10`, ignoring `"10"`/`level: 11`
+    # and `"14"`/`level: 15`) plus 1-level Alternate Sprint (`values_label == ""`).
+    gi_synth = {
+        "rarity": 5,
+        "element": "Cryo",
+        "weapon": "WEAPON_SWORD_ONE_HAND",
+        "skills": [
+            {
+                "id": 1001,
+                "name": "Frostbite Slash",
+                "desc": "Deals Cryo DMG.",
+                "promote": {
+                    str(i): {
+                        "level": i + 1,
+                        "desc": ["Skill DMG|{param1:F1P}"],
+                        "param": [1.0 + 0.1 * (i + 1)],
+                    }
+                    for i in range(15)
+                },
+            },
+            {
+                "id": 1002,
+                "name": "Icy Veil",
+                "desc": "Alternate Sprint.",
+                "promote": {
+                    "0": {
+                        "level": 1,
+                        "desc": ["Stamina Consumption|{param1:F1}"],
+                        "param": [15.0],
+                    },
+                },
+            },
+        ],
+    }
+    gi_built = beta_mod._gi_character(gi_synth)
+    assert gi_built["sections"][0].values_label == "Lv. 10"
+    gi_lines_0 = "\n".join(gi_built["sections"][0].lines)
+    assert "Skill DMG: 200%" in gi_lines_0 and "210%" not in gi_lines_0 and "250%" not in gi_lines_0
+    assert gi_built["sections"][1].values_label == "" and "Stamina Consumption: 15" in gi_built["sections"][1].lines
+
+
+def test_beta_equipment_curves_markup_cn_reconcile_and_ww_baseline_self_heal():
+    import copy
+
+    from gamexpress import beta as beta_mod
+
+    # 1) Markup cleanup (`<Term:...>`, `<highlight>`, `{RUBY_*}`) and list rarity parsing
+    cleaned = beta_mod._clean(
+        "<Term:1042><highlight>Tune Break</highlight> deals {RUBY_B#glacio}Frost{RUBY_E#} DMG."
+    )
+    assert cleaned == "Tune Break deals Frost DMG."
+    assert beta_mod._parse_rarity("ww", [1, 3, 4], 5) == 4
+
+    # 2) WuWa Echo Rank 5 `skill.param[-1]` + Sonata `entry["param"]` interpolation (no `[TBD]`)
+    ww_echo_detail = {
+        "name": "Phantom: Dreamweaver",
+        "rarity": [1, 3, 4],
+        "intensity": "Calamity Class",
+        "skill": {
+            "desc": "<highlight>Summon</highlight> Dreamweaver to deal {0} Spectro DMG. CD: {1}s.",
+            "param": [
+                ["110.00%", "20"],
+                ["135.00%", "20"],
+                ["160.00%", "20"],
+                ["185.00%", "20"],
+                ["210.00%", "15"],
+            ],
+        },
+        "group": {
+            "9": {
+                "name": "Luminous Reverie",
+                "set": {
+                    "2": {"desc": "Spectro DMG + {0}.", "param": ["10%"]},
+                    "5": {"desc": "Casting Intro Skill grants {0} Spectro DMG for {1}s.", "param": ["30%", "15"]},
+                },
+            },
+        },
+    }
+    built_echo = beta_mod._equip_from_detail("ww", "echo", ww_echo_detail, {})
+    echo_txt = "\n".join(built_echo["lines"])
+    assert built_echo["rarity"] == 4
+    assert "210.00%" in echo_txt and "15s" in echo_txt and "110.00%" not in echo_txt
+    assert "Spectro DMG + 10%." in echo_txt and "30% Spectro DMG for 15s" in echo_txt
+    assert "[TBD]" not in echo_txt and "<highlight>" not in echo_txt
+
+    # 3) GI Lv. 90 weapon substat curve (`4.594`) when listing omits substat %
+    gi_weap_cd = beta_mod._equip_from_detail("gi", "weapon", {
+        "name": "Starlit Blade",
+        "rarity": 5,
+        "type": "WEAPON_SWORD_ONE_HAND",
+        "weapon_prop": [
+            {"prop_type": "FIGHT_PROP_BASE_ATTACK", "init_value": 44.3358, "type": "GROW_CURVE_ATTACK_304"},
+            {"prop_type": "FIGHT_PROP_CRITICAL_HURT", "init_value": 0.192, "type": "GROW_CURVE_CRITICAL_301"},
+        ],
+        "refinement": {"1": {"name": "Edge", "desc": "CRIT Rate +8%."}},
+    }, {"atk": 542})
+    assert gi_weap_cd["sub_type"] == "CRIT DMG 88.2%" and "Base ATK 542" in gi_weap_cd["stats_line"]
+    gi_weap_em = beta_mod._equip_from_detail("gi", "weapon", {
+        "name": "Tome of Dawning",
+        "rarity": 5,
+        "type": "WEAPON_CATALYST",
+        "weapon_prop": [
+            {"prop_type": "FIGHT_PROP_BASE_ATTACK", "init_value": 44.3358, "type": "GROW_CURVE_ATTACK_304"},
+            {"prop_type": "FIGHT_PROP_ELEMENT_MASTERY", "init_value": 57.6, "type": "GROW_CURVE_CRITICAL_301"},
+        ],
+        "refinement": {"1": {"name": "Insight", "desc": "EM +40."}},
+    }, {"atk": 542})
+    assert gi_weap_em["sub_type"] == "Elemental Mastery 265"
+
+    # 4) `_numbered_slot` accepts both `str` and `BetaSectionEntry` during CN-EN reconciliation
+    en_sec = beta_mod.BetaSectionEntry(title="E1 — First Light", category="Eidolons", lines=["ATK +???%."])
+    zh_sec = beta_mod.BetaSectionEntry(title="E1 — 初光", category="Eidolons", lines=["攻击力提高24%。"])
+    assert beta_mod._numbered_slot(en_sec) == ("e", "1")
+    en_kit = {"sections": [en_sec]}
+    beta_mod._reconcile_en_with_zh_kit(en_kit, {"sections": [zh_sec]})
+    assert any("24%" in ln for ln in en_kit["sections"][0].lines)
+
+    # 5) Legacy pre-`BETA_NORM_REV` WuWa (`ww:1512`) snapshot self-healing (zero bogus `[NERF]` diffs)
+    ww_base = json.loads((FIX / "beta" / "ww_character_1512.json").read_text(encoding="utf-8"))
+    ww_v1 = copy.deepcopy(ww_base)
+    ww_v1["skill_trees"]["6"]["skill"]["level"]["99"] = {
+        "name": "Intro Skill - Eternal Bloom DMG",
+        "param": [["18.50%"] * 9 + ["36.09%"] + ["50.00%"] * 9 + ["65.86%"]],
+        "format": "{0} HP",
+    }
+    ww_v2_buff = copy.deepcopy(ww_v1)
+    ww_v2_buff["skill_trees"]["6"]["skill"]["level"]["99"]["param"] = [
+        ["18.50%"] * 9 + ["42.00%"] + ["55.00%"] * 9 + ["72.00%"]
+    ]
+
+    # Build a legacy pre-BETA_NORM_REV snapshot (no `norm_rev`, storing old Lv. 20 `65.86%` text)
+    legacy_built = beta_mod._ww_character(ww_v1)
+    for sec in legacy_built["sections"]:
+        sec.lines = [ln.replace("36.09% HP", "65.86%") for ln in sec.lines]
+    legacy_char = beta_mod.BetaCharacter(
+        id="ww:1512", name="Lily", rarity=5, element="Spectro", role="Pistols",
+        subtext="", stats_lines=legacy_built["stats_lines"], sections=legacy_built["sections"],
+        page_url="https://ww.nanoka.cc/character/1512",
+    )
+    legacy_snap = beta_mod._character_snapshot(legacy_char, "3.8.1", 1790000000)
+    legacy_snap.pop("norm_rev", None)
+
+    class SelfHealFetcher:
+        def __init__(self, v2_doc, *, allow_v1=True):
+            self.v2_doc = v2_doc
+            self.allow_v1 = allow_v1
+
+        async def get_json(self, url, **_kw):
+            if url.endswith("/ww/3.8.1/en/character/1512.json"):
+                return copy.deepcopy(ww_v1) if self.allow_v1 else None
+            if url.endswith("/ww/3.8.2/en/character/1512.json"):
+                return copy.deepcopy(self.v2_doc)
+            return None
+
+        async def preflight_media(self, _url):
+            return False
+
+    manifest_382 = {
+        "ww": {
+            "latest": "3.8.2",
+            "available": ["3.8.1", "3.8.2"],
+            "live": "3.7.0",
+            "new": {"character": [1512], "weapon": [], "echo": []},
+        }
+    }
+
+    # Case 5a: 3.8.2 identical to 3.8.1 -> self-heals to `equal` (zero bogus `[NERF]` cards)
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx_eq = _beta_ctx(Path(tmp) / "s1.json", SelfHealFetcher(ww_v1), BETA_ENABLED="1", games=["wuwa"])
+        rec_eq = ctx_eq.state.beta_record("wuwa")
+        rec_eq["format_epoch"] = 4
+        rec_eq["source_version"] = "3.8.1"
+        rec_eq["snapshots"] = {"ww:1512": copy.deepcopy(legacy_snap)}
+        patch_eq = asyncio.run(beta_mod.build_patch(ctx_eq, GAMES["wuwa"], manifest_382, beta_mod._budget(ctx_eq)))
+        assert patch_eq is not None and patch_eq.characters == []
+        assert patch_eq.snapshots["ww:1512"]["norm_rev"] == beta_mod.BETA_NORM_REV
+
+    # Case 5b: 3.8.2 genuinely buffs Lv. 10 (36.09% -> 42.00%) -> emits `[BUFF]`, NEVER `[NERF]` from 65.86%!
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx_bf = _beta_ctx(Path(tmp) / "s2.json", SelfHealFetcher(ww_v2_buff), BETA_ENABLED="1", games=["wuwa"])
+        rec_bf = ctx_bf.state.beta_record("wuwa")
+        rec_bf["format_epoch"] = 4
+        rec_bf["source_version"] = "3.8.1"
+        rec_bf["snapshots"] = {"ww:1512": copy.deepcopy(legacy_snap)}
+        patch_bf = asyncio.run(beta_mod.build_patch(ctx_bf, GAMES["wuwa"], manifest_382, beta_mod._budget(ctx_bf)))
+        assert patch_bf is not None and len(patch_bf.characters) == 1
+        diff_txt = "\n".join(ln for s in patch_bf.characters[0].sections for ln in s.lines)
+        assert "[BUFF]" in diff_txt and "36.09" in diff_txt and "42.00" in diff_txt
+        assert "[NERF]" not in diff_txt and "65.86" not in diff_txt
+
+    # Case 5c: 3.8.1 historical JSON unavailable -> falls back to full `snapshot` mode (zero `[NERF]`)
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx_fb = _beta_ctx(
+            Path(tmp) / "s3.json", SelfHealFetcher(ww_v2_buff, allow_v1=False), BETA_ENABLED="1", games=["wuwa"]
+        )
+        rec_fb = ctx_fb.state.beta_record("wuwa")
+        rec_fb["format_epoch"] = 4
+        rec_fb["source_version"] = "3.8.1"
+        rec_fb["snapshots"] = {"ww:1512": copy.deepcopy(legacy_snap)}
+        patch_fb = asyncio.run(beta_mod.build_patch(ctx_fb, GAMES["wuwa"], manifest_382, beta_mod._budget(ctx_fb)))
+        assert patch_fb is not None and len(patch_fb.characters) == 1
+        fb_txt = "\n".join(ln for s in patch_fb.characters[0].sections for ln in s.lines)
+        assert "[NERF]" not in fb_txt and "65.86" not in fb_txt
+
+
 if __name__ == "__main__":
     sys.exit(main())

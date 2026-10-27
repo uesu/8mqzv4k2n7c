@@ -141,10 +141,10 @@ def _clean(value: Any) -> str:
     raw_str = str(value)
     text = re.sub(r"<rt>.*?</rt>", "", raw_str, flags=re.I | re.S)
     text = re.sub(r"<size=\d+>\s*</size>", "", text, flags=re.I)
-    text = re.sub(r"<IconMap:[^>]*>", "", text, flags=re.I)
+    text = re.sub(r"<(?:IconMap|Term):[^>]*>", "", text, flags=re.I)
     text = re.sub(
         r"</?(?:color(?:=[^>]*)?|unbreak|u|i|b|s|size(?:=[^>]*)?|te(?:\s+[^>]*)?|"
-        r"SapTag(?:=[^>]*)?|align(?:=[^>]*)?|sprite(?:\s+[^>]*)?|ruby|span(?:\s+[^>]*)?)>",
+        r"SapTag(?:=[^>]*)?|align(?:=[^>]*)?|sprite(?:\s+[^>]*)?|ruby|highlight|span(?:\s+[^>]*)?)>",
         "",
         text,
         flags=re.I,
@@ -153,6 +153,7 @@ def _clean(value: Any) -> str:
         return ""
     text = text.replace("\\n", "\n").replace("\r", " ").replace("\xa0", " ")
     text = text.replace("{NON_BREAK_SPACE}", " ")
+    text = re.sub(r"\{RUBY_(?:B#[^}]*|E#)\}", "", text, flags=re.I)
     text = re.sub(r"\{LINK#[^}]*\}([^\{]*)\{/LINK\}", r"\1", text)
     text = re.sub(r"\{(?:LINK|N|S)#\d+\}", "", text)
     text = re.sub(
@@ -179,6 +180,9 @@ def _parse_rarity(ns: str, raw: Any, fallback: int | None = 5) -> int | None:
     """Normalize GI/HSR/ZZZ/WW rarity enums and integers into 1..5 stars."""
     if raw is None or raw == "":
         return fallback
+    if isinstance(raw, (list, tuple)):
+        vals = [r for item in raw if (r := _parse_rarity(ns, item, None)) is not None]
+        return max(vals) if vals else fallback
     if isinstance(raw, (int, float)) or (isinstance(raw, str) and raw.strip().isdigit()):
         val = int(float(raw))
         if val <= 0:
@@ -233,10 +237,16 @@ def _num(value: Any, digits: int = 4) -> str:
 # A trailing `%` means the stored value is a ratio (0.5 -> 50); with no `%` the stored
 # value is already the number the game shows (5 -> 5 instances).
 _UNRESOLVED_RE = re.compile(r"#\{[^{}]*\}")
-_PARAM_RE = re.compile(r"#(\d+)\[([A-Za-z])\](%?)")
+_PARAM_RE = re.compile(r"#(\d+)\[([A-Za-z0-9]+)\](%?)")
 
-# Skill values are rendered at the level the databases themselves default to.
-SKILL_LEVEL = {"zzz": 12, "gi": 10, "ww": 10, "hsr": 0}
+# Base (E0 / C0 / M0 / S0) maximum playable skill levels verified against raw game config tables:
+#   * ZZZ: M0 = Lv. 12 combat skills + Core Skill F (tier 7); M3 = +2 (Lv. 14), M5 = +2 (Lv. 16 max), M6 = +0.
+#   * GI:  C0 crowned = Lv. 10 (1 for 1-level sprints); C3/C5 = +3 (Lv. 13), raw promote tables run 1..15.
+#   * WW:  In-game max = Lv. 10 on the 5 leveled skills (S1–S6 add +0 levels); raw param[0] runs 1..20.
+#   * HSR: E0 = Lv. 6 (Basic ATK / Memosprite), Lv. 10 (Skill / Ult / Talent / Elation), Lv. 1 (Technique);
+#          E3/E5 = +1 (Lv. 7) / +2 (Lv. 12), while raw skill tables run 1..10 and 1..15.
+SKILL_LEVEL = {"zzz": 12, "gi": 10, "ww": 10, "hsr": 10}
+BETA_NORM_REV = 2
 
 
 def _fmt_value(value: Any, kind: str = "i") -> str:
@@ -244,11 +254,19 @@ def _fmt_value(value: Any, kind: str = "i") -> str:
         f = float(value)
     except (TypeError, ValueError):
         return ""
-    if kind == "i":
+    k = (kind or "i").lower()
+    if k == "i":
         if abs(f - round(f)) < 1e-6:
             return str(int(round(f)))
-        return f"{round(f, 2):g}"
-    return f"{round(f, 4):g}"
+        return f"{round(f, 2):.2f}".rstrip("0").rstrip(".")
+    if len(k) == 2 and k[0] == "f" and k[1].isdigit():
+        digits = int(k[1])
+        if digits == 0 or abs(f - round(f)) < 1e-9:
+            return str(int(round(f)))
+        return f"{round(f, digits):.{digits}f}".rstrip("0").rstrip(".")
+    if abs(f - round(f)) < 1e-9:
+        return str(int(round(f)))
+    return f"{round(f, 4):.4f}".rstrip("0").rstrip(".")
 
 
 def substitute_params(text: str, params: Any) -> tuple[str, bool]:
@@ -508,11 +526,32 @@ def _norm_title(title: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", str(title or "").lower()).strip()
 
 
-def _numbered_slot(title: str) -> tuple[str, str] | None:
+def _numbered_slot(title: Any) -> tuple[str, str] | None:
     """Numbered progression titles are separate blocks, never fuzzy-renamed siblings."""
-    normal = _norm_title(title)
-    match = re.match(r"^(mindscape cinema|sequence node|constellation|eidolon|c|e)\s*(\d+)\b", normal)
+    raw = getattr(title, "title", title)
+    normal = _norm_title(str(raw or ""))
+    match = re.match(
+        r"^(mindscape cinema|sequence node|constellation|eidolon|stat bonus|c|e)\s*(\d+)\b",
+        normal,
+    )
     return (match.group(1), match.group(2)) if match else None
+
+
+_SINGLE_STAT_NUM_RE = re.compile(
+    r"^\s*(-?\d+(?:\.\d+)?)\s*(?:%|s\b|%\s*(?:HP|DEF|ATK)\b|\s+(?:HP|DEF|ATK)\b)?\s*$",
+    re.I,
+)
+
+
+def _single_stat_float(text: Any) -> float | None:
+    """Extract the scalar float when `text` is a single numeric multiplier/cooldown (not `25%+25%*3`)."""
+    m = _SINGLE_STAT_NUM_RE.match(str(text or ""))
+    if not m:
+        return None
+    try:
+        return float(m.group(1))
+    except ValueError:
+        return None
 
 
 def _section_lines(entry: Any) -> list[str]:
@@ -1389,25 +1428,38 @@ def _encore_character(data: dict) -> dict:
             continue
         category = _encore_text(skill.get("SkillType")) or "Skill"
         lines = _lines(_encore_text(skill.get("SkillDescribe")))
+        attr_rows: list[str] = []
         params = []
+        level = SKILL_LEVEL["ww"]
         for row in _encore_rows(skill.get("SkillAttributes")):
             if not isinstance(row, dict):
                 continue
             label = _encore_text(row.get("attributeName"))
             values = row.get("values")
-            level = SKILL_LEVEL["ww"]
             if not label or not isinstance(values, list) or len(values) < level:
                 continue
             shown = _encore_text(values[level - 1])
             if not shown:
                 continue
-            lines.append(f"{label} (Lv. {level}): {shown}")
-            if re.fullmatch(r"-?\d+(?:\.\d+)?%?", shown):
-                params.append({"name": label, "value": float(shown.rstrip("%")), "text": shown})
+            raw_unit = row.get("Description")
+            unit_txt = _encore_text(raw_unit)
+            if unit_txt and not shown.lower().endswith(unit_txt.lower()):
+                sep = " " if (
+                    (isinstance(raw_unit, str) and raw_unit[:1].isspace())
+                    or (unit_txt[:1].isalpha() and unit_txt.lower() != "s")
+                ) else ""
+                shown = f"{shown}{sep}{unit_txt}"
+            attr_rows.append(f"{label}: {shown}")
+            scalar = _single_stat_float(shown)
+            if scalar is not None:
+                params.append({"name": label, "value": scalar, "text": shown})
+        if attr_rows:
+            lines.append(f"**Skill Attributes (Lv. {level})**")
+            lines.extend(attr_rows)
         if lines:
             sections.append(BetaSectionEntry(title=_dedup_skill_title(category, name),
                                              category=category, lines=lines, params=params,
-                                             values_label=f"Lv. {SKILL_LEVEL['ww']}" if params else ""))
+                                             values_label=f"Lv. {level}" if attr_rows else ""))
     stat_bonuses: dict[str, list[float]] = {}
     stat_bonus_units: dict[str, str] = {}
     for index, node in enumerate(_encore_rows(data.get("SkillTree")), 1):
@@ -1512,33 +1564,74 @@ def _zzz_stats(data: dict) -> list[str]:
         except (TypeError, ValueError):
             return None
 
-    # The core-skill track (`extra_level`) grants a FLAT ATK bonus and a % CRIT Rate bonus
-    # at its last node; both have to be added or ATK comes out ~10% low (Robin 676 vs 750).
+    # The core-skill track (`extra_level`) grants flat Base ATK (`prop=12101`) plus a
+    # secondary bonus at its last node (`extra_level.6`); guard flat vs percent props
+    # so `Percent ATK` (`prop=12102`, `%` format) never corrupts flat Base ATK.
     extra_lv = (data.get("extra_level") or {}).get("6") or {}
     if not isinstance(extra_lv, dict):
         extra_lv = {}
+    flat_hp = 0.0
     flat_atk = 0.0
+    flat_def = 0.0
     crit_bonus = 0.0
+    cd_bonus = 0.0
+    pen_bonus = 0.0
+    impact_bonus = 0.0
+    am_bonus = 0.0
+    ap_bonus = 0.0
+    sharp_bonus = 0.0
     for entry in (extra_lv.get("extra", {}).values()
                   if isinstance(extra_lv.get("extra"), dict) else ()):
         if not isinstance(entry, dict):
             continue
         label = str(entry.get("name") or "").strip().lower()
+        fmt_str = str(entry.get("format") or "")
+        try:
+            prop_id = int(entry.get("prop") or 0)
+        except (TypeError, ValueError):
+            prop_id = 0
         try:
             value = float(entry.get("value") or 0)
         except (TypeError, ValueError):
             continue
-        if label.startswith("crit rate"):
+        is_pct = "%" in fmt_str or "percent" in label
+        if prop_id == 20101 or label.startswith("crit rate"):
             crit_bonus += value
-        elif "atk" in label:
+        elif prop_id == 21101 or label.startswith("crit dmg"):
+            cd_bonus += value
+        elif prop_id == 23101 or label.startswith("pen ratio"):
+            pen_bonus += value
+        elif prop_id == 12201 or label in ("impact", "base impact"):
+            impact_bonus += value
+        elif prop_id == 31401 or label == "anomaly mastery":
+            am_bonus += value
+        elif prop_id == 31201 or label == "anomaly proficiency":
+            ap_bonus += value
+        elif prop_id == 21301 or "laceration" in label:
+            sharp_bonus += value
+        elif prop_id == 12101 or ("atk" in label and not is_pct):
             flat_atk += value
+        elif prop_id == 11101 or ("base hp" in label and not is_pct):
+            flat_hp += value
+        elif prop_id == 13101 or ("base def" in label and not is_pct):
+            flat_def += value
 
     out: list[str] = []
     hp, atk, df = at("hp_max", "hp_growth", "hp_max"), at("attack", "attack_growth", "attack"), \
         at("defence", "defence_growth", "defence")
+    if hp is not None and flat_hp:
+        try:
+            hp = str(int(float(hp) + flat_hp))
+        except (TypeError, ValueError):
+            pass
     if atk is not None and flat_atk:
         try:
             atk = str(int(float(atk) + flat_atk))
+        except (TypeError, ValueError):
+            pass
+    if df is not None and flat_def:
+        try:
+            df = str(int(float(df) + flat_def))
         except (TypeError, ValueError):
             pass
     if hp and atk and df:
@@ -1551,35 +1644,84 @@ def _zzz_stats(data: dict) -> list[str]:
             pass
     cd = stats.get("crit_damage")
     if cd is not None:
-        p = _pct(float(cd) / 10000)
-        if p:
-            out.append(f"CRIT DMG {p}")
-    for label, key in (("Impact", "break_stun"), ("Anomaly Mastery", "element_abnormal_power"),
-                       ("Anomaly Proficiency", "element_mystery")):
+        try:
+            p = _pct((float(cd) + cd_bonus) / 10000)
+            if p:
+                out.append(f"CRIT DMG {p}")
+        except (TypeError, ValueError):
+            pass
+    for label, key, bonus_val in (
+        ("Impact", "break_stun", impact_bonus),
+        ("Anomaly Mastery", "element_abnormal_power", am_bonus),
+        ("Anomaly Proficiency", "element_mystery", ap_bonus),
+    ):
         val = stats.get(key)
         if val not in (None, ""):
-            out.append(f"{label} {_num(val)}")
+            try:
+                out.append(f"{label} {_num(float(val) + bonus_val)}")
+            except (TypeError, ValueError):
+                out.append(f"{label} {_num(val)}")
     pr = stats.get("pen_rate")
     if pr is not None:
-        out.append(f"PEN Ratio {_num(pr)}%")
+        try:
+            out.append(f"PEN Ratio {_num(float(pr) + pen_bonus / 100, 3)}%")
+        except (TypeError, ValueError):
+            out.append(f"PEN Ratio {_num(pr)}%")
     sharp = stats.get("sharp_critical_damage")
-    if sharp:
-        p = _pct(float(sharp) / 10000)
-        if p:
-            out.append(f"Laceration DMG {p}")
+    if sharp or sharp_bonus:
+        try:
+            p = _pct((float(sharp or 0) + sharp_bonus) / 10000)
+            if p:
+                out.append(f"Laceration DMG {p}")
+        except (TypeError, ValueError):
+            pass
     return out
+
+
+_ZZZ_ELEMENT_ENUM = {
+    "200": "Physical",
+    "201": "Fire",
+    "202": "Ice",
+    "203": "Electric",
+    "204": "Wind",
+    "205": "Ether",
+}
+_ZZZ_SPECIALTY_ENUM = {
+    "1": "Attack",
+    "2": "Stun",
+    "3": "Anomaly",
+    "4": "Support",
+    "5": "Defense",
+    "6": "Rupture",
+    "7": "Armorer",
+}
+_ZZZ_SPECIAL_ELEMENT_ENUM = {
+    "20001": "Honed Edge",
+    "20101": "Genesis Flare",
+    "20201": "Frost",
+    "20501": "Auric Ink",
+    "300": "Lumiflux",
+}
 
 
 def _zzz_character(data: dict) -> dict:
     element = ""
-    for v in (data.get("element_type") or {}).values():
-        if isinstance(v, str) and v:
-            element = v
+    elem_map = data.get("element_type") if isinstance(data.get("element_type"), dict) else {}
+    for k, v in elem_map.items():
+        if isinstance(v, str) and v.strip():
+            element = v.strip()
+            break
+        if str(k) in _ZZZ_ELEMENT_ENUM:
+            element = _ZZZ_ELEMENT_ENUM[str(k)]
             break
     role = ""
-    for v in (data.get("weapon_type") or {}).values():
-        if isinstance(v, str) and v:
-            role = v
+    role_map = data.get("weapon_type") if isinstance(data.get("weapon_type"), dict) else {}
+    for k, v in role_map.items():
+        if isinstance(v, str) and v.strip():
+            role = v.strip()
+            break
+        if str(k) in _ZZZ_SPECIALTY_ENUM:
+            role = _ZZZ_SPECIALTY_ENUM[str(k)]
             break
     camp = ""
     for v in (data.get("camp") or {}).values():
@@ -1603,7 +1745,7 @@ def _zzz_character(data: dict) -> dict:
             for item in block.get("description") or []:
                 if not isinstance(item, dict):
                     continue
-                name = _clean(item.get("name")) or label
+                name = _clean(item.get("name")).rstrip(": \t") or label
                 desc = _clean(item.get("desc"))
                 if name not in prose:
                     order.append(name)
@@ -1628,7 +1770,11 @@ def _zzz_character(data: dict) -> dict:
             attack_type = v
             break
     spec_elem = data.get("special_element_type") or {}
-    spec_elem_name = _clean(spec_elem.get("name")) if isinstance(spec_elem, dict) else ""
+    spec_elem_name = ""
+    if isinstance(spec_elem, dict):
+        spec_elem_name = _clean(spec_elem.get("name"))
+        if not spec_elem_name and spec_elem.get("id") is not None:
+            spec_elem_name = _ZZZ_SPECIAL_ELEMENT_ENUM.get(str(spec_elem.get("id")), "")
 
     # Real static.nanoka.cc ZZZ detail JSON stores Core Passive & Additional Ability at
     # top-level `passive.level` (max `level` = Core Skill F), rather than `skill.core`.
@@ -1665,7 +1811,7 @@ def _zzz_character(data: dict) -> dict:
                         continue
                     default_lbl = "Core Passive" if p_idx == 0 else "Additional Ability"
                     raw_nm = (
-                        _clean(p_names[p_idx])
+                        _clean(p_names[p_idx]).rstrip(": \t")
                         if isinstance(p_names, list) and p_idx < len(p_names)
                         else ""
                     )
@@ -1836,15 +1982,54 @@ def _hsr_meta(tag_value: str) -> str:
     return _HSR_SKILL_TAGS.get(raw, re.sub(r"(?<!^)(?=[A-Z])", " ", raw).title())
 
 
-def _hsr_skill_params(item: dict) -> Any:
-    """The skill's own numbers, at its highest published level."""
+def _hsr_skill_cap(item: dict) -> int:
+    """E0 playable skill-level cap per HSR skill category (both EN and CN labels)."""
+    tname = str(item.get("type_name") or "").strip().lower()
+    raw_type = str(item.get("type") or "").strip().lower()
+    tag = str(item.get("tag") or "").strip().lower()
+    if (
+        "technique" in tname
+        or "秘技" in tname
+        or "大世界" in tname
+        or raw_type.startswith("maze")
+        or tag.startswith("maze")
+    ):
+        return 1
+    if (
+        "basic" in tname
+        or "memosprite" in tname
+        or "普攻" in tname
+        or "忆灵" in tname
+        or raw_type in ("normal", "memospriteskill", "memospritetalent")
+    ):
+        return 6
+    return SKILL_LEVEL["hsr"]
+
+
+def _hsr_skill_params_with_level(item: dict) -> tuple[Any, int | None]:
+    """The skill's parameters capped at its playable E0 max level (never unobtainable Lv. 10/15)."""
     levels = item.get("level")
     if isinstance(levels, dict) and levels:
+        cap = _hsr_skill_cap(item)
+        num_keys = [(int(k), k) for k in levels if str(k).isdigit()]
+        if num_keys:
+            capped = [(n, k) for n, k in num_keys if n <= cap]
+            chosen_num, chosen_key = max(capped) if capped else min(num_keys)
+            top = levels.get(chosen_key)
+            if isinstance(top, dict) and isinstance(top.get("param_list"), list):
+                return top["param_list"], chosen_num
         top_key = sorted(levels, key=lambda k: int(k) if str(k).isdigit() else -1)[-1]
         top = levels[top_key]
         if isinstance(top, dict) and isinstance(top.get("param_list"), list):
-            return top["param_list"]
-    return item.get("param_list")
+            lvl_n = int(top_key) if str(top_key).isdigit() else None
+            return top["param_list"], lvl_n
+    return item.get("param_list"), None
+
+
+def _hsr_skill_params(item: dict) -> Any:
+    """The skill's own numbers, capped at its playable E0 max level."""
+    params, _ = _hsr_skill_params_with_level(item)
+    return params
 
 
 def _hsr_character(data: dict) -> dict:
@@ -1883,7 +2068,8 @@ def _hsr_character(data: dict) -> dict:
             continue
         tag = str(item.get("type_name") or "").strip()
         name = _clean(item.get("name"))
-        lines, unresolved = render(item.get("desc"), _hsr_skill_params(item))
+        sk_params, sk_lvl = _hsr_skill_params_with_level(item)
+        lines, unresolved = render(item.get("desc"), sk_params)
         glossary = collect_extras(item.get("extra"))
         if not name and not lines and not glossary:
             continue
@@ -1894,6 +2080,7 @@ def _hsr_character(data: dict) -> dict:
         sections.append(BetaSectionEntry(
             title=f"{tag}: {name}" if tag else name, category="Skills",
             tag="[NEW]", meta=_hsr_meta(item.get("tag")), lines=lines, defs=glossary,
+            values_label=f"Lv. {sk_lvl}" if (sk_lvl and sk_lvl > 1 and sk_params) else "",
         ))
 
     points = data.get("points") or {}
@@ -1988,7 +2175,27 @@ def _gi_character(data: dict) -> dict:
         promote = skill.get("promote") or {}
         rows: list[str] = []
         param_rows: list[dict] = []
-        top_key = "10" if isinstance(promote, dict) and "10" in promote else "1"
+        top_key = "1"
+        shown_level = SKILL_LEVEL["gi"]
+        if isinstance(promote, dict) and promote:
+            lvl_entries = [
+                (int(v["level"]), k)
+                for k, v in promote.items()
+                if isinstance(v, dict) and str(v.get("level") or "").isdigit()
+            ]
+            if lvl_entries:
+                capped_lv = [(lv, k) for lv, k in lvl_entries if lv <= SKILL_LEVEL["gi"]]
+                if capped_lv:
+                    shown_level, top_key = max(capped_lv)
+                else:
+                    shown_level, top_key = min(lvl_entries)
+                    if len(lvl_entries) == 1 and top_key == str(SKILL_LEVEL["gi"]):
+                        shown_level = SKILL_LEVEL["gi"]
+            else:
+                num_keys = [(int(k), k) for k in promote if str(k).isdigit()]
+                if num_keys:
+                    capped_k = [(n, k) for n, k in num_keys if n <= SKILL_LEVEL["gi"]]
+                    shown_level, top_key = max(capped_k) if capped_k else min(num_keys)
         top = promote.get(top_key) if isinstance(promote, dict) else None
         if isinstance(top, dict):
             params = top.get("param") or []
@@ -2024,7 +2231,7 @@ def _gi_character(data: dict) -> dict:
         sections.append(BetaSectionEntry(
             title=name or "Talent", category="Talents", tag="[NEW]", meta="",
             lines=_lines(desc) + rows, params=param_rows,
-            values_label=f"Lv. {top_key}" if param_rows else "",
+            values_label=f"Lv. {shown_level}" if (param_rows and shown_level > 1) else "",
         ))
 
     for passive in data.get("passives") or []:
@@ -2141,14 +2348,29 @@ def _ww_character(data: dict) -> dict:
             if not params or not isinstance(params[0], list):
                 continue
             col = params[0]
-            top = col[-1] if col else ""
-            if label and top != "" and top is not None:
-                rows.append(f"{label}: {top}")
-                try:
-                    param_rows.append({"name": label, "value": float(str(top).rstrip("%")),
-                                       "text": str(top)})
-                except (TypeError, ValueError):
-                    pass
+            if not col:
+                continue
+            # Kuro's raw param[0] carries 20 entries on some skills, while the in-game max on
+            # all five leveled skills is strictly Lv. 10 (index 9; S1–S6 add +0 levels).
+            idx = min(SKILL_LEVEL["ww"], len(col)) - 1
+            raw_top = col[idx] if idx >= 0 else ""
+            if not label or raw_top == "" or raw_top is None:
+                continue
+            fmt = spec.get("format")
+            if isinstance(fmt, str) and fmt.strip():
+                top = (
+                    _clean(fmt.replace("{0}", str(raw_top)))
+                    if "{0}" in fmt
+                    else f"{raw_top}{fmt}"
+                )
+            else:
+                top = str(raw_top)
+            if not top:
+                continue
+            rows.append(f"{label}: {top}")
+            scalar = _single_stat_float(top)
+            if scalar is not None:
+                param_rows.append({"name": label, "value": scalar, "text": str(top)})
         if rows:
             rows = [f"**Skill Attributes (Lv. {SKILL_LEVEL['ww']})**"] + rows
         s_lines = _lines(desc) + rows
@@ -2157,7 +2379,7 @@ def _ww_character(data: dict) -> dict:
         sections.append(BetaSectionEntry(
             title=_dedup_skill_title(stype, name), category=stype, tag="[NEW]", meta="",
             lines=s_lines, params=param_rows,
-            values_label=f"Lv. {SKILL_LEVEL['ww']}" if param_rows else "",
+            values_label=f"Lv. {SKILL_LEVEL['ww']}" if rows else "",
         ))
 
     chains = data.get("chains") or {}
@@ -2238,7 +2460,18 @@ _GI_FIGHT_PROP_LABELS = {
     "FIGHT_PROP_HP_PERCENT": "HP%",
     "FIGHT_PROP_DEFENSE_PERCENT": "DEF%",
     "FIGHT_PROP_PHYSICAL_ADD_HURT": "Physical DMG Bonus",
+    "FIGHT_PROP_FIRE_ADD_HURT": "Pyro DMG Bonus",
+    "FIGHT_PROP_WATER_ADD_HURT": "Hydro DMG Bonus",
+    "FIGHT_PROP_GRASS_ADD_HURT": "Dendro DMG Bonus",
+    "FIGHT_PROP_ELEC_ADD_HURT": "Electro DMG Bonus",
+    "FIGHT_PROP_ICE_ADD_HURT": "Cryo DMG Bonus",
+    "FIGHT_PROP_WIND_ADD_HURT": "Anemo DMG Bonus",
+    "FIGHT_PROP_ROCK_ADD_HURT": "Geo DMG Bonus",
+    "FIGHT_PROP_HEAL_ADD": "Healing Bonus",
 }
+# Verified against Genshin WeaponCurveExcelConfigData.json: all GROW_CURVE_CRITICAL_{101,201,301}
+# weapon substats multiply init_value by 4.594 at Lv. 90 (e.g. 0.192 -> 88.2% CRIT DMG).
+_GI_WEAPON_SUBSTAT_LV90_MULT = 4.594
 
 
 def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
@@ -2410,14 +2643,41 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
     elif ns == "gi" and kind == "weapon":
         weapon_class = _GI_WEAPON_LABELS.get(str(data.get("type") or listing.get("type") or ""), "")
         sub_raw = str(listing.get("sub") or "").strip()
-        if sub_raw:
-            sub_type = _GI_FIGHT_PROP_LABELS.get(sub_raw, "")
         props = data.get("weapon_prop") or []
         main = None
+        sub_prop = None
         for prop in props:
-            if isinstance(prop, dict) and "BASE_ATTACK" in str(prop.get("prop_type") or ""):
+            if not isinstance(prop, dict):
+                continue
+            ptype = str(prop.get("prop_type") or "").strip()
+            if "BASE_ATTACK" in ptype and main is None:
                 main = prop
-                break
+            elif ptype and "BASE_ATTACK" not in ptype and sub_prop is None:
+                sub_prop = prop
+        if not sub_raw and isinstance(sub_prop, dict):
+            sub_raw = str(sub_prop.get("prop_type") or "").strip()
+        if sub_raw:
+            sub_lbl = _GI_FIGHT_PROP_LABELS.get(sub_raw, "")
+            sub_val_str = ""
+            if (
+                sub_lbl
+                and isinstance(sub_prop, dict)
+                and str(sub_prop.get("type") or "").startswith("GROW_CURVE_CRITICAL_")
+                and sub_prop.get("init_value") is not None
+            ):
+                try:
+                    scaled_sub = float(sub_prop["init_value"]) * _GI_WEAPON_SUBSTAT_LV90_MULT
+                    if sub_raw == "FIGHT_PROP_ELEMENT_MASTERY":
+                        sub_val_str = str(int(round(scaled_sub)))
+                    else:
+                        sub_val_str = f"{round(scaled_sub * 100, 1):g}%"
+                except (TypeError, ValueError):
+                    sub_val_str = ""
+            if sub_lbl and sub_val_str:
+                disp_lbl = sub_lbl.rstrip("%") if sub_lbl in ("ATK%", "HP%", "DEF%") else sub_lbl
+                sub_type = f"{disp_lbl} {sub_val_str}"
+            else:
+                sub_type = sub_lbl
         if listing.get("atk") is not None:
             stats_line = f"Base ATK {_num(listing['atk'])}"
         elif isinstance(main, dict):
@@ -2500,18 +2760,30 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         set_kind = "Sonata Effect"
         skill = data.get("skill") or {}
         if isinstance(skill, dict):
-            lines = _lines(skill.get("desc"))
+            sk_raw_params = skill.get("param") or []
+            if (
+                isinstance(sk_raw_params, list)
+                and sk_raw_params
+                and isinstance(sk_raw_params[-1], list)
+            ):
+                echo_params = sk_raw_params[-1]
+            else:
+                echo_params = sk_raw_params
+            lines = _lines(_ww_fill_params(skill.get("desc"), echo_params))
         groups = data.get("group") or {}
         for gid in sorted(groups, key=str):
             group = groups[gid] or {}
             gname = _clean(group.get("name"))
             for num in sorted((group.get("set") or {}), key=lambda k: int(k) if str(k).isdigit() else 0):
                 entry = (group.get("set") or {})[num] or {}
-                desc = _clean(entry.get("desc"))
+                desc = _clean(
+                    _ww_fill_params(entry.get("desc"), entry.get("param"))
+                    if isinstance(entry, dict) else entry
+                )
                 if desc:
                     lines.append(f"{gname} {num}-Piece: {desc}" if gname else f"{num}-Piece: {desc}")
 
-    unresolved = re.compile(r"#\d+\[[A-Za-z]\]%?|\{\d+\}")
+    unresolved = re.compile(r"#\d+\[[A-Za-z0-9]+\]%?|\{\d+\}")
     if any(unresolved.search(line) for line in lines):
         lines = [unresolved.sub("[value unavailable]", line) for line in lines]
         lines.append("-# ⚠️ Some values are unavailable in this revision's source data.")
@@ -3114,6 +3386,15 @@ def _snapshot_record(item, data: dict, kind: str, revision: str, now: int) -> di
 def _snapshot_comparison(previous: dict, current: dict) -> str:
     if previous.get("provider", "nanoka") != current.get("provider", "nanoka"):
         return "snapshot"
+    # Pre-BETA_NORM_REV WuWa nanoka character snapshots stored Lv. 20 param[-1] rows under
+    # a Lv. 10 label; never diff them directly without re-normalizing the historical build.
+    if (
+        previous.get("kind") == "character"
+        and previous.get("provider", "nanoka") == "nanoka"
+        and str((previous.get("data") or {}).get("id") or "").startswith("ww:")
+        and int(previous.get("norm_rev") or 0) < BETA_NORM_REV
+    ):
+        return "snapshot"
     if previous.get("content_signature") == current["content_signature"]:
         return "equal"
     # Old snapshots did not record what was clipped. Rebaseline once without claiming
@@ -3133,7 +3414,9 @@ def _character_snapshot(character: BetaCharacter, revision: str, now: int) -> di
         "mechanic_defs": [(str(name), _clip(desc)) for name, desc in character.mechanic_defs[:24]],
         "image_url": character.image_url, "page_url": character.page_url,
     }
-    return _snapshot_record(character, data, "character", revision, now)
+    snap = _snapshot_record(character, data, "character", revision, now)
+    snap["norm_rev"] = BETA_NORM_REV
+    return snap
 
 
 def _character_from_snapshot(snapshot: Any) -> BetaCharacter | None:
@@ -3851,14 +4134,20 @@ def _synthesize_kit_overview(
         ("restore hp", "healing"),
         ("heals", "healing"),
         ("crit dmg", "CRIT scaling"),
+        ("laceration", "Laceration DMG"),
+        ("sharp dmg", "Sharp DMG"),
         ("sheer", "Sheer DMG"),
         ("miasma", "Miasma interaction"),
         ("anomaly", "Anomaly buildup"),
         ("daze", "Daze / Stun"),
         ("aftershock", "Aftershock attacks"),
+        ("elation", "Elation DMG"),
+        ("memosprite", "Memosprite summons"),
         ("coordinated", "coordinated attacks"),
         ("nightsoul", "Nightsoul mechanics"),
         ("lunar", "Lunar reactions"),
+        ("tune break", "Tune Break"),
+        ("unison", "Unison mechanics"),
         ("outro skill", "Outro support"),
     ):
         if needle in low and label not in focus:
@@ -4056,6 +4345,47 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         rarity = _parse_rarity(ns, data.get("rarity"), built.get("rarity") or 5) or 5
         name = _safe_entry_name(entry, data, None, item_id, zh_data=zh_data)
         previous_revision = str((previous_snapshot or {}).get("revision") or "")
+        # Self-heal pre-BETA_NORM_REV WuWa nanoka snapshots (which stored Lv. 20 param[-1]
+        # multipliers) by re-building the historical revision at Lv. 10 before diffing.
+        if (
+            ns == "ww"
+            and previous_snapshot is not None
+            and previous_snapshot.get("provider", "nanoka") == "nanoka"
+            and "_encore" not in data
+            and int(previous_snapshot.get("norm_rev") or 0) < BETA_NORM_REV
+            and previous_revision
+            and previous_revision != version
+            and builder is not None
+            and requests + 1 <= budget["max_requests"]
+            and _take_shared_request(budget, 1)
+        ):
+            requests += 1
+            hist_data = await _detail(
+                ctx.fetcher, ns, previous_revision, char_detail_kind, item_id
+            )
+            hist_built = builder(hist_data) if hist_data else None
+            if hist_built and hist_built.get("sections"):
+                hist_rar = _parse_rarity(
+                    ns, (hist_data or {}).get("rarity"), hist_built.get("rarity") or rarity
+                ) or rarity
+                hist_char = BetaCharacter(
+                    id=snap_key,
+                    name=str(((previous_snapshot.get("data") or {}).get("name")) or name),
+                    rarity=hist_rar,
+                    element=str(hist_built.get("element") or ""),
+                    role=str(hist_built.get("role") or ""),
+                    subtext=str(hist_built.get("subtext") or ""),
+                    stats_lines=list(hist_built.get("stats_lines") or []),
+                    sections=_clone_sections(list(hist_built.get("sections") or []), "[NEW]"),
+                    mechanic_defs=[],
+                    image_url=str(((previous_snapshot.get("data") or {}).get("image_url")) or ""),
+                    page_url=str(((previous_snapshot.get("data") or {}).get("page_url")) or ""),
+                )
+                rebuilt_prev = _character_snapshot(hist_char, previous_revision, ctx.now)
+                if previous_snapshot.get("gallery_urls"):
+                    rebuilt_prev["gallery_urls"] = list(previous_snapshot["gallery_urls"])
+                previous_snapshot = rebuilt_prev
+                previous = _character_from_snapshot(previous_snapshot)
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
             _item_page_url(ns, "character", item_id, name)
         diff_url = (str(entry.get("diff") or "") or
