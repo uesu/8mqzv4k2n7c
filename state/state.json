@@ -5011,8 +5011,8 @@
             ]
           },
           "banners_checked_ts": 1793002222,
-          "banners_search_ts": 1793090431,
-          "calendar_ts": 1793090431,
+          "banners_search_ts": 1793101531,
+          "calendar_ts": 1793101531,
           "estimate_sources": [
             "version cadence"
           ],
@@ -5417,8 +5417,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793090431,
-          "banners_search_ts": 1793090431,
+          "banners_checked_ts": 1793101531,
+          "banners_search_ts": 1793101531,
           "banners_settled": [
             "phase1",
             "phase2",
