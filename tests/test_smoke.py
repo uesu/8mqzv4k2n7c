@@ -20237,5 +20237,401 @@ def test_beta_equipment_curves_markup_cn_reconcile_and_ww_baseline_self_heal():
         assert "[NERF]" not in fb_txt and "65.86" not in fb_txt
 
 
+def test_feature5_all_game_weapon_refinement_scaling_and_cards():
+    """Verify inline S1–S5 / R1–R5 weapon, W-Engine & Light Cone scaling across all 4 games."""
+    import copy
+
+    from gamexpress import beta as beta_mod
+
+    def _card_text(gk: str, eq: beta_mod.BetaEquipment) -> str:
+        pls = cards.beta_payloads(
+            GAMES[gk],
+            beta_mod.BetaPatch(game_key=gk, beta_version="4.2", rev_label="4.2.50", equipment=[eq]),
+        )
+        assert pls and all(cards.validate_payload(pl) == [] for pl in pls)
+        txt = "\n".join(
+            comp["content"]
+            for pl in pls
+            for comp in pl["components"][0]["components"]
+            if comp.get("type") == 10
+        )
+        assert "Full Kit" not in txt and "Full kit" not in txt
+        return txt
+
+    # 1. Honkai: Star Rail Light Cone 22009 ("See You at the World's End!") — exact reference line!
+    hsr_lc = _beta_json("hsr_lightcone_22009_live.json")
+    f_hsr = beta_mod._equip_from_detail("hsr", "lightcone", hsr_lc["data"], hsr_lc["listing"])
+    assert f_hsr["lines"] == [
+        "For every Elation character on the team, increase the wearer's CRIT DMG by 6%/7%/8%/9%/10%. "
+        "When Aeon ★ Aha is on the field, the wearer's CRIT DMG additionally increases by 12%/14%/16%/18%/20%."
+    ]
+    hsr_eq = beta_mod.BetaEquipment(
+        id="hsr:22009", name=hsr_lc["listing"]["en"], category_label="Light Cone",
+        rarity=4, sub_type=f_hsr["sub_type"], weapon_class=f_hsr["weapon_class"],
+        tag="[NEW]", stats_line=f_hsr["stats_line"], effect_title=f_hsr["effect_title"],
+        lines=f_hsr["lines"], page_url="https://hsr.nanoka.cc/lightcone/22009",
+    )
+    hsr_card = _card_text("starrail", hsr_eq)
+    assert "### [See You at the World's End!](https://hsr.nanoka.cc/lightcone/22009) (4★ Light Cone)" in hsr_card
+    assert "**[Conspirator] *(S1–S5)*:**" in hsr_card
+    assert (
+        "For every Elation character on the team, increase the wearer's CRIT DMG by **6%/7%/8%/9%/10%**. "
+        "When Aeon ★ Aha is on the field, the wearer's CRIT DMG additionally increases by **12%/14%/16%/18%/20%**."
+    ) in hsr_card
+
+    # Alternate HSR Light Cone `params: {"1": [...], "2": [...]}` schema + constant turn collapse (`3`).
+    alt_hsr_txt, alt_unres = beta_mod.substitute_hsr_refinement_params(
+        "Increases SPD by #1[f1]% for #2[i] turns.",
+        {"params": {"1": [0.12, 0.14, 0.16, 0.18, 0.20], "2": [3, 3, 3, 3, 3]}},
+    )
+    assert not alt_unres and alt_hsr_txt == "Increases SPD by 12%/14%/16%/18%/20% for 3 turns."
+
+    # 2. Genshin Impact Weapon 14525 ("Starsealed Edict") + legacy `affix.upgrade["0".."4"]` schema.
+    gi_w = _beta_json("gi_weapon_14525_live.json")
+    f_gi = beta_mod._equip_from_detail("gi", "weapon", gi_w["data"], gi_w["listing"])
+    assert "24%/30%/36%/42%/48%" in f_gi["lines"][0]
+    assert "48/60/72/84/96 for 20s" in f_gi["lines"][0]
+    assert "24/30/36/42/48. Max 3 stacks." in f_gi["lines"][0]
+    assert "12%/15%/18%/21%/24%." in f_gi["lines"][1]
+    gi_eq = beta_mod.BetaEquipment(
+        id="gi:14525", name=gi_w["listing"]["en"], category_label="Weapon",
+        rarity=5, sub_type=f_gi["sub_type"], weapon_class=f_gi["weapon_class"],
+        tag="[NEW]", stats_line=f_gi["stats_line"], effect_title=f_gi["effect_title"],
+        lines=f_gi["lines"], page_url="https://gi.nanoka.cc/weapon/14525",
+    )
+    gi_card = _card_text("genshin", gi_eq)
+    assert "### [Starsealed Edict](https://gi.nanoka.cc/weapon/14525) (5★ Catalyst)" in gi_card
+    assert "**[Dawnstar's Flowing Trail] *(R1–R5)*:**" in gi_card
+    assert "**24%/30%/36%/42%/48%**" in gi_card and "**48/60/72/84/96** for **20s**" in gi_card
+    assert "**12%/15%/18%/21%/24%**" in gi_card
+
+    gi_legacy = {
+        "type": "WEAPON_SWORD_ONE_HAND",
+        "affix": {
+            "111501": {
+                "name": "Frostbite Edge",
+                "upgrade": {
+                    str(i): f"ATK +{16 + 4 * i}% for 12s."
+                    for i in range(5)
+                },
+            }
+        },
+    }
+    f_gi_leg = beta_mod._equip_from_detail("gi", "weapon", gi_legacy, {"atk": 608, "rank": 5})
+    assert f_gi_leg["lines"] == ["ATK +16%/20%/24%/28%/32% for 12s."]
+
+    # 3. Zenless Zone Zero 5-tier W-Engine + `1 stack -> 1/2/3/4/5 stacks` + Day-0 empty effect_title.
+    zzz_5t = copy.deepcopy(_beta_json("zzz_weapon_14166.json"))
+    zzz_5t["talents"] = {
+        str(t): {
+            "name": "Solar Harmonic",
+            "desc": (
+                f"CRIT Rate +{16 + 4 * t}%. Grants {t} {'stack' if t == 1 else 'stacks'} for 15s, "
+                f"increasing Ice DMG by {8.5 + 1.5 * t:g}%."
+            ),
+        }
+        for t in range(1, 6)
+    }
+    f_zzz = beta_mod._equip_from_detail("zzz", "weapon", zzz_5t, {"atk": 713, "rank": 4})
+    assert f_zzz["lines"] == [
+        "CRIT Rate +20%/24%/28%/32%/36%. Grants 1/2/3/4/5 stacks for 15s, "
+        "increasing Ice DMG by 10%/11.5%/13%/14.5%/16%."
+    ]
+    zzz_eq = beta_mod.BetaEquipment(
+        id="zzz:14166", name="Solar Crown", category_label="W-Engine",
+        rarity=5, sub_type=f_zzz["sub_type"], weapon_class=f_zzz["weapon_class"],
+        tag="[NEW]", stats_line=f_zzz["stats_line"], effect_title=f_zzz["effect_title"],
+        lines=f_zzz["lines"], page_url="https://zzz.nanoka.cc/weapon/14166",
+    )
+    zzz_card = _card_text("zzz", zzz_eq)
+    assert "### [Solar Crown](https://zzz.nanoka.cc/weapon/14166)" in zzz_card
+    assert "**[Solar Harmonic] *(R1–R5)*:**" in zzz_card
+    assert "**+20%/24%/28%/32%/36%**" in zzz_card and "**1/2/3/4/5** stacks for **15s**" in zzz_card
+    assert "**10%/11.5%/13%/14.5%/16%**" in zzz_card
+
+    # Day-0 unlocalized `effect_title == ""` renders inline `*(R1–R5)*`, while media-only omits it.
+    zzz_notitle = copy.deepcopy(zzz_eq)
+    zzz_notitle.effect_title = ""
+    notitle_card = _card_text("zzz", zzz_notitle)
+    assert "* **[NEW]** *(R1–R5)* CRIT Rate **+20%/24%/28%/32%/36%**" in notitle_card
+    media_only = copy.deepcopy(zzz_notitle)
+    media_only.lines = ["**[NEW]** Official beta visual assets added in this revision."]
+    media_card = _card_text("zzz", media_only)
+    assert "*(R1" not in media_card
+
+    # 4. Wuthering Waves Nanoka (`ww_weapon_21030076_live.json`) & Encore (`encore_weapon_live.json`).
+    ww_w = _beta_json("ww_weapon_21030076_live.json")
+    f_ww = beta_mod._equip_from_detail("ww", "weapon", ww_w["data"], ww_w["listing"])
+    assert "12%/15%/18%/21%/24%" in f_ww["lines"][0]
+    assert "8/10/12/14/16 points of Concerto Energy, triggered once every 20s" in f_ww["lines"][0]
+    assert "16%/20%/24%/28%/32% ATK increase for [value unavailable]s" in f_ww["lines"][0]
+    assert "24%/30%/36%/42%/48% Echo Skill DMG Bonus for 6s" in f_ww["lines"][0]
+    ww_eq = beta_mod.BetaEquipment(
+        id="ww:21030076", name=ww_w["listing"]["en"], category_label="Weapon",
+        rarity=5, sub_type=f_ww["sub_type"], weapon_class=f_ww["weapon_class"],
+        tag="[NEW]", stats_line=f_ww["stats_line"], effect_title=f_ww["effect_title"],
+        lines=f_ww["lines"], page_url="https://ww.nanoka.cc/weapon/21030076",
+    )
+    ww_card = _card_text("wuwa", ww_eq)
+    assert "### [Lullaby](https://ww.nanoka.cc/weapon/21030076) (5★ Pistols)" in ww_card
+    assert "**[Dreamland Solace] *(R1–R5)*:**" in ww_card
+    assert "**12%/15%/18%/21%/24%**" in ww_card and "**8/10/12/14/16**" in ww_card
+
+    enc_raw = _beta_json("encore_weapon_live.json")
+    f_enc = beta_mod._equip_from_detail("ww", "weapon", {"_encore": enc_raw}, {})
+    enc_eq = beta_mod.BetaEquipment(
+        id="ww:21030076", name="Lullaby", category_label="Weapon",
+        rarity=5, sub_type=f_enc["sub_type"], weapon_class=f_enc["weapon_class"],
+        tag="[NEW]", stats_line=f_enc["stats_line"], effect_title=f_enc["effect_title"],
+        lines=f_enc["lines"], page_url="https://encore.moe/weapon/21030076?lang=en&v=Beta",
+    )
+    enc_card = _card_text("wuwa", enc_eq)
+    assert "### [Lullaby](https://encore.moe/weapon/21030076?lang=en&v=Beta)" in enc_card
+    assert "**[Dreamland Solace]:**" in enc_card
+    assert "-# Effect values shown for refinements 1–5." in enc_card
+
+
+def test_feature5_weapon_refinement_s1_r1_fallbacks_when_incomplete_or_unclear():
+    """Verify clean S1 / R1 fallback whenever tiers 2..5 are missing, zero-padded, or inconsistent."""
+    import copy
+
+    from gamexpress import beta as beta_mod
+
+    # 1. HSR Light Cone: missing tiers 3..5 OR zero-padded S2..S5 (`0.0`) -> clean S1 + `*(S1)*` badge.
+    hsr_lc = copy.deepcopy(_beta_json("hsr_lightcone_22009_live.json"))
+    for k in ("3", "4", "5"):
+        hsr_lc["data"]["refinements"]["level"].pop(k, None)
+    f_hsr_partial = beta_mod._equip_from_detail("hsr", "lightcone", hsr_lc["data"], hsr_lc["listing"])
+    assert "6%." in f_hsr_partial["lines"][0] and "12%." in f_hsr_partial["lines"][0]
+    assert "/" not in f_hsr_partial["lines"][0]
+
+    hsr_zero = copy.deepcopy(_beta_json("hsr_lightcone_22009_live.json"))
+    hsr_zero["data"]["refinements"]["level"]["4"]["param_list"] = [0.0, 0.0]
+    f_hsr_zero = beta_mod._equip_from_detail("hsr", "lightcone", hsr_zero["data"], hsr_zero["listing"])
+    assert "6%." in f_hsr_zero["lines"][0] and "/" not in f_hsr_zero["lines"][0]
+    hsr_s1_card = "\n".join(
+        c["content"]
+        for c in cards.beta_payloads(
+            GAMES["starrail"],
+            beta_mod.BetaPatch(
+                game_key="starrail", beta_version="4.2", rev_label="4.2.50",
+                equipment=[beta_mod.BetaEquipment(
+                    id="hsr:22009", name="See You at the World's End!", category_label="Light Cone",
+                    rarity=4, weapon_class="Elation", tag="[NEW]", stats_line=f_hsr_zero["stats_line"],
+                    effect_title=f_hsr_zero["effect_title"], lines=f_hsr_zero["lines"],
+                    page_url="https://hsr.nanoka.cc/lightcone/22009",
+                )],
+            ),
+        )[0]["components"][0]["components"]
+        if c.get("type") == 10
+    )
+    assert "**[Conspirator] *(S1)*:**" in hsr_s1_card
+
+    # 2. GI Weapon: reworded prose OR zero-padded R2..R5 OR `[TBD]` in R3 -> clean R1 + `*(R1)*`.
+    gi_reword = copy.deepcopy(_beta_json("gi_weapon_14525_live.json"))
+    gi_reword["data"]["refinement"]["3"]["desc"] = "Completely different mechanics by 36%."
+    f_gi_rw = beta_mod._equip_from_detail("gi", "weapon", gi_reword["data"], gi_reword["listing"])
+    assert "24%." in f_gi_rw["lines"][0] and "24%/30%" not in f_gi_rw["lines"][0]
+
+    gi_zero = copy.deepcopy(_beta_json("gi_weapon_14525_live.json"))
+    gi_zero["data"]["refinement"]["2"]["desc"] = gi_zero["data"]["refinement"]["1"]["desc"].replace("24%", "0%")
+    f_gi_z = beta_mod._equip_from_detail("gi", "weapon", gi_zero["data"], gi_zero["listing"])
+    assert "24%." in f_gi_z["lines"][0] and "24%/0%" not in f_gi_z["lines"][0]
+
+    # 3. ZZZ W-Engine: captured `zzz_weapon_14166.json` (only `"1"` + truncated `"2"`) -> R1 + `*(R1)*`.
+    zzz_inc = _beta_json("zzz_weapon_14166.json")
+    f_zzz_inc = beta_mod._equip_from_detail("zzz", "weapon", zzz_inc, {"atk": 713, "rank": 4})
+    assert "10% for 10s" in f_zzz_inc["lines"][0] and "/" not in f_zzz_inc["lines"][0]
+    zzz_r1_card = "\n".join(
+        c["content"]
+        for c in cards.beta_payloads(
+            GAMES["zzz"],
+            beta_mod.BetaPatch(
+                game_key="zzz", beta_version="3.4", rev_label="3.4.1",
+                equipment=[beta_mod.BetaEquipment(
+                    id="zzz:14166", name="Robin's Exclusive W-Engine", category_label="W-Engine",
+                    rarity=5, sub_type=f_zzz_inc["sub_type"], weapon_class=f_zzz_inc["weapon_class"],
+                    tag="[NEW]", stats_line=f_zzz_inc["stats_line"], effect_title=f_zzz_inc["effect_title"],
+                    lines=f_zzz_inc["lines"], page_url="https://zzz.nanoka.cc/weapon/14166",
+                )],
+            ),
+        )[0]["components"][0]["components"]
+        if c.get("type") == 10
+    )
+    assert "**[Robin Test Engine] *(R1)*:**" in zzz_r1_card
+
+    # 4. WuWa Nanoka & Encore: 2-tier or zero-padded `param` -> R1 only + `*(R1)*` (no false 1–5 note).
+    ww_2t = copy.deepcopy(_beta_json("ww_weapon_21030076_live.json"))
+    ww_2t["data"]["param"][0] = ["12%", "0%", "0%", "0%", "0%"]
+    f_ww_z = beta_mod._equip_from_detail("ww", "weapon", ww_2t["data"], ww_2t["listing"])
+    assert "12%." in f_ww_z["lines"][0] and "12%/0%" not in f_ww_z["lines"][0]
+
+    enc_zero = copy.deepcopy(_beta_json("encore_weapon_live.json"))
+    enc_zero["Desc"] = "Increases ATK by 12%/0%/0%/0%/0% for 10s."
+    f_enc_z = beta_mod._equip_from_detail("ww", "weapon", {"_encore": enc_zero}, {})
+    assert f_enc_z["lines"] == ["Increases ATK by 12% for 10s."]
+
+
+def test_feature5_weapon_multi_tier_diffs_zh_sync_and_legacy_state_self_heal():
+    """Verify atomic multi-tier [BUFF]/[NERF] diffs, CN `/zh/` sync, and `equip_norm_rev` self-healing."""
+    import copy
+
+    from gamexpress import beta as beta_mod
+
+    # 1. Atomic slash-progression diffing: uniform buff, uniform nerf, mixed curve, and duration nerf.
+    ln_buff, tag_buff = beta_mod._change_line(
+        "Increases CRIT DMG by 6%/7%/8%/9%/10%.",
+        "Increases CRIT DMG by 8%/9%/10%/11%/12%.",
+    )
+    assert tag_buff == "[BUFF]" and "~~6%/7%/8%/9%/10%~~ → **8%/9%/10%/11%/12%**" in ln_buff
+
+    ln_nerf, tag_nerf = beta_mod._change_line(
+        "Increases Elemental Mastery by 48/60/72/84/96 for 20s.",
+        "Increases Elemental Mastery by 40/50/60/70/80 for 20s.",
+    )
+    assert tag_nerf == "[NERF]" and "~~48/60/72/84/96~~ → **40/50/60/70/80**" in ln_nerf
+
+    ln_mixed, tag_mixed = beta_mod._change_line(
+        "Increases ATK by 12%/15%/18%/21%/24%.",
+        "Increases ATK by 10%/14%/18%/22%/26%.",
+    )
+    assert tag_mixed == "[CHANGED]" and tag_mixed != "[TEXT FIX]"
+    assert "~~12%/15%/18%/21%/24%~~ → **10%/14%/18%/22%/26%**" in ln_mixed
+
+    ln_dur, tag_dur = beta_mod._change_line(
+        "Shield lasts for 10/12/14/16/18s.",
+        "Shield lasts for 8/10/12/14/16s.",
+    )
+    assert tag_dur == "[NERF]" and "~~10/12/14/16/18s~~ → **8/10/12/14/16s**" in ln_dur
+
+    ln_red, tag_red = beta_mod._change_line(
+        "DMG taken is reduced by 20%/22%/24%/26%/28%.",
+        "DMG taken is reduced by 24%/26%/28%/30%/32%.",
+    )
+    assert tag_red == "[BUFF]" and "~~20%/22%/24%/26%/28%~~ → **24%/26%/28%/30%/32%**" in ln_red
+
+    # 2. CN `/zh/` sync: (a) fills `[value unavailable]` with full 5-tier progression;
+    # (b) upgrades EN R1-only prose (preserving `"3rd"` ordinal!) when CN has matching R1–R5;
+    # (c) emits zero false lag warning when EN is R1–R5 and CN only has matching R1.
+    eq_unavail = beta_mod.BetaEquipment(
+        id="ww:21030076", name="Lullaby", category_label="Weapon", rarity=5,
+        lines=[
+            "Increases ATK by 16%/20%/24%/28%/32% for [value unavailable]s.",
+            "-# ⚠️ Some values are unavailable in this revision's source data.",
+        ],
+    )
+    did_patch = beta_mod._reconcile_en_with_zh_equipment(
+        eq_unavail, {"lines": ["攻击提升16%/20%/24%/28%/32%，持续10/12/14/16/18秒。"]}
+    )
+    assert did_patch
+    assert "10/12/14/16/18s." in eq_unavail.lines[0]
+    assert not any("unavailable" in x for x in eq_unavail.lines)
+
+    eq_en_r1 = beta_mod.BetaEquipment(
+        id="zzz:14166", name="Robin's Exclusive W-Engine", category_label="W-Engine", rarity=5,
+        lines=["On every 3rd hit, squad DEF increases by 10% for 10s."],
+    )
+    did_upgrade = beta_mod._reconcile_en_with_zh_equipment(
+        eq_en_r1, {"lines": ["每第3次命中，全队防御力提升10%/11.5%/13%/14.5%/16%，持续10秒。"]}
+    )
+    assert did_upgrade
+    assert eq_en_r1.lines[0] == "On every 3rd hit, squad DEF increases by 10%/11.5%/13%/14.5%/16% for 10s."
+
+    eq_en_5t = beta_mod.BetaEquipment(
+        id="gi:14525", name="Starsealed Edict", category_label="Weapon", rarity=5,
+        lines=["Increases CRIT DMG by 24%/30%/36%/42%/48%."],
+    )
+    assert not beta_mod._reconcile_en_with_zh_equipment(
+        eq_en_5t, {"lines": ["暴击伤害提升24%。"]}
+    )
+
+    # 3. Live `state.json` legacy R1 weapon snapshot (`equip_norm_rev` absent) self-heals cleanly!
+    ww_381 = copy.deepcopy(_beta_json("ww_weapon_21030076_live.json"))
+    ww_382_buff = copy.deepcopy(ww_381)
+    ww_382_buff["data"]["param"][0] = ["16%", "20%", "24%", "28%", "32%"]
+
+    legacy_r1_eq = beta_mod.BetaEquipment(
+        id="ww:21030076", name="Lullaby", category_label="Weapon", rarity=5,
+        sub_type=ww_381["listing"]["sub"], weapon_class="Pistols", tag="[NEW]",
+        stats_line="ATK 412.5 · Energy Regen 77.04%", effect_title="Dreamland Solace",
+        lines=[
+            "Increases Max HP by 12%. Casting Resonance Liberation restores 8 points of Concerto Energy, "
+            "triggered once every 20s."
+        ],
+        page_url="https://ww.nanoka.cc/weapon/21030076",
+    )
+    legacy_weap_snap = beta_mod._equipment_snapshot(legacy_r1_eq, "3.8.1", 1700000000, "weapon")
+    legacy_weap_snap.pop("equip_norm_rev", None)
+
+    class WeaponHealFetcher:
+        def __init__(self, v2_data: dict, *, allow_hist: bool = True):
+            self.v2_data = v2_data
+            self.allow_hist = allow_hist
+            self.calls: list[str] = []
+
+        async def get_text(self, _url, **_kw):
+            return ""
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/weapon.json"):
+                return {"21030076": copy.deepcopy(ww_381["listing"])}
+            if url.endswith("/ww/3.8.1/en/weapon/21030076.json"):
+                return copy.deepcopy(ww_381["data"]) if self.allow_hist else None
+            if url.endswith("/ww/3.8.2/en/weapon/21030076.json"):
+                return copy.deepcopy(self.v2_data)
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    manifest_ww = {
+        "ww": {
+            "latest": "3.8.2", "available": ["3.8.1", "3.8.2"], "live": "3.7.0",
+            "new": {"character": [], "weapon": [21030076], "echo": []},
+        }
+    }
+
+    # 3a: Unchanged 3.8.2 -> self-heals to `equal` (0 false posts) & stamps `equip_norm_rev`.
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher_eq = WeaponHealFetcher(ww_381["data"])
+        ctx_eq = _beta_ctx(Path(tmp) / "wh1.json", fetcher_eq, BETA_ENABLED="1", games=["wuwa"])
+        rec_eq = ctx_eq.state.beta_record("wuwa")
+        rec_eq["format_epoch"] = 4
+        rec_eq["source_version"] = "3.8.1"
+        rec_eq["snapshots"] = {"ww:21030076": copy.deepcopy(legacy_weap_snap)}
+        p_eq = asyncio.run(beta_mod.build_patch(ctx_eq, GAMES["wuwa"], manifest_ww, beta_mod._budget(ctx_eq)))
+        assert p_eq is not None and p_eq.equipment == []
+        assert p_eq.snapshots["ww:21030076"]["equip_norm_rev"] == beta_mod.BETA_EQUIP_NORM_REV
+
+    # 3b: Genuine R1–R5 buff in 3.8.2 (`12%/15%/18%/21%/24%` -> `16%/20%/24%/28%/32%`) -> clean `[BUFF]`.
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher_bf = WeaponHealFetcher(ww_382_buff["data"])
+        ctx_bf = _beta_ctx(Path(tmp) / "wh2.json", fetcher_bf, BETA_ENABLED="1", games=["wuwa"])
+        rec_bf = ctx_bf.state.beta_record("wuwa")
+        rec_bf["format_epoch"] = 4
+        rec_bf["source_version"] = "3.8.1"
+        rec_bf["snapshots"] = {"ww:21030076": copy.deepcopy(legacy_weap_snap)}
+        p_bf = asyncio.run(beta_mod.build_patch(ctx_bf, GAMES["wuwa"], manifest_ww, beta_mod._budget(ctx_bf)))
+        assert p_bf is not None and len(p_bf.equipment) == 1
+        w_diff = "\n".join(p_bf.equipment[0].lines)
+        assert "[BUFF]" in w_diff
+        assert "~~12%/15%/18%/21%/24%~~ → **16%/20%/24%/28%/32%**" in w_diff
+
+    # 3c: Historical 3.8.1 JSON unavailable -> safe `snapshot` mode (zero bogus R1 -> R1–R5 `[BUFF]`).
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher_fb = WeaponHealFetcher(ww_381["data"], allow_hist=False)
+        ctx_fb = _beta_ctx(Path(tmp) / "wh3.json", fetcher_fb, BETA_ENABLED="1", games=["wuwa"])
+        rec_fb = ctx_fb.state.beta_record("wuwa")
+        rec_fb["format_epoch"] = 4
+        rec_fb["source_version"] = "3.8.1"
+        rec_fb["snapshots"] = {"ww:21030076": copy.deepcopy(legacy_weap_snap)}
+        p_fb = asyncio.run(beta_mod.build_patch(ctx_fb, GAMES["wuwa"], manifest_ww, beta_mod._budget(ctx_fb)))
+        assert p_fb is not None and len(p_fb.equipment) == 1
+        fb_lines = "\n".join(p_fb.equipment[0].lines)
+        assert "no direction is inferred" in fb_lines
+        assert "[BUFF]" not in fb_lines and "[NERF]" not in fb_lines
+
+
 if __name__ == "__main__":
     sys.exit(main())

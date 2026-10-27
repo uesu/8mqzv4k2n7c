@@ -247,6 +247,11 @@ _PARAM_RE = re.compile(r"#(\d+)\[([A-Za-z0-9]+)\](%?)")
 #          E3/E5 = +1 (Lv. 7) / +2 (Lv. 12), while raw skill tables run 1..10 and 1..15.
 SKILL_LEVEL = {"zzz": 12, "gi": 10, "ww": 10, "hsr": 10}
 BETA_NORM_REV = 2
+BETA_EQUIP_NORM_REV = 1
+_MULTI_TIER_SLASH_RE = re.compile(
+    r"(?<![A-Za-z0-9_./])\d+(?:\.\d+)?(?:%|s)?(?:/[+-]?\d+(?:\.\d+)?(?:%|s)?){4}(?![A-Za-z0-9_/])"
+)
+_TIER_NUM_RE = re.compile(r"(?<![A-Za-z0-9_.])\d+(?:,\d{3})*(?:\.\d+)?%?(?!(?:st|nd|rd|th)\b)", re.I)
 
 
 def _fmt_value(value: Any, kind: str = "i") -> str:
@@ -265,7 +270,7 @@ def _fmt_value(value: Any, kind: str = "i") -> str:
             return str(int(round(f)))
         return f"{round(f, digits):.{digits}f}".rstrip("0").rstrip(".")
     if abs(f - round(f)) < 1e-9:
-        return str(int(round(f)))
+        return str(int(f))
     return f"{round(f, 4):.4f}".rstrip("0").rstrip(".")
 
 
@@ -300,6 +305,200 @@ def substitute_params(text: str, params: Any) -> tuple[str, bool]:
 
     out = _PARAM_RE.sub(_repl, raw)
     return re.sub(r"\s{2,}", " ", out).strip(), unresolved
+
+
+def substitute_hsr_refinement_params(text: str, ref: dict) -> tuple[str, bool]:
+    """Fill HSR Light Cone `#N[fmt]%` across S1–S5 (`6%/7%/8%/9%/10%`), or S1 when unclear."""
+    level_map = ref.get("level") if isinstance(ref, dict) else None
+    p1: list[Any] | None = None
+    tier_lists: list[list[float]] = []
+
+    if isinstance(level_map, dict) and level_map:
+        first_entry = level_map.get("1")
+        if not isinstance(first_entry, dict):
+            num_keys = sorted(
+                (k for k in level_map if str(k).isdigit()),
+                key=lambda k: int(k),
+            )
+            first_entry = level_map.get(num_keys[0]) if num_keys else None
+        if isinstance(first_entry, dict) and isinstance(first_entry.get("param_list"), list):
+            p1 = first_entry["param_list"]
+
+        if p1 and all(isinstance(level_map.get(str(t)), dict) for t in range(1, 6)):
+            raw_tiers = [level_map[str(t)].get("param_list") for t in range(1, 6)]
+            if all(isinstance(tl, list) and len(tl) == len(p1) for tl in raw_tiers):
+                valid_all = True
+                parsed_tiers: list[list[float]] = [[] for _ in range(5)]
+                for col_idx in range(len(p1)):
+                    col_floats: list[float] = []
+                    for t_idx in range(5):
+                        rv = raw_tiers[t_idx][col_idx]
+                        if rv is None or isinstance(rv, bool):
+                            valid_all = False
+                            break
+                        try:
+                            fv = float(rv)
+                        except (TypeError, ValueError):
+                            valid_all = False
+                            break
+                        if fv != fv or fv in (float("inf"), float("-inf")):
+                            valid_all = False
+                            break
+                        col_floats.append(fv)
+                    if not valid_all:
+                        break
+                    # Early-beta zero-placeholder guard: S1 non-zero while S2–S5 left at 0.
+                    if col_floats[0] != 0.0 and any(v == 0.0 for v in col_floats[1:]):
+                        valid_all = False
+                        break
+                    for t_idx, fv in enumerate(col_floats):
+                        parsed_tiers[t_idx].append(fv)
+                if valid_all:
+                    tier_lists = parsed_tiers
+    elif isinstance(ref, dict) and isinstance(ref.get("params"), dict):
+        # Alternate Light Cone schema: `params: {"1": [s1..s5], "2": [s1..s5]}`
+        alt = ref["params"]
+        max_idx = max((int(k) for k in alt if str(k).isdigit()), default=0)
+        if max_idx > 0 and all(isinstance(alt.get(str(i)), list) and alt[str(i)] for i in range(1, max_idx + 1)):
+            p1 = [alt[str(i)][0] for i in range(1, max_idx + 1)]
+            if all(len(alt[str(i)]) == 5 for i in range(1, max_idx + 1)):
+                valid_alt = True
+                parsed_alt: list[list[float]] = [[] for _ in range(5)]
+                for i in range(1, max_idx + 1):
+                    try:
+                        c_f = [float(x) for x in alt[str(i)]]
+                    except (TypeError, ValueError):
+                        valid_alt = False
+                        break
+                    if c_f[0] != 0.0 and any(v == 0.0 for v in c_f[1:]):
+                        valid_alt = False
+                        break
+                    for t_idx, fv in enumerate(c_f):
+                        parsed_alt[t_idx].append(fv)
+                if valid_alt:
+                    tier_lists = parsed_alt
+
+    if not tier_lists:
+        return substitute_params(text, p1)
+
+    raw = str(text or "")
+    if not raw:
+        return "", False
+    unresolved = bool(_UNRESOLVED_RE.search(raw))
+    if unresolved:
+        raw = _UNRESOLVED_RE.sub("…", raw)
+
+    def _repl_multi(m: re.Match) -> str:
+        idx = int(m.group(1)) - 1
+        if idx < 0 or idx >= len(tier_lists[0]):
+            return m.group(0)
+        kind = (m.group(2) or "i").lower()
+        is_pct = m.group(3) == "%"
+        shown: list[str] = []
+        for t_idx in range(5):
+            val = tier_lists[t_idx][idx] * (100.0 if is_pct else 1.0)
+            s = _fmt_value(val, kind)
+            if not s:
+                return m.group(0)
+            shown.append(f"{s}%" if is_pct else s)
+        return shown[0] if len(set(shown)) == 1 else "/".join(shown)
+
+    out = _PARAM_RE.sub(_repl_multi, raw)
+    return re.sub(r"\s{2,}", " ", out).strip(), unresolved
+
+
+def _ww_weapon_refinement_params(raw_param: Any) -> list[Any]:
+    """Build R1–R5 slash-joined params (`12%/15%/18%/21%/24%`), or R1 when incomplete/unclear."""
+    rows = list(raw_param or []) if isinstance(raw_param, (list, tuple)) else []
+    if not rows:
+        return []
+    r1_fallback = [row[0] if isinstance(row, list) and row else row for row in rows]
+    merged: list[str] = []
+    for row in rows:
+        if not isinstance(row, list) or len(row) != 5:
+            return r1_fallback
+        cells = [_clean(c) for c in row]
+        if any(not c or "?" in c or "[TBD]" in c for c in cells):
+            return r1_fallback
+        if len({c.endswith("%") for c in cells}) != 1:
+            return r1_fallback
+        nums_per_cell = [_numbers(c) for c in cells]
+        if all(len(ns_c) == 1 for ns_c in nums_per_cell):
+            f_vals = [ns_c[0] for ns_c in nums_per_cell]
+            if f_vals[0] != 0.0 and any(v == 0.0 for v in f_vals[1:]):
+                return r1_fallback
+        merged.append(cells[0] if len(set(cells)) == 1 else "/".join(cells))
+    return merged
+
+
+def _merge_tiered_descriptions(raw_descs: list[Any]) -> str | None:
+    """Align 5 pre-rendered refinement descriptions into `R1/R2/R3/R4/R5` inline values.
+
+    Returns `None` whenever fewer than 5 tiers exist, any tier carries unresolved tokens
+    or zero-padded beta placeholders, or the surrounding prose skeleton differs across tiers.
+    """
+    if len(raw_descs) != 5:
+        return None
+    cleaned = [_clean(d) for d in raw_descs]
+    if any(
+        not c
+        or "???" in c
+        or "[TBD]" in c
+        or "[value unavailable]" in c
+        or re.search(r"#\d+\[[A-Za-z0-9]+\]|\{\d+\}", c)
+        for c in cleaned
+    ):
+        return None
+    if len(set(cleaned)) == 1 or _MULTI_TIER_SLASH_RE.search(cleaned[0]):
+        return cleaned[0]
+
+    all_parts = [_TIER_NUM_RE.split(c) for c in cleaned]
+    all_nums = [_TIER_NUM_RE.findall(c) for c in cleaned]
+    slot_count = len(all_nums[0])
+    if slot_count == 0 or any(len(n) != slot_count for n in all_nums):
+        return None
+    if any(len(tp) != slot_count + 1 for tp in all_parts):
+        return None
+
+    chosen_parts: list[str] = []
+    for idx in range(slot_count + 1):
+        col_chunks = [tp[idx] for tp in all_parts]
+        if len(set(col_chunks)) == 1:
+            chosen_parts.append(col_chunks[0])
+            continue
+        # Handle English singular-vs-plural after `1` in R1 (e.g. `1 stack` vs `2..5 stacks`).
+        if (
+            idx > 0
+            and all_nums[0][idx - 1] == "1"
+            and len(set(col_chunks[1:])) == 1
+            and re.sub(r"^(\s+[A-Za-z]+)s\b", r"\1", col_chunks[1]) == col_chunks[0]
+        ):
+            chosen_parts.append(col_chunks[1])
+            continue
+        return None
+
+    merged_slots: list[str] = []
+    for j in range(slot_count):
+        raw_slot = [all_nums[t][j] for t in range(5)]
+        norm_slot = [s.replace(",", "") for s in raw_slot]
+        if len({s.endswith("%") for s in norm_slot}) != 1:
+            return None
+        try:
+            f_vals = [float(s.rstrip("%")) for s in norm_slot]
+        except ValueError:
+            return None
+        if f_vals[0] != 0.0 and any(v == 0.0 for v in f_vals[1:]):
+            return None
+        if len(set(norm_slot)) == 1:
+            merged_slots.append(raw_slot[0])
+        else:
+            merged_slots.append("/".join(norm_slot))
+
+    assembled: list[str] = [chosen_parts[0]]
+    for j in range(slot_count):
+        assembled.append(merged_slots[j])
+        assembled.append(chosen_parts[j + 1])
+    return "".join(assembled)
 
 
 def _zzz_param_rows(items: Any, level: int = 12) -> list[dict]:
@@ -338,7 +537,7 @@ def _zzz_param_rows(items: Any, level: int = 12) -> list[dict]:
 
 
 # --------------------------------------------------------------------------- text diff
-_TOKEN_RE = re.compile(r"\w+|[^\s\w]")
+_TOKEN_RE = re.compile(r"\d+(?:\.\d+)?(?:%|s\b)?(?:/[+-]?\d+(?:\.\d+)?(?:%|s\b)?)+|\w+|[^\s\w]")
 
 
 def _spans(text: str) -> list[tuple[str, int, int]]:
@@ -444,7 +643,12 @@ _REDUCTION_RE = re.compile(
 def _direction(label: str, old: float, new: float) -> str:
     """[BUFF] / [NERF] when the wording makes the direction obvious, else [CHANGED]."""
     text = str(label or "").strip()
-    matches = list(re.finditer(r"-?\d+(?:\.\d+)?", text))
+    matches = list(
+        re.finditer(
+            r"-?\d+(?:\.\d+)?(?:%|s)?(?:/[+-]?\d+(?:\.\d+)?(?:%|s)?)+|-?\d+(?:\.\d+)?",
+            text,
+        )
+    )
     # The changed number is normally the final number in this small replacement context;
     # `3rd/4th hit ... reduced by 35%` must not classify on the ordinal.
     number = matches[-1] if matches else None
@@ -507,6 +711,17 @@ def _change_line(old_frag: str, new_frag: str, label: str = "") -> tuple[str, st
         o_nums, n_nums = _numbers(old_part), _numbers(new_part)
         if len(o_nums) == 1 and len(n_nums) == 1 and o_nums[0] != n_nums[0]:
             tags.append(_direction(label or _changed_context(new_frag, new_part), o_nums[0], n_nums[0]))
+        elif len(o_nums) == len(n_nums) and len(o_nums) >= 2 and o_nums != n_nums:
+            diffs = [b - a for a, b in zip(o_nums, n_nums) if a != b]
+            if diffs and (all(d > 0 for d in diffs) or all(d < 0 for d in diffs)):
+                first_pair = next((a, b) for a, b in zip(o_nums, n_nums) if a != b)
+                tags.append(
+                    _direction(label or _changed_context(new_frag, new_part), first_pair[0], first_pair[1])
+                )
+            else:
+                tags.append("[CHANGED]")
+        elif o_nums != n_nums:
+            tags.append("[CHANGED]")
         else:
             tags.append("[TEXT FIX]")
     # One line can carry several changes: the strongest statement wins, and a direction we
@@ -2508,8 +2723,17 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
             stats_line = f"Lv. 90 — {stats_line}"
         effect_title = _encore_text(raw.get("ResonName"))
         raw_desc = _encore_text(raw.get("Desc"))
-        clean_desc = re.sub(r"\b(\d+(?:\.\d+)?%?)(?:/\1){2,}", r"\1", raw_desc)
-        lines = ["-# Effect values shown for refinements 1–5."] + _lines(clean_desc)
+        clean_desc = re.sub(
+            r"(?<![A-Za-z0-9_./])([1-9]\d*(?:\.\d+)?%?)(?:/0(?:\.0+)?%?)+(?![A-Za-z0-9_/])",
+            r"\1",
+            raw_desc,
+        )
+        clean_desc = re.sub(r"\b(\d+(?:\.\d+)?%?)(?:/\1){2,}", r"\1", clean_desc)
+        body_lines = _lines(clean_desc)
+        if _MULTI_TIER_SLASH_RE.search(clean_desc):
+            lines = ["-# Effect values shown for refinements 1–5."] + body_lines
+        else:
+            lines = body_lines
         sub_type = _encore_text(raw.get("WeaponTypeName"))
         weapon_class = sub_type
         rarity = rarity or _parse_rarity("ww", raw.get("QualityId"), None)
@@ -2562,7 +2786,7 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
                 if isinstance(v, str) and v:
                     weapon_class = v
                     break
-        talents = data.get("talents") or {}
+        talents = data.get("talents") if isinstance(data.get("talents"), dict) else {}
         first = None
         for key in sorted(talents, key=lambda k: int(k) if str(k).isdigit() else 0):
             if isinstance(talents[key], dict):
@@ -2570,7 +2794,12 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
                 break
         if isinstance(first, dict):
             effect_title = _clean(first.get("name"))
-            lines = _lines(first.get("desc"))
+            merged_desc = None
+            if all(isinstance(talents.get(str(i)), dict) for i in range(1, 6)):
+                merged_desc = _merge_tiered_descriptions(
+                    [talents[str(i)].get("desc") for i in range(1, 6)]
+                )
+            lines = _lines(merged_desc if merged_desc is not None else first.get("desc"))
     elif ns == "zzz" and kind == "equipment":
         set_kind = "Drive Disc Set"
         d2, d4 = _clean(data.get("desc2")), _clean(data.get("desc4"))
@@ -2616,8 +2845,7 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         ref = data.get("refinements") or data.get("refimements") or {}
         if isinstance(ref, dict):
             effect_title = _clean(ref.get("name"))
-            params = ((ref.get("level") or {}).get("1") or {}).get("param_list")
-            desc, _ = substitute_params(_clean(ref.get("desc")), params)
+            desc, _ = substitute_hsr_refinement_params(_clean(ref.get("desc")), ref)
             lines = _lines(desc)
             add_gloss(ref.get("extra"))
     elif ns == "hsr" and kind == "relicset":
@@ -2682,17 +2910,26 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
             stats_line = f"Base ATK {_num(listing['atk'])}"
         elif isinstance(main, dict):
             stats_line = f"Lv. 1 Base ATK {_num(main.get('init_value'))}"
-        ref = (data.get("refinement") or {}).get("1") or {}
-        if isinstance(ref, dict) and (ref.get("name") or ref.get("desc")):
+        ref_map = data.get("refinement") if isinstance(data.get("refinement"), dict) else {}
+        ref = ref_map.get("1") if isinstance(ref_map.get("1"), dict) else {}
+        if ref and (ref.get("name") or ref.get("desc")):
             effect_title = _clean(ref.get("name"))
-            lines = _lines(ref.get("desc"))
+            merged_desc = None
+            if all(isinstance(ref_map.get(str(i)), dict) for i in range(1, 6)):
+                merged_desc = _merge_tiered_descriptions(
+                    [ref_map[str(i)].get("desc") for i in range(1, 6)]
+                )
+            lines = _lines(merged_desc if merged_desc is not None else ref.get("desc"))
         else:
             affix = data.get("affix") or {}
             for spec in (affix.values() if isinstance(affix, dict) else ()):
                 if isinstance(spec, dict):
                     effect_title = _clean(spec.get("name"))
-                    up = spec.get("upgrade") or {}
-                    lines = _lines(up.get("0") if isinstance(up, dict) else "")
+                    up = spec.get("upgrade") if isinstance(spec.get("upgrade"), dict) else {}
+                    merged_up = None
+                    if all(up.get(str(i)) is not None for i in range(5)):
+                        merged_up = _merge_tiered_descriptions([up.get(str(i)) for i in range(5)])
+                    lines = _lines(merged_up if merged_up is not None else up.get("0", ""))
                     break
     elif ns == "gi" and kind == "artifact":
         set_kind = "Artifact Set"
@@ -2734,8 +2971,7 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
         if listing.get("sub") and isinstance(listing.get("sub"), str):
             sub_type = str(listing["sub"]).strip()
         effect_title = _clean(data.get("effect_name"))
-        params = [row[0] if isinstance(row, list) and row else row
-                  for row in data.get("param") or []]
+        params = _ww_weapon_refinement_params(data.get("param"))
         lines = _lines(_ww_fill_params(data.get("effect"), params))
         stats_table = data.get("stats") or {}
         block = None
@@ -3395,6 +3631,14 @@ def _snapshot_comparison(previous: dict, current: dict) -> str:
         and int(previous.get("norm_rev") or 0) < BETA_NORM_REV
     ):
         return "snapshot"
+    # Pre-BETA_EQUIP_NORM_REV nanoka weapon snapshots stored R1/S1-only descriptions;
+    # never diff them directly against R1–R5/S1–S5 without re-normalizing the baseline.
+    if (
+        previous.get("kind") == "weapon"
+        and previous.get("provider", "nanoka") == "nanoka"
+        and int(previous.get("equip_norm_rev") or 0) < BETA_EQUIP_NORM_REV
+    ):
+        return "snapshot"
     if previous.get("content_signature") == current["content_signature"]:
         return "equal"
     # Old snapshots did not record what was clipped. Rebaseline once without claiming
@@ -3455,7 +3699,10 @@ def _equipment_snapshot(equipment: BetaEquipment, revision: str, now: int, kind:
         "image_urls": [str(u) for u in (equipment.image_urls or [])[:10] if u],
         "page_url": equipment.page_url,
     }
-    return _snapshot_record(equipment, data, kind, revision, now)
+    snap = _snapshot_record(equipment, data, kind, revision, now)
+    if kind == "weapon":
+        snap["equip_norm_rev"] = BETA_EQUIP_NORM_REV
+    return snap
 
 
 def _equipment_from_snapshot(snapshot: Any) -> BetaEquipment | None:
@@ -3783,16 +4030,16 @@ def _extract_kit_percents(lines: list[str]) -> list[str]:
     for ln in lines:
         if ln.startswith("-#"):
             continue
-        tokens.extend(re.findall(r"\d+(?:\.\d+)?%", ln))
-        for dur in re.findall(r"(?<![A-Za-z0-9.])(\d+(?:\.\d+)?)\s*(?:s\b|sec(?:ond)?s?\b|秒)", ln, re.I):
+        tokens.extend(re.findall(r"\d+(?:\.\d+)?%(?:/[+-]?\d+(?:\.\d+)?%)+|\d+(?:\.\d+)?%", ln))
+        for dur in re.findall(r"(?<![A-Za-z0-9./])(\d+(?:\.\d+)?)\s*(?:s\b|sec(?:ond)?s?\b|秒)", ln, re.I):
             tokens.append(f"{dur}s")
     return tokens
 
 
 def _extract_numeric_tokens_clean(text: str) -> list[str]:
-    """Extract numeric tokens (`1000`, `24%`, `12.5%`), normalizing thousands commas (`1,000`)."""
+    """Extract numeric tokens (`1000`, `24%`, `12%/15%/18%/21%/24%`), normalizing commas."""
     norm = re.sub(r"(?<=\d),(?=\d{3}\b)", "", text or "")
-    return re.findall(r"\d+(?:\.\d+)?%?", norm)
+    return re.findall(r"\d+(?:\.\d+)?%?(?:/[+-]?\d+(?:\.\d+)?%?)+|\d+(?:\.\d+)?%?", norm)
 
 
 def _patch_placeholder_line_from_zh(en_ln: str, zh_ln: str, placeholder_re: str) -> tuple[str, bool]:
@@ -4008,6 +4255,30 @@ def _reconcile_en_with_zh_equipment(current: BetaEquipment, zh_fields: dict) -> 
                 if needle in ln:
                     ln, did = _patch_placeholder_line_from_zh(ln, zh_ln, ph_re)
                     changed = changed or did
+            if not _MULTI_TIER_SLASH_RE.search(ln) and _MULTI_TIER_SLASH_RE.search(zh_ln):
+                zh_multi_re = re.compile(
+                    r"(?<![A-Za-z0-9_.第])\d+(?:,\d{3})*(?:\.\d+)?%?(?:/[+-]?\d+(?:,\d{3})*(?:\.\d+)?%?)+"
+                    r"|(?<![A-Za-z0-9_.第])\d+(?:,\d{3})*(?:\.\d+)?%?(?!(?:st|nd|rd|th)\b)",
+                    re.I,
+                )
+                en_nums = [s.replace(",", "") for s in _TIER_NUM_RE.findall(ln)]
+                zh_nums = [s.replace(",", "") for s in zh_multi_re.findall(zh_ln)]
+                if (
+                    en_nums
+                    and Counter(en_nums) == Counter(zt.split("/", 1)[0] for zt in zh_nums)
+                    and any("/" in zt for zt in zh_nums)
+                ):
+                    by_r1: dict[str, list[str]] = {}
+                    for zt in zh_nums:
+                        by_r1.setdefault(zt.split("/", 1)[0], []).append(zt)
+
+                    def _upgrade_r1_tok(m: re.Match, _map=by_r1) -> str:
+                        key = m.group(0).replace(",", "")
+                        bucket = _map.get(key)
+                        return bucket.pop(0) if bucket else m.group(0)
+
+                    ln = _TIER_NUM_RE.sub(_upgrade_r1_tok, ln)
+                    changed = True
         updated.append(ln)
     if changed and not any("[value unavailable]" in x for x in updated if not x.startswith("-#")):
         updated = [
@@ -4021,9 +4292,14 @@ def _reconcile_en_with_zh_equipment(current: BetaEquipment, zh_fields: dict) -> 
             updated.append("-# 🌐 Values synced with authoritative CN/CHS beta data.")
         current.lines = updated
         return True
+    en_cmp_toks = (
+        [t.split("/", 1)[0] for t in en_eq_toks]
+        if any("/" in t for t in en_eq_toks) and not any("/" in t for t in zh_eq_toks)
+        else en_eq_toks
+    )
     if (
         zh_eq_toks
-        and Counter(en_eq_toks) != Counter(zh_eq_toks)
+        and Counter(en_cmp_toks) != Counter(zh_eq_toks)
         and not any("CN/CHS" in x for x in updated)
     ):
         preview = ", ".join(zh_eq_toks[:8])
@@ -4613,6 +4889,46 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         is_new = item_id in (new_weapon_ids if role == "weapon" else new_relic_ids) and previous is None
         name = _safe_entry_name(entry, data, listing_entry, item_id)
         previous_revision = str((previous_snapshot or {}).get("revision") or "")
+        # Self-heal legacy R1/S1 nanoka weapon snapshots (`equip_norm_rev < BETA_EQUIP_NORM_REV`)
+        # from `previous_revision` once so unchanged weapons stay `equal` and real edits diff R1–R5.
+        if (
+            role == "weapon"
+            and previous_snapshot is not None
+            and previous_snapshot.get("provider", "nanoka") == "nanoka"
+            and "_encore" not in data
+            and int(previous_snapshot.get("equip_norm_rev") or 0) < BETA_EQUIP_NORM_REV
+            and previous_revision
+            and previous_revision != version
+            and requests + 1 <= budget["max_requests"]
+            and _take_shared_request(budget, 1)
+        ):
+            requests += 1
+            hist_eq_data = await _detail(ctx.fetcher, ns, previous_revision, detail_kind, item_id)
+            if hist_eq_data:
+                hist_fields = _equip_from_detail(ns, detail_kind, hist_eq_data, l_dict or {})
+                if hist_fields.get("lines") or hist_fields.get("stats_line"):
+                    hist_name = _safe_entry_name(entry, hist_eq_data, listing_entry, item_id)
+                    hist_eq = BetaEquipment(
+                        id=snap_key, name=hist_name, category_label=str(kinds[role]["label"]),
+                        rarity=hist_fields.get("rarity") or rarity,
+                        sub_type=str(hist_fields.get("sub_type") or ""),
+                        weapon_class=str(hist_fields.get("weapon_class") or ""),
+                        set_kind=str(hist_fields.get("set_kind") or ""),
+                        set_parts=str(hist_fields.get("set_parts") or ""),
+                        tag="[CHANGED]",
+                        stats_line=str(hist_fields.get("stats_line") or ""),
+                        effect_title=str(hist_fields.get("effect_title") or ""),
+                        lines=list(hist_fields.get("lines") or []),
+                        glossary=list(hist_fields.get("glossary") or []),
+                        image_url=str(((previous_snapshot.get("data") or {}).get("image_url")) or ""),
+                        image_urls=list(((previous_snapshot.get("data") or {}).get("image_urls")) or []),
+                        diff_url="", page_url=_item_page_url(ns, role, item_id, hist_name),
+                    )
+                    healed_eq_snap = _equipment_snapshot(hist_eq, previous_revision, ctx.now, role)
+                    if previous_snapshot.get("gallery_urls"):
+                        healed_eq_snap["gallery_urls"] = list(previous_snapshot["gallery_urls"])
+                    previous_snapshot = healed_eq_snap
+                    previous = hist_eq
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
             _item_page_url(ns, role, item_id, name)
         diff_url = (str(entry.get("diff") or "") or

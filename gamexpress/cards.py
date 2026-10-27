@@ -951,9 +951,12 @@ _HSR_STANDARD_PATHS = {
 _BOLD_COMBAT_NUM_RE = re.compile(
     r"(?<![\w\-\*~\[(#@/\.])("
     r"[+-]?\d+(?:\.\d+)?%(?:/[+-]?\d+(?:\.\d+)?%)+"
-    r"|\d+(?:\.\d+)?(?:/\d+(?:\.\d+)?){2,}"
+    r"|[+-]?\d+(?:\.\d+)?s?(?:/[+-]?\d+(?:\.\d+)?s?){2,}"
     r"|[+-]?\d+(?:\.\d+)?(?:%|s\b)"
     r")(?![\w\*~\])])"
+)
+_EQUIP_MULTI_TIER_RE = re.compile(
+    r"(?<![A-Za-z0-9_./])\d+(?:\.\d+)?(?:%|s)?(?:/[+-]?\d+(?:\.\d+)?(?:%|s)?){4}(?![A-Za-z0-9_/])"
 )
 _SKILL_ATTR_HEADER_RE = re.compile(r"^\*\*Skill Attributes\b", re.I)
 
@@ -1808,12 +1811,31 @@ def beta_payloads_with_map(
             if eq_parts_line:
                 eq_parts.append(f"*Parts: {eq_parts_line}*")
             eq_parts.extend(_format_equipment_stats_line(game.key, eq_stats, eq_sub, eq_wclass))
+            is_weapon_eq = (
+                any(k in display_cat.lower() for k in ("weapon", "w-engine", "light cone"))
+                and not eq_set_kind
+            )
+            has_encore_ref_note = any(
+                "refinements 1–5" in x.lower() for x in eq_lines if x.startswith("-#")
+            )
+            has_multi_tier = any(
+                _EQUIP_MULTI_TIER_RE.search(x) for x in eq_lines if not x.startswith("-#")
+            )
+            weapon_ref_badge = ""
+            if is_weapon_eq and eq_tag == "[NEW]" and not has_encore_ref_note:
+                if game.key == "starrail":
+                    weapon_ref_badge = "S1–S5" if has_multi_tier else "S1"
+                else:
+                    weapon_ref_badge = "R1–R5" if has_multi_tier else "R1"
+
+            pending_ref_badge = ""
             if eq_eff_title:
                 eq_parts.append("")
-                ref_note = " *(S1 values)*" if game.key == "starrail" and eq_tag == "[NEW]" else ""
+                ref_note = f" *({weapon_ref_badge})*" if weapon_ref_badge else ""
                 eq_parts.append(f"**[{eq_eff_title}]{ref_note}:**")
             elif eq_lines:
                 eq_parts.append("")
+                pending_ref_badge = weapon_ref_badge
 
             has_eq_bullet = False
             for eln in eq_lines:
@@ -1834,6 +1856,9 @@ def beta_payloads_with_map(
                         eq_parts.append(f"* **{eq_tag}** {_bold_beta_numbers(m_pc.group(2).strip())}")
                     else:
                         pfx = f"**{eq_tag}** " if eq_tag else ""
+                        if pending_ref_badge:
+                            pfx = f"{pfx}*({pending_ref_badge})* "
+                            pending_ref_badge = ""
                         eq_parts.append(f"* {pfx}{_bold_beta_numbers(eln)}")
             for g_name, g_desc in eq_glossary:
                 c_gn = strip_invisible(str(g_name)).strip()
