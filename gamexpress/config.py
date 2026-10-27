@@ -199,10 +199,16 @@ DEFAULT_REDDIT = [
     # on `/new`, `/user/`, and `/comments/` with full multi-image gallery + comments) and
     # `redlib.ducks.party` (Tier 2 `v0.40.0` `/new` listing with inline gallery carousels), and
     # demoted `redlib.vanillax.me` to Tier 3 (`The backend server is having issues` error body);
-    # nothing deleted.
+    # Fleet 24 -> 27 (`2026-10-27`): added `r.naa.gg` (`Nachtalb/redlib` GraphQL engine),
+    # `redlib.thepixora.com` (`PR #603` GraphQL comments patch), and `redlib.r4fo.com`
+    # (`redlib-instances#121` / `redlib#604` verified working instance); excluded `redlib.cow.rip`
+    # (`redlib-instances#120` Cloudflare + custom verification wall); nothing deleted.
     "https://redlib.mint.lgbt",           # Redlib 0.36.0 (`0baefabf` Shreddit build), full listing + `/user/` + `/comments/`
     "https://reddit.idevicehacked.com",   # Redlib 0.40.0 (`848f3013`), full listing + inline gallery + `/user/` + `/comments/`
     "https://redlib.reallyaweso.me",      # Redlib (`redlib.blueberry.reallyaweso.me`), full `/new` + `/user/` + `/comments/` 200 OK
+    "https://r.naa.gg",                   # Nachtalb/redlib GraphQL primary instance, full `/new` + `/user/` + `/comments/` 200 OK
+    "https://redlib.thepixora.com",       # Redlib w/ PR #603 GraphQL comments patch, full `/new` + `/user/` + `/comments/` 200 OK
+    "https://redlib.r4fo.com",            # Verified working Redlib instance (`redlib-instances#121` / `redlib#604`)
     "https://redlib.catsarch.com",        # runner-proven fast `/new` & `/user/` answerer
     "https://snoo.habedieeh.re",          # Redlib v3.0.0 (#592), listing + `/user/` + 1080p CMAF
     "https://redlib.miningtcup.me",       # token-gated private Redlib (`NITTER_RSS_TOKEN`)

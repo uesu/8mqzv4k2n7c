@@ -92,6 +92,11 @@ REDLIB_IMG_RE = re.compile(r"^https?://[^/]+/img/([^?#\s]+)", re.I)
 REDLIB_PREVIEW_RE = re.compile(r"^https?://[^/]+/preview/(external-pre|pre)/([^?#\s]+)(\?[^\s\"'<>]*)?", re.I)
 REDLIB_VID_RE = re.compile(r"^https?://[^/]+/vid/([A-Za-z0-9_-]+)/([^\s\"'<>]+)", re.I)
 _REDLIB_VID_SUBPATH_RE = re.compile(r"^(DASH|CMAF|HLS)/([A-Za-z0-9._-]+)", re.I)
+INLINE_REDDIT_VIDEO_RE = re.compile(
+    r"(?:https?://[^/\s\"'<>]+|(?:(?<=[\s\x22\x27<(])|^))/link/[a-z0-9]+/video/([A-Za-z0-9]{5,20})(?:/player)?(?=[/?#\x22\x27<>\s).,;]|$)",
+    re.I,
+)
+VREDDIT_ID_RE = re.compile(r"https?://v\.redd\.it/([A-Za-z0-9]{5,20})(?=[/?#\x22\x27<>\s).,;]|$)", re.I)
 UNMUXED_REDDIT_VIDEO_RE = re.compile(r"https?://v\.redd\.it/[^/?#]+/(?:DASH|CMAF|HLS)_[^/?#]+\.mp4", re.I)
 _ONION_URL_RE = re.compile(r"^https?://[^/?#\s]+\.onion(?=[/?#]|$)", re.I)
 _GATEWAY_ERROR_RE = re.compile(
@@ -170,7 +175,27 @@ def redlib_media_to_reddit(url: str, base_origin: str = "") -> str:
     if m:
         vid_tail = _REDLIB_VID_SUBPATH_RE.sub(r"\1_\2", m.group(2))
         return f"https://v.redd.it/{m.group(1)}/{vid_tail}"
+    m = INLINE_REDDIT_VIDEO_RE.match(raw)
+    if m:
+        return f"https://v.redd.it/{m.group(1)}/CMAF_720.mp4"
     return raw if raw.lower().startswith(("http://", "https://")) else ""
+
+
+def _inline_video_urls_from_text(*chunks: str | None) -> list[str]:
+    """Extract canonical `v.redd.it/<id>/CMAF_720.mp4` candidates from rich-text `/player` and `v.redd.it` URLs."""
+    seen: set[str] = set()
+    out: list[str] = []
+    for raw_chunk in chunks:
+        if not raw_chunk:
+            continue
+        text = html.unescape(raw_chunk)
+        for rx in (INLINE_REDDIT_VIDEO_RE, VREDDIT_ID_RE):
+            for m in rx.finditer(text):
+                vid = m.group(1)
+                if vid.lower() not in seen:
+                    seen.add(vid.lower())
+                    out.append(f"https://v.redd.it/{vid}/CMAF_720.mp4")
+    return out
 
 
 def canonical_post_url(subreddit: str, post_id: str, slug_part: str = "") -> str:
@@ -434,6 +459,8 @@ def parse_redlib_html(body: str, base_origin: str = "https://snoo.habedieeh.re")
             u = redlib_media_to_reddit(raw_v, base_origin)
             if u:
                 videos.append(u)
+        for iv_u in _inline_video_urls_from_text(chunk, *body_links):
+            videos.append(iv_u)
 
         if not title and not body_text and not images and not videos:
             continue
@@ -589,6 +616,7 @@ def parse_reddit_rss(xml_text: str) -> list[dict]:
         parsed_time = e.get("published_parsed") or e.get("updated_parsed")
         ts = int(timegm(parsed_time)) if parsed_time else 0
         images: list[str] = []
+        videos: list[str] = _inline_video_urls_from_text(html_body, *links)
         for u in links + imgs:
             cu = redlib_media_to_reddit(u)
             if cu and re.search(r"https?://(?:i\.redd\.it|preview\.redd\.it|external-preview\.redd\.it)/", cu, re.I):
@@ -601,6 +629,7 @@ def parse_reddit_rss(xml_text: str) -> list[dict]:
             if u.startswith(("http://", "https://"))
             and not POST_LINK_RE.search(u)
             and not _REDDIT_NAV_LINK_RE.match(u)
+            and not INLINE_REDDIT_VIDEO_RE.match(u)
             and u not in images
         ]
         posts[post_id] = {
@@ -614,13 +643,81 @@ def parse_reddit_rss(xml_text: str) -> list[dict]:
             "url": canonical_post_url(subreddit, post_id, slug_part),
             "ts": ts,
             "images": dedupe(images),
-            "videos": [],
+            "videos": dedupe(videos),
             "links": dedupe(ext_links),
             "stickied": False,
             "comments": [],
         }
         order.append(post_id)
     return [posts[pid] for pid in order]
+
+
+def _extract_record_media(source_data: dict) -> tuple[list[str], list[str], str]:
+    """Extract `(images, videos, dest_url)` from a Reddit `.json` or Arctic Shift post dict,
+    including `gallery_data`, rich-text `media_metadata` (`Image`, `AnimatedImage`, `RedditVideo`),
+    direct `i.redd.it` / `preview.redd.it` links, `reddit_video`, and inline `/player` video URLs."""
+    images: list[str] = []
+    videos: list[str] = []
+    gal_items = ((source_data.get("gallery_data") or {}).get("items") or []) if isinstance(source_data.get("gallery_data"), dict) else []
+    media_meta = source_data.get("media_metadata") if isinstance(source_data.get("media_metadata"), dict) else {}
+
+    def _add_meta_entry(mid: str, meta_entry: object) -> None:
+        if not isinstance(meta_entry, dict) or meta_entry.get("status") not in (None, "valid"):
+            return
+        best_s = meta_entry.get("s") if isinstance(meta_entry.get("s"), dict) else {}
+        if (meta_entry.get("e") == "RedditVideo" or meta_entry.get("is_video")) and not isinstance(
+            best_s.get("gif"), str
+        ):
+            vid_id = str(meta_entry.get("id") or mid or "").strip()
+            if vid_id and re.fullmatch(r"[A-Za-z0-9]{5,20}", vid_id):
+                videos.append(f"https://v.redd.it/{vid_id}/CMAF_720.mp4")
+            return
+        img_u = html.unescape(str(best_s.get("gif") or best_s.get("u") or "")).strip()
+        if img_u.startswith(("http://", "https://")):
+            images.append(img_u)
+
+    seen_meta_ids: set[str] = set()
+    for gi in gal_items:
+        if not isinstance(gi, dict) or gi.get("is_deleted"):
+            continue
+        mid = str(gi.get("media_id") or "")
+        if not mid:
+            continue
+        seen_meta_ids.add(mid)
+        _add_meta_entry(mid, media_meta.get(mid) if isinstance(media_meta, dict) else None)
+
+    if isinstance(media_meta, dict) and media_meta:
+        selftext_s = str(source_data.get("selftext") or "")
+        remaining_ids = [
+            str(k) for k in media_meta
+            if str(k) not in seen_meta_ids
+        ]
+        remaining_ids.sort(key=lambda k: (selftext_s.find(k) if k in selftext_s else 10**9))
+        for mid in remaining_ids:
+            _add_meta_entry(mid, media_meta.get(mid))
+
+    dest_url = html.unescape(str(source_data.get("url_overridden_by_dest") or source_data.get("url") or "")).strip()
+    if re.search(r"https?://(?:i\.redd\.it|preview\.redd\.it)/", dest_url, re.I):
+        images.append(dest_url)
+    preview_imgs = ((source_data.get("preview") or {}).get("images") or []) if isinstance(source_data.get("preview"), dict) else []
+    for pimg in preview_imgs:
+        if not isinstance(pimg, dict):
+            continue
+        src_u = html.unescape(str(((pimg.get("source") or {}).get("url")) or "")).strip()
+        if src_u.startswith(("http://", "https://")):
+            images.append(src_u)
+
+    sec_media = source_data.get("secure_media") or source_data.get("media")
+    if isinstance(sec_media, dict) and isinstance(sec_media.get("reddit_video"), dict):
+        fb_u = html.unescape(str(sec_media["reddit_video"].get("fallback_url") or "")).strip()
+        if fb_u.startswith(("http://", "https://")):
+            videos.append(fb_u)
+
+    for iv_u in _inline_video_urls_from_text(str(source_data.get("selftext") or ""), dest_url):
+        if not any(vid_id.lower() in existing.lower() for existing in videos for vid_id in [iv_u.split("/")[3]]):
+            videos.append(iv_u)
+
+    return dedupe(images), dedupe(videos), dest_url
 
 
 def parse_reddit_json(payload: object) -> list[dict]:
@@ -664,42 +761,7 @@ def parse_reddit_json(payload: object) -> list[dict]:
         if removed_cat or raw_body.strip().lower() in _REMOVED_BODY_MARKERS:
             raw_body = ""
 
-        images: list[str] = []
-        videos: list[str] = []
-
-        # 1. Full multi-image gallery in exact `gallery_data` page order
-        gal_items = ((source_data.get("gallery_data") or {}).get("items") or []) if isinstance(source_data.get("gallery_data"), dict) else []
-        media_meta = source_data.get("media_metadata") if isinstance(source_data.get("media_metadata"), dict) else {}
-        for gi in gal_items:
-            if not isinstance(gi, dict):
-                continue
-            mid = str(gi.get("media_id") or "")
-            meta_entry = media_meta.get(mid) if isinstance(media_meta, dict) else None
-            if not isinstance(meta_entry, dict) or meta_entry.get("status") not in (None, "valid"):
-                continue
-            best_s = meta_entry.get("s") if isinstance(meta_entry.get("s"), dict) else {}
-            img_u = html.unescape(str(best_s.get("gif") or best_s.get("u") or "")).strip()
-            if img_u.startswith(("http://", "https://")):
-                images.append(img_u)
-
-        # 2. Direct `i.redd.it` / `preview.redd.it` link or preview source
-        dest_url = html.unescape(str(source_data.get("url_overridden_by_dest") or source_data.get("url") or "")).strip()
-        if re.search(r"https?://(?:i\.redd\.it|preview\.redd\.it)/", dest_url, re.I):
-            images.append(dest_url)
-        preview_imgs = ((source_data.get("preview") or {}).get("images") or []) if isinstance(source_data.get("preview"), dict) else []
-        for pimg in preview_imgs:
-            if not isinstance(pimg, dict):
-                continue
-            src_u = html.unescape(str(((pimg.get("source") or {}).get("url")) or "")).strip()
-            if src_u.startswith(("http://", "https://")):
-                images.append(src_u)
-
-        # 3. Native `reddit_video` fallback stream
-        sec_media = source_data.get("secure_media") or source_data.get("media")
-        if isinstance(sec_media, dict) and isinstance(sec_media.get("reddit_video"), dict):
-            fb_u = html.unescape(str(sec_media["reddit_video"].get("fallback_url") or "")).strip()
-            if fb_u.startswith(("http://", "https://")):
-                videos.append(fb_u)
+        images, videos, dest_url = _extract_record_media(source_data)
 
         perm = str(raw.get("permalink") or "").strip()
         m_link = POST_LINK_RE.search(perm)
@@ -710,6 +772,7 @@ def parse_reddit_json(payload: object) -> list[dict]:
             and u.startswith(("http://", "https://"))
             and not POST_LINK_RE.search(u)
             and not _REDDIT_NAV_LINK_RE.match(u)
+            and not INLINE_REDDIT_VIDEO_RE.match(u)
             and u not in images
         ]
         author = str(raw.get("author") or "").strip().lstrip("/").removeprefix("u/").strip()
@@ -1349,18 +1412,29 @@ class RedditClient:
             rows = (arc or {}).get("data") if isinstance(arc, dict) else None
             if isinstance(rows, list) and rows and isinstance(rows[0], dict):
                 row = rows[0]
-                raw_selftext = clean_text(str(row.get("selftext") or ""))
-                is_removed = raw_selftext.strip().lower() in (
-                    "[removed]",
-                    "[deleted]",
-                    "[ removed by reddit ]",
-                    "[ removed by moderator ]",
-                )
+                media_row = row
+                cross_list = row.get("crosspost_parent_list")
+                if isinstance(cross_list, list) and cross_list and isinstance(cross_list[0], dict):
+                    media_row = cross_list[0]
+                else:
+                    cp_id = str(row.get("crosspost_parent") or "").strip().removeprefix("t3_").strip().lower()
+                    if cp_id and cp_id != post_id.lower():
+                        arc_parent = await self._get_json(
+                            f"{DEFAULT_REDDIT_ARCHIVE.rstrip('/')}/api/posts/ids",
+                            source="reddit-archive",
+                            params={"ids": cp_id},
+                            retries=0,
+                            timeout=REDDIT_TIMEOUT,
+                        )
+                        p_rows = (arc_parent or {}).get("data") if isinstance(arc_parent, dict) else None
+                        if isinstance(p_rows, list) and p_rows and isinstance(p_rows[0], dict):
+                            media_row = p_rows[0]
+                raw_selftext = clean_text(str(row.get("selftext") or media_row.get("selftext") or ""))
+                is_removed = raw_selftext.strip().lower() in _REMOVED_BODY_MARKERS
                 selftext = "" if is_removed else raw_selftext
                 title_clean = clean_text(str(row.get("title") or ""))
-                ext_url = str(row.get("url") or "").strip()
-                imgs = [ext_url] if re.search(r"https?://(?:i\.redd\.it|preview\.redd\.it)/", ext_url, re.I) else []
-                if not (is_removed and not title_clean and not imgs):
+                imgs, vids, _ = _extract_record_media(media_row)
+                if not (is_removed and not title_clean and not imgs and not vids):
                     best = {
                         "id": post_id.lower(),
                         "subreddit": str(row.get("subreddit") or subreddit),
@@ -1372,8 +1446,11 @@ class RedditClient:
                         "url": canonical_post_url(subreddit, post_id, slug_part),
                         "ts": _safe_epoch_ts(row.get("created_utc")),
                         "images": imgs,
-                        "videos": [],
-                        "links": find_urls(selftext),
+                        "videos": vids,
+                        "links": [
+                            u for u in find_urls(selftext)
+                            if not INLINE_REDDIT_VIDEO_RE.match(u)
+                        ],
                         "stickied": False,
                         "comments": [],
                     }

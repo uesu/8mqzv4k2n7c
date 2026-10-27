@@ -13283,13 +13283,16 @@ def test_reddit_fleet_ordering_tiering_and_exclusions():
         RedditClient,
     )
 
-    assert len(DEFAULT_REDDIT) == 24
+    assert len(DEFAULT_REDDIT) == 27
     assert set(TOKEN_GATED_REDDIT) == {"https://redlib.miningtcup.me"}
 
     active_healthy_tier = [
         "https://redlib.mint.lgbt",
         "https://reddit.idevicehacked.com",
         "https://redlib.reallyaweso.me",
+        "https://r.naa.gg",
+        "https://redlib.thepixora.com",
+        "https://redlib.r4fo.com",
         "https://redlib.catsarch.com",
         "https://snoo.habedieeh.re",
         "https://redlib.miningtcup.me",
@@ -13314,8 +13317,8 @@ def test_reddit_fleet_ordering_tiering_and_exclusions():
         "https://safereddit.com",
         "https://redlib.nadeko.net",
     ]
-    assert DEFAULT_REDDIT[:9] == active_healthy_tier
-    assert DEFAULT_REDDIT[9:] == partial_and_legacy_tail
+    assert DEFAULT_REDDIT[:12] == active_healthy_tier
+    assert DEFAULT_REDDIT[12:] == partial_and_legacy_tail
     assert frozenset(partial_and_legacy_tail[:7]) | {"https://redlib.vanillax.me"} == REDDIT_LISTING_ONLY
     expected_sub_only = frozenset({"https://redlib.ducks.party"})
     assert expected_sub_only == REDDIT_SUB_LISTING_ONLY
@@ -13353,6 +13356,7 @@ def test_reddit_fleet_ordering_tiering_and_exclusions():
         "https://rxddit.com",
         "https://rxyddit.com",
         "https://troddit.com",
+        "https://redlib.cow.rip",
     }
     fleet_all = set(DEFAULT_REDDIT) | set(DEFAULT_REDDIT_PROXIES) | {DEFAULT_REDDIT_ARCHIVE}
     assert excluded_candidates.isdisjoint(fleet_all)
@@ -13361,6 +13365,179 @@ def test_reddit_fleet_ordering_tiering_and_exclusions():
         "https://embedez.com",
         "https://embeddit.deltandy.me",
     ]
+
+
+def test_reddit_inline_video_and_crosspost_media_parity():
+    """Inline rich-text `/link/<post>/video/<id>/player` + `media_metadata` `RedditVideo` / `Image` /
+    `AnimatedImage` + Arctic Shift crosspost parent unwrapping across Redlib HTML, RSS, JSON, and `resolve_post`."""
+    from gamexpress.sources.reddit import (
+        RedditClient,
+        parse_reddit_json,
+        parse_reddit_rss,
+        parse_redlib_html,
+        redlib_media_to_reddit,
+    )
+
+    assert (
+        redlib_media_to_reddit("/link/1xgncao/video/juuuo3it3zxh1/player", "https://r.naa.gg")
+        == "https://v.redd.it/juuuo3it3zxh1/CMAF_720.mp4"
+    )
+    assert (
+        redlib_media_to_reddit("https://reddit.com/link/1xgncao/video/juuuo3it3zxh1/player")
+        == "https://v.redd.it/juuuo3it3zxh1/CMAF_720.mp4"
+    )
+
+    # 1. Redlib HTML rich-text inline video
+    rl_html = """<!DOCTYPE html><html><head><title>Showcase - Redlib</title></head><body>
+    <div id="posts"><div class="post" id="1xgncao">
+      <div class="post_header">
+        <a class="post_subreddit" href="/r/ClaretMains_">r/ClaretMains_</a>
+        <a class="post_author" href="/user/ShowcaseOP">u/ShowcaseOP</a>
+        <span class="created" title="Oct 27 2026, 04:00:05 UTC">1h ago</span>
+      </div>
+      <h2 class="post_title">
+        <a href="/r/ClaretMains_/comments/1xgncao/sunbringer_claret_robin_showcase_529k/">Showcase</a>
+      </h2>
+      <div class="post_body">
+        <p><a href="/link/1xgncao/video/juuuo3it3zxh1/player">https://reddit.com/link/1xgncao/video/juuuo3it3zxh1/player</a></p>
+        <p>Credit to Ferro.</p>
+      </div>
+    </div></div></body></html>"""
+    rl_posts = parse_redlib_html(rl_html, "https://r.naa.gg")
+    assert len(rl_posts) == 1
+    assert rl_posts[0]["videos"] == ["https://v.redd.it/juuuo3it3zxh1/CMAF_720.mp4"]
+
+    # 2. RSS rich-text inline video
+    rss_xml = """<?xml version="1.0" encoding="UTF-8"?>
+    <feed xmlns="http://www.w3.org/2005/Atom">
+      <entry>
+        <id>t3_1xgncao</id>
+        <title>Sunbringer / Claret / Robin showcase - 52.9k</title>
+        <link href="https://www.reddit.com/r/ClaretMains_/comments/1xgncao/sunbringer_claret_robin_showcase_529k/"/>
+        <author><name>/u/ShowcaseOP</name></author>
+        <content type="html">&lt;div class="md"&gt;&lt;p&gt;&lt;a href="https://reddit.com/link/1xgncao/video/juuuo3it3zxh1/player"&gt;https://reddit.com/link/1xgncao/video/juuuo3it3zxh1/player&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Credit to Ferro.&lt;/p&gt;&lt;/div&gt;</content>
+      </entry>
+    </feed>"""
+    rss_posts = parse_reddit_rss(rss_xml)
+    assert len(rss_posts) == 1
+    assert rss_posts[0]["videos"] == ["https://v.redd.it/juuuo3it3zxh1/CMAF_720.mp4"]
+    assert rss_posts[0]["links"] == []
+
+    # 3. Native JSON crosspost with rich-text RedditVideo + inline Image/AnimatedImage
+    json_payload = {
+        "data": {
+            "children": [
+                {
+                    "kind": "t3",
+                    "data": {
+                        "id": "1xgntbu",
+                        "subreddit": "Zenlesszonezeroleaks_",
+                        "title": "Sunbringer / Claret / Robin showcase - 52.9k",
+                        "author": "Crossposter",
+                        "permalink": "/r/Zenlesszonezeroleaks_/comments/1xgntbu/sunbringer_claret_robin_showcase_529k/",
+                        "created_utc": 1793000000,
+                        "crosspost_parent_list": [
+                            {
+                                "id": "1xgncao",
+                                "subreddit": "ClaretMains_",
+                                "is_self": True,
+                                "selftext": "https://reddit.com/link/1xgncao/video/juuuo3it3zxh1/player\n\nhttps://preview.redd.it/card1.png",
+                                "media_metadata": {
+                                    "card1": {"status": "valid", "e": "Image", "s": {"u": "https://preview.redd.it/card1.png"}},
+                                    "juuuo3it3zxh1": {"status": "valid", "e": "RedditVideo", "id": "juuuo3it3zxh1", "isGif": False},
+                                },
+                            }
+                        ],
+                    },
+                }
+            ]
+        }
+    }
+    j_posts = parse_reddit_json(json_payload)
+    assert len(j_posts) == 1
+    assert j_posts[0]["images"] == ["https://preview.redd.it/card1.png"]
+    assert j_posts[0]["videos"] == ["https://v.redd.it/juuuo3it3zxh1/CMAF_720.mp4"]
+
+    # 4. Arctic Shift parent-ID crosspost fallback in resolve_post
+    from unittest.mock import AsyncMock
+
+    async def _run_arc_xpost():
+        rc = RedditClient(
+            None,
+            settings(REDDIT_INSTANCES="", REDDIT_PROXIES=""),
+        )
+
+        async def _fake_get_json(url, **kw):
+            pid = (kw.get("params") or {}).get("ids")
+            if pid == "1xgntbu":
+                return {
+                    "data": [
+                        {
+                            "id": "1xgntbu",
+                            "subreddit": "Zenlesszonezeroleaks_",
+                            "author": "Crossposter",
+                            "title": "Showcase",
+                            "crosspost_parent": "t3_1xgncao",
+                            "created_utc": 1793000000,
+                        }
+                    ]
+                }
+            if pid == "1xgncao":
+                return {
+                    "data": [
+                        {
+                            "id": "1xgncao",
+                            "subreddit": "ClaretMains_",
+                            "selftext": "https://reddit.com/link/1xgncao/video/juuuo3it3zxh1/player\n\nCredit to Ferro.",
+                            "media_metadata": {
+                                "juuuo3it3zxh1": {"status": "valid", "e": "RedditVideo", "id": "juuuo3it3zxh1", "isGif": False}
+                            },
+                        }
+                    ]
+                }
+            return None
+
+        rc._get_json = _fake_get_json
+        rc._get_text = AsyncMock(return_value=None)
+        resolved = await rc.resolve_post("Zenlesszonezeroleaks_", "1xgntbu", "showcase")
+        assert resolved is not None
+        assert resolved["videos"] == ["https://v.redd.it/juuuo3it3zxh1/CMAF_720.mp4"]
+        assert "Credit to Ferro." in resolved["text"]
+
+    asyncio.run(_run_arc_xpost())
+
+    # 5. Mid-path foreign URLs never false-match INLINE_REDDIT_VIDEO_RE, and loop-flagged RedditVideo (isGif=True, no s.gif) stays a video.
+    from gamexpress.sources.reddit import _inline_video_urls_from_text
+
+    assert _inline_video_urls_from_text(
+        "https://example.com/foo/link/1xgncao/video/juuuo3it3zxh1/player "
+        "https://video.twimg.com/ext_tw_video/1982000/pu/vid/1280x720/abc.mp4"
+    ) == []
+    assert _inline_video_urls_from_text("/link/1xgncao/video/juuuo3it3zxh1/player") == [
+        "https://v.redd.it/juuuo3it3zxh1/CMAF_720.mp4"
+    ]
+    loop_json = {
+        "data": {
+            "children": [
+                {
+                    "kind": "t3",
+                    "data": {
+                        "id": "1loop99",
+                        "subreddit": "Zenlesszonezeroleaks_",
+                        "title": "Loop Clip",
+                        "author": "Leaker",
+                        "created_utc": 1793000000,
+                        "media_metadata": {
+                            "loopvid99": {"status": "valid", "e": "RedditVideo", "id": "loopvid99", "isGif": True},
+                        },
+                    },
+                }
+            ]
+        }
+    }
+    loop_posts = parse_reddit_json(loop_json)
+    assert len(loop_posts) == 1
+    assert loop_posts[0]["videos"] == ["https://v.redd.it/loopvid99/CMAF_720.mp4"]
 
 
 def test_redlib_html_parser_merges_author_comment_and_rewrites_redd_it_media():
