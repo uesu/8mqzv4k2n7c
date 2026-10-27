@@ -1,3 +1,78 @@
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Nice! A real website dishing out free PSN codes](https://www.reddit.com/r/Genshin_Impact_Leaks/comments/1xh7jl3/)\n*by Chef-Goat in r/Genshin_Impact_Leaks*"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "https://caidenbtlgw.wikitidings.com/6669522/daily_free_psn_codes"
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "-# 💬 2 👍 1   •   🕐 <t:1793141758:f>"
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.reddit.com/r/Genshin_Impact_Leaks/comments/1xh7jl3/"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
 Reddit Feed Monitor #10864
 
 https://github.com/uesu/7jkxmy9nvbc/actions/runs/40599012879
