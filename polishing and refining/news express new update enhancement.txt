@@ -345,7 +345,7 @@ rm -f reddit_run_result.json
 Once all suites pass with zero failures and zero annotations, commit, push to your active branch, open the PR against `main` (**do not merge**), and return the PR link.
 ~~~
 
-Once you paste that into `News-Express` and send back the PR link, I'll audit the PR diff, CI run, and annotations end-to-end before you merge and sync `7jkxmy9nvbc`.
+Once you paste that into `News-Express` and send back the PR link, I'll audit the PR diff, CI run, and annotations end-to-end before you merge and sync `7jkxmy9nvbc` as well as the twitter: wvkhabh2s22.
 
 Here is the direct, verified breakdown for each of your questions against current `main`:
 
