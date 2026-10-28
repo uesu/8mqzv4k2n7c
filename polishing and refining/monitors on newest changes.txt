@@ -1,0 +1,2835 @@
+Twitter Feed Monitor #11504
+
+2026-10-28T04:00:37.8438043Z Current runner version: '2.338.0'
+2026-10-28T04:00:37.8456437Z ##[group]Runner Image Provisioner
+2026-10-28T04:00:37.8457145Z Hosted Compute Agent
+2026-10-28T04:00:37.8457582Z Version: 20261021.618
+2026-10-28T04:00:37.8458071Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-28T04:00:37.8458603Z Build Date: 2026-10-21T00:45:21Z
+2026-10-28T04:00:37.8459328Z Worker ID: {89110717-9b56-4171-b264-c11fe2478e00}
+2026-10-28T04:00:37.8459867Z Region: centralus
+2026-10-28T04:00:37.8460298Z Cloud: Azure
+2026-10-28T04:00:37.8460689Z ##[endgroup]
+2026-10-28T04:00:37.8461513Z ##[group]Operating System
+2026-10-28T04:00:37.8462017Z Ubuntu
+2026-10-28T04:00:37.8462411Z 24.04.5
+2026-10-28T04:00:37.8462823Z LTS
+2026-10-28T04:00:37.8463391Z ##[endgroup]
+2026-10-28T04:00:37.8463864Z ##[group]Runner Image
+2026-10-28T04:00:37.8464301Z Image: ubuntu-24.04
+2026-10-28T04:00:37.8464705Z Version: 20261025.353.1
+2026-10-28T04:00:37.8465570Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-28T04:00:37.8466563Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-10-28T04:00:37.8467190Z ##[endgroup]
+2026-10-28T04:00:37.8468011Z ##[group]GITHUB_TOKEN Permissions
+2026-10-28T04:00:37.8469485Z Contents: write
+2026-10-28T04:00:37.8469919Z Metadata: read
+2026-10-28T04:00:37.8470344Z ##[endgroup]
+2026-10-28T04:00:37.8471718Z Secret source: Actions
+2026-10-28T04:00:37.8472466Z Cache mode: write
+2026-10-28T04:00:37.8472919Z Prepare workflow directory
+2026-10-28T04:00:37.8679328Z Prepare all required actions
+2026-10-28T04:00:37.8713692Z Getting action download info
+2026-10-28T04:00:38.1091423Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-28T04:00:38.1992391Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-10-28T04:00:38.6922900Z Complete job name: check-twitter
+2026-10-28T04:00:38.7423667Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-28T04:00:38.7424187Z with:
+2026-10-28T04:00:38.7424621Z   repository: uesu/wvkhabh2s22
+2026-10-28T04:00:38.7426787Z   token: ***
+2026-10-28T04:00:38.7427183Z   ssh-strict: true
+2026-10-28T04:00:38.7427430Z   ssh-user: git
+2026-10-28T04:00:38.7427687Z   persist-credentials: true
+2026-10-28T04:00:38.7427967Z   clean: true
+2026-10-28T04:00:38.7428233Z   sparse-checkout-cone-mode: true
+2026-10-28T04:00:38.7428529Z   fetch-depth: 1
+2026-10-28T04:00:38.7428778Z   fetch-tags: false
+2026-10-28T04:00:38.7429033Z   show-progress: true
+2026-10-28T04:00:38.7429290Z   lfs: false
+2026-10-28T04:00:38.7429525Z   submodules: false
+2026-10-28T04:00:38.7429786Z   set-safe-directory: true
+2026-10-28T04:00:38.7430073Z   allow-unsafe-pr-checkout: false
+2026-10-28T04:00:38.7430456Z ##[endgroup]
+2026-10-28T04:00:38.9304636Z Syncing repository: uesu/wvkhabh2s22
+2026-10-28T04:00:38.9305854Z ##[group]Getting Git version info
+2026-10-28T04:00:38.9306430Z Working directory is '/home/runner/work/wvkhabh2s22/wvkhabh2s22'
+2026-10-28T04:00:38.9307089Z [command]/usr/bin/git version
+2026-10-28T04:00:38.9378447Z git version 2.56.0
+2026-10-28T04:00:38.9401001Z ##[endgroup]
+2026-10-28T04:00:38.9405819Z Temporarily overriding HOME='/home/runner/work/_temp/d991edb5-6b49-40b0-9aee-1cc6528da28c' before making global git config changes
+2026-10-28T04:00:38.9407028Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T04:00:38.9408050Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-28T04:00:38.9453657Z Deleting the contents of '/home/runner/work/wvkhabh2s22/wvkhabh2s22'
+2026-10-28T04:00:38.9456757Z ##[group]Determining repository object format
+2026-10-28T04:00:38.9457732Z ##[endgroup]
+2026-10-28T04:00:38.9458526Z ##[group]Initializing the repository
+2026-10-28T04:00:38.9461352Z [command]/usr/bin/git init /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-28T04:00:38.9689227Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-28T04:00:38.9690554Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-28T04:00:38.9691690Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-28T04:00:38.9692567Z hint: call:
+2026-10-28T04:00:38.9693320Z hint:
+2026-10-28T04:00:38.9693920Z hint: 	git config --global init.defaultBranch <name>
+2026-10-28T04:00:38.9694603Z hint:
+2026-10-28T04:00:38.9695251Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-28T04:00:38.9696217Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-28T04:00:38.9697148Z hint:
+2026-10-28T04:00:38.9697641Z hint: 	git branch -m <name>
+2026-10-28T04:00:38.9698189Z hint:
+2026-10-28T04:00:38.9698873Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-28T04:00:38.9700038Z Initialized empty Git repository in /home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/
+2026-10-28T04:00:38.9705440Z [command]/usr/bin/git remote add origin https://github.com/uesu/wvkhabh2s22
+2026-10-28T04:00:38.9755579Z ##[endgroup]
+2026-10-28T04:00:38.9756346Z ##[group]Disabling automatic garbage collection
+2026-10-28T04:00:38.9758082Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-28T04:00:38.9800702Z ##[endgroup]
+2026-10-28T04:00:38.9801788Z ##[group]Setting up auth
+2026-10-28T04:00:38.9802299Z Removing SSH command configuration
+2026-10-28T04:00:38.9806973Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T04:00:38.9849974Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T04:00:39.0135449Z Removing HTTP extra header
+2026-10-28T04:00:39.0138989Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T04:00:39.0177424Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T04:00:39.0361925Z Removing includeIf entries pointing to credentials config files
+2026-10-28T04:00:39.0366653Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T04:00:39.0408368Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T04:00:39.0597707Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-28T04:00:39.0638863Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path /home/runner/work/_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:00:39.0675975Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:00:39.0713764Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:00:39.0751189Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:00:39.0787181Z ##[endgroup]
+2026-10-28T04:00:39.0787826Z ##[group]Fetching the repository
+2026-10-28T04:00:39.0791971Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +9823c3dcb99b6c477c1749e02f061175ff9ece99:refs/remotes/origin/main
+2026-10-28T04:00:39.5307790Z From https://github.com/uesu/wvkhabh2s22
+2026-10-28T04:00:39.5310226Z  * [new ref]         9823c3dcb99b6c477c1749e02f061175ff9ece99 -> origin/main
+2026-10-28T04:00:39.5315618Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-28T04:00:39.5350532Z   origin/main
+2026-10-28T04:00:39.5356105Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-28T04:00:39.5387786Z 9823c3dcb99b6c477c1749e02f061175ff9ece99
+2026-10-28T04:00:39.5391597Z ##[endgroup]
+2026-10-28T04:00:39.5392926Z ##[group]Determining the checkout info
+2026-10-28T04:00:39.5394523Z ##[endgroup]
+2026-10-28T04:00:39.5395451Z [command]/usr/bin/git sparse-checkout disable
+2026-10-28T04:00:39.5446397Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-28T04:00:39.5484210Z ##[group]Checking out the ref
+2026-10-28T04:00:39.5485957Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-28T04:00:39.5601192Z Switched to a new branch 'main'
+2026-10-28T04:00:39.5605533Z branch 'main' set up to track 'origin/main'.
+2026-10-28T04:00:39.5611615Z ##[endgroup]
+2026-10-28T04:00:39.5655523Z [command]/usr/bin/git log -1 --format=%H
+2026-10-28T04:00:39.5688680Z 9823c3dcb99b6c477c1749e02f061175ff9ece99
+2026-10-28T04:00:39.5968096Z ##[group]Run git fetch origin "${CACHE_BRANCH:-main}"
+2026-10-28T04:00:39.5969328Z [36;1mgit fetch origin "${CACHE_BRANCH:-main}"[0m
+2026-10-28T04:00:39.5970355Z [36;1mgit reset --hard FETCH_HEAD[0m
+2026-10-28T04:00:39.5971544Z [36;1mecho "Now at $(git log -1 --format=%H) (live ${CACHE_BRANCH:-main} tip)."[0m
+2026-10-28T04:00:39.5991863Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:00:39.5992674Z env:
+2026-10-28T04:00:39.5993528Z   CACHE_BRANCH: main
+2026-10-28T04:00:39.5994251Z ##[endgroup]
+2026-10-28T04:00:39.8748301Z From https://github.com/uesu/wvkhabh2s22
+2026-10-28T04:00:39.8748697Z  * branch            main       -> FETCH_HEAD
+2026-10-28T04:00:39.8850623Z HEAD is now at 9823c3d auto: update posted_tweets.json cache
+2026-10-28T04:00:39.8870393Z Now at 9823c3dcb99b6c477c1749e02f061175ff9ece99 (live main tip).
+2026-10-28T04:00:39.8968965Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-10-28T04:00:39.8969234Z with:
+2026-10-28T04:00:39.8969406Z   python-version: 3.14.9
+2026-10-28T04:00:39.8969575Z   cache: pip
+2026-10-28T04:00:39.8969730Z   check-latest: false
+2026-10-28T04:00:39.8970981Z   token: ***
+2026-10-28T04:00:39.8971202Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-10-28T04:00:39.8971460Z   update-environment: true
+2026-10-28T04:00:39.8971643Z   allow-prereleases: false
+2026-10-28T04:00:39.8971818Z   freethreaded: false
+2026-10-28T04:00:39.8971989Z ##[endgroup]
+2026-10-28T04:00:39.9734693Z ##[group]Installed versions
+2026-10-28T04:00:39.9756218Z Successfully set up CPython (3.14.9)
+2026-10-28T04:00:39.9756791Z ##[endgroup]
+2026-10-28T04:00:40.0136235Z [command]/opt/hostedtoolcache/Python/3.14.9/x64/bin/pip cache dir
+2026-10-28T04:00:42.0166212Z /home/runner/.cache/pip
+2026-10-28T04:00:42.1998473Z Cache hit for: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-28T04:00:43.0063504Z Received 7799739 of 7799739 (100.0%), 11.8 MBs/sec
+2026-10-28T04:00:43.0063908Z Cache Size: ~7 MB (7799739 B)
+2026-10-28T04:00:43.0080263Z [command]/usr/bin/tar -xf /home/runner/work/_temp/5ff95718-86b1-4cda-8445-5cba612a26ca/cache.tzst -P -C /home/runner/work/wvkhabh2s22/wvkhabh2s22 --use-compress-program unzstd
+2026-10-28T04:00:43.0281256Z Cache restored successfully
+2026-10-28T04:00:43.0287958Z Cache restored from key: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-28T04:00:43.0417728Z ##[group]Run python -m pip install --upgrade pip
+2026-10-28T04:00:43.0417974Z [36;1mpython -m pip install --upgrade pip[0m
+2026-10-28T04:00:43.0418162Z [36;1mpip install -r requirements.txt[0m
+2026-10-28T04:00:43.0437799Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:00:43.0437959Z env:
+2026-10-28T04:00:43.0438285Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:43.0438568Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:00:43.0438815Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:43.0439036Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:43.0439255Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:43.0439479Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:00:43.0439671Z ##[endgroup]
+2026-10-28T04:00:44.3062954Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.14.9/x64/lib/python3.14/site-packages (26.2.2)
+2026-10-28T04:00:45.0806086Z Collecting feedparser<7,>=6.0.14 (from -r requirements.txt (line 1))
+2026-10-28T04:00:45.0816517Z   Using cached feedparser-6.0.14-py3-none-any.whl.metadata (2.7 kB)
+2026-10-28T04:00:45.4401943Z Collecting aiohttp<4,>=3.14.3 (from -r requirements.txt (line 2))
+2026-10-28T04:00:45.4413296Z   Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+2026-10-28T04:00:45.4984218Z Collecting python-dotenv<2,>=1.2.3 (from -r requirements.txt (line 3))
+2026-10-28T04:00:45.4994486Z   Using cached python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+2026-10-28T04:00:45.6247180Z Collecting feedparser-sgmllib<3,>=2 (from feedparser<7,>=6.0.14->-r requirements.txt (line 1))
+2026-10-28T04:00:45.6258476Z   Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl.metadata (926 bytes)
+2026-10-28T04:00:45.7563153Z Collecting aiohappyeyeballs>=2.5.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:45.7574264Z   Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
+2026-10-28T04:00:45.7762700Z Collecting aiosignal>=1.4.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:45.7769577Z   Using cached aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+2026-10-28T04:00:45.7966806Z Collecting attrs>=17.3.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:45.7973533Z   Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-10-28T04:00:45.8371975Z Collecting frozenlist>=1.1.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:45.8380846Z   Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+2026-10-28T04:00:45.9793255Z Collecting multidict<8.0,>=4.5 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:45.9803310Z   Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.1 kB)
+2026-10-28T04:00:46.0236121Z Collecting propcache>=0.2.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:46.0244297Z   Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (25 kB)
+2026-10-28T04:00:46.1537744Z Collecting yarl<2.0,>=1.25.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:46.1548973Z   Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (111 kB)
+2026-10-28T04:00:46.1859884Z Collecting idna>=2.0 (from yarl<2.0,>=1.25.1->aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:00:46.1868065Z   Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-10-28T04:00:46.1919187Z Using cached feedparser-6.0.14-py3-none-any.whl (80 kB)
+2026-10-28T04:00:46.1926902Z Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+2026-10-28T04:00:46.1938846Z Using cached python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+2026-10-28T04:00:46.1945223Z Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl (11 kB)
+2026-10-28T04:00:46.1952061Z Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (506 kB)
+2026-10-28T04:00:46.1960045Z Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (117 kB)
+2026-10-28T04:00:46.1967213Z Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+2026-10-28T04:00:46.1973330Z Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+2026-10-28T04:00:46.1979167Z Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-10-28T04:00:46.1985713Z Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+2026-10-28T04:00:46.1992033Z Using cached idna-3.20-py3-none-any.whl (69 kB)
+2026-10-28T04:00:46.1998624Z Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (232 kB)
+2026-10-28T04:00:46.2460524Z Installing collected packages: python-dotenv, propcache, multidict, idna, frozenlist, feedparser-sgmllib, attrs, aiohappyeyeballs, yarl, feedparser, aiosignal, aiohttp
+2026-10-28T04:00:46.6311353Z 
+2026-10-28T04:00:46.6323295Z Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.5 aiosignal-1.4.0 attrs-26.1.0 feedparser-6.0.14 feedparser-sgmllib-2.1.0 frozenlist-1.8.0 idna-3.20 multidict-7.2.1 propcache-0.5.4 python-dotenv-1.2.4 yarl-1.25.1
+2026-10-28T04:00:46.7142866Z ##[group]Run echo "TWITTER_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+2026-10-28T04:00:46.7143460Z [36;1mecho "TWITTER_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-28T04:00:46.7143660Z [36;1mset -o pipefail[0m
+2026-10-28T04:00:46.7143800Z [36;1mset +e[0m
+2026-10-28T04:00:46.7143999Z [36;1mpython "testing area/twitter_v3.py" 2>&1 | tee twitter_monitor.log   # ← V3[0m
+2026-10-28T04:00:46.7144237Z [36;1mstatuses=("${PIPESTATUS[@]}")[0m
+2026-10-28T04:00:46.7144432Z [36;1mecho "TWITTER_END_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-28T04:00:46.7144665Z [36;1mif [ "${statuses[0]}" -ne 0 ] || [ "${statuses[1]}" -ne 0 ]; then[0m
+2026-10-28T04:00:46.7144857Z [36;1m  exit 1[0m
+2026-10-28T04:00:46.7144973Z [36;1mfi[0m
+2026-10-28T04:00:46.7160705Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:00:46.7160878Z env:
+2026-10-28T04:00:46.7161034Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:46.7161304Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:00:46.7161538Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:46.7161746Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:46.7161969Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:46.7162209Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:00:46.7162557Z   ACCOUNTS: ***
+2026-10-28T04:00:46.7162684Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:46.7163123Z   WEBHOOK_TYPEII_EN: ***
+2026-10-28T04:00:46.7163471Z   WEBHOOK_POMPOM_HONKAISR: ***
+2026-10-28T04:00:46.7163821Z   WEBHOOK_WUTHERING_WAVES: ***
+2026-10-28T04:00:46.7164134Z   WEBHOOK_HONKAINA: ***
+2026-10-28T04:00:46.7164443Z   WEBHOOK_ANANTA_EN: ***
+2026-10-28T04:00:46.7164578Z   TEST_TWEET_ID: 
+2026-10-28T04:00:46.7164769Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:46.7164908Z   MAX_CACHE_SIZE_PER_ACCOUNT: 
+2026-10-28T04:00:46.7165050Z   MAX_CACHE_SIZE_TOTAL: 
+2026-10-28T04:00:46.7165178Z   MEDIA_HEAL: 
+2026-10-28T04:00:46.7165307Z   MEDIA_HEAL_DELAY_SECONDS: 
+2026-10-28T04:00:46.7165449Z   MEDIA_HEAL_ATTEMPTS: 
+2026-10-28T04:00:46.7165581Z   MEDIA_HEAL_SCOPE: 
+2026-10-28T04:00:46.7165708Z ##[endgroup]
+2026-10-28T04:00:48.8387805Z 2026-10-28 04:00:48,838 [INFO] [Ananta_EN] feed OK via https://nitter.cf — 17 entries.
+2026-10-28T04:00:48.8479340Z 2026-10-28 04:00:48,847 [INFO] [HonkaiNA] feed OK via https://nitter.cf — 20 entries.
+2026-10-28T04:00:48.8731301Z 2026-10-28 04:00:48,872 [INFO] [PomPom_HonkaiSR] feed OK via https://nitter.cf — 20 entries.
+2026-10-28T04:00:48.9520470Z 2026-10-28 04:00:48,951 [INFO] [Wuthering_Waves] feed OK via https://nitter.cf — 21 entries.
+2026-10-28T04:00:48.9575949Z 2026-10-28 04:00:48,957 [INFO] [TYPEII_EN] feed OK via https://nitter.cf — 20 entries.
+2026-10-28T04:00:50.3034847Z 2026-10-28 04:00:50,303 [INFO] V3 Posted: Wuthering_Waves_2115292476311576669 (lang=en | source=fxtwitter)
+2026-10-28T04:00:50.3035606Z 2026-10-28 04:00:50,303 [INFO] MEDIA-HEAL queued for Wuthering_Waves_2115292476311576669: Discord returned 1 heal-eligible media item(s) with no dimensions/content-type (cold media proxy; scope=video).
+2026-10-28T04:00:51.8055353Z 2026-10-28 04:00:51,805 [INFO] MEDIA-HEAL: 1 message(s) posted with unresolved media — re-editing each in 45s.
+2026-10-28T04:01:37.0566351Z 2026-10-28 04:01:37,056 [INFO] MEDIA-HEAL Wuthering_Waves_2115292476311576669: skipped after revalidation — no unresolved eligible media remains.
+2026-10-28T04:01:37.0574632Z 2026-10-28 04:01:37,057 [INFO] Twitter V3 Monitor execution finished.
+2026-10-28T04:01:37.0877394Z ##[group]Run cache_result=failed
+2026-10-28T04:01:37.0877624Z [36;1mcache_result=failed[0m
+2026-10-28T04:01:37.0877802Z [36;1mecho "TWITTER_CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-28T04:01:37.0878002Z [36;1mset -o pipefail[0m
+2026-10-28T04:01:37.0878244Z [36;1mgit config --local user.email "github-actions[bot]@users.noreply.github.com"[0m
+2026-10-28T04:01:37.0878522Z [36;1mgit config --local user.name "github-actions[bot]"[0m
+2026-10-28T04:01:37.0878719Z [36;1mgit add -f posted_tweets.json[0m
+2026-10-28T04:01:37.0878873Z [36;1m[0m
+2026-10-28T04:01:37.0879002Z [36;1mif git diff --cached --quiet; then[0m
+2026-10-28T04:01:37.0879177Z [36;1m  echo "No cache changes to push."[0m
+2026-10-28T04:01:37.0879342Z [36;1m  cache_result=no-changes[0m
+2026-10-28T04:01:37.0879534Z [36;1m  echo "TWITTER_CACHE_RESULT=no-changes" >> "$GITHUB_ENV"[0m
+2026-10-28T04:01:37.0879724Z [36;1melse[0m
+2026-10-28T04:01:37.0879911Z [36;1m  if ! git commit -m "auto: update posted_tweets.json cache"; then[0m
+2026-10-28T04:01:37.0880287Z [36;1m    echo "::error::CACHE COMMIT FAILED — dedup cache was not persisted; rerun this monitor after resolving the repository state."[0m
+2026-10-28T04:01:37.0880597Z [36;1m    exit 1[0m
+2026-10-28T04:01:37.0880727Z [36;1m  fi[0m
+2026-10-28T04:01:37.0880840Z [36;1m[0m
+2026-10-28T04:01:37.0880970Z [36;1m  cache_branch="${CACHE_BRANCH:-main}"[0m
+2026-10-28T04:01:37.0896103Z [36;1m  # Round 61 (2026-10-04): save OUR freshly-written cache aside —[0m
+2026-10-28T04:01:37.0896478Z [36;1m  # the recovery below resets to the live tip and re-merges it[0m
+2026-10-28T04:01:37.0896840Z [36;1m  # SEMANTICALLY (union of dedup keys; git's line merge turned the[0m
+2026-10-28T04:01:37.0897096Z [36;1m  # 2026-10-03 Reddit collision into a fatal conflict instead).[0m
+2026-10-28T04:01:37.0897303Z [36;1m  ours_dir="$(mktemp -d)"[0m
+2026-10-28T04:01:37.0897564Z [36;1m  if [ -f posted_tweets.json ]; then cp posted_tweets.json "$ours_dir/posted_tweets.json"; fi[0m
+2026-10-28T04:01:37.0897812Z [36;1m  pushed=0[0m
+2026-10-28T04:01:37.0897944Z [36;1m  attempts=0[0m
+2026-10-28T04:01:37.0898084Z [36;1m  for attempt in 1 2 3; do[0m
+2026-10-28T04:01:37.0898240Z [36;1m    attempts="$attempt"[0m
+2026-10-28T04:01:37.0898431Z [36;1m    if git push origin "HEAD:${cache_branch}"; then[0m
+2026-10-28T04:01:37.0898614Z [36;1m      pushed=1[0m
+2026-10-28T04:01:37.0898747Z [36;1m      break[0m
+2026-10-28T04:01:37.0898869Z [36;1m    fi[0m
+2026-10-28T04:01:37.0898987Z [36;1m[0m
+2026-10-28T04:01:37.0899156Z [36;1m    # A remote cache commit landed between our sync and this push.[0m
+2026-10-28T04:01:37.0899409Z [36;1m    # Reset to the live tip, semantically merge our cache onto it,[0m
+2026-10-28T04:01:37.0899621Z [36;1m    # then retry with bounded backoff.[0m
+2026-10-28T04:01:37.0899796Z [36;1m    if [ "$attempt" -lt 3 ]; then[0m
+2026-10-28T04:01:37.0900101Z [36;1m      echo "::warning::Cache push attempt $attempt/3 failed; merging the live ${cache_branch} tip semantically before retry."[0m
+2026-10-28T04:01:37.0900426Z [36;1m      if ! git fetch origin "$cache_branch"; then[0m
+2026-10-28T04:01:37.0900732Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — could not fetch the live tip; dedup cache was not persisted."[0m
+2026-10-28T04:01:37.0901171Z [36;1m        break[0m
+2026-10-28T04:01:37.0901301Z [36;1m      fi[0m
+2026-10-28T04:01:37.0901431Z [36;1m      git reset --hard FETCH_HEAD[0m
+2026-10-28T04:01:37.0901695Z [36;1m      if ! python .github/scripts/merge_monitor_caches.py "$ours_dir" . posted_tweets.json; then[0m
+2026-10-28T04:01:37.0902062Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — semantic merge failed; dedup cache was not persisted."[0m
+2026-10-28T04:01:37.0902326Z [36;1m        break[0m
+2026-10-28T04:01:37.0902456Z [36;1m      fi[0m
+2026-10-28T04:01:37.0902592Z [36;1m      git add -f posted_tweets.json[0m
+2026-10-28T04:01:37.0902772Z [36;1m      if git diff --cached --quiet; then[0m
+2026-10-28T04:01:37.0903321Z [36;1m        echo "Live tip already contains our cache state — nothing left to push."[0m
+2026-10-28T04:01:37.0903549Z [36;1m        pushed=1[0m
+2026-10-28T04:01:37.0903685Z [36;1m        break[0m
+2026-10-28T04:01:37.0903808Z [36;1m      fi[0m
+2026-10-28T04:01:37.0903992Z [36;1m      if ! git commit -m "auto: update posted_tweets.json cache"; then[0m
+2026-10-28T04:01:37.0904303Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — merge commit failed; dedup cache was not persisted."[0m
+2026-10-28T04:01:37.0904559Z [36;1m        break[0m
+2026-10-28T04:01:37.0904685Z [36;1m      fi[0m
+2026-10-28T04:01:37.0904814Z [36;1m      sleep "$((attempt * 15))"[0m
+2026-10-28T04:01:37.0904965Z [36;1m    fi[0m
+2026-10-28T04:01:37.0905081Z [36;1m  done[0m
+2026-10-28T04:01:37.0905195Z [36;1m[0m
+2026-10-28T04:01:37.0905318Z [36;1m  if [ "$pushed" -ne 1 ]; then[0m
+2026-10-28T04:01:37.0905718Z [36;1m    echo "::error::CACHE PUSH FAILED after ${attempts}/3 attempt(s) — dedup cache was not persisted; the next run may re-post. Rerun this monitor after GitHub recovers."[0m
+2026-10-28T04:01:37.0906118Z [36;1m    exit 1[0m
+2026-10-28T04:01:37.0906240Z [36;1m  fi[0m
+2026-10-28T04:01:37.0906355Z [36;1mfi[0m
+2026-10-28T04:01:37.0906578Z [36;1mif [ "$cache_result" != "no-changes" ]; then echo "TWITTER_CACHE_RESULT=success" >> "$GITHUB_ENV"; fi[0m
+2026-10-28T04:01:37.0923204Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:01:37.0923348Z env:
+2026-10-28T04:01:37.0923506Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:37.0923746Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:01:37.0924056Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:37.0924267Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:37.0924475Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:37.0924761Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:01:37.0924958Z   TWITTER_START_EPOCH: 1793160046
+2026-10-28T04:01:37.0925112Z   TWITTER_END_EPOCH: 1793160097
+2026-10-28T04:01:37.0925261Z   CACHE_BRANCH: main
+2026-10-28T04:01:37.0925391Z ##[endgroup]
+2026-10-28T04:01:37.1193103Z [main 3f90c7b] auto: update posted_tweets.json cache
+2026-10-28T04:01:37.1193441Z  1 file changed, 2 insertions(+), 1 deletion(-)
+2026-10-28T04:01:38.2370696Z To https://github.com/uesu/wvkhabh2s22
+2026-10-28T04:01:38.2371043Z    9823c3d..3f90c7b  HEAD -> main
+2026-10-28T04:01:38.2449022Z ##[group]Run [ -f twitter_monitor.log ] || : > twitter_monitor.log
+2026-10-28T04:01:38.2449316Z [36;1m[ -f twitter_monitor.log ] || : > twitter_monitor.log[0m
+2026-10-28T04:01:38.2449628Z [36;1mcount_matches() { local pattern="$1"; grep -Ec "$pattern" twitter_monitor.log 2>/dev/null || true; }[0m
+2026-10-28T04:01:38.2450200Z [36;1mtotal_feed_entries() { local total; total=$(grep 'feed OK via' twitter_monitor.log 2>/dev/null | grep -Eo '[0-9]+ entries' | grep -Eo '[0-9]+' | awk '{ total += $1 } END { print total + 0 }' || true); printf '%s\n' "${total:-0}"; }[0m
+2026-10-28T04:01:38.2450766Z [36;1mfeed_lines() { sed -E 's/^.*\[(DEBUG|INFO|WARNING|ERROR|CRITICAL)\][[:space:]]*//' twitter_monitor.log; }[0m
+2026-10-28T04:01:38.2451183Z [36;1mfeed_failures() { feed_lines | awk '/^\[[^]]+\] NO working nitter instance this run/ { n++ } END { print n + 0 }' 2>/dev/null || true; }[0m
+2026-10-28T04:01:38.2451645Z [36;1mruntime=unavailable[0m
+2026-10-28T04:01:38.2451883Z [36;1mif [ -n "${TWITTER_START_EPOCH:-}" ] && [ -n "${TWITTER_END_EPOCH:-}" ]; then[0m
+2026-10-28T04:01:38.2452155Z [36;1m  runtime="$(( TWITTER_END_EPOCH - TWITTER_START_EPOCH ))s"[0m
+2026-10-28T04:01:38.2452349Z [36;1mfi[0m
+2026-10-28T04:01:38.2452493Z [36;1mfeeds_ok=$(count_matches 'feed OK via')[0m
+2026-10-28T04:01:38.2452677Z [36;1mfeeds_failed=$(feed_failures)[0m
+2026-10-28T04:01:38.2452890Z [36;1mfeeds_empty=$(count_matches 'skipping — no feed / 0 entries')[0m
+2026-10-28T04:01:38.2453332Z [36;1mentries_read=$(total_feed_entries)[0m
+2026-10-28T04:01:38.2453571Z [36;1m{[0m
+2026-10-28T04:01:38.2453774Z [36;1m  echo "## Twitter Feed Monitor — run summary"[0m
+2026-10-28T04:01:38.2453956Z [36;1m  echo[0m
+2026-10-28T04:01:38.2454183Z [36;1m  if [ "success" = "success" ]; then echo "**Result:** success"; else echo "**Result:** failure"; fi[0m
+2026-10-28T04:01:38.2454450Z [36;1m  echo "**Runtime:** ${runtime}"[0m
+2026-10-28T04:01:38.2454607Z [36;1m  echo[0m
+2026-10-28T04:01:38.2454741Z [36;1m  echo "### Feeds"[0m
+2026-10-28T04:01:38.2455008Z [36;1m  echo "- counts describe matching local log records, not an independent delivery/source-health audit"[0m
+2026-10-28T04:01:38.2455355Z [36;1m  if [ "$feeds_ok" -eq 0 ] && [ "$feeds_failed" -eq 0 ] && [ "$feeds_empty" -eq 0 ]; then[0m
+2026-10-28T04:01:38.2455652Z [36;1m    echo "- observation coverage: unavailable (no matching feed records)"[0m
+2026-10-28T04:01:38.2455870Z [36;1m  fi[0m
+2026-10-28T04:01:38.2456536Z [36;1m  accounts_checked=$(feed_lines | awk '/^\[[^]]+\] feed OK via/ || /^\[[^]]+\] NO working nitter instance this run/ || /^\[[^]]+\] skipping — no feed \/ 0 entries/ { account=$0; sub(/^\[/, "", account); sub(/\].*$/, "", account); print account }' 2>/dev/null | sort -u | wc -l | tr -d ' ' || true)[0m
+2026-10-28T04:01:38.2457480Z [36;1m  echo "- accounts observed in feed logs: ${accounts_checked}"[0m
+2026-10-28T04:01:38.2457831Z [36;1m  echo "- entries read: ${entries_read}"[0m
+2026-10-28T04:01:38.2458117Z [36;1m  echo "- successful feeds: ${feeds_ok}"[0m
+2026-10-28T04:01:38.2458391Z [36;1m  echo "- failed feeds: ${feeds_failed}"[0m
+2026-10-28T04:01:38.2458666Z [36;1m  echo "- empty feeds: ${feeds_empty}"[0m
+2026-10-28T04:01:38.2458937Z [36;1m  echo[0m
+2026-10-28T04:01:38.2459146Z [36;1m  echo "### Posts"[0m
+2026-10-28T04:01:38.2459456Z [36;1m  echo "- new candidates: not separately measured by this log format"[0m
+2026-10-28T04:01:38.2459842Z [36;1m  echo "- posts delivered: $(count_matches 'V3 Posted:')"[0m
+2026-10-28T04:01:38.2460195Z [36;1m  echo "- skip log lines: $(count_matches 'skipping')"[0m
+2026-10-28T04:01:38.2460569Z [36;1m  echo "- retry/fallback log lines: $(count_matches 'trying next|retry')"[0m
+2026-10-28T04:01:38.2460892Z [36;1m  echo[0m
+2026-10-28T04:01:38.2461078Z [36;1m  echo "### State"[0m
+2026-10-28T04:01:38.2461424Z [36;1m  echo "- cache: ${TWITTER_CACHE_RESULT:-failed}"[0m
+2026-10-28T04:01:38.2462020Z [36;1m  echo "- summary source: local twitter_monitor.log only; no additional requests"[0m
+2026-10-28T04:01:38.2462400Z [36;1m} >> "$GITHUB_STEP_SUMMARY"[0m
+2026-10-28T04:01:38.2479037Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:01:38.2479187Z env:
+2026-10-28T04:01:38.2479350Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:38.2479603Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:01:38.2479843Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:38.2480063Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:38.2480279Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:01:38.2480504Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:01:38.2480701Z   TWITTER_START_EPOCH: 1793160046
+2026-10-28T04:01:38.2480959Z   TWITTER_END_EPOCH: 1793160097
+2026-10-28T04:01:38.2481111Z   TWITTER_CACHE_RESULT: success
+2026-10-28T04:01:38.2481259Z ##[endgroup]
+2026-10-28T04:01:38.2743431Z Post job cleanup.
+2026-10-28T04:01:38.3471510Z Cache hit occurred on the primary key setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d, not saving cache.
+2026-10-28T04:01:38.3582134Z Post job cleanup.
+2026-10-28T04:01:38.4128100Z [command]/usr/bin/git version
+2026-10-28T04:01:38.4161846Z git version 2.56.0
+2026-10-28T04:01:38.4184975Z Temporarily overriding HOME='/home/runner/work/_temp/ccbc098d-b09c-4bc6-bf81-7bed0cda36ae' before making global git config changes
+2026-10-28T04:01:38.4185500Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T04:01:38.4188382Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-28T04:01:38.4220381Z Removing SSH command configuration
+2026-10-28T04:01:38.4224990Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T04:01:38.4255899Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T04:01:38.4481066Z Removing HTTP extra header
+2026-10-28T04:01:38.4486192Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T04:01:38.4544152Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T04:01:38.4794570Z Removing includeIf entries pointing to credentials config files
+2026-10-28T04:01:38.4801136Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T04:01:38.4837099Z includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path
+2026-10-28T04:01:38.4837819Z includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path
+2026-10-28T04:01:38.4838587Z includeif.gitdir:/github/workspace/.git.path
+2026-10-28T04:01:38.4839213Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T04:01:38.4844516Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path
+2026-10-28T04:01:38.4876476Z /home/runner/work/_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:01:38.4901630Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-680dd7b5\-2536\-4c58\-a535\-01d275d72b2b\.config
+2026-10-28T04:01:38.4932299Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path
+2026-10-28T04:01:38.4970337Z /home/runner/work/_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:01:38.4980075Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-680dd7b5\-2536\-4c58\-a535\-01d275d72b2b\.config
+2026-10-28T04:01:38.5019700Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-28T04:01:38.5050263Z /github/runner_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:01:38.5056245Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-680dd7b5\-2536\-4c58\-a535\-01d275d72b2b\.config
+2026-10-28T04:01:38.5095227Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T04:01:38.5125925Z /github/runner_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config
+2026-10-28T04:01:38.5131037Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-680dd7b5\-2536\-4c58\-a535\-01d275d72b2b\.config
+2026-10-28T04:01:38.5170476Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T04:01:38.5381518Z Removing credentials config '/home/runner/work/_temp/git-credentials-680dd7b5-2536-4c58-a535-01d275d72b2b.config'
+2026-10-28T04:01:38.5524547Z Cleaning up orphan processes
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 1942002,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Wuthering Waves](https://x.com/Wuthering_Waves) just tweeted:"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "Amidst the Rain (￣.￣)☔︎\nThe road runs ahead. Side by side, where the raindrops tread.\n\n[#WutheringWaves](https://x.com/hashtag/WutheringWaves)\n[#Suoming](https://x.com/hashtag/Suoming)"
+        },
+        {
+          "id": 4,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://video.twimg.com/amplify_video/2114632546063634432/vid/avc1/1920x1080/nFQxgVxO5K7ZeWDn.mp4?tag=29",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/XA4euu-uo9WkaTbY5TaxMTbPqcApgHjbFqqlTMsjpf4/%3Ftag%3D29/https/video.twimg.com/amplify_video/2114632546063634432/vid/avc1/1920x1080/nFQxgVxO5K7ZeWDn.mp4",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "video/mp4"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "-# 💬 0 🔁 20 ❤️ 113 👁️ 14451   •   🕐 <t:1793160001:f>"
+        },
+        {
+          "id": 7,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://fxtwitter.com/Wuthering_Waves/status/2115292476311576669"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+Reddit Feed Monitor #10937
+
+2026-10-28T04:05:13.7346518Z Current runner version: '2.338.0'
+2026-10-28T04:05:13.7375168Z ##[group]Runner Image Provisioner
+2026-10-28T04:05:13.7376415Z Hosted Compute Agent
+2026-10-28T04:05:13.7377484Z Version: 20261021.618
+2026-10-28T04:05:13.7378391Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-28T04:05:13.7379639Z Build Date: 2026-10-21T00:45:21Z
+2026-10-28T04:05:13.7380625Z Worker ID: {7444ddd1-a23b-4a9b-a5c0-873be8e426c9}
+2026-10-28T04:05:13.7381786Z Region: westus3
+2026-10-28T04:05:13.7382562Z Cloud: Azure
+2026-10-28T04:05:13.7383486Z ##[endgroup]
+2026-10-28T04:05:13.7385241Z ##[group]Operating System
+2026-10-28T04:05:13.7386296Z Ubuntu
+2026-10-28T04:05:13.7387306Z 24.04.5
+2026-10-28T04:05:13.7388154Z LTS
+2026-10-28T04:05:13.7388915Z ##[endgroup]
+2026-10-28T04:05:13.7389865Z ##[group]Runner Image
+2026-10-28T04:05:13.7390692Z Image: ubuntu-24.04
+2026-10-28T04:05:13.7391617Z Version: 20261012.334.1
+2026-10-28T04:05:13.7393300Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-28T04:05:13.7395577Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-28T04:05:13.7397206Z ##[endgroup]
+2026-10-28T04:05:13.7398684Z ##[group]GITHUB_TOKEN Permissions
+2026-10-28T04:05:13.7401004Z Contents: write
+2026-10-28T04:05:13.7401803Z Metadata: read
+2026-10-28T04:05:13.7402677Z ##[endgroup]
+2026-10-28T04:05:13.7405101Z Secret source: Actions
+2026-10-28T04:05:13.7406496Z Cache mode: write
+2026-10-28T04:05:13.7407708Z Prepare workflow directory
+2026-10-28T04:05:13.7674811Z Prepare all required actions
+2026-10-28T04:05:13.7713110Z Getting action download info
+2026-10-28T04:05:14.0635876Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-28T04:05:14.1362183Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-10-28T04:05:15.0406114Z Complete job name: check-reddit
+2026-10-28T04:05:15.1093519Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-28T04:05:15.1094457Z with:
+2026-10-28T04:05:15.1094904Z   repository: uesu/7jkxmy9nvbc
+2026-10-28T04:05:15.1098559Z   token: ***
+2026-10-28T04:05:15.1099007Z   ssh-strict: true
+2026-10-28T04:05:15.1099440Z   ssh-user: git
+2026-10-28T04:05:15.1099890Z   persist-credentials: true
+2026-10-28T04:05:15.1100386Z   clean: true
+2026-10-28T04:05:15.1100828Z   sparse-checkout-cone-mode: true
+2026-10-28T04:05:15.1101335Z   fetch-depth: 1
+2026-10-28T04:05:15.1101772Z   fetch-tags: false
+2026-10-28T04:05:15.1102210Z   show-progress: true
+2026-10-28T04:05:15.1102650Z   lfs: false
+2026-10-28T04:05:15.1103071Z   submodules: false
+2026-10-28T04:05:15.1103527Z   set-safe-directory: true
+2026-10-28T04:05:15.1104018Z   allow-unsafe-pr-checkout: false
+2026-10-28T04:05:15.1104748Z ##[endgroup]
+2026-10-28T04:05:15.2907972Z Syncing repository: uesu/7jkxmy9nvbc
+2026-10-28T04:05:15.2909873Z ##[group]Getting Git version info
+2026-10-28T04:05:15.2910805Z Working directory is '/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc'
+2026-10-28T04:05:15.2912088Z [command]/usr/bin/git version
+2026-10-28T04:05:15.2953169Z git version 2.55.0
+2026-10-28T04:05:15.2971238Z ##[endgroup]
+2026-10-28T04:05:15.2979683Z Temporarily overriding HOME='/home/runner/work/_temp/10a165bf-ad3b-487e-bfc7-e070ca7447e8' before making global git config changes
+2026-10-28T04:05:15.2983925Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T04:05:15.2985359Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc
+2026-10-28T04:05:15.3021181Z Deleting the contents of '/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc'
+2026-10-28T04:05:15.3023915Z ##[group]Determining repository object format
+2026-10-28T04:05:15.3025164Z ##[endgroup]
+2026-10-28T04:05:15.3025903Z ##[group]Initializing the repository
+2026-10-28T04:05:15.3029179Z [command]/usr/bin/git init /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc
+2026-10-28T04:05:15.3100094Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-28T04:05:15.3101617Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-28T04:05:15.3102537Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-28T04:05:15.3103239Z hint: call:
+2026-10-28T04:05:15.3103666Z hint:
+2026-10-28T04:05:15.3104191Z hint: 	git config --global init.defaultBranch <name>
+2026-10-28T04:05:15.3104793Z hint:
+2026-10-28T04:05:15.3105357Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-28T04:05:15.3106204Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-28T04:05:15.3107089Z hint:
+2026-10-28T04:05:15.3107526Z hint: 	git branch -m <name>
+2026-10-28T04:05:15.3108005Z hint:
+2026-10-28T04:05:15.3108604Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-28T04:05:15.3113297Z Initialized empty Git repository in /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/
+2026-10-28T04:05:15.3120879Z [command]/usr/bin/git remote add origin https://github.com/uesu/7jkxmy9nvbc
+2026-10-28T04:05:15.3160229Z ##[endgroup]
+2026-10-28T04:05:15.3161007Z ##[group]Disabling automatic garbage collection
+2026-10-28T04:05:15.3164021Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-28T04:05:15.3192586Z ##[endgroup]
+2026-10-28T04:05:15.3194235Z ##[group]Setting up auth
+2026-10-28T04:05:15.3195320Z Removing SSH command configuration
+2026-10-28T04:05:15.3197395Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T04:05:15.3224962Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T04:05:15.3510046Z Removing HTTP extra header
+2026-10-28T04:05:15.3514936Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T04:05:15.3548061Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T04:05:15.3733116Z Removing includeIf entries pointing to credentials config files
+2026-10-28T04:05:15.3737271Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T04:05:15.3773811Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T04:05:15.3961859Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-28T04:05:15.3994556Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path /home/runner/work/_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:05:15.4024442Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:05:15.4057382Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:05:15.4088223Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:05:15.4115990Z ##[endgroup]
+2026-10-28T04:05:15.4117559Z ##[group]Fetching the repository
+2026-10-28T04:05:15.4122482Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +cccf9ab7b9ad0daffa5b2fd02e171a02a44ee4ce:refs/remotes/origin/main
+2026-10-28T04:05:16.0676319Z From https://github.com/uesu/7jkxmy9nvbc
+2026-10-28T04:05:16.0678052Z  * [new ref]         cccf9ab7b9ad0daffa5b2fd02e171a02a44ee4ce -> origin/main
+2026-10-28T04:05:16.0685392Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-28T04:05:16.0710861Z   origin/main
+2026-10-28T04:05:16.0724363Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-28T04:05:16.0739742Z cccf9ab7b9ad0daffa5b2fd02e171a02a44ee4ce
+2026-10-28T04:05:16.0743789Z ##[endgroup]
+2026-10-28T04:05:16.0744833Z ##[group]Determining the checkout info
+2026-10-28T04:05:16.0745734Z ##[endgroup]
+2026-10-28T04:05:16.0747888Z [command]/usr/bin/git sparse-checkout disable
+2026-10-28T04:05:16.0792822Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-28T04:05:16.0821356Z ##[group]Checking out the ref
+2026-10-28T04:05:16.0823942Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-28T04:05:16.0939763Z Switched to a new branch 'main'
+2026-10-28T04:05:16.0944130Z branch 'main' set up to track 'origin/main'.
+2026-10-28T04:05:16.1013474Z ##[endgroup]
+2026-10-28T04:05:16.1015049Z [command]/usr/bin/git log -1 --format=%H
+2026-10-28T04:05:16.1015989Z cccf9ab7b9ad0daffa5b2fd02e171a02a44ee4ce
+2026-10-28T04:05:16.1219468Z ##[group]Run git fetch origin "${CACHE_BRANCH:-main}"
+2026-10-28T04:05:16.1220236Z [36;1mgit fetch origin "${CACHE_BRANCH:-main}"[0m
+2026-10-28T04:05:16.1220885Z [36;1mgit reset --hard FETCH_HEAD[0m
+2026-10-28T04:05:16.1221605Z [36;1mecho "Now at $(git log -1 --format=%H) (live ${CACHE_BRANCH:-main} tip)."[0m
+2026-10-28T04:05:16.1418930Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:05:16.1419489Z env:
+2026-10-28T04:05:16.1419916Z   CACHE_BRANCH: main
+2026-10-28T04:05:16.1420378Z ##[endgroup]
+2026-10-28T04:05:16.4666838Z From https://github.com/uesu/7jkxmy9nvbc
+2026-10-28T04:05:16.4668298Z  * branch            main       -> FETCH_HEAD
+2026-10-28T04:05:16.4791935Z HEAD is now at cccf9ab auto: update reddit monitor caches
+2026-10-28T04:05:16.4811350Z Now at cccf9ab7b9ad0daffa5b2fd02e171a02a44ee4ce (live main tip).
+2026-10-28T04:05:16.4992736Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-10-28T04:05:16.4994195Z with:
+2026-10-28T04:05:16.4995018Z   python-version: 3.14.9
+2026-10-28T04:05:16.4995955Z   cache: pip
+2026-10-28T04:05:16.4996778Z   check-latest: false
+2026-10-28T04:05:16.5004066Z   token: ***
+2026-10-28T04:05:16.5005249Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-10-28T04:05:16.5006690Z   update-environment: true
+2026-10-28T04:05:16.5007791Z   allow-prereleases: false
+2026-10-28T04:05:16.5008750Z   freethreaded: false
+2026-10-28T04:05:16.5009639Z ##[endgroup]
+2026-10-28T04:05:16.5927668Z ##[group]Installed versions
+2026-10-28T04:05:16.5939522Z Version 3.14.9 was not found in the local cache
+2026-10-28T04:05:18.1272006Z Version 3.14.9 is available for downloading
+2026-10-28T04:05:18.1273049Z Download from "https://github.com/actions/python-versions/releases/download/3.14.9-39619022138/python-3.14.9-linux-24.04-x64.tar.gz"
+2026-10-28T04:05:18.8648546Z Extract downloaded archive
+2026-10-28T04:05:18.8750639Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/8be5763f-a8b7-468b-bff4-3d64689a9815 -f /home/runner/work/_temp/9685f3cd-67d0-4702-a4c4-515964d91ca5
+2026-10-28T04:05:20.7725820Z Execute installation script
+2026-10-28T04:05:20.7808746Z Check if Python hostedtoolcache folder exist...
+2026-10-28T04:05:20.7809427Z Create Python 3.14.9 folder
+2026-10-28T04:05:20.7822223Z Copy Python binaries to hostedtoolcache folder
+2026-10-28T04:05:21.1852236Z Create additional symlinks (Required for the UsePythonVersion Azure Pipelines task and the setup-python GitHub Action)
+2026-10-28T04:05:21.1885132Z Upgrading pip...
+2026-10-28T04:05:23.0662721Z Collecting pip
+2026-10-28T04:05:23.1256823Z Downloading pip-26.2.2-py3-none-any.whl.metadata (4.6 kB)
+2026-10-28T04:05:23.1410799Z Downloading pip-26.2.2-py3-none-any.whl (1.8 MB)
+2026-10-28T04:05:23.2211420Z ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 31.7 MB/s  0:00:00
+2026-10-28T04:05:23.2212507Z 
+2026-10-28T04:05:23.3168751Z Installing collected packages: pip
+2026-10-28T04:05:23.3169230Z Attempting uninstall: pip
+2026-10-28T04:05:23.3187677Z Found existing installation: pip 26.2.2
+2026-10-28T04:05:23.3438057Z Uninstalling pip-26.2.2:
+2026-10-28T04:05:23.3485444Z Successfully uninstalled pip-26.2.2
+2026-10-28T04:05:24.3813702Z Successfully installed pip-26.2.2
+2026-10-28T04:05:24.4352670Z Create complete file
+2026-10-28T04:05:24.4382915Z Successfully set up CPython (3.14.9)
+2026-10-28T04:05:24.4383687Z ##[endgroup]
+2026-10-28T04:05:24.4719151Z [command]/opt/hostedtoolcache/Python/3.14.9/x64/bin/pip cache dir
+2026-10-28T04:05:24.5952837Z /home/runner/.cache/pip
+2026-10-28T04:05:24.8084148Z Cache hit for: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-28T04:05:26.0426647Z Received 4194304 of 7799380 (53.8%), 4.0 MBs/sec
+2026-10-28T04:05:26.0596099Z Received 7799380 of 7799380 (100.0%), 7.3 MBs/sec
+2026-10-28T04:05:26.0597598Z Cache Size: ~7 MB (7799380 B)
+2026-10-28T04:05:26.0622040Z [command]/usr/bin/tar -xf /home/runner/work/_temp/1604c41e-43aa-40e5-a25a-3f61518b6272/cache.tzst -P -C /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc --use-compress-program unzstd
+2026-10-28T04:05:26.0839727Z Cache restored successfully
+2026-10-28T04:05:26.0847718Z Cache restored from key: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-28T04:05:26.0981943Z ##[group]Run python -m pip install --upgrade pip
+2026-10-28T04:05:26.0982292Z [36;1mpython -m pip install --upgrade pip[0m
+2026-10-28T04:05:26.0982580Z [36;1mpip install -r requirements.txt[0m
+2026-10-28T04:05:26.1044422Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:05:26.1044670Z env:
+2026-10-28T04:05:26.1044930Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:26.1045324Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:05:26.1045721Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:26.1046043Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:26.1046369Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:26.1046710Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:05:26.1047099Z ##[endgroup]
+2026-10-28T04:05:26.3941053Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.14.9/x64/lib/python3.14/site-packages (26.2.2)
+2026-10-28T04:05:26.8314691Z Collecting feedparser<7,>=6.0.14 (from -r requirements.txt (line 1))
+2026-10-28T04:05:26.8326751Z   Using cached feedparser-6.0.14-py3-none-any.whl.metadata (2.7 kB)
+2026-10-28T04:05:27.1688585Z Collecting aiohttp<4,>=3.14.3 (from -r requirements.txt (line 2))
+2026-10-28T04:05:27.1700414Z   Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+2026-10-28T04:05:27.1873508Z Collecting python-dotenv<2,>=1.2.3 (from -r requirements.txt (line 3))
+2026-10-28T04:05:27.1884486Z   Using cached python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+2026-10-28T04:05:27.2033666Z Collecting feedparser-sgmllib<3,>=2 (from feedparser<7,>=6.0.14->-r requirements.txt (line 1))
+2026-10-28T04:05:27.2044105Z   Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl.metadata (926 bytes)
+2026-10-28T04:05:27.2200767Z Collecting aiohappyeyeballs>=2.5.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.2209400Z   Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
+2026-10-28T04:05:27.2345424Z Collecting aiosignal>=1.4.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.2353709Z   Using cached aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+2026-10-28T04:05:27.2516016Z Collecting attrs>=17.3.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.2524458Z   Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-10-28T04:05:27.2987558Z Collecting frozenlist>=1.1.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.2997326Z   Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+2026-10-28T04:05:27.4747024Z Collecting multidict<8.0,>=4.5 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.4757894Z   Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.1 kB)
+2026-10-28T04:05:27.5244709Z Collecting propcache>=0.2.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.5254227Z   Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (25 kB)
+2026-10-28T04:05:27.6873459Z Collecting yarl<2.0,>=1.25.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.6884602Z   Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (111 kB)
+2026-10-28T04:05:27.7105054Z Collecting idna>=2.0 (from yarl<2.0,>=1.25.1->aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-28T04:05:27.7114526Z   Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-10-28T04:05:27.7177113Z Using cached feedparser-6.0.14-py3-none-any.whl (80 kB)
+2026-10-28T04:05:27.7185813Z Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+2026-10-28T04:05:27.7200123Z Using cached python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+2026-10-28T04:05:27.7207858Z Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl (11 kB)
+2026-10-28T04:05:27.7216117Z Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (506 kB)
+2026-10-28T04:05:27.7227494Z Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (117 kB)
+2026-10-28T04:05:27.7235612Z Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+2026-10-28T04:05:27.7243518Z Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+2026-10-28T04:05:27.7251308Z Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-10-28T04:05:27.7259587Z Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+2026-10-28T04:05:27.7267750Z Using cached idna-3.20-py3-none-any.whl (69 kB)
+2026-10-28T04:05:27.7275878Z Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (232 kB)
+2026-10-28T04:05:27.7850480Z Installing collected packages: python-dotenv, propcache, multidict, idna, frozenlist, feedparser-sgmllib, attrs, aiohappyeyeballs, yarl, feedparser, aiosignal, aiohttp
+2026-10-28T04:05:28.2280588Z 
+2026-10-28T04:05:28.2294905Z Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.5 aiosignal-1.4.0 attrs-26.1.0 feedparser-6.0.14 feedparser-sgmllib-2.1.0 frozenlist-1.8.0 idna-3.20 multidict-7.2.1 propcache-0.5.4 python-dotenv-1.2.4 yarl-1.25.1
+2026-10-28T04:05:28.3064819Z ##[group]Run echo "MONITOR_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+2026-10-28T04:05:28.3065258Z [36;1mecho "MONITOR_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-28T04:05:28.3065571Z [36;1mset -o pipefail[0m
+2026-10-28T04:05:28.3065794Z [36;1mset +e[0m
+2026-10-28T04:05:28.3066077Z [36;1mpython "testing area/reddit_main_v3.py" 2>&1 | tee monitor.log[0m
+2026-10-28T04:05:28.3066406Z [36;1mstatuses=("${PIPESTATUS[@]}")[0m
+2026-10-28T04:05:28.3066704Z [36;1mecho "MONITOR_END_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-28T04:05:28.3067480Z [36;1mif [ "${statuses[0]}" -ne 0 ] || [ "${statuses[1]}" -ne 0 ]; then[0m
+2026-10-28T04:05:28.3067799Z [36;1m  exit 1[0m
+2026-10-28T04:05:28.3067998Z [36;1mfi[0m
+2026-10-28T04:05:28.3124462Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:05:28.3124707Z env:
+2026-10-28T04:05:28.3124957Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:28.3125373Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:05:28.3125900Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:28.3126225Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:28.3126543Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:05:28.3127090Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:05:28.3127913Z   SUBREDDITS: ***
+2026-10-28T04:05:28.3128135Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:05:28.3128593Z   REDDIT_FEED_TOKEN: ***
+2026-10-28T04:05:28.3128913Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:05:28.3129125Z   TEST_POST_ID: 
+2026-10-28T04:05:28.3129325Z   DRY_RUN: false
+2026-10-28T04:05:28.3147797Z   PROXY_MEDIA: 
+2026-10-28T04:05:28.3148155Z   PROXY_VIDEO_HEAL: 
+2026-10-28T04:05:28.3148476Z   PROXY_VIDEO_HEAL_DELAY: 
+2026-10-28T04:05:28.3148805Z   PROXY_WARMUP_POST: 
+2026-10-28T04:05:28.3149091Z   EMBEDDIT_INSTANCE: 
+2026-10-28T04:05:28.3149302Z   REDDIT_VIDEO_QUALITY: 
+2026-10-28T04:05:28.3149540Z   YOUTUBE_LINK_MESSAGE: 
+2026-10-28T04:05:28.3149752Z   DISCOHOOK_PREVIEW: 
+2026-10-28T04:05:28.3149956Z   REDDIT_OP_COMMENT: 
+2026-10-28T04:05:28.3150150Z   YOUTUBE_MEDIA_EMBED: 
+2026-10-28T04:05:28.3150355Z   FEEDTOKEN_JSON_STAGGER: 
+2026-10-28T04:05:28.3150586Z   PENDING_RECHECK_SECONDS: 600
+2026-10-28T04:05:28.3150836Z   FRESH_HOLD_SECONDS: 60
+2026-10-28T04:05:28.3151053Z   MAX_CACHE_SIZE_PER_SUB: 
+2026-10-28T04:05:28.3151268Z   MAX_CACHE_SIZE_TOTAL: 
+2026-10-28T04:05:28.3151473Z   MAX_POSTS_PER_RUN: 
+2026-10-28T04:05:28.3151672Z   REDDIT_JSON_PROBE: 
+2026-10-28T04:05:28.3151869Z   RETRACT_DEAD_POSTS: 
+2026-10-28T04:05:28.3152088Z   RETRACT_MODE: 
+2026-10-28T04:05:28.3152297Z   RETRACT_WINDOW_SECONDS: 
+2026-10-28T04:05:28.3152507Z   PROXY_WAVE_DELAY: 
+2026-10-28T04:05:28.3152708Z   PROXY_GALLERY_GRACE: 
+2026-10-28T04:05:28.3152918Z   PROXY_MAX_CONCURRENCY: 
+2026-10-28T04:05:28.3153590Z   WEBHOOK_REDDIT_ZENLESSZONEZEROLEAKS_: ***
+2026-10-28T04:05:28.3154189Z   WEBHOOK_REDDIT_GENSHIN_IMPACT_LEAKS: ***
+2026-10-28T04:05:28.3154796Z   WEBHOOK_REDDIT_HONKAISTARRAIL_LEAKS: ***
+2026-10-28T04:05:28.3155417Z   WEBHOOK_REDDIT_WUTHERINGWAVESLEAKS: ***
+2026-10-28T04:05:28.3155987Z   WEBHOOK_REDDIT_HONKAINEXUSANIMALEAKS: ***
+2026-10-28T04:05:28.3156532Z   WEBHOOK_REDDIT_ANANTALEAKS: ***
+2026-10-28T04:05:28.3156762Z   REDDIT_CLIENT_ID: 
+2026-10-28T04:05:28.3157114Z   REDDIT_CLIENT_SECRET: 
+2026-10-28T04:05:28.3157327Z ##[endgroup]
+2026-10-28T04:05:28.7013581Z 2026-10-28 04:05:28,700 [INFO] No Reddit OAuth app secrets — V3 uses native RSS data; the feed token .json FULL-MODE probe is ENABLED (token-powered: .json FIRST with instant RSS fallback — ≤2 s stagger, 1 req, 403 remembered for the run; force keeps the same cap, off disables).
+2026-10-28T04:05:28.7020461Z 2026-10-28 04:05:28,701 [WARNING] dedup cache near cap: 1009 key(s) (per-sub quota 250, backstop 10000); hot: Genshin_Impact_Leaks=250, HonkaiStarRail_leaks=250, Zenlesszonezeroleaks_=250
+2026-10-28T04:05:28.7022051Z 2026-10-28 04:05:28,702 [INFO] Probing proxy media services (redditez, vxreddit, embeddit) with HonkaiStarRail_leaks/1whbjbh...
+2026-10-28T04:05:30.4227449Z 2026-10-28 04:05:30,422 [INFO] [proxy warm-up] redditez: OK — 1 media item(s)
+2026-10-28T04:05:30.4228125Z 2026-10-28 04:05:30,422 [INFO] [proxy warm-up] vxreddit: OK — 1 media item(s)
+2026-10-28T04:05:30.4228587Z 2026-10-28 04:05:30,422 [INFO] [proxy warm-up] embeddit: OK — 1 media item(s)
+2026-10-28T04:05:30.4229009Z 2026-10-28 04:05:30,422 [INFO] Fetching combined feed for 6 subreddits in 1 request...
+2026-10-28T04:05:31.9520983Z 2026-10-28 04:05:31,951 [INFO] Combined feed OK: 100 entries covering 5 subreddit(s).
+2026-10-28T04:05:32.4614023Z 2026-10-28 04:05:32,461 [INFO] [WutheringWavesLeaks] Arctic Shift search unavailable: HTTP 500
+2026-10-28T04:05:32.9399897Z 2026-10-28 04:05:32,939 [INFO] [HonkaiNexusAnimaLeaks] Arctic Shift search unavailable: HTTP 500
+2026-10-28T04:05:33.4381133Z 2026-10-28 04:05:33,437 [INFO] [AnantaLeaks] Arctic Shift search unavailable: HTTP 500
+2026-10-28T04:05:33.4382165Z 2026-10-28 04:05:33,437 [INFO] Reddit candidates: 4 unposted candidate(s) considered from 100 feed entries covering 5 of 6 subreddit(s) represented.
+2026-10-28T04:05:35.4522696Z 2026-10-28 04:05:35,451 [INFO] [1xhe28k] post JSON HTTP 403 — native mode (feed token will not be retried this run)
+2026-10-28T04:05:36.1590893Z 2026-10-28 04:05:36,158 [INFO] [HonkaiStarRail_leaks_1xhe28k] proxy media via vxreddit - 1 item(s) (best so far).
+2026-10-28T04:05:36.1896701Z 2026-10-28 04:05:36,189 [INFO] [HonkaiStarRail_leaks_1xhe28k] embeddit media (1 item(s)) not more complete than the best so far (1) - keeping vxreddit.
+2026-10-28T04:05:36.4443496Z 2026-10-28 04:05:36,444 [INFO] [HonkaiStarRail_leaks_1xhe28k] redditez media (1 item(s)) not more complete than the best so far (1) - keeping vxreddit.
+2026-10-28T04:05:36.4444656Z 2026-10-28 04:05:36,444 [INFO] [HonkaiStarRail_leaks_1xhe28k] proxy media winner - 1 item(s).
+2026-10-28T04:05:36.4445995Z 2026-10-28 04:05:36,444 [INFO] [HonkaiStarRail_leaks_1xhe28k] original-source child_id=1xhe28k source_id=none source_path=none provenance=none video_evidence=none
+2026-10-28T04:05:43.5914707Z 2026-10-28 04:05:43,591 [INFO] [HonkaiStarRail_leaks_1xhe28k] redlib gallery enrichment failed (all instances) — proxy/native media used instead.
+2026-10-28T04:05:43.5915705Z 2026-10-28 04:05:43,591 [INFO] [HonkaiStarRail_leaks_1xhe28k] card media via vxreddit — 1 item(s).
+2026-10-28T04:05:43.5920942Z 2026-10-28 04:05:43,591 [INFO] [HonkaiStarRail_leaks_1xhe28k] media-outcome kind=image provider=vxreddit fallback=none
+2026-10-28T04:05:44.0242137Z 2026-10-28 04:05:44,023 [INFO] Reddit V3 Posted: HonkaiStarRail_leaks_1xhe28k (media=image | proxy: vxreddit | 1 item(s)) | LATENCY 5.3min after creation
+2026-10-28T04:05:47.4300539Z 2026-10-28 04:05:47,429 [INFO] Discohook preview for HonkaiStarRail_leaks_1xhe28k: https://discohook.app/?share=ES05klFS
+2026-10-28T04:05:49.5616755Z 2026-10-28 04:05:49,561 [INFO] [Zenlesszonezeroleaks__1xhe2kr] proxy media via vxreddit - 1 item(s) (best so far).
+2026-10-28T04:05:49.6538058Z 2026-10-28 04:05:49,653 [INFO] [Zenlesszonezeroleaks__1xhe2kr] embeddit media (1 item(s)) not more complete than the best so far (1) - keeping vxreddit.
+2026-10-28T04:05:50.4234626Z 2026-10-28 04:05:50,423 [INFO] [Zenlesszonezeroleaks__1xhe2kr] redditez media (1 item(s)) not more complete than the best so far (1) - keeping vxreddit.
+2026-10-28T04:05:50.4235792Z 2026-10-28 04:05:50,423 [INFO] [Zenlesszonezeroleaks__1xhe2kr] proxy media winner - 1 item(s).
+2026-10-28T04:05:50.4237063Z 2026-10-28 04:05:50,423 [INFO] [Zenlesszonezeroleaks__1xhe2kr] original-source child_id=1xhe2kr source_id=none source_path=none provenance=none video_evidence=none
+2026-10-28T04:05:56.3753871Z 2026-10-28 04:05:56,375 [INFO] [Zenlesszonezeroleaks__1xhe2kr] redlib gallery enrichment failed (all instances) — proxy/native media used instead.
+2026-10-28T04:05:56.3754788Z 2026-10-28 04:05:56,375 [INFO] [Zenlesszonezeroleaks__1xhe2kr] card media via vxreddit — 1 item(s).
+2026-10-28T04:05:56.3755768Z 2026-10-28 04:05:56,375 [INFO] [Zenlesszonezeroleaks__1xhe2kr] media-outcome kind=image provider=vxreddit fallback=none
+2026-10-28T04:05:56.6915851Z 2026-10-28 04:05:56,691 [INFO] Reddit V3 Posted: Zenlesszonezeroleaks__1xhe2kr (media=image | proxy: vxreddit | 1 item(s)) | LATENCY 4.9min after creation
+2026-10-28T04:05:57.8731828Z 2026-10-28 04:05:57,872 [INFO] Discohook preview for Zenlesszonezeroleaks__1xhe2kr: https://discohook.app/?share=p9aMcP0L
+2026-10-28T04:06:00.1828280Z 2026-10-28 04:06:00,182 [INFO] [HonkaiStarRail_leaks_1xhe3b3] proxy media via embeddit - 1 item(s) (best so far).
+2026-10-28T04:06:00.2384953Z 2026-10-28 04:06:00,238 [INFO] [HonkaiStarRail_leaks_1xhe3b3] vxreddit has 2 media item(s) vs 1 from embeddit - replacing the winner.
+2026-10-28T04:06:00.2385659Z 2026-10-28 04:06:00,238 [INFO] [HonkaiStarRail_leaks_1xhe3b3] proxy media via vxreddit - 2 item(s) (best so far).
+2026-10-28T04:06:00.4691975Z 2026-10-28 04:06:00,468 [INFO] [HonkaiStarRail_leaks_1xhe3b3] redditez media (1 item(s)) not more complete than the best so far (2) - keeping vxreddit.
+2026-10-28T04:06:00.4693439Z 2026-10-28 04:06:00,468 [INFO] [HonkaiStarRail_leaks_1xhe3b3] proxy media winner - 2 item(s).
+2026-10-28T04:06:00.4694455Z 2026-10-28 04:06:00,469 [INFO] [HonkaiStarRail_leaks_1xhe3b3] original-source child_id=1xhe3b3 source_id=none source_path=none provenance=none video_evidence=none
+2026-10-28T04:06:01.5673467Z 2026-10-28 04:06:01,567 [INFO] [HonkaiStarRail_leaks_1xhe3b3] proxy video OK via vxreddit (3365099 bytes).
+2026-10-28T04:06:02.7865851Z 2026-10-28 04:06:02,786 [INFO] [HonkaiStarRail_leaks_1xhe3b3] EmbedEZ 1080p candidate accepted: provider=embedez, content_type=validated, bytes=6094340, dimensions=unverified; URL quality hint was not used as proof, audio=unknown, url_quality_hint=1080p (not evidence), reason=validated quality improvement.
+2026-10-28T04:06:02.7868139Z 2026-10-28 04:06:02,786 [INFO] [HonkaiStarRail_leaks_1xhe3b3] card media via embedez — 1 video tile.
+2026-10-28T04:06:02.7869083Z 2026-10-28 04:06:02,786 [INFO] [HonkaiStarRail_leaks_1xhe3b3] media-outcome kind=video provider=embedez fallback=none
+2026-10-28T04:06:03.8346250Z 2026-10-28 04:06:03,834 [INFO] Reddit V3 Posted: HonkaiStarRail_leaks_1xhe3b3 (media=video | proxy: embedez | 1 item(s)) | LATENCY 3.9min after creation
+2026-10-28T04:06:04.8345595Z 2026-10-28 04:06:04,834 [INFO] Discohook preview for HonkaiStarRail_leaks_1xhe3b3: https://discohook.app/?share=YXX5Z1m3
+2026-10-28T04:06:04.8346765Z 2026-10-28 04:06:04,834 [INFO] [HonkaiStarRail_leaks_1xhe3b3] proxy-video heal queued: Discord returned 1 video item(s) with unresolved-media evidence; the edit is revalidated before it is sent.
+2026-10-28T04:06:06.9712534Z 2026-10-28 04:06:06,970 [INFO] [Genshin_Impact_Leaks_1xhe4e7] proxy media via vxreddit - 8 item(s) (best so far).
+2026-10-28T04:06:07.0797517Z 2026-10-28 04:06:07,079 [INFO] [Genshin_Impact_Leaks_1xhe4e7] embeddit media (4 item(s)) not more complete than the best so far (8) - keeping vxreddit.
+2026-10-28T04:06:07.5998942Z 2026-10-28 04:06:07,599 [INFO] [Genshin_Impact_Leaks_1xhe4e7] redditez media (8 item(s)) not more complete than the best so far (8) - keeping vxreddit.
+2026-10-28T04:06:07.6000065Z 2026-10-28 04:06:07,599 [INFO] [Genshin_Impact_Leaks_1xhe4e7] proxy media winner - 8 item(s).
+2026-10-28T04:06:07.6001147Z 2026-10-28 04:06:07,599 [INFO] [Genshin_Impact_Leaks_1xhe4e7] original-source child_id=1xhe4e7 source_id=none source_path=none provenance=none video_evidence=none
+2026-10-28T04:06:09.8290810Z 2026-10-28 04:06:09,828 [INFO] [Genshin_Impact_Leaks_1xhe4e7] redlib gallery enrichment failed (all instances) — proxy/native media used instead.
+2026-10-28T04:06:09.8291906Z 2026-10-28 04:06:09,828 [INFO] [Genshin_Impact_Leaks_1xhe4e7] card media via vxreddit — 8 item(s).
+2026-10-28T04:06:09.8292676Z 2026-10-28 04:06:09,829 [INFO] [Genshin_Impact_Leaks_1xhe4e7] media-outcome kind=image provider=vxreddit fallback=none
+2026-10-28T04:06:10.0701881Z 2026-10-28 04:06:10,069 [INFO] Reddit V3 Posted: Genshin_Impact_Leaks_1xhe4e7 (media=gif,image | proxy: vxreddit | 8 item(s)) | LATENCY 2.5min after creation
+2026-10-28T04:06:10.9057789Z 2026-10-28 04:06:10,905 [INFO] Discohook preview for Genshin_Impact_Leaks_1xhe4e7: https://discohook.app/?share=QxcB5uU6
+2026-10-28T04:06:12.4076741Z 2026-10-28 04:06:12,407 [INFO] MEDIA-HEAL: 1 unresolved Reddit video card(s) queued; revalidating them concurrently after delivery and editing only the still-unresolved ones.
+2026-10-28T04:06:18.5690454Z 2026-10-28 04:06:18,568 [INFO] [HonkaiStarRail_leaks_1xhe3b3] proxy-video media heal skipped: revalidation HTTP 404
+2026-10-28T04:06:18.5715435Z 2026-10-28 04:06:18,571 [INFO] REDLIB-REACH: 0/26 instance(s) answered this run — r.naa.gg 0/3, red.artemislena.eu 0/3, reddit.idevicehacked.com 0/3, reddit.jeremyh.xyz 0/3, redlib-1.privadency.com 0/3, redlib-2.privadency.com 0/3, redlib.catsarch.com 0/3, redlib.ducks.party 0/3, redlib.freedit.eu 0/3, redlib.jeikobu.net 0/3, redlib.kylrth.com 0/3, redlib.miningtcup.me 0/3, redlib.mint.lgbt 0/3, redlib.nadeko.net 0/3, redlib.nohost.network 0/3, redlib.privacyredirect.com 0/3, redlib.privadency.com 0/3, redlib.r4fo.com 0/3, redlib.reallyaweso.me 0/3, redlib.thepixora.com 0/3, redlib.tiekoetter.com 0/3, redlib.utilibre.org 0/3, redlib.vanillax.me 0/3, rl.awy.one 0/3, safereddit.com 0/3, snoo.habedieeh.re 0/3
+2026-10-28T04:06:18.5718614Z 2026-10-28 04:06:18,571 [INFO] Run summary: 4 considered, 4 entering card processing, 4 delivered (4 real, 0 dry-run), 0 failed, 0 known-pending, 0 retry-backoff, 0 fresh-hold, 0 newly rejected, 0 liveness-unverified, 0 media-wait, 0 partial-gallery, 0 flood-cap dropped, 96 dedup skipped in run, 0 other skipped.
+2026-10-28T04:06:18.5719937Z 2026-10-28 04:06:18,571 [WARNING] dedup cache: evicted 4 oldest key(s) (per-sub cap 250): ['Genshin_Impact_Leaks_1wt61rv', 'HonkaiStarRail_leaks_1wou8en', 'HonkaiStarRail_leaks_1woub3u', 'Zenlesszonezeroleaks__1wt035a']
+2026-10-28T04:06:18.5742599Z 2026-10-28 04:06:18,574 [INFO] Reddit V3 Monitor execution finished.
+2026-10-28T04:06:18.6157045Z ##[group]Run # Entered persistence defaults to failed; only confirmed outcomes become unchanged/saved; never-ran stays not-reached (handled in summary)
+2026-10-28T04:06:18.6158299Z [36;1m# Entered persistence defaults to failed; only confirmed outcomes become unchanged/saved; never-ran stays not-reached (handled in summary)[0m
+2026-10-28T04:06:18.6158857Z [36;1mecho "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6159145Z [36;1mset -o pipefail[0m
+2026-10-28T04:06:18.6159781Z [36;1mgit config --local user.email "github-actions[bot]@users.noreply.github.com" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PREPARATION FAILED — git config failed"; exit 1; }[0m
+2026-10-28T04:06:18.6160709Z [36;1mgit config --local user.name "github-actions[bot]" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PREPARATION FAILED — git config failed"; exit 1; }[0m
+2026-10-28T04:06:18.6161621Z [36;1mgit add -f posted_reddit.json proxy_health.json pending_reddit.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE STAGING FAILED — git add failed"; exit 1; }[0m
+2026-10-28T04:06:18.6162229Z [36;1mif [ -f posted_messages.json ]; then[0m
+2026-10-28T04:06:18.6162733Z [36;1m  git add -f posted_messages.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE STAGING FAILED — git add failed"; exit 1; }[0m
+2026-10-28T04:06:18.6163208Z [36;1mfi[0m
+2026-10-28T04:06:18.6163400Z [36;1m[0m
+2026-10-28T04:06:18.6163605Z [36;1mif git diff --cached --quiet; then[0m
+2026-10-28T04:06:18.6163876Z [36;1m  echo "No cache changes to push."[0m
+2026-10-28T04:06:18.6164170Z [36;1m  echo "CACHE_RESULT=unchanged" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6164453Z [36;1melse[0m
+2026-10-28T04:06:18.6164757Z [36;1m  if ! git commit -m "auto: update reddit monitor caches"; then[0m
+2026-10-28T04:06:18.6165107Z [36;1m    echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6165627Z [36;1m    echo "::error::CACHE COMMIT FAILED — dedup cache was not persisted; rerun this monitor after resolving the repository state."[0m
+2026-10-28T04:06:18.6166113Z [36;1m    exit 1[0m
+2026-10-28T04:06:18.6166315Z [36;1m  fi[0m
+2026-10-28T04:06:18.6166507Z [36;1m[0m
+2026-10-28T04:06:18.6166718Z [36;1m  cache_branch="${CACHE_BRANCH:-main}"[0m
+2026-10-28T04:06:18.6167216Z [36;1m  # Round 61 (2026-10-04): save OUR freshly-written caches aside —[0m
+2026-10-28T04:06:18.6167609Z [36;1m  # the recovery below resets to the live tip and re-merges them[0m
+2026-10-28T04:06:18.6167998Z [36;1m  # SEMANTICALLY (git merges lines; these files carry meaning. The[0m
+2026-10-28T04:06:18.6168374Z [36;1m  # 2026-10-03 run #4014 lost its dedup state to a line conflict[0m
+2026-10-28T04:06:18.6168748Z [36;1m  # in pending_reddit.json that a JSON merge resolves trivially).[0m
+2026-10-28T04:06:18.6169316Z [36;1m  ours_dir="$(mktemp -d)" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PREPARATION FAILED — mktemp failed"; exit 1; }[0m
+2026-10-28T04:06:18.6170113Z [36;1m  for f in posted_reddit.json proxy_health.json pending_reddit.json posted_messages.json; do[0m
+2026-10-28T04:06:18.6170751Z [36;1m    if [ -f "$f" ]; then cp "$f" "$ours_dir/$f" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE COPYING FAILED — cp $f failed"; exit 1; }; fi[0m
+2026-10-28T04:06:18.6171230Z [36;1m  done[0m
+2026-10-28T04:06:18.6171436Z [36;1m  pushed=0[0m
+2026-10-28T04:06:18.6171648Z [36;1m  attempts=0[0m
+2026-10-28T04:06:18.6171877Z [36;1m  for attempt in 1 2 3; do[0m
+2026-10-28T04:06:18.6172128Z [36;1m    attempts="$attempt"[0m
+2026-10-28T04:06:18.6172413Z [36;1m    if git push origin "HEAD:${cache_branch}"; then[0m
+2026-10-28T04:06:18.6172703Z [36;1m      pushed=1[0m
+2026-10-28T04:06:18.6172924Z [36;1m      break[0m
+2026-10-28T04:06:18.6173125Z [36;1m    fi[0m
+2026-10-28T04:06:18.6173318Z [36;1m[0m
+2026-10-28T04:06:18.6173737Z [36;1m    # A remote cache commit landed between our sync and this push.[0m
+2026-10-28T04:06:18.6174137Z [36;1m    # Reset to the live tip, semantically merge our caches onto it[0m
+2026-10-28T04:06:18.6174505Z [36;1m    # (union of dedup keys — a lost key is a double post; an extra[0m
+2026-10-28T04:06:18.6174897Z [36;1m    # key is merely re-evicted by the round-34 caps), then retry.[0m
+2026-10-28T04:06:18.6175215Z [36;1m    if [ "$attempt" -lt 3 ]; then[0m
+2026-10-28T04:06:18.6175668Z [36;1m      echo "::warning::Cache push attempt $attempt/3 failed; merging the live ${cache_branch} tip semantically before retry."[0m
+2026-10-28T04:06:18.6176147Z [36;1m      if ! git fetch origin "$cache_branch"; then[0m
+2026-10-28T04:06:18.6176457Z [36;1m        echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6177048Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — could not fetch the live tip; dedup cache was not persisted."[0m
+2026-10-28T04:06:18.6177473Z [36;1m        break[0m
+2026-10-28T04:06:18.6177680Z [36;1m      fi[0m
+2026-10-28T04:06:18.6178222Z [36;1m      git reset --hard FETCH_HEAD || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PUSH RECOVERY FAILED — reset failed; dedup cache was not persisted."; break; }[0m
+2026-10-28T04:06:18.6179095Z [36;1m      if ! python .github/scripts/merge_monitor_caches.py "$ours_dir" . posted_reddit.json proxy_health.json pending_reddit.json posted_messages.json; then[0m
+2026-10-28T04:06:18.6179669Z [36;1m        echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6180109Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — semantic merge failed; dedup cache was not persisted."[0m
+2026-10-28T04:06:18.6180505Z [36;1m        break[0m
+2026-10-28T04:06:18.6180706Z [36;1m      fi[0m
+2026-10-28T04:06:18.6181368Z [36;1m      git add -f posted_reddit.json proxy_health.json pending_reddit.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PUSH RECOVERY FAILED — staging failed after merge; dedup cache was not persisted."; break; }[0m
+2026-10-28T04:06:18.6182102Z [36;1m      if [ -f posted_messages.json ]; then[0m
+2026-10-28T04:06:18.6182861Z [36;1m        git add -f posted_messages.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PUSH RECOVERY FAILED — staging posted_messages failed; dedup cache was not persisted."; break; }[0m
+2026-10-28T04:06:18.6183943Z [36;1m      fi[0m
+2026-10-28T04:06:18.6184195Z [36;1m      if git diff --cached --quiet; then[0m
+2026-10-28T04:06:18.6184561Z [36;1m        echo "Live tip already contains our cache state — nothing left to push."[0m
+2026-10-28T04:06:18.6184906Z [36;1m        pushed=1[0m
+2026-10-28T04:06:18.6185120Z [36;1m        break[0m
+2026-10-28T04:06:18.6185322Z [36;1m      fi[0m
+2026-10-28T04:06:18.6185588Z [36;1m      if ! git commit -m "auto: update reddit monitor caches"; then[0m
+2026-10-28T04:06:18.6185933Z [36;1m        echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6186368Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — merge commit failed; dedup cache was not persisted."[0m
+2026-10-28T04:06:18.6187036Z [36;1m        break[0m
+2026-10-28T04:06:18.6187282Z [36;1m      fi[0m
+2026-10-28T04:06:18.6187486Z [36;1m      sleep "$((attempt * 15))"[0m
+2026-10-28T04:06:18.6187723Z [36;1m    fi[0m
+2026-10-28T04:06:18.6187908Z [36;1m  done[0m
+2026-10-28T04:06:18.6188092Z [36;1m[0m
+2026-10-28T04:06:18.6188307Z [36;1m  if [ "$pushed" -ne 1 ]; then[0m
+2026-10-28T04:06:18.6188582Z [36;1m    echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6189166Z [36;1m    echo "::error::CACHE PUSH FAILED after ${attempts}/3 attempt(s) — dedup cache was not persisted; the next run may re-post. Rerun this monitor after GitHub recovers."[0m
+2026-10-28T04:06:18.6189695Z [36;1m    exit 1[0m
+2026-10-28T04:06:18.6189890Z [36;1m  fi[0m
+2026-10-28T04:06:18.6190078Z [36;1m[0m
+2026-10-28T04:06:18.6190293Z [36;1m  echo "CACHE_RESULT=saved" >> "$GITHUB_ENV"[0m
+2026-10-28T04:06:18.6190556Z [36;1mfi[0m
+2026-10-28T04:06:18.6247441Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:06:18.6247699Z env:
+2026-10-28T04:06:18.6247955Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:18.6248337Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:06:18.6248694Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:18.6249016Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:18.6249332Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:18.6249650Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:06:18.6249946Z   MONITOR_START_EPOCH: 1793160328
+2026-10-28T04:06:18.6250186Z   MONITOR_END_EPOCH: 1793160378
+2026-10-28T04:06:18.6250420Z   CACHE_BRANCH: main
+2026-10-28T04:06:18.6250624Z ##[endgroup]
+2026-10-28T04:06:18.6483753Z [main 587dfb7] auto: update reddit monitor caches
+2026-10-28T04:06:18.6484164Z  1 file changed, 5 insertions(+), 5 deletions(-)
+2026-10-28T04:06:19.9273452Z To https://github.com/uesu/7jkxmy9nvbc
+2026-10-28T04:06:19.9273854Z    cccf9ab..587dfb7  HEAD -> main
+2026-10-28T04:06:19.9372532Z ##[group]Run RUNTIME=unavailable
+2026-10-28T04:06:19.9373272Z [36;1mRUNTIME=unavailable[0m
+2026-10-28T04:06:19.9373613Z [36;1mif [ -n "${MONITOR_START_EPOCH:-}" ] && [ -n "${MONITOR_END_EPOCH:-}" ]; then[0m
+2026-10-28T04:06:19.9374035Z [36;1m  RUNTIME="$(( MONITOR_END_EPOCH - MONITOR_START_EPOCH ))s"[0m
+2026-10-28T04:06:19.9374340Z [36;1mfi[0m
+2026-10-28T04:06:19.9374541Z [36;1mexport RUNTIME[0m
+2026-10-28T04:06:19.9374766Z [36;1mexport CACHE_RESULT[0m
+2026-10-28T04:06:19.9375006Z [36;1mexport JOB_STATUS="success"[0m
+2026-10-28T04:06:19.9375282Z [36;1mpython3 - << 'PY' >> "$GITHUB_STEP_SUMMARY"[0m
+2026-10-28T04:06:19.9375570Z [36;1mimport json, os, pathlib[0m
+2026-10-28T04:06:19.9375861Z [36;1mruntime = os.environ.get("RUNTIME", "unavailable")[0m
+2026-10-28T04:06:19.9376305Z [36;1m# Reporting correction: entered persistence defaults to failed; never-ran is not-reached[0m
+2026-10-28T04:06:19.9376747Z [36;1mcache_result = os.environ.get("CACHE_RESULT")[0m
+2026-10-28T04:06:19.9377252Z [36;1mif not cache_result:[0m
+2026-10-28T04:06:19.9377495Z [36;1m    cache_result = "not-reached"[0m
+2026-10-28T04:06:19.9377808Z [36;1mjob_status = os.environ.get("JOB_STATUS", "unavailable")[0m
+2026-10-28T04:06:19.9378154Z [36;1mresult_path = pathlib.Path("reddit_run_result.json")[0m
+2026-10-28T04:06:19.9378443Z [36;1mdata = {}[0m
+2026-10-28T04:06:19.9378668Z [36;1mif result_path.exists():[0m
+2026-10-28T04:06:19.9378910Z [36;1m    try:[0m
+2026-10-28T04:06:19.9379160Z [36;1m        raw = result_path.read_text(encoding="utf-8")[0m
+2026-10-28T04:06:19.9379460Z [36;1m        loaded = json.loads(raw)[0m
+2026-10-28T04:06:19.9379731Z [36;1m        if isinstance(loaded, dict):[0m
+2026-10-28T04:06:19.9379988Z [36;1m            data = loaded[0m
+2026-10-28T04:06:19.9380219Z [36;1m        else:[0m
+2026-10-28T04:06:19.9380515Z [36;1m            data = {"error": "wrong_shape", "raw_type": type(loaded).__name__}[0m
+2026-10-28T04:06:19.9381015Z [36;1m    except Exception as e:[0m
+2026-10-28T04:06:19.9381313Z [36;1m        data = {"error": f"malformed_json: {type(e).__name__}"}[0m
+2026-10-28T04:06:19.9381623Z [36;1mdef v(k, default="unavailable"):[0m
+2026-10-28T04:06:19.9381875Z [36;1m    val = data.get(k)[0m
+2026-10-28T04:06:19.9382144Z [36;1m    return str(val) if val is not None else default[0m
+2026-10-28T04:06:19.9382426Z [36;1mdef dict_str(d):[0m
+2026-10-28T04:06:19.9382666Z [36;1m    if not isinstance(d, dict) or not d:[0m
+2026-10-28T04:06:19.9382929Z [36;1m        return "none"[0m
+2026-10-28T04:06:19.9383208Z [36;1m    return ", ".join(f"{k}: {v}" for k, v in sorted(d.items()))[0m
+2026-10-28T04:06:19.9383564Z [36;1mprint("## Reddit Feed Monitor — run summary")[0m
+2026-10-28T04:06:19.9383838Z [36;1mprint()[0m
+2026-10-28T04:06:19.9384177Z [36;1m# Repository persistence (observed commit/push) vs local persistence (from run_result)[0m
+2026-10-28T04:06:19.9384576Z [36;1mprint(f"**Result:** {job_status}")[0m
+2026-10-28T04:06:19.9384870Z [36;1mprint(f"**Monitor runtime:** {runtime}")[0m
+2026-10-28T04:06:19.9385292Z [36;1m# Repo persistence is from workflow env (observed git push), local is from run_result (file saves)[0m
+2026-10-28T04:06:19.9385742Z [36;1mprint(f"**Repository persistence:** {cache_result}")[0m
+2026-10-28T04:06:19.9386112Z [36;1mlocal_persist = data.get("persistence_status", "unavailable")[0m
+2026-10-28T04:06:19.9386469Z [36;1mprint(f"**Local persistence:** {local_persist}")[0m
+2026-10-28T04:06:19.9386769Z [36;1mif local_persist == "skipped_dry_run":[0m
+2026-10-28T04:06:19.9387249Z [36;1m    print(f"  - Dry-run: no local cache write (as intended)")[0m
+2026-10-28T04:06:19.9387588Z [36;1m# Run completion with dry-run distinction[0m
+2026-10-28T04:06:19.9387866Z [36;1mif data.get("completed") is True:[0m
+2026-10-28T04:06:19.9388135Z [36;1m    print(f"**Run status:** completed")[0m
+2026-10-28T04:06:19.9388404Z [36;1m    if data.get("dry_run") is True:[0m
+2026-10-28T04:06:19.9388896Z [36;1m        print(f"  - Dry-run execution (no live delivery or persistence)")[0m
+2026-10-28T04:06:19.9389251Z [36;1m    elif data.get("dry_run") is False:[0m
+2026-10-28T04:06:19.9389529Z [36;1m        print(f"  - Live execution")[0m
+2026-10-28T04:06:19.9389804Z [36;1melif data.get("completed") is False:[0m
+2026-10-28T04:06:19.9390072Z [36;1m    print(f"**Run status:** incomplete")[0m
+2026-10-28T04:06:19.9390339Z [36;1m    if data.get("error"):[0m
+2026-10-28T04:06:19.9390601Z [36;1m        # Error already sanitized in engine[0m
+2026-10-28T04:06:19.9390891Z [36;1m        print(f"**Error:** {data.get('error')}")[0m
+2026-10-28T04:06:19.9391155Z [36;1melse:[0m
+2026-10-28T04:06:19.9391374Z [36;1m    print(f"**Run status:** unavailable")[0m
+2026-10-28T04:06:19.9391623Z [36;1mprint()[0m
+2026-10-28T04:06:19.9391821Z [36;1mprint("### Feed")[0m
+2026-10-28T04:06:19.9392108Z [36;1mprint(f"- Combined-feed entries: {v('combined_entries')}")[0m
+2026-10-28T04:06:19.9392513Z [36;1m# Legacy phrasing for compatibility: Subreddits represented: X of Y[0m
+2026-10-28T04:06:19.9392865Z [36;1msub_rep = v('subreddits_represented')[0m
+2026-10-28T04:06:19.9393154Z [36;1mcomb_cov = v('combined_subreddits_covered')[0m
+2026-10-28T04:06:19.9393435Z [36;1mcfg = v('subreddits_configured')[0m
+2026-10-28T04:06:19.9393692Z [36;1mif sub_rep != "unavailable":[0m
+2026-10-28T04:06:19.9393985Z [36;1m    print(f"- Subreddits represented: {sub_rep} of {cfg}")[0m
+2026-10-28T04:06:19.9394323Z [36;1m    if comb_cov != "unavailable" and comb_cov != sub_rep:[0m
+2026-10-28T04:06:19.9394707Z [36;1m        print(f"- Combined subreddits covered: {comb_cov} of {cfg} configured")[0m
+2026-10-28T04:06:19.9395040Z [36;1melse:[0m
+2026-10-28T04:06:19.9395316Z [36;1m    print(f"- Combined subreddits covered: {comb_cov} of {cfg} configured")[0m
+2026-10-28T04:06:19.9395722Z [36;1mprint(f"- Combined fetch status: {v('combined_fetch_status')}")[0m
+2026-10-28T04:06:19.9396154Z [36;1mif data.get('fallback_status') and data.get('fallback_status') != "not_attempted":[0m
+2026-10-28T04:06:19.9396688Z [36;1m    print(f"- Fallback status: {v('fallback_status')}")[0m
+2026-10-28T04:06:19.9397180Z [36;1m    print(f"- Fallback entries: {v('fallback_entries')}")[0m
+2026-10-28T04:06:19.9397569Z [36;1m    print(f"- Fallback subreddits covered: {v('fallback_subreddits_covered')}")[0m
+2026-10-28T04:06:19.9397957Z [36;1mif data.get('arctic_candidates') is not None:[0m
+2026-10-28T04:06:19.9398284Z [36;1m    print(f"- Arctic candidates: {v('arctic_candidates')}")[0m
+2026-10-28T04:06:19.9398692Z [36;1mprint(f"- Unposted candidates considered: {v('unposted_candidates_considered')}")[0m
+2026-10-28T04:06:19.9399171Z [36;1mprint(f"- Candidates entering processing: {v('candidates_entering_processing')}")[0m
+2026-10-28T04:06:19.9399560Z [36;1mprint(f"- Delivered posts: {v('delivered')}")[0m
+2026-10-28T04:06:19.9399850Z [36;1mif 'dry_run_would_deliver' in data:[0m
+2026-10-28T04:06:19.9400173Z [36;1m    print(f"- Dry-run would-deliver: {v('dry_run_would_deliver')}")[0m
+2026-10-28T04:06:19.9400549Z [36;1mprint(f"- Failed deliveries: {v('failed_delivery')}")[0m
+2026-10-28T04:06:19.9400837Z [36;1mprint()[0m
+2026-10-28T04:06:19.9401055Z [36;1mprint("### Skipped and deferred")[0m
+2026-10-28T04:06:19.9401416Z [36;1mprint(f"- Known-rejected archive candidates: {v('known_pending_suppressed')}")[0m
+2026-10-28T04:06:19.9401787Z [36;1mif data.get('known_pending_by_reason'):[0m
+2026-10-28T04:06:19.9402138Z [36;1m    print(f"  - by reason: {dict_str(data.get('known_pending_by_reason'))}")[0m
+2026-10-28T04:06:19.9402524Z [36;1mprint(f"- Retry backoff: {v('retry_backoff')}")[0m
+2026-10-28T04:06:19.9402819Z [36;1mif data.get('retry_backoff_by_reason'):[0m
+2026-10-28T04:06:19.9403155Z [36;1m    print(f"  - by reason: {dict_str(data.get('retry_backoff_by_reason'))}")[0m
+2026-10-28T04:06:19.9403508Z [36;1mprint(f"- Fresh-age hold: {v('fresh_hold')}")[0m
+2026-10-28T04:06:19.9403869Z [36;1mprint(f"- Newly rejected removed/deleted: {v('newly_rejected_removed')}")[0m
+2026-10-28T04:06:19.9404387Z [36;1mif data.get('newly_rejected_by_reason'):[0m
+2026-10-28T04:06:19.9404738Z [36;1m    print(f"  - by reason: {dict_str(data.get('newly_rejected_by_reason'))}")[0m
+2026-10-28T04:06:19.9405147Z [36;1mprint(f"- Liveness not verified: {v('liveness_not_verified')}")[0m
+2026-10-28T04:06:19.9405474Z [36;1mif data.get('liveness_by_reason'):[0m
+2026-10-28T04:06:19.9405800Z [36;1m    print(f"  - by reason: {dict_str(data.get('liveness_by_reason'))}")[0m
+2026-10-28T04:06:19.9406141Z [36;1mprint(f"- Media-wait: {v('media_wait')}")[0m
+2026-10-28T04:06:19.9406608Z [36;1mprint(f"- Partial-gallery: {v('partial_gallery')}")[0m
+2026-10-28T04:06:19.9407539Z [36;1mprint(f"- Flood-cap dropped: {v('flood_cap_dropped')}")[0m
+2026-10-28T04:06:19.9408146Z [36;1mprint(f"- Dedup skipped in run: {v('dedup_skipped_in_run')}")[0m
+2026-10-28T04:06:19.9408631Z [36;1mprint(f"- Other skipped: {v('other_skipped')}")[0m
+2026-10-28T04:06:19.9409102Z [36;1mif data.get('other_by_reason'):[0m
+2026-10-28T04:06:19.9409561Z [36;1m    print(f"  - by reason: {dict_str(data.get('other_by_reason'))}")[0m
+2026-10-28T04:06:19.9410064Z [36;1mprint()[0m
+2026-10-28T04:06:19.9410406Z [36;1mprint("### Providers and media")[0m
+2026-10-28T04:06:19.9420676Z [36;1m# Warmup: locally observed, no extra network (does not prove audio)[0m
+2026-10-28T04:06:19.9421283Z [36;1mwarmup_status = data.get("proxy_warmup_status", "unavailable")[0m
+2026-10-28T04:06:19.9421693Z [36;1mwarmup_services = data.get("proxy_warmup_services")[0m
+2026-10-28T04:06:19.9422067Z [36;1mif warmup_status == "ok" and isinstance(warmup_services, dict):[0m
+2026-10-28T04:06:19.9422549Z [36;1m    details = ", ".join(f"{k}={'ok' if v.get('ok') else 'down'}" for k, v in sorted(warmup_services.items()))[0m
+2026-10-28T04:06:19.9423007Z [36;1m    print(f"- Proxy warmup: {warmup_status} ({details})")[0m
+2026-10-28T04:06:19.9423316Z [36;1melif warmup_status == "ok":[0m
+2026-10-28T04:06:19.9423760Z [36;1m    print(f"- Proxy warmup: {warmup_status}")[0m
+2026-10-28T04:06:19.9424062Z [36;1melif warmup_status == "disabled":[0m
+2026-10-28T04:06:19.9424401Z [36;1m    print(f"- Proxy warmup: disabled (PROXY_MEDIA=0 or module missing)")[0m
+2026-10-28T04:06:19.9424818Z [36;1melif warmup_status in ("failed", "unavailable", "not-reached"):[0m
+2026-10-28T04:06:19.9425160Z [36;1m    print(f"- Proxy warmup: {warmup_status}")[0m
+2026-10-28T04:06:19.9425417Z [36;1melse:[0m
+2026-10-28T04:06:19.9425635Z [36;1m    print(f"- Proxy warmup: {warmup_status}")[0m
+2026-10-28T04:06:19.9425931Z [36;1m# Video quality mode (local config, no network)[0m
+2026-10-28T04:06:19.9426234Z [36;1mvq = data.get("video_quality", "unavailable")[0m
+2026-10-28T04:06:19.9426520Z [36;1mprint(f"- Video quality mode: {vq}")[0m
+2026-10-28T04:06:19.9427130Z [36;1m# Redlib instance reachability (REDLIB-REACH, local observation only, no extra network)[0m
+2026-10-28T04:06:19.9427537Z [36;1mredlib_line = data.get("redlib_reach")[0m
+2026-10-28T04:06:19.9427810Z [36;1mif not redlib_line:[0m
+2026-10-28T04:06:19.9428066Z [36;1m    log_path = pathlib.Path("monitor.log")[0m
+2026-10-28T04:06:19.9428333Z [36;1m    if log_path.exists():[0m
+2026-10-28T04:06:19.9428559Z [36;1m        try:[0m
+2026-10-28T04:06:19.9428901Z [36;1m            for ln in reversed(log_path.read_text(encoding="utf-8", errors="ignore").splitlines()):[0m
+2026-10-28T04:06:19.9429313Z [36;1m                if "REDLIB-REACH:" in ln:[0m
+2026-10-28T04:06:19.9429684Z [36;1m                    redlib_line = "REDLIB-REACH: " + ln.split("REDLIB-REACH:", 1)[1].strip()[0m
+2026-10-28T04:06:19.9430029Z [36;1m                    break[0m
+2026-10-28T04:06:19.9430259Z [36;1m        except Exception:[0m
+2026-10-28T04:06:19.9430488Z [36;1m            pass[0m
+2026-10-28T04:06:19.9430766Z [36;1mredlib_cfg = data.get("redlib_instances_configured")[0m
+2026-10-28T04:06:19.9431123Z [36;1mif isinstance(redlib_line, str) and redlib_line.strip():[0m
+2026-10-28T04:06:19.9431598Z [36;1m    print(f"- Instances (REDLIB-REACH): {redlib_line.strip()}")[0m
+2026-10-28T04:06:19.9431916Z [36;1melif redlib_cfg is not None:[0m
+2026-10-28T04:06:19.9432320Z [36;1m    print(f"- Instances (REDLIB-REACH): not probed this run ({redlib_cfg} Redlib instance(s) configured)")[0m
+2026-10-28T04:06:19.9432831Z [36;1m# Required diagnostic distinctions (when actually observed, no extra network)[0m
+2026-10-28T04:06:19.9433195Z [36;1m# 1. Media resolved via provider[0m
+2026-10-28T04:06:19.9433476Z [36;1mvia = data.get("media_resolved_via_provider")[0m
+2026-10-28T04:06:19.9433755Z [36;1mif isinstance(via, dict) and via:[0m
+2026-10-28T04:06:19.9434056Z [36;1m    print(f"- Media resolved via provider: {dict_str(via)}")[0m
+2026-10-28T04:06:19.9434408Z [36;1melif data.get("unposted_candidates_considered") == 0:[0m
+2026-10-28T04:06:19.9434757Z [36;1m    print(f"- Media resolved via provider: none (no candidates)")[0m
+2026-10-28T04:06:19.9435091Z [36;1m# 2. Final media endpoint/hosting category[0m
+2026-10-28T04:06:19.9435421Z [36;1mendpoint = data.get("final_media_endpoint_category")[0m
+2026-10-28T04:06:19.9435747Z [36;1mif isinstance(endpoint, dict) and endpoint:[0m
+2026-10-28T04:06:19.9436065Z [36;1m    print(f"- Final media endpoint: {dict_str(endpoint)}")[0m
+2026-10-28T04:06:19.9436373Z [36;1m# 3. Final card media kind and tile count[0m
+2026-10-28T04:06:19.9436683Z [36;1mkind_counts = data.get("final_card_media_kind_counts")[0m
+2026-10-28T04:06:19.9437168Z [36;1mtile_total = data.get("final_card_media_tile_total")[0m
+2026-10-28T04:06:19.9437492Z [36;1mif isinstance(kind_counts, dict) and kind_counts:[0m
+2026-10-28T04:06:19.9437977Z [36;1m    print(f"- Final card media: kind={dict_str(kind_counts)}, tiles={tile_total if tile_total is not None else 'unavailable'}")[0m
+2026-10-28T04:06:19.9438477Z [36;1melif data.get("delivered") and data.get("delivered") != 0:[0m
+2026-10-28T04:06:19.9438846Z [36;1m    # Fallback to legacy selected provider view for compatibility[0m
+2026-10-28T04:06:19.9439405Z [36;1m    providers = data.get("selected_media_providers") or data.get("media_provider_counts")[0m
+2026-10-28T04:06:19.9439809Z [36;1m    if isinstance(providers, dict) and providers:[0m
+2026-10-28T04:06:19.9440144Z [36;1m        print(f"- Selected media provider: {dict_str(providers)}")[0m
+2026-10-28T04:06:19.9440440Z [36;1melse:[0m
+2026-10-28T04:06:19.9440677Z [36;1m    if data.get("unposted_candidates_considered") == 0:[0m
+2026-10-28T04:06:19.9441015Z [36;1m        print(f"- Final card media: none (no candidates)")[0m
+2026-10-28T04:06:19.9441291Z [36;1m    else:[0m
+2026-10-28T04:06:19.9441618Z [36;1m        providers = data.get("selected_media_providers") or data.get("media_provider_counts")[0m
+2026-10-28T04:06:19.9442021Z [36;1m        if isinstance(providers, dict) and providers:[0m
+2026-10-28T04:06:19.9442372Z [36;1m            print(f"- Selected media provider: {dict_str(providers)}")[0m
+2026-10-28T04:06:19.9442776Z [36;1m# 4. Optional quality candidate result + 5. Whether validated base retained[0m
+2026-10-28T04:06:19.9443157Z [36;1mqa = data.get("quality_upgrades_accepted")[0m
+2026-10-28T04:06:19.9443437Z [36;1mqf = data.get("quality_fallbacks", 0)[0m
+2026-10-28T04:06:19.9443751Z [36;1mq_result = data.get("optional_quality_candidate_result")[0m
+2026-10-28T04:06:19.9444102Z [36;1mbase_retained = data.get("validated_base_retained")[0m
+2026-10-28T04:06:19.9444424Z [36;1mif isinstance(q_result, dict) and q_result:[0m
+2026-10-28T04:06:19.9444761Z [36;1m    print(f"- Optional quality candidate: {dict_str(q_result)}")[0m
+2026-10-28T04:06:19.9445079Z [36;1m    if base_retained:[0m
+2026-10-28T04:06:19.9445368Z [36;1m        print(f"  - Validated base retained: {base_retained}")[0m
+2026-10-28T04:06:19.9445672Z [36;1melif qa is not None or qf:[0m
+2026-10-28T04:06:19.9445914Z [36;1m    # Legacy compatibility[0m
+2026-10-28T04:06:19.9446146Z [36;1m    if qa is not None:[0m
+2026-10-28T04:06:19.9446408Z [36;1m        print(f"- Quality upgrades accepted: {qa}")[0m
+2026-10-28T04:06:19.9446679Z [36;1m    if qf:[0m
+2026-10-28T04:06:19.9447250Z [36;1m        print(f"- Quality fallbacks (base retained): {qf}")[0m
+2026-10-28T04:06:19.9447587Z [36;1m        if data.get("quality_fallback_reasons"):[0m
+2026-10-28T04:06:19.9447956Z [36;1m            print(f"  - by reason: {dict_str(data.get('quality_fallback_reasons'))}")[0m
+2026-10-28T04:06:19.9448312Z [36;1m    elif qa is not None and qa == 0:[0m
+2026-10-28T04:06:19.9448606Z [36;1m        print(f"- Quality fallbacks (base retained): 0")[0m
+2026-10-28T04:06:19.9448892Z [36;1m    if base_retained:[0m
+2026-10-28T04:06:19.9449175Z [36;1m        print(f"- Validated base retained: {base_retained}")[0m
+2026-10-28T04:06:19.9449589Z [36;1m# 6. Terminal media fallback (proxy -> native), distinct from feed and quality fallback[0m
+2026-10-28T04:06:19.9449997Z [36;1mterm_fb = data.get("terminal_media_fallbacks")[0m
+2026-10-28T04:06:19.9450271Z [36;1mif term_fb:[0m
+2026-10-28T04:06:19.9450567Z [36;1m    print(f"- Terminal media fallback (proxy -> native): {term_fb}")[0m
+2026-10-28T04:06:19.9451036Z [36;1m# 7. Heal: queued, edit performed, or edit skipped after revalidation (distinct, no audio inference)[0m
+2026-10-28T04:06:19.9451449Z [36;1mheal_q = data.get("heal_queued", 0)[0m
+2026-10-28T04:06:19.9451752Z [36;1mheal_edit = data.get("heal_edit_performed", 0)[0m
+2026-10-28T04:06:19.9452081Z [36;1mheal_skip = data.get("heal_skipped_after_revalidation", 0)[0m
+2026-10-28T04:06:19.9452399Z [36;1mif heal_q or heal_edit or heal_skip:[0m
+2026-10-28T04:06:19.9452807Z [36;1m    print(f"- Heal: queued={heal_q}, edit_performed={heal_edit}, skipped_after_revalidation={heal_skip}")[0m
+2026-10-28T04:06:19.9453260Z [36;1melif data.get("delivered") and data.get("delivered") != 0:[0m
+2026-10-28T04:06:19.9453660Z [36;1m    # Show zero vs not-reached distinction when deliveries occurred but no heal[0m
+2026-10-28T04:06:19.9454054Z [36;1m    if heal_q == 0 and heal_edit == 0 and heal_skip == 0:[0m
+2026-10-28T04:06:19.9454610Z [36;1m        print(f"- Heal: queued=0, edit_performed=0, skipped_after_revalidation=0 (no unresolved evidence)")[0m
+2026-10-28T04:06:19.9455146Z [36;1m# Distinguish feed fallback (RSS per-subreddit) from video-quality and terminal fallback[0m
+2026-10-28T04:06:19.9455568Z [36;1mif data.get("fallback_status") == "not_attempted":[0m
+2026-10-28T04:06:19.9455917Z [36;1m    print(f"- Feed fallback: not attempted (combined succeeded)")[0m
+2026-10-28T04:06:19.9456305Z [36;1melif data.get("fallback_status") in ("ok", "partial", "all_failed"):[0m
+2026-10-28T04:06:19.9456861Z [36;1m    print(f"- Feed fallback: {data.get('fallback_status')} ({v('fallback_entries')} entries, {v('fallback_subreddits_covered')} subreddits)")[0m
+2026-10-28T04:06:19.9457518Z [36;1melif data.get("fallback_status") is not None:[0m
+2026-10-28T04:06:19.9457858Z [36;1m    print(f"- Feed fallback: {v('fallback_status')}")[0m
+2026-10-28T04:06:19.9458219Z [36;1m# Clarify: warmup and video validation do not prove audio inclusion[0m
+2026-10-28T04:06:19.9458757Z [36;1mprint(f"- Note: provider warmup, HTTP validation, player controls, or 'chain complete' do not prove audio inclusion")[0m
+2026-10-28T04:06:19.9459475Z [36;1mprint(f"- Note: per-candidate provider/quality/terminal-fallback/heal details in monitor.log; counts above are this run's local observations")[0m
+2026-10-28T04:06:19.9459980Z [36;1mprint()[0m
+2026-10-28T04:06:19.9460406Z [36;1mprint("Counts describe this run's local observations, not an independent subreddit-visibility or end-to-end health audit.")[0m
+2026-10-28T04:06:19.9461114Z [36;1mprint("Summary source: reddit_run_result.json (per-run, ignored) + monitor.log for provider diagnostics; no additional network requests.")[0m
+2026-10-28T04:06:19.9461592Z [36;1mPY[0m
+2026-10-28T04:06:19.9517969Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:06:19.9518216Z env:
+2026-10-28T04:06:19.9518471Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:19.9518848Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:06:19.9519346Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:19.9519669Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:19.9519988Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:06:19.9520304Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:06:19.9520600Z   MONITOR_START_EPOCH: 1793160328
+2026-10-28T04:06:19.9520836Z   MONITOR_END_EPOCH: 1793160378
+2026-10-28T04:06:19.9521062Z   CACHE_RESULT: saved
+2026-10-28T04:06:19.9521278Z   JOB_STATUS: success
+2026-10-28T04:06:19.9521479Z ##[endgroup]
+2026-10-28T04:06:19.9947123Z Post job cleanup.
+2026-10-28T04:06:20.0868868Z Cache hit occurred on the primary key setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d, not saving cache.
+2026-10-28T04:06:20.0992493Z Post job cleanup.
+2026-10-28T04:06:20.1768348Z [command]/usr/bin/git version
+2026-10-28T04:06:20.1827553Z git version 2.55.0
+2026-10-28T04:06:20.1861812Z Temporarily overriding HOME='/home/runner/work/_temp/cb90e085-481b-41b1-ad1d-3eaa4474646d' before making global git config changes
+2026-10-28T04:06:20.1862988Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T04:06:20.1865605Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc
+2026-10-28T04:06:20.1911338Z Removing SSH command configuration
+2026-10-28T04:06:20.1918240Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T04:06:20.1960466Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T04:06:20.2251385Z Removing HTTP extra header
+2026-10-28T04:06:20.2257813Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T04:06:20.2304261Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T04:06:20.2580679Z Removing includeIf entries pointing to credentials config files
+2026-10-28T04:06:20.2587590Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T04:06:20.2615126Z includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path
+2026-10-28T04:06:20.2616111Z includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path
+2026-10-28T04:06:20.2617520Z includeif.gitdir:/github/workspace/.git.path
+2026-10-28T04:06:20.2618424Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T04:06:20.2622833Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path
+2026-10-28T04:06:20.2647565Z /home/runner/work/_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:06:20.2657503Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-cbedf1c2\-0d48\-443c\-9887\-1306dce5d72e\.config
+2026-10-28T04:06:20.2694496Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path
+2026-10-28T04:06:20.2719401Z /home/runner/work/_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:06:20.2733891Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-cbedf1c2\-0d48\-443c\-9887\-1306dce5d72e\.config
+2026-10-28T04:06:20.2770452Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-28T04:06:20.2796694Z /github/runner_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:06:20.2801107Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-cbedf1c2\-0d48\-443c\-9887\-1306dce5d72e\.config
+2026-10-28T04:06:20.2832804Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T04:06:20.2855224Z /github/runner_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config
+2026-10-28T04:06:20.2862207Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-cbedf1c2\-0d48\-443c\-9887\-1306dce5d72e\.config
+2026-10-28T04:06:20.2895898Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T04:06:20.3089788Z Removing credentials config '/home/runner/work/_temp/git-credentials-cbedf1c2-0d48-443c-9887-1306dce5d72e.config'
+2026-10-28T04:06:20.3229984Z Cleaning up orphan processes
+
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Character Introduction and Skill Showcase - \"Fort Fulguration\" Valeriy](https://www.reddit.com/r/Genshin_Impact_Leaks/comments/1xhe4e7/character_introduction_and_skill_showcase_fort/)\n*by the-roast in r/Genshin_Impact_Leaks*"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://i.redd.it/r3i9x0xpt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/gkMpSNcGJgp18-Zo0sZyhN_bM9BBofAQIjnBvpMtePs/https/i.redd.it/r3i9x0xpt4yh1.png",
+                "width": 700,
+                "height": 1510,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/insui57qt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/PwZltnZX0Ck36-trzEpq-hdu-wJPCossSi2tmBP8EMo/https/i.redd.it/insui57qt4yh1.png",
+                "width": 700,
+                "height": 2558,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/oddg4qoqt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/xGHyp9DjNDkSBNIUc49feVkafOg3WYJsB-x0irew60g/https/i.redd.it/oddg4qoqt4yh1.png",
+                "width": 700,
+                "height": 1266,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/wkt3ihhst4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/oiviuPK8CSoKt6nBWLqtEQgZFeIvZRVeC-58x7lu9EE/https/i.redd.it/wkt3ihhst4yh1.gif",
+                "width": 700,
+                "height": 1122,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/i9lux8sst4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/rCj477tZ5N8O-CTf4OA6qLfpxBjy7KF6gRqi4B2Ottg/https/i.redd.it/i9lux8sst4yh1.gif",
+                "width": 700,
+                "height": 821,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/p5f5eo3tt4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Oo5p39rqof8smhNjuBST0Hmdh-8jGfGEDA3sVIXPRZ8/https/i.redd.it/p5f5eo3tt4yh1.gif",
+                "width": 700,
+                "height": 821,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/fiq7pndtt4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/3EVUnyCApWP01L3kCAEZNFDD6ANEzWHK1L9YWyZiIgs/https/i.redd.it/fiq7pndtt4yh1.gif",
+                "width": 700,
+                "height": 991,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/1bzg86ltt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Q3mGrrB7aJq2w8VCLtXCYuYcAveLfW8LUREEmL-9S8Q/https/i.redd.it/1bzg86ltt4yh1.png",
+                "width": 700,
+                "height": 2019,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "-# 💬 3 👍 25   •   🕐 <t:1793160180:f>"
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.reddit.com/r/Genshin_Impact_Leaks/comments/1xhe4e7/character_introduction_and_skill_showcase_fort/"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Extraterrestrial Satellite Communication | Astra Yao](https://www.reddit.com/r/HonkaiStarRail_leaks/comments/1xhe28k/extraterrestrial_satellite_communication_astra_yao/)\n*by LuciferMS7777 in r/HonkaiStarRail_leaks*"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://i.redd.it/fvjnmzpct4yh1.jpeg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/WIdndhdLpDdWjz3azySjYKapIabLe9FKZ5V6azGfEBQ/https/i.redd.it/fvjnmzpct4yh1.jpeg",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "-# 💬 30 👍 146   •   🕐 <t:1793160013:f>"
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.reddit.com/r/HonkaiStarRail_leaks/comments/1xhe28k/extraterrestrial_satellite_communication_astra_yao/"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Character Introduction and Skill Showcase - \"Fort Fulguration\" Valeriy](https://www.reddit.com/r/Genshin_Impact_Leaks/comments/1xhe4e7/character_introduction_and_skill_showcase_fort/)\n*by the-roast in r/Genshin_Impact_Leaks*"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://i.redd.it/r3i9x0xpt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/gkMpSNcGJgp18-Zo0sZyhN_bM9BBofAQIjnBvpMtePs/https/i.redd.it/r3i9x0xpt4yh1.png",
+                "width": 700,
+                "height": 1510,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/insui57qt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/PwZltnZX0Ck36-trzEpq-hdu-wJPCossSi2tmBP8EMo/https/i.redd.it/insui57qt4yh1.png",
+                "width": 700,
+                "height": 2558,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/oddg4qoqt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/xGHyp9DjNDkSBNIUc49feVkafOg3WYJsB-x0irew60g/https/i.redd.it/oddg4qoqt4yh1.png",
+                "width": 700,
+                "height": 1266,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/wkt3ihhst4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/oiviuPK8CSoKt6nBWLqtEQgZFeIvZRVeC-58x7lu9EE/https/i.redd.it/wkt3ihhst4yh1.gif",
+                "width": 700,
+                "height": 1122,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/i9lux8sst4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/rCj477tZ5N8O-CTf4OA6qLfpxBjy7KF6gRqi4B2Ottg/https/i.redd.it/i9lux8sst4yh1.gif",
+                "width": 700,
+                "height": 821,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/p5f5eo3tt4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Oo5p39rqof8smhNjuBST0Hmdh-8jGfGEDA3sVIXPRZ8/https/i.redd.it/p5f5eo3tt4yh1.gif",
+                "width": 700,
+                "height": 821,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/fiq7pndtt4yh1.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/3EVUnyCApWP01L3kCAEZNFDD6ANEzWHK1L9YWyZiIgs/https/i.redd.it/fiq7pndtt4yh1.gif",
+                "width": 700,
+                "height": 991,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://i.redd.it/1bzg86ltt4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Q3mGrrB7aJq2w8VCLtXCYuYcAveLfW8LUREEmL-9S8Q/https/i.redd.it/1bzg86ltt4yh1.png",
+                "width": 700,
+                "height": 2019,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "-# 💬 3 👍 25   •   🕐 <t:1793160180:f>"
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.reddit.com/r/Genshin_Impact_Leaks/comments/1xhe4e7/character_introduction_and_skill_showcase_fort/"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Extraterrestrial Satellite Communication | Astra Yao from Official HSR account](https://www.reddit.com/r/Zenlesszonezeroleaks_/comments/1xhe2kr/extraterrestrial_satellite_communication_astra/)\n*by cakeel- in r/Zenlesszonezeroleaks_*"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://i.redd.it/wb1a76qet4yh1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/u3xHSloMsd0sx6SABv1shb1FYy9UGP3Do-9bmus4BJE/https/i.redd.it/wb1a76qet4yh1.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "-# 💬 14 👍 102   •   🕐 <t:1793160037:f>"
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.reddit.com/r/Zenlesszonezeroleaks_/comments/1xhe2kr/extraterrestrial_satellite_communication_astra/"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+Game-Express Monitor #2221
+
+2026-10-28T04:00:28.3716247Z Current runner version: '2.338.0'
+2026-10-28T04:00:28.3752562Z ##[group]Runner Image Provisioner
+2026-10-28T04:00:28.3754133Z Hosted Compute Agent
+2026-10-28T04:00:28.3755214Z Version: 20261021.618
+2026-10-28T04:00:28.3756649Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-28T04:00:28.3758068Z Build Date: 2026-10-21T00:45:21Z
+2026-10-28T04:00:28.3759570Z Worker ID: {f7606beb-81fc-4c96-94a5-09476ad817b0}
+2026-10-28T04:00:28.3761463Z Region: eastus2
+2026-10-28T04:00:28.3762642Z Cloud: Azure
+2026-10-28T04:00:28.3763853Z ##[endgroup]
+2026-10-28T04:00:28.3766696Z ##[group]Operating System
+2026-10-28T04:00:28.3768079Z Ubuntu
+2026-10-28T04:00:28.3769197Z 24.04.5
+2026-10-28T04:00:28.3770424Z LTS
+2026-10-28T04:00:28.3771747Z ##[endgroup]
+2026-10-28T04:00:28.3772939Z ##[group]Runner Image
+2026-10-28T04:00:28.3774271Z Image: ubuntu-24.04
+2026-10-28T04:00:28.3775467Z Version: 20261025.353.1
+2026-10-28T04:00:28.3778044Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-28T04:00:28.3781421Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-10-28T04:00:28.3783436Z ##[endgroup]
+2026-10-28T04:00:28.3785643Z ##[group]GITHUB_TOKEN Permissions
+2026-10-28T04:00:28.3788860Z Contents: write
+2026-10-28T04:00:28.3790203Z Metadata: read
+2026-10-28T04:00:28.3791668Z ##[endgroup]
+2026-10-28T04:00:28.3794979Z Secret source: Actions
+2026-10-28T04:00:28.3796753Z Cache mode: write
+2026-10-28T04:00:28.3798444Z Prepare workflow directory
+2026-10-28T04:00:28.4697808Z Prepare all required actions
+2026-10-28T04:00:28.4772744Z Getting action download info
+2026-10-28T04:00:28.6751180Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-28T04:00:28.8046854Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-10-28T04:00:29.0235263Z Download action repository 'astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e' (SHA:07a047e608db84b3d8c06cd9a7c7dcc9c355c18e)
+2026-10-28T04:00:29.3700859Z Complete job name: monitor
+2026-10-28T04:00:29.4693667Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-28T04:00:29.4695411Z with:
+2026-10-28T04:00:29.4696188Z   ref: main
+2026-10-28T04:00:29.4697003Z   repository: uesu/8mqzv4k2n7c
+2026-10-28T04:00:29.4705236Z   token: ***
+2026-10-28T04:00:29.4706066Z   ssh-strict: true
+2026-10-28T04:00:29.4706907Z   ssh-user: git
+2026-10-28T04:00:29.4707760Z   persist-credentials: true
+2026-10-28T04:00:29.4708704Z   clean: true
+2026-10-28T04:00:29.4709556Z   sparse-checkout-cone-mode: true
+2026-10-28T04:00:29.4710695Z   fetch-depth: 1
+2026-10-28T04:00:29.4711524Z   fetch-tags: false
+2026-10-28T04:00:29.4712374Z   show-progress: true
+2026-10-28T04:00:29.4713249Z   lfs: false
+2026-10-28T04:00:29.4714056Z   submodules: false
+2026-10-28T04:00:29.4714918Z   set-safe-directory: true
+2026-10-28T04:00:29.4715923Z   allow-unsafe-pr-checkout: false
+2026-10-28T04:00:29.4717192Z env:
+2026-10-28T04:00:29.4717982Z   PYTHONUNBUFFERED: 1
+2026-10-28T04:00:29.4720253Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-28T04:00:29.4721409Z   DISCORD_WEBHOOK_CODES: 
+2026-10-28T04:00:29.4723739Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-28T04:00:29.4726223Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-28T04:00:29.4728538Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-28T04:00:29.4731234Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-28T04:00:29.4733668Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-28T04:00:29.4736016Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-28T04:00:29.4737028Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:29.4738288Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:29.4792431Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-28T04:00:29.4807049Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-28T04:00:29.4891495Z   TEST: webhooks
+2026-10-28T04:00:29.4892625Z   NO_PING: 0
+2026-10-28T04:00:29.4893686Z   PING_FLAG: 
+2026-10-28T04:00:29.4894550Z   GAME_ARG: 
+2026-10-28T04:00:29.4895341Z ##[endgroup]
+2026-10-28T04:00:29.7814202Z Syncing repository: uesu/8mqzv4k2n7c
+2026-10-28T04:00:29.7818076Z ##[group]Getting Git version info
+2026-10-28T04:00:29.7820738Z Working directory is '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-10-28T04:00:29.7824094Z [command]/usr/bin/git version
+2026-10-28T04:00:29.7905582Z git version 2.56.0
+2026-10-28T04:00:29.7934129Z ##[endgroup]
+2026-10-28T04:00:29.7970147Z Temporarily overriding HOME='/home/runner/work/_temp/2df57fb9-ce80-4b4f-be2d-52d3e9a1afb7' before making global git config changes
+2026-10-28T04:00:29.7975397Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T04:00:29.7979451Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-28T04:00:29.8041007Z Deleting the contents of '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-10-28T04:00:29.8049901Z ##[group]Determining repository object format
+2026-10-28T04:00:30.0072249Z ##[endgroup]
+2026-10-28T04:00:30.0075632Z ##[group]Initializing the repository
+2026-10-28T04:00:30.0083505Z [command]/usr/bin/git init /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-28T04:00:30.0241193Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-28T04:00:30.0244992Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-28T04:00:30.0248738Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-28T04:00:30.0252123Z hint: call:
+2026-10-28T04:00:30.0253796Z hint:
+2026-10-28T04:00:30.0256091Z hint: 	git config --global init.defaultBranch <name>
+2026-10-28T04:00:30.0258925Z hint:
+2026-10-28T04:00:30.0261736Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-28T04:00:30.0265405Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-28T04:00:30.0268594Z hint:
+2026-10-28T04:00:30.0270073Z hint: 	git branch -m <name>
+2026-10-28T04:00:30.0272022Z hint:
+2026-10-28T04:00:30.0273531Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-28T04:00:30.0275945Z Initialized empty Git repository in /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/
+2026-10-28T04:00:30.0279612Z [command]/usr/bin/git remote add origin https://github.com/uesu/8mqzv4k2n7c
+2026-10-28T04:00:30.0345795Z ##[endgroup]
+2026-10-28T04:00:30.0347956Z ##[group]Disabling automatic garbage collection
+2026-10-28T04:00:30.0350322Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-28T04:00:30.0407307Z ##[endgroup]
+2026-10-28T04:00:30.0408888Z ##[group]Setting up auth
+2026-10-28T04:00:30.0410748Z Removing SSH command configuration
+2026-10-28T04:00:30.0414659Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T04:00:30.0488427Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T04:00:30.0916389Z Removing HTTP extra header
+2026-10-28T04:00:30.0922221Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T04:00:30.0975114Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T04:00:30.1234869Z Removing includeIf entries pointing to credentials config files
+2026-10-28T04:00:30.1241825Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T04:00:30.1299436Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T04:00:30.1593594Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-28T04:00:30.1655289Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path /home/runner/work/_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:30.1705924Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:30.1756271Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:30.1808544Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:30.1856668Z ##[endgroup]
+2026-10-28T04:00:30.1857784Z ##[group]Fetching the repository
+2026-10-28T04:00:30.1864602Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/main*:refs/remotes/origin/main* +refs/tags/main*:refs/tags/main*
+2026-10-28T04:00:30.6018551Z From https://github.com/uesu/8mqzv4k2n7c
+2026-10-28T04:00:30.6020839Z  * [new branch]      main       -> origin/main
+2026-10-28T04:00:30.6026278Z ##[endgroup]
+2026-10-28T04:00:30.6028396Z ##[group]Determining the checkout info
+2026-10-28T04:00:30.6035554Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-28T04:00:30.6080680Z   origin/main
+2026-10-28T04:00:30.6087941Z ##[endgroup]
+2026-10-28T04:00:30.6092039Z [command]/usr/bin/git sparse-checkout disable
+2026-10-28T04:00:30.6165382Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-28T04:00:30.6218057Z ##[group]Checking out the ref
+2026-10-28T04:00:30.6222103Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-28T04:00:30.6545595Z Switched to a new branch 'main'
+2026-10-28T04:00:30.6551258Z branch 'main' set up to track 'origin/main'.
+2026-10-28T04:00:30.6558989Z ##[endgroup]
+2026-10-28T04:00:30.6623514Z [command]/usr/bin/git log -1 --format=%H
+2026-10-28T04:00:30.6666765Z d96dcd5b9b5ffe1266d9f05bb9cefe996c45aa8b
+2026-10-28T04:00:30.6986497Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-10-28T04:00:30.6987590Z with:
+2026-10-28T04:00:30.6988379Z   python-version: 3.14.9
+2026-10-28T04:00:30.6989211Z   check-latest: false
+2026-10-28T04:00:30.6993060Z   token: ***
+2026-10-28T04:00:30.6994047Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-10-28T04:00:30.6995099Z   update-environment: true
+2026-10-28T04:00:30.6995950Z   allow-prereleases: false
+2026-10-28T04:00:30.6996999Z   freethreaded: false
+2026-10-28T04:00:30.6997809Z env:
+2026-10-28T04:00:30.6998589Z   PYTHONUNBUFFERED: 1
+2026-10-28T04:00:30.6999980Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-28T04:00:30.7000992Z   DISCORD_WEBHOOK_CODES: 
+2026-10-28T04:00:30.7002441Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-28T04:00:30.7003922Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-28T04:00:30.7005370Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-28T04:00:30.7006832Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-28T04:00:30.7008325Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-28T04:00:30.7009736Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-28T04:00:30.7010797Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:30.7011792Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:30.7037694Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-28T04:00:30.7044256Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-28T04:00:30.7046271Z   TEST: webhooks
+2026-10-28T04:00:30.7047040Z   NO_PING: 0
+2026-10-28T04:00:30.7047792Z   PING_FLAG: 
+2026-10-28T04:00:30.7048537Z   GAME_ARG: 
+2026-10-28T04:00:30.7049300Z ##[endgroup]
+2026-10-28T04:00:30.8265370Z ##[group]Installed versions
+2026-10-28T04:00:30.8304609Z Successfully set up CPython (3.14.9)
+2026-10-28T04:00:30.8306472Z ##[endgroup]
+2026-10-28T04:00:30.8600816Z ##[group]Run astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
+2026-10-28T04:00:30.8602640Z with:
+2026-10-28T04:00:30.8603668Z   version: latest-known
+2026-10-28T04:00:30.8604789Z   activate-environment: false
+2026-10-28T04:00:30.8605932Z   no-project: false
+2026-10-28T04:00:30.8607166Z   working-directory: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-28T04:00:30.8612732Z   github-token: ***
+2026-10-28T04:00:30.8613566Z   enable-cache: auto
+2026-10-28T04:00:30.8614787Z   cache-dependency-glob: **/*requirements*.txt
+**/*requirements*.in
+**/*constraints*.txt
+**/*constraints*.in
+**/pyproject.toml
+**/uv.lock
+**/*.py.lock
+
+2026-10-28T04:00:30.8616606Z   restore-cache: true
+2026-10-28T04:00:30.8617645Z   save-cache: auto
+2026-10-28T04:00:30.8618648Z   prune-cache: false
+2026-10-28T04:00:30.8619671Z   cache-python: false
+2026-10-28T04:00:30.8621055Z   ignore-nothing-to-cache: false
+2026-10-28T04:00:30.8622219Z   ignore-empty-workdir: false
+2026-10-28T04:00:30.8623428Z   download-from-astral-mirror: true
+2026-10-28T04:00:30.8624594Z   add-problem-matchers: true
+2026-10-28T04:00:30.8625667Z   quiet: false
+2026-10-28T04:00:30.8626691Z   resolution-strategy: highest
+2026-10-28T04:00:30.8627766Z env:
+2026-10-28T04:00:30.8628732Z   PYTHONUNBUFFERED: 1
+2026-10-28T04:00:30.8630859Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-28T04:00:30.8631979Z   DISCORD_WEBHOOK_CODES: 
+2026-10-28T04:00:30.8633928Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-28T04:00:30.8636330Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-28T04:00:30.8638315Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-28T04:00:30.8640317Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-28T04:00:30.8642624Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-28T04:00:30.8644637Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-28T04:00:30.8645974Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:30.8647316Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:30.8676244Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-28T04:00:30.8688273Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-28T04:00:30.8691745Z   TEST: webhooks
+2026-10-28T04:00:30.8692768Z   NO_PING: 0
+2026-10-28T04:00:30.8693802Z   PING_FLAG: 
+2026-10-28T04:00:30.8694823Z   GAME_ARG: 
+2026-10-28T04:00:30.8696000Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:30.8697874Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:00:30.8699871Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:30.8701582Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:30.8703015Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:30.8705037Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:00:30.8706447Z ##[endgroup]
+2026-10-28T04:00:31.0977851Z Fetching manifest data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+2026-10-28T04:00:31.1683131Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+2026-10-28T04:00:31.4016760Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/17c35c8d-590d-4884-ae46-0378d2420702 -f /home/runner/work/_temp/504d2a53-bf42-4f02-bdce-7c74452fc61d
+2026-10-28T04:00:31.7134969Z Added /home/runner/.local/bin to the path
+2026-10-28T04:00:31.7139647Z Added /opt/hostedtoolcache/uv/0.13.5/x86_64 to the path
+2026-10-28T04:00:31.7142009Z Set UV_PYTHON_INSTALL_DIR to /home/runner/work/_temp/uv-python-dir
+2026-10-28T04:00:31.7143054Z Added /home/runner/work/_temp/uv-python-dir to the path
+2026-10-28T04:00:31.7154284Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+2026-10-28T04:00:31.7155772Z Successfully installed uv version 0.13.5
+2026-10-28T04:00:32.8334266Z Searching files using cache dependency glob: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/pyproject.toml,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/uv.lock,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*.py.lock
+2026-10-28T04:00:32.8706215Z /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/requirements.txt
+2026-10-28T04:00:32.8834106Z Found 1 files to hash.
+2026-10-28T04:00:32.8924704Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-28T04:00:32.9493867Z Cache hit for: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-28T04:00:33.1511705Z Received 6598642 of 6598642 (100.0%), 42.0 MBs/sec
+2026-10-28T04:00:33.1512739Z Cache Size: ~6 MB (6598642 B)
+2026-10-28T04:00:33.1578817Z [command]/usr/bin/tar -xf /home/runner/work/_temp/61c34939-77e2-4d2d-a123-ab8ac48f9bc4/cache.tzst -P -C /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c --use-compress-program unzstd
+2026-10-28T04:00:33.2246764Z Cache restored successfully
+2026-10-28T04:00:33.2256614Z cache restored from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-28T04:00:33.3431038Z ##[group]Run uv pip install -r requirements.txt -q
+2026-10-28T04:00:33.3431585Z [36;1muv pip install -r requirements.txt -q[0m
+2026-10-28T04:00:33.3457112Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:00:33.3457420Z env:
+2026-10-28T04:00:33.3457676Z   PYTHONUNBUFFERED: 1
+2026-10-28T04:00:33.3458584Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-28T04:00:33.3458891Z   DISCORD_WEBHOOK_CODES: 
+2026-10-28T04:00:33.3459586Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-28T04:00:33.3460382Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-28T04:00:33.3461543Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-28T04:00:33.3462230Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-28T04:00:33.3462958Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-28T04:00:33.3463642Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-28T04:00:33.3463953Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:33.3464373Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:33.3481128Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-28T04:00:33.3485601Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-28T04:00:33.3486859Z   TEST: webhooks
+2026-10-28T04:00:33.3487119Z   NO_PING: 0
+2026-10-28T04:00:33.3487368Z   PING_FLAG: 
+2026-10-28T04:00:33.3487641Z   GAME_ARG: 
+2026-10-28T04:00:33.3487955Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.3488420Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:00:33.3488882Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.3489299Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.3489943Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.3490367Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:00:33.3491026Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-28T04:00:33.3491432Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-28T04:00:33.3491764Z   UV_SYSTEM_PYTHON: 1
+2026-10-28T04:00:33.3492012Z ##[endgroup]
+2026-10-28T04:00:33.5697675Z ##[group]Run python -m gamexpress validate || true
+2026-10-28T04:00:33.5698156Z [36;1mpython -m gamexpress validate || true[0m
+2026-10-28T04:00:33.5720263Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:00:33.5720781Z env:
+2026-10-28T04:00:33.5721021Z   PYTHONUNBUFFERED: 1
+2026-10-28T04:00:33.5721760Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-28T04:00:33.5722065Z   DISCORD_WEBHOOK_CODES: 
+2026-10-28T04:00:33.5722753Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-28T04:00:33.5723496Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-28T04:00:33.5724197Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-28T04:00:33.5724900Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-28T04:00:33.5725612Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-28T04:00:33.5726299Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-28T04:00:33.5726596Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:33.5726977Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:33.5743413Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-28T04:00:33.5747886Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-28T04:00:33.5749149Z   TEST: webhooks
+2026-10-28T04:00:33.5749390Z   NO_PING: 0
+2026-10-28T04:00:33.5749621Z   PING_FLAG: 
+2026-10-28T04:00:33.5749844Z   GAME_ARG: 
+2026-10-28T04:00:33.5750154Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.5750980Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:00:33.5751457Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.5751873Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.5752287Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:33.5752705Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:00:33.5753141Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-28T04:00:33.5753546Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-28T04:00:33.5753881Z ##[endgroup]
+2026-10-28T04:00:35.4998326Z Game-Express d96dcd5 | features=['beta', 'codes', 'maintenance', 'news', 'schedule'] | instance=alpha (primary) | dry_run=False
+2026-10-28T04:00:35.4999851Z peer_state_url=— | X=on | nitter instances=27 | token=set
+2026-10-28T04:00:35.5001255Z Reddit=on | reddit instances=27 | proxies=3 | feed_token=set
+2026-10-28T04:00:35.5002591Z news=on | news games=genshin,hna,starrail,wuwa,zzz | article count cap=none | timestamps=off | expand full=off | group long strips=on | dedicated destinations only
+2026-10-28T04:00:35.5004058Z maintenance=on | maintenance games=genshin,starrail,wuwa,zzz | dedicated destinations only
+2026-10-28T04:00:35.6316951Z beta=on | beta games=genshin,starrail,wuwa,zzz | ping=off (no PING_BETA set) | budget=chars≤4 changed≤8 equip≤12 requests≤48 repoll≥30m
+2026-10-28T04:00:35.6318459Z emoji: title=✓, youtube=✓, twitch=✓, source=✓, redeem=✓
+2026-10-28T04:00:35.6319233Z   ✓ genshin   Genshin Impact        
+2026-10-28T04:00:35.6320741Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI]
+2026-10-28T04:00:35.6322001Z       codes[✓ DISCORD_WEBHOOK_CODES_GENSHIN | no ping]
+2026-10-28T04:00:35.6322821Z       news[✓ DISCORD_WEBHOOK_NEWS_GENSHIN | no ping]
+2026-10-28T04:00:35.6323854Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_GENSHIN | <@&1296268365593186426>]
+2026-10-28T04:00:35.6324838Z       beta[✓ DISCORD_WEBHOOK_NEWS_GENSHIN | no ping]
+2026-10-28T04:00:35.6326958Z       X=GenshinImpact Reddit=Genshin_Impact code_sources=hoyolab:2,seria:genshin,humbao:GENSHIN,ogc:genshin,ennead:genshin,fandom:genshin-impact/Promotional_Code,codehub:genshin-impact,reddit:Genshin_Impact,x 4★/phase=3
+2026-10-28T04:00:35.6328873Z       beta=gi changelog=https://gi.gachabase.net/changelog/beta?lang=en
+2026-10-28T04:00:35.6329758Z   ✓ starrail  Honkai: Star Rail     
+2026-10-28T04:00:35.6331107Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR]
+2026-10-28T04:00:35.6332299Z       codes[✓ DISCORD_WEBHOOK_CODES_STARRAIL | no ping]
+2026-10-28T04:00:35.6333078Z       news[✓ DISCORD_WEBHOOK_NEWS_STARRAIL | no ping]
+2026-10-28T04:00:35.6334104Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_STARRAIL | <@&1296268365593186426>]
+2026-10-28T04:00:35.6335099Z       beta[✓ DISCORD_WEBHOOK_NEWS_STARRAIL | no ping]
+2026-10-28T04:00:35.6337158Z       X=honkaistarrail Reddit=HonkaiStarRail code_sources=hoyolab:6,seria:hkrpg,humbao:HSR,ogc:starrail,ennead:starrail,fandom:honkai-star-rail/Redemption_Code,codehub:honkai-star-rail,reddit:HonkaiStarRail,x 4★/phase=3
+2026-10-28T04:00:35.6339100Z       beta=hsr changelog=https://hsr.gachabase.net/changelog/beta?lang=en
+2026-10-28T04:00:35.6339951Z   ✓ zzz       Zenless Zone Zero     
+2026-10-28T04:00:35.6341383Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ]
+2026-10-28T04:00:35.6342570Z       codes[✓ DISCORD_WEBHOOK_CODES_ZZZ | no ping]
+2026-10-28T04:00:35.6343323Z       news[✓ DISCORD_WEBHOOK_NEWS_ZZZ | no ping]
+2026-10-28T04:00:35.6344262Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_ZZZ | <@&1296268365593186426>]
+2026-10-28T04:00:35.6345166Z       beta[✓ DISCORD_WEBHOOK_NEWS_ZZZ | no ping]
+2026-10-28T04:00:35.6347070Z       X=ZZZ_EN Reddit=ZZZ_Official code_sources=hoyolab:8,seria:nap,humbao:ZZZ,ogc:zenless,ennead:zenless,fandom:zenless-zone-zero/Redemption_Code,codehub:zenless-zone-zero,reddit:ZZZ_Official,x 4★/phase=2
+2026-10-28T04:00:35.6348915Z       beta=zzz changelog=https://zzz.gachabase.net/changelog/beta?lang=en
+2026-10-28T04:00:35.6349792Z   ✓ wuwa      Wuthering Waves       
+2026-10-28T04:00:35.6351207Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA]
+2026-10-28T04:00:35.6352393Z       codes[✓ DISCORD_WEBHOOK_CODES_WUWA | no ping]
+2026-10-28T04:00:35.6353132Z       news[✓ DISCORD_WEBHOOK_NEWS_WUWA | no ping]
+2026-10-28T04:00:35.6354041Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_WUWA | <@&1296268365593186426>]
+2026-10-28T04:00:35.6354916Z       beta[✓ DISCORD_WEBHOOK_NEWS_WUWA | no ping]
+2026-10-28T04:00:35.6356625Z       X=Wuthering_Waves Reddit=WutheringWaves code_sources=ogc:wuwa,wuthering.gg,fandom:wutheringwaves/Redemption_Code,codehub:wuthering-waves,reddit:WutheringWaves,x 4★/phase=3
+2026-10-28T04:00:35.6358463Z       beta=ww changelog=—
+2026-10-28T04:00:35.6359025Z   ✓ hna       Honkai: Nexus Anima   
+2026-10-28T04:00:35.6360128Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA]
+2026-10-28T04:00:35.6361595Z       codes[✓ DISCORD_WEBHOOK_CODES_HNA | no ping]
+2026-10-28T04:00:35.6362332Z       news[✓ DISCORD_WEBHOOK_NEWS_HNA | no ping]
+2026-10-28T04:00:35.6363307Z       maintenance[— none | <@&1296268365593186426>]
+2026-10-28T04:00:35.6364082Z       beta[✓ DISCORD_WEBHOOK_NEWS_HNA | no ping]
+2026-10-28T04:00:35.6365855Z       X=HonkaiNA Reddit=HonkaiNexusAnima code_sources=hoyolab:9,fandom:honkai-nexus-anima/Redemption_Code,reddit:HonkaiNexusAnima,x 4★/phase=count not set (set four_star_count at launch)
+2026-10-28T04:00:35.6367499Z   ✓ ananta    ANANTA                
+2026-10-28T04:00:35.6368664Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA]
+2026-10-28T04:00:35.6369887Z       codes[✓ DISCORD_WEBHOOK_CODES_ANANTA | no ping]
+2026-10-28T04:00:35.6370863Z       news[— none | no ping]
+2026-10-28T04:00:35.6371556Z       maintenance[— none | <@&1296268365593186426>]
+2026-10-28T04:00:35.6372234Z       beta[— none | no ping]
+2026-10-28T04:00:35.6373743Z       X=Ananta_EN Reddit=AnantaOfficial code_sources=fandom:ananta/Redemption_Code,reddit:AnantaOfficial,x 4★/phase=count not set (set four_star_count at launch)
+2026-10-28T04:00:35.6453471Z config OK
+2026-10-28T04:00:35.6951105Z ##[group]Run python -m gamexpress run
+2026-10-28T04:00:35.6951529Z [36;1mpython -m gamexpress run[0m
+2026-10-28T04:00:35.6972175Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:00:35.6972459Z env:
+2026-10-28T04:00:35.6972697Z   PYTHONUNBUFFERED: 1
+2026-10-28T04:00:35.6973417Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-28T04:00:35.6973714Z   DISCORD_WEBHOOK_CODES: 
+2026-10-28T04:00:35.6974434Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-28T04:00:35.6975179Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-28T04:00:35.6975874Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-28T04:00:35.6976545Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-28T04:00:35.6977237Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-28T04:00:35.6978087Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-28T04:00:35.6978399Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:35.6978780Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:35.6995113Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-28T04:00:35.6999379Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-28T04:00:35.7000699Z   TEST: webhooks
+2026-10-28T04:00:35.7000932Z   NO_PING: 0
+2026-10-28T04:00:35.7001148Z   PING_FLAG: 
+2026-10-28T04:00:35.7001363Z   GAME_ARG: 
+2026-10-28T04:00:35.7001861Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:35.7002321Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:00:35.7002778Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:35.7003193Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:35.7003596Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:35.7004011Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:00:35.7004441Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-28T04:00:35.7004847Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-28T04:00:35.7005170Z   ONLY: 
+2026-10-28T04:00:35.7005376Z   GAME: 
+2026-10-28T04:00:35.7005577Z   REPOST: 
+2026-10-28T04:00:35.7005792Z ##[endgroup]
+2026-10-28T04:00:38.1866976Z 04:00:38 INFO    gamexpress: [zzz] 0 official item(s) matched in the last 72h (live 3.3, pre-install —)
+2026-10-28T04:00:38.4396248Z 04:00:38 INFO    gamexpress: [hna] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-10-28T04:00:38.5125372Z 04:00:38 INFO    gamexpress: [ananta] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-10-28T04:00:38.7243562Z 04:00:38 INFO    gamexpress: [genshin] 2 official item(s) matched in the last 72h (live 7.1, pre-install —)
+2026-10-28T04:00:38.8677538Z 04:00:38 INFO    gamexpress: [wuwa] 1 official item(s) matched in the last 72h (live 3.7, pre-install —)
+2026-10-28T04:00:39.2086954Z 04:00:39 INFO    gamexpress: [starrail] 4 official item(s) matched in the last 72h (live 4.6, pre-install —)
+2026-10-28T04:00:45.6727820Z 04:00:45 INFO    gamexpress: sources: bannerfeed: 1 ok / 0 fail; beta-manifest: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; hoyolab: 16 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 1 ok / 0 fail; nitter: 18 ok / 0 fail; reddit: 6 ok / 0 fail
+2026-10-28T04:00:45.6771852Z 04:00:45 INFO    gamexpress: 
+2026-10-28T04:00:45.6772708Z ### Game-Express d96dcd5 — alpha (primary)
+2026-10-28T04:00:45.6773620Z - 📰 GI news: discovered=8, eligible=8, attempted=0, delivered=0, deferred/error=0
+2026-10-28T04:00:45.6774685Z - 📰 HSR news: delivered 47228524 (1 message(s), 1 container(s))
+2026-10-28T04:00:45.6775651Z - 📰 HSR news: discovered=3, eligible=3, attempted=1, delivered=1, deferred/error=0
+2026-10-28T04:00:45.6776721Z - 📰 ZZZ news: discovered=1, eligible=1, attempted=0, delivered=0, deferred/error=0
+2026-10-28T04:00:45.6777761Z - 📰 WW news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+2026-10-28T04:00:45.6778803Z - 📰 HNA news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+2026-10-28T04:00:45.6779829Z - repository commit/push: not observed here; see the subsequent workflow persistence step.
+2026-10-28T04:00:45.6783335Z - sources: bannerfeed: 1 ok / 0 fail; beta-manifest: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; hoyolab: 16 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 1 ok / 0 fail; nitter: 18 ok / 0 fail; reddit: 6 ok / 0 fail
+2026-10-28T04:00:45.6786548Z - ⏱️ run took 9.5s
+2026-10-28T04:00:45.7385492Z ##[group]Run git config user.name "github-actions[bot]"
+2026-10-28T04:00:45.7385979Z [36;1mgit config user.name "github-actions[bot]"[0m
+2026-10-28T04:00:45.7386472Z [36;1mgit config user.email "41898282+github-actions[bot]@users.noreply.github.com"[0m
+2026-10-28T04:00:45.7387156Z [36;1mgit add state/state.json 2>/dev/null || true[0m
+2026-10-28T04:00:45.7387689Z [36;1m# config/program_announcements.json travels WITH the commit, not with the state: a nitter[0m
+2026-10-28T04:00:45.7388359Z [36;1m# timeline only reaches back a few days, but the card is re-rendered for the whole version[0m
+2026-10-28T04:00:45.7389009Z [36;1m# and every mode=test run starts from an empty state. Committing the discovered tweet id is[0m
+2026-10-28T04:00:45.7389665Z [36;1m# what lets a later test run resolve the same announcement by id through fxtwitter and show[0m
+2026-10-28T04:00:45.7390343Z [36;1m# the real link and the real key art. Same pattern as posted_tweets.json in the X monitor.[0m
+2026-10-28T04:00:45.7391244Z [36;1mgit add -f config/program_announcements.json 2>/dev/null || true[0m
+2026-10-28T04:00:45.7391832Z [36;1mif git diff --cached --quiet; then echo "state unchanged — nothing to commit"; exit 0; fi[0m
+2026-10-28T04:00:45.7392368Z [36;1mgit commit -m "auto: update state [skip ci]"[0m
+2026-10-28T04:00:45.7392728Z [36;1mfor i in 1 2 3 4 5; do[0m
+2026-10-28T04:00:45.7393296Z [36;1m  if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then[0m
+2026-10-28T04:00:45.7393840Z [36;1m    exit 0[0m
+2026-10-28T04:00:45.7394078Z [36;1m  fi[0m
+2026-10-28T04:00:45.7394314Z [36;1m  sleep $((i * 3))[0m
+2026-10-28T04:00:45.7394579Z [36;1mdone[0m
+2026-10-28T04:00:45.7394923Z [36;1mecho "::error::could not push state/state.json after 5 attempts"[0m
+2026-10-28T04:00:45.7395322Z [36;1mexit 1[0m
+2026-10-28T04:00:45.7415633Z shell: /usr/bin/bash -e {0}
+2026-10-28T04:00:45.7415923Z env:
+2026-10-28T04:00:45.7416158Z   PYTHONUNBUFFERED: 1
+2026-10-28T04:00:45.7416866Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-28T04:00:45.7417156Z   DISCORD_WEBHOOK_CODES: 
+2026-10-28T04:00:45.7417830Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-28T04:00:45.7418585Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-28T04:00:45.7419264Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-28T04:00:45.7419932Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-28T04:00:45.7420894Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-28T04:00:45.7421594Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-28T04:00:45.7421886Z   DISCORD_WEBHOOK_URL: 
+2026-10-28T04:00:45.7422260Z   NITTER_RSS_TOKEN: ***
+2026-10-28T04:00:45.7438403Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-28T04:00:45.7443176Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-28T04:00:45.7444418Z   TEST: webhooks
+2026-10-28T04:00:45.7444653Z   NO_PING: 0
+2026-10-28T04:00:45.7444877Z   PING_FLAG: 
+2026-10-28T04:00:45.7445096Z   GAME_ARG: 
+2026-10-28T04:00:45.7445390Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:45.7445981Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-28T04:00:45.7446430Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:45.7446835Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:45.7447239Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-28T04:00:45.7447641Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-28T04:00:45.7448063Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-28T04:00:45.7448466Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-28T04:00:45.7448804Z ##[endgroup]
+2026-10-28T04:00:45.7821349Z [main 651f3d6] auto: update state [skip ci]
+2026-10-28T04:00:45.7822010Z  1 file changed, 14 insertions(+), 2 deletions(-)
+2026-10-28T04:00:45.9408629Z From https://github.com/uesu/8mqzv4k2n7c
+2026-10-28T04:00:45.9409276Z  * branch            main       -> FETCH_HEAD
+2026-10-28T04:00:45.9545275Z Current branch main is up to date.
+2026-10-28T04:00:46.9317984Z To https://github.com/uesu/8mqzv4k2n7c
+2026-10-28T04:00:46.9318499Z    d96dcd5..651f3d6  HEAD -> main
+2026-10-28T04:00:46.9543680Z Post job cleanup.
+2026-10-28T04:00:47.0741570Z UV_CACHE_DIR is already set to /home/runner/work/_temp/setup-uv-cache
+2026-10-28T04:00:47.0747824Z UV_PYTHON_INSTALL_DIR is already set to /home/runner/work/_temp/uv-python-dir
+2026-10-28T04:00:47.0751556Z Cache hit occurred on key setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d, not saving cache.
+2026-10-28T04:00:47.1903036Z Post job cleanup.
+2026-10-28T04:00:47.3249905Z Post job cleanup.
+2026-10-28T04:00:47.4172177Z [command]/usr/bin/git version
+2026-10-28T04:00:47.4218257Z git version 2.56.0
+2026-10-28T04:00:47.4258173Z Temporarily overriding HOME='/home/runner/work/_temp/9f8cf8e9-9ca9-444a-bafb-6b3c760b4067' before making global git config changes
+2026-10-28T04:00:47.4259597Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-28T04:00:47.4265661Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-28T04:00:47.4304795Z Removing SSH command configuration
+2026-10-28T04:00:47.4310738Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-28T04:00:47.4368632Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-28T04:00:47.4641446Z Removing HTTP extra header
+2026-10-28T04:00:47.4649192Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-28T04:00:47.4691936Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-28T04:00:47.4964891Z Removing includeIf entries pointing to credentials config files
+2026-10-28T04:00:47.4973686Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-28T04:00:47.5044445Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-10-28T04:00:47.5045728Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-10-28T04:00:47.5046865Z includeif.gitdir:/github/workspace/.git.path
+2026-10-28T04:00:47.5047682Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T04:00:47.5055148Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-10-28T04:00:47.5093904Z /home/runner/work/_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:47.5105052Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-2410243a\-5110\-43da\-a0a6\-8fd8b3b668c0\.config
+2026-10-28T04:00:47.5166339Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-10-28T04:00:47.5203174Z /home/runner/work/_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:47.5213690Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-2410243a\-5110\-43da\-a0a6\-8fd8b3b668c0\.config
+2026-10-28T04:00:47.5263876Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-28T04:00:47.5299309Z /github/runner_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:47.5308227Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-2410243a\-5110\-43da\-a0a6\-8fd8b3b668c0\.config
+2026-10-28T04:00:47.5353955Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-28T04:00:47.5388504Z /github/runner_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config
+2026-10-28T04:00:47.5397344Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-2410243a\-5110\-43da\-a0a6\-8fd8b3b668c0\.config
+2026-10-28T04:00:47.5444044Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-28T04:00:47.5716500Z Removing credentials config '/home/runner/work/_temp/git-credentials-2410243a-5110-43da-a0a6-8fd8b3b668c0.config'
+2026-10-28T04:00:47.5919266Z Cleaning up orphan processes
+
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Extraterrestrial Satellite Communication | Astra Yao](https://www.hoyolab.com/article/47228524)\n-# HoYoLAB · Honkai: Star Rail · <t:1793160008:f>"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/14ab33dbc78de84b8970f5d103a6dcc7_6351797617886405560.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/2olwXvTMGfZkMiCEfRe8b9ulD16krYgKw9ptf9dn8IM/https/upload-os-bbs.hoyolab.com/upload/community/2026/10/26/14ab33dbc78de84b8970f5d103a6dcc7_6351797617886405560.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "\"I'm Astra Yao, a singer from New Eridu. If you like my music, we'll definitely hit it off. And if you're not a fan yet... just give me one track to win you over!\"\n\nThe stars take their seats for her, the lights dim for her, and New Eridu's most dazzling voice pierces the sky.\nOffstage, she spends her vacation drifting like a cloud beneath the arcadia's clear sky.\n\"Whoever you are, wherever you're from... this song is dedicated to the one and only you!\""
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.hoyolab.com/article/47228524"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1548224352686968922",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Character Introduction and Skill Showcase - \"Fort Fulguration\" Valeriy](https://www.hoyolab.com/article/47228525)\n-# HoYoLAB · Genshin Impact Official · <t:1793160010:f>"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/bf1b03a34d2a7e0b987421623d0f2e3f_765590824782765732.jpeg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/rn9RviKCRHxjg8nqsJRjiemEm_qL7PH1Qfq4eJJcpSM/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/bf1b03a34d2a7e0b987421623d0f2e3f_765590824782765732.jpeg",
+                "width": 1200,
+                "height": 675,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Hello, Traveler! You're probably already familiar with Major Valeriy of the Special Assignments Battalion. We've got his daily schedule right here, let's find out what a day in his life looks like~**\n**After the version update on November 4, Valeriy will also receive a huge drop-rate boost!**"
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/5bb14a707d907e41801f69dd935e5ff5_1294891943120662668.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/owBeSv8lb-I2LQfWgQ6BQHGGLRWcNjaGhTh9D3OwiBA/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/5bb14a707d907e41801f69dd935e5ff5_1294891943120662668.jpg",
+                "width": 700,
+                "height": 1510,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/de76c146846be9fcfd20758a2a7b5e83_4509572516559301244.jpeg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/usR6ahcG22VQgSuEV-gbYDEQGYZZKq2hK3fLAv_kGWg/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/de76c146846be9fcfd20758a2a7b5e83_4509572516559301244.jpeg",
+                "width": 700,
+                "height": 2558,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/8e985d7468bbe671d68cb597af3658e9_4078666152349221538.jpeg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/sMCFSd1ZPIxX1D89TiO4r94SjxtohM03xp7EIarrrpE/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/8e985d7468bbe671d68cb597af3658e9_4078666152349221538.jpeg",
+                "width": 700,
+                "height": 1266,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/1fa3b1b46b9d8f769e1dd906f66c8c6a_5149480260230591990.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/qUzxj74poM1zSziCB1Wt9GhgzVbKN98E__NYN0_BL4M/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/1fa3b1b46b9d8f769e1dd906f66c8c6a_5149480260230591990.gif",
+                "width": 700,
+                "height": 1122,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/f33f2c2d3071e700f4789cd88f76cd2a_4604656048482802261.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/kB7VvzaGphYjPwvDgqA0njpIpDiZxDrZBG1ADD04o38/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/f33f2c2d3071e700f4789cd88f76cd2a_4604656048482802261.gif",
+                "width": 700,
+                "height": 821,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/9c93ca3079d4e552d08a03e39183e9f7_3252521992913799611.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/u6BciaPpqEtwG2c41CM7Gy6A06tRDdv3HtcRqOvSmF4/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/9c93ca3079d4e552d08a03e39183e9f7_3252521992913799611.gif",
+                "width": 700,
+                "height": 821,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/9d664791e9c35454180b247802762b79_2165281545650672386.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/_hDQ_xvEKlm3-8gDq61a3_iJzM-AswIwYZH0JE_ZxKo/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/9d664791e9c35454180b247802762b79_2165281545650672386.gif",
+                "width": 700,
+                "height": 991,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/0/a5f82c7593712bbe21494e750fcad4c3_4477572140907133798.jpeg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/xJiYp1es63KM45a3xMsBRfwBjwRRD5emYt4F0oA1SZY/https/upload-os-bbs.hoyolab.com/upload/2026/10/27/0/a5f82c7593712bbe21494e750fcad4c3_4477572140907133798.jpeg",
+                "width": 700,
+                "height": 2019,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.hoyolab.com/article/47228525"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
