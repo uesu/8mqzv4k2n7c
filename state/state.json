@@ -5308,7 +5308,7 @@
       "4.7": {
         "calendar": {
           "banners": [],
-          "ts": 1793139926
+          "ts": 1793151036
         },
         "data": {
           "announcement_locked": true,
@@ -5319,9 +5319,9 @@
               "Aeon ★ Aha"
             ]
           },
-          "banners_checked_ts": 1793139926,
-          "banners_search_ts": 1793139926,
-          "calendar_ts": 1793139926,
+          "banners_checked_ts": 1793151036,
+          "banners_search_ts": 1793151036,
+          "calendar_ts": 1793151036,
           "estimate_sources": [
             "version cadence"
           ],
