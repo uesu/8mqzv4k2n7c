@@ -4329,7 +4329,7 @@
         ],
         "47228525": [
           1793160321,
-          1,
+          2,
           "19a21f66f0f8e584"
         ]
       },
@@ -4516,7 +4516,7 @@
         ],
         "47228524": [
           1793160036,
-          1,
+          2,
           "3d9cbf8a285b1a37"
         ]
       },
@@ -5332,7 +5332,7 @@
       "4.7": {
         "calendar": {
           "banners": [],
-          "ts": 1793151036
+          "ts": 1793161841
         },
         "data": {
           "announcement_locked": true,
@@ -5343,9 +5343,9 @@
               "Aeon ★ Aha"
             ]
           },
-          "banners_checked_ts": 1793151036,
-          "banners_search_ts": 1793151036,
-          "calendar_ts": 1793151036,
+          "banners_checked_ts": 1793161841,
+          "banners_search_ts": 1793161841,
+          "calendar_ts": 1793161841,
           "estimate_sources": [
             "version cadence"
           ],
