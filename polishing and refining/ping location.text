@@ -1,0 +1,86 @@
+{
+  "attachments": [],
+  "webhook_id": "1547613015258439793",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Extraterrestrial Satellite Communication | Astra Yao](https://www.hoyolab.com/article/47228524)\n-# HoYoLAB · Honkai: Star Rail · <t:1793160008:f> · <@&1296268365593186426> "
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/14ab33dbc78de84b8970f5d103a6dcc7_6351797617886405560.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/2olwXvTMGfZkMiCEfRe8b9ulD16krYgKw9ptf9dn8IM/https/upload-os-bbs.hoyolab.com/upload/community/2026/10/26/14ab33dbc78de84b8970f5d103a6dcc7_6351797617886405560.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "\"I'm Astra Yao, a singer from New Eridu. If you like my music, we'll definitely hit it off. And if you're not a fan yet... just give me one track to win you over!\"\n\nThe stars take their seats for her, the lights dim for her, and New Eridu's most dazzling voice pierces the sky.\nOffstage, she spends her vacation drifting like a cloud beneath the arcadia's clear sky.\n\"Whoever you are, wherever you're from... this song is dedicated to the one and only you!\""
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.hoyolab.com/article/47228524"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
