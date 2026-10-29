@@ -4010,6 +4010,7 @@
         "status": "seeded"
       },
       "SUNBRINGER": {
+        "expired_at": 1793289638,
         "first_seen": 1792725020,
         "gate": "redeem-validated",
         "last_seen": 1793289020,
