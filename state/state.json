@@ -5044,7 +5044,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1793255121
+          "ts": 1793266229
         },
         "data": {
           "announcement_locked": true,
@@ -5066,8 +5066,8 @@
             ]
           },
           "banners_checked_ts": 1793002222,
-          "banners_search_ts": 1793255121,
-          "calendar_ts": 1793255121,
+          "banners_search_ts": 1793266229,
+          "calendar_ts": 1793266229,
           "estimate_sources": [
             "version cadence"
           ],
@@ -5472,8 +5472,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793255121,
-          "banners_search_ts": 1793255121,
+          "banners_checked_ts": 1793266229,
+          "banners_search_ts": 1793266229,
           "banners_settled": [
             "phase1",
             "phase2",
