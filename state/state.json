@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793359517,
+      "last_poll": 1793361637,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793359517,
+      "last_poll": 1793361637,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793359517,
+      "last_poll": 1793361637,
       "latest_rev": "1ce49e698ba2de12",
       "locked_images": {},
       "revisions": {
@@ -47,7 +47,7 @@
             "ww:1512": 0
           },
           "label": "v3.8.3",
-          "late_checks": 1,
+          "late_checks": 2,
           "messages": [
             "1565679336609153024",
             "1565679359766044674",
@@ -517,7 +517,7 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793359517,
+      "last_poll": 1793361637,
       "latest_rev": "db88b87c5aa4dfb3",
       "locked_images": {
         "zzz:1331": {
@@ -3030,6 +3030,20 @@
         ],
         "status": "seeded"
       },
+      "AHABLESSYOU": {
+        "first_seen": 1793361637,
+        "gate": "only ennead, ogc",
+        "last_seen": 1793361637,
+        "rewards": [
+          "Stellar Jade ×100",
+          "Refined Aether ×4"
+        ],
+        "sources": [
+          "ennead",
+          "ogc"
+        ],
+        "status": "pending"
+      },
       "AT45Q": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
@@ -3254,27 +3268,29 @@
       },
       "NEVERGONNAGIVE": {
         "first_seen": 1793360418,
-        "gate": "only ennead",
+        "gate": "only ennead, ogc",
         "last_seen": 1793360418,
         "rewards": [
           "Stellar Jade ×100",
           "Traveler's Guide ×50000"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "ogc"
         ],
         "status": "pending"
       },
       "NEVERGONNAMAKE": {
         "first_seen": 1793361021,
-        "gate": "only ennead",
+        "gate": "only ennead, ogc",
         "last_seen": 1793361021,
         "rewards": [
           "Stellar Jade ×100",
           "Traveler's Guide ×5"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "ogc"
         ],
         "status": "pending"
       },
@@ -4688,8 +4704,8 @@
     },
     "starrail": {
       "cursor": [
-        1793246407,
-        "47238347"
+        1793361607,
+        "47251829"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -4703,6 +4719,11 @@
           1793246437,
           2,
           "f8cd1e88fd6bb1f4"
+        ],
+        "47251829": [
+          1793361637,
+          0,
+          "49f06a012af74ce2"
         ]
       },
       "records": {
@@ -4785,6 +4806,13 @@
           ],
           "status": "posted",
           "ts": 1793246407
+        },
+        "47251829": {
+          "messages": [
+            "1565696992557011077"
+          ],
+          "status": "posted",
+          "ts": 1793361607
         }
       },
       "route": "d6cfe8654063c7ee"
