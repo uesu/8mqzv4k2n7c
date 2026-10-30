@@ -1,0 +1,416 @@
+2026-10-30T01:00:41.5143599Z Current runner version: '2.338.0'
+2026-10-30T01:00:41.5173216Z ##[group]Runner Image Provisioner
+2026-10-30T01:00:41.5174390Z Hosted Compute Agent
+2026-10-30T01:00:41.5175082Z Version: 20261021.618
+2026-10-30T01:00:41.5175831Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-30T01:00:41.5176660Z Build Date: 2026-10-21T00:45:21Z
+2026-10-30T01:00:41.5178391Z Worker ID: {63f87507-98af-4a10-8b48-3f781625f011}
+2026-10-30T01:00:41.5179221Z Region: westus
+2026-10-30T01:00:41.5179901Z Cloud: Azure
+2026-10-30T01:00:41.5180565Z ##[endgroup]
+2026-10-30T01:00:41.5182233Z ##[group]Operating System
+2026-10-30T01:00:41.5183092Z Ubuntu
+2026-10-30T01:00:41.5183695Z 24.04.5
+2026-10-30T01:00:41.5184375Z LTS
+2026-10-30T01:00:41.5185027Z ##[endgroup]
+2026-10-30T01:00:41.5185727Z ##[group]Runner Image
+2026-10-30T01:00:41.5186435Z Image: ubuntu-24.04
+2026-10-30T01:00:41.5187169Z Version: 20261025.353.1
+2026-10-30T01:00:41.5188999Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-30T01:00:41.5190779Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-10-30T01:00:41.5191890Z ##[endgroup]
+2026-10-30T01:00:41.5193215Z ##[group]GITHUB_TOKEN Permissions
+2026-10-30T01:00:41.5195594Z Contents: write
+2026-10-30T01:00:41.5196311Z Metadata: read
+2026-10-30T01:00:41.5196967Z ##[endgroup]
+2026-10-30T01:00:41.5199544Z Secret source: Actions
+2026-10-30T01:00:41.5200699Z Cache mode: write
+2026-10-30T01:00:41.5201520Z Prepare workflow directory
+2026-10-30T01:00:41.5566874Z Prepare all required actions
+2026-10-30T01:00:41.5619338Z Getting action download info
+2026-10-30T01:00:41.9165863Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-30T01:00:42.0278016Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-10-30T01:00:42.5241127Z Complete job name: check-twitter
+2026-10-30T01:00:42.6240774Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-30T01:00:42.6241910Z with:
+2026-10-30T01:00:42.6242788Z   repository: uesu/wvkhabh2s22
+2026-10-30T01:00:42.6247135Z   token: ***
+2026-10-30T01:00:42.6247961Z   ssh-strict: true
+2026-10-30T01:00:42.6248459Z   ssh-user: git
+2026-10-30T01:00:42.6248957Z   persist-credentials: true
+2026-10-30T01:00:42.6249485Z   clean: true
+2026-10-30T01:00:42.6249974Z   sparse-checkout-cone-mode: true
+2026-10-30T01:00:42.6250539Z   fetch-depth: 1
+2026-10-30T01:00:42.6251014Z   fetch-tags: false
+2026-10-30T01:00:42.6251513Z   show-progress: true
+2026-10-30T01:00:42.6252010Z   lfs: false
+2026-10-30T01:00:42.6252539Z   submodules: false
+2026-10-30T01:00:42.6253034Z   set-safe-directory: true
+2026-10-30T01:00:42.6253593Z   allow-unsafe-pr-checkout: false
+2026-10-30T01:00:42.6254510Z ##[endgroup]
+2026-10-30T01:00:42.8984187Z Syncing repository: uesu/wvkhabh2s22
+2026-10-30T01:00:42.8986996Z ##[group]Getting Git version info
+2026-10-30T01:00:42.8988641Z Working directory is '/home/runner/work/wvkhabh2s22/wvkhabh2s22'
+2026-10-30T01:00:42.8990464Z [command]/usr/bin/git version
+2026-10-30T01:00:42.9081458Z git version 2.56.0
+2026-10-30T01:00:42.9105549Z ##[endgroup]
+2026-10-30T01:00:42.9117196Z Temporarily overriding HOME='/home/runner/work/_temp/630ded0a-c252-428f-b70e-782c4ad1e51b' before making global git config changes
+2026-10-30T01:00:42.9119989Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-30T01:00:42.9124339Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-30T01:00:42.9192576Z Deleting the contents of '/home/runner/work/wvkhabh2s22/wvkhabh2s22'
+2026-10-30T01:00:42.9206281Z ##[group]Determining repository object format
+2026-10-30T01:00:42.9208554Z ##[endgroup]
+2026-10-30T01:00:42.9210172Z ##[group]Initializing the repository
+2026-10-30T01:00:42.9211483Z [command]/usr/bin/git init /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-30T01:00:42.9335613Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-30T01:00:42.9336937Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-30T01:00:42.9338809Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-30T01:00:42.9340059Z hint: call:
+2026-10-30T01:00:42.9340561Z hint:
+2026-10-30T01:00:42.9341186Z hint: 	git config --global init.defaultBranch <name>
+2026-10-30T01:00:42.9341910Z hint:
+2026-10-30T01:00:42.9343047Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-30T01:00:42.9344146Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-30T01:00:42.9345145Z hint:
+2026-10-30T01:00:42.9345902Z hint: 	git branch -m <name>
+2026-10-30T01:00:42.9346458Z hint:
+2026-10-30T01:00:42.9347144Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-30T01:00:42.9351884Z Initialized empty Git repository in /home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/
+2026-10-30T01:00:42.9365130Z [command]/usr/bin/git remote add origin https://github.com/uesu/wvkhabh2s22
+2026-10-30T01:00:42.9418138Z ##[endgroup]
+2026-10-30T01:00:42.9419626Z ##[group]Disabling automatic garbage collection
+2026-10-30T01:00:42.9423046Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-30T01:00:42.9462076Z ##[endgroup]
+2026-10-30T01:00:42.9464009Z ##[group]Setting up auth
+2026-10-30T01:00:42.9465134Z Removing SSH command configuration
+2026-10-30T01:00:42.9468890Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-30T01:00:42.9511697Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-30T01:00:42.9915853Z Removing HTTP extra header
+2026-10-30T01:00:42.9921767Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-30T01:00:42.9974435Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-30T01:00:43.0223657Z Removing includeIf entries pointing to credentials config files
+2026-10-30T01:00:43.0228908Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-30T01:00:43.0276972Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-30T01:00:43.0527123Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-30T01:00:43.0579452Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path /home/runner/work/_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:43.0624520Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:43.0671680Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:43.0718727Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:43.0762647Z ##[endgroup]
+2026-10-30T01:00:43.0764034Z ##[group]Fetching the repository
+2026-10-30T01:00:43.0770093Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +74c4fd42a1e59d347da7aa87e1d407caa539989c:refs/remotes/origin/main
+2026-10-30T01:00:43.5587360Z From https://github.com/uesu/wvkhabh2s22
+2026-10-30T01:00:43.5590204Z  * [new ref]         74c4fd42a1e59d347da7aa87e1d407caa539989c -> origin/main
+2026-10-30T01:00:43.5608693Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-30T01:00:43.5639540Z   origin/main
+2026-10-30T01:00:43.5650961Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-10-30T01:00:43.5694574Z 74c4fd42a1e59d347da7aa87e1d407caa539989c
+2026-10-30T01:00:43.5700154Z ##[endgroup]
+2026-10-30T01:00:43.5701699Z ##[group]Determining the checkout info
+2026-10-30T01:00:43.5703378Z ##[endgroup]
+2026-10-30T01:00:43.5707237Z [command]/usr/bin/git sparse-checkout disable
+2026-10-30T01:00:43.5783385Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-30T01:00:43.5843875Z ##[group]Checking out the ref
+2026-10-30T01:00:43.5845042Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-30T01:00:43.6007410Z Switched to a new branch 'main'
+2026-10-30T01:00:43.6013588Z branch 'main' set up to track 'origin/main'.
+2026-10-30T01:00:43.6022839Z ##[endgroup]
+2026-10-30T01:00:43.6083900Z [command]/usr/bin/git log -1 --format=%H
+2026-10-30T01:00:43.6126199Z 74c4fd42a1e59d347da7aa87e1d407caa539989c
+2026-10-30T01:00:43.6505508Z ##[group]Run git fetch origin "${CACHE_BRANCH:-main}"
+2026-10-30T01:00:43.6506513Z [36;1mgit fetch origin "${CACHE_BRANCH:-main}"[0m
+2026-10-30T01:00:43.6507285Z [36;1mgit reset --hard FETCH_HEAD[0m
+2026-10-30T01:00:43.6508488Z [36;1mecho "Now at $(git log -1 --format=%H) (live ${CACHE_BRANCH:-main} tip)."[0m
+2026-10-30T01:00:43.6533234Z shell: /usr/bin/bash -e {0}
+2026-10-30T01:00:43.6533893Z env:
+2026-10-30T01:00:43.6534391Z   CACHE_BRANCH: main
+2026-10-30T01:00:43.6534938Z ##[endgroup]
+2026-10-30T01:00:44.1204902Z From https://github.com/uesu/wvkhabh2s22
+2026-10-30T01:00:44.1206309Z  * branch            main       -> FETCH_HEAD
+2026-10-30T01:00:44.1349096Z HEAD is now at 74c4fd4 auto: update posted_tweets.json cache
+2026-10-30T01:00:44.1376818Z Now at 74c4fd42a1e59d347da7aa87e1d407caa539989c (live main tip).
+2026-10-30T01:00:44.1623911Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-10-30T01:00:44.1625780Z with:
+2026-10-30T01:00:44.1626780Z   python-version: 3.14.9
+2026-10-30T01:00:44.1628141Z   cache: pip
+2026-10-30T01:00:44.1629171Z   check-latest: false
+2026-10-30T01:00:44.1640257Z   token: ***
+2026-10-30T01:00:44.1641782Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-10-30T01:00:44.1643650Z   update-environment: true
+2026-10-30T01:00:44.1644869Z   allow-prereleases: false
+2026-10-30T01:00:44.1646060Z   freethreaded: false
+2026-10-30T01:00:44.1647147Z ##[endgroup]
+2026-10-30T01:00:44.2876779Z ##[group]Installed versions
+2026-10-30T01:00:44.2913166Z Successfully set up CPython (3.14.9)
+2026-10-30T01:00:44.2916323Z ##[endgroup]
+2026-10-30T01:00:44.3625639Z [command]/opt/hostedtoolcache/Python/3.14.9/x64/bin/pip cache dir
+2026-10-30T01:00:46.3011341Z /home/runner/.cache/pip
+2026-10-30T01:00:46.5924199Z Cache hit for: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-30T01:00:47.8709428Z Received 3605435 of 7799739 (46.2%), 3.4 MBs/sec
+2026-10-30T01:00:47.9037357Z Received 7799739 of 7799739 (100.0%), 7.2 MBs/sec
+2026-10-30T01:00:47.9038479Z Cache Size: ~7 MB (7799739 B)
+2026-10-30T01:00:47.9089199Z [command]/usr/bin/tar -xf /home/runner/work/_temp/6158705c-21d2-4dcb-aeb2-b2eb995efd0d/cache.tzst -P -C /home/runner/work/wvkhabh2s22/wvkhabh2s22 --use-compress-program unzstd
+2026-10-30T01:00:47.9353789Z Cache restored successfully
+2026-10-30T01:00:47.9364315Z Cache restored from key: setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-10-30T01:00:47.9526953Z ##[group]Run python -m pip install --upgrade pip
+2026-10-30T01:00:47.9527812Z [36;1mpython -m pip install --upgrade pip[0m
+2026-10-30T01:00:47.9528209Z [36;1mpip install -r requirements.txt[0m
+2026-10-30T01:00:47.9553235Z shell: /usr/bin/bash -e {0}
+2026-10-30T01:00:47.9553526Z env:
+2026-10-30T01:00:47.9553831Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:47.9554355Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T01:00:47.9554831Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:47.9555241Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:47.9555649Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:47.9556071Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T01:00:47.9556427Z ##[endgroup]
+2026-10-30T01:00:49.3704396Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.14.9/x64/lib/python3.14/site-packages (26.2.2)
+2026-10-30T01:00:50.1523271Z Collecting feedparser<7,>=6.0.14 (from -r requirements.txt (line 1))
+2026-10-30T01:00:50.1538949Z   Using cached feedparser-6.0.14-py3-none-any.whl.metadata (2.7 kB)
+2026-10-30T01:00:50.6857114Z Collecting aiohttp<4,>=3.14.3 (from -r requirements.txt (line 2))
+2026-10-30T01:00:50.6871770Z   Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+2026-10-30T01:00:50.7080289Z Collecting python-dotenv<2,>=1.2.3 (from -r requirements.txt (line 3))
+2026-10-30T01:00:50.7094992Z   Using cached python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+2026-10-30T01:00:50.7265032Z Collecting feedparser-sgmllib<3,>=2 (from feedparser<7,>=6.0.14->-r requirements.txt (line 1))
+2026-10-30T01:00:50.7276538Z   Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl.metadata (926 bytes)
+2026-10-30T01:00:50.7460961Z Collecting aiohappyeyeballs>=2.5.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:50.7473158Z   Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
+2026-10-30T01:00:50.7630757Z Collecting aiosignal>=1.4.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:50.7644250Z   Using cached aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+2026-10-30T01:00:50.7832384Z Collecting attrs>=17.3.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:50.7854989Z   Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-10-30T01:00:50.8521045Z Collecting frozenlist>=1.1.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:50.8535265Z   Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+2026-10-30T01:00:51.1316335Z Collecting multidict<8.0,>=4.5 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:51.1330596Z   Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.1 kB)
+2026-10-30T01:00:51.2058809Z Collecting propcache>=0.2.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:51.2072470Z   Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (25 kB)
+2026-10-30T01:00:51.4628084Z Collecting yarl<2.0,>=1.25.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:51.4641714Z   Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (111 kB)
+2026-10-30T01:00:51.4908807Z Collecting idna>=2.0 (from yarl<2.0,>=1.25.1->aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-10-30T01:00:51.4920887Z   Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-10-30T01:00:51.5011245Z Using cached feedparser-6.0.14-py3-none-any.whl (80 kB)
+2026-10-30T01:00:51.5023544Z Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+2026-10-30T01:00:51.5042894Z Using cached python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+2026-10-30T01:00:51.5054315Z Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl (11 kB)
+2026-10-30T01:00:51.5066773Z Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (506 kB)
+2026-10-30T01:00:51.5080171Z Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (117 kB)
+2026-10-30T01:00:51.5091679Z Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+2026-10-30T01:00:51.5103089Z Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+2026-10-30T01:00:51.5114308Z Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-10-30T01:00:51.5126186Z Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+2026-10-30T01:00:51.5137679Z Using cached idna-3.20-py3-none-any.whl (69 kB)
+2026-10-30T01:00:51.5149654Z Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (232 kB)
+2026-10-30T01:00:51.5950377Z Installing collected packages: python-dotenv, propcache, multidict, idna, frozenlist, feedparser-sgmllib, attrs, aiohappyeyeballs, yarl, feedparser, aiosignal, aiohttp
+2026-10-30T01:00:52.1787710Z 
+2026-10-30T01:00:52.1807648Z Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.5 aiosignal-1.4.0 attrs-26.1.0 feedparser-6.0.14 feedparser-sgmllib-2.1.0 frozenlist-1.8.0 idna-3.20 multidict-7.2.1 propcache-0.5.4 python-dotenv-1.2.4 yarl-1.25.1
+2026-10-30T01:00:52.2829180Z ##[group]Run echo "TWITTER_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+2026-10-30T01:00:52.2829727Z [36;1mecho "TWITTER_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-30T01:00:52.2830104Z [36;1mset -o pipefail[0m
+2026-10-30T01:00:52.2830360Z [36;1mset +e[0m
+2026-10-30T01:00:52.2830734Z [36;1mpython "testing area/twitter_v3.py" 2>&1 | tee twitter_monitor.log   # ← V3[0m
+2026-10-30T01:00:52.2831196Z [36;1mstatuses=("${PIPESTATUS[@]}")[0m
+2026-10-30T01:00:52.2831561Z [36;1mecho "TWITTER_END_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-30T01:00:52.2832027Z [36;1mif [ "${statuses[0]}" -ne 0 ] || [ "${statuses[1]}" -ne 0 ]; then[0m
+2026-10-30T01:00:52.2832405Z [36;1m  exit 1[0m
+2026-10-30T01:00:52.2832663Z [36;1mfi[0m
+2026-10-30T01:00:52.2853870Z shell: /usr/bin/bash -e {0}
+2026-10-30T01:00:52.2854162Z env:
+2026-10-30T01:00:52.2854455Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:52.2854966Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T01:00:52.2855419Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:52.2855811Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:52.2856215Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:52.2856610Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T01:00:52.2857216Z   ACCOUNTS: ***
+2026-10-30T01:00:52.2857659Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T01:00:52.2858324Z   WEBHOOK_TYPEII_EN: ***
+2026-10-30T01:00:52.2859011Z   WEBHOOK_POMPOM_HONKAISR: ***
+2026-10-30T01:00:52.2859688Z   WEBHOOK_WUTHERING_WAVES: ***
+2026-10-30T01:00:52.2860329Z   WEBHOOK_HONKAINA: ***
+2026-10-30T01:00:52.2860962Z   WEBHOOK_ANANTA_EN: ***
+2026-10-30T01:00:52.2861207Z   TEST_TWEET_ID: 
+2026-10-30T01:00:52.2861556Z   NITTER_RSS_TOKEN: ***
+2026-10-30T01:00:52.2861804Z   MAX_CACHE_SIZE_PER_ACCOUNT: 
+2026-10-30T01:00:52.2862068Z   MAX_CACHE_SIZE_TOTAL: 
+2026-10-30T01:00:52.2862298Z   MEDIA_HEAL: 
+2026-10-30T01:00:52.2862526Z   MEDIA_HEAL_DELAY_SECONDS: 
+2026-10-30T01:00:52.2862783Z   MEDIA_HEAL_ATTEMPTS: 
+2026-10-30T01:00:52.2863016Z   MEDIA_HEAL_SCOPE: 
+2026-10-30T01:00:52.2863240Z ##[endgroup]
+2026-10-30T01:00:53.9874653Z 2026-10-30 01:00:53,987 [INFO] [Wuthering_Waves] feed OK via https://nitter.cf — 21 entries.
+2026-10-30T01:00:54.0292289Z 2026-10-30 01:00:54,028 [INFO] [Ananta_EN] feed OK via https://nitter.cf — 17 entries.
+2026-10-30T01:00:54.0588494Z 2026-10-30 01:00:54,058 [INFO] [HonkaiNA] feed OK via https://nitter.cf — 20 entries.
+2026-10-30T01:00:54.1349618Z 2026-10-30 01:00:54,134 [INFO] [PomPom_HonkaiSR] feed OK via https://nitter.cf — 20 entries.
+2026-10-30T01:00:54.1472971Z 2026-10-30 01:00:54,146 [INFO] [TYPEII_EN] feed OK via https://nitter.cf — 20 entries.
+2026-10-30T01:00:54.1490891Z 2026-10-30 01:00:54,148 [INFO] Twitter V3 Monitor execution finished.
+2026-10-30T01:00:54.1892710Z ##[group]Run cache_result=failed
+2026-10-30T01:00:54.1893104Z [36;1mcache_result=failed[0m
+2026-10-30T01:00:54.1893443Z [36;1mecho "TWITTER_CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-10-30T01:00:54.1893815Z [36;1mset -o pipefail[0m
+2026-10-30T01:00:54.1894230Z [36;1mgit config --local user.email "github-actions[bot]@users.noreply.github.com"[0m
+2026-10-30T01:00:54.1894760Z [36;1mgit config --local user.name "github-actions[bot]"[0m
+2026-10-30T01:00:54.1895136Z [36;1mgit add -f posted_tweets.json[0m
+2026-10-30T01:00:54.1895421Z [36;1m[0m
+2026-10-30T01:00:54.1895658Z [36;1mif git diff --cached --quiet; then[0m
+2026-10-30T01:00:54.1895986Z [36;1m  echo "No cache changes to push."[0m
+2026-10-30T01:00:54.1896291Z [36;1m  cache_result=no-changes[0m
+2026-10-30T01:00:54.1896650Z [36;1m  echo "TWITTER_CACHE_RESULT=no-changes" >> "$GITHUB_ENV"[0m
+2026-10-30T01:00:54.1897023Z [36;1melse[0m
+2026-10-30T01:00:54.1897380Z [36;1m  if ! git commit -m "auto: update posted_tweets.json cache"; then[0m
+2026-10-30T01:00:54.1898497Z [36;1m    echo "::error::CACHE COMMIT FAILED — dedup cache was not persisted; rerun this monitor after resolving the repository state."[0m
+2026-10-30T01:00:54.1899119Z [36;1m    exit 1[0m
+2026-10-30T01:00:54.1899349Z [36;1m  fi[0m
+2026-10-30T01:00:54.1899561Z [36;1m[0m
+2026-10-30T01:00:54.1899798Z [36;1m  cache_branch="${CACHE_BRANCH:-main}"[0m
+2026-10-30T01:00:54.1900204Z [36;1m  # Round 61 (2026-10-04): save OUR freshly-written cache aside —[0m
+2026-10-30T01:00:54.1900680Z [36;1m  # the recovery below resets to the live tip and re-merges it[0m
+2026-10-30T01:00:54.1901179Z [36;1m  # SEMANTICALLY (union of dedup keys; git's line merge turned the[0m
+2026-10-30T01:00:54.1901668Z [36;1m  # 2026-10-03 Reddit collision into a fatal conflict instead).[0m
+2026-10-30T01:00:54.1902061Z [36;1m  ours_dir="$(mktemp -d)"[0m
+2026-10-30T01:00:54.1902553Z [36;1m  if [ -f posted_tweets.json ]; then cp posted_tweets.json "$ours_dir/posted_tweets.json"; fi[0m
+2026-10-30T01:00:54.1922699Z [36;1m  pushed=0[0m
+2026-10-30T01:00:54.1923009Z [36;1m  attempts=0[0m
+2026-10-30T01:00:54.1923287Z [36;1m  for attempt in 1 2 3; do[0m
+2026-10-30T01:00:54.1923599Z [36;1m    attempts="$attempt"[0m
+2026-10-30T01:00:54.1923948Z [36;1m    if git push origin "HEAD:${cache_branch}"; then[0m
+2026-10-30T01:00:54.1924303Z [36;1m      pushed=1[0m
+2026-10-30T01:00:54.1924548Z [36;1m      break[0m
+2026-10-30T01:00:54.1924774Z [36;1m    fi[0m
+2026-10-30T01:00:54.1924989Z [36;1m[0m
+2026-10-30T01:00:54.1925306Z [36;1m    # A remote cache commit landed between our sync and this push.[0m
+2026-10-30T01:00:54.1925791Z [36;1m    # Reset to the live tip, semantically merge our cache onto it,[0m
+2026-10-30T01:00:54.1926201Z [36;1m    # then retry with bounded backoff.[0m
+2026-10-30T01:00:54.1926534Z [36;1m    if [ "$attempt" -lt 3 ]; then[0m
+2026-10-30T01:00:54.1927139Z [36;1m      echo "::warning::Cache push attempt $attempt/3 failed; merging the live ${cache_branch} tip semantically before retry."[0m
+2026-10-30T01:00:54.1928109Z [36;1m      if ! git fetch origin "$cache_branch"; then[0m
+2026-10-30T01:00:54.1928710Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — could not fetch the live tip; dedup cache was not persisted."[0m
+2026-10-30T01:00:54.1929258Z [36;1m        break[0m
+2026-10-30T01:00:54.1929506Z [36;1m      fi[0m
+2026-10-30T01:00:54.1929755Z [36;1m      git reset --hard FETCH_HEAD[0m
+2026-10-30T01:00:54.1930279Z [36;1m      if ! python .github/scripts/merge_monitor_caches.py "$ours_dir" . posted_tweets.json; then[0m
+2026-10-30T01:00:54.1931038Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — semantic merge failed; dedup cache was not persisted."[0m
+2026-10-30T01:00:54.1931557Z [36;1m        break[0m
+2026-10-30T01:00:54.1931788Z [36;1m      fi[0m
+2026-10-30T01:00:54.1932420Z [36;1m      git add -f posted_tweets.json[0m
+2026-10-30T01:00:54.1933029Z [36;1m      if git diff --cached --quiet; then[0m
+2026-10-30T01:00:54.1933770Z [36;1m        echo "Live tip already contains our cache state — nothing left to push."[0m
+2026-10-30T01:00:54.1934250Z [36;1m        pushed=1[0m
+2026-10-30T01:00:54.1934495Z [36;1m        break[0m
+2026-10-30T01:00:54.1934732Z [36;1m      fi[0m
+2026-10-30T01:00:54.1935060Z [36;1m      if ! git commit -m "auto: update posted_tweets.json cache"; then[0m
+2026-10-30T01:00:54.1935672Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — merge commit failed; dedup cache was not persisted."[0m
+2026-10-30T01:00:54.1936177Z [36;1m        break[0m
+2026-10-30T01:00:54.1936397Z [36;1m      fi[0m
+2026-10-30T01:00:54.1936629Z [36;1m      sleep "$((attempt * 15))"[0m
+2026-10-30T01:00:54.1936915Z [36;1m    fi[0m
+2026-10-30T01:00:54.1937129Z [36;1m  done[0m
+2026-10-30T01:00:54.1937336Z [36;1m[0m
+2026-10-30T01:00:54.1937846Z [36;1m  if [ "$pushed" -ne 1 ]; then[0m
+2026-10-30T01:00:54.1938600Z [36;1m    echo "::error::CACHE PUSH FAILED after ${attempts}/3 attempt(s) — dedup cache was not persisted; the next run may re-post. Rerun this monitor after GitHub recovers."[0m
+2026-10-30T01:00:54.1939332Z [36;1m    exit 1[0m
+2026-10-30T01:00:54.1939605Z [36;1m  fi[0m
+2026-10-30T01:00:54.1939816Z [36;1mfi[0m
+2026-10-30T01:00:54.1940231Z [36;1mif [ "$cache_result" != "no-changes" ]; then echo "TWITTER_CACHE_RESULT=success" >> "$GITHUB_ENV"; fi[0m
+2026-10-30T01:00:54.1960968Z shell: /usr/bin/bash -e {0}
+2026-10-30T01:00:54.1961255Z env:
+2026-10-30T01:00:54.1961555Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.1962025Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T01:00:54.1962477Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.1962901Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.1963318Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.1963746Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T01:00:54.1964121Z   TWITTER_START_EPOCH: 1793322052
+2026-10-30T01:00:54.1964406Z   TWITTER_END_EPOCH: 1793322054
+2026-10-30T01:00:54.1964677Z   CACHE_BRANCH: main
+2026-10-30T01:00:54.1964932Z ##[endgroup]
+2026-10-30T01:00:54.2085895Z No cache changes to push.
+2026-10-30T01:00:54.2141218Z ##[group]Run [ -f twitter_monitor.log ] || : > twitter_monitor.log
+2026-10-30T01:00:54.2141766Z [36;1m[ -f twitter_monitor.log ] || : > twitter_monitor.log[0m
+2026-10-30T01:00:54.2142354Z [36;1mcount_matches() { local pattern="$1"; grep -Ec "$pattern" twitter_monitor.log 2>/dev/null || true; }[0m
+2026-10-30T01:00:54.2143440Z [36;1mtotal_feed_entries() { local total; total=$(grep 'feed OK via' twitter_monitor.log 2>/dev/null | grep -Eo '[0-9]+ entries' | grep -Eo '[0-9]+' | awk '{ total += $1 } END { print total + 0 }' || true); printf '%s\n' "${total:-0}"; }[0m
+2026-10-30T01:00:54.2144507Z [36;1mfeed_lines() { sed -E 's/^.*\[(DEBUG|INFO|WARNING|ERROR|CRITICAL)\][[:space:]]*//' twitter_monitor.log; }[0m
+2026-10-30T01:00:54.2145304Z [36;1mfeed_failures() { feed_lines | awk '/^\[[^]]+\] NO working nitter instance this run/ { n++ } END { print n + 0 }' 2>/dev/null || true; }[0m
+2026-10-30T01:00:54.2145900Z [36;1mruntime=unavailable[0m
+2026-10-30T01:00:54.2146351Z [36;1mif [ -n "${TWITTER_START_EPOCH:-}" ] && [ -n "${TWITTER_END_EPOCH:-}" ]; then[0m
+2026-10-30T01:00:54.2146846Z [36;1m  runtime="$(( TWITTER_END_EPOCH - TWITTER_START_EPOCH ))s"[0m
+2026-10-30T01:00:54.2147252Z [36;1mfi[0m
+2026-10-30T01:00:54.2147820Z [36;1mfeeds_ok=$(count_matches 'feed OK via')[0m
+2026-10-30T01:00:54.2148167Z [36;1mfeeds_failed=$(feed_failures)[0m
+2026-10-30T01:00:54.2148558Z [36;1mfeeds_empty=$(count_matches 'skipping — no feed / 0 entries')[0m
+2026-10-30T01:00:54.2148972Z [36;1mentries_read=$(total_feed_entries)[0m
+2026-10-30T01:00:54.2149267Z [36;1m{[0m
+2026-10-30T01:00:54.2149705Z [36;1m  echo "## Twitter Feed Monitor — run summary"[0m
+2026-10-30T01:00:54.2150031Z [36;1m  echo[0m
+2026-10-30T01:00:54.2150445Z [36;1m  if [ "success" = "success" ]; then echo "**Result:** success"; else echo "**Result:** failure"; fi[0m
+2026-10-30T01:00:54.2150939Z [36;1m  echo "**Runtime:** ${runtime}"[0m
+2026-10-30T01:00:54.2151224Z [36;1m  echo[0m
+2026-10-30T01:00:54.2151460Z [36;1m  echo "### Feeds"[0m
+2026-10-30T01:00:54.2151952Z [36;1m  echo "- counts describe matching local log records, not an independent delivery/source-health audit"[0m
+2026-10-30T01:00:54.2152718Z [36;1m  if [ "$feeds_ok" -eq 0 ] && [ "$feeds_failed" -eq 0 ] && [ "$feeds_empty" -eq 0 ]; then[0m
+2026-10-30T01:00:54.2153274Z [36;1m    echo "- observation coverage: unavailable (no matching feed records)"[0m
+2026-10-30T01:00:54.2153685Z [36;1m  fi[0m
+2026-10-30T01:00:54.2154613Z [36;1m  accounts_checked=$(feed_lines | awk '/^\[[^]]+\] feed OK via/ || /^\[[^]]+\] NO working nitter instance this run/ || /^\[[^]]+\] skipping — no feed \/ 0 entries/ { account=$0; sub(/^\[/, "", account); sub(/\].*$/, "", account); print account }' 2>/dev/null | sort -u | wc -l | tr -d ' ' || true)[0m
+2026-10-30T01:00:54.2155716Z [36;1m  echo "- accounts observed in feed logs: ${accounts_checked}"[0m
+2026-10-30T01:00:54.2156143Z [36;1m  echo "- entries read: ${entries_read}"[0m
+2026-10-30T01:00:54.2156506Z [36;1m  echo "- successful feeds: ${feeds_ok}"[0m
+2026-10-30T01:00:54.2156851Z [36;1m  echo "- failed feeds: ${feeds_failed}"[0m
+2026-10-30T01:00:54.2157186Z [36;1m  echo "- empty feeds: ${feeds_empty}"[0m
+2026-10-30T01:00:54.2157817Z [36;1m  echo[0m
+2026-10-30T01:00:54.2158078Z [36;1m  echo "### Posts"[0m
+2026-10-30T01:00:54.2158460Z [36;1m  echo "- new candidates: not separately measured by this log format"[0m
+2026-10-30T01:00:54.2158954Z [36;1m  echo "- posts delivered: $(count_matches 'V3 Posted:')"[0m
+2026-10-30T01:00:54.2159389Z [36;1m  echo "- skip log lines: $(count_matches 'skipping')"[0m
+2026-10-30T01:00:54.2159870Z [36;1m  echo "- retry/fallback log lines: $(count_matches 'trying next|retry')"[0m
+2026-10-30T01:00:54.2160280Z [36;1m  echo[0m
+2026-10-30T01:00:54.2160505Z [36;1m  echo "### State"[0m
+2026-10-30T01:00:54.2160815Z [36;1m  echo "- cache: ${TWITTER_CACHE_RESULT:-failed}"[0m
+2026-10-30T01:00:54.2161477Z [36;1m  echo "- summary source: local twitter_monitor.log only; no additional requests"[0m
+2026-10-30T01:00:54.2161941Z [36;1m} >> "$GITHUB_STEP_SUMMARY"[0m
+2026-10-30T01:00:54.2182137Z shell: /usr/bin/bash -e {0}
+2026-10-30T01:00:54.2182410Z env:
+2026-10-30T01:00:54.2182707Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.2183164Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T01:00:54.2183632Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.2184039Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.2184437Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T01:00:54.2184847Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T01:00:54.2185199Z   TWITTER_START_EPOCH: 1793322052
+2026-10-30T01:00:54.2185485Z   TWITTER_END_EPOCH: 1793322054
+2026-10-30T01:00:54.2185764Z   TWITTER_CACHE_RESULT: no-changes
+2026-10-30T01:00:54.2186035Z ##[endgroup]
+2026-10-30T01:00:54.2554988Z Post job cleanup.
+2026-10-30T01:00:54.3740376Z Cache hit occurred on the primary key setup-python-Linux-x64-24.04-Ubuntu-python-3.14.9-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d, not saving cache.
+2026-10-30T01:00:54.3905322Z Post job cleanup.
+2026-10-30T01:00:54.4908072Z [command]/usr/bin/git version
+2026-10-30T01:00:54.4958939Z git version 2.56.0
+2026-10-30T01:00:54.5002762Z Temporarily overriding HOME='/home/runner/work/_temp/53da8fab-8692-498b-8165-1b41b8e848ba' before making global git config changes
+2026-10-30T01:00:54.5004284Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-30T01:00:54.5009380Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/wvkhabh2s22/wvkhabh2s22
+2026-10-30T01:00:54.5050075Z Removing SSH command configuration
+2026-10-30T01:00:54.5058366Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-30T01:00:54.5105351Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-30T01:00:54.5404045Z Removing HTTP extra header
+2026-10-30T01:00:54.5410980Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-30T01:00:54.5458935Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-30T01:00:54.5750384Z Removing includeIf entries pointing to credentials config files
+2026-10-30T01:00:54.5759110Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-30T01:00:54.5805391Z includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path
+2026-10-30T01:00:54.5806683Z includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path
+2026-10-30T01:00:54.5808930Z includeif.gitdir:/github/workspace/.git.path
+2026-10-30T01:00:54.5809664Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-30T01:00:54.5817401Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path
+2026-10-30T01:00:54.5855632Z /home/runner/work/_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:54.5870965Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-b4c01d70\-592f\-4d13\-9edd\-1cb0e5f01ee3\.config
+2026-10-30T01:00:54.5925341Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path
+2026-10-30T01:00:54.5970459Z /home/runner/work/_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:54.5982414Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/wvkhabh2s22/wvkhabh2s22/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-b4c01d70\-592f\-4d13\-9edd\-1cb0e5f01ee3\.config
+2026-10-30T01:00:54.6033278Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-30T01:00:54.6072748Z /github/runner_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:54.6081499Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-b4c01d70\-592f\-4d13\-9edd\-1cb0e5f01ee3\.config
+2026-10-30T01:00:54.6130196Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-30T01:00:54.6169352Z /github/runner_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config
+2026-10-30T01:00:54.6176460Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-b4c01d70\-592f\-4d13\-9edd\-1cb0e5f01ee3\.config
+2026-10-30T01:00:54.6227032Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-30T01:00:54.6507391Z Removing credentials config '/home/runner/work/_temp/git-credentials-b4c01d70-592f-4d13-9edd-1cb0e5f01ee3.config'
+2026-10-30T01:00:54.6670732Z Cleaning up orphan processes
