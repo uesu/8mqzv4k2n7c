@@ -6283,7 +6283,14 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     patch.more = True
                     ctx.warnings.append(f"{game.short} beta: unreadable {role} id {item_id}; deferred")
                 else:
+                    # Recorded so the batch can settle, but never silently: an item this run could
+                    # not read must still be named in the summary, or the change it carried is
+                    # gone with nothing to point at.
                     patch.item_keys.append(_entry_key(ns, role, item_id))
+                    ctx.report.append(
+                        f"{game.short} beta: {role} id {item_id} has no readable text in this "
+                        "build; recorded as seen"
+                    )
                 continue
         rarity = fields.get("rarity")
         if rarity is None and isinstance(listing_entry, dict):

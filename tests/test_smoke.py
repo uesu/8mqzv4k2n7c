@@ -20476,6 +20476,65 @@ def test_feature5_a_signature_only_change_posts_a_labelled_note_not_silence():
         assert cards.validate_payload(payload) == []
 
 
+def test_feature5_an_unreadable_weapon_is_recorded_and_reported_never_silent():
+    """A weapon the source cannot describe is skipped from the card — but named in the summary.
+
+    Recording it stops the batch from retrying a source that will never answer; saying so stops
+    the change it carried from disappearing with nothing to point at.
+    """
+    from gamexpress import beta as beta_mod
+
+    previous_listing = {
+        "1601": {"icon": "Weapon_S_1601", "rank": 4, "en": "Item_Weapon_S_1601_Name"},
+    }
+    current_listing = dict(previous_listing, **{
+        "14166": {"icon": "Weapon_S_1661", "rank": 4, "en": "Item_Weapon_S_1661_Name"},
+    })
+
+    class UnreadableWeaponFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(("json", url))
+            if url.endswith("/manifest.json"):
+                return {"zzz": {"live": "3.3", "latest": "3.4.1+19997538",
+                                "available": ["3.3", "3.4.1+19851435", "3.4.1+19997538"],
+                                "new": {"character": [], "weapon": [], "equipment": []}}}
+            if url.endswith("/weapon.json"):
+                return current_listing if "19997538" in url else previous_listing
+            if "/weapon/14166" in url and "/3.3/" not in url:
+                return {"id": 14166}                 # a detail with no readable text at all
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", UnreadableWeaponFetcher(), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        record = ctx.state.beta_record("zzz")
+        record["source_version"] = "3.4.1+19851435"
+        record["latest_rev"] = "previous-revision"
+        ctx.state.save()
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], {
+            "zzz": {"live": "3.3", "latest": "3.4.1+19997538",
+                    "available": ["3.3", "3.4.1+19851435", "3.4.1+19997538"],
+                    "new": {"character": [], "weapon": [], "equipment": []}}},
+            beta_mod._budget(ctx)))
+
+    assert patch is not None
+    # Nothing invented on the card …
+    assert all(eq.name != "14166" for eq in patch.equipment)
+    # … the item is recorded so the batch can settle …
+    assert "weapon:zzz:14166" in patch.item_keys
+    # … and the run summary names it instead of dropping it in silence.
+    assert any("has no readable text" in line and "14166" in line for line in ctx.report), ctx.report
+
+
 def test_feature5_a_padded_source_line_does_not_disable_the_diff():
     """One trailing space must not cost the reader every future `~~old~~ → **new**`.
 
