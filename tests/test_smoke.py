@@ -25021,5 +25021,76 @@ def test_a_maintenance_edit_keeps_the_ping_the_card_was_posted_with():
     assert "<@&1296268365593186426>" in json.dumps(edit, ensure_ascii=False)
 
 
+def test_feature5_a_poll_inside_the_floor_says_so_instead_of_going_quiet():
+    """A run that must not re-poll explains itself, so "no beta card" is never a mystery.
+
+    Monitor #2912 (13:30) followed #2907 (13:05) by 25 minutes, so the 30-minute floor skipped
+    every game: no beta fetch, no beta delivery line, nothing in the summary. The skip is right —
+    the silence was not.
+    """
+    from gamexpress import beta as beta_mod
+
+    messages: list[str] = []
+
+    class _ListHandler(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            messages.append(record.getMessage())
+
+    manifest = {"ww": {"live": "3.7", "latest": "3.8.4",
+                       "available": ["3.7", "3.8.3", "3.8.4"],
+                       "new": {"character": [], "weapon": [], "echo": []}}}
+    fetcher = _RecordingFetcher({"manifest.json": manifest})
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        BETA_MIN_POLL_MINUTES="30", DISCORD_WEBHOOK_BETA=HOOK, games=["wuwa"])
+        ctx.state.beta_record("wuwa")["last_poll"] = ctx.now - 25 * 60
+        handler = _ListHandler()
+        previous_level = beta_mod.log.level
+        beta_mod.log.addHandler(handler)
+        beta_mod.log.setLevel(logging.INFO)  # the runner configures INFO; the test root is not
+        try:
+            asyncio.run(beta_mod.run(ctx))
+        finally:
+            beta_mod.log.setLevel(previous_level)
+            beta_mod.log.removeHandler(handler)
+
+    # One manifest GET is the documented cost of a quiet poll; nothing per-item is fetched.
+    assert fetcher.calls == ["https://static.nanoka.cc/manifest.json"], fetcher.calls
+    assert any("source check skipped" in m and "polled 25m ago" in m and "floor is 30m" in m
+               for m in messages), messages
+
+
+def test_feature5_a_metadata_mover_is_labelled_and_a_localization_is_not_a_rename():
+    """The shape of a classification-only line, and the two moves that must never invent one."""
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaEquipment
+
+    def weapon(**over):
+        base = dict(id="weapon:wuwa:21030076", name="Ages of Harvest", category_label="Weapon",
+                    rarity=4, sub_type="Sword", weapon_class="Sword")
+        base.update(over)
+        return BetaEquipment(**base)
+
+    fields = ("name", *beta_mod._BETA_EQUIP_META_FIELDS)
+
+    # A real move: every affected field is named, and the line is a strikethrough arrow.
+    moved = beta_mod._metadata_changes(
+        "wuwa", weapon(), weapon(sub_type="Broadblade", weapon_class="Broadblade"), fields)
+    assert "**[ADJUSTMENT]** Type changed from ~~Sword~~ → **Broadblade**." in moved, moved
+    assert "**[ADJUSTMENT]** Weapon class changed from ~~Sword~~ → **Broadblade**." in moved, moved
+
+    # A rename is a name move, not a reclassification.
+    renamed = beta_mod._metadata_changes("wuwa", weapon(), weapon(name="Ages of Harvesting"), fields)
+    assert renamed == ["**[CHANGED]** Renamed from ~~Ages of Harvest~~ → **Ages of Harvesting**."], renamed
+
+    # A Chinese name becoming English is the localization landing, not a rename.
+    assert beta_mod._metadata_changes(
+        "wuwa", weapon(name="岁月之穗"), weapon(name="Ages of Harvest"), fields) == []
+
+    # A released baseline that never published a name must not invent a rename.
+    assert beta_mod._metadata_changes(
+        "wuwa", weapon(), weapon(name="Lucilla's Weapon"), fields, require_both=True) == []
+
+
 if __name__ == "__main__":
     sys.exit(main())

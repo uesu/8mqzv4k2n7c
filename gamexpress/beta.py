@@ -6612,6 +6612,13 @@ async def run(ctx) -> None:
             ctx.state.save()
         last_poll = int(record.get("last_poll") or 0)
         if budget["min_poll_min"] and ctx.now - last_poll < budget["min_poll_min"] * 60:
+            # Not a failure and not a silence either: a monitor run with no beta card has to read
+            # as "checked, nothing was due", never as "the beta step did nothing at all".
+            waited_min = max(0, int(ctx.now) - last_poll) // 60
+            log.info(
+                "[%s] beta: source check skipped — polled %dm ago, floor is %dm "
+                "(BETA_MIN_POLL_MINUTES)", game.key, waited_min, budget["min_poll_min"],
+            )
             continue
         before_requests = int(shared_budget.get("_shared_requests_left", 0))
         starved_before = len(ctx.warnings)
