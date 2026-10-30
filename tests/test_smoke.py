@@ -19240,6 +19240,74 @@ def test_feature5_a_name_or_type_swap_is_changed_not_a_text_fix():
     assert tag == "[CHANGED]", line      # a lone capitalised swap with no context: not prose
 
 
+def test_feature5_a_deliberate_destination_move_is_adopted_not_muted():
+    """Adding DISCORD_WEBHOOK_BETA_<GAME> after using the news channel must not silence beta.
+
+    The stored route fingerprints the old destination. With every earlier batch settled there is
+    nothing a move can corrupt, so the next card goes to the new channel and the run summary says
+    which secret it used — the alternative (refusing forever) mutes the feature silently.
+    """
+    from gamexpress import beta as beta_mod
+
+    news_hook = "https://discord.com/api/webhooks/111/news-zzz"
+    beta_hook = "https://discord.com/api/webhooks/222/beta-zzz"
+
+    def route_of(url):
+        return beta_mod.stable_hash([webhook_fingerprint(url), url.partition("?")[2]])
+
+    class Recorder:
+        def __init__(self):
+            self.sent = []
+
+        async def send(self, url, payload, **_kw):
+            self.sent.append((url, payload))
+            return SendResult(True, 200, message_id=f"m{len(self.sent)}")
+
+        async def edit(self, *_a, **_kw):
+            return True
+
+    def patch(rev):
+        return BetaPatch(
+            game_key="zzz", beta_version="3.4", rev_label=f"v3.4 Rev. {rev}", rev_id=f"rev-{rev}",
+            characters=[BetaCharacter(
+                id="zzz:1", name="Robin", rarity=5, element="Ether", role="Defense", is_new=True,
+                sections=[BetaSectionEntry(title="Basic Attack: A", category="Basic Attack",
+                                           tag="[NEW]", lines=["Deals 100% ATK."])])],
+            item_keys=["character:zzz:1"], batch_id=f"batch-{rev}")
+
+    def ctx_for(tmp, hook, route, partial=False):
+        ctx = _beta_ctx(Path(tmp) / "state.json", _RecordingFetcher({}), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA_ZZZ=beta_hook, DISCORD_WEBHOOK_NEWS_ZZZ=news_hook,
+                        DISCORD_WEBHOOK_BETA="", games=["zzz"])
+        ctx.webhook = hook
+        record = ctx.state.beta_record("zzz")
+        record["route"] = route
+        if partial:
+            record["revisions"] = {"rev-old": {"status": "posted", "batches": {
+                "batch-old": {"status": "partial", "messages": ["already-posted-page"]}}}}
+        return ctx, record
+
+    with tempfile.TemporaryDirectory() as tmp:
+        # Settled history + a moved destination: post, announce the new secret, store the new route.
+        hook = Recorder()
+        ctx, record = ctx_for(tmp, hook, route_of(news_hook))
+        asyncio.run(beta_mod._deliver(ctx, GAMES["zzz"], patch(2), record, ephemeral=False))
+        assert len(hook.sent) == 1, ctx.warnings
+        assert hook.sent[0][0] == beta_hook
+        assert record["route"] == route_of(beta_hook)
+        assert any("destination changed" in line and "DISCORD_WEBHOOK_BETA_ZZZ" in line
+                   for line in ctx.report), ctx.report
+        assert not ctx.warnings
+
+        # A half-posted card is the real hazard: its pages are in the old channel, so hold.
+        hook = Recorder()
+        ctx, record = ctx_for(tmp, hook, route_of(news_hook), partial=True)
+        asyncio.run(beta_mod._deliver(ctx, GAMES["zzz"], patch(3), record, ephemeral=False))
+        assert hook.sent == []
+        assert record["route"] == route_of(news_hook)
+        assert any("unfinished" in line and "destination changed" in line for line in ctx.warnings)
+
+
 def test_feature5_a_retired_block_is_one_statement_in_every_diff_path():
     """Both diff paths state a retirement once, instead of one bullet per dropped line."""
     from gamexpress import beta as beta_mod

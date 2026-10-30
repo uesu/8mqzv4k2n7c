@@ -6264,6 +6264,24 @@ async def _wait_between_beta_pages(ctx, *, ephemeral: bool) -> None:
     await sleeper(BETA_PAGE_GAP_SECONDS)
 
 
+def _unfinished_deliveries(record: dict) -> list[str]:
+    """Batch keys whose Discord outcome is not settled: a half-posted card lives here.
+
+    These are the only deliveries a destination change can corrupt, because their already-sent
+    pages sit in the *old* channel and a retry would split the card across two of them.
+    """
+    out: list[str] = []
+    for rev_key, revision in (record.get("revisions") or {}).items():
+        if not isinstance(revision, dict):
+            continue
+        for batch_key, batch in (revision.get("batches") or {}).items():
+            if not isinstance(batch, dict):
+                continue
+            if batch.get("status") != "posted" and (batch.get("messages") or batch.get("ambiguous")):
+                out.append(f"{rev_key}/{batch_key}")
+    return out
+
+
 async def _deliver(ctx, game: Game, patch: BetaPatch, record: dict, ephemeral: bool) -> None:
     hook = ctx.settings.webhook("beta", game.key)
     if not hook:
@@ -6274,9 +6292,21 @@ async def _deliver(ctx, game: Game, patch: BetaPatch, record: dict, ephemeral: b
     fp = webhook_fingerprint(hook)
     fp = stable_hash([fp, hook.partition("?")[2]])
     if record.get("route") and record.get("route") != fp:
-        ctx.warnings.append(f"{game.short} beta: destination changed; review beta state before posting")
-        return
-    record.setdefault("route", fp)
+        # A destination change is usually deliberate — adding `DISCORD_WEBHOOK_BETA_<GAME>` after
+        # beta had been posting through that game's news channel. Nothing is half-posted, so the
+        # only thing left to do is move: refusing forever would silently mute the feature instead
+        # of protecting it. A half-posted card is the real hazard (its pages are in the old
+        # channel), so that case still stops and asks for reconciliation.
+        unfinished = _unfinished_deliveries(record)
+        if unfinished:
+            ctx.warnings.append(
+                f"{game.short} beta: destination changed while {len(unfinished)} delivery is "
+                "unfinished; reconcile it before posting to the new channel")
+            return
+        destination, _url = ctx.settings.webhook_source("beta", game.key)
+        ctx.report.append(
+            f"{game.short} beta: destination changed — new cards post to {destination or 'the new webhook'}")
+    record["route"] = fp
 
     ping = ctx.settings.ping("beta", game.key)
     try:
