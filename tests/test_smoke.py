@@ -18685,8 +18685,10 @@ def test_feature5_a_bangboo_is_a_card_kind_of_its_own():
     assert "4210" not in text and "8863" not in text
     # No localization key is ever printed as prose.
     assert "_54024" not in text and "Bangboo_" not in text
-    # The Talent block exists but is keys-only at 3.4.1; it says so instead of vanishing.
-    assert "-# Talent: only localization keys in this build" in text
+    # The ability block exists but is keys-only at 3.4.1; it says so instead of vanishing.
+    assert "-# Additional Ability: only localization keys in this build" in text
+    # Block names are the sites' own words, not the data keys `Talent` / `QTE`.
+    assert "Talent:" not in text and "QTE:" not in text
     # ...and the missing prose is stated once for the whole item, like the page shows it raw.
     assert "-# Some skill text is still untranslated in this build" in text
 
@@ -18698,6 +18700,91 @@ def test_feature5_a_bangboo_is_a_card_kind_of_its_own():
                               "3.4.1+19851435", "3.4.1+19997538") == (
         "https://zzz.gachabase.net/diff/bangboo/54024/charley"
         "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en")
+
+
+def _booltergeist_like_detail() -> dict:
+    """The shapes Booltergeist (53021) publishes, rebuilt from the two served pages.
+
+    Not a raw capture: `skill_prop` carries the Lv. 1 `main` values nanoka prints (480 / 281 /
+    834 / 119) with the 10% growth per level that lands on gachabase's Lv. 6 column (720 / 421.5 /
+    1251 / 178.5), and the blocks list six levels the way the real file lists ten. Rarity 3 is the
+    raw value behind the A-rank both pages show.
+    """
+    def block(name: str, desc: str, props: list[str], params: str) -> dict:
+        row = {"name": name, "desc": desc, "property": props, "param": params}
+        return {"level": {str(level): dict(row) for level in range(1, 7)}}
+
+    def table(main: int, growth: int) -> dict:
+        return {"main": main, "growth": growth, "format": "%"}
+
+    return {
+        "id": 53021, "code_name": "Booltergeist", "rarity": 3,
+        "stats": {"break_stun": 94, "crit": 500, "crit_dmg": 5000, "pen_ratio": 0,
+                  "element_abnormal_power": 100},
+        "level": {"6": {"level_max": 60,
+                        "extra": {"20101": {"value": 4500}, "21101": {"value": 5000}}}},
+        "skill": {
+            "a": block("Cursed Spotlight",
+                       "Booltergeist floats in the air and continuously fires lasers at enemies, "
+                       "dealing massive Ether DMG.",
+                       ["DMG Multiplier", "Daze Multiplier", "Bangboo_ActiveSkill_Property_CD_53021"],
+                       "{Skill:5302101, Prop:1001}|{Skill:5302101, Prop:1002}"
+                       "|Bangboo_ActiveSkill_Property_CD_53021"),
+            "b": block("Specialty Scare Actor",
+                       "When there's at least 1 Attack or Anomaly character in your squad: When an "
+                       "Active Skill is used, there is a 60% chance for that instance to deal 40% "
+                       "increased DMG.",
+                       ["DMG Increase"], "{Skill:5302103, Prop:1001}"),
+            "c": block("Mischief Maker on the Loose",
+                       "Dives from the air toward enemies, exploding on impact and dealing massive "
+                       "Ether DMG.",
+                       ["DMG Multiplier", "Daze Multiplier"],
+                       "{Skill:5302102, Prop:1001}|{Skill:5302102, Prop:1002}"),
+        },
+        "skill_prop": {
+            "5302101": {"1001": table(48000, 4800), "1002": table(28100, 2810)},
+            "5302102": {"1001": table(83400, 8340), "1002": table(11900, 1190)},
+            "5302103": {"1001": table(4000, 0)},
+        },
+    }
+
+
+def test_feature5_a_translated_bangboo_prints_its_skill_names_and_page_values():
+    """Booltergeist (A-rank) reads exactly like the two pages that publish it."""
+    from gamexpress import beta as beta_mod
+
+    fields = beta_mod._equip_from_detail("zzz", "bangboo", _booltergeist_like_detail(), {})
+    text = "\n".join(fields["lines"])
+
+    # A-rank: raw 3 + the zzz mapping is the four-star rank the pages print.
+    assert fields["rarity"] == 4
+    assert beta_mod._parse_rarity("zzz", 3, None) == 4
+
+    # Names come from the build, and the block labels are the sites' own wording.
+    assert "Active Skill — Cursed Spotlight: Booltergeist floats in the air" in text, text
+    assert "Additional Ability — Specialty Scare Actor: When there's at least 1" in text, text
+    assert "Bangboo Chain Attack — Mischief Maker on the Loose: Dives from the air" in text, text
+
+    # Lv. 6 values are the ones gachabase prints for this Bangboo (720% / 421.5%, 1251% / 178.5%),
+    # grown from the Lv. 1 column nanoka shows (480% / 281%, 834% / 119%).
+    assert "DMG Multiplier 720% · Daze Multiplier 421.5%" in text, text
+    assert "DMG Multiplier 1251% · Daze Multiplier 178.5%" in text, text
+    # Its additional ability has no upgrade track, so it is read at Lv. 1.
+    assert "Additional Ability attributes (Lv. 1): DMG Increase 40%" in text, text
+    assert "there is a 60% chance for that instance to deal 40% increased DMG" in text, text
+
+    # A `{0}` in the prose is filled from the value resolved for that row, so it never reaches a
+    # card as a placeholder or as the "unavailable" fallback.
+    fillable = _booltergeist_like_detail()
+    fillable["skill"]["b"]["level"]["1"]["desc"] = "Deals {0} increased DMG for 5s."
+    filled = "\n".join(beta_mod._equip_from_detail("zzz", "bangboo", fillable, {})["lines"])
+    assert "Deals 40% increased DMG for 5s." in filled, filled
+    assert "unavailable" not in filled, filled
+
+    # The stats line is the page's, and the level-scaled HP/ATK/DEF stay out of it.
+    assert fields["stats_line"] == (
+        "Impact 94 · CRIT Rate 50% · CRIT DMG 100% · PEN Ratio 0% · Anomaly Mastery 100")
+    assert "3827" not in text and "6570" not in text
 
 
 def test_feature5_a_bangboo_block_shorter_than_the_cap_reads_at_its_own_last_level():

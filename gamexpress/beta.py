@@ -3042,13 +3042,21 @@ _GI_FIGHT_PROP_LABELS = {
 _GI_WEAPON_SUBSTAT_LV90_MULT = 4.594
 
 
-_ZZZ_BANGBOO_SKILLS = (("a", "Active Skill"), ("b", "Talent"), ("c", "QTE"))
+# The wording the two sites print, not the data keys (`Talent`/`QTE`): gachabase and nanoka both
+# label block b "Additional Ability" and block c "Bangboo Chain Attack" — captured 2026-10-30/31
+# from `ID: 54024` and `/bangboo/53021` (Booltergeist).
+_ZZZ_BANGBOO_SKILLS = (
+    ("a", "Active Skill"),
+    ("b", "Additional Ability"),
+    ("c", "Bangboo Chain Attack"),
+)
 
-# The skill level each block is read at, capped by what the block publishes. A Bangboo's Active
-# Skill and QTE stop at level 6 and its Talent has no upgrade track, which is the maximum the
-# served page's own level sliders allow (gachabase `ID: 54024`, captured 2026-10-30: 6 / 1 / 6).
-# The file itself lists up to 10 levels per block, so the count is not the cap; agents read at
-# `SKILL_LEVEL["zzz"]` for the same reason.
+# The level each block is read at — 6 for the two upgradeable skills, 1 for the ability with no
+# upgrade track. Both sites agree: gachabase shows `Lv. 6 / 1 / 6` for Charley (S-rank) and for
+# Booltergeist (A-rank), and its sliders run to the length of the block itself (10 / 5 / 10), so
+# the block's own length is never the cap. Nanoka starts every slider at 1 and lets a reader walk
+# up to that same length, which is why its first view of Booltergeist is the Lv. 1 column
+# (480% / 281% / 834% / 119%) that the Lv. 6 line here is grown from.
 _ZZZ_BANGBOO_SKILL_LEVEL = {"a": 6, "b": 1, "c": 6}
 
 _BANGBOO_CRIT_RATE_PROP = "20101"
@@ -3094,13 +3102,8 @@ def _bangboo_skill_lines(data: dict) -> list[str]:
         row = levels.get(str(level))
         if not isinstance(row, dict):
             continue
-        desc = "" if _is_key(str(row.get("desc") or "")) else _clean(row.get("desc"))
-        if desc:
-            lines.append(f"{label}: {desc}")
-        else:
-            untranslated.append(label)
         names = [str(prop) for prop in (row.get("property") or []) if not _is_key(str(prop))]
-        pairs: list[str] = []
+        pairs: list[tuple[str, str]] = []
         for slot in str(row.get("param") or "").split("|"):
             match = re.search(r"\{Skill:\s*(\d+)\s*,\s*Prop:\s*(\d+)\}", slot)
             if not match:
@@ -3109,9 +3112,24 @@ def _bangboo_skill_lines(data: dict) -> list[str]:
             value = _bangboo_prop_value((table or {}).get(match.group(2))
                                         if isinstance(table, dict) else None, level)
             if value and len(pairs) < len(names):
-                pairs.append(f"{names[len(pairs)]} {value}")
+                pairs.append((names[len(pairs)], value))
+        # A newer build translates the block: Booltergeist's are real text ("Cursed Spotlight",
+        # "Specialty Scare Actor"), Charley's are still keys. Placeholders are filled from the
+        # values already resolved, so `{0}` never reaches a card.
+        title = "" if _is_key(str(row.get("name") or "")) else _clean(row.get("name"))
+        desc = "" if _is_key(str(row.get("desc") or "")) else _clean(
+            _ww_fill_params(row.get("desc"), [value for _name, value in pairs]))
+        if title and desc:
+            lines.append(f"{label} — {title}: {desc}")
+        elif title:
+            lines.append(f"{label} — {title}")
+        elif desc:
+            lines.append(f"{label}: {desc}")
+        else:
+            untranslated.append(label)
         if pairs:
-            lines.append(f"{label} attributes (Lv. {level}): " + " · ".join(pairs))
+            shown = " · ".join(f"{name} {value}" for name, value in pairs)
+            lines.append(f"{label} attributes (Lv. {level}): {shown}")
         elif not desc:
             # A fresh build ships the block but every string in it is still a key, so there is
             # nothing to print. Say the section exists rather than letting it vanish.
