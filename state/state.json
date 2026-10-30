@@ -4793,12 +4793,12 @@
         ],
         "47252183": [
           1793363430,
-          1,
+          2,
           "d28b921304ee982a"
         ],
         "47252283": [
           1793363430,
-          1,
+          2,
           "6de4312ee116e094"
         ],
         "47252376": [
@@ -4813,17 +4813,17 @@
         ],
         "47252512": [
           1793364619,
-          0,
+          1,
           "af765177569c4887"
         ],
         "47252649": [
           1793364917,
-          0,
+          1,
           "af0c47ffe86b1907"
         ],
         "47252651": [
           1793364917,
-          0,
+          1,
           "eeb5ddc601762d61"
         ]
       },
@@ -5442,7 +5442,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1793354119
+          "ts": 1793365238
         },
         "data": {
           "announcement_locked": true,
@@ -5464,8 +5464,8 @@
             ]
           },
           "banners_checked_ts": 1793002222,
-          "banners_search_ts": 1793354119,
-          "calendar_ts": 1793354119,
+          "banners_search_ts": 1793365238,
+          "calendar_ts": 1793365238,
           "estimate_sources": [
             "version cadence"
           ],
@@ -5870,8 +5870,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793354119,
-          "banners_search_ts": 1793354119,
+          "banners_checked_ts": 1793365238,
+          "banners_search_ts": 1793365238,
           "banners_settled": [
             "phase1",
             "phase2",
