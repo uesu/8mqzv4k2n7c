@@ -18787,6 +18787,170 @@ def test_feature5_a_translated_bangboo_prints_its_skill_names_and_page_values():
     assert "3827" not in text and "6570" not in text
 
 
+def _ariel_like_detail(dmg_main: int = 77200, dmg_growth: int = 7720) -> dict:
+    """The shapes Ariel (54023) publishes, rebuilt from the two served pages.
+
+    S-rank, so the stats block is the same one Charley has. Its Active Skill is the widest shape
+    a Bangboo has shown: five attribute rows, three of them buffs with units that are not `%`
+    (`9.6% HP`, `4 Energy`) and one with no growth at all (`20%` flat). `skill_prop` carries the
+    Lv. 1 values nanoka prints (772 / 328 / 828 / 118 and 6.6 / 2.75 / 20) with the growth that
+    lands on gachabase's Lv. 6 column (1158 / 492 / 1242 / 177 and 9.6 / 4 / 20).
+    """
+    def block(name: str, desc: str, props: list[str], params: str) -> dict:
+        row = {"name": name, "desc": desc, "property": props, "param": params}
+        return {"level": {str(level): dict(row) for level in range(1, 7)}}
+
+    def table(main: int, growth: int, fmt: str = "%") -> dict:
+        return {"main": main, "growth": growth, "format": fmt}
+
+    return {
+        "id": 54023, "code_name": "Ariel", "rarity": 4,
+        "stats": {"break_stun": 103, "crit": 500, "crit_dmg": 5000, "pen_ratio": 0,
+                  "element_abnormal_power": 110},
+        "level": {"6": {"level_max": 60,
+                        "extra": {"20101": {"value": 4500}, "21101": {"value": 5000}}}},
+        "skill": {
+            "a": block(
+                "Searing Flash",
+                "Flies high into the air, then blinks to the target's vicinity, attacking and "
+                "pulling in enemies across a large area.\\nOnce the pull ends, gain 1/2/3 random "
+                "buffs based on the number of enemies pulled:\\nBuff 1: Restore the Agent's HP.",
+                ["Buff 1: HP Recovery", "Buff 2: Restore Energy", "Buff 3: DMG Increase",
+                 "DMG Multiplier", "Daze Multiplier", "Bangboo_ActiveSkill_Property_CD_54023"],
+                "{Skill:5402301, Prop:1001}|{Skill:5402301, Prop:1002}"
+                "|{Skill:5402301, Prop:1003}|{Skill:5402301, Prop:1004}"
+                "|{Skill:5402301, Prop:1005}|Bangboo_ActiveSkill_Property_CD_54023"),
+            "b": block(
+                "Angel's Protection",
+                "When Remielle is in the squad: When using an Active Skill, all buffs are "
+                "guaranteed, and Bangboo Chain Attack DMG increases by 15%.",
+                ["DMG Increase"], "{Skill:5402303, Prop:1001}"),
+            "c": block(
+                "Radiance",
+                "Glides through the air and throws a Dazzling Nebula at the target, dealing "
+                "massive Ether DMG.",
+                ["DMG Multiplier", "Daze Multiplier"],
+                "{Skill:5402302, Prop:1001}|{Skill:5402302, Prop:1002}"),
+        },
+        "skill_prop": {
+            "5402301": {
+                "1001": table(660, 60, "% HP"),
+                "1002": table(275, 25, "Energy"),
+                "1003": table(2000, 0),
+                "1004": table(dmg_main, dmg_growth),
+                "1005": table(32800, 3280),
+            },
+            "5402302": {"1001": table(82800, 8280), "1002": table(11800, 1180)},
+            "5402303": {"1001": table(1500, 0)},
+        },
+    }
+
+
+def test_feature5_an_s_rank_bangboo_with_buff_rows_matches_both_sites():
+    """Ariel's five-row Active Skill, including the units that are not percentages."""
+    from gamexpress import beta as beta_mod
+
+    fields = beta_mod._equip_from_detail("zzz", "bangboo", _ariel_like_detail(), {})
+    text = "\n".join(fields["lines"])
+
+    assert fields["rarity"] == 5 and fields["stats_line"] == (
+        "Impact 103 · CRIT Rate 50% · CRIT DMG 100% · PEN Ratio 0% · Anomaly Mastery 110")
+
+    # Lv. 6 column of gachabase: 9.6% HP, 4 Energy, 20% (flat), 1158%, 492%.
+    assert ("Active Skill attributes (Lv. 6): Buff 1: HP Recovery 9.6% HP · "
+            "Buff 2: Restore Energy 4 Energy · Buff 3: DMG Increase 20% · "
+            "DMG Multiplier 1158% · Daze Multiplier 492%") in text, text
+    assert "Bangboo Chain Attack attributes (Lv. 6): DMG Multiplier 1242% · Daze Multiplier 177%" \
+        in text, text
+    assert "Additional Ability attributes (Lv. 1): DMG Increase 15%" in text, text
+
+    # A multi-paragraph description is one bullet line, not a broken block.
+    assert "Flies high into the air" in text
+    assert not any(line.startswith("Once the pull ends") for line in fields["lines"])
+
+    # Nothing is invented: no level-scaled HP/ATK/DEF, and the unresolved cooldown row is gone.
+    assert "4210" not in text and "8863" not in text
+    assert "Cooldown" not in text
+
+
+def test_feature5_a_keyed_bangboo_row_drops_only_its_own_value():
+    """`property` and `param` are parallel columns; a keyed name must not shift its neighbours."""
+    from gamexpress import beta as beta_mod
+
+    data = _ariel_like_detail()
+    # The middle row still has no English name in this build, but its value is there.
+    data["skill"]["a"]["level"]["6"]["property"] = [
+        "Buff 1: HP Recovery",
+        "Bangboo_ActiveSkill_Property_Energy_54023",
+        "Buff 3: DMG Increase",
+        "DMG Multiplier",
+        "Daze Multiplier",
+        "Bangboo_ActiveSkill_Property_CD_54023",
+    ]
+    text = "\n".join(beta_mod._equip_from_detail("zzz", "bangboo", data, {})["lines"])
+    # DMG still belongs to DMG and Daze to Daze — not shifted onto their neighbours.
+    assert "Buff 1: HP Recovery 9.6% HP · Buff 3: DMG Increase 20% · " \
+        "DMG Multiplier 1158% · Daze Multiplier 492%" in text, text
+    # The unnamed row is dropped, never printed as `...Energy_54023 4 Energy`.
+    assert "Property_Energy" not in text and " 4 Energy" not in text.split("attributes")[-1], text
+
+
+def test_feature5_a_released_bangboo_diffs_instead_of_reposting_its_kit():
+    """Ariel is already live, so a rebalance is a before/after, never the whole kit again."""
+    from gamexpress import beta as beta_mod
+
+    old_detail = _ariel_like_detail()
+    new_detail = _ariel_like_detail(dmg_main=80000, dmg_growth=8000)  # 1158% -> 1200% at Lv. 6
+    old_fields = beta_mod._equip_from_detail("zzz", "bangboo", old_detail, {})
+    previous = BetaEquipment(
+        id="zzz:54023", name="Ariel", category_label="Bangboo", rarity=old_fields["rarity"],
+        set_kind=old_fields["set_kind"], tag="[NEW]", stats_line=old_fields["stats_line"],
+        lines=list(old_fields["lines"]),
+        page_url="https://zzz.gachabase.net/bangboo/54023/ariel/beta?lang=en", diff_url="",
+    )
+    snapshot = beta_mod._equipment_snapshot(previous, "3.4.1+19851435", 1793000000, "bangboo")
+    key = beta_mod._snapshot_key_for({}, "zzz", "bangboo", "54023")
+
+    changelog = "\n\n".join([
+        "# CHANGELOG - v3.4.X",
+        "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### Bangboo",
+        "[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/54023.png)\\\\",
+        "\\\\Ariel](https://zzz.gachabase.net/bangboo/54023/ariel/beta?lang=en)",
+    ])
+    # Not in `new.bangboo`: it shipped in 3.3, so it is a change, not a reveal.
+    manifest = {"zzz": {"live": "3.3", "latest": "3.4.1+19997538",
+                        "available": ["3.3", "3.4.1+19997538"],
+                        "new": {"character": [], "weapon": [], "equipment": [], "bangboo": []}}}
+    with tempfile.TemporaryDirectory() as tmp:
+        state_path = Path(tmp) / "state.json"
+        state_path.write_text(json.dumps({"beta": {"zzz": {
+            "format_epoch": beta_mod.BETA_FORMAT_EPOCH,
+            "source_version": "3.4.1+19851435",
+            "snapshots": {key: snapshot},
+        }}}), encoding="utf-8")
+        fetcher = _RecordingFetcher({
+            "/3.4.1+19997538/en/bangboo/54023": new_detail,
+            "/3.4.1+19997538/bangboo.json": {"54023": {"rank": 4, "en": "Ariel"}},
+            "changelog/beta": changelog,
+        })
+        ctx = _beta_ctx(state_path, fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(
+            beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+
+    assert len(patch.equipment) == 1, patch.equipment
+    card = patch.equipment[0]
+    assert card.tag == "[CHANGED]", card.tag
+    body = "\n".join(card.lines)
+    # The rebalanced row reads as a before → after, with the level it was read at kept.
+    assert "~~" in body and "→" in body, body
+    assert "1200%" in body and "1158%" in body, body
+    # Unchanged blocks are omitted entirely — no full kit, no `No changes.` filler.
+    assert "Bangboo Chain Attack" not in body and "Additional Ability" not in body, body
+    assert "No changes" not in body
+
+
 def test_feature5_a_bangboo_block_shorter_than_the_cap_reads_at_its_own_last_level():
     """The file lists up to 10 levels, the sliders stop at 6, and a short block stays short."""
     from gamexpress import beta as beta_mod

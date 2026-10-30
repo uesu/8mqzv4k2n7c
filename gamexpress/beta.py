@@ -3063,8 +3063,28 @@ _BANGBOO_CRIT_RATE_PROP = "20101"
 _BANGBOO_CRIT_DMG_PROP = "21101"
 
 
+def _bangboo_prop_suffix(fmt: Any) -> str:
+    """The unit a `skill_prop` row prints after its number.
+
+    `format` in these files is a literal unit (`"%"` on every Charley row), not a format string.
+    A build that ships a .NET placeholder instead (`"{0:0.#%} HP"`) is still read correctly: the
+    unit is whatever follows the closing brace. Either way the card prints the same unit the site
+    does rather than dropping it.
+    """
+    text = str(fmt or "").strip()
+    closing = text.rfind("}")
+    if closing != -1 and "{" in text[:closing]:
+        text = text[closing + 1:].strip()
+    return text
+
+
 def _bangboo_prop_value(prop: Any, level: int = 1) -> str:
-    """One `skill_prop` entry at one skill level: `main 80000` + `growth 8000` at 6 is `1200%`."""
+    """One `skill_prop` entry at one skill level: `main 80000` + `growth 8000` at 6 is `1200%`.
+
+    Every row in these files is fixed-point hundredths — Charley's `80000` is 800% and Ariel's
+    HP recovery `660` is 6.6% — so the value is always divided by 100 and the unit comes from
+    `format`.
+    """
     if not isinstance(prop, dict):
         return ""
     main = prop.get("main")
@@ -3074,9 +3094,12 @@ def _bangboo_prop_value(prop: Any, level: int = 1) -> str:
     growth = prop.get("growth")
     if isinstance(growth, (int, float)) and not isinstance(growth, bool) and level > 1:
         value += float(growth) * (level - 1)
-    if "%" in str(prop.get("format") or ""):
-        return f"{_fmt_value(value / 100.0, 'g')}%"
-    return _fmt_value(value, "g")
+    number = _fmt_value(value / 100.0, "g")
+    suffix = _bangboo_prop_suffix(prop.get("format"))
+    if not suffix:
+        return number
+    # `%`, `s` and friends hug the number; a word unit gets a space: "9.6% HP", "4 Energy".
+    return f"{number} {suffix}" if suffix[:1].isalpha() else f"{number}{suffix}"
 
 
 def _bangboo_skill_lines(data: dict) -> list[str]:
@@ -3102,23 +3125,28 @@ def _bangboo_skill_lines(data: dict) -> list[str]:
         row = levels.get(str(level))
         if not isinstance(row, dict):
             continue
-        names = [str(prop) for prop in (row.get("property") or []) if not _is_key(str(prop))]
+        # `property` and `param` are two parallel columns: slot N names the value slot N points
+        # at. A name that is still a localization key drops only its own pair — the position is
+        # kept, or every row after it would be labelled with the wrong attribute.
+        names = [str(prop) for prop in (row.get("property") or [])]
         pairs: list[tuple[str, str]] = []
-        for slot in str(row.get("param") or "").split("|"):
+        for idx, slot in enumerate(str(row.get("param") or "").split("|")):
             match = re.search(r"\{Skill:\s*(\d+)\s*,\s*Prop:\s*(\d+)\}", slot)
-            if not match:
+            if not match or idx >= len(names) or _is_key(names[idx]):
                 continue
             table = props.get(match.group(1))
             value = _bangboo_prop_value((table or {}).get(match.group(2))
                                         if isinstance(table, dict) else None, level)
-            if value and len(pairs) < len(names):
-                pairs.append((names[len(pairs)], value))
+            if value:
+                pairs.append((names[idx], value))
         # A newer build translates the block: Booltergeist's are real text ("Cursed Spotlight",
         # "Specialty Scare Actor"), Charley's are still keys. Placeholders are filled from the
         # values already resolved, so `{0}` never reaches a card.
         title = "" if _is_key(str(row.get("name") or "")) else _clean(row.get("name"))
-        desc = "" if _is_key(str(row.get("desc") or "")) else _clean(
-            _ww_fill_params(row.get("desc"), [value for _name, value in pairs]))
+        # One bullet is one line: a multi-paragraph description (Ariel's Active Skill lists its
+        # three buffs on separate lines) is collapsed rather than breaking out of the bullet.
+        desc = "" if _is_key(str(row.get("desc") or "")) else " ".join(_clean(
+            _ww_fill_params(row.get("desc"), [value for _name, value in pairs])).split())
         if title and desc:
             lines.append(f"{label} — {title}: {desc}")
         elif title:
