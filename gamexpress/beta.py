@@ -85,7 +85,9 @@ NANOKA_KINDS: dict[str, dict[str, Any]] = {
         "character_label": "Agents",
         "weapon": {"detail": "weapon", "listing": "weapon", "label": "W-Engines"},
         "relic": {"detail": "equipment", "listing": "equipment", "label": "Drive Discs"},
-        "new_keys": {"character": "character", "weapon": "weapon", "relic": "equipment"},
+        "bangboo": {"detail": "bangboo", "listing": "bangboo", "label": "Bangboo"},
+        "new_keys": {"character": "character", "weapon": "weapon", "relic": "equipment",
+                     "bangboo": "bangboo"},
     },
     "hsr": {
         "character_label": "Characters",
@@ -106,6 +108,12 @@ NANOKA_KINDS: dict[str, dict[str, Any]] = {
         "new_keys": {"character": "character", "weapon": "weapon", "relic": "echo"},
     },
 }
+
+CARD_ROLES = ("character", "weapon", "relic", "bangboo")
+"""Every role a changelog can list that a card can carry. ZZZ adds `bangboo` to the usual three."""
+
+EQUIP_ROLES = ("weapon", "relic", "bangboo")
+"""The roles that read as an equipment entry rather than a character."""
 
 # Wuthering Waves stores element / weapon as bare ints.
 WW_ELEMENTS = {1: "Glacio", 2: "Fusion", 3: "Electro", 4: "Aero", 5: "Spectro", 6: "Havoc"}
@@ -1212,7 +1220,7 @@ _REV_RE = re.compile(r"^##\s+(?P<label>v?[0-9][^\n|]*?)(?:\s*\|\s*(?P<date>[^\n]
 _SECTION_RE = re.compile(r"^###[ \t]+(?P<name>[^\n]+?)[ \t]*$", re.M)
 _ITEM_ID_RE = re.compile(r"/(?:agents|characters|resonators|w-engines|weapons|light-cones|"
                          r"lightcones|relics|relicsets|planar-ornaments|drive-discs|artifacts|"
-                         r"echoes|echo)/(\d+)")
+                         r"echoes|echo|bangboo)/(\d+)")
 _GENERIC_CHANGELOG_LABELS = frozenset({
     "full", "full kit", "changes", "see changes", "diff",
     "chinese", "english", "cn", "chs", "cht", "en", "jp", "kr",
@@ -3034,6 +3042,60 @@ _GI_FIGHT_PROP_LABELS = {
 _GI_WEAPON_SUBSTAT_LV90_MULT = 4.594
 
 
+_ZZZ_BANGBOO_SKILLS = (("a", "Active Skill"), ("b", "Talent"), ("c", "QTE"))
+
+
+def _bangboo_prop_value(prop: Any) -> str:
+    """One `skill_prop` entry as the site displays it: `main: 80000` with format `%` is `800%`."""
+    if not isinstance(prop, dict):
+        return ""
+    main = prop.get("main")
+    if not isinstance(main, (int, float)) or isinstance(main, bool):
+        return ""
+    if "%" in str(prop.get("format") or ""):
+        return f"{_fmt_value(float(main) / 100.0, 'g')}%"
+    return _fmt_value(main, "g")
+
+
+def _bangboo_skill_lines(data: dict) -> list[str]:
+    """A Bangboo's three skills, keeping only what the build actually publishes.
+
+    Its English strings can lag the build — Charley's 3.4.1 file carries a localization key for
+    every title and description — so a key is dropped instead of printed, and `skill_prop` still
+    supplies the numbers the site itself shows.
+    """
+    skill = data.get("skill") if isinstance(data.get("skill"), dict) else {}
+    props = data.get("skill_prop") if isinstance(data.get("skill_prop"), dict) else {}
+    lines: list[str] = []
+    for key, label in _ZZZ_BANGBOO_SKILLS:
+        block = skill.get(key)
+        levels = block.get("level") if isinstance(block, dict) else None
+        first = levels.get("1") if isinstance(levels, dict) else None
+        if not isinstance(first, dict):
+            continue
+        desc = "" if _is_key(str(first.get("desc") or "")) else _clean(first.get("desc"))
+        if desc:
+            lines.append(f"{label}: {desc}")
+        names = [str(prop) for prop in (first.get("property") or []) if not _is_key(str(prop))]
+        pairs: list[str] = []
+        for slot in str(first.get("param") or "").split("|"):
+            match = re.search(r"\{Skill:\s*(\d+)\s*,\s*Prop:\s*(\d+)\}", slot)
+            if not match:
+                continue
+            table = props.get(match.group(1))
+            value = _bangboo_prop_value((table or {}).get(match.group(2))
+                                        if isinstance(table, dict) else None)
+            if value and len(pairs) < len(names):
+                pairs.append(f"{names[len(pairs)]} {value}")
+        if pairs:
+            lines.append(f"{label} attributes: " + " · ".join(pairs))
+        elif not desc:
+            # A fresh build ships the block but every string in it is still a key, so there is
+            # nothing to print. Say the section exists rather than letting it vanish.
+            lines.append(f"-# {label}: only localization keys in this build — omitted until translated.")
+    return lines
+
+
 def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
     """Pull the display fields of one weapon / relic out of its detail JSON."""
     stats_line = ""
@@ -3161,6 +3223,10 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
             ]
             if p_names:
                 set_parts = " · ".join(p_names)
+    elif ns == "zzz" and kind == "bangboo":
+        # No `set_kind`: the card's own category heading is already "Bangboo", and a promoted
+        # Lv. 60 total cannot be derived from the file honestly (see docs/SOURCES.md).
+        lines = _bangboo_skill_lines(data)
     elif ns == "hsr" and kind == "lightcone":
         weapon_class = str(data.get("base_type") or listing.get("baseType") or "").strip()
         stats_table = data.get("stats") or {}
@@ -3846,6 +3912,8 @@ def _entry_role(ns: str, url: str) -> str:
         return "character"
     if "/w-engines/" in low or "/light-cones/" in low or "/lightcones/" in low or "/weapons/" in low:
         return "weapon"
+    if "/bangboo/" in low:
+        return "bangboo"
     if ("/drive-discs/" in low or "/relics/" in low or "/relicsets/" in low
             or "/planar-ornaments/" in low or "/artifacts/" in low or "/echoes/" in low
             or "/echo/" in low):
@@ -3862,7 +3930,8 @@ def _public_path(ns: str, role: str, set_kind: str = "") -> str:
     a card that used them linked to a 404.
     """
     paths = {
-        "zzz": {"character": "agents", "weapon": "w-engines", "relic": "drive-discs"},
+        "zzz": {"character": "agents", "weapon": "w-engines", "relic": "drive-discs",
+                "bangboo": "bangboo"},
         "hsr": {"character": "characters", "weapon": "lightcones", "relic": "relics"},
         "gi": {"character": "characters", "weapon": "weapons", "relic": "artifacts"},
         "ww": {"character": "resonators", "weapon": "weapons", "relic": "echoes"},
@@ -3920,7 +3989,8 @@ def _snapshot_item_id(key: object, snapshot: dict) -> str:
 
 def _candidate_entries(ns: str, kinds: dict, entries: list[dict], snapshots: dict,
                        new_char_ids: set[str], new_weapon_ids: set[str],
-                       new_relic_ids: set[str]) -> tuple[list[dict], list[dict]]:
+                       new_relic_ids: set[str],
+                       new_bangboo_ids: set[str] | None = None) -> tuple[list[dict], list[dict]]:
     """Changelog entries first; if it is empty, probe only tracked/new ids, never every unit."""
     chars: dict[str, dict] = {}
     equipment: dict[tuple[str, str], dict] = {}
@@ -3929,7 +3999,7 @@ def _candidate_entries(ns: str, kinds: dict, entries: list[dict], snapshots: dic
             continue
         item_id = _entry_id(raw)
         role = _entry_role(ns, str(raw.get("url") or ""))
-        if not item_id or role not in ("character", "weapon", "relic"):
+        if not item_id or role not in CARD_ROLES:
             continue
         copy = dict(raw)
         copy["role"] = role
@@ -3942,6 +4012,7 @@ def _candidate_entries(ns: str, kinds: dict, entries: list[dict], snapshots: dic
         ("character", new_char_ids),
         ("weapon", new_weapon_ids),
         ("relic", new_relic_ids),
+        ("bangboo", new_bangboo_ids or set()),
     ):
         for item_id in sorted(ids):
             fallback = _fallback_entry(ns, role, item_id)
@@ -3959,7 +4030,7 @@ def _candidate_entries(ns: str, kinds: dict, entries: list[dict], snapshots: dic
                 continue
             if role == "character":
                 chars.setdefault(item_id, _fallback_entry(ns, role, item_id))
-            elif role in ("weapon", "relic"):
+            elif role in EQUIP_ROLES:
                 equipment.setdefault((role, item_id), _fallback_entry(ns, role, item_id))
     return list(chars.values()), list(equipment.values())
 
@@ -4199,7 +4270,7 @@ def _equipment_snapshot(equipment: BetaEquipment, revision: str, now: int, kind:
 
 
 def _equipment_from_snapshot(snapshot: Any) -> BetaEquipment | None:
-    if not isinstance(snapshot, dict) or snapshot.get("kind") not in ("weapon", "relic"):
+    if not isinstance(snapshot, dict) or snapshot.get("kind") not in EQUIP_ROLES:
         return None
     data = snapshot.get("data")
     if not isinstance(data, dict):
@@ -4434,7 +4505,7 @@ def _data_image_candidates(
     elif ns == "hsr" and role == "relic":
         if raw_icon:
             add(f"{STATIC_BASE}/assets/hsr/itemfigures/{Path(raw_icon).stem}.webp")
-    elif ns == "zzz" and role in ("character", "weapon", "relic"):
+    elif ns == "zzz" and role in ("character",) + EQUIP_ROLES:
         for z_raw in (
             data.get("icon"),
             data.get("icon2"),
@@ -5530,7 +5601,7 @@ def _pending_entries(ns: str, entries: list[dict], processed: set[str]) -> list[
             continue
         role = _entry_role(ns, str(entry.get("url") or ""))
         item_id = _entry_id(entry)
-        if role not in ("character", "weapon", "relic") or not item_id:
+        if role not in CARD_ROLES or not item_id:
             continue
         if _entry_key(ns, role, item_id) not in processed:
             pending.append(entry)
@@ -5631,7 +5702,7 @@ async def _released_equipment(
     ctx, ns: str, kinds: dict, role: str, item_id: str, live_build: str
 ) -> BetaEquipment | None:
     """The same weapon / disc / relic as it ships in the live build, or None when it has none."""
-    if role not in ("weapon", "relic") or not live_build or not item_id:
+    if role not in EQUIP_ROLES or not live_build or not item_id:
         return None
     detail_kind = kinds[role]["detail"]
     data = await _detail(ctx.fetcher, ns, live_build, detail_kind, item_id)
@@ -5804,10 +5875,12 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     new_char_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["character"])
     new_weapon_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["weapon"])
     new_relic_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["relic"])
+    # Only ZZZ has a bangboo list, and only some builds carry it — an absent key reads as empty.
+    new_bangboo_ids = manifest_new_ids(manifest, ns, str(kinds["new_keys"].get("bangboo") or ""))
     source_entries = (late_pending if late_pending is not None else
                       (list(source_revision.get("entries") or []) if source_revision else []))
     patch.listed = len([e for e in source_entries
-                        if _entry_role(ns, str(e.get("url") or "")) in ("character", "weapon", "relic")])
+                        if _entry_role(ns, str(e.get("url") or "")) in CARD_ROLES])
     # A changelog can list something no card carries (ZZZ lists Bangboo, Genshin lists
     # materials). Say so once per revision instead of dropping it in silence.
     unkinded = [e for e in source_entries
@@ -5834,11 +5907,14 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         and _major_minor(previous_ver) == _major_minor(version)
         and budget["max_requests"] >= 12
     ):
-        for role in ("character", "weapon", "relic"):
+        for role in CARD_ROLES:
+            # Only ZZZ publishes Bangboo listings; the other games have no such kind.
+            list_kind = str(kinds["new_keys"].get(role) or "")
+            if not list_kind:
+                continue
             if requests + 2 > budget["max_requests"] or not _take_shared_request(budget, 2):
                 break
             requests += 2
-            list_kind = kinds["new_keys"][role]
             prev_idx = await _listing(ctx.fetcher, ns, previous_ver, list_kind)
             cur_idx = await _listing(ctx.fetcher, ns, version, list_kind)
             if not prev_idx or not cur_idx:
@@ -5848,7 +5924,8 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     source_entries.append(_fallback_entry(ns, role, str(item_id)))
 
     char_entries, equip_entries = _candidate_entries(
-        ns, kinds, source_entries, snapshots, new_char_ids, new_weapon_ids, new_relic_ids)
+        ns, kinds, source_entries, snapshots, new_char_ids, new_weapon_ids, new_relic_ids,
+        new_bangboo_ids)
 
     processed = set(saved.get("processed") or []) if isinstance(saved, dict) else set()
     char_entries = [entry for entry in char_entries
@@ -6287,7 +6364,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     for entry in equip_entries:
         item_id = _entry_id(entry)
         role = str(entry.get("role") or _entry_role(ns, str(entry.get("url") or "")))
-        if not item_id or role not in ("weapon", "relic"):
+        if not item_id or role not in EQUIP_ROLES:
             continue
         if equip_count >= budget["max_equip"]:
             patch.more = True
@@ -6355,7 +6432,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         )
         previous = (_equipment_from_snapshot(previous_snapshot)
                     if str((previous_snapshot or {}).get("kind") or "") == role else None)
-        is_new = item_id in (new_weapon_ids if role == "weapon" else new_relic_ids) and previous is None
+        is_new = item_id in {
+            "weapon": new_weapon_ids, "relic": new_relic_ids, "bangboo": new_bangboo_ids,
+        }.get(role, set()) and previous is None
         name = _safe_entry_name(
             entry, data, listing_entry, item_id,
             extra_names=(str(((previous_snapshot or {}).get("data") or {}).get("name") or ""),),

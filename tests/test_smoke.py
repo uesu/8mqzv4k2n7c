@@ -18582,8 +18582,11 @@ def test_feature5_sveltekit_data_stream_is_read_when_the_page_is_not():
     chars, equip = beta_mod._candidate_entries(
         "zzz", beta_mod.NANOKA_KINDS["zzz"], top["entries"], {}, set(), set(), set())
     assert [beta_mod._entry_id(c) for c in chars] == ["1071", "1551", "1661"]
-    # Bangboo are listed but not a tracked card role, exactly as the page path behaves.
-    assert sorted(beta_mod._entry_id(e) for e in equip) == ["14166", "34300"]
+    # Bangboo is a tracked card role of its own, so the listed 54024 is a candidate too — with
+    # its own role, which is what routes it to `en/bangboo/<id>.json` and the `/bangboo/` path.
+    assert sorted(beta_mod._entry_id(e) for e in equip) == ["14166", "34300", "54024"]
+    assert {beta_mod._entry_id(e): e["role"] for e in equip} == {
+        "14166": "weapon", "34300": "relic", "54024": "bangboo"}
     assert beta_mod._parse_gachabase_data("Access denied") == []
     assert beta_mod._parse_gachabase_data("") == []
 
@@ -18660,11 +18663,93 @@ def test_feature5_every_nanoka_endpoint_the_cards_read_is_the_one_the_site_serve
     }
 
 
+def test_feature5_a_bangboo_is_a_card_kind_of_its_own():
+    """Charley (54024) reads like a small agent: three skills, and keys where the prose is not
+    translated yet. Captured from static.nanoka.cc 2026-10-30."""
+    from gamexpress import beta as beta_mod
+
+    data = _beta_json("zzz_bangboo_54024.json")
+    fields = beta_mod._equip_from_detail("zzz", "bangboo", data, {})
+    # zzz rarity 4 is the five-star S rank the site prints.
+    assert fields["rarity"] == 5 and fields["set_kind"] == ""
+    text = "\n".join(fields["lines"])
+    # The numbers are real, taken from `skill_prop`, and match the served page (800% / 293%,
+    # 1079% / 154%).
+    assert "DMG Multiplier 800%" in text and "Daze Multiplier 293%" in text
+    assert "DMG Multiplier 1079%" in text and "Daze Multiplier 154%" in text
+    # No localization key is ever printed as prose.
+    assert "_54024" not in text and "Bangboo_" not in text
+    # The Talent block exists but is keys-only at 3.4.1; it says so instead of vanishing.
+    assert "-# Talent: only localization keys in this build" in text
+
+    # Route, page path and diff link all use the site's own `bangboo` segment.
+    assert beta_mod._entry_role("zzz", "https://zzz.gachabase.net/bangboo/54024/54024/beta") \
+        == "bangboo"
+    assert beta_mod._public_path("zzz", "bangboo") == "bangboo"
+    assert beta_mod._diff_url("zzz", "bangboo", "54024", "Charley",
+                              "3.4.1+19851435", "3.4.1+19997538") == (
+        "https://zzz.gachabase.net/diff/bangboo/54024/charley"
+        "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en")
+
+
+def test_feature5_a_new_bangboo_reaches_the_card_end_to_end():
+    """A listed Bangboo becomes an equipment entry instead of a "no card kind" note."""
+    from gamexpress import beta as beta_mod
+
+    changelog = "\n\n".join([
+        "# CHANGELOG - v3.4.X",
+        "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### Bangboo",
+        "[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/54024.png)\\\\",
+        "\\\\Charley](https://zzz.gachabase.net/bangboo/54024/54024/beta?lang=en) "
+        "[See Changes](https://zzz.gachabase.net/diff/bangboo/54024/54024"
+        "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en)",
+    ])
+    manifest = {"zzz": {"live": "3.3", "latest": "3.4.1+19997538",
+                        "available": ["3.3", "3.4.1+19997538"],
+                        "new": {"character": [], "weapon": [], "equipment": [],
+                                "bangboo": ["54024"]}}}
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = _RecordingFetcher({
+            # Only the beta build has this Bangboo; the live 3.3 read must miss, or the item
+            # would look unchanged against the build players already run.
+            "/3.4.1+19997538/en/bangboo/54024": _beta_json("zzz_bangboo_54024.json"),
+            "/3.4.1+19997538/bangboo.json": {"54024": {"rank": 4, "en": "Charley"}},
+            "changelog/beta": changelog,
+        })
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(
+            beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+        assert not any("no card kind" in warn for warn in ctx.warnings), ctx.warnings
+
+    names = [eq.name for eq in patch.equipment]
+    assert names == ["Charley"], names
+    card = patch.equipment[0]
+    assert card.category_label == "Bangboo" and card.rarity == 5, (card.category_label, card.rarity)
+    # New-ness comes from the manifest's own bangboo list, not from the relic ids.
+    assert card.tag == "[NEW]", card.tag
+    # The changelog's own "See Changes" link wins over a generated one, route and all.
+    assert "/diff/bangboo/54024/" in card.diff_url, card.diff_url
+    assert "prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538" in card.diff_url, card.diff_url
+    rendered = "\n".join(card.lines)
+    assert "DMG Multiplier 800%" in rendered and "Bangboo_" not in rendered
+
+    # Rendered card: an S-Rank Bangboo under its own heading, and no redundant `*Bangboo*` line.
+    payloads, _ = cards.beta_payloads_with_map(GAMES["zzz"], patch)
+    body = json.dumps(payloads)
+    assert "## Bangboo" in body and "S-Rank" in body, body[:2000]
+    assert "*Bangboo*" not in body
+
+
 def test_feature5_a_listed_group_with_no_card_kind_is_reported_not_swallowed():
     """ZZZ lists Bangboo; the card has no Bangboo kind, so the run says so instead of hiding it."""
     from gamexpress import beta as beta_mod
 
     stream = (BETA_FIX / "zzz_changelog_data.jsonl").read_text(encoding="utf-8")
+    # A route no card kind knows (`/npcs/`), listed inside a section that is read. ZZZ's own
+    # Bangboo is carded now, so this is the shape that still has to be reported.
+    stream = stream.replace("/agents/", "/npcs/")
 
     class StreamFetcher:
         async def get_text(self, url, **_kw):
@@ -18685,7 +18770,7 @@ def test_feature5_a_listed_group_with_no_card_kind_is_reported_not_swallowed():
         patch = asyncio.run(
             beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
     assert patch is not None
-    assert any("no card kind" in warn and "Bangboo" in warn for warn in ctx.warnings), ctx.warnings
+    assert any("no card kind" in warn and "Agents" in warn for warn in ctx.warnings), ctx.warnings
 
 
 def test_feature5_changelog_falls_back_to_the_data_endpoint_after_403():
