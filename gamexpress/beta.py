@@ -1618,12 +1618,28 @@ def _devalue(flat: list, ref: Any, depth: int = 0) -> Any:
     return ref
 
 
+# Every group name the three changelogs use, not just ZZZ's. The pages spell the same three
+# groups differently: ZZZ `agents|wEngines|bangboo|driveDiscs`, Star Rail
+# `characters|lightcones|relics|planarOrnaments`, Genshin `characters|weapons|artifacts`
+# (all confirmed from the served pages, 2026-10-30). A group missing from this map is dropped
+# silently, so before this map covered all three a Star Rail stream kept only `relics` and a
+# Genshin stream produced no revision at all.
+# `items` and `materials`/`params` are listed by the sites too, but no card carries them.
 _DATA_SECTIONS = {
     "agents": "Agents",
+    "characters": "Characters",
+    "resonators": "Resonators",
     "wEngines": "W-Engines",
+    "weapons": "Weapons",
+    "lightcones": "Light Cones",
+    "lightCones": "Light Cones",
     "bangboo": "Bangboo",
     "driveDiscs": "Drive Discs",
-    "relics": "Drive Discs",
+    "artifacts": "Artifacts",
+    "relics": "Relics",
+    "relicsets": "Relic Sets",
+    "planarOrnaments": "Planar Ornaments",
+    "echoes": "Echoes",
 }
 
 
@@ -5786,6 +5802,16 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                       (list(source_revision.get("entries") or []) if source_revision else []))
     patch.listed = len([e for e in source_entries
                         if _entry_role(ns, str(e.get("url") or "")) in ("character", "weapon", "relic")])
+    # A changelog can list something no card carries (ZZZ lists Bangboo, Genshin lists
+    # materials). Say so once per revision instead of dropping it in silence.
+    unkinded = [e for e in source_entries
+                if str(e.get("section") or "").strip()
+                and not _entry_role(ns, str(e.get("url") or ""))]
+    if unkinded:
+        labels = sorted({str(e.get("section") or "").strip() for e in unkinded})
+        ctx.warnings.append(
+            f"{game.short} beta: {len(unkinded)} listed change(s) have no card kind "
+            f"({', '.join(labels)}) — skipped")
     requests = (2 + extra_ch_reqs) if _changelog_url(game) else 1
     previous_ver = str(record.get("source_version") or "").strip()
     # When GachaBase is unreachable (on 2026-10-30 it answered 403 to

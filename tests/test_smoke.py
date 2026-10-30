@@ -18588,6 +18588,63 @@ def test_feature5_sveltekit_data_stream_is_read_when_the_page_is_not():
     assert beta_mod._parse_gachabase_data("") == []
 
 
+def test_feature5_every_games_changelog_group_names_are_read():
+    """The three sites name the same groups differently, and all of them have to parse.
+
+    Measured from the served pages (2026-10-30): ZZZ `agents|wEngines|bangboo|driveDiscs`,
+    Star Rail `characters|lightcones|relics|planarOrnaments`, Genshin
+    `characters|weapons|artifacts`. The fixture stream is ZZZ's, so renaming its group keys is
+    exactly the shape the other two send.
+    """
+    from gamexpress import beta as beta_mod
+
+    raw = (BETA_FIX / "zzz_changelog_data.jsonl").read_text(encoding="utf-8")
+    gi = (raw.replace('"agents"', '"characters"').replace('"wEngines"', '"weapons"')
+             .replace('"bangboo"', '"artifacts"'))
+    hsr = (raw.replace('"agents"', '"characters"').replace('"wEngines"', '"lightcones"')
+              .replace('"bangboo"', '"planarOrnaments"').replace('"driveDiscs"', '"relics"'))
+    for stream, ns, labels in (
+        (gi, "gi", {"Characters", "Weapons", "Artifacts"}),
+        (hsr, "hsr", {"Characters", "Light Cones", "Planar Ornaments", "Relics"}),
+    ):
+        revs = beta_mod._parse_gachabase_data(
+            stream, base_url=f"https://{ns}.gachabase.net/changelog/beta?lang=en")
+        assert [r["label"] for r in revs] == ["v3.4.1 Rev. 19997538", "v3.4.1 Rev. 19834130"], ns
+        sections = {e["section"] for e in revs[0]["entries"]}
+        assert labels <= sections, (ns, sections)
+        # A group with no card role is still carried for the caller to report, never invented
+        # into a weapon or a relic.
+        assert all(e["url"] for e in revs[0]["entries"])
+
+
+def test_feature5_a_listed_group_with_no_card_kind_is_reported_not_swallowed():
+    """ZZZ lists Bangboo; the card has no Bangboo kind, so the run says so instead of hiding it."""
+    from gamexpress import beta as beta_mod
+
+    stream = (BETA_FIX / "zzz_changelog_data.jsonl").read_text(encoding="utf-8")
+
+    class StreamFetcher:
+        async def get_text(self, url, **_kw):
+            return stream if url.endswith("/__data.json?lang=en") else None
+
+        async def get_json(self, _url, **_kw):
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    manifest = {"zzz": {"live": "3.3", "latest": "3.4.1+19997538",
+                        "available": ["3.3", "3.4.1+19997538"],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", StreamFetcher(), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(
+            beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+    assert patch is not None
+    assert any("no card kind" in warn and "Bangboo" in warn for warn in ctx.warnings), ctx.warnings
+
+
 def test_feature5_changelog_falls_back_to_the_data_endpoint_after_403():
     from gamexpress import beta as beta_mod
 
