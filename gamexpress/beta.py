@@ -4024,15 +4024,56 @@ def _section_from_snapshot(value: Any) -> BetaSectionEntry:
     )
 
 
+def _text(value: Any) -> str:
+    """A value as the snapshot keeps it — whitespace-trimmed, never clipped."""
+    return str(value or "").strip()
+
+
+def _section_content(section: BetaSectionEntry) -> dict:
+    """One block's full content, trimmed like the retained copy but never clipped or capped.
+
+    `truncated` has to mean "the retained copy lost text". Comparing raw attributes against the
+    trimmed copy made a single trailing space (or one blank line) look like a clipped block, so an
+    item whose source ever pads a line was marked truncated forever: `_snapshot_comparison()` then
+    refused to diff it and every later revision re-printed the whole kit as `[CHANGED]` — exactly
+    the WuWa 3.8.3 symptom, with no cap in sight.
+    """
+    return {
+        "title": _text(section.title),
+        "category": _text(section.category),
+        "meta": _text(section.meta),
+        "lines": [_text(raw) for raw in section.lines or () if str(raw).strip()],
+        "params": [
+            {"name": _text(row.get("name")), "value": row.get("value"),
+             "text": _text(row.get("text"))}
+            for row in section.params or () if isinstance(row, dict)
+        ],
+        "defs": [(_text(name), _text(desc)) for name, desc in section.defs or ()
+                 if str(name).strip() and str(desc).strip()],
+        "values_label": _text(section.values_label),
+    }
+
+
 def _snapshot_record(item, data: dict, kind: str, revision: str, now: int) -> dict:
     """Keep bounded text plus a digest of full content, excluding mutable media/links."""
     excluded = ("image_url", "image_urls", "page_url", "weapon_class", "set_kind", "set_parts")
-    full = {key: getattr(item, key) for key in data if key not in excluded}
     if kind == "character":
-        full["sections"] = [
-            {key: getattr(section, key) for key in _section_snapshot(section)}
-            for section in item.sections
-        ]
+        full = {
+            "id": item.id, "name": _text(item.name), "rarity": item.rarity,
+            "element": _text(item.element), "role": _text(item.role),
+            "subtext": _text(item.subtext), "stats_header": _text(item.stats_header),
+            "stats_lines": [_text(line) for line in item.stats_lines],
+            "sections": [_section_content(section) for section in item.sections],
+            "mechanic_defs": [(_text(name), _text(desc)) for name, desc in item.mechanic_defs],
+        }
+    else:
+        full = {
+            "id": item.id, "name": _text(item.name), "category_label": _text(item.category_label),
+            "rarity": item.rarity, "sub_type": _text(item.sub_type),
+            "stats_line": _text(item.stats_line), "effect_title": _text(item.effect_title),
+            "lines": [_text(line) for line in item.lines],
+        }
+    full = {key: full[key] for key in data if key in full and key not in excluded}
     content_signature = stable_hash(full)
     retained = {key: value for key, value in data.items() if key in full}
     return {"kind": kind, "revision": revision, "ts": int(now), "data": data,

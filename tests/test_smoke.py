@@ -20476,6 +20476,93 @@ def test_feature5_a_signature_only_change_posts_a_labelled_note_not_silence():
         assert cards.validate_payload(payload) == []
 
 
+def test_feature5_a_padded_source_line_does_not_disable_the_diff():
+    """One trailing space must not cost the reader every future `~~old~~ → **new**`.
+
+    `truncated` used to compare raw attributes against the trimmed retained copy, so an item whose
+    source ever padded a line (or emitted a blank one) was marked clipped forever,
+    `_snapshot_comparison()` refused to diff it, and every later revision re-printed the whole kit
+    as `[CHANGED]` — the WuWa 3.8.3 symptom, without any cap involved.
+    """
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaSectionEntry
+    from gamexpress.state import State
+
+    def kit(value, pad):
+        lines = [f"Basic Attack Stage 1 DMG: {value}" + (" " if pad else ""),
+                 "",                                     # a blank line inside the block
+                 "Press Normal Attack to perform up to 4 attacks."]
+        return {"sections": [BetaSectionEntry(title="Normal Attack", category="Normal Attack",
+                                              lines=lines)],
+                "stats_lines": ["Base HP 16712.5"], "role": "Sword", "element": "Spectro",
+                "rarity": 5}
+
+    state = {"kit": kit("74.28%", True)}
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.8.1"],
+                       "new": {"character": [1512], "weapon": [], "equipment": []}}}
+
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"ww": lambda _d: state["kit"]}):
+        ctx = _beta_ctx(Path(tmp) / "state.json",
+                        _RecordingFetcher({"changelog/beta": "", "character/1512": {"rarity": 5}}),
+                        BETA_ENABLED="1", games=["wuwa"])
+
+        def advance(revision):
+            manifest["ww"]["latest"] = revision
+            manifest["ww"]["available"].append(revision)
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                   beta_mod._budget(ctx)))
+
+        first = advance("3.8.1")
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), first, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(ctx.settings.state_path)
+        snap = ctx.state.beta_record("wuwa")["snapshots"]["ww:1512"]
+        assert snap["truncated"] is False, "whitespace is not truncation"
+
+        state["kit"] = kit("63.62%", False)
+        second = advance("3.8.3")
+
+    assert len(second.characters) == 1
+    card = second.characters[0]
+    text = "\n".join(line for section in card.sections for line in section.lines)
+    assert "~~74.28%~~ → **63.62%**" in text
+    assert second.diff_range == "Rev. 3.8.1 → 3.8.3"
+    # And the untouched sentence is omitted, not re-printed as an unchanged block.
+    assert "Press Normal Attack to perform up to 4 attacks." not in text
+    payloads = cards.beta_payloads(GAMES["wuwa"], second)
+    for payload in payloads:
+        assert cards.validate_payload(payload) == []
+
+
+def test_feature5_the_snapshot_still_calls_a_real_clip_truncated():
+    """The whitespace fix must not blind the guard: real loss still disables the diff."""
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaCharacter, BetaEquipment, BetaSectionEntry
+
+    def snap(lines, title="Skill"):
+        char = BetaCharacter(id="ww:1", name="Lily", rarity=5, stats_lines=["Base HP 1"],
+                             sections=[BetaSectionEntry(title=title, category="Skills",
+                                                        lines=lines)])
+        return beta_mod._character_snapshot(char, "1.0", 1793000000)["truncated"]
+
+    assert snap(["Deals 100% DMG."]) is False
+    assert snap(["Deals 100% DMG. "]) is False                 # padding is not loss
+    assert snap(["Deals 100% DMG.", "", "   "]) is False        # dropped blanks are not loss
+    assert snap([f"line {i}" for i in range(161)]) is True      # the 160-line cap bites
+    assert snap(["x" * 1500]) is True                           # the 1400-char clip bites
+    assert snap(["Deals 100% DMG."], title="Skill " * 60) is True   # the 240-char title clip
+
+    eq = BetaEquipment(id="ww:2", name="Dreamweaver", category_label="Weapon", rarity=5,
+                       lines=["ATK increased by 10%."])
+    padded = BetaEquipment(id="ww:2", name="Dreamweaver", category_label="Weapon", rarity=5,
+                           lines=["ATK increased by 10%." + " "])
+    assert beta_mod._equipment_snapshot(eq, "1.0", 1, "weapon")["truncated"] is False
+    assert beta_mod._equipment_snapshot(padded, "1.0", 1, "weapon")["truncated"] is False
+
+
 def _ww_prior_revision_state(tmp_path, kit_3_8_1, truncate=True):
     """A WuWa record already holding 3.8.1, as prod did before the snapshot cap was raised."""
     from gamexpress import beta as beta_mod
