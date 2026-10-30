@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793363719,
+      "last_poll": 1793365519,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793363719,
+      "last_poll": 1793365519,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793363719,
+      "last_poll": 1793365519,
       "latest_rev": "1ce49e698ba2de12",
       "locked_images": {},
       "revisions": {
@@ -517,7 +517,7 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793363719,
+      "last_poll": 1793365519,
       "latest_rev": "db88b87c5aa4dfb3",
       "locked_images": {
         "zzz:1331": {
@@ -5753,10 +5753,31 @@
           "announcement_ts": 1793008804,
           "banners": {
             "phase1": [
-              "Aeon ★ Aha"
+              "Aeon ★ Aha",
+              "Silver Wolf LV.999",
+              "Sparxie",
+              "Yao Guang"
+            ],
+            "phase1_4": [
+              "Asta",
+              "Lynx",
+              "Yukong"
+            ],
+            "phase2": [
+              "Acheron",
+              "Dan Heng • Imbibitor Lunae",
+              "Jing Yuan"
+            ],
+            "reruns": [
+              "Silver Wolf LV.999",
+              "Sparxie",
+              "Yao Guang",
+              "Acheron",
+              "Dan Heng • Imbibitor Lunae",
+              "Jing Yuan"
             ]
           },
-          "banners_checked_ts": 1793354717,
+          "banners_checked_ts": 1793365519,
           "banners_search_ts": 1793359222,
           "calendar_ts": 1793359222,
           "estimate_sources": [
@@ -5796,17 +5817,38 @@
         ],
         "first_seen": 1793008837,
         "message_id": "1564217196715057163",
-        "mirror_hash": "9b3cb55bea64e6b5",
+        "mirror_hash": "d1a3b122d3cd532d",
         "mirror_message_id": "1564217201806942302",
         "mirror_webhook_fp": "6f8f20d42db3",
-        "payload_hash": "4771bee54d8300b6",
+        "payload_hash": "b80c2e010ec4f170",
         "posted_at": 1793008837,
         "prov": {
           "b_phase1": [
             6,
-            1793019656
+            1793365519
+          ],
+          "b_phase1_4": [
+            6,
+            1793365519
+          ],
+          "b_phase1_4_by": [
+            "wiki"
           ],
           "b_phase1_by": [
+            "wiki"
+          ],
+          "b_phase2": [
+            6,
+            1793365519
+          ],
+          "b_phase2_by": [
+            "wiki"
+          ],
+          "b_reruns": [
+            6,
+            1793365519
+          ],
+          "b_reruns_by": [
             "wiki"
           ],
           "maint_end_ts": [
@@ -5839,7 +5881,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1793019656,
+        "updated_at": 1793365519,
         "webhook_fp": "19991534cf6d"
       }
     },
