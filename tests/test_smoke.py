@@ -18846,6 +18846,32 @@ def _ariel_like_detail(dmg_main: int = 77200, dmg_growth: int = 7720) -> dict:
     }
 
 
+def test_feature5_a_bangboo_value_prints_the_unit_the_site_prints():
+    """`format` is a literal unit, not a format string — and it must survive every shape."""
+    from gamexpress import beta as beta_mod
+
+    for prop, level, want in (
+        # Charley / Booltergeist / Ariel percentages, at the level the page shows.
+        ({"main": 80000, "growth": 8000, "format": "%"}, 6, "1200%"),
+        ({"main": 77200, "growth": 7720, "format": "%"}, 6, "1158%"),
+        # Ariel's rows that are not percentages.
+        ({"main": 660, "growth": 60, "format": "% HP"}, 6, "9.6% HP"),
+        ({"main": 275, "growth": 25, "format": "Energy"}, 6, "4 Energy"),
+        ({"main": 2000, "growth": 0, "format": "%"}, 6, "20%"),
+        # A .NET placeholder carries its sign inside the braces.
+        ({"main": 660, "growth": 60, "format": "{0:0.#%} HP"}, 6, "9.6% HP"),
+        ({"main": 660, "growth": 60, "format": "{0:0.#%}"}, 6, "9.6%"),
+        # Seconds hug the number; an already-fractional value is not divided again.
+        ({"main": 2400, "format": "s"}, 1, "24s"),
+        ({"main": 2.75, "growth": 0.25, "format": "Energy"}, 6, "4 Energy"),
+        ({"main": 1500, "format": ""}, 1, "15"),
+    ):
+        assert beta_mod._bangboo_prop_value(prop, level) == want, (prop, level)
+    # A row with no number produces nothing rather than a bare unit.
+    assert beta_mod._bangboo_prop_value({"growth": 5, "format": "%"}, 1) == ""
+    assert beta_mod._bangboo_prop_value({"main": True, "format": "%"}, 1) == ""
+
+
 def test_feature5_an_s_rank_bangboo_with_buff_rows_matches_both_sites():
     """Ariel's five-row Active Skill, including the units that are not percentages."""
     from gamexpress import beta as beta_mod

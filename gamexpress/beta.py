@@ -3064,18 +3064,28 @@ _BANGBOO_CRIT_DMG_PROP = "21101"
 
 
 def _bangboo_prop_suffix(fmt: Any) -> str:
-    """The unit a `skill_prop` row prints after its number.
+    """The unit a `skill_prop` row prints after its number, spacing included.
 
-    `format` in these files is a literal unit (`"%"` on every Charley row), not a format string.
-    A build that ships a .NET placeholder instead (`"{0:0.#%} HP"`) is still read correctly: the
-    unit is whatever follows the closing brace. Either way the card prints the same unit the site
-    does rather than dropping it.
+    `format` in these files is a literal unit (`"%"` on every Charley row, `"% HP"` on Ariel's
+    HP recovery, `"Energy"` on its energy restore), not a format string. A build that ships a
+    .NET placeholder instead (`"{0:0.#%} HP"`) is read the same way: the sign comes from inside
+    the placeholder, the text after the closing brace is the rest of the unit.
     """
     text = str(fmt or "").strip()
+    if not text:
+        return ""
     closing = text.rfind("}")
     if closing != -1 and "{" in text[:closing]:
-        text = text[closing + 1:].strip()
-    return text
+        spec = text[text.index("{"):closing]
+        symbol, tail = ("%" if "%" in spec else ""), text[closing + 1:].strip()
+    else:
+        symbol, tail = "", text
+        if text[:1].isalnum() is False:
+            symbol, tail = text[:1], text[1:].strip()
+    # "9.6% HP" and "4 Energy" space a word; "%" and "24s" hug the number.
+    if len(tail) > 1 and tail[:1].isalpha():
+        tail = " " + tail
+    return symbol + tail
 
 
 def _bangboo_prop_value(prop: Any, level: int = 1) -> str:
@@ -3083,7 +3093,8 @@ def _bangboo_prop_value(prop: Any, level: int = 1) -> str:
 
     Every row in these files is fixed-point hundredths — Charley's `80000` is 800% and Ariel's
     HP recovery `660` is 6.6% — so the value is always divided by 100 and the unit comes from
-    `format`.
+    `format`. A build that ever ships an already-fractional value (`2.75` rather than `275`) is
+    read as-is instead of being divided a second time, which would print `0.0275 Energy`.
     """
     if not isinstance(prop, dict):
         return ""
@@ -3094,12 +3105,10 @@ def _bangboo_prop_value(prop: Any, level: int = 1) -> str:
     growth = prop.get("growth")
     if isinstance(growth, (int, float)) and not isinstance(growth, bool) and level > 1:
         value += float(growth) * (level - 1)
-    number = _fmt_value(value / 100.0, "g")
-    suffix = _bangboo_prop_suffix(prop.get("format"))
-    if not suffix:
-        return number
-    # `%`, `s` and friends hug the number; a word unit gets a space: "9.6% HP", "4 Energy".
-    return f"{number} {suffix}" if suffix[:1].isalpha() else f"{number}{suffix}"
+    # The raw `main` decides the scale: an integer is fixed point, a fraction is already a rate.
+    fixed_point = isinstance(main, int) or float(main).is_integer()
+    number = _fmt_value(value / 100.0 if fixed_point else value, "g")
+    return number + _bangboo_prop_suffix(prop.get("format"))
 
 
 def _bangboo_skill_lines(data: dict) -> list[str]:
