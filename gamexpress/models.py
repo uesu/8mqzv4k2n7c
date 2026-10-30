@@ -120,6 +120,9 @@ class BetaPatch:
     beta_version: str = ""
     rev_label: str = ""
     rev_id: str = ""
+    # Header range for a revision diff: `Rev. 3.8.1 → 3.8.3`, or `Rev. 19834130 → 19851435` when
+    # only the build moved. Empty for a whole-kit card, which the header labels from the changelog.
+    diff_range: str = ""
     characters: list[BetaCharacter] = field(default_factory=list)
     equipment: list[BetaEquipment] = field(default_factory=list)
     source_url: str = ""

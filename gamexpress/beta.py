@@ -543,7 +543,16 @@ def _zzz_param_rows(items: Any, level: int = 12) -> list[dict]:
 
 
 # --------------------------------------------------------------------------- text diff
-_TOKEN_RE = re.compile(r"\d+(?:\.\d+)?(?:%|s\b)?(?:/[+-]?\d+(?:\.\d+)?(?:%|s\b)?)+|\w+|[^\s\w]")
+# One number INCLUDING its decimal point, its unit and any arithmetic joining it to the next
+# number: `74.28%` is one token, and so is `25.17%+25.17%*3`. Splitting on the `.` instead made the
+# word diff mark the decimal point as unchanged punctuation, so `74.28% -> 63.62%` came out as
+# `~~74.~~ -> **63.** ~~28~~ -> **62**%` — unreadable, and wrong about direction too: the
+# fragments `63.` and `62` were read as two independent changes, one of them going UP, which turned
+# a damage nerf into a [BUFF] verdict on the real WuWa 3.8.1 -> 3.8.3 kit.
+_TOKEN_RE = re.compile(
+    r"\d+(?:\.\d+)?(?:%|s\b)?(?:[/+*×x-]\d+(?:\.\d+)?(?:%|s\b)?)*"
+    r"|\w+|[^\s\w]"
+)
 
 
 def _spans(text: str) -> list[tuple[str, int, int]]:
@@ -3637,6 +3646,23 @@ def _revision_build(value: str) -> int | None:
         return None
 
 
+def _rev_range_label(previous: str, current: str) -> str:
+    """`Rev. 3.8.1 → 3.8.3`, or `Rev. 19834130 → 19851435` when only the build moved.
+
+    The format guide's header (`Rev. XXXXXXX → XXXXXXX`) and the hand-written 3.8.3 card both
+    name the revision pair: it says what the `~~old~~ → **new**` pairs below are measured against.
+    A bare build id cannot, and the same-version case has only build ids to offer. Returns "" when
+    the two revisions cannot be told apart, so the header falls back to the changelog's own label.
+    """
+    prev_display, cur_display = _display_version(previous), _display_version(current)
+    if prev_display and cur_display and prev_display != cur_display:
+        return f"Rev. {prev_display} → {cur_display}"
+    prev_build, cur_build = _revision_build(previous), _revision_build(current)
+    if prev_build is not None and cur_build is not None and prev_build != cur_build:
+        return f"Rev. {prev_build} → {cur_build}"
+    return ""
+
+
 def _major_minor(version: str) -> tuple[int, int]:
     nums = [int(n) for n in re.findall(r"\d+", _display_version(version))[:2]]
     if len(nums) >= 2:
@@ -3876,19 +3902,70 @@ def _clip(value: Any, limit: int = 1400) -> str:
     return text[:limit].rstrip() + ("…" if len(text) > limit else "")
 
 
-def _section_snapshot(section: BetaSectionEntry) -> dict:
+# Bounds for what ONE snapshot retains. These are safety limits against a runaway source, not a
+# display limit, and they sit well above the largest real kit: WuWa Lily's Forte Circuit carries 40
+# lines and her whole kit is ~11k characters, while these allow 60k characters, 160 lines per block
+# and 128 blocks.
+#
+# The old cap was 32 lines per block. Lily's Forte Circuit is longer than that, so her snapshot was
+# clipped, `_snapshot_record()` marked it `truncated`, and `_snapshot_comparison()` refuses to diff
+# anything an untrustworthy baseline because the clipped suffix could hold the only real change.
+# The result was the WuWa 3.8.3 card: a whole kit reprinted with every line `[CHANGED]`, no
+# `~~old~~ → **new**`, and no direction — for a revision whose entire point was the diff. A cap
+# below the real thing does not bound the snapshot, it silently disables the feature.
+BETA_SNAPSHOT_TEXT_BUDGET = 60_000
+BETA_SNAPSHOT_SECTIONS = 128
+BETA_SNAPSHOT_LINES = 160
+BETA_SNAPSHOT_PARAMS = 60
+BETA_SNAPSHOT_DEFS = 40
+BETA_SNAPSHOT_STATS = 32
+
+
+def _section_snapshot(section: BetaSectionEntry, budget: list[int] | None = None) -> dict:
+    """One block, retained in full until `budget` runs out (shared across the whole snapshot)."""
+    def spend(text: str) -> bool:
+        if budget is None:
+            return True
+        if budget[0] <= 0:
+            return False
+        budget[0] -= len(text)
+        return True
+
+    lines: list[str] = []
+    for raw in list(section.lines or [])[:BETA_SNAPSHOT_LINES]:
+        if not str(raw).strip():
+            continue
+        text = _clip(raw)
+        if not spend(text):
+            break
+        lines.append(text)
+
+    params: list[dict] = []
+    for row in list(section.params or [])[:BETA_SNAPSHOT_PARAMS]:
+        if not isinstance(row, dict):
+            continue
+        end = {"name": _clip(row.get("name"), 160), "value": row.get("value"),
+               "text": _clip(row.get("text"), 100)}
+        if not spend(str(end["name"]) + str(end["text"])):
+            break
+        params.append(end)
+
+    defs: list[tuple[str, str]] = []
+    for name, desc in list(section.defs or [])[:BETA_SNAPSHOT_DEFS]:
+        if not (str(name).strip() and str(desc).strip()):
+            continue
+        pair = (_clip(name, 160), _clip(desc))
+        if not spend(pair[0] + pair[1]):
+            break
+        defs.append(pair)
+
     return {
         "title": _clip(section.title, 240),
         "category": _clip(section.category, 120),
         "meta": _clip(section.meta, 160),
-        "lines": [_clip(line) for line in list(section.lines or [])[:32] if str(line).strip()],
-        "params": [
-            {"name": _clip(row.get("name"), 160), "value": row.get("value"),
-             "text": _clip(row.get("text"), 100)}
-            for row in list(section.params or [])[:20] if isinstance(row, dict)
-        ],
-        "defs": [(_clip(name, 160), _clip(desc)) for name, desc in list(section.defs or [])[:12]
-                 if str(name).strip() and str(desc).strip()],
+        "lines": lines,
+        "params": params,
+        "defs": defs,
         "values_label": _clip(section.values_label, 80),
     }
 
@@ -3954,12 +4031,14 @@ def _snapshot_comparison(previous: dict, current: dict) -> str:
 
 
 def _character_snapshot(character: BetaCharacter, revision: str, now: int) -> dict:
+    budget = [BETA_SNAPSHOT_TEXT_BUDGET]
     data = {
         "id": character.id, "name": character.name, "rarity": character.rarity,
         "element": character.element, "role": character.role, "subtext": character.subtext,
         "stats_header": character.stats_header,
-        "stats_lines": [_clip(line, 300) for line in character.stats_lines[:16]],
-        "sections": [_section_snapshot(section) for section in character.sections[:64]],
+        "stats_lines": [_clip(line, 300) for line in character.stats_lines[:BETA_SNAPSHOT_STATS]],
+        "sections": [_section_snapshot(section, budget)
+                     for section in character.sections[:BETA_SNAPSHOT_SECTIONS]],
         "mechanic_defs": [(str(name), _clip(desc)) for name, desc in character.mechanic_defs[:24]],
         "image_url": character.image_url, "page_url": character.page_url,
     }
@@ -4000,7 +4079,8 @@ def _equipment_snapshot(equipment: BetaEquipment, revision: str, now: int, kind:
         "weapon_class": equipment.weapon_class, "set_kind": equipment.set_kind,
         "set_parts": equipment.set_parts,
         "stats_line": _clip(equipment.stats_line, 400), "effect_title": _clip(equipment.effect_title, 200),
-        "lines": [_clip(line) for line in equipment.lines[:32]], "image_url": equipment.image_url,
+        "lines": [_clip(line) for line in equipment.lines[:BETA_SNAPSHOT_LINES]],
+        "image_url": equipment.image_url,
         "image_urls": [str(u) for u in (equipment.image_urls or [])[:10] if u],
         "page_url": equipment.page_url,
     }
@@ -4961,9 +5041,13 @@ def _revision_explanation(
     sentence = f"{lead}."
 
     if unchanged:
-        rest = (f"The other {_count(unchanged, 'block')} "
-                f"{'are' if unchanged > 1 else 'is'} untouched")
-        rest += f" and read exactly as they do on {compared_to}." if compared_to else "."
+        other = _count(unchanged, "block")
+        plural = unchanged > 1
+        rest = (f"The other {other} are untouched and read exactly as they do on {compared_to}."
+                if plural else
+                f"The other {other} is untouched and reads exactly as it does on {compared_to}.")
+        if not compared_to:
+            rest = f"The other {other} are untouched." if plural else f"The other {other} is untouched."
     elif compared_to:
         rest = f"Every block moved against {compared_to}."
     else:
@@ -5236,6 +5320,37 @@ async def _released_character(
         return None
     return BetaCharacter(
         id=f"released:{ns}:{item_id}",
+        name=str(built.get("name") or ""),
+        rarity=_parse_rarity(ns, (data or {}).get("rarity"), built.get("rarity") or 5) or 5,
+        element=str(built.get("element") or ""),
+        role=str(built.get("role") or ""),
+        stats_lines=list(built.get("stats_lines") or []),
+        sections=_clone_sections(list(built.get("sections") or []), "[CHANGED]"),
+    )
+
+
+async def _previous_revision_character(
+    ctx, ns: str, kinds: dict, item_id: str, revision: str
+) -> BetaCharacter | None:
+    """The same agent's kit as it stood at `revision`, rebuilt from the versioned detail JSON.
+
+    A retained snapshot can be untrustworthy — clipped by an older, smaller capacity, or stored
+    under a previous normalisation — and `_snapshot_comparison()` then refuses to diff it rather
+    than invent a change. Rebuilding the previous revision restores the comparison, so
+    `3.8.1 → 3.8.3` becomes a real before/after instead of a whole-kit reprint.
+
+    Returns None when the source no longer serves that revision (or serves something unreadable),
+    and the caller falls back to the honest full snapshot.
+    """
+    builder = _CHARACTER_BUILDERS.get(ns)
+    if not builder or not revision or not item_id:
+        return None
+    data = await _detail(ctx.fetcher, ns, revision, kinds["new_keys"]["character"], item_id)
+    built = builder(data) if isinstance(data, dict) else None
+    if not built or not built.get("sections"):
+        return None
+    return BetaCharacter(
+        id=f"previous:{ns}:{item_id}",
         name=str(built.get("name") or ""),
         rarity=_parse_rarity(ns, (data or {}).get("rarity"), built.get("rarity") or 5) or 5,
         element=str(built.get("element") or ""),
@@ -5692,26 +5807,62 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         # This runs BEFORE the snapshot and the delivered-item key are recorded: a deferred item
         # must stay pending, and a stored snapshot would make the next run look unchanged.
         released: BetaCharacter | None = None
+        prior_baseline = False
+        # The revision the retained snapshot was taken at — the second kind of baseline. It covers
+        # the case the live build cannot: an agent who is not released yet has no `live_build` kit
+        # to compare with (WuWa Lily answers 404 there), so `3.8.1 → 3.8.3` would otherwise reprint
+        # the whole kit with no before/after at all.
+        prior_revision = str((previous_snapshot or {}).get("revision") or "")
+        can_use_prior = bool(prior_revision and prior_revision != version)
         # `_encore` data is a different provider's shape: diffing it against a nanoka live build
         # would invent changes that are only formatting differences.
         needs_baseline = bool(
-            not is_new and has_live_build and "_encore" not in data
+            not is_new and "_encore" not in data
             and _live_baseline_possible(budget)
             and (previous is None or cmp_mode == "snapshot")
+            and (has_live_build or can_use_prior)
         )
-        if needs_baseline and (
-            not _live_baseline_affordable(budget, requests) or not _take_shared_request(budget, 1)
-        ):
-            # The baseline is what makes this a diff instead of a dump, so wait for the next
-            # run's budget rather than spending a card on the whole kit.
+        starved = False
+        if needs_baseline and _live_baseline_affordable(budget, requests):
+            if has_live_build:
+                if _take_shared_request(budget, 1):
+                    requests += 1
+                    released = await _released_character(ctx, ns, kinds, item_id, live_build)
+                    if released is not None:
+                        previous = released
+                        cmp_mode = "diff"
+                else:
+                    starved = True
+            # `previous` may exist and still be unusable — that is what `cmp_mode == "snapshot"`
+            # means, and `needs_baseline` already excludes the cases where it is trustworthy.
+            if (released is None and can_use_prior
+                    and _live_baseline_affordable(budget, requests)):
+                if _take_shared_request(budget, 1):
+                    requests += 1
+                    prior_kit = await _previous_revision_character(
+                        ctx, ns, kinds, item_id, prior_revision)
+                    # A CDN answering an old version path with the CURRENT build would make the
+                    # diff empty and claim "nothing changed" about a revision that changed a lot.
+                    # Compare the kit text itself: an identical rebuild is not a baseline, so keep
+                    # the honest full snapshot instead of posting an empty card.
+                    if prior_kit is not None and (
+                        stable_hash([_section_snapshot(section) for section in prior_kit.sections])
+                        != stable_hash([_section_snapshot(section) for section in full.sections])
+                    ):
+                        previous = prior_kit
+                        cmp_mode = "diff"
+                        prior_baseline = True
+                else:
+                    starved = True
+        elif needs_baseline:
+            starved = True
+        if starved and previous is None:
+            # The baseline is what makes this a diff instead of a dump, and the budget that funds
+            # it comes back next run, so wait rather than spend a card on the whole kit. A source
+            # that simply no longer serves the old revision is different: that falls through to
+            # the labelled full snapshot below, because waiting cannot fix it.
             patch.more = True
             continue
-        if needs_baseline:
-            requests += 1
-            released = await _released_character(ctx, ns, kinds, item_id, live_build)
-            if released is not None:
-                previous = released
-                cmp_mode = "diff"
         patch.snapshots[snap_key] = cur_snap
         if eidolon_imgs:
             patch.snapshots[snap_key]["gallery_urls"] = list(eidolon_imgs)
@@ -5747,6 +5898,14 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 full.is_new = False
                 old_rev = (f"the released {live_build} kit" if released is not None
                            else str((previous_snapshot or {}).get("revision") or "previous revision"))
+                if not patch.diff_range:
+                    # Taken from the first diffed item and kept: a mixed batch still covers one
+                    # revision pair, and the header names the range the whole card spans.
+                    patch.diff_range = _rev_range_label(
+                        live_build if released is not None
+                        else str((previous_snapshot or {}).get("revision") or ""),
+                        version,
+                    )
                 tally = _change_tally(diff_sections)
                 full.subtext = (f"-# Revision diff against {old_rev}"
                                 + (f" • {tally}" if tally else "")
@@ -5765,6 +5924,18 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     "no value change to post"
                 )
                 continue
+            elif prior_baseline:
+                # The rebuilt previous revision read back identical to this one — the diff found
+                # nothing to say. An item must never disappear from a batch, so print the honest
+                # full snapshot instead of appending nothing at all.
+                full.sections = _clone_sections(full.sections, "[CHANGED]")
+                full.is_new = False
+                full.subtext = ("-# Full current kit — complete before/after text is unavailable; "
+                                "no direction is inferred.")
+                full.overview = _synthesize_kit_overview(
+                    game.key, name, built, full.sections, is_new=False
+                )
+                patch.characters.append(full)
             elif new_char_img_added or new_char_gal_added:
                 vis_secs: list[BetaSectionEntry] = []
                 if new_char_img_added:
@@ -6050,6 +6221,10 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             changed = _diff_equipment(previous, current)
             if changed:
                 compared = f"the released {live_build} build" if released_eq is not None else ""
+                if not patch.diff_range:
+                    patch.diff_range = _rev_range_label(
+                        live_build if released_eq is not None else previous_revision, version
+                    )
                 changed.overview = _equipment_explanation(
                     name, changed.lines, compared_to=compared
                 )

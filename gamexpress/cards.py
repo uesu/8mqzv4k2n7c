@@ -1163,13 +1163,6 @@ def _bold_beta_numbers(line: str) -> str:
     return re.sub(r"\x01(\d+)\x01", lambda m: protected[int(m.group(1))], work)
 
 
-def _beta_cycle_label(beta_ver: str) -> str:
-    parts = [p for p in str(beta_ver or "").split(".") if p]
-    if len(parts) >= 2 and parts[0].isdigit() and parts[1].isdigit():
-        return f"{parts[0]}.{parts[1]}"
-    return beta_ver or "?"
-
-
 def _short_rev_label(rev_label: str, beta_ver: str) -> str:
     label = str(rev_label or "").strip()
     if not label:
@@ -1694,10 +1687,12 @@ def beta_payloads_with_map(
     rev_label = strip_invisible(str(getattr(patch, "rev_label", "") or "")).strip() or "Update"
     res_line = BETA_RESOURCE_LINKS.get(game.key, BETA_RESOURCE_LINKS["genshin"])
 
-    cycle_ver = _beta_cycle_label(beta_ver)
-    rev_short = _short_rev_label(rev_label, beta_ver)
+    # A revision diff says what it is measured against (`Rev. 3.8.1 → 3.8.3`); a whole-kit card
+    # has nothing to compare, so it keeps the changelog's own label.
+    rev_short = (strip_invisible(str(getattr(patch, "diff_range", "") or "")).strip()
+                 or _short_rev_label(rev_label, beta_ver))
     header_lines = [
-        f"## [{game.name} - {cycle_ver} Beta] Patch Notes: {rev_short}",
+        f"## [{game.short} - {beta_ver} Beta] Patch Notes: {rev_short}",
         res_line,
     ]
     if ping_obj and not silent and ping_obj.text:

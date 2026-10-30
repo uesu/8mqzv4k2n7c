@@ -17769,7 +17769,7 @@ def test_feature5_full_kit_substitution_and_structured_numeric_diff_are_truthful
         [BetaSectionEntry(title="Guard", category="Core", lines=["DMG taken is reduced by 40%."])],
         [BetaSectionEntry(title="Guard", category="Core", lines=["DMG taken is reduced by 35%."])],
     )
-    assert "[NERF]" in lower[0].lines[0] and "~~40~~ → **35**%" in lower[0].lines[0]
+    assert "[NERF]" in lower[0].lines[0] and "~~40%~~ → **35%**" in lower[0].lines[0]
 
 
 
@@ -18944,7 +18944,7 @@ def test_feature5_released_weapon_diffs_against_the_live_build():
         eq = patch.equipment[0]
         assert eq.lines[0].startswith("-# Compared with the released 3.3 kit")
         body = "\n".join(eq.lines)
-        assert "~~8~~ → **10**" in body
+        assert "~~8%~~ → **10%**" in body
 
 
 def _explanation_phoenix_sections() -> list:
@@ -19895,7 +19895,7 @@ def test_feature5_legacy_epoch1_state_resets_once_and_preserves_route_and_ambigu
         asyncio.run(beta_mod.run(ctx))
         # ZZZ reposts cleanly despite recent legacy last_poll and "No tracked changes" on 19851435; GI is gated.
         assert len(sent) >= 1
-        assert "Zenless Zone Zero - 3.4 Beta" in json.dumps(sent)
+        assert "## [ZZZ - 3.4.1 Beta] Patch Notes:" in json.dumps(sent)
         zzz_rec = ctx.state.beta_record("zzz")
         assert zzz_rec["format_epoch"] == BETA_FORMAT_EPOCH
         assert "old_zzz" not in zzz_rec["revisions"]
@@ -20069,7 +20069,7 @@ def test_feature5_prime_formatting_style_overview_rework_diff_and_footer_invaria
     payloads = cards.beta_payloads(GAMES["starrail"], patch)
     assert len(payloads) >= 2
     full_dump = json.dumps(payloads, ensure_ascii=False)
-    assert "## [Honkai: Star Rail - 4.7 Beta] Patch Notes: v1" in full_dump
+    assert "## [HSR - 4.7.51 Beta] Patch Notes: v1" in full_dump
     assert "**Element:** Quantum | **Path:** The Harmony | **Rarity:** ★★★★★" in full_dump
     assert "**Prime Tester** is a 5-Star Quantum Harmony unit" in full_dump
     assert "Citlali Mains" not in full_dump
@@ -20084,6 +20084,225 @@ def test_feature5_prime_formatting_style_overview_rework_diff_and_footer_invaria
         assert foot["type"] == 9
         assert foot["components"][0]["content"] == f"-# Honkai: Star Rail 4.7.51 Beta • Page {idx}/{len(payloads)}"
         assert foot["accessory"]["label"] == "Citlali News"
+
+
+def test_feature5_ww_3_8_3_second_revision_is_a_real_before_after_not_a_kit_dump():
+    """WuWa 3.8.1 -> 3.8.3 must read as a diff, even when a block is 40 lines long.
+
+    Run #2880 regressed here: the old 32-line snapshot cap clipped Lily's 40-line Forte Circuit,
+    revision had no baseline and every block re-printed as `[CHANGED]` under one full-kit card.
+    This pins the fix end to end — a real `~~old~~ -> **new**` line, the untouched block omitted
+    (never printed as `No changes.`), and the header's `Rev. 3.8.1 -> 3.8.3` range.
+    """
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import State
+
+    def build(values):
+        forte = ["Dream Perfume", "Lily can hold up to 300 points."]
+        forte += [f"Heavy Attack - Woven Fairytale step {i + 1}: pulls in nearby targets."
+                  for i in range(16)]
+        forte += [f"Basic Attack Stage 1 DMG: {values[0]}",
+                  f"Basic Attack Stage 2 DMG: {values[1]}"]
+        forte += [f"Trailing filler line {i} kept so the block stays long." for i in range(20)]
+        return {"sections": [
+            BetaSectionEntry(title="Normal Attack", category="Normal Attack",
+                             lines=["Press Normal Attack to perform up to 4 attacks.",
+                                    f"Basic Attack Stage 1 DMG: {values[0]}"]),
+            BetaSectionEntry(title="Forte Circuit", category="Forte Circuit", lines=forte),
+            BetaSectionEntry(title="RC4 [May Your Past Sink into Silence]",
+                             category="Resonance Chain",
+                             lines=["Healing provided is increased by 30%."]),
+            BetaSectionEntry(title="RC6 [May My Reverie Never End]", category="Resonance Chain",
+                             lines=[f"Spectro DMG bonus increased by {values[2]}."]),
+        ], "stats_lines": ["Base HP 16712.5"]}
+
+    old = ("74.28%", "25.17%+25.17%*3", "500%")
+    new = ("63.62%", "29.15%+29.15%*3", "400%")
+    state = {"kit": build(old)}
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.8.1"],
+                       "new": {"character": [1512], "weapon": [], "equipment": []}}}
+
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"ww": lambda _d: state["kit"]}):
+        ctx = _beta_ctx(
+            Path(tmp) / "state.json",
+            _RecordingFetcher({"changelog/beta": "", "character/1512": {"rarity": 5, "id": 1512}}),
+            BETA_ENABLED="1", games=["wuwa"],
+        )
+
+        def advance(revision):
+            manifest["ww"]["latest"] = revision
+            manifest["ww"]["available"].append(revision)
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                   beta_mod._budget(ctx)))
+
+        first = advance("3.8.1")
+        assert len(first.characters) == 1
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), first, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(ctx.settings.state_path)
+        snap = ctx.state.beta_record("wuwa")["snapshots"]["ww:1512"]
+        # 40 lines beat the old 32-line cap: a clipped snapshot cannot serve as a baseline.
+        assert snap["truncated"] is False
+        assert len(snap["data"]["sections"][1]["lines"]) == 40
+
+        state["kit"] = build(new)
+        second = advance("3.8.3")
+
+    card = second.characters[0]
+    text = "\n".join(line for section in card.sections for line in section.lines)
+    assert second.diff_range == "Rev. 3.8.1 → 3.8.3"
+    assert card.subtext.startswith("-# Revision diff against 3.8.1")
+    assert "~~74.28%~~ → **63.62%**" in text
+    assert "~~25.17%+25.17%*3~~ → **29.15%+29.15%*3**" in text
+    assert "~~400%~~" not in text and "~~500%~~ → **400%**" in text
+    # Only what moved is printed: the untouched 40 Forte lines never come back.
+    assert "Trailing filler line" not in text
+    # An unchanged block is omitted outright — not listed with a `No changes.` placeholder.
+    assert not any("May Your Past Sink" in section.title for section in card.sections)
+    assert "No changes." not in (card.overview or "")
+
+    payloads = cards.beta_payloads(GAMES["wuwa"], second)
+    dump = json.dumps(payloads, ensure_ascii=False)
+    assert "## [WW - 3.8.3 Beta] Patch Notes: Rev. 3.8.1 → 3.8.3" in dump
+    assert "No changes." not in dump
+    assert "*(cont." not in dump
+    for payload in payloads:
+        assert cards.validate_payload(payload) == []
+
+
+def _ww_prior_revision_state(tmp_path, kit_3_8_1, truncate=True):
+    """A WuWa record already holding 3.8.1, as prod did before the snapshot cap was raised."""
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaCharacter
+    from gamexpress.state import stable_hash
+
+    char = BetaCharacter(
+        id="previous:ww:1512", name="Lily", rarity=5,
+        stats_lines=list(kit_3_8_1["stats_lines"]), sections=list(kit_3_8_1["sections"]),
+    )
+    snap = beta_mod._character_snapshot(char, "3.8.1", 1793000000)
+    if truncate:
+        # Exactly what the old 32-line / 64-section cap produced: a snapshot that cannot be diffed.
+        snap["truncated"] = True
+        snap["data"]["sections"][1]["lines"] = snap["data"]["sections"][1]["lines"][:32]
+    record = {"format_epoch": 4, "latest_rev": "old", "source_version": "3.8.1",
+              "source_revision": "old", "locked_images": {}, "revisions": {},
+              "snapshots": {"ww:1512": snap}}
+    path = Path(tmp_path) / "state.json"
+    path.write_text(json.dumps({
+        "version": 3, "bootstrapped": True,
+        "beta": {"wuwa": {**record, "route": stable_hash([beta_mod.webhook_fingerprint(HOOK), ""])}},
+    }), encoding="utf-8")
+    return path
+
+
+def _ww_kit(prefix: int) -> dict:
+    """A 40-line Forte Circuit, so the old 32-line snapshot cap clipped it."""
+    forte = [f"Dream Perfume line {prefix}: Lily holds up to 300 points."]
+    forte += [f"Heavy Attack - Woven Fairytale step {i + 1}: pulls in nearby targets."
+              for i in range(16)]
+    forte += [f"Basic Attack Stage 1 DMG: {74.28 - prefix}%",
+              "Basic Attack Stage 2 DMG: 25.17%+25.17%*3"]
+    forte += [f"Trailing filler line {i} kept so the block stays long." for i in range(21)]
+    return {"sections": [
+        BetaSectionEntry(title="Normal Attack", category="Normal Attack",
+                         lines=["Press Normal Attack to perform up to 4 attacks.",
+                                f"Basic Attack Stage 1 DMG: {74.28 - prefix}%"]),
+        BetaSectionEntry(title="Forte Circuit", category="Forte Circuit", lines=forte),
+        BetaSectionEntry(title="RC4 [May Your Past Sink into Silence]",
+                         category="Resonance Chain",
+                         lines=["Healing provided is increased by 30%."]),
+    ], "stats_lines": ["Base HP 16712.5"]}
+
+
+def test_feature5_clipped_snapshot_rebuilds_the_previous_revision_instead_of_a_kit_dump():
+    """A legacy clipped snapshot is rebuilt at its own revision, so the next post still diffs.
+
+    This is the WuWa 3.8.3 fix's second half: the 32-line cap had clipped 3.8.1, `_snapshot_comparison`
+    rightly refused to diff it, and the card reprinted the whole kit. Rebuilding 3.8.1 from the
+    versioned detail JSON restores the before/after without inventing anything.
+    """
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+
+    old_kit, new_kit = _ww_kit(0), _ww_kit(10)
+    manifest = {"ww": {"latest": "3.8.3", "available": ["3.8.1", "3.8.3"],
+                       "new": {"character": [1512], "weapon": [], "equipment": []}}}
+
+    def builder(data):
+        return old_kit if (data or {}).get("build") == "3.8.1" else new_kit
+
+    files = {"changelog/beta": "", "ww/3.8.1/en/character/1512": {"rarity": 5, "build": "3.8.1"},
+             "ww/3.8.3/en/character/1512": {"rarity": 5, "build": "3.8.3"}}
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"ww": builder}):
+        ctx = _beta_ctx(_ww_prior_revision_state(tmp, old_kit),
+                        _RecordingFetcher(files), BETA_ENABLED="1", games=["wuwa"])
+        patch_obj = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                    beta_mod._budget(ctx)))
+
+    assert len(patch_obj.characters) == 1
+    card = patch_obj.characters[0]
+    text = "\n".join(line for section in card.sections for line in section.lines)
+    assert card.subtext.startswith("-# Revision diff against 3.8.1")
+    assert patch_obj.diff_range == "Rev. 3.8.1 → 3.8.3"
+    assert "~~74.28%~~ → **64.28%**" in text
+    assert "Trailing filler line" not in text
+
+
+def test_feature5_rebuild_that_matches_the_current_kit_is_not_a_baseline():
+    """An old version path answering with the current build must not claim "nothing changed"."""
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+
+    old_kit, new_kit = _ww_kit(0), _ww_kit(10)
+    manifest = {"ww": {"latest": "3.8.3", "available": ["3.8.1", "3.8.3"],
+                       "new": {"character": [1512], "weapon": [], "equipment": []}}}
+    # The CDN serves the CURRENT build on the old revision path — the trap the identity guard exists for.
+    files = {"changelog/beta": "", "ww/3.8.1/en/character/1512": {"rarity": 5, "build": "3.8.1"},
+             "ww/3.8.3/en/character/1512": {"rarity": 5, "build": "3.8.3"}}
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"ww": lambda _d: new_kit}):
+        ctx = _beta_ctx(_ww_prior_revision_state(tmp, old_kit),
+                        _RecordingFetcher(files), BETA_ENABLED="1", games=["wuwa"])
+        patch_obj = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                    beta_mod._budget(ctx)))
+
+    # One honest full snapshot, labelled — never an empty post, never a fake "no changes".
+    assert len(patch_obj.characters) == 1
+    card = patch_obj.characters[0]
+    assert card.subtext.startswith("-# Full")
+    assert patch_obj.diff_range == ""
+    text = "\n".join(line for section in card.sections for line in section.lines)
+    assert "~~" not in text
+    assert "No changes." not in text
+
+
+def test_feature5_header_range_uses_versions_then_build_ids_and_never_fakes_a_pair():
+    """`Rev. A → B` names the comparison; a card with nothing to compare keeps the changelog label."""
+    from gamexpress import beta as beta_mod
+
+    # Version moved (WuWa 3.8.1 -> 3.8.3, the hand-written card's header).
+    assert beta_mod._rev_range_label("3.8.1", "3.8.3") == "Rev. 3.8.1 → 3.8.3"
+    # Same version, new build (the guide's own `Rev. 14896358 → 14985632`).
+    assert (beta_mod._rev_range_label("3.4.1+19834130", "3.4.1+19851435")
+            == "Rev. 19834130 → 19851435")
+    # Nothing to say: the same revision, or a snapshot with no build id behind it.
+    assert beta_mod._rev_range_label("3.8.3", "3.8.3") == ""
+    assert beta_mod._rev_range_label("", "3.8.3") == ""
+    # A whole-kit card has no range, so the header falls back to the changelog's label.
+    patch = BetaPatch(game_key="wuwa", beta_version="3.8.3", rev_label="v3.8.3", rev_id="x")
+    dump = json.dumps(cards.beta_payloads(GAMES["wuwa"], patch), ensure_ascii=False)
+    assert "## [WW - 3.8.3 Beta] Patch Notes: v3.8.3" in dump
+    # …and the same card with a range uses it instead.
+    patch.diff_range = "Rev. 3.8.1 → 3.8.3"
+    dump = json.dumps(cards.beta_payloads(GAMES["wuwa"], patch), ensure_ascii=False)
+    assert "## [WW - 3.8.3 Beta] Patch Notes: Rev. 3.8.1 → 3.8.3" in dump
 
 
 def test_feature5_cn_chs_crosscheck_reconciles_lagging_en_values_and_placeholders():
