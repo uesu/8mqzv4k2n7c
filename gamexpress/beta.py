@@ -637,7 +637,18 @@ def _diff_parts(old: str, new: str, keep: int = 4, max_blocks: int | None = None
             out.append(f"~~{old_part}~~")
         cursor = new_end
     out.append(new_s[cursor:])
-    return "".join(out).strip(), parts
+    return _space_adjacent_spans("".join(out).strip()), parts
+
+
+def _space_adjacent_spans(text: str) -> str:
+    """Keep two neighbouring spans from touching: `**a****b**` renders as one broken span.
+
+    Two changed blocks with no unchanged token between them (and the same for strikethroughs) are
+    rare but legitimate — a zero-width space keeps both readable without inventing a visible
+    character in the source text.
+    """
+    return (str(text).replace("****", "**\u200b**").replace("~~~~", "~~\u200b~~"))
+
 
 def inline_diff(old: str, new: str, keep: int = 4, max_blocks: int = 6,
                 max_len: int = 560) -> str:
@@ -4179,6 +4190,93 @@ def _stat_diff(prev: BetaCharacter, current: BetaCharacter) -> list[BetaSectionE
                              tag="[CHANGED]", lines=lines)]
 
 
+# Fields a card states in its meta row. A revision can move one of them without a single readable
+# value changing, and that movement still belongs on the card.
+_META_CATEGORY = "Profile"
+_META_TITLE = "Classification"
+_BETA_META_FIELDS = ("rarity", "element", "role", "faction", "attack_type")
+# Every one of these is printed by the card: rarity and class in the item's badge, the set kind
+# and parts as their own lines. A move in any of them is a visible change on the item.
+_BETA_EQUIP_META_FIELDS = ("rarity", "sub_type", "weapon_class", "set_kind", "set_parts")
+
+
+def _meta_label(game_key: str, field: str) -> str:
+    """The label the card's own meta row uses for this field."""
+    if field == "element":
+        return "Attribute" if game_key in ("zzz", "wuwa") else "Element"
+    if field == "role":
+        return {"zzz": "Specialty", "starrail": "Path"}.get(game_key, "Weapon")
+    if field == "faction":
+        return "Faction" if game_key == "zzz" else "Affiliation"
+    if field == "sub_type":
+        return "Type"
+    if field == "weapon_class":
+        return "Weapon class"
+    if field == "set_kind":
+        return "Set type"
+    if field == "set_parts":
+        return "Set parts"
+    return field.replace("_", " ").title()
+
+
+def _rarity_label(game_key: str, rarity: Any) -> str:
+    """Rarity exactly as the card renders it (one source of truth: `cards._format_beta_rarity`)."""
+    from .cards import _format_beta_rarity  # local: the renderer never imports this module
+
+    try:
+        value = int(rarity)
+    except (TypeError, ValueError):
+        return ""
+    return _format_beta_rarity(game_key, value) if value else ""
+
+
+def _metadata_changes(game_key: str, previous: Any, current: Any,
+                      fields: tuple[str, ...], *, require_both: bool = False) -> list[str]:
+    """Lines for a revision whose only movement is a classification or metadata field.
+
+    A kit can change without a readable value moving: an agent reclassified from Sword to
+    Rectifier, a rarity raised, a faction corrected. The content signatures differ, so the item is
+    part of this revision, but a text diff has nothing to show — and dropping it here would record
+    the item as delivered and lose the change for good.
+    """
+    if previous is None or current is None:
+        return []
+    lines: list[str] = []
+    if "name" in fields and not require_both:
+        old_name = _clean(str(getattr(previous, "name", "") or ""))
+        new_name = _clean(str(getattr(current, "name", "") or ""))
+        # A Chinese name becoming an English one is a localization dropping in, not a rename.
+        cjk = re.compile(r"[\u3400-\u9fff]")
+        if old_name and new_name and old_name != new_name \
+                and not cjk.search(old_name) and not cjk.search(new_name):
+            lines.append(f"**[CHANGED]** Renamed from ~~{old_name}~~ → **{new_name}**.")
+    for field in fields:
+        if field == "name":
+            continue
+        if field == "rarity":
+            old_n, new_n = getattr(previous, field, None), getattr(current, field, None)
+            if old_n == new_n:
+                continue
+            old_text, new_text = _rarity_label(game_key, old_n), _rarity_label(game_key, new_n)
+        else:
+            old_text = str(getattr(previous, field, "") or "").strip()
+            new_text = str(getattr(current, field, "") or "").strip()
+            if old_text == new_text:
+                continue
+        if require_both and not (old_text and new_text):
+            # Against the live build a field can be missing because the released reader never
+            # published it. "Faction set to X" would be an artifact of the baseline, not a change.
+            continue
+        label = _meta_label(game_key, field)
+        if old_text and new_text:
+            lines.append(f"**[ADJUSTMENT]** {label} changed from ~~{old_text}~~ → **{new_text}**.")
+        elif new_text:
+            lines.append(f"**[ADJUSTMENT]** {label} set to **{new_text}**.")
+        else:
+            lines.append(f"**[CHANGED]** {label} no longer published (was ~~{old_text}~~).")
+    return lines
+
+
 def _diff_equipment(previous: BetaEquipment, current: BetaEquipment) -> BetaEquipment | None:
     changes: list[str] = []
     if previous.stats_line != current.stats_line:
@@ -5036,15 +5134,21 @@ def _revision_explanation(
     signed: list[float] = []
     new_titles: list[str] = []
     structural: list[str] = []
-    retired = renamed = 0
+    retired = renamed = classified = 0
     for section in sections or ():
         fallback_tag = str(getattr(section, "tag", "") or "[CHANGED]")
         label = _block_label(getattr(section, "title", "")) or "this block"
+        # How an item is filed (element, weapon type, rarity, faction) is not a kit rework: the
+        # card would otherwise announce rebuilt mechanics for a one-word reclassification.
+        meta_section = str(getattr(section, "category", "") or "") == _META_CATEGORY
         for raw in (getattr(section, "lines", ()) or ()):
             tag, body = _bullet_parts(raw)
             if not tag:
                 tag = fallback_tag if fallback_tag in counts else "[CHANGED]"
             counts[tag] += 1
+            if meta_section:
+                classified += 1
+                continue
             if "Removed from this revision" in body or body.startswith("Removed:"):
                 retired += 1
             elif re.search(r"\brenamed\b|\bName finalized\b", body, re.I):
@@ -5090,6 +5194,9 @@ def _revision_explanation(
     elif nerfs:
         lead = f"**{name}** is toned down in this revision"
         direction = "nothing was buffed" if no_up else ""
+    elif classified and quiet:
+        lead = (f"**{name}** is reclassified in this revision — how the game files it moved, "
+                "no value changed")
     elif structural and quiet:
         lead = (f"**{name}**'s kit is reworked in this revision — the mechanics are rebuilt "
                 "and no value changes")
@@ -5141,7 +5248,7 @@ def _revision_explanation(
 
 def _equipment_explanation(name: str, lines: list, *, compared_to: str = "") -> str:
     """One sentence for a revised weapon / disc — the same courtesy the agents get."""
-    buffs = nerfs = news = retired = 0
+    buffs = nerfs = news = retired = adjust = 0
     best: tuple[float, str] | None = None
     signed: list[float] = []
     for raw in lines or ():
@@ -5155,6 +5262,8 @@ def _equipment_explanation(name: str, lines: list, *, compared_to: str = "") -> 
             nerfs += 1
         elif tag == "[NEW]":
             news += 1
+        elif tag == "[ADJUSTMENT]":
+            adjust += 1
         if "Removed from this revision" in body:
             retired += 1
         pair = _NUM_PAIR_RE.search(body)
@@ -5184,6 +5293,8 @@ def _equipment_explanation(name: str, lines: list, *, compared_to: str = "") -> 
         lead = f"**{name}** gains new material in this revision"
     elif retired:
         lead = f"**{name}** is trimmed in this revision — no value moved"
+    elif adjust:
+        lead = f"**{name}** is reclassified in this revision — no value moved"
     else:
         lead = f"**{name}** is reworded in this revision — no value moved"
     detail = ""
@@ -5971,6 +6082,14 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     title="Eidolon Icons", category="Eidolons", tag="[NEW]",
                     lines=["**[NEW]** Official Eidolon icons added in this beta revision."],
                 ))
+            if not diff_sections:
+                meta_lines = _metadata_changes(
+                    game.key, previous, full, ("name", *_BETA_META_FIELDS),
+                    require_both=released is not None)
+                if meta_lines:
+                    diff_sections.append(BetaSectionEntry(
+                        title=_META_TITLE, category=_META_CATEGORY,
+                        tag="[ADJUSTMENT]", lines=meta_lines))
             if diff_sections:
                 full.sections = diff_sections
                 full.is_new = False
@@ -6033,6 +6152,24 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 full.overview = _synthesize_kit_overview(
                     game.key, name, built, full.sections, is_new=False, mode="diff",
                     unchanged=unchanged, compared_to=old_rev,
+                )
+                patch.characters.append(full)
+            else:
+                # Last resort. The signature says this revision changed the item, but no readable
+                # value, classification field or visual asset did. Saying that is honest, and it
+                # keeps the item from being recorded as delivered without ever being posted.
+                full.sections = [BetaSectionEntry(
+                    title="Note", category="Metadata", tag="[CHANGED]",
+                    lines=["**[CHANGED]** This revision changed the item's stored metadata; "
+                           "no readable value moved."],
+                )]
+                full.is_new = False
+                if not patch.diff_range:
+                    patch.diff_range = _rev_range_label(previous_revision, version)
+                full.subtext = "-# Revision diff with no readable value change"
+                full.overview = (
+                    f"**{name}** was re-issued in this revision without a readable text or value "
+                    "change — the stored entry moved. Nothing is marked as up or down."
                 )
                 patch.characters.append(full)
         elif cmp_mode == "equal" and (new_char_img_added or new_char_gal_added):
@@ -6329,6 +6466,29 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     glossary=[], image_url=current.image_url, image_urls=list(current.image_urls),
                     diff_url=current.diff_url, page_url=current.page_url,
                 ))
+            else:
+                # Same rule as the agent branch above: an item the signature calls changed must
+                # reach the card. A classification or metadata move has no readable value to diff,
+                # and a game with no live build (WuWa) has no `released_eq` fallback to catch it.
+                meta_lines = _metadata_changes(
+                    game.key, previous, current, ("name", *_BETA_EQUIP_META_FIELDS),
+                    require_both=released_eq is not None)
+                if meta_lines:
+                    if not patch.diff_range:
+                        patch.diff_range = _rev_range_label(previous_revision, version)
+                    current.tag = "[ADJUSTMENT]"
+                    current.stats_line = ""
+                    current.effect_title = ""
+                    current.lines = meta_lines
+                    current.overview = _equipment_explanation(name, meta_lines)
+                    patch.equipment.append(current)
+                else:
+                    equip_count += 1
+                    ctx.report.append(
+                        f"{game.short} {name}: beta {role} listed as changed but no readable "
+                        "value or classification moved — nothing to post"
+                    )
+                    continue
         elif eq_cmp == "equal" and eq_media_added:
             patch.equipment.append(BetaEquipment(
                 id=current.id, name=current.name, category_label=current.category_label,

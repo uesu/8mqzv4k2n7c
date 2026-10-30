@@ -20226,6 +20226,256 @@ def test_feature5_ww_3_8_3_second_revision_is_a_real_before_after_not_a_kit_dump
         assert cards.validate_payload(payload) == []
 
 
+def test_feature5_a_revision_that_only_reclassifies_an_agent_still_reaches_the_card():
+    """Reclassifying an agent moves no readable value — the card must still say so.
+
+    Found by fuzzing the diff layer against two revisions whose only movement was metadata:
+    a 3.8.1 -> 3.8.3 run emitted **zero characters**, no report line, while `item_keys` and
+    `diff_range` advanced. The item was recorded as delivered and the change was lost for good.
+    """
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaSectionEntry
+    from gamexpress.state import State
+
+    def kit(weapon_type):
+        return {"sections": [BetaSectionEntry(
+                    title="Resonance Skill", category="Skills",
+                    lines=["Deals 100% Spectro DMG."])],
+                "stats_lines": ["Base HP 100"], "role": weapon_type,
+                "faction": "Black Shores", "element": "Spectro", "rarity": 4}
+
+    state = {"kit": kit("Sword")}
+    files = {"changelog/beta": "", "character/1512": {"rarity": 4}}
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.8.1"],
+                       "new": {"character": [1512], "weapon": [], "equipment": []}}}
+
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"ww": lambda _d: state["kit"]}):
+        ctx = _beta_ctx(Path(tmp) / "state.json", _RecordingFetcher(files),
+                        BETA_ENABLED="1", games=["wuwa"])
+
+        def advance(revision):
+            manifest["ww"]["latest"] = revision
+            manifest["ww"]["available"].append(revision)
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                   beta_mod._budget(ctx)))
+
+        first = advance("3.8.1")
+        assert len(first.characters) == 1
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), first, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(ctx.settings.state_path)
+
+        state["kit"] = kit("Rectifier")          # the only movement this revision
+        second = advance("3.8.3")
+
+    assert len(second.characters) == 1, "a metadata-only revision must not vanish"
+    card = second.characters[0]
+    lines = [line for section in card.sections for line in section.lines]
+    assert any("~~Sword~~ → **Rectifier**" in line for line in lines)
+    assert card.sections[0].tag == "[ADJUSTMENT]"
+    # Not a kit rework: the classification moved, no skill text did.
+    assert "reclassified" in (card.overview or "")
+    assert "reworked" not in (card.overview or "")
+    # The unchanged skill block stays omitted, and the header keeps the revision range.
+    assert not any(section.title == "Resonance Skill" for section in card.sections)
+    assert "No changes." not in (card.overview or "")
+    assert second.diff_range == "Rev. 3.8.1 → 3.8.3"
+
+    payloads = cards.beta_payloads(GAMES["wuwa"], second)
+    dump = json.dumps(payloads, ensure_ascii=False)
+    assert "## [WW - 3.8.3 Beta] Patch Notes: Rev. 3.8.1 → 3.8.3" in dump
+    assert "**[ADJUSTMENT]** Weapon changed from ~~Sword~~ → **Rectifier**." in dump
+    for payload in payloads:
+        assert cards.validate_payload(payload) == []
+
+
+def test_feature5_a_revision_that_only_moves_weapon_metadata_is_posted_not_dropped():
+    """A weapon whose stats and effect are untouched but whose rarity moved is still a change.
+
+    `_diff_equipment` compares `stats_line`, `effect_title` and `lines` only, and WuWa has no live
+    build, so the `released_eq` fallback never fires: the weapon was silently dropped after its
+    `item_keys` entry was written.
+    """
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaSectionEntry
+    from gamexpress.state import State
+
+    def kit(values):
+        return {"sections": [BetaSectionEntry(
+                    title="Resonance Skill", category="Skills",
+                    lines=[f"Deals {values[0]}% Spectro DMG."])],
+                "stats_lines": ["Base HP 100"], "role": "Sword",
+                "faction": "Black Shores", "element": "Spectro", "rarity": 4}
+
+    state = {"kit": kit(("100",)), "rarity": 4}
+
+    def weapon():
+        return {"lines": ["ATK increased by 10% when casting Resonance Skill."],
+                "stats_line": "ATK 412.50", "effect_title": "Dreamweaver",
+                "rarity": state["rarity"], "sub_type": "Sword", "weapon_class": "Sword",
+                "set_kind": "", "set_parts": ""}
+
+    files = {"changelog/beta": "", "character/1512": {"rarity": 4},
+             "weapon/21030076": {"id": 21030076}, "weapon.json": {"21030076": {"rank": 4}}}
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.8.1"],
+                       "new": {"character": [1512], "weapon": [21030076], "equipment": []}}}
+
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"ww": lambda _d: state["kit"]}), \
+            mock_patch.object(beta_mod, "_equip_from_detail", side_effect=lambda *a, **k: weapon()):
+        ctx = _beta_ctx(Path(tmp) / "state.json", _RecordingFetcher(files),
+                        BETA_ENABLED="1", games=["wuwa"])
+
+        def advance(revision):
+            manifest["ww"]["latest"] = revision
+            manifest["ww"]["available"].append(revision)
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                   beta_mod._budget(ctx)))
+
+        first = advance("3.8.1")
+        assert len(first.equipment) == 1
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), first, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(ctx.settings.state_path)
+
+        state["rarity"] = 5                          # nothing readable moved
+        second = advance("3.8.3")
+
+    assert len(second.characters) == 0, "the unchanged agent must not be re-posted"
+    assert len(second.equipment) == 1, "the weapon must not be dropped"
+    weapon_card = second.equipment[0]
+    assert weapon_card.tag == "[ADJUSTMENT]"
+    assert weapon_card.lines == [
+        "**[ADJUSTMENT]** Rarity changed from ~~★★★★~~ → **★★★★★**."]
+    assert "reclassified" in (weapon_card.overview or "")
+    # No invented before/after for text that did not move.
+    assert "~~ATK increased by 10%" not in " ".join(weapon_card.lines)
+    assert second.diff_range == "Rev. 3.8.1 → 3.8.3"
+
+    payloads = cards.beta_payloads(GAMES["wuwa"], second)
+    for payload in payloads:
+        assert cards.validate_payload(payload) == []
+    assert "~~★★★★~~ → **★★★★★**" in json.dumps(payloads, ensure_ascii=False)
+
+
+def test_feature5_metadata_helpers_tell_a_rename_from_a_localization():
+    """`_metadata_changes` only claims a rename when the name actually changed languages out."""
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaCharacter, BetaEquipment
+
+    def char(**kw):
+        base = {"id": "ww:1", "name": "Lily", "rarity": 5, "element": "Spectro",
+                "role": "Sword", "faction": "Black Shores"}
+        base.update(kw)
+        return BetaCharacter(**base)
+
+    fields = ("name", *beta_mod._BETA_META_FIELDS)
+    lines = beta_mod._metadata_changes("wuwa", char(), char(name="Lily Blossom"), fields)
+    assert lines == ["**[CHANGED]** Renamed from ~~Lily~~ → **Lily Blossom**."]
+
+    # A CN name resolving to its EN one is a localization landing, not a rename.
+    assert beta_mod._metadata_changes("wuwa", char(name="莉莉"), char(), fields) == []
+    assert beta_mod._metadata_changes("wuwa", char(), char(), fields) == []
+
+    # Rarity reads in the same stars the card prints, never as a raw number.
+    lines = beta_mod._metadata_changes("wuwa", char(rarity=4), char(rarity=5), fields)
+    assert lines == ["**[ADJUSTMENT]** Rarity changed from ~~★★★★~~ → **★★★★★**."]
+
+    # A field that only one side publishes says which way it moved.
+    lines = beta_mod._metadata_changes(
+        "wuwa", char(faction=""), char(faction="Black Shores"), fields)
+    assert lines == ["**[ADJUSTMENT]** Affiliation set to **Black Shores**."]
+    lines = beta_mod._metadata_changes(
+        "wuwa", char(faction="Black Shores"), char(faction=""), fields)
+    assert lines == ["**[CHANGED]** Affiliation no longer published (was ~~Black Shores~~)."]
+
+    # Weapons and discs use their own meta row.
+    old = BetaEquipment(id="ww:2", name="Dreamweaver", category_label="Weapon", rarity=4,
+                        sub_type="Sword", weapon_class="Sword", stats_line="ATK 412.50",
+                        lines=["ATK increased by 10%."])
+    new = BetaEquipment(id="ww:2", name="Dreamweaver", category_label="Weapon", rarity=4,
+                        sub_type="Sword", weapon_class="Gauntlets", stats_line="ATK 412.50",
+                        lines=["ATK increased by 10%."])
+    eq_fields = ("name", *beta_mod._BETA_EQUIP_META_FIELDS)
+    assert beta_mod._metadata_changes("wuwa", old, new, eq_fields) == [
+        "**[ADJUSTMENT]** Weapon class changed from ~~Sword~~ → **Gauntlets**."]
+    # Set data is printed on the card too, so it is compared like the rest.
+    sets = BetaEquipment(id="zzz:9", name="Branch & Blade", category_label="Drive Disc",
+                         rarity=5, set_kind="2-piece", set_parts="4/6",
+                         lines=["ATK +10%."])
+    longer = BetaEquipment(id="zzz:9", name="Branch & Blade", category_label="Drive Disc",
+                           rarity=5, set_kind="2-piece", set_parts="6/6",
+                           lines=["ATK +10%."])
+    assert beta_mod._metadata_changes("zzz", sets, longer, eq_fields) == [
+        "**[ADJUSTMENT]** Set parts changed from ~~4/6~~ → **6/6**."]
+    # Nothing moved at all: no invented card.
+    assert beta_mod._metadata_changes("wuwa", old, old, eq_fields) == []
+
+
+def test_feature5_a_signature_only_change_posts_a_labelled_note_not_silence():
+    """Signature moved, text did not: say so instead of recording the item as delivered.
+
+    The gap this closes is the one that lost the metadata-only revision — `item_keys` advanced
+    while the card stayed silent, so the change could never surface again.
+    """
+    from unittest.mock import patch as mock_patch
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaSectionEntry
+    from gamexpress.state import State
+
+    def kit(blurb):
+        return {"sections": [BetaSectionEntry(
+                    title="Resonance Skill", category="Skills",
+                    lines=["Deals 100% Spectro DMG."])],
+                "stats_lines": ["Base HP 100"], "role": "Sword", "faction": "Black Shores",
+                "element": "Spectro", "rarity": 4, "subtext": blurb}
+
+    state = {"kit": kit("A wandering perfumer.")}
+    manifest = {"ww": {"latest": "3.8.1", "available": ["3.8.1"],
+                       "new": {"character": [1512], "weapon": [], "equipment": []}}}
+
+    with tempfile.TemporaryDirectory() as tmp, \
+            mock_patch.dict(beta_mod._CHARACTER_BUILDERS, {"ww": lambda _d: state["kit"]}):
+        ctx = _beta_ctx(Path(tmp) / "state.json",
+                        _RecordingFetcher({"changelog/beta": "", "character/1512": {"rarity": 4}}),
+                        BETA_ENABLED="1", games=["wuwa"])
+
+        def advance(revision):
+            manifest["ww"]["latest"] = revision
+            manifest["ww"]["available"].append(revision)
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                   beta_mod._budget(ctx)))
+
+        first = advance("3.8.1")
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), first, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(ctx.settings.state_path)
+
+        state["kit"] = kit("A wandering perfumer of the Black Shores.")   # nothing readable
+        second = advance("3.8.3")
+
+    assert len(second.characters) == 1
+    card = second.characters[0]
+    assert card.sections[0].lines == [
+        "**[CHANGED]** This revision changed the item's stored metadata; "
+        "no readable value moved."]
+    assert second.diff_range == "Rev. 3.8.1 → 3.8.3"
+    # No invented direction, and no full-kit dump for an item that did not change.
+    assert "Nothing is marked as up or down" in (card.overview or "")
+    assert not any(section.title == "Resonance Skill" for section in card.sections)
+    payloads = cards.beta_payloads(GAMES["wuwa"], second)
+    dump = json.dumps(payloads, ensure_ascii=False)
+    assert "## [WW - 3.8.3 Beta] Patch Notes: Rev. 3.8.1 → 3.8.3" in dump
+    for payload in payloads:
+        assert cards.validate_payload(payload) == []
+
+
 def _ww_prior_revision_state(tmp_path, kit_3_8_1, truncate=True):
     """A WuWa record already holding 3.8.1, as prod did before the snapshot cap was raised."""
     from gamexpress import beta as beta_mod
