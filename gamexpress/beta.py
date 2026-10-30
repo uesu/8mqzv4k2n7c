@@ -3044,17 +3044,31 @@ _GI_WEAPON_SUBSTAT_LV90_MULT = 4.594
 
 _ZZZ_BANGBOO_SKILLS = (("a", "Active Skill"), ("b", "Talent"), ("c", "QTE"))
 
+# The skill level each block is read at, capped by what the block publishes. A Bangboo's Active
+# Skill and QTE stop at level 6 and its Talent has no upgrade track, which is the maximum the
+# served page's own level sliders allow (gachabase `ID: 54024`, captured 2026-10-30: 6 / 1 / 6).
+# The file itself lists up to 10 levels per block, so the count is not the cap; agents read at
+# `SKILL_LEVEL["zzz"]` for the same reason.
+_ZZZ_BANGBOO_SKILL_LEVEL = {"a": 6, "b": 1, "c": 6}
 
-def _bangboo_prop_value(prop: Any) -> str:
-    """One `skill_prop` entry as the site displays it: `main: 80000` with format `%` is `800%`."""
+_BANGBOO_CRIT_RATE_PROP = "20101"
+_BANGBOO_CRIT_DMG_PROP = "21101"
+
+
+def _bangboo_prop_value(prop: Any, level: int = 1) -> str:
+    """One `skill_prop` entry at one skill level: `main 80000` + `growth 8000` at 6 is `1200%`."""
     if not isinstance(prop, dict):
         return ""
     main = prop.get("main")
     if not isinstance(main, (int, float)) or isinstance(main, bool):
         return ""
+    value = float(main)
+    growth = prop.get("growth")
+    if isinstance(growth, (int, float)) and not isinstance(growth, bool) and level > 1:
+        value += float(growth) * (level - 1)
     if "%" in str(prop.get("format") or ""):
-        return f"{_fmt_value(float(main) / 100.0, 'g')}%"
-    return _fmt_value(main, "g")
+        return f"{_fmt_value(value / 100.0, 'g')}%"
+    return _fmt_value(value, "g")
 
 
 def _bangboo_skill_lines(data: dict) -> list[str]:
@@ -3067,33 +3081,108 @@ def _bangboo_skill_lines(data: dict) -> list[str]:
     skill = data.get("skill") if isinstance(data.get("skill"), dict) else {}
     props = data.get("skill_prop") if isinstance(data.get("skill_prop"), dict) else {}
     lines: list[str] = []
+    untranslated: list[str] = []
     for key, label in _ZZZ_BANGBOO_SKILLS:
         block = skill.get(key)
         levels = block.get("level") if isinstance(block, dict) else None
-        first = levels.get("1") if isinstance(levels, dict) else None
-        if not isinstance(first, dict):
+        if not isinstance(levels, dict) or not levels:
             continue
-        desc = "" if _is_key(str(first.get("desc") or "")) else _clean(first.get("desc"))
+        published = [int(k) for k in levels if str(k).isdigit()]
+        if not published:
+            continue
+        level = min(_ZZZ_BANGBOO_SKILL_LEVEL.get(key, 1), max(published))
+        row = levels.get(str(level))
+        if not isinstance(row, dict):
+            continue
+        desc = "" if _is_key(str(row.get("desc") or "")) else _clean(row.get("desc"))
         if desc:
             lines.append(f"{label}: {desc}")
-        names = [str(prop) for prop in (first.get("property") or []) if not _is_key(str(prop))]
+        else:
+            untranslated.append(label)
+        names = [str(prop) for prop in (row.get("property") or []) if not _is_key(str(prop))]
         pairs: list[str] = []
-        for slot in str(first.get("param") or "").split("|"):
+        for slot in str(row.get("param") or "").split("|"):
             match = re.search(r"\{Skill:\s*(\d+)\s*,\s*Prop:\s*(\d+)\}", slot)
             if not match:
                 continue
             table = props.get(match.group(1))
             value = _bangboo_prop_value((table or {}).get(match.group(2))
-                                        if isinstance(table, dict) else None)
+                                        if isinstance(table, dict) else None, level)
             if value and len(pairs) < len(names):
                 pairs.append(f"{names[len(pairs)]} {value}")
         if pairs:
-            lines.append(f"{label} attributes: " + " · ".join(pairs))
+            lines.append(f"{label} attributes (Lv. {level}): " + " · ".join(pairs))
         elif not desc:
             # A fresh build ships the block but every string in it is still a key, so there is
             # nothing to print. Say the section exists rather than letting it vanish.
             lines.append(f"-# {label}: only localization keys in this build — omitted until translated.")
+    if untranslated:
+        # The page itself prints those keys raw; the card says once that there is no prose yet.
+        lines.append("-# Some skill text is still untranslated in this build; "
+                     "only the skill table is shown.")
     return lines
+
+
+def _bangboo_max_rank(data: dict) -> dict:
+    """The promotion block with the highest `level_max` — the one a maxed Bangboo is read at."""
+    levels = data.get("level") if isinstance(data.get("level"), dict) else {}
+    best: dict = {}
+    best_max = -1
+    for block in levels.values():
+        if not isinstance(block, dict):
+            continue
+        top = block.get("level_max")
+        rank = float(top) if isinstance(top, (int, float)) and not isinstance(top, bool) else -1
+        if rank > best_max:
+            best, best_max = block, rank
+    return best
+
+
+def _bangboo_stats_line(data: dict) -> str:
+    """The stats the page prints at max promotion — everything except level-scaled HP/ATK/DEF.
+
+    Those three cannot be rebuilt from this file: the page's Lv. 60 totals (4,210 / 8,863 / 666)
+    do not follow from `stats` + `level[].hp_max` + `hpupgrade` by any factor that fits all three,
+    so they are left out rather than approximated. The rest are exact: `crit` 500 + the max-rank
+    `extra` 4500 is 5000, printed as 50%.
+    """
+    stats = data.get("stats") if isinstance(data.get("stats"), dict) else {}
+    extra = _bangboo_max_rank(data).get("extra")
+    extra = extra if isinstance(extra, dict) else {}
+
+    def num(value: Any) -> float | None:
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return float(value)
+        return None
+
+    def extra_value(prop: str) -> float:
+        entry = extra.get(prop)
+        found = num(entry.get("value")) if isinstance(entry, dict) else None
+        return found or 0.0
+
+    def pct(base: Any, prop: str = "") -> str | None:
+        raw = num(base)
+        if raw is None:
+            return None
+        total = raw + (extra_value(prop) if prop else 0.0)
+        return f"{_fmt_value(total / 100.0, 'g')}%"
+
+    parts: list[str] = []
+    impact = num(stats.get("break_stun"))
+    if impact is not None:
+        parts.append(f"Impact {_fmt_value(impact, 'g')}")
+    for label, base, prop in (
+        ("CRIT Rate", stats.get("crit"), _BANGBOO_CRIT_RATE_PROP),
+        ("CRIT DMG", stats.get("crit_dmg"), _BANGBOO_CRIT_DMG_PROP),
+        ("PEN Ratio", stats.get("pen_ratio"), ""),
+    ):
+        shown = pct(base, prop)
+        if shown is not None:
+            parts.append(f"{label} {shown}")
+    mastery = num(stats.get("element_abnormal_power"))
+    if mastery is not None:
+        parts.append(f"Anomaly Mastery {_fmt_value(mastery, 'g')}")
+    return " · ".join(parts)
 
 
 def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
@@ -3225,8 +3314,9 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
                 set_parts = " · ".join(p_names)
     elif ns == "zzz" and kind == "bangboo":
         # No `set_kind`: the card's own category heading is already "Bangboo", and a promoted
-        # Lv. 60 total cannot be derived from the file honestly (see docs/SOURCES.md).
+        # Lv. 60 HP/ATK/DEF total cannot be derived from the file honestly (see docs/SOURCES.md).
         lines = _bangboo_skill_lines(data)
+        stats_line = _bangboo_stats_line(data)
     elif ns == "hsr" and kind == "lightcone":
         weapon_class = str(data.get("base_type") or listing.get("baseType") or "").strip()
         stats_table = data.get("stats") or {}

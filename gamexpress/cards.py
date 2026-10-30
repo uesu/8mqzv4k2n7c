@@ -1634,7 +1634,8 @@ def _format_equipment_stats_line(
         for seg in segs:
             sm = re.match(
                 r"^(Base ATK|Lv\.\s*1 Base ATK|HP|ATK|DEF|CRIT Rate|CRIT DMG|"
-                r"Energy Regen|Energy Recharge|Elemental Mastery)\s+(.+)$",
+                r"Energy Regen|Energy Recharge|Elemental Mastery|"
+                r"Impact|PEN Ratio|Anomaly Mastery)\s+(.+)$",
                 seg,
                 re.I,
             )

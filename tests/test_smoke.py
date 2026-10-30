@@ -18673,14 +18673,22 @@ def test_feature5_a_bangboo_is_a_card_kind_of_its_own():
     # zzz rarity 4 is the five-star S rank the site prints.
     assert fields["rarity"] == 5 and fields["set_kind"] == ""
     text = "\n".join(fields["lines"])
-    # The numbers are real, taken from `skill_prop`, and match the served page (800% / 293%,
-    # 1079% / 154%).
-    assert "DMG Multiplier 800%" in text and "Daze Multiplier 293%" in text
-    assert "DMG Multiplier 1079%" in text and "Daze Multiplier 154%" in text
+    # The numbers are real, taken from `skill_prop` at the level the served page's own sliders
+    # stop at, and match that page exactly: 1200% / 439.5% and 1618.5% / 231%.
+    assert "DMG Multiplier 1200%" in text and "Daze Multiplier 439.5%" in text
+    assert "DMG Multiplier 1618.5%" in text and "Daze Multiplier 231%" in text
+    assert "(Lv. 6)" in text
+    # The page's max-promotion stats, minus the level-scaled HP/ATK/DEF the file cannot rebuild
+    # (4,210 / 8,863 / 666 follow from no consistent factor).
+    assert fields["stats_line"] == (
+        "Impact 103 · CRIT Rate 50% · CRIT DMG 100% · PEN Ratio 0% · Anomaly Mastery 110")
+    assert "4210" not in text and "8863" not in text
     # No localization key is ever printed as prose.
     assert "_54024" not in text and "Bangboo_" not in text
     # The Talent block exists but is keys-only at 3.4.1; it says so instead of vanishing.
     assert "-# Talent: only localization keys in this build" in text
+    # ...and the missing prose is stated once for the whole item, like the page shows it raw.
+    assert "-# Some skill text is still untranslated in this build" in text
 
     # Route, page path and diff link all use the site's own `bangboo` segment.
     assert beta_mod._entry_role("zzz", "https://zzz.gachabase.net/bangboo/54024/54024/beta") \
@@ -18690,6 +18698,27 @@ def test_feature5_a_bangboo_is_a_card_kind_of_its_own():
                               "3.4.1+19851435", "3.4.1+19997538") == (
         "https://zzz.gachabase.net/diff/bangboo/54024/charley"
         "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en")
+
+
+def test_feature5_a_bangboo_block_shorter_than_the_cap_reads_at_its_own_last_level():
+    """The file lists up to 10 levels, the sliders stop at 6, and a short block stays short."""
+    from gamexpress import beta as beta_mod
+
+    data = _beta_json("zzz_bangboo_54024.json")
+    trimmed = json.loads(json.dumps(data))
+    trimmed["skill"]["a"]["level"] = {
+        key: value for key, value in list(trimmed["skill"]["a"]["level"].items())[:3]
+    }
+    text = "\n".join(beta_mod._equip_from_detail("zzz", "bangboo", trimmed, {})["lines"])
+    # Lv. 3 = main 80000 + 8000 x 2 = 96000 -> 960%
+    assert "Active Skill attributes (Lv. 3): DMG Multiplier 960%" in text, text
+
+    # A block with no readable property table still renders, just without values.
+    bare = json.loads(json.dumps(data))
+    bare["skill_prop"] = {}
+    lines = beta_mod._equip_from_detail("zzz", "bangboo", bare, {})["lines"]
+    assert not any("DMG Multiplier" in line for line in lines), lines
+    assert any("only localization keys" in line for line in lines), lines
 
 
 def test_feature5_a_new_bangboo_reaches_the_card_end_to_end():
@@ -18733,13 +18762,16 @@ def test_feature5_a_new_bangboo_reaches_the_card_end_to_end():
     assert "/diff/bangboo/54024/" in card.diff_url, card.diff_url
     assert "prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538" in card.diff_url, card.diff_url
     rendered = "\n".join(card.lines)
-    assert "DMG Multiplier 800%" in rendered and "Bangboo_" not in rendered
+    assert "DMG Multiplier 1200%" in rendered and "Bangboo_" not in rendered
+    assert card.stats_line.startswith("Impact 103 · CRIT Rate 50%")
 
     # Rendered card: an S-Rank Bangboo under its own heading, and no redundant `*Bangboo*` line.
     payloads, _ = cards.beta_payloads_with_map(GAMES["zzz"], patch)
     body = json.dumps(payloads)
     assert "## Bangboo" in body and "S-Rank" in body, body[:2000]
     assert "*Bangboo*" not in body
+    # Stats keep the same bold-label treatment weapons get.
+    assert "**Impact:** 103" in body and "**Anomaly Mastery:** 110" in body, body[:2000]
 
 
 def test_feature5_a_listed_group_with_no_card_kind_is_reported_not_swallowed():
