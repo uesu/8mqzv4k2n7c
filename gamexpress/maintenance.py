@@ -1180,7 +1180,6 @@ async def _run_game_maintenance(
                                         estimated=is_est,
                                         estimate_source=est_src,
                                         observed=is_obs and not auth_ts_upgrade,
-                                        silent=True,
                                     )
                                     res = await ctx.webhook.edit(hook, msg_id, edit_card)
                                     if res.ok:

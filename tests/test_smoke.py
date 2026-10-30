@@ -454,7 +454,10 @@ def test_schedule_post_once_then_edit_silently():
         methods = [x["method"] for x in ctx.webhook.sent]
         assert methods == ["PATCH"], methods
         edit = ctx.webhook.sent[0]["payload"]
-        assert edit["allowed_mentions"] == {"parse": []}
+        # The edit re-sends the same card, so it keeps the same mention permission the post had:
+        # that is what keeps the role rendered (and the role-colour highlight) after an update.
+        # It still notifies nobody — Discord never notifies on an edit.
+        assert edit["allowed_mentions"] == {"parse": [], "roles": ["1296268365593186426"]}
         flat = json.dumps(edit, ensure_ascii=False)
         assert "<t:1790560800:F>" in flat and "<t:1790712000:f> to <t:1790737200:t>" in flat
         assert "Astrite ×300" in flat
@@ -1048,7 +1051,8 @@ def test_posted_code_card_is_edited_when_code_expires():
         edit = ctx.webhook.sent[0]["payload"]
         flat = json.dumps(edit, ensure_ascii=False)
         assert "~~`WAKINGMOON`~~ · expired" in flat and "`FINDSENTINEL`" in flat and "1 expired" in flat
-        assert edit["allowed_mentions"] == {"parse": []}
+        # Page 1 still carries the mention, so the edit keeps its permission (no new notification).
+        assert edit["allowed_mentions"] == {"parse": [], "roles": ["1296268365593186426"]}
         ctx.state.save()
         ctx = make_ctx(sp, codes_table=table, now=1789400600)                  # no repeated edits
         ctx.games = [GAMES["wuwa"]]
@@ -8708,7 +8712,8 @@ def test_maintenance_separate_dedup_silent_seed_late_edit_and_isolated_collectio
             asyncio.run(maintenance.run(ctx))
         assert len(ctx.webhook.sends) == 1 and len(ctx.webhook.edits) == 1
         assert ctx.webhook.edits[0][0] == "preload-msg-1"
-        assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": []}
+        # The card was posted with the role mention; the tier-upgrade edit keeps it rendered.
+        assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": [], "roles": ["1296268365593186426"]}
         assert [
             it["media"]["url"]
             for c in ctx.webhook.edits[0][1]["components"][0]["components"]
@@ -9200,7 +9205,8 @@ def test_correction_1_launch_media_lock_vs_tier_upgrade_window_and_edit_failure(
             asyncio.run(maintenance.run(ctx))
         assert len(ctx.webhook.sends) == 0 and len(ctx.webhook.edits) == 1
         assert ctx.webhook.edits[0][0] == "preload-art-msg"
-        assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": []}
+        # Same permission as the post: the mention stays rendered, nobody is notified again.
+        assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": [], "roles": ["1296268365593186426"]}
         assert [
             it["media"]["url"]
             for c in ctx.webhook.edits[0][1]["components"][0]["components"]
@@ -13920,6 +13926,8 @@ def test_edge_case_regressions_bare_tz_period_kuro_empty_ameta_and_maint_extensi
             asyncio.run(maintenance.run(ctx))  # idempotent on subsequent ticks
         assert len(ctx.webhook.edits) == 1
         assert ctx.webhook.edits[0][0] == "maint-ext-1"
+        # No PING_MAINTENANCE here, so the card was posted with no mention at all and the edit
+        # carries nothing either: the permission only ever mirrors what the post had.
         assert ctx.webhook.edits[0][1]["allowed_mentions"] == {"parse": []}
         assert "<t:1792558800:" in json.dumps(ctx.webhook.edits[0][1])
         assert ctx.state.maintenance_record("zzz")["versions"]["3.3"]["maintenance"]["end_ts"] == 1792558800
@@ -21102,8 +21110,14 @@ def test_post_publish_cms_edit_heals_news_and_schedule_cards_across_all_games():
         }
         assert patches2[2]["fp"] == webhook_fingerprint(news_hook)
         for p_call in patches2:
-            assert p_call["payload"]["allowed_mentions"] == {"parse": []}
-            assert cards.validate_payload(p_call["payload"]) == []
+            payload = p_call["payload"]
+            am = payload["allowed_mentions"]
+            # An edit carries exactly the permissions of the card it updates, never a blanket:
+            # the role survives where the card mentions it, and nothing is invented where the
+            # card has no mention at all (the mirror copy and the plain news article).
+            assert am["parse"] == [] and set(am) <= {"parse", "roles"}
+            assert bool(am.get("roles")) == ("<@&" in json.dumps(payload, ensure_ascii=False))
+            assert cards.validate_payload(payload) == []
         # Both #schedule and mirror now carry the [Watch] button -> https://www.youtube.com/watch?v=psifFhA2QAA:
         for sched_patch in patches2[:2]:
             action_rows = [c for c in sched_patch["payload"]["components"][0]["components"] if c["type"] == 1]
@@ -22929,10 +22943,11 @@ def test_reveal_ping_same_time_single_ping_wave_different_times_recheck_edit_and
         p4 = posts[3]
         assert p4["allowed_mentions"] == {"parse": [], "roles": [role_id]}
         assert "zephyr" in ww_rec["reveal_chars"]
-        # `6101` CMS edit preserved `<@&ROLE_ID>` in header text while `edit` kept `allowed_mentions={"parse": []}`!
+        # `6101` CMS edit kept `<@&ROLE_ID>` in the header text AND its permission, so the card
+        # keeps rendering the role mention (and its highlight) through the edit.
         assert len(patches) == 1
         edited_payload = patches[0]
-        assert edited_payload["allowed_mentions"] == {"parse": []}
+        assert edited_payload["allowed_mentions"] == {"parse": [], "roles": [role_id]}
         assert f"<@&{role_id}>" in edited_payload["components"][0]["components"][0]["content"]
 
         # 6:00 PM same day (+7 hours, DIFFERENT announcement time!): `Vespera` drops AND `Profile Reveal — Noctis` drops!
@@ -24157,6 +24172,98 @@ def test_maintenance_all_games_exact_boundaries_and_restart_dedup():
                     assert len(ctx.webhook.sends) == previous, (key, label)
                 saved = State.load(path).maintenance_record(key)["versions"]["9.0"]
                 assert saved["preload"]["status"] == saved["maintenance"]["status"] == "posted"
+
+
+def test_an_edit_carries_the_mention_permission_the_card_was_posted_with():
+    """A PATCH must not blank the mention: that is what kept it from rendering after an update.
+
+    Live proof that this matters: the WuWa 3.8 card posted 2026-10-30 11:00, edited 15:25 to add
+    the Watch button, kept its `<@&…>` text but lost the orange role highlight, because the edit
+    body forced `allowed_mentions={"parse": []}`. Editing never notifies either way (Discord
+    decides that from the request type), so all the blank could ever do was cost the render.
+    """
+    s = settings()
+    ping = s.ping("schedule", "wuwa")
+    assert ping.allowed_mentions == {"parse": [], "roles": ["1296268365593186426"]}
+    payload = cards.schedule_payload(GAMES["wuwa"], SCHEDULE_SAMPLES["wuwa"], s, ping)
+
+    async def _run():
+        client = WebhookClient(None, dry_run=True)
+        await client.send(HOOK, payload)
+        await client.edit(HOOK, "999", payload)
+        return client.sent
+
+    sent = asyncio.run(_run())
+    assert [x["method"] for x in sent] == ["POST", "PATCH"]
+    post, patch = sent[0]["payload"], sent[1]["payload"]
+    assert post["allowed_mentions"] == patch["allowed_mentions"] == ping.allowed_mentions
+    assert post["components"] == patch["components"]
+    assert "<@&1296268365593186426>" in json.dumps(patch, ensure_ascii=False)
+
+
+def test_an_edit_of_an_unpinged_card_still_denies_every_mention():
+    """The carried-over permission is the card's OWN — it is never widened into a blanket."""
+    s = settings(PING_SCHEDULE="none")
+    ping = s.ping("schedule", "wuwa")
+    assert ping.allowed_mentions == {"parse": []}
+    payload = cards.schedule_payload(GAMES["wuwa"], SCHEDULE_SAMPLES["wuwa"], s, ping)
+
+    async def _run():
+        client = WebhookClient(None, dry_run=True)
+        await client.edit(HOOK, "999", payload)
+        return client.sent
+
+    patch = asyncio.run(_run())[0]["payload"]
+    assert patch["allowed_mentions"] == {"parse": []}
+    assert "<@&" not in json.dumps(patch, ensure_ascii=False)
+
+
+def test_edit_allowed_mentions_only_ever_narrows_and_never_invents_a_mention():
+    """`_edit_allowed_mentions` accepts the three documented keys and digit ids, nothing else.
+
+    A scraped `@everyone` / `@here` / `@username` inside an article title must never become a
+    live mention just because a card was edited, and a malformed value must degrade to "none"
+    instead of raising in the middle of a posting run.
+    """
+    from gamexpress.discord import _edit_allowed_mentions
+
+    assert _edit_allowed_mentions({"parse": [], "roles": ["1296268365593186426"]}) == {
+        "parse": [], "roles": ["1296268365593186426"]}
+    # Unknown parse keys are dropped, non-numeric ids are dropped, everything else is preserved.
+    assert _edit_allowed_mentions(
+        {"parse": ["roles", "bogus"], "roles": ["1296268365593186426", "nope", "", None]}
+    ) == {"parse": ["roles"], "roles": ["1296268365593186426"]}
+    assert _edit_allowed_mentions({"parse": ["everyone", "users"]}) == {"parse": ["everyone", "users"]}
+    # Wrong types, and no permissions at all, degrade to the safe default instead of raising.
+    assert _edit_allowed_mentions(None) == {"parse": []}
+    assert _edit_allowed_mentions({}) == {"parse": []}
+    assert _edit_allowed_mentions("roles") == {"parse": []}
+    assert _edit_allowed_mentions({"parse": "roles", "roles": "1296268365593186426"}) == {"parse": []}
+    # Discord accepts at most 100 ids per list.
+    capped = _edit_allowed_mentions({"roles": [str(100000000000000000 + i) for i in range(150)]})
+    assert len(capped["roles"]) == 100
+
+
+def test_a_maintenance_edit_keeps_the_ping_the_card_was_posted_with():
+    """Pre-load/maintenance upgrade their media with a PATCH; that PATCH must not unmention them.
+
+    `maintenance_payload()` used to have a `silent=` flag that blanked `allowed_mentions` for
+    exactly this edit, so a maintenance card lost the role highlight the moment its artwork was
+    upgraded to the official video. The permission is now the card's own, on both calls.
+    """
+    import inspect
+
+    assert "silent" not in inspect.signature(cards.maintenance_payload).parameters
+    s = settings(PING_MAINTENANCE="<@&1296268365593186426>")
+    ping = s.ping("maintenance", "zzz")
+    assert ping.allowed_mentions == {"parse": [], "roles": ["1296268365593186426"]}
+    post = cards.maintenance_payload(GAMES["zzz"], "3.3", "maintenance",
+                                     start_ts=1792533600, end_ts=1792551600, ping=ping)
+    edit = cards.maintenance_payload(GAMES["zzz"], "3.3", "maintenance",
+                                     start_ts=1792533600, end_ts=1792551600, ping=ping,
+                                     media_url="https://fastcdn.hoyoverse.com/static-resource-v2/x.webm")
+    assert post["allowed_mentions"] == edit["allowed_mentions"] == ping.allowed_mentions
+    assert "<@&1296268365593186426>" in json.dumps(edit, ensure_ascii=False)
 
 
 if __name__ == "__main__":

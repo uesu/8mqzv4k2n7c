@@ -77,6 +77,34 @@ def _is_definite_pre_send_error(exc: BaseException) -> bool:
     )
 
 
+MENTION_PARSE = ("roles", "users", "everyone")
+
+
+def _edit_allowed_mentions(source: object) -> dict:
+    """The mention permissions the card was POSTED with, re-sanitised for a PATCH.
+
+    Editing never notifies — Discord decides that from the request type, not from
+    `allowed_mentions` — so the only thing this field changes on a PATCH is whether a mention
+    still RENDERS. Blanking it to `{"parse": []}` demoted the card's `<@&…>` to plain text on its
+    first edit and silently dropped the role-colour highlight it had carried since it was posted.
+    Seen live on WuWa 3.8, 2026-10-30: posted 11:00, edited 15:25 to add the Watch button, and the
+    orange highlight was gone while the mention text stayed.
+
+    Deliberately not "allow everything": `parse` is filtered to the three documented keys and only
+    ids the card itself declared are carried, so a scraped `@everyone`, `@here` or `@username`
+    inside a title can never become a live mention by way of an edit.
+    """
+    am = source if isinstance(source, dict) else {}
+    out: dict = {"parse": [p for p in (am.get("parse") or []) if p in MENTION_PARSE]}
+    for key in ("roles", "users"):
+        raw = am.get(key)
+        ids = [str(i) for i in (raw if isinstance(raw, (list, tuple)) else [])
+               if str(i).strip().isdigit()]
+        if ids:
+            out[key] = ids[:100]
+    return out
+
+
 class WebhookClient:
     def __init__(self, session: aiohttp.ClientSession, dry_run: bool = False) -> None:
         self.session = session
@@ -217,6 +245,9 @@ class WebhookClient:
     async def edit(self, webhook_url: str, message_id: str, payload: dict) -> SendResult:
         base, keep = _split(webhook_url)
         q = urlencode({"with_components": "true", **keep})
-        body = {k: v for k, v in payload.items() if k in ("components", "flags", "allowed_mentions")}
-        body["allowed_mentions"] = {"parse": []}   # edits never ping
+        body = {k: v for k, v in payload.items() if k in ("components", "flags")}
+        # The permissions the card was POSTED with, not a blank. An edit cannot notify (that is
+        # Discord's rule, independent of `allowed_mentions`), so all this decides is whether the
+        # mention still renders -- see `_edit_allowed_mentions`.
+        body["allowed_mentions"] = _edit_allowed_mentions(payload.get("allowed_mentions"))
         return await self._request("PATCH", f"{base}/messages/{message_id}?{q}", body)

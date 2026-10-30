@@ -572,7 +572,6 @@ def maintenance_payload(
     estimated: bool = False,
     estimate_source: str = "",
     observed: bool = False,
-    silent: bool = False,
 ) -> dict:
     """Build a Pre-Load Started or Maintenance Started Components V2 payload.
 
@@ -627,7 +626,10 @@ def maintenance_payload(
     return {
         "flags": IS_COMPONENTS_V2,
         "components": [container(children, None)],
-        "allowed_mentions": {"parse": []} if silent else ping_obj.allowed_mentions,
+        # The card's own permissions, on the edit that upgrades its media just as on the post.
+        # Discord never notifies on an edit, so this is not a ping switch: it is what keeps the
+        # mention RENDERED (and with it the role-colour highlight) after the card is updated.
+        "allowed_mentions": ping_obj.allowed_mentions,
     }
 
 
