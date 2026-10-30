@@ -4708,7 +4708,12 @@ def _item_page_url(ns: str, role: str, item_id: str, name: str, set_kind: str = 
 # `firstVer`/`secondVer` are the beta PATCH versions; `*GameVer` is the game version the patch
 # belongs to (3.8.x -> 3.8.0). WuWa is served by Encore only (no gachabase grammar), so this is
 # the revision-diff link a WuWa card can carry.
+#
+# The served compare page offers four types — `character`, `weapon`, `echo`, `term` — so an echo
+# has a comparison too, and our relic role is that `echo` type. Echoes also have their own pages,
+# `https://encore.moe/echo/<id>?lang=en` (436 of them linked from the served index).
 _ENCORE_DIFF = "https://encore.moe/diff"
+_ENCORE_ROUTES = {"character": "character", "weapon": "weapon", "relic": "echo", "echo": "echo"}
 
 
 def _beta_patch_parts(version: str) -> list[str]:
@@ -4731,7 +4736,8 @@ def _encore_diff_url(item_id: str, route: str, first_version: str, second_versio
     A comparison it cannot name (cold start, the same patch twice, an unreadable build id) returns
     "" instead of a link that would open an empty comparison.
     """
-    if not item_id or route not in ("character", "weapon"):
+    route = _ENCORE_ROUTES.get(str(route or ""), "")
+    if not item_id or not route:
         return ""
     first, second = _beta_patch_parts(first_version), _beta_patch_parts(second_version)
     if not first or not second or first == second:

@@ -20815,7 +20815,37 @@ def test_feature5_encore_diff_link_matches_the_sites_own_grammar():
     # A two-part value is the game version, not a `Beta_` patch.
     assert beta_mod._encore_diff_url("1512", "character", "3.7", "3.8.3") == ""
     assert beta_mod._encore_diff_url("", "character", "3.8.1", "3.8.3") == ""
-    assert beta_mod._encore_diff_url("1512", "relic", "3.8.1", "3.8.3") == ""
+    # The compare page's own type list is character | weapon | echo | term, so an echo has a
+    # comparison too — our relic role is that `echo` type.
+    assert beta_mod._encore_diff_url("6000041", "relic", "3.8.2", "3.8.3") == (
+        "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
+        "&firstVer=Beta_3.8.2&secondVer=Beta_3.8.3&route=echo&id=6000041&lang=en"
+    )
+    assert beta_mod._encore_diff_url("6000041", "echo", "3.8.2", "3.8.3").endswith(
+        "&route=echo&id=6000041&lang=en")
+    # A route the site does not offer is refused rather than guessed.
+    assert beta_mod._encore_diff_url("6000041", "term", "3.8.2", "3.8.3") == ""
+
+
+def test_feature5_a_wuwa_echo_card_links_its_own_comparison():
+    """Echoes were the one WuWa kind with no diff link; Encore serves them as `route=echo`."""
+    from gamexpress import beta as beta_mod
+
+    url = beta_mod._diff_url("ww", "relic", "6000041", "Diamondclaw", "3.8.2", "3.8.3")
+    assert url.startswith("https://encore.moe/diff?") and "&route=echo&id=6000041&" in url, url
+    assert "gachabase" not in url
+
+    equip = BetaEquipment(
+        id="ww:6000041", name="Diamondclaw", category_label="Echoes", rarity=5,
+        set_kind="Echo", stats_line="ATK 500",
+        lines=["**[BUFF]** ATK ~~10%~~ → **12%**."], diff_url=url,
+    )
+    patch = BetaPatch(game_key="wuwa", beta_version="3.8.3", rev_label="v3.8.3", rev_id="r",
+                      equipment=[equip])
+    payloads = cards.beta_payloads(GAMES["wuwa"], patch)
+    dump = json.dumps(payloads, ensure_ascii=False)
+    assert "&route=echo&id=6000041&lang=en" in dump, dump
+    assert all(not cards.validate_payload(p) for p in payloads)
 
 
 def test_feature5_every_game_uses_the_diff_database_that_serves_it():
