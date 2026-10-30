@@ -19220,6 +19220,51 @@ def test_feature5_direction_reads_the_kit_not_the_number():
     assert params and params[0][1] == "[BUFF]" and "*(cheaper to use)*" in params[0][0]
 
 
+def test_feature5_every_number_shape_survives_the_word_diff_whole():
+    """Signs, multipliers, rates, versions and full expressions stay one span, not shredded text.
+
+    Each row is a shape a real kit uses. The regression they guard is the same one that produced
+    run #2880's unreadable pairs: `~~74.~~ -> **63.**  ~~28~~ -> **62**%`, which also read as two
+    independent changes and turned a nerf into a [BUFF].
+    """
+    from gamexpress import beta as beta_mod
+
+    for old, new, tag, span in (
+        ("Stage 1 DMG: 74.28%", "Stage 1 DMG: 63.62%", "[NERF]",
+         "~~74.28%~~ → **63.62%**"),
+        ("DMG Multiplier: 25.17%+25.17%*3", "DMG Multiplier: 29.15%+29.15%*3", "[BUFF]",
+         "~~25.17%+25.17%*3~~ → **29.15%+29.15%*3**"),
+        ("DMG Multiplier: 39.77%*3+39.77%", "DMG Multiplier: 38.45%*3+38.45%", "[NERF]",
+         "~~39.77%*3+39.77%~~ → **38.45%*3+38.45%**"),
+        # The multiplier and the rate unit belong to the number they modify.
+        ("deals 2x DMG", "deals 3x DMG", "[BUFF]", "~~2x~~ → **3x**"),
+        ("regenerates 0.5%/s", "regenerates 0.8%/s", "[CHANGED]", "~~0.5%/s~~ → **0.8%/s**"),
+        ("Balance v3.8.1 rules", "Balance v3.8.3 rules", "[CHANGED]", "~~v3.8.1~~ → **v3.8.3**"),
+    ):
+        line, got = beta_mod._change_line(old, new)
+        assert got == tag, (old, line, got)
+        assert span in line, (old, line)
+
+    # A leading sign stays inside the strikethrough instead of being stranded outside it.
+    line, _ = beta_mod._change_line("DEF reduction: -5%", "DEF reduction: -7%")
+    assert "~~-5%~~ → **-7%**" in line and "-~~5%~~" not in line
+
+    # An inserted list entry keeps its separator outside the bold span.
+    line, _ = beta_mod._change_line("stage 1, 2, 3", "stage 1, 2, 3, 4")
+    assert "3, **4**" in line and "3**, 4**" not in line
+
+    # A wording-only edit is a [TEXT FIX] even at the start of a sentence…
+    line, tag = beta_mod._change_line("Casting", "After casting")
+    assert tag == "[TEXT FIX]" and "~~Casting~~ → **After casting**" in line
+    # …while a real rename stays [CHANGED].
+    line, tag = beta_mod._change_line("[Embers] to empower", "[Blazing Flame] to empower")
+    assert tag == "[CHANGED]"
+
+    # A long rewrite is never turned into a wall of strikethrough.
+    line, _ = beta_mod._change_line("word " * 40, "other " * 40)
+    assert "~~" not in line
+
+
 def test_feature5_a_name_or_type_swap_is_changed_not_a_text_fix():
     """Terminology moved, not prose: `RES PEN type narrowed` is [CHANGED] per the format guide."""
     from gamexpress import beta as beta_mod

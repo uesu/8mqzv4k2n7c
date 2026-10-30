@@ -550,9 +550,19 @@ def _zzz_param_rows(items: Any, level: int = 12) -> list[dict]:
 # fragments `63.` and `62` were read as two independent changes, one of them going UP, which turned
 # a damage nerf into a [BUFF] verdict on the real WuWa 3.8.1 -> 3.8.3 kit.
 _TOKEN_RE = re.compile(
-    r"\d+(?:\.\d+)?(?:%|s\b)?(?:[/+*×x-]\d+(?:\.\d+)?(?:%|s\b)?)*"
+    # The sign belongs to the number: `-5% -> -7%` must be one strikethrough, not a detached `-`
+    # followed by `~~5%~~`. So does a trailing multiplier or rate unit (`2x`, `0.5%/s`), and a
+    # multi-dot version (`3.8.1`), which `\d+(?:\.\d+)?` used to cut in half.
+    r"[+-]?\d+(?:\.\d+)*(?:(?:%|s\b|[x×]\b)(?:/[A-Za-z]+\b)?)?"
+    r"(?:[/+*×x-]\d+(?:\.\d+)*(?:(?:%|s\b|[x×]\b))?)*"
+    # `v3.8.1`, `S1.5`: a leading word only when a dotted version follows it.
+    r"|[A-Za-z]+\d+(?:\.\d+)+"
     r"|\w+|[^\s\w]"
 )
+
+
+# Separator an inserted fragment arrived with (`, 4`), kept outside its bold span.
+_INSERT_LEAD_RE = re.compile(r"^[\s,;:.!?)\]]+")
 
 
 def _spans(text: str) -> list[tuple[str, int, int]]:
@@ -571,6 +581,13 @@ def _diff_parts(old: str, new: str, keep: int = 4, max_blocks: int | None = None
     matcher = difflib.SequenceMatcher(
         None, [t[0] for t in o_toks], [t[0] for t in n_toks], autojunk=False)
     if matcher.ratio() < 0.45:
+        # A short value replaced outright (`25.17%+25.17%*3` -> `29.15%+29.15%*3`, `Casting` ->
+        # `After casting`) shares no token to anchor an inline window on, yet the pair itself is the
+        # clearest thing a reader can be shown. Only a long rewrite stays plain: `_diff_section`
+        # gives those their own `[REWORK]` Old/New shape, and a wall of strikethrough is not an
+        # improvement.
+        if 0 < len(old_s) <= 120 and 0 < len(new_s) <= 120:
+            return f"~~{old_s}~~ → **{new_s}**", [(old_s, new_s)]
         return new_s, []
     opcodes = list(matcher.get_opcodes())
     blocks: list[list[int]] = []
@@ -610,7 +627,12 @@ def _diff_parts(old: str, new: str, keep: int = 4, max_blocks: int | None = None
         if old_part and new_part:
             out.append(f"~~{old_part}~~ → **{new_part}**")
         elif new_part:
-            out.append(f"**{new_part}**")
+            # An insertion: keep the separator it came with outside the bold span, so a new list
+            # entry reads `stage 1, 2, 3, **4**` instead of `stage 1, 2, 3**, 4**`.
+            lead = _INSERT_LEAD_RE.match(new_part)
+            prefix = lead.group(0) if lead else ""
+            body = new_part[len(prefix):]
+            out.append(f"{prefix}**{body}**" if body else prefix)
         elif old_part:
             out.append(f"~~{old_part}~~")
         cursor = new_end
@@ -759,7 +781,7 @@ def _is_terminology(context: str, old_part: str, new_part: str, *, single: bool 
 
     `single` says this is the only fragment that moved in the line. A rewrite touching several
     fragments is prose by construction (`Grants a shield to the whole squad` -> `Gives a shield to
-    the entire squad`), so the capital-letter guess below is only consulted for a lone swap —
+    the entire squad`), so the capitalisation guess below is only consulted for a lone swap —
     otherwise every sentence-initial verb change would read as a renamed skill.
     """
     if "[" in str(old_part) or "[" in str(new_part):
@@ -768,12 +790,18 @@ def _is_terminology(context: str, old_part: str, new_part: str, *, single: bool 
         return True
     if not single:
         return False
-    for part in (str(old_part or "").strip(), str(new_part or "").strip()):
-        if part[:1].isupper() and any(ch.isalpha() for ch in part):
-            words = re.sub(r"[-+]?\d+(?:\.\d+)?%?s?", "", part).strip()
-            if words and words[:1].isupper():
-                return True     # `All-Type` -> `Quantum`: two proper nouns, no number moved
-    return False
+
+    def title_case_terms(value: str) -> list[str]:
+        return [word for word in str(value or "").split() if word[:1].isalpha()]
+
+    before = title_case_terms(old_part)
+    after = title_case_terms(new_part)
+    # A rename is capitalised on both sides, word for word: `All-Type` -> `Quantum`,
+    # `Embers` -> `Blazing Flame`. `Casting` -> `After casting` grows a lowercase word, so it is
+    # prose — the guide's `[TEXT FIX]`, not a renamed skill.
+    if not before or not after:
+        return False
+    return all(word[:1].isupper() for word in before + after)
 
 
 def _numbers(text: str) -> list[float]:
