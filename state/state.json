@@ -3961,7 +3961,7 @@
       "INKSHIFT33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1793287519,
+        "last_seen": 1793331025,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -4020,7 +4020,7 @@
       "LEVELUP33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1793287519,
+        "last_seen": 1793331025,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -4334,8 +4334,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1793268004,
-        "47240755"
+        1793331007,
+        "47247786"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -4364,6 +4364,11 @@
           1793268041,
           2,
           "8c571a1685d2dc07"
+        ],
+        "47247786": [
+          1793331025,
+          0,
+          "4938aff2d0821b59"
         ]
       },
       "records": {
@@ -4547,6 +4552,13 @@
           ],
           "status": "posted",
           "ts": 1793268004
+        },
+        "47247786": {
+          "messages": [
+            "1565568565409746977"
+          ],
+          "status": "posted",
+          "ts": 1793331007
         }
       },
       "route": "a0f2147590c35140"
