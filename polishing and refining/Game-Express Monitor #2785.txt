@@ -1,3 +1,106 @@
+{
+  "attachments": [],
+  "webhook_id": "1552947103658025040",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Wuthering Waves Version 3.8 \"Special Broadcast\"](https://x.com/Wuthering_Waves/status/2116002155723444733) <:ananta1:1558340472525693018>\n<t:1793962800:F> or <t:1793962800:R>"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Maintenance Time & Compensation Details**\n\n✦ Pre-Install: <t:1794276000:F>\n✦ Maintenance: <t:1794427200:f> to <t:1794452400:t>\n\n※ In the event that the maintenance is extended, the dev team will issue a follow-up notice and adjust the compensation accordingly."
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**Version 3.8 Banners (STC)**\n\n※ 4 Star Characters: TBA\n\n✦ First Half/Phase: TBA\n- 4 Star Characters: TBA\n\n✦ Second Half/Phase: TBA\n- 4 Star Characters: TBA"
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/RPbudMoV7h_FyaBTbAy9NarFgB-KAldjhiNgAYcQKRY/%3Fname%3Dorig/https/pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Youtube",
+              "emoji": {
+                "id": "1508619925940473966",
+                "name": "kurobbseventcalendar",
+                "animated": true
+              },
+              "url": "https://www.youtube.com/@WutheringWaves/streams"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Twitch",
+              "emoji": {
+                "id": "1508647148902813776",
+                "name": "hsrbbsevanescia",
+                "animated": true
+              },
+              "url": "https://www.twitch.tv/wuthering_waves"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": 10,
+          "content": "-# STC — Subject to Change • TBA — To be Announced <@&1296268365593186426>"
+        },
+        {
+          "id": 13,
+          "type": 10,
+          "content": "-# 🕒 pre-install, maintenance start, maintenance end estimated from version cadence — the official notice replaces it automatically"
+        }
+      ]
+    }
+  ]
+}
+
 https://github.com/uesu/8mqzv4k2n7c/actions/runs/40994904172
 
 Game-Express Monitor #2785
