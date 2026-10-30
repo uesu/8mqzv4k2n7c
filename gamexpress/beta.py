@@ -3837,19 +3837,31 @@ def _entry_role(ns: str, url: str) -> str:
     return ""
 
 
-def _public_path(ns: str, role: str) -> str:
+def _public_path(ns: str, role: str, set_kind: str = "") -> str:
+    """The path segment each site itself uses — read off its own changelog pages (2026-10-30).
+
+    Captured from the served HTML: `gi/changelog/beta` links `characters|weapons|artifacts`,
+    `hsr` links `characters|lightcones|relics|planar-ornaments`, `zzz` links
+    `agents|w-engines|drive-discs`. `light-cones` and `relicsets` are not routes on that site, so
+    a card that used them linked to a 404.
+    """
     paths = {
         "zzz": {"character": "agents", "weapon": "w-engines", "relic": "drive-discs"},
-        "hsr": {"character": "characters", "weapon": "light-cones", "relic": "relicsets"},
+        "hsr": {"character": "characters", "weapon": "lightcones", "relic": "relics"},
         "gi": {"character": "characters", "weapon": "weapons", "relic": "artifacts"},
         "ww": {"character": "resonators", "weapon": "weapons", "relic": "echoes"},
     }
+    # Star Rail splits its two relic families: a Planar Ornament set has its own route, a Cavern
+    # Relic set lives under `relics`. The item's own set kind is the only thing that tells them
+    # apart, so it is passed through from the parsed detail.
+    if ns == "hsr" and role == "relic" and "planar" in str(set_kind or "").lower():
+        return "planar-ornaments"
     return paths.get(ns, {}).get(role, role)
 
 
-def _fallback_entry(ns: str, role: str, item_id: str) -> dict:
+def _fallback_entry(ns: str, role: str, item_id: str, set_kind: str = "") -> dict:
     """A manifest/snapshot candidate with deterministic source URLs (no guessed content)."""
-    path = _public_path(ns, role)
+    path = _public_path(ns, role, set_kind)
     if ns == "ww":
         url = f"https://ww.nanoka.cc/{role}/{item_id}/"
     else:
@@ -4664,11 +4676,11 @@ def _slug(value: str, fallback_id: str = "") -> str:
     return slug or str(fallback_id or "").strip() or "item"
 
 
-def _item_page_url(ns: str, role: str, item_id: str, name: str) -> str:
+def _item_page_url(ns: str, role: str, item_id: str, name: str, set_kind: str = "") -> str:
     if ns == "ww":
         return f"https://ww.nanoka.cc/{role}/{item_id}/"
     return (
-        f"https://{ns}.gachabase.net/{_public_path(ns, role)}/"
+        f"https://{ns}.gachabase.net/{_public_path(ns, role, set_kind)}/"
         f"{item_id}/{_slug(name, item_id)}/beta?lang=en"
     )
 
@@ -4717,22 +4729,24 @@ def _encore_diff_url(item_id: str, route: str, first_version: str, second_versio
 
 
 def _diff_url(ns: str, role: str, item_id: str, name: str,
-              previous_version: str, current_version: str) -> str:
+              previous_version: str, current_version: str, set_kind: str = "") -> str:
     """The revision-diff link for one item, in whichever database serves that game."""
     if ns == "ww":
         return _encore_diff_url(item_id, role, previous_version, current_version)
-    return _generated_diff_url(ns, role, item_id, name, previous_version, current_version)
+    return _generated_diff_url(ns, role, item_id, name, previous_version, current_version,
+                               set_kind)
 
 
 def _generated_diff_url(ns: str, role: str, item_id: str, name: str,
-                        previous_version: str, current_version: str) -> str:
+                        previous_version: str, current_version: str,
+                        set_kind: str = "") -> str:
     """A deterministic diff link for a blank hotfix revision (e.g. 19850203)."""
     if ns == "ww" or not previous_version or not current_version:
         return ""
     before = str(previous_version).replace("+", "_")
     after = str(current_version).replace("+", "_")
     return (
-        f"https://{ns}.gachabase.net/diff/{_public_path(ns, role)}/"
+        f"https://{ns}.gachabase.net/diff/{_public_path(ns, role, set_kind)}/"
         f"{item_id}/{_slug(name, item_id)}"
         f"?prev=beta_{before}&cur=beta_{after}&lang=en"
     )
@@ -6352,7 +6366,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                         glossary=list(hist_fields.get("glossary") or []),
                         image_url=str(((previous_snapshot.get("data") or {}).get("image_url")) or ""),
                         image_urls=list(((previous_snapshot.get("data") or {}).get("image_urls")) or []),
-                        diff_url="", page_url=_item_page_url(ns, role, item_id, hist_name),
+                        diff_url="",
+                        page_url=_item_page_url(ns, role, item_id, hist_name,
+                                                set_kind=str(hist_fields.get("set_kind") or "")),
                     )
                     healed_eq_snap = _equipment_snapshot(hist_eq, previous_revision, ctx.now, role)
                     if previous_snapshot.get("gallery_urls"):
@@ -6360,9 +6376,11 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     previous_snapshot = healed_eq_snap
                     previous = hist_eq
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
-            _item_page_url(ns, role, item_id, name)
+            _item_page_url(ns, role, item_id, name,
+                           set_kind=str(fields.get("set_kind") or ""))
         diff_url = (str(entry.get("diff") or "") or
-                    _diff_url(ns, role, item_id, name, previous_revision, version))
+                    _diff_url(ns, role, item_id, name, previous_revision, version,
+                              set_kind=str(fields.get("set_kind") or "")))
         if "_encore" in data:
             page_url = f"https://encore.moe/weapon/{item_id}?lang=en&v=Beta"
             rarity = data.get("rarity")

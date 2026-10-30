@@ -20783,6 +20783,57 @@ def test_feature5_every_game_uses_the_diff_database_that_serves_it():
         assert "?prev=beta_3.4.1_19836465&cur=beta_3.4.1_19850203&lang=en" in url
 
 
+
+def test_feature5_gachabase_paths_match_the_routes_the_site_itself_serves():
+    """The path segments come from the sites' own changelog links (captured 2026-10-30).
+
+    `light-cones` and `relicsets` are not routes on hsr.gachabase.net, so a card built from them
+    pointed at a 404; Star Rail also splits planar ornaments from cavern relics by the set's kind.
+    """
+    from gamexpress import beta as beta_mod
+
+    cases = (
+        ("hsr", "weapon", "", "lightcones"),
+        ("hsr", "relic", "Relic Set", "relics"),
+        ("hsr", "relic", "Planar Ornament Set", "planar-ornaments"),
+        ("hsr", "relic", "", "relics"),
+        ("gi", "relic", "Artifact Set", "artifacts"),
+        ("zzz", "weapon", "", "w-engines"),
+        ("zzz", "relic", "Drive Disc", "drive-discs"),
+    )
+    for ns, role, set_kind, path in cases:
+        url = beta_mod._diff_url(ns, role, "12345", "Some Name", "4.6.52", "4.6.53",
+                                 set_kind=set_kind)
+        assert f"/diff/{path}/12345/some-name?prev=beta_4.6.52&cur=beta_4.6.53&lang=en" in url, (
+            ns, role, set_kind, url)
+        assert "light-cones" not in url and "relicsets" not in url, url
+        # Every other link to the same item uses that route too, so none of them disagree.
+        assert f"/{path}/12345/12345/beta?lang=en" in beta_mod._fallback_entry(
+            ns, role, "12345", set_kind)["url"]
+        assert f"/{path}/12345/some-name/beta?lang=en" in beta_mod._item_page_url(
+            ns, role, "12345", "Some Name", set_kind)
+
+    # Rendered: a Star Rail planar ornament links to its own set page and to its own comparison.
+    kind = "Planar Ornament Set"
+    equip = BetaEquipment(
+        id="hsr:330", name="Subspace Asc Center", category_label="Relic Sets", rarity=5,
+        set_kind=kind, stats_line="ATK +12%",
+        lines=["**[BUFF]** ATK ~~10%~~ → **12%**."],
+        page_url=beta_mod._item_page_url("hsr", "relic", "330", "Subspace Asc Center", kind),
+        diff_url=beta_mod._diff_url("hsr", "relic", "330", "Subspace Asc Center", "4.6.52",
+                                    "4.6.53", set_kind=kind),
+    )
+    patch = BetaPatch(game_key="starrail", beta_version="4.6.53", rev_label="v4.6.53",
+                      rev_id="r", equipment=[equip])
+    payloads = cards.beta_payloads(GAMES["starrail"], patch)
+    dump = json.dumps(payloads, ensure_ascii=False)
+    assert "/planar-ornaments/330/subspace-asc-center/beta?lang=en" in dump, dump
+    assert ("/diff/planar-ornaments/330/subspace-asc-center"
+            "?prev=beta_4.6.52&cur=beta_4.6.53") in dump, dump
+    assert "relicsets" not in dump and "light-cones" not in dump, dump
+    assert all(not cards.validate_payload(p) for p in payloads)
+
+
 def test_feature5_diff_link_renders_on_every_games_card():
     """Each game's card carries its own comparison link, character and equipment alike."""
     from gamexpress import beta as beta_mod
