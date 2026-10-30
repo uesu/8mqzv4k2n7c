@@ -1906,6 +1906,12 @@ def manifest_new_ids(manifest: dict, ns: str, key: str) -> set[str]:
 
 
 # --------------------------------------------------------------------------- detail JSON
+def _detail_url(ns: str, version: str, kind: str, item_id: str,
+                locale: str = LOCALE) -> str:
+    """The static path a per-item record is read from — also what a failure report names."""
+    return f"{STATIC_BASE}/{ns}/{version}/{locale}/{kind}/{item_id}.json"
+
+
 async def _detail(
     fetcher,
     ns: str,
@@ -1917,7 +1923,7 @@ async def _detail(
 ) -> dict | None:
     if not ns or not version or not item_id:
         return None
-    url = f"{STATIC_BASE}/{ns}/{version}/{locale}/{kind}/{item_id}.json"
+    url = _detail_url(ns, version, kind, item_id, locale)
     data = await fetcher.get_json(url, source="beta-data", retries=1)
     return data if isinstance(data, dict) else None
 
@@ -3112,16 +3118,22 @@ def _bangboo_prop_value(prop: Any, level: int = 1) -> str:
 
 
 def _bangboo_skill_lines(data: dict) -> list[str]:
-    """A Bangboo's three skills, keeping only what the build actually publishes.
+    """A Bangboo's three skills, reading a `param` slot for what it actually is.
 
-    Its English strings can lag the build — Charley's 3.4.1 file carries a localization key for
-    every title and description — so a key is dropped instead of printed, and `skill_prop` still
-    supplies the numbers the site itself shows.
+    A slot is either a `{Skill:<id>, Prop:<id>}` pointer into `skill_prop` (grown by
+    `main + growth x (level - 1)`) or a literal the build already wrote out for that level — Ariel
+    ships `9.6% HP|4 Energy|20%|{...}|{...}|28s` at Lv. 6, so its three buffs and the cooldown are
+    literals while the two multipliers are pointers. `property` and `param` are parallel columns;
+    a slot whose name or value is still a localization key drops only its own pair.
+
+    The English strings can also lag: Charley's 3.4.1 file carries a key for every title and
+    description, so a key is dropped instead of printed.
     """
     skill = data.get("skill") if isinstance(data.get("skill"), dict) else {}
     props = data.get("skill_prop") if isinstance(data.get("skill_prop"), dict) else {}
     lines: list[str] = []
     untranslated: list[str] = []
+    labels = sorted((label.lower() for _key, label in _ZZZ_BANGBOO_SKILLS), key=len, reverse=True)
     for key, label in _ZZZ_BANGBOO_SKILLS:
         block = skill.get(key)
         levels = block.get("level") if isinstance(block, dict) else None
@@ -3134,28 +3146,39 @@ def _bangboo_skill_lines(data: dict) -> list[str]:
         row = levels.get(str(level))
         if not isinstance(row, dict):
             continue
-        # `property` and `param` are two parallel columns: slot N names the value slot N points
-        # at. A name that is still a localization key drops only its own pair — the position is
-        # kept, or every row after it would be labelled with the wrong attribute.
+
+        # `property` and `param` are two parallel columns: slot N names the value slot N carries.
         names = [str(prop) for prop in (row.get("property") or [])]
         pairs: list[tuple[str, str]] = []
         for idx, slot in enumerate(str(row.get("param") or "").split("|")):
-            match = re.search(r"\{Skill:\s*(\d+)\s*,\s*Prop:\s*(\d+)\}", slot)
-            if not match or idx >= len(names) or _is_key(names[idx]):
+            if idx >= len(names) or _is_key(names[idx]):
                 continue
-            table = props.get(match.group(1))
-            value = _bangboo_prop_value((table or {}).get(match.group(2))
-                                        if isinstance(table, dict) else None, level)
+            pointer = re.search(r"\{Skill:\s*(\d+)\s*,\s*Prop:\s*(\d+)\}", slot)
+            if pointer:
+                table = props.get(pointer.group(1))
+                value = _bangboo_prop_value(
+                    (table or {}).get(pointer.group(2)) if isinstance(table, dict) else None,
+                    level,
+                )
+            elif _is_key(slot):
+                continue          # e.g. Charley's cooldown is a key in 3.4.1
+            else:
+                value = slot.strip()
             if value:
                 pairs.append((names[idx], value))
-        # A newer build translates the block: Booltergeist's are real text ("Cursed Spotlight",
-        # "Specialty Scare Actor"), Charley's are still keys. Placeholders are filled from the
-        # values already resolved, so `{0}` never reaches a card.
+
         title = "" if _is_key(str(row.get("name") or "")) else _clean(row.get("name"))
-        # One bullet is one line: a multi-paragraph description (Ariel's Active Skill lists its
-        # three buffs on separate lines) is collapsed rather than breaking out of the bullet.
+        # One bullet is one line: a multi-paragraph description is collapsed, or it would break
+        # out of its own bullet.
         desc = "" if _is_key(str(row.get("desc") or "")) else " ".join(_clean(
             _ww_fill_params(row.get("desc"), [value for _name, value in pairs])).split())
+        # The file opens each description with the skill type it belongs to ("Active Skill Flies
+        # high into the air …"). The card prints that type as the line's own label, so the copy
+        # inside the text would read as a stutter.
+        for known in labels:
+            if desc.lower().startswith(known + " "):
+                desc = desc[len(known) + 1:].strip()
+                break
         if title and desc:
             lines.append(f"{label} — {title}: {desc}")
         elif title:
@@ -6086,6 +6109,32 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     gallery_cache: dict[str, list[str]] = {}
     char_new, char_changed, equip_count = 0, 0, 0
     listing_cache: dict[str, dict] = {}
+    live_listing_cache: dict[str, dict] = {}
+
+    async def live_has(role: str, item_id: str) -> bool:
+        """Does the LIVE build's own listing already carry this id?
+
+        The manifest's `new` lists are a claim, not proof: nanoka keeps an item in them while it
+        keeps changing, so a Bangboo that shipped in 3.1 (Ariel), 3.0 (Ultra Jake), 2.8
+        (Booltergeist) or 1.7 (Overtimeboo) is still named in `new.bangboo` on 3.4.1. The live
+        build's listing is what settles whether players already have the item, and that decides
+        between a reveal and a change — for characters and every equipment role, in every game.
+
+        A listing that cannot be read leaves the cache empty and answers False, so a failed read
+        keeps the manifest's claim instead of demoting on no evidence.
+        """
+        nonlocal requests
+        list_kind = str(kinds["new_keys"].get(role) or "")
+        if not list_kind or not has_live_build:
+            return False
+        if list_kind not in live_listing_cache:
+            if requests + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
+                return False
+            listing_live = await _listing(ctx.fetcher, ns, live_build, list_kind)
+            requests += 1
+            if isinstance(listing_live, dict) and listing_live:
+                live_listing_cache[list_kind] = listing_live
+        return item_id in (live_listing_cache.get(list_kind) or {})
     encore_revision = None
 
     async def encore_fallback(kind: str, item_id: str) -> dict | None:
@@ -6128,6 +6177,12 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         previous_snapshot = known_snapshots.get(snap_key)
         previous = _character_from_snapshot(previous_snapshot)
         is_new = item_id in new_char_ids and previous is None
+        if is_new and await live_has("character", item_id):
+            # Same rule as equipment: an Agent the live build already lists is a change, not a
+            # reveal, whatever the manifest's `new.character` says. (The Encore fallback that
+            # WuWa may still need happens later, so it cannot be part of this decision — and it
+            # does not need to be: the live listing answers the question for every game.)
+            is_new = False
         cap = budget["max_chars"] if is_new else budget["max_changed"]
         seen = char_new if is_new else char_changed
         if (not is_new and cap == 0):
@@ -6557,7 +6612,8 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     patch.item_keys.append(_entry_key(ns, role, item_id))
                     ctx.report.append(
                         f"{game.short} beta: {role} id {item_id} has no readable text in this "
-                        "build; recorded as seen"
+                        f"build ({_detail_url(ns, version, detail_kind, item_id)}); "
+                        "recorded as seen"
                     )
                 continue
         rarity = fields.get("rarity")
@@ -6580,6 +6636,10 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         is_new = item_id in {
             "weapon": new_weapon_ids, "relic": new_relic_ids, "bangboo": new_bangboo_ids,
         }.get(role, set()) and previous is None
+        shipped_live = bool(
+            is_new and "_encore" not in data and await live_has(role, item_id))
+        if shipped_live:
+            is_new = False
         name = _safe_entry_name(
             entry, data, listing_entry, item_id,
             extra_names=(str(((previous_snapshot or {}).get("data") or {}).get("name") or ""),),
@@ -6739,12 +6799,17 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             if released_eq is not None:
                 previous = released_eq
                 eq_cmp = "diff"
+            elif shipped_live:
+                # The live build lists it, so this is not a reveal — but its old kit could not be
+                # read, so there is nothing to diff. The existing snapshot path says exactly that
+                # instead of printing a released item as a brand-new one.
+                eq_cmp = "snapshot"
         patch.snapshots[snap_key] = eq_snap
         if eq_gallery:
             patch.snapshots[snap_key]["gallery_urls"] = list(eq_gallery)
         known_snapshots[snap_key] = patch.snapshots[snap_key]
         patch.item_keys.append(_entry_key(ns, role, item_id))
-        if previous is None:
+        if previous is None and eq_cmp != "snapshot":
             patch.equipment.append(current)
         elif eq_cmp == "snapshot":
             current.tag = "[CHANGED]"
