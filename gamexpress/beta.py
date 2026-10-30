@@ -4506,6 +4506,57 @@ def _item_page_url(ns: str, role: str, item_id: str, name: str) -> str:
     )
 
 
+# Encore's version comparison is a real page, not a guess: the query grammar below is the one its
+# own UI produces (observed 2026-10-30) —
+#   /diff?firstGameVer=3.8.0&secondGameVer=3.8.0&firstVer=Beta_3.8.2&secondVer=Beta_3.8.3
+#        &route=character&id=1512&lang=en
+# `firstVer`/`secondVer` are the beta PATCH versions; `*GameVer` is the game version the patch
+# belongs to (3.8.x -> 3.8.0). WuWa is served by Encore only (no gachabase grammar), so this is
+# the revision-diff link a WuWa card can carry.
+_ENCORE_DIFF = "https://encore.moe/diff"
+
+
+def _beta_patch_parts(version: str) -> list[str]:
+    """`3.8.1` -> ['3', '8', '1']; anything else yields [] and no link is invented.
+
+    Encore names a beta patch `Beta_<x.y.z>`. A two-part value is the game version (`3.7`), not a
+    patch, and a build id (`3.8.1+9162983`) is not part of the label — both are refused rather
+    than turned into a URL the site cannot resolve.
+    """
+    parts = _display_version(version).split(".")
+    if len(parts) != 3 or not all(part.isdigit() for part in parts):
+        return []
+    return parts
+
+
+def _encore_diff_url(item_id: str, route: str, first_version: str, second_version: str) -> str:
+    """The Encore diff page for one item across two beta patches, or "" when it cannot be built.
+
+    Every part of the query is a value the card actually compared: the two beta patch versions.
+    A comparison it cannot name (cold start, the same patch twice, an unreadable build id) returns
+    "" instead of a link that would open an empty comparison.
+    """
+    if not item_id or route not in ("character", "weapon"):
+        return ""
+    first, second = _beta_patch_parts(first_version), _beta_patch_parts(second_version)
+    if not first or not second or first == second:
+        return ""
+    game_first, game_second = f"{first[0]}.{first[1]}.0", f"{second[0]}.{second[1]}.0"
+    return (
+        f"{_ENCORE_DIFF}?firstGameVer={game_first}&secondGameVer={game_second}"
+        f"&firstVer=Beta_{'.'.join(first)}&secondVer=Beta_{'.'.join(second)}"
+        f"&route={route}&id={item_id}&lang=en"
+    )
+
+
+def _diff_url(ns: str, role: str, item_id: str, name: str,
+              previous_version: str, current_version: str) -> str:
+    """The revision-diff link for one item, in whichever database serves that game."""
+    if ns == "ww":
+        return _encore_diff_url(item_id, role, previous_version, current_version)
+    return _generated_diff_url(ns, role, item_id, name, previous_version, current_version)
+
+
 def _generated_diff_url(ns: str, role: str, item_id: str, name: str,
                         previous_version: str, current_version: str) -> str:
     """A deterministic diff link for a blank hotfix revision (e.g. 19850203)."""
@@ -5727,10 +5778,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
             _item_page_url(ns, "character", item_id, name)
         diff_url = (str(entry.get("diff") or "") or
-                    _generated_diff_url(ns, "character", item_id, name, previous_revision, version))
+                    _diff_url(ns, "character", item_id, name, previous_revision, version))
         if "_encore" in data:
             page_url = f"https://encore.moe/character/{item_id}?lang=en&v=Beta"
-            diff_url = ""
 
         candidates = _data_image_candidates(ns, "character", item_id, data)
         image_entry = {"id": snap_key, "image": entry.get("image"), "candidates": candidates}
@@ -6099,10 +6149,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
             _item_page_url(ns, role, item_id, name)
         diff_url = (str(entry.get("diff") or "") or
-                    _generated_diff_url(ns, role, item_id, name, previous_revision, version))
+                    _diff_url(ns, role, item_id, name, previous_revision, version))
         if "_encore" in data:
             page_url = f"https://encore.moe/weapon/{item_id}?lang=en&v=Beta"
-            diff_url = ""
             rarity = data.get("rarity")
         current = BetaEquipment(
             id=snap_key, name=name, category_label=str(kinds[role]["label"]), rarity=rarity,

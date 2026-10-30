@@ -20164,9 +20164,17 @@ def test_feature5_ww_3_8_3_second_revision_is_a_real_before_after_not_a_kit_dump
     assert not any("May Your Past Sink" in section.title for section in card.sections)
     assert "No changes." not in (card.overview or "")
 
+    # The card points at Encore's own comparison of the two patches it just diffed.
+    encore_diff = (
+        "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
+        "&firstVer=Beta_3.8.1&secondVer=Beta_3.8.3&route=character&id=1512&lang=en"
+    )
+    assert card.diff_url == encore_diff
+
     payloads = cards.beta_payloads(GAMES["wuwa"], second)
     dump = json.dumps(payloads, ensure_ascii=False)
     assert "## [WW - 3.8.3 Beta] Patch Notes: Rev. 3.8.1 → 3.8.3" in dump
+    assert f"[Revision diff]({encore_diff})" in dump
     assert "No changes." not in dump
     assert "*(cont." not in dump
     for payload in payloads:
@@ -20281,6 +20289,93 @@ def test_feature5_rebuild_that_matches_the_current_kit_is_not_a_baseline():
     text = "\n".join(line for section in card.sections for line in section.lines)
     assert "~~" not in text
     assert "No changes." not in text
+
+
+def test_feature5_encore_diff_link_matches_the_sites_own_grammar():
+    """The per-item comparison URL is the one Encore's own UI produces (captured 2026-10-30)."""
+    from gamexpress import beta as beta_mod
+
+    assert beta_mod._encore_diff_url("1512", "character", "3.8.2", "3.8.3") == (
+        "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
+        "&firstVer=Beta_3.8.2&secondVer=Beta_3.8.3&route=character&id=1512&lang=en"
+    )
+    assert beta_mod._encore_diff_url("21030076", "weapon", "3.8.1", "3.8.3") == (
+        "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
+        "&firstVer=Beta_3.8.1&secondVer=Beta_3.8.3&route=weapon&id=21030076&lang=en"
+    )
+    # Across cycles each side keeps its own game version.
+    assert beta_mod._encore_diff_url("1512", "character", "3.7.2", "3.8.3").startswith(
+        "https://encore.moe/diff?firstGameVer=3.7.0&secondGameVer=3.8.0&firstVer=Beta_3.7.2"
+    )
+    # A snapshot revision may carry a build id; the beta patch is still what the page compares.
+    assert "firstVer=Beta_3.8.1&" in beta_mod._encore_diff_url(
+        "1512", "character", "3.8.1+9162983", "3.8.3")
+    # Never invent a comparison the card cannot name.
+    assert beta_mod._encore_diff_url("1512", "character", "3.8.3", "3.8.3") == ""
+    assert beta_mod._encore_diff_url("1512", "character", "", "3.8.3") == ""
+    assert beta_mod._encore_diff_url("1512", "character", "live", "3.8.3") == ""
+    # A two-part value is the game version, not a `Beta_` patch.
+    assert beta_mod._encore_diff_url("1512", "character", "3.7", "3.8.3") == ""
+    assert beta_mod._encore_diff_url("", "character", "3.8.1", "3.8.3") == ""
+    assert beta_mod._encore_diff_url("1512", "relic", "3.8.1", "3.8.3") == ""
+
+
+def test_feature5_every_game_uses_the_diff_database_that_serves_it():
+    """WuWa diffs live on Encore, the other three on gachabase — for characters and equipment."""
+    from gamexpress import beta as beta_mod
+
+    # `_diff_url` takes the nanoka namespace ("ww"), which is what every call site passes.
+    assert beta_mod._diff_url("ww", "character", "1512", "Lily", "3.8.1", "3.8.3").startswith(
+        "https://encore.moe/diff?")
+    assert beta_mod._diff_url("ww", "weapon", "21030076", "Lullaby", "3.8.1", "3.8.3").startswith(
+        "https://encore.moe/diff?")
+    # Never a gachabase diff for WuWa (that page does not exist) and never an Encore one elsewhere.
+    assert "gachabase" not in beta_mod._diff_url("ww", "character", "1512", "Lily", "3.8.1", "3.8.3")
+    for ns, path, item_id in (
+        ("zzz", "agents", "1601"),
+        ("gi", "characters", "10000136"),
+        ("hsr", "characters", "1511"),
+    ):
+        url = beta_mod._diff_url(ns, "character", item_id, "Name", "3.4.1+19836465", "3.4.1+19850203")
+        assert url.startswith(f"https://{ns}.gachabase.net/diff/{path}/{item_id}/"), url
+        assert "encore.moe" not in url
+        assert "?prev=beta_3.4.1_19836465&cur=beta_3.4.1_19850203&lang=en" in url
+
+
+def test_feature5_diff_link_renders_on_every_games_card():
+    """Each game's card carries its own comparison link, character and equipment alike."""
+    from gamexpress import beta as beta_mod
+
+    for key, ns, role, item_id, name in (
+        ("wuwa", "ww", "character", "1512", "Lily"),
+        ("zzz", "zzz", "character", "1601", "Sunbringer"),
+        ("genshin", "gi", "character", "10000136", "Citlali"),
+        ("starrail", "hsr", "character", "1511", "Sunday"),
+    ):
+        url = beta_mod._diff_url(ns, role, item_id, name, "3.8.1", "3.8.3")
+        assert url, key
+        char = BetaCharacter(
+            id=f"{ns}:{item_id}", name=name, rarity=5,
+            subtext="-# Revision diff against 3.8.1",
+            sections=[BetaSectionEntry(title="Skill", category="Skills", tag="[CHANGED]",
+                                       lines=["**[BUFF]** ATK ~~100%~~ → **110%**."])],
+            diff_url=url,
+        )
+        eq_url = beta_mod._diff_url(ns, "weapon", "21030076", "Lullaby", "3.8.1", "3.8.3")
+        equipment = BetaEquipment(
+            id=f"{ns}:21030076", name="Lullaby", category_label="Weapons", rarity=5,
+            stats_line="ATK 500", effect_title="Effect",
+            lines=["**[BUFF]** ATK ~~10%~~ → **12%**."], diff_url=eq_url,
+        )
+        payloads = cards.beta_payloads(
+            GAMES[key],
+            beta_mod.BetaPatch(game_key=key, beta_version="3.8.3", rev_label="v3.8.3",
+                               rev_id="r", characters=[char], equipment=[equipment]),
+        )
+        dump = json.dumps(payloads, ensure_ascii=False)
+        assert f"[Revision diff]({url})" in dump, key
+        assert f"[Revision diff]({eq_url})" in dump, key
+        assert all(not cards.validate_payload(p) for p in payloads), key
 
 
 def test_feature5_header_range_uses_versions_then_build_ids_and_never_fakes_a_pair():

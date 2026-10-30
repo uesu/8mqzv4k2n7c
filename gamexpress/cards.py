@@ -1124,7 +1124,13 @@ BETA_RESOURCE_LINKS = {
         "Resource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en)"
         " / [nanoka](https://zzz.nanoka.cc/)"
     ),
-    "wuwa": "Resource: [nanoka](https://ww.nanoka.cc/) / [encore](https://encore.moe/new?v=Beta)",
+    # WuWa has no gachabase beta changelog, so its revision work lives on nanoka (data) and
+    # Encore (browse + the version-comparison tool the per-item diff links point at).
+    "wuwa": (
+        "Resource: [nanoka](https://ww.nanoka.cc/)"
+        " / [encore](https://encore.moe/new?v=Beta)"
+        " / [diff](https://encore.moe/diff?lang=en)"
+    ),
 }
 
 _HSR_STANDARD_PATHS = {
