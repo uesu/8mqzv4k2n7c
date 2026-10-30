@@ -5586,6 +5586,77 @@
           ]
         },
         "status": "seeded"
+      },
+      "3.8": {
+        "data": {
+          "announcement_locked": true,
+          "announcement_source": "x",
+          "announcement_ts": 1793329202,
+          "banners_checked_ts": 1793329238,
+          "estimate_sources": [
+            "version cadence"
+          ],
+          "estimated": [
+            "preinstall_ts",
+            "maint_start_ts",
+            "maint_end_ts"
+          ],
+          "images": [
+            "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
+          ],
+          "maint_end_ts": 1794452400,
+          "maint_start_ts": 1794427200,
+          "preinstall_ts": 1794276000,
+          "program_name": "Special Broadcast",
+          "program_seen": true,
+          "program_ts": 1793962800,
+          "source_label": "X Post",
+          "source_links": [
+            [
+              "X Post",
+              "https://x.com/Wuthering_Waves/status/2116002155723444733"
+            ]
+          ],
+          "source_url": "https://x.com/Wuthering_Waves/status/2116002155723444733",
+          "title_url": "https://x.com/Wuthering_Waves/status/2116002155723444733",
+          "version": "3.8"
+        },
+        "estimated_reported": [
+          "preinstall_ts",
+          "maint_start_ts",
+          "maint_end_ts"
+        ],
+        "first_seen": 1793329238,
+        "message_id": "1565561054497480738",
+        "mirror_hash": "9288f1ff22fd2f7d",
+        "mirror_message_id": "1565561076589006939",
+        "mirror_webhook_fp": "a85deaa1f0fb",
+        "payload_hash": "6ba0ef96fd33414e",
+        "posted_at": 1793329238,
+        "prov": {
+          "maint_end_ts": [
+            9,
+            1793329238
+          ],
+          "maint_start_ts": [
+            9,
+            1793329238
+          ],
+          "preinstall_ts": [
+            9,
+            1793329238
+          ],
+          "program_name": [
+            40,
+            1793329202
+          ],
+          "program_ts": [
+            40,
+            1793329202
+          ]
+        },
+        "status": "posted",
+        "webhook_fp": "19991534cf6d"
       }
     },
     "zzz": {

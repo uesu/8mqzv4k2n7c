@@ -1,66 +1,70 @@
 {
   "_": "Official X (Twitter) post that announces each version's Special Program / Special Broadcast.",
-  "_why": "A nitter timeline only reaches back a few days, but the card is re-rendered for the whole 6-week version and every `mode=test` run starts from an empty state. So the tweet id is discovered once from the timeline and kept here — fxtwitter still serves a 5-week-old tweet by id, which is what makes the link and the key art correct on a test run.",
   "_updated_by": ".github/workflows/monitor.yml commits this file back when a new announcement is found (same pattern as posted_tweets.json in the X monitor repo).",
   "_verified": "Every id below was resolved through https://api.fxtwitter.com/status/<id> on 2026-09-27 and returned the key art at ?name=orig.",
-
+  "_why": "A nitter timeline only reaches back a few days, but the card is re-rendered for the whole 6-week version and every `mode=test` run starts from an empty state. So the tweet id is discovered once from the timeline and kept here — fxtwitter still serves a 5-week-old tweet by id, which is what makes the link and the key art correct on a test run.",
   "genshin": {
     "7.1": {
-      "id": "2096810691021689205",
       "account": "GenshinImpact",
-      "url": "https://x.com/GenshinImpact/status/2096810691021689205",
-      "posted_ts": 1788753600,
+      "found_at": 1790473600,
+      "id": "2096810691021689205",
       "image": "https://pbs.twimg.com/media/HRlONCqXcAUhgGD.jpg?name=orig",
-      "found_at": 1790473600
+      "posted_ts": 1788753600,
+      "url": "https://x.com/GenshinImpact/status/2096810691021689205"
     },
     "7.2": {
-      "id": "2112755760107081755",
       "account": "GenshinImpact",
-      "url": "https://x.com/GenshinImpact/status/2112755760107081755",
-      "posted_ts": 1792555200,
+      "found_at": 1792555239,
+      "id": "2112755760107081755",
       "image": "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig",
-      "found_at": 1792555239
+      "posted_ts": 1792555200,
+      "url": "https://x.com/GenshinImpact/status/2112755760107081755"
     }
   },
-
   "starrail": {
     "4.6": {
-      "id": "2099440781115211916",
       "account": "honkaistarrail",
-      "url": "https://x.com/honkaistarrail/status/2099440781115211916",
-      "posted_ts": 1789380662,
+      "found_at": 1790473600,
+      "id": "2099440781115211916",
       "image": "https://pbs.twimg.com/media/HSK2Q2pXsAA4YJA.jpg?name=orig",
-      "found_at": 1790473600
+      "posted_ts": 1789380662,
+      "url": "https://x.com/honkaistarrail/status/2099440781115211916"
     }
   },
-
-  "zzz": {
-    "3.2": {
-      "id": "2091737263398862915",
-      "account": "ZZZ_EN",
-      "url": "https://x.com/ZZZ_EN/status/2091737263398862915",
-      "posted_ts": 1787544000,
-      "image": "https://pbs.twimg.com/media/HQZWs-3WAAEj32y.jpg?name=orig",
-      "found_at": 1790473600
-    },
-    "3.3": {
-      "id": "2106957553435312559",
-      "account": "ZZZ_EN",
-      "url": "https://x.com/ZZZ_EN/status/2106957553435312559",
-      "posted_ts": 1791172800,
-      "image": "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig",
-      "found_at": 1791525260
-    }
-  },
-
   "wuwa": {
     "3.7": {
-      "id": "2098607530780021002",
       "account": "Wuthering_Waves",
-      "url": "https://x.com/Wuthering_Waves/status/2098607530780021002",
-      "posted_ts": 1789182000,
+      "found_at": 1790473600,
+      "id": "2098607530780021002",
       "image": "https://pbs.twimg.com/media/HR70hTAaoAA8Dzz.jpg?name=orig",
-      "found_at": 1790473600
+      "posted_ts": 1789182000,
+      "url": "https://x.com/Wuthering_Waves/status/2098607530780021002"
+    },
+    "3.8": {
+      "account": "Wuthering_Waves",
+      "found_at": 1793329238,
+      "id": "2116002155723444733",
+      "image": "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig",
+      "posted_ts": 1793329202,
+      "url": "https://x.com/Wuthering_Waves/status/2116002155723444733"
+    }
+  },
+  "zzz": {
+    "3.2": {
+      "account": "ZZZ_EN",
+      "found_at": 1790473600,
+      "id": "2091737263398862915",
+      "image": "https://pbs.twimg.com/media/HQZWs-3WAAEj32y.jpg?name=orig",
+      "posted_ts": 1787544000,
+      "url": "https://x.com/ZZZ_EN/status/2091737263398862915"
+    },
+    "3.3": {
+      "account": "ZZZ_EN",
+      "found_at": 1791525260,
+      "id": "2106957553435312559",
+      "image": "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig",
+      "posted_ts": 1791172800,
+      "url": "https://x.com/ZZZ_EN/status/2106957553435312559"
     }
   }
 }
