@@ -5744,8 +5744,55 @@
       },
       "4.7": {
         "calendar": {
-          "banners": [],
-          "ts": 1793359222
+          "banners": [
+            {
+              "endsAt": 1797948000,
+              "featured": [
+                "Aeon ★ Aha"
+              ],
+              "featured4": [
+                "Asta",
+                "Lynx",
+                "Yukong"
+              ],
+              "startsAt": 1794362400,
+              "title": "",
+              "version": "4.7"
+            },
+            {
+              "endsAt": 1796209140,
+              "featured": [
+                "Silver Wolf LV.999",
+                "Sparxie",
+                "Yao Guang"
+              ],
+              "featured4": [
+                "Asta",
+                "Lynx",
+                "Yukong"
+              ],
+              "startsAt": 1794362400,
+              "title": "",
+              "version": "4.7"
+            },
+            {
+              "endsAt": 1797948000,
+              "featured": [
+                "Acheron",
+                "Dan Heng • Imbibitor Lunae",
+                "Jing Yuan"
+              ],
+              "featured4": [
+                "Asta",
+                "Lynx",
+                "Yukong"
+              ],
+              "startsAt": 1796209200,
+              "title": "",
+              "version": "4.7"
+            }
+          ],
+          "ts": 1793370022
         },
         "data": {
           "announcement_locked": true,
@@ -5768,6 +5815,11 @@
               "Dan Heng • Imbibitor Lunae",
               "Jing Yuan"
             ],
+            "phase2_4": [
+              "Asta",
+              "Lynx",
+              "Yukong"
+            ],
             "reruns": [
               "Silver Wolf LV.999",
               "Sparxie",
@@ -5778,8 +5830,13 @@
             ]
           },
           "banners_checked_ts": 1793365519,
-          "banners_search_ts": 1793359222,
-          "calendar_ts": 1793359222,
+          "banners_search_ts": 1793370022,
+          "banners_settled": [
+            "phase1",
+            "phase1_4",
+            "phase2"
+          ],
+          "calendar_ts": 1793370022,
           "estimate_sources": [
             "version cadence"
           ],
@@ -5817,10 +5874,10 @@
         ],
         "first_seen": 1793008837,
         "message_id": "1564217196715057163",
-        "mirror_hash": "d1a3b122d3cd532d",
+        "mirror_hash": "75c4e697b50be3ba",
         "mirror_message_id": "1564217201806942302",
         "mirror_webhook_fp": "6f8f20d42db3",
-        "payload_hash": "b80c2e010ec4f170",
+        "payload_hash": "99f7cae2839e733a",
         "posted_at": 1793008837,
         "prov": {
           "b_phase1": [
@@ -5832,16 +5889,26 @@
             1793365519
           ],
           "b_phase1_4_by": [
+            "calendar",
             "wiki"
           ],
           "b_phase1_by": [
+            "calendar",
             "wiki"
           ],
           "b_phase2": [
             6,
             1793365519
           ],
+          "b_phase2_4": [
+            5,
+            1793370022
+          ],
+          "b_phase2_4_by": [
+            "calendar"
+          ],
           "b_phase2_by": [
+            "calendar",
             "wiki"
           ],
           "b_reruns": [
@@ -5881,7 +5948,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1793365519,
+        "updated_at": 1793370022,
         "webhook_fp": "19991534cf6d"
       }
     },
