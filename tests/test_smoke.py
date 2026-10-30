@@ -6502,7 +6502,9 @@ def test_news_ordered_html_quill_gifs_videos_links_and_unknown_embeds():
 
 
 def test_news_overflow_one_message_one_container_lead_only_and_emoji_buttons():
-    item = news_item(body="Complete source sentence. " * 500)
+    # Beyond the default page ceiling (4 pages ~ 16,000 text chars) the card falls back to one
+    # labelled excerpt with a single lead image; inside the ceiling the whole article is paged.
+    item = news_item(body="Complete source sentence. " * 2500)
     item.article_blocks += [{"kind": "image", "url": "https://example.com/lead.gif"},
                             {"kind": "image", "url": "https://example.com/second.png"}]
     payloads = cards.news_payloads(GAMES["genshin"], item)
@@ -6579,7 +6581,7 @@ def test_news_single_message_failed_send_retries_without_delivery_checkpoint():
             asyncio.run(run_news(ctx))
         ctx.now += 20
         row = {"id": "100", "ts": ctx.now - 10}
-        item = news_item(body="A full article sentence. " * 300)
+        item = news_item(body="A full article sentence. " * 40)
         ctx.webhook = ScriptedWebhook([], [SendResult(False, 503)])
         with patch.object(hoyolab, "discover_news", return_value=[row]), patch.object(hoyolab, "news_article", return_value=item):
             asyncio.run(run_news(ctx))
@@ -6999,6 +7001,9 @@ def test_news_text_only_short_and_overflow_component_budget_are_explicit():
     assert "Excerpt" not in json.dumps(ps)
     item.article_blocks = [{"kind": "image", "url": f"https://example.com/{i}.png"} for i in range(100)]
     ps = cards.news_payloads(GAMES["wuwa"], item)
+    # A hundred single-image galleries for a SHORT text still resolve to the excerpt path: the
+    # smart fitting added in this change is about text that overflows the 4,000-character budget,
+    # and a media-heavy card keeps the existing one-lead-image excerpt with the buttons intact.
     assert len(ps) == 1 and len(ps[0]["components"]) == 1
     assert not cards.validate_payload(ps[0]) and "Excerpt" in json.dumps(ps)
     assert sum(c["type"] == 12 for c in ps[0]["components"][0]["components"]) == 1
@@ -7160,18 +7165,28 @@ def test_news_moderate_overflow_two_pages_all_games_and_long_excerpt():
         assert all(p["allowed_mentions"] == {"parse": []} for p in pages)
         item.article_blocks[0]["text"] = body * 3
         long = cards.news_payloads(GAMES[key], item)
-        assert len(long) == 1 and len(long[0]["components"]) == 1
-        assert 'Excerpt' in str(long) and not cards.validate_payload(long[0])
+        # Three times the body is still delivered in full: smart fitting continues across pages
+        # instead of truncating to one excerpt, and every page keeps the shared payload shape.
+        assert 2 <= len(long) <= cards.NEWS_DEFAULT_MAX_PAGES
+        assert all(not cards.validate_payload(p) for p in long)
+        assert 'Excerpt' not in str(long)
+        assert all(p["allowed_mentions"] == {"parse": []} for p in long)
+        assert long[-1]["components"][0]["components"][-1]["type"] == 1
+        whole = ''.join(c["content"] for p in long for c in p["components"][0]["components"]
+                        if c["type"] == 10 and not c["content"].startswith(("## ", "-# Page")))
+        assert whole == body * 3
 
 
 def test_news_moderate_ceiling_and_unsplittable_fallback():
-    for wanted in (7000, 7001):
+    # There is no 7,000-character cliff any more: 6,999 and 7,001 chars are both delivered whole
+    # across pages, because the page split is decided by Discord's 4,000-char text budget only.
+    for wanted in (6999, 7001):
         item = news_item(body="probe")
         header = cards.news_payloads(GAMES["wuwa"], item)[0]["components"][0]["components"][0]
         n = wanted - len(header["content"])
         item.article_blocks[0]["text"] = 'a' * 3400 + '\n\n' + 'b' * (n - 3402)
         pages = cards.news_payloads(GAMES["wuwa"], item)
-        assert len(pages) == (2 if wanted == 7000 else 1)
+        assert len(pages) == 2
         assert all(not cards.validate_payload(p) for p in pages)
     item = news_item(body='a' * 4500)  # no safe paragraph boundary
     pages = cards.news_payloads(GAMES["wuwa"], item)
@@ -7745,10 +7760,15 @@ def test_news_video_cover_policy_pagination_and_excerpt_keep_existing_limits():
     ps = cards.news_payloads(GAMES['genshin'], item)
     assert len(ps) == 2 and urls(ps) == [video]
     assert all(not cards.validate_payload(p) for p in ps)
+    # Three times the text no longer collapses to an excerpt: the article is smart fitted whole.
     item.article_blocks[0]['text'] *= 3
     ps = cards.news_payloads(GAMES['genshin'], item)
-    assert len(ps) == 1 and urls(ps) == [cover]
-    assert any('**Excerpt' in c.get('content', '') for co in ps[0]['components'] for c in co['components'])
+    assert 2 <= len(ps) <= cards.NEWS_DEFAULT_MAX_PAGES
+    assert all(not cards.validate_payload(p) for p in ps)
+    assert not any('**Excerpt' in c.get('content', '') for p in ps for co in p['components'] for c in co['components'])
+    assert urls(ps) == [video]          # the native video still owns the cover slot
+    assert "Page 2" in json.dumps(ps)
+    assert "Page 4" in json.dumps(ps)
 
 
 def _captured_kuro_lucilla_5626():
@@ -8764,11 +8784,13 @@ def test_news_expand_full_disabled_equality_multipage_order_cover_video_and_fall
     )
     frozen = copy.deepcopy(item)
 
-    # Disabled: identical to original single-message excerpt fallback.
+    # Disabled: the same packer as the expanded policy, whole article, no excerpt.
     default_out = cards.news_payloads(GAMES["zzz"], item)
     disabled_out = cards.news_payloads(GAMES["zzz"], item, timestamps=False, expand_full=False)
-    assert disabled_out == default_out and len(default_out) == 1
-    assert "Excerpt" in json.dumps(default_out)
+    assert disabled_out == default_out
+    assert 2 <= len(default_out) <= cards.NEWS_DEFAULT_MAX_PAGES
+    assert "Excerpt" not in json.dumps(default_out)
+    assert all(not cards.validate_payload(p) for p in default_out)
 
     # Enabled: multi-page full article > 2 pages preserving ALL text, media, videos, links, and order!
     expanded = cards.news_payloads(GAMES["zzz"], item, timestamps=False, expand_full=True)
@@ -8806,7 +8828,8 @@ def test_news_expand_full_disabled_equality_multipage_order_cover_video_and_fall
         if c["type"] == 10
     )
     assert "Excerpt" not in flattened_all
-    assert f"[Open original media]({yt_embed})" in flattened_all
+    assert "https://www.youtube.com/watch?v=drFgtruoPe8" in flattened_all
+    assert f"[Open original media]({yt_embed})" not in flattened_all
     assert "Closing official summary paragraph." in flattened_all
     for marker in expected_sections:
         assert marker in flattened_all
@@ -8914,11 +8937,16 @@ def test_reproducible_offline_benchmark_command_and_bypass_invariants():
         rc = gxmain.main(["benchmark", "--iterations", "20", "--json"])
     assert rc == 0
     data = json.loads(out.getvalue())
-    assert data["default_long_messages"] == 1
-    assert data["expanded_long_messages"] > 2
+    # The default policy smart fits the whole long article; the expanded policy reuses the same
+    # packer, so it reports the same page count while keeping its own (larger) ceilings.
+    assert 2 <= data["default_long_messages"] <= 4
+    assert data["long_default_pages"] == data["default_long_messages"]
+    assert data["long_default_complete"] is True
+    assert data["expanded_long_messages"] == data["default_long_messages"]
     assert data["disabled_output_equal"] is True
+    assert data["main_baseline_sha256_equal"] is True
     assert data["request_counts"]["short_default_off"]["webhook_posts"] == 1
-    assert data["request_counts"]["long_expand_off"]["webhook_posts"] == 1
+    assert data["request_counts"]["long_expand_off"]["webhook_posts"] == data["default_long_messages"]
     assert data["request_counts"]["long_expand_on"]["webhook_posts"] == data["expanded_long_messages"]
     assert data["default_short_messages"] == 1
     assert data["default_medium_messages"] == 2
@@ -9890,7 +9918,8 @@ def test_followup_3_complete_expanded_news_disabled_parity_strips_and_failure_ma
     assert [
         it["media"]["url"] for p in link_vid_pages for co in p["components"] for c in co["components"] if c["type"] == 12 for it in c["items"]
     ] == [cover_url]
-    assert f"[Open original media]({yt_link})" in json.dumps(link_vid_pages)
+    assert yt_link in json.dumps(link_vid_pages)
+    assert "[Open original media]" not in json.dumps(link_vid_pages)
 
     # 8) Explicit 12-page / 120,000-char / 120-media / single-unit safety bounds & honest labelled excerpt fallback:
     assert cards.NEWS_EXPAND_MAX_PAGES == 12
@@ -10194,12 +10223,17 @@ def test_followup_4_default_off_preservation_7000_policy_and_production_baseline
             assert "-# Page 1" in json.dumps(p2_abs[0]) and "-# Page 2" in json.dumps(p2_abs[1])
             assert any(c["type"] == 1 for c in p2_abs[1]["components"][-1]["components"])
             assert not any(c["type"] == 1 for c in p2_abs[0]["components"][-1]["components"])
-            # Over-7,000 labelled excerpt fallback intact:
-            assert p3_abs == p3_fls and len(p3_abs) == 1
-            dumped_ex = json.dumps(p3_abs[0], ensure_ascii=False)
-            assert "**Excerpt — this article exceeds Discord's single-message limits.**" in dumped_ex
-            assert dumped_ex.count("https://upload-os-bbs.hoyolab.com/upload/cover.jpg") == 1
-            assert "inline1.jpg" not in dumped_ex
+            # A >7,000-character article is no longer truncated: the whole text is smart fitted
+            # across pages (< NEWS_DEFAULT_MAX_PAGES), every page valid, nothing dropped.
+            assert p3_abs == p3_fls and 2 <= len(p3_abs) <= cards.NEWS_DEFAULT_MAX_PAGES
+            dumped_full = json.dumps(p3_abs, ensure_ascii=False)
+            assert "**Excerpt" not in dumped_full
+            assert "inline1.jpg" in dumped_full
+            whole_text = "".join(c["content"] for page in p3_abs
+                                 for c in page["components"][0]["components"]
+                                 if c["type"] == 10 and not c["content"].startswith(("## ", "-# Page")))
+            assert whole_text.count("Detailed patch adjustment entry on October 25, 2026.") == 200
+            assert len(whole_text) >= 200 * len("Detailed patch adjustment entry on October 25, 2026.")
     assert spy_calls == 0
 
     # 4. Production regression baseline shapes (#432 ZZZ 47150244, #436 ZZZ 47150315 4-issue short
@@ -10285,8 +10319,9 @@ def test_followup_4_default_off_preservation_7000_policy_and_production_baseline
     assert bench["timestamp_converter_calls_when_off"] == 0
     assert bench["default_short_messages"] == 1
     assert bench["default_medium_messages"] == 2
-    assert bench["default_long_messages"] == 1
-    assert bench["expanded_long_messages"] == 4
+    assert 2 <= bench["default_long_messages"] <= bench["long_default_pages"]
+    assert bench["long_default_complete"] is True
+    assert bench["expanded_long_messages"] == bench["default_long_messages"]
     assert bench["request_counts"]["basis"] == "derived_from_rendered_payloads_not_live_http"
     assert len(bench["benchmarks"]) == 12
 
@@ -11273,6 +11308,11 @@ def test_final_acceptance_baseline_parity_shared_callers_and_template():
         return hashlib.sha256(raw).hexdigest()
 
     # Exact canonical JSON SHA-256 digests generated directly by `main` (`1e071d82eba82baa0a2977f33d6f8180d3677aaf`).
+    # `fit1`/`fit2`/`fixture`/`prod` digests are pre-PR main (1e071d8) byte-identical: ordinary
+    # articles, articles that already used a second page, and the captured production cards did
+    # not change. `over7k` is the one deliberate delta: main truncated a >7,000-character article
+    # to a single excerpt, and the default policy now smart fits the whole article into pages
+    # (new digests below, generated from this head on every game, all pages valid, no excerpt).
     MAIN_1E071D8_SHA256 = {
         "fixture:hoyolab_genshin_46604275_full.json": (1, "a87d0dc74d042fb12d9f89490b67ade96546133168e0c5394eaf321480816598"),
         "fixture:hoyolab_starrail_46814308_full.json": (1, "d0833d351eacad7c690c566948618a52f6f21e867b21cc9c0e0f44a78a4876b0"),
@@ -11280,19 +11320,19 @@ def test_final_acceptance_baseline_parity_shared_callers_and_template():
         "fixture:hoyolab_zzz_46863847_full.json": (1, "8245162cd633f95510ee9d2b6b7b0c1c07801d1247445432ec968ff1aebfb14d"),
         "fit1:genshin": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
         "fit2:genshin": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
-        "over7k:genshin": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "over7k:genshin": (3, "c68dc2c6e2179a7c1e57622bdd34400bbc14bee07f0ed8e49dece09322ee160d"),
         "fit1:starrail": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
         "fit2:starrail": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
-        "over7k:starrail": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "over7k:starrail": (3, "c68dc2c6e2179a7c1e57622bdd34400bbc14bee07f0ed8e49dece09322ee160d"),
         "fit1:hna": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
         "fit2:hna": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
-        "over7k:hna": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "over7k:hna": (3, "c68dc2c6e2179a7c1e57622bdd34400bbc14bee07f0ed8e49dece09322ee160d"),
         "fit1:zzz": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
         "fit2:zzz": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
-        "over7k:zzz": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "over7k:zzz": (3, "c68dc2c6e2179a7c1e57622bdd34400bbc14bee07f0ed8e49dece09322ee160d"),
         "fit1:wuwa": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
         "fit2:wuwa": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
-        "over7k:wuwa": (1, "c6d362d112bf97c5dc54575edd2a64aadbb12ab06d2ddd8abfb1db1741222646"),
+        "over7k:wuwa": (3, "c68dc2c6e2179a7c1e57622bdd34400bbc14bee07f0ed8e49dece09322ee160d"),
         "prod:zzz_436": (1, "1bae1ccb24aa17d136f564038cc0a4545c066be4315fcc85d84f48448eea1417"),
         "prod:zzz_444": (1, "d2038dc109cd2f15c5df47e6da5e2887434914dd48f90dbec430e686b529b1de"),
     }
@@ -15944,6 +15984,10 @@ def test_monitor_916_unnumbered_convene_inference_sibling_merge_and_credits_hygi
             "https://github.com/torikushiii/hoyoverse-api",
             "https://github.com/TwintailTeam/game-manifests",
             "https://github.com/TomyJan/GenshinImpact-Client-Version",
+            # Both launcher adapters were written from these notes; never drop the credits again.
+            "https://gist.github.com/DynamiByte/0ad250bbe1930e2736a6d4e6e842bcb2",
+            "https://gist.github.com/DynamiByte/d839bf9f671c975b6666d0f6e6634641",
+            "https://github.com/Cheu3172/Wuwa-Web-Request",
             "https://genshin-countdown.gengamer.in/",
             "https://gachacountdown.online/",
             "https://github.com/corenting/eddrit",
@@ -17636,7 +17680,9 @@ def test_feature5_hotfix_blank_changelog_walks_revisions_and_emits_inline_diff()
         payloads = cards.beta_payloads(GAMES["zzz"], hotfix, None, None)
         assert payloads and all(cards.validate_payload(payload) == [] for payload in payloads)
         rendered = json.dumps(payloads)
-        assert "Revision Changes" in rendered and "Revision diff" in rendered
+        # A revision card explains itself in a sentence, and still carries the machine diff line.
+        assert "comes out ahead in this revision" in rendered and "Revision diff" in rendered
+        assert "Revision Changes" not in rendered
         assert "sunbringer" in rendered and "19850203" in rendered
 
 
@@ -18175,6 +18221,57 @@ def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits
         assert not any("encore.moe/" in url for url in ctx.fetcher.calls)
 
 
+def test_feature5_encore_shaped_data_never_uses_the_live_build_as_its_baseline():
+    """Encore and nanoka format the same kit differently.
+
+    Diffing one provider's beta data against the other's live build would report formatting as
+    buffs and nerfs, so the released-kit baseline is nanoka-only.
+    """
+    from gamexpress import beta as beta_mod
+
+    manifest = {"ww": {"latest": "3.8.1", "live": "3.7", "available": ["3.7", "3.8.1"],
+                       "new": {"character": [1512], "weapon": [21030076], "echo": []}}}
+
+    class EncoreOnlyFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if url.startswith("https://api-v2.encore.moe/api/en"):
+                if "/new?" in url:
+                    return [{"GameVer": "3.8.0", "ResVer": "3.8.1", "Changelist": "9162983"}]
+                if "/weapon/" in url:
+                    return _beta_json("encore_weapon_live.json")
+                return _beta_json("encore_lily_live.json")
+            return None                    # nanoka has no beta detail for this agent
+
+        async def get_text(self, _url, **_kw):
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = EncoreOnlyFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["wuwa"])
+        budget = beta_mod._budget(ctx)
+        budget["_shared_requests_left"] = 40
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
+        assert patch and patch.characters, patch
+        assert patch.equipment and "encore.moe/weapon/21030076" in patch.equipment[0].page_url
+        assert all(snap.get("provider") == "encore" for snap in patch.snapshots.values())
+        # The released build was never read: one provider cannot baseline the other.
+        assert not any("/3.7/" in url for url in fetcher.calls)
+        assert not any(url.startswith("https://static.nanoka.cc/ww/3.7/") for url in fetcher.calls)
+        # …and the provider is part of what is stored, so the NEXT revision can diff against it
+        # instead of seeing a provider change and re-posting the whole effect.
+        stored = next(iter(patch.snapshots.values()))
+        assert beta_mod._snapshot_comparison(stored, dict(stored)) == "equal"
+
+
 def test_feature5_encore_hsin_suoming_captured_beta_kits():
     from gamexpress import beta as beta_mod
 
@@ -18228,7 +18325,13 @@ def test_feature5_complete_output_keeps_long_equipment_parameters_and_diff_chang
     changes, untouched = diff_kits(previous + [removed], current)
     assert len(changes) == 15 and untouched == 0
     assert all(len(section.lines) == 12 for section in changes[:14])
-    assert len(changes[-1].lines) == 9
+    # A retired block is one compact statement, not nine re-printed lines — the second post is
+    # supposed to get shorter, not longer.
+    removed_entry = changes[-1]
+    assert len(removed_entry.lines) == 1
+    assert "Removed from this revision" in removed_entry.lines[0]
+    assert "Removed-line-00" in removed_entry.lines[0]
+    assert "(+8 more lines no longer published)" in removed_entry.lines[0]
     assert "more change(s)" not in str(changes)
     stat_changes = _stat_diff(
         BetaCharacter(id="stats", name="Stats", stats_lines=[f"Stat-{i}: 100" for i in range(12)]),
@@ -18389,7 +18492,7 @@ def test_feature5_active_beta_gating_skips_live_and_past_cycles_with_zero_extra_
                 return _beta_json("zzz_character_1661.json")
             if "/zzz/" in url and url.endswith("/weapon.json"):
                 return _beta_json("zzz_weapon_listing.json")
-            if "/zzz/" in url and "/weapon/14166" in url:
+            if "/zzz/" in url and "/weapon/14166" in url and "/3.3/" not in url:
                 return _beta_json("zzz_weapon_14166.json")
             if "/zzz/" in url and "/weapon/14160" in url:
                 return _beta_json("zzz_weapon_14166.json")
@@ -18440,6 +18543,978 @@ def test_feature5_active_beta_gating_skips_live_and_past_cycles_with_zero_extra_
         assert beta_mod._available_beta_versions(
             {"latest": "7.3.50", "available": ["7.2", "7.2.55", "7.3", "7.3.50"]}, live_cycle=(7, 2)
         ) == ["7.3.50"]
+
+
+def test_feature5_sveltekit_data_stream_is_read_when_the_page_is_not():
+    """`/changelog/beta/__data.json` carries the same revisions — and the display names.
+
+    The fixture is a devalue stream shaped exactly like the live one (one flat array whose
+    integers are references); ZZZ Rev. 19997538 is the revision whose page the runner could not
+    read on 2026-10-30.
+    """
+    from gamexpress import beta as beta_mod
+
+    raw = (BETA_FIX / "zzz_changelog_data.jsonl").read_text(encoding="utf-8")
+    revs = beta_mod._parse_gachabase_data(
+        raw, base_url="https://zzz.gachabase.net/changelog/beta?lang=en")
+    assert [r["label"] for r in revs] == ["v3.4.1 Rev. 19997538", "v3.4.1 Rev. 19834130"]
+    top = revs[0]
+    assert top["date"] == "2026-10-30" and not top["no_changes"]
+    # A localization key is never a name — `_clean` drops it and the caller falls back to
+    # the listing or the honest `W-Engine (ID 14166)` label.
+    assert [e["name"] for e in top["entries"]] == [
+        "Caesar", "Pyrois", "Robin", "", "ID: 54024", "ID: 34300"]
+    caesar = top["entries"][0]
+    assert caesar["url"] == "https://zzz.gachabase.net/agents/1071/caesar/beta?lang=en"
+    assert caesar["diff"].endswith("&lang=en") and caesar["section"] == "Agents"
+    assert top["entries"][3]["section"] == "W-Engines"
+    # A revision whose lists did not stream is skipped, never reported as "no changes".
+    assert revs[1]["no_changes"] and revs[1]["entries"] == []
+    # The stream reaches the same candidate list the page does.
+    chars, equip = beta_mod._candidate_entries(
+        "zzz", beta_mod.NANOKA_KINDS["zzz"], top["entries"], {}, set(), set(), set())
+    assert [beta_mod._entry_id(c) for c in chars] == ["1071", "1551", "1661"]
+    # Bangboo are listed but not a tracked card role, exactly as the page path behaves.
+    assert sorted(beta_mod._entry_id(e) for e in equip) == ["14166", "34300"]
+    assert beta_mod._parse_gachabase_data("Access denied") == []
+    assert beta_mod._parse_gachabase_data("") == []
+
+
+def test_feature5_changelog_falls_back_to_the_data_endpoint_after_403():
+    from gamexpress import beta as beta_mod
+
+    stream = (BETA_FIX / "zzz_changelog_data.jsonl").read_text(encoding="utf-8")
+
+    class BlockedPageFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/__data.json?lang=en"):
+                return stream
+            return None                      # the page and its alternates answer 403
+
+        async def get_json(self, _url, **_kw):
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = BlockedPageFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        revisions, extra = asyncio.run(
+            beta_mod._fetch_changelog_revisions(ctx, GAMES["zzz"], beta_mod._budget(ctx), 2))
+        assert extra >= 1
+        assert any(url.endswith("/__data.json?lang=en") for url in fetcher.calls)
+        assert revisions[0]["label"] == "v3.4.1 Rev. 19997538"
+        assert revisions[0]["entries"][0]["name"] == "Caesar"
+
+
+def test_feature5_late_changelog_entries_are_delivered_for_a_settled_revision():
+    """ZZZ 19997538 listed 7 agents; the read that posted the card saw 4 and settled forever.
+
+    A revision that has just posted is re-read for entries it never delivered — bounded to
+    BETA_LATE_RECHECKS reads inside BETA_LATE_RECHECK_H hours, and only entries absent from
+    `processed` can produce a card.
+    """
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import stable_hash
+
+    version = "3.4.1+19997538"
+    rev_id = stable_hash(["zzz", version])
+
+    def entry(item_id, slug, name):
+        return (f"[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/{item_id}.png)\\\n"
+                f"\\\n{name}](https://zzz.gachabase.net/agents/{item_id}/{slug}/beta?lang=en) "
+                f"[See Changes](https://zzz.gachabase.net/diff/agents/{item_id}/{slug}"
+                f"?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en)")
+
+    changelog = "\n\n".join([
+        "# CHANGELOG - v3.4.X",
+        "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### Agents",
+        "UPDATED", entry(1661, "1661", "Robin"),
+        "UPDATED", entry(1601, "sunbringer", "Sunbringer"),
+        "UPDATED", entry(1391, "ju-fufu", "Ju Fufu"),
+        "UPDATED", entry(1331, "vivian", "Vivian"),
+        # The page gained this one after the card went out.
+        "UPDATED", entry(1071, "caesar", "Caesar"),
+    ])
+
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", "3.4.1+19851435", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+
+    # The build players already run (3.3) says "up to 3 attacks"; this beta says 4. A released
+    # agent with no retained beta baseline is compared against THAT kit, not dumped whole.
+    live_kit = json.loads(json.dumps(_beta_json("zzz_character_1551.json")))
+    live_kit["skill"]["basic"]["description"][0]["desc"] = (
+        "Press  to activate:\nUnleashes up to 3 attacks forward, dealing Ether DMG."
+    )
+
+    class LateFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/3.3/" in url and "/character/" in url:
+                return json.loads(json.dumps(live_kit))
+            if "/zzz/" in url and "/character/" in url:
+                return _beta_json("zzz_character_1551.json")
+            return None
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(url)
+            return changelog
+
+        async def verify_media(self, _url):
+            return True
+
+    def settled_record(ctx, *, late_checks=0, processed=(1331, 1391, 1601, 1661), ts=None):
+        record = ctx.state.beta_record("zzz")
+        record.update({
+            "source_version": version, "latest_rev": rev_id,
+            "revisions": {rev_id: {
+                "status": "posted", "ts": ctx.now - 600 if ts is None else ts,
+                "source_version": version,
+                "more": False, "late_checks": late_checks,
+                "processed": [f"character:zzz:{i}" for i in processed],
+            }},
+        })
+        ctx.state.save()
+
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        fetcher = LateFetcher()
+        ctx = _beta_ctx(path, fetcher, BETA_ENABLED="1", DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        settled_record(ctx)
+
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert patch is not None
+        assert [c.name for c in patch.characters] == ["Caesar"]
+        card = patch.characters[0]
+        assert "released 3.3" in card.subtext
+        # Only the value that actually moved is on the card, with the old one struck through.
+        rendered = "\n".join(line for section in card.sections for line in section.lines)
+        assert "~~3~~ → **4**" in rendered
+        assert "Celestial Light" not in rendered or "~~3~~" in rendered
+        assert patch.listed == 1      # this batch listed exactly what it delivered
+        assert ctx.state.beta_record("zzz")["revisions"][rev_id]["late_checks"] == 1
+
+        # Once every entry is delivered the revision is closed and the changelog is not re-read.
+        stored = ctx.state.beta_record("zzz")
+        stored["revisions"][rev_id]["processed"].append("character:zzz:1071")
+        ctx.state.save()
+        assert asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                beta_mod._budget(ctx))) is None
+        assert ctx.state.beta_record("zzz")["revisions"][rev_id]["late_checks"] == 2
+        # The third poll stops before any page request at all.
+        calls_before = len(fetcher.calls)
+        assert asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                beta_mod._budget(ctx))) is None
+        assert len(fetcher.calls) == calls_before
+        assert ctx.state.beta_record("zzz")["revisions"][rev_id]["late_checks"] == 2
+
+    # The window is bounded: past BETA_LATE_RECHECK_H a settled revision costs no request.
+    with tempfile.TemporaryDirectory() as tmp:
+        quiet = _RecordingFetcher({})
+        ctx2 = _beta_ctx(Path(tmp) / "state.json", quiet, BETA_ENABLED="1",
+                         DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"], now=1793000000 + 7 * 3600)
+        settled_record(ctx2, ts=1793000000)
+        assert asyncio.run(beta_mod.build_patch(ctx2, GAMES["zzz"], manifest,
+                                                beta_mod._budget(ctx2))) is None
+        assert quiet.calls == []
+
+
+def test_feature5_released_agent_diffs_against_the_live_build_not_the_whole_kit():
+    """ZZZ 19997538 rewrote five released agents, and without a beta baseline the card could only
+    dump every skill as [CHANGED] — indistinguishable from everything being new.
+
+    The released build is the baseline instead: one extra read, and the card carries only the
+    values that moved, struck through and re-stated, with a buff/nerf tag.
+    """
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", "3.4.1+19851435", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    entry = ("[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/1661.png)\\\n"
+             "\\\nRobin](https://zzz.gachabase.net/agents/1661/1661/beta?lang=en) "
+             "[See Changes](https://zzz.gachabase.net/diff/agents/1661/1661"
+             "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en)")
+    changelog = "\n\n".join([
+        "# CHANGELOG - v3.4.X", "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### Agents", "UPDATED", entry,
+    ])
+    live_kit = json.loads(json.dumps(_beta_json("zzz_character_1661.json")))
+    live_kit["skill"]["basic"]["description"][0]["desc"] = (
+        "Press  to activate:\nUnleashes up to 2 attacks forward, dealing Ether DMG;"
+    )
+
+    class ReleasedFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/3.3/" in url and "/character/1661" in url:
+                return json.loads(json.dumps(live_kit))
+            if "/zzz/" in url and "/character/1661" in url:
+                return _beta_json("zzz_character_1661.json")
+            return None
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(url)
+            return changelog
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = ReleasedFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert [c.name for c in patch.characters] == ["Robin"]
+        card = patch.characters[0]
+        assert card.is_new is False
+        # Only the block that moved is on the card; the other 14 are omitted, not re-posted.
+        assert [section.title for section in card.sections] == ["Basic Attack: Robin Attack"]
+        assert card.sections[0].tag == "[BUFF]"
+        assert "~~2~~ → **3**" in card.sections[0].lines[0]
+        assert "released 3.3" in card.subtext and "1 buff" in card.subtext
+        assert "14 unchanged block(s) omitted" in card.subtext
+        # One read of the released build, and the beta snapshot becomes the next baseline.
+        assert sum("/3.3/" in url for url in fetcher.calls) == 1
+        assert "zzz:1661" in patch.snapshots
+
+
+def test_feature5_released_agent_with_no_visible_change_posts_nothing():
+    """No readable movement against the build players run means no card — that is the point."""
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    entry = ("[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/1661.png)\\\n"
+             "\\\nRobin](https://zzz.gachabase.net/agents/1661/1661/beta?lang=en) "
+             "[See Changes](https://zzz.gachabase.net/diff/agents/1661/1661"
+             "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en)")
+    changelog = "\n\n".join([
+        "# CHANGELOG - v3.4.X", "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### Agents", "UPDATED", entry,
+    ])
+
+    class SameKitFetcher:
+        async def get_json(self, url, **_kw):
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/character/1661" in url:
+                return _beta_json("zzz_character_1661.json")   # released build == beta build
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return changelog
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", SameKitFetcher(), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert patch.characters == []
+        assert any("matches the released 3.3" in line for line in ctx.report), ctx.report
+
+
+def test_feature5_agent_missing_from_the_live_build_keeps_the_full_kit_snapshot():
+    """A character the live build does not serve yet still gets the honest full snapshot."""
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    entry = ("[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/1661.png)\\\n"
+             "\\\nRobin](https://zzz.gachabase.net/agents/1661/1661/beta?lang=en) "
+             "[See Changes](https://zzz.gachabase.net/diff/agents/1661/1661"
+             "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en)")
+    changelog = "\n\n".join([
+        "# CHANGELOG - v3.4.X", "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### Agents", "UPDATED", entry,
+    ])
+
+    class NoLiveKitFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/" in url and "/character/1661" in url and "/3.3/" not in url:
+                return _beta_json("zzz_character_1661.json")
+            return None       # the released build has no such agent
+
+        async def get_text(self, _url, **_kw):
+            return changelog
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = NoLiveKitFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert [c.name for c in patch.characters] == ["Robin"]
+        card = patch.characters[0]
+        assert card.is_new is False
+        assert "prior baseline was not retained" in card.subtext
+        assert len(card.sections) > 1
+
+
+def test_feature5_released_weapon_diffs_against_the_live_build():
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    entry = ("[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/14166.png)\\\n"
+             "\\\nRobin's Exclusive W-Engine]"
+             "(https://zzz.gachabase.net/w-engines/14166/14166/beta?lang=en) "
+             "[See Changes](https://zzz.gachabase.net/diff/w-engines/14166/14166"
+             "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en)")
+    changelog = "\n\n".join([
+        "# CHANGELOG - v3.4.X", "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### W-Engines", "UPDATED", entry,
+    ])
+    live_weapon = json.loads(json.dumps(_beta_json("zzz_weapon_14166.json")))
+    live_weapon["talents"]["1"]["desc"] = live_weapon["talents"]["1"]["desc"].replace(
+        "DEF increases by 10%", "DEF increases by 8%"
+    )
+
+    class WeaponFetcher:
+        async def get_json(self, url, **_kw):
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/3.3/" in url and "/weapon/14166" in url:
+                return json.loads(json.dumps(live_weapon))
+            if "/zzz/" in url and "/weapon/14166" in url:
+                return _beta_json("zzz_weapon_14166.json")
+            if "/zzz/" in url and url.endswith("/weapon.json"):
+                return {"14166": {"icon": "Weapon_S_1661", "rank": 4, "en": "Robin's Exclusive W-Engine"}}
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return changelog
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", WeaponFetcher(), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert patch.equipment, patch
+        eq = patch.equipment[0]
+        assert eq.lines[0].startswith("-# Compared with the released 3.3 kit")
+        body = "\n".join(eq.lines)
+        assert "~~8~~ → **10**" in body
+
+
+def _explanation_phoenix_sections() -> list:
+    """A revision shaped like the live ZZZ card: buffs, a nerf, a new mechanic, a retirement."""
+    return [
+        BetaSectionEntry(
+            title="Ultimate: Deathless Revival", category="Ultimate", tag="[BUFF]", lines=[
+                "**[BUFF]** DMG Multiplier increased from ~~**2318.1%**~~ → **3669.3%**.",
+                "**[NEW]** Now counts as a **[Burning Attack]**.",
+            ]),
+        BetaSectionEntry(
+            title="Basic Attack: Life Severing", category="Basic Attack", tag="[NERF]", lines=[
+                "**[NERF]** 1st-Hit DMG Multiplier reduced from ~~**63.1%**~~ → **39.3%**.",
+            ]),
+        BetaSectionEntry(
+            title="Dodge: Sway", category="Dodge", tag="[CHANGED]", lines=[
+                "**[CHANGED]** Removed from this revision — ~~Old dodge text~~ "
+                "*(+8 more lines no longer published)*",
+            ]),
+    ]
+
+
+def test_feature5_a_revision_card_explains_itself_like_a_person():
+    """The second post must read as an explanation, not as a changelog of tags.
+
+    `[BUFF] ~~2~~ -> **3**` alone tells a reader what moved but not what the revision *is*.
+    The paragraph above the bullets carries the verdict, where the movement lands, and what was
+    left alone — built from the same measurements, so it cannot contradict the card.
+    """
+    from gamexpress import beta as beta_mod
+
+    text = beta_mod._revision_explanation(
+        "Phoenix", _explanation_phoenix_sections(), unchanged=17,
+        compared_to="the released 3.3 kit",
+    )
+    assert text.startswith("**Phoenix** is rebalanced in this revision"), text
+    assert "most of the movement is in Deathless Revival and Life Severing" in text
+    assert "[Burning Attack] is new here" in text
+    assert "The other 17 blocks are untouched and read exactly as they do on the released 3.3 kit." in text
+    # Prose, not a wall of tags: no bullet markup, no tag prefix, no arrow diff inside it.
+    assert "**[BUFF]**" not in text and "**[NERF]**" not in text
+    assert "\u2192" not in text and "Revision Changes" not in text
+    assert len(text) <= 600, len(text)
+    # Deterministic: the same card always explains itself the same way.
+    assert text == beta_mod._revision_explanation(
+        "Phoenix", _explanation_phoenix_sections(), unchanged=17,
+        compared_to="the released 3.3 kit",
+    )
+
+
+def test_feature5_explanation_never_claims_a_direction_it_did_not_measure():
+    """Honesty: a value the diff could not read means silence, not "nothing was nerfed"."""
+    from gamexpress import beta as beta_mod
+
+    # A `[BUFF]` tag whose measured number actually fell (a cost, say) proves no global claim.
+    falling = [BetaSectionEntry(
+        title="Special Attack: Fire Snatch", category="Special Attack", tag="[BUFF]", lines=[
+            "**[BUFF]** Energy Cost reduced from ~~**80**~~ → **40**.",
+        ])]
+    text = beta_mod._revision_explanation("Phoenix", falling, unchanged=12,
+                                          compared_to="the released 3.3 kit")
+    assert "comes out ahead" in text
+    assert "nothing was nerfed" not in text          # a number did fall; no blanket claim
+    assert "the only block that moved is Fire Snatch" in text
+
+    # Nothing numeric at all -> no direction words, and the rename is stated as such.
+    renamed = [BetaSectionEntry(
+        title="Chain Attack: Against All Odds", category="Chain Attack", tag="[CHANGED]", lines=[
+            "**[CHANGED]** Renamed from ~~Chain Attack~~ → **Chain Attack: Against All Odds**.",
+            "**[TEXT FIX]** Press Normal after use to chain into Basic 3.",
+        ])]
+    text = beta_mod._revision_explanation("Phoenix", renamed, unchanged=9,
+                                          compared_to="the released 3.3 kit")
+    assert "is renamed in this revision rather than rebalanced" in text
+    assert "buff" not in text.lower() and "nerf" not in text.lower()
+
+    # A plain `[CHANGED]` bullet can still carry a before/after pair: that is a value moving,
+    # so the paragraph must not claim "no value moved" just because no tag said buff or nerf.
+    plain = [BetaSectionEntry(
+        title="Talent: Overclock", category="Talent", tag="[CHANGED]",
+        lines=["**[CHANGED]** Duration goes from ~~**12**~~ → **15** seconds."])]
+    text = beta_mod._revision_explanation("Phoenix", plain, unchanged=8,
+                                          compared_to="the released 3.3 kit")
+    assert "no value moved" not in text and "no value changes" not in text
+    assert "the only block that moved is Overclock" in text
+
+
+def test_feature5_a_terminology_pass_says_so_instead_of_looking_like_a_rework():
+    """A rename sweep is labelled as one — the reader is told to check the CN text."""
+    from gamexpress import beta as beta_mod
+
+    sections = [
+        BetaSectionEntry(
+            title="Basic Attack: Sin Pyre", category="Basic Attack", tag="[CHANGED]", lines=[
+                "**[CHANGED]** Renamed from ~~Basic Attack: Hold~~ → **Basic Attack: Sin Pyre**.",
+            ]),
+        BetaSectionEntry(
+            title="EX Special Attack: Dazzle Flame", category="EX Special Attack", tag="[CHANGED]",
+            lines=["**[CHANGED]** Renamed from ~~EX Special Attack: Phase 1~~ → "
+                   "**EX Special Attack: Dazzle Flame**."]),
+        BetaSectionEntry(
+            title="Chain Attack: Against All Odds", category="Chain Attack", tag="[TEXT FIX]",
+            lines=["**[TEXT FIX]** Counts as [Burning Attack]."]),
+    ]
+    text = beta_mod._revision_explanation("Phoenix", sections, unchanged=4,
+                                          compared_to="the released 3.3 kit")
+    assert "**Note:** this is largely a terminology pass" in text
+    assert "2 blocks changed only in wording" in text and "CN text" in text
+    assert "no value changes" in text
+
+
+def test_feature5_a_full_kit_snapshot_never_borrows_the_diff_voice():
+    """No baseline means no direction: the paragraph describes the card and stops there."""
+    from gamexpress import beta as beta_mod
+
+    sections = [BetaSectionEntry(title=f"Skill {i}", category="Skills", tag="[CHANGED]",
+                                 lines=[f"**[CHANGED]** Damage is **{40 + i}%**."])
+                for i in range(6)]
+    text = beta_mod._synthesize_kit_overview(
+        "zzz", "Robin", {"rarity": 5, "element": "Ether", "role": "Support"}, sections,
+        is_new=False,
+    )
+    assert text.startswith("**Robin**'s full kit for this revision — 6 blocks.")
+    assert "Nothing is marked as up or down" in text
+    for claim in ("comes out ahead", "rebalanced", "nerfed", "buff", "untouched"):
+        assert claim not in text, claim
+
+
+def test_feature5_released_diff_card_carries_the_explanation_into_discord():
+    """End to end: the human paragraph is on the delivered card, above the diff bullets."""
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    beta_kit = _beta_json("zzz_character_1661.json")
+    live_kit = json.loads(json.dumps(beta_kit))
+    live_kit["skill"]["basic"]["description"][0]["desc"] = (
+        "Press  to activate:\nUnleashes up to 2 attacks forward, dealing Ether DMG;")
+
+    class ExplainedFetcher:
+        async def get_json(self, url, **_kw):
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/3.3/" in url and "/character/1661" in url:
+                return json.loads(json.dumps(live_kit))
+            if "/zzz/" in url and "/character/1661" in url:
+                return json.loads(json.dumps(beta_kit))
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return _released_changelog(_RELEASED_ENTRY_1661)
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", ExplainedFetcher(), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        card = patch.characters[0]
+        assert card.overview.startswith("**Robin** comes out ahead in this revision"), card.overview
+        assert "the only block that moved is Robin Attack" in card.overview
+        assert "the released 3.3 kit" in card.overview
+        assert "Revision Changes" not in card.overview
+
+        payloads = cards.beta_payloads(GAMES["zzz"], patch)
+        assert payloads and all(cards.validate_payload(p) == [] for p in payloads)
+        body = "\n".join(
+            comp.get("content", "")
+            for payload in payloads for comp in payload["components"][0]["components"]
+            if comp.get("type") == 10
+        )
+        assert "**Robin** comes out ahead in this revision" in body
+        # The explanation sits above the bullets, and the bullets still carry the strike diff.
+        assert body.index("comes out ahead") < body.index("**[BUFF]**")
+        assert "~~2~~ \u2192 **3**" in body
+
+
+def test_feature5_a_revised_weapon_explains_itself_too():
+    """Weapons get the same courtesy: one sentence, then the changed values."""
+    from gamexpress import beta as beta_mod
+
+    text = beta_mod._equipment_explanation(
+        "Nirvana Plume",
+        ["**[BUFF]** Anomaly Proficiency bonus increased from ~~**75**~~ → **90** points.",
+         "**[CHANGED]** Name finalized: ~~Phoenix Test Engine~~ → **Nirvana Plume**."],
+        compared_to="the released 3.3 build",
+    )
+    assert text.startswith("**Nirvana Plume** gets stronger in this revision")
+    assert "The biggest change is its Anomaly Proficiency bonus." in text
+    assert text.endswith("The rest of the effect is untouched and reads as it does on the "
+                         "released 3.3 build.")
+    assert "~~" not in text and "**[" not in text
+
+    # A nerf reads as one, and an unmeasurable change claims no direction at all.
+    assert beta_mod._equipment_explanation(
+        "Cage of Forbidden Sins",
+        ["**[NERF]** ATK reduced from ~~**20%**~~ → **18%**."],
+    ).startswith("**Cage of Forbidden Sins** is toned down in this revision — nothing buffed.")
+    reworded = beta_mod._equipment_explanation(
+        "Candlelight Scheme", ["**[CHANGED]** Effect renamed from ~~Old~~ → **New**."])
+    assert "is reworded in this revision — no value moved" in reworded
+    assert "stronger" not in reworded and "toned down" not in reworded
+
+
+def test_feature5_equipment_explanation_is_rendered_once_under_the_title():
+    """The paragraph is a card line, not metadata: it renders above the effect and only once."""
+    eq = BetaEquipment(
+        id="zzz:14166", name="Robin's Exclusive W-Engine", category_label="W-Engines",
+        rarity=5, weapon_class="Attack", tag="[BUFF]",
+        stats_line="Base ATK 713 | ATK 30%",
+        overview="**Robin's Exclusive W-Engine** gets stronger in this revision — nothing nerfed.",
+        lines=["**[BUFF]** DEF increased from ~~**8%**~~ → **10%**."],
+        image_url="https://static.nanoka.cc/assets/zzz/weapon/14166.webp",
+    )
+    patch = BetaPatch(game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1",
+                      rev_id="eq_explain", equipment=[eq])
+    payloads = cards.beta_payloads(GAMES["zzz"], patch)
+    assert payloads and all(cards.validate_payload(p) == [] for p in payloads)
+    body = "\n".join(
+        comp.get("content", "")
+        for payload in payloads for comp in payload["components"][0]["components"]
+        if comp.get("type") == 10
+    )
+    assert body.count("gets stronger in this revision") == 1
+    assert body.index("gets stronger") < body.index("~~**8%**~~")
+    # A brand-new weapon has nothing to explain, so the field stays empty.
+    assert BetaEquipment(id="zzz:1", name="New Engine").overview == ""
+
+
+_RELEASED_ENTRY_1661 = (
+    "[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/1661.png)\\\n"
+    "\\\nRobin](https://zzz.gachabase.net/agents/1661/1661/beta?lang=en) "
+    "[See Changes](https://zzz.gachabase.net/diff/agents/1661/1661"
+    "?prev=beta_3.4.1_19851435&cur=beta_3.4.1_19997538&lang=en)"
+)
+
+
+def _released_changelog(entry: str, section: str = "Agents") -> str:
+    return "\n\n".join([
+        "# CHANGELOG - v3.4.X", "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        f"### {section}", "UPDATED", entry,
+    ])
+
+
+def test_feature5_legacy_snapshot_for_a_released_agent_diffs_against_the_live_build():
+    """A retained snapshot that can no longer be compared must not become a full kit re-print.
+
+    Legacy records without a full-content digest are exactly the case that used to post the whole
+    kit again as `[CHANGED]`. The released build is a real, complete baseline, so the second post
+    is still a diff.
+    """
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": "3.4.1+19851435",
+                        "available": ["3.3", "3.4.1+19851435"],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    beta_kit = _beta_json("zzz_character_1661.json")
+    live_kit = json.loads(json.dumps(beta_kit))
+    live_kit["skill"]["basic"]["description"][0]["desc"] = (
+        "Press  to activate:\nUnleashes up to 2 attacks forward, dealing Ether DMG;"
+    )
+
+    class SnapshotFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/3.3/" in url and "/character/1661" in url:
+                return json.loads(json.dumps(live_kit))
+            if "/zzz/" in url and "/character/1661" in url:
+                return json.loads(json.dumps(beta_kit))
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return _released_changelog(_RELEASED_ENTRY_1661)
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = SnapshotFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        first = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert first and first.characters
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), first, status="posted")
+
+        # A legacy record: the kit is retained, but what was clipped was never recorded, so a
+        # direct before/after against it cannot be trusted.
+        for snapshot in ctx.state.beta_record("zzz")["snapshots"].values():
+            snapshot.pop("content_signature", None)
+            snapshot.pop("truncated", None)
+        ctx.state.save()
+
+        manifest["zzz"]["latest"] = version
+        manifest["zzz"]["available"].append(version)
+        second = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                  beta_mod._budget(ctx)))
+        assert [c.name for c in second.characters] == ["Robin"]
+        card = second.characters[0]
+        assert "released 3.3" in card.subtext, card.subtext
+        assert "Full current kit" not in card.subtext
+        assert [section.title for section in card.sections] == ["Basic Attack: Robin Attack"]
+        assert "~~2~~ → **3**" in card.sections[0].lines[0]
+
+
+def test_feature5_released_agent_is_deferred_when_the_live_baseline_cannot_be_read():
+    """The baseline is what makes the card a diff; without the budget for it, wait a run."""
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+
+    class TightFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/" in url and "/character/1661" in url and "/3.3/" not in url:
+                return _beta_json("zzz_character_1661.json")
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return _released_changelog(_RELEASED_ENTRY_1661)
+
+        async def verify_media(self, _url):
+            return True
+
+    from unittest.mock import patch as mock_patch
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = TightFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        # This run has no headroom left for the baseline read (the configuration could afford
+        # one, this run cannot), so the item waits instead of being re-printed whole.
+        with mock_patch.object(beta_mod, "_live_baseline_affordable", return_value=False):
+            patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                     beta_mod._budget(ctx)))
+        assert patch is not None
+        assert patch.more is True and patch.characters == []
+        assert not any("/3.3/" in url for url in fetcher.calls)
+        # Nothing was rendered, so nothing is marked delivered: the item comes back next run.
+        assert patch.item_keys == []
+
+
+def test_feature5_a_configuration_that_can_never_afford_a_baseline_never_stalls():
+    """`BETA_MAX_REQUESTS` smaller than the baseline reserve must not defer forever."""
+    from gamexpress import beta as beta_mod
+
+    assert beta_mod._live_baseline_possible({"max_requests": 48}) is True
+    assert beta_mod._live_baseline_possible({"max_requests": 9}) is False
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+
+    class TinyBudgetFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/" in url and "/character/1661" in url and "/3.3/" not in url:
+                return _beta_json("zzz_character_1661.json")
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return _released_changelog(_RELEASED_ENTRY_1661)
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = TinyBudgetFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"], BETA_MAX_REQUESTS="4")
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert not any("/3.3/" in url for url in fetcher.calls)
+        if patch is None or not patch.characters:
+            return                      # the 4-request ceiling may not even reach a detail read
+        card = patch.characters[0]
+        assert "prior baseline was not retained" in card.subtext
+        assert patch.more is not True
+
+
+def test_feature5_live_baseline_probe_never_spends_a_request_twice():
+    """One baseline read costs one request — the affordability probe itself is free.
+
+    Charging in both the probe and the read would quietly shrink the run's budget and starve the
+    images of the batch that needed the baseline.
+    """
+    from gamexpress import beta as beta_mod
+
+    budget = {"max_requests": 48, "_shared_requests_left": 10}
+    assert beta_mod._live_baseline_affordable(budget, 2) is True
+    assert budget["_shared_requests_left"] == 10
+    # 8 requests must stay free for the images of this batch, and the boundary is inclusive.
+    assert beta_mod._live_baseline_affordable({"max_requests": 10}, 2) is True
+    assert beta_mod._live_baseline_affordable({"max_requests": 9}, 2) is False
+    assert beta_mod._live_baseline_affordable({"max_requests": 48, "_shared_requests_left": 0}, 2) is False
+    assert beta_mod._live_baseline_affordable({"max_requests": 48}, 40) is True
+
+
+def test_feature5_a_retired_block_is_one_statement_not_a_reprint():
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaSectionEntry
+
+    previous = [
+        BetaSectionEntry(title="Core Passive", category="Core Passive",
+                         lines=[f"Old line {i}" for i in range(4)]),
+        BetaSectionEntry(title="Source note", category="Notes",
+                         lines=["-# 🌐 CN/CHS values updated in this build"]),
+        BetaSectionEntry(title="Single Skill", category="Skills", lines=["Only line"]),
+    ]
+    changes, untouched = beta_mod.diff_kits(previous, [])
+    assert untouched == 0
+    assert [section.title for section in changes] == ["Core Passive", "Single Skill"]
+    first, single = changes
+    assert len(first.lines) == 1
+    assert "Removed from this revision" in first.lines[0]
+    assert "(+3 more lines no longer published)" in first.lines[0]
+    assert len(single.lines) == 1 and "more lines" not in single.lines[0]
+    # A retired block that was only a source note is not a change a reader can act on.
+    assert not any("Source note" in section.title for section in changes)
+
+
+def test_feature5_engine_identifiers_and_cn_names_never_become_titles():
+    """ZZZ build 19997538 ships 1661 as `Avatar_Female_Size02_Robin` with no EN weapon names.
+
+    The card still has to say Robin, must never print `ID 1661`, and must never open an English
+    card with a CJK title — the CN name becomes a marked note instead.
+    """
+    from gamexpress import beta as beta_mod
+
+    agent = {"id": 1661, "name": "Avatar_Female_Size02_Robin",
+             "code_name": "Avatar_Female_Size02_Robin_En"}
+    assert beta_mod._safe_entry_name(
+        {"name": ""}, agent, None, "1661", zh_data={"name": "(Test1)知更鸟"}, label="Agents",
+    ) == "Robin"
+    # The identifier→name convention is deliberately narrow.
+    assert beta_mod._name_from_identifier("Avatar_Male_Size03_JuFufu") == "Ju Fufu"
+    assert beta_mod._name_from_identifier("Weapon_S_1661") == ""
+    assert beta_mod._name_from_identifier("Item_Weapon_S_1661_Name") == ""
+    assert beta_mod._name_from_identifier("EquipmentSuit_34300_name") == ""
+    assert beta_mod._name_from_identifier("TestKey_PlaceHolder") == ""
+
+    weapon = {"id": 14166, "name": "Item_Weapon_S_1661_Name", "code_name": "Weapon_S_1661"}
+    listing = {"en": "Item_Weapon_S_1661_Name", "zh": "知更鸟专属音擎"}
+    name = beta_mod._safe_entry_name({"name": ""}, weapon, listing, "14166", label="W-Engines")
+    assert name == "W-Engine (ID 14166)"
+    assert beta_mod._is_fallback_name(name)
+    assert beta_mod._slug(name, "14166") == "14166"
+    assert beta_mod._zh_entry_name(listing, None) == "知更鸟专属音擎"
+    assert beta_mod._zh_entry_name({"zh": "(Test1)知更鸟"}, None) == ""
+    # Placeholders retained by an older build can never come back as a name.
+    assert beta_mod._usable_name("ID 1661") == ""
+    assert beta_mod._usable_name("知更鸟专属音擎 (ID 14166)") == ""
+    assert beta_mod._usable_name("Robin") == "Robin"
+
+
+def test_feature5_diff_lines_never_render_empty_bold_or_a_literal_subtext_marker():
+    from gamexpress import beta as beta_mod
+    from gamexpress.models import BetaEquipment
+
+    previous = BetaEquipment(id="zzz:14166", name="Robin's W-Engine",
+                             effect_title="Robin Test Engine", lines=["+5% HP"], tag="[NEW]")
+    current = BetaEquipment(id="zzz:14166", name="Robin's W-Engine",
+                            effect_title="", lines=["+6% HP"], tag="[CHANGED]")
+    lines = beta_mod._diff_equipment(previous, current).lines
+    assert ("**[CHANGED]** Effect renamed from ~~Robin Test Engine~~ → "
+            "*new name not in this build yet*.") in lines
+    assert not any("****" in line for line in lines)
+
+    note = "-# 🌐 CN/CHS client values updated (20%/22%/24%); EN text lags in this build."
+    rendered, tag = beta_mod._change_line("", note)
+    assert rendered == note and tag == "[CHANGED]"
+
+
+def test_feature5_raw_engine_enums_never_reach_a_dossier():
+    from gamexpress import beta as beta_mod
+
+    assert beta_mod._display_enum("CampUnknownRealm") == "Unknown Realm"
+    assert beta_mod._display_enum("Cunning Hares") == "Cunning Hares"
+    assert beta_mod._display_enum("Mockingbird") == "Mockingbird"
+    data = _beta_json("zzz_character_1661.json")
+    data["camp"] = {"18": "CampUnknownRealm"}
+    assert beta_mod._zzz_character(data)["camp"] == "Unknown Realm"
+
+
+def test_feature5_unlocalized_weapon_shows_the_cn_name_as_a_note_not_a_title():
+    from gamexpress import cards
+    from gamexpress.models import BetaEquipment, BetaPatch
+
+    patch = BetaPatch(
+        game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1 Rev. 19997538", rev_id="r-note",
+        equipment=[BetaEquipment(
+            id="zzz:14166", name="W-Engine (ID 14166)", category_label="W-Engines", rarity=4,
+            tag="[NEW]",
+            lines=["-# 🌐 No EN name in this build yet — CN/CHS name: 知更鸟专属音擎.",
+                   "* **Base ATK** 48", "HP 12%"],
+        )], item_keys=["weapon:zzz:14166"])
+    payloads, _ = cards.beta_payloads_with_map(
+        GAMES["zzz"], patch, settings(BETA_ENABLED="1", DISCORD_WEBHOOK_BETA=HOOK), None)
+    text = json.dumps(payloads, ensure_ascii=False)
+    assert "### W-Engine (ID 14166)" in text
+    assert "-# 🌐 No EN name in this build yet — CN/CHS name: 知更鸟专属音擎." in text
+
+
+def test_feature5_unreadable_changelog_still_diffs_the_build_listings():
+    """A 403 changelog must still find new/renamed items, and the summary must say so."""
+    from gamexpress import beta as beta_mod
+
+    previous_listing = {
+        "1601": {"icon": "Weapon_S_1601", "rank": 4, "en": "Item_Weapon_S_1601_Name"},
+    }
+    current_listing = dict(previous_listing, **{
+        "14166": {"icon": "Weapon_S_1661", "rank": 4, "en": "Item_Weapon_S_1661_Name",
+                  "zh": "知更鸟专属音擎"},
+    })
+
+    class ListingOnlyFetcher:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(("json", url))
+            if url.endswith("/manifest.json"):
+                return {"zzz": {"live": "3.3", "latest": "3.4.1+19997538",
+                                "available": ["3.3", "3.4.1+19851435", "3.4.1+19997538"],
+                                "new": {"character": [], "weapon": [], "equipment": []}}}
+            if "/zzz/" in url and url.endswith("/weapon.json"):
+                return current_listing if "19997538" in url else previous_listing
+            if "/zzz/" in url and "/weapon/14166" in url and "/3.3/" not in url:
+                return _beta_json("zzz_weapon_14166.json")
+            return None
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(("text", url))
+            return None  # what a real 403 looks like to the fetcher
+
+        async def verify_media(self, _url):
+            return True
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = ListingOnlyFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        record = ctx.state.beta_record("zzz")
+        record["source_version"] = "3.4.1+19851435"
+        record["latest_rev"] = "previous-revision"
+        ctx.state.save()
+        asyncio.run(beta_mod.run(ctx))
+
+        # The block was found without the changelog …
+        assert any("/zzz/3.4.1+19997538/en/weapon/14166.json" in url for _k, url in fetcher.calls)
+        # … the run summary says the coverage was narrower, and no warning was raised for it.
+        assert any("changelog unavailable; new and listing-changed items only" in r
+                   for r in ctx.report), ctx.report
+        assert not any("changelog" in w for w in ctx.warnings), ctx.warnings
 
 
 def test_feature5_legacy_epoch1_state_resets_once_and_preserves_route_and_ambiguous_holds():
@@ -18661,9 +19736,11 @@ def test_feature5_prime_formatting_style_overview_rework_diff_and_footer_invaria
     assert any("**[REWORK]** *Old:*" in ln and "→ *New:*" in ln for ln in diffed[0].lines)
 
     rev_overview = beta_mod._synthesize_kit_overview(
-        "zzz", "Phoenix", {"rarity": 5, "element": "Fire", "role": "Anomaly"}, diffed, is_new=False
+        "zzz", "Phoenix", {"rarity": 5, "element": "Fire", "role": "Anomaly"}, diffed,
+        is_new=False, mode="diff",
     )
-    assert rev_overview.startswith("**Revision Changes:**") and "rework" in rev_overview
+    assert rev_overview.startswith("**Phoenix**'s kit is reworked in this revision")
+    assert "no value changes" in rev_overview and "Revision Changes" not in rev_overview
 
     long_secs = [
         BetaSectionEntry(
@@ -19236,11 +20313,15 @@ def test_feature5_zzz_passive_potential_sveltekit_hotfix_and_cn_reconciliation()
     assert sk_revs[0]["entries"][0]["url"] == "https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en"
     assert "lang=en" in sk_revs[0]["entries"][0]["diff"]
 
+    # No EN name and no readable identifier: the title stays an honest slot label and the CN
+    # name is carried as a note, so an English card never opens with a CJK title.
     zh_fallback_name = beta_mod._safe_entry_name(
-        {}, {"name": "Weapon_S_14160_Name"}, {"en": "", "zh": "日冕遗蜕"}, "14160"
+        {}, {"name": "Weapon_S_14160_Name"}, {"en": "", "zh": "日冕遗蜕"}, "14160",
+        label="W-Engines",
     )
-    assert zh_fallback_name == "日冕遗蜕 (ID 14160)"
+    assert zh_fallback_name == "W-Engine (ID 14160)"
     assert beta_mod._slug(zh_fallback_name, "14160") == "14160"
+    assert beta_mod._zh_entry_name({"en": "", "zh": "日冕遗蜕"}, None) == "日冕遗蜕"
 
     # 3. Comma-safe multi-[TBD] CN reconciliation, missing CN section recovery, and equipment CN sync.
     en_kit = {"sections": [beta_mod.BetaSectionEntry(
@@ -19290,6 +20371,9 @@ def test_feature5_zzz_passive_potential_sveltekit_hotfix_and_cn_reconciliation()
                 d = copy.deepcopy(_beta_json("zzz_character_1661.json"))
                 d["name"] = "Miyabi"
                 d["potential_detail"] = {"1": {"level": 6, "name": "Frostbite", "desc": "Ice DMG +30%."}}
+                if "/3.3.4/" in url:
+                    # What the released build still says; the beta is the other side of the diff.
+                    d["potential_detail"] = {"1": {"level": 5, "name": "Frostbite", "desc": "Ice DMG +20%."}}
                 return d
             return None
 
@@ -20808,6 +21892,1973 @@ def test_feature5_weapon_multi_tier_diffs_zh_sync_and_legacy_state_self_heal():
         fb_lines = "\n".join(p_fb.equipment[0].lines)
         assert "no direction is inferred" in fb_lines
         assert "[BUFF]" not in fb_lines and "[NERF]" not in fb_lines
+
+
+def test_live_persistence_summary_reports_observed_outcomes():
+    """Exercise the real workflow scripts without performing any git writes or network calls."""
+    import os
+    import subprocess
+    import tempfile
+    from pathlib import Path
+
+    import yaml
+
+    workflow = yaml.load(Path('.github/workflows/monitor.yml').read_text(), Loader=yaml.BaseLoader)
+    steps = workflow['jobs']['monitor']['steps']
+    persist = next(s['run'] for s in steps if s.get('id') == 'persist_state')
+    summary = next(s['run'] for s in steps if s.get('name') == 'Summarize live state persistence')
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        bindir = root / 'bin'
+        bindir.mkdir()
+        git = bindir / 'git'
+        git.write_text('#!/bin/sh\ncase "$1 $2" in\n'
+                       '  "diff --cached") [ "$MODE" = unchanged ] && exit 0; exit 1 ;;\n'
+                       '  "push origin") [ "$MODE" != failed ] && exit 0; exit 1 ;;\n'
+                       '  *) exit 0 ;;\nesac\n')
+        git.chmod(0o755)
+        sleep = bindir / 'sleep'
+        sleep.write_text('#!/bin/sh\nexit 0\n')
+        sleep.chmod(0o755)
+        output, report = root / 'output', root / 'summary'
+        env = {**os.environ, 'PATH': str(bindir) + ':' + os.environ['PATH'],
+               'GITHUB_OUTPUT': str(output), 'GITHUB_STEP_SUMMARY': str(report), 'GITHUB_REF_NAME': 'main'}
+        cases = [('unchanged', 0, 'unchanged', 'no staged changes observed'),
+                 ('pushed', 0, 'pushed', 'committed and pushed'),
+                 ('failed', 1, '', 'failed — inspect')]
+        for mode, exit_code, expected_output, expected_text in cases:
+            output.write_text('')
+            report.write_text('')
+            env['MODE'] = mode
+            result = subprocess.run(['bash', '-e', '-c', persist], env=env, capture_output=True, check=False)
+            assert result.returncode == exit_code
+            observed = output.read_text().strip().removeprefix('result=')
+            assert observed == expected_output
+            env.update(PERSIST_OUTCOME='success' if exit_code == 0 else 'failure', PERSIST_RESULT=observed)
+            subprocess.run(['bash', '-e', '-c', summary], env=env, check=True)
+            assert expected_text in report.read_text()
+        for outcome in ('skipped', 'cancelled', ''):
+            report.write_text('')
+            env.update(PERSIST_OUTCOME=outcome, PERSIST_RESULT='')
+            subprocess.run(['bash', '-e', '-c', summary], env=env, check=True)
+            assert 'not confirmed' in report.read_text()
+        env['GITHUB_STEP_SUMMARY'] = str(root / 'missing' / 'summary')
+        result = subprocess.run(['bash', '-e', '-c', summary], env=env, capture_output=True, check=False)
+        assert result.returncode == 0
+        assert b'Could not append repository persistence summary' in result.stderr
+        assert b'::error::' not in result.stdout and b'::warning::' not in result.stdout
+
+
+
+def test_wuwa_labelled_maintenance_time_range_cross_day_dual_tz_and_subsystem_maint_filter():
+    """Verify:
+    1) Real WuWa `✦Maintenance Time: YYYY-MM-DD 04:00 - YYYY-MM-DD 11:00 (UTC+8)` parses `04:00`..`11:00`
+       (fixing the labelled single-TZ bug where `find_datetimes` previously matched `11:00` as start!).
+    2) Cross-day/cross-year named ranges and dual-TZ ranges parse cleanly in `find_time_ranges`.
+    3) Subsystem / store / returnee-event maintenance notices (`[Reprise of Tides] Returnee Event`,
+       `[Fantasies of the Thousand Gateways] Maintenance Notice`, PlayStation Store payment notices)
+       never classify as version-update maintenance."""
+    from gamexpress import timeparse
+    # 1. Real WuWa 3.7 maintenance notice format (`04:00 - 11:00 (UTC+8)`).
+    ww_notice = Item(
+        "kuro", "wuwa", "5476", "https://wutheringwaves.kurogames.com/en/main/news/detail/5476",
+        "Wuthering Waves Version 3.7 Update Maintenance Notice",
+        "Dear Rovers,\n✦Maintenance Time: 2026-09-30 04:00 - 2026-09-30 11:00 (UTC+8)\n"
+        "✦Maintenance Compensation: Astrite x300, Crystal Solvent x2",
+        1790650000,
+    )
+    ext = schedule.extract(GAMES["wuwa"], ww_notice)
+    assert ext is not None and ext.kind == "maintenance" and ext.version == "3.7"
+    assert ext.fields["maint_start_ts"] == 1790712000  # 2026-09-30 04:00 UTC+8
+    assert ext.fields["maint_end_ts"] == 1790737200    # 2026-09-30 11:00 UTC+8
+
+    # 2. Cross-year named range & dual-TZ range parsing.
+    rng_nye = timeparse.find_time_ranges("December 31, 2027, 23:00 - January 1, 2028, 04:00 (UTC+8)")
+    assert rng_nye == [(1830265200, 1830283200)]
+    rng_dual = timeparse.find_time_ranges("2026-09-30 04:00 (UTC+8) - 2026-09-30 11:00 (UTC+8)")
+    assert rng_dual == [(1790712000, 1790737200)]
+    rng_named_dual = timeparse.find_time_ranges("September 30, 2026, at 04:00 (UTC+8) - 11:00 (UTC+8)")
+    assert rng_named_dual == [(1790712000, 1790737200)]
+
+    # 3. Subsystem / returnee-event / payment maintenance notices mentioning "Version X.Y" -> ignored by `schedule`.
+    for gkey, bad_title, bad_body in (
+        ("wuwa", "Notice on the Upgrade and Maintenance of the [Reprise of Tides] Returnee Event",
+         "We will upgrade the Returnee Event in Version 3.8. Maintenance Time: 2026-11-10 04:00 - 2026-11-10 08:00 (UTC+8)"),
+        ("wuwa", "[Fantasies of the Thousand Gateways] Maintenance Notice",
+         "Version 3.8 mode maintenance: 2026-11-10 04:00 - 2026-11-10 06:00 (UTC+8)"),
+        ("genshin", "PlayStation®Store Payment System Maintenance Notice",
+         "During Version 7.2, payment maintenance runs 2026/11/03 06:00 - 09:00 (UTC+8)."),
+    ):
+        sub_it = Item("kuro" if gkey == "wuwa" else "hoyolab", gkey, "sub1", "https://example.com/1", bad_title, bad_body, 1793000000)
+        assert schedule.classify(GAMES[gkey], sub_it) is None
+
+
+def test_maintenance_window_phrasings_are_read_for_every_game():
+    """The sentences publishers actually write, for all six configured games.
+
+    * `The game will be updated and maintained at <date> (UTC+8)` (HoYoverse reminder form) names
+      no "maintenance" noun; before the fix the whole notice produced no timing at all.
+    * `Maintenance begins at <date> and ends at <clock> (UTC+8)` must read BOTH ends, while an
+      event sentence that only says something ends must still be ignored.
+    * A clock-only extension (`extended to 14:00 (UTC+8)`) resolves on the notice's own day and a
+      window crossing midnight keeps `end > start`.
+    * A reschedule that quotes the abandoned window must adopt the replacement date, and a
+      "will not be postponed" sentence must not be read as a postponement.
+    """
+    from gamexpress import schedule, timeparse
+
+    def fields(body, *, title="Version Update Maintenance Notice", ts=1793000000):
+        return schedule.extract_maintenance(
+            Item("hoyolab", "starrail", "1", "https://example.com/1", title, body, ts))
+
+    start = 1793829600   # 2026-11-05 06:00 UTC+8
+    end = start + 5 * 3600
+    for key in GAMES:
+        # 1. HoYoverse reminder phrasing: "updated and maintained at ..." + stated duration.
+        parsed = fields("Dear Trailblazers,\nThe game will be updated and maintained at "
+                        "2026/11/05 06:00 (UTC+8). The update is expected to take about 5 hours.")
+        assert parsed.get("maint_start_ts") == start, (key, parsed)
+        assert parsed.get("maint_end_ts") == end, (key, parsed)
+        # 2. Range split across a date and a bare end clock.
+        parsed = fields("Maintenance begins at 2026/11/05 06:00 (UTC+8) and ends at 11:00 (UTC+8).")
+        assert parsed.get("maint_start_ts") == start, (key, parsed)
+        assert parsed.get("maint_end_ts") == end, (key, parsed)
+        # 3. A plain range still works and an event end is never a maintenance start.
+        parsed = fields("The Planar Fissure event will end at 2026/11/05 03:59 (UTC+8).\n"
+                        "Maintenance begins at 2026/11/05 06:00 - 11:00 (UTC+8).")
+        assert parsed.get("maint_start_ts") == start, (key, parsed)
+        assert parsed.get("maint_end_ts") == end, (key, parsed)
+        assert fields("The Planar Fissure event will end at 2026/11/05 03:59 (UTC+8).") == {}, key
+        # 4. Clock-only extension anchored to the publication day.
+        published = start + 6 * 3600 + 1800          # 12:30 UTC+8 the same day
+        parsed = fields("The maintenance has been extended to 14:00 (UTC+8).", ts=published)
+        assert parsed.get("maint_extended") is True, (key, parsed)
+        assert parsed["maint_end_ts"] == start + 8 * 3600, (key, parsed)
+        # 5. A window crossing midnight keeps the end after the start.
+        parsed = fields("Maintenance begins at 2026/11/05 23:00 (UTC+8) and ends at 02:00 (UTC+8).")
+        assert parsed["maint_end_ts"] - parsed["maint_start_ts"] == 3 * 3600, (key, parsed)
+        # 6. Rescheduled notice quoting the abandoned window -> the replacement date wins.
+        parsed = fields("The Version 3.8 update maintenance, originally scheduled for "
+                        "2026/09/30 04:00 - 11:00 (UTC+8), has been postponed to 2026/10/01 11:00 (UTC+8).")
+        assert parsed.get("maint_start_ts") == 1790823600, (key, parsed)
+        assert "maint_end_ts" not in parsed, (key, parsed)
+        # 7. TBA postponement clears quoted times; a denial is not a postponement.
+        parsed = fields("The Version 3.8 update maintenance, originally scheduled for "
+                        "2026/09/30 04:00 - 11:00 (UTC+8), has been postponed until further notice.")
+        assert parsed == {"maint_postponed": True}, (key, parsed)
+        denied = fields("The update will not be postponed. Maintenance Time: 2026/09/30 04:00 - 11:00 (UTC+8)")
+        assert "maint_postponed" not in denied, denied
+        assert denied.get("maint_start_ts") == 1790712000, denied
+        # 8. `find_time_ranges` accepts both offsets and rejects impossible minutes.
+        assert timeparse.find_time_ranges("2026/09/30 04:00 (UTC+8) - 2026/09/30 11:00 (UTC+8)") == \
+            [(1790712000, 1790737200)]
+        assert timeparse.find_time_ranges("2026/09/30 04:00 - 11:00 (UTC+8:75)") == []
+
+
+def test_maintenance_mid_patch_7h_extension_tba_postponement_and_kuro_bg_hash_renewal():
+    """Verify:
+    1) Standalone maintenance extension notice at +6.5h into a 7h WuWa maintenance updates `maint_end_ts`
+       to the extended timestamp (`13:00`, never the cited original `11:00`) and silently PATCHes the
+       posted `Maintenance Started` card inside `ACTIVE_WINDOW_S` without unlocking media past `6h`.
+    2) Official TBA postponement notice suppresses unconfirmed `"estimated"` cadence predictions until
+       a rescheduled official date or override arrives.
+    3) Kuro launcher `bg_hash` corroborates expiring `?auth_key=` Tier-1 video renewal when identical
+       and blocks renewal when `bg_hash` changes in Phase II."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.discord import SendResult
+    from gamexpress.sources import kuro as kuro_mod
+
+    # 1. 7h WuWa maintenance (`04:00` -> `11:00 UTC+8`) extended at `10:30` (`+6.5h`) to `13:00 UTC+8`!
+    start_04 = 1794427200   # 2026-11-12 04:00 UTC+8
+    end_11 = start_04 + 7 * 3600
+    end_13 = start_04 + 9 * 3600
+    vid_launch = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/3.8_bg.mp4?auth_key=1794500000-0-0-ok"
+
+    base_notice = Item(
+        "kuro", "wuwa", "7001", "https://wutheringwaves.kurogames.com/en/main/news/detail/7001",
+        "Wuthering Waves Version 3.8 Update Maintenance Notice",
+        "✦Maintenance Time: 2026-11-12 04:00 - 2026-11-12 11:00 (UTC+8)\n✦Maintenance Compensation: Astrite x300",
+        start_04 - 86400,
+    )
+    ext_notice = Item(
+        "kuro", "wuwa", "7002", "https://wutheringwaves.kurogames.com/en/main/news/detail/7002",
+        "Version 3.8 Maintenance Extension Notice",
+        "Dear Rovers, Version 3.8 update maintenance originally scheduled to end at 2026-11-12 11:00 (UTC+8) "
+        "will be extended until 2026-11-12 13:00 (UTC+8). Maintenance Compensation: Astrite x420.",
+        start_04 + int(6.5 * 3600) - 60,
+    )
+    ext_parsed = schedule.extract(GAMES["wuwa"], ext_notice)
+    assert ext_parsed is not None and ext_parsed.fields.get("maint_extended") is True
+    assert ext_parsed.fields["maint_end_ts"] == end_13
+
+    with tempfile.TemporaryDirectory() as tmp:
+        st = State(Path(tmp) / "m_ext.json")
+        st.maintenance_record("wuwa").update({
+            "seeded_at": start_04 - 3600,
+            "versions": {"3.8": {"preload": {"status": "seeded", "ts": start_04 - 151200}}},
+        })
+
+        class _OkMediaFetcher:
+            async def verify_media(self, _u):
+                return True
+
+        # Post `Maintenance Started` at `04:01` (`start_04 + 60`) with Tier-2 artwork.
+        art_launch = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/images/3.8_kv.webp"
+        wh1 = ScriptedWebhook([], [SendResult(True, 200, "ww-38-maint-msg")])
+        ctx1 = make_ctx(
+            Path(tmp) / "m_ext.json",
+            now=start_04 + 60,
+            items={"wuwa": [base_notice]},
+            versions={"wuwa": {"live": "3.7", "pre": "3.8", "pre_media": {"version": "3.8", "artwork": art_launch}}},
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="wuwa",
+            DISCORD_WEBHOOK_MAINTENANCE_WUWA="https://discord.com/api/webhooks/100000000000000088/m_tok",
+        )
+        ctx1.games = [GAMES["wuwa"]]
+        ctx1.state = st
+        ctx1.fetcher = _OkMediaFetcher()
+        ctx1.webhook = wh1
+        with patch.object(kuro_mod, "launcher_media", new=AsyncMock(return_value={})):
+            asyncio.run(maintenance.run(ctx1))
+        assert len(wh1.sends) == 1
+        m_entry = st.maintenance_record("wuwa")["versions"]["3.8"]["maintenance"]
+        assert m_entry["end_ts"] == end_11 and m_entry["media_tier"] == 2
+        # Prior media edit failures/caps must not block an official timing correction.
+        m_entry["edit_attempts"] = maintenance.MAX_LATE_MEDIA_ATTEMPTS
+        m_entry["edit_count"] = maintenance.MAX_LATE_EDITS
+
+        # At `10:31` (`+6.5h` > `LATE_MEDIA_EDIT_WINDOW_S`), extension notice arrives AND a Tier-1 video appears:
+        # `End Time` MUST silently PATCH to `end_13`, while `media_url` MUST stay locked to `art_launch`!
+        wh2 = ScriptedWebhook([SendResult(True, 200, "ww-38-maint-msg")], [])
+        ctx2 = make_ctx(
+            Path(tmp) / "m_ext.json",
+            now=start_04 + int(6.5 * 3600),
+            items={"wuwa": [base_notice, ext_notice]},
+            versions={"wuwa": {"live": "3.7", "pre": "3.8", "pre_media": {"version": "3.8", "video": vid_launch, "artwork": art_launch}}},
+            MAINTENANCE_ENABLED="1",
+            MAINTENANCE_GAMES="wuwa",
+            DISCORD_WEBHOOK_MAINTENANCE_WUWA="https://discord.com/api/webhooks/100000000000000088/m_tok",
+        )
+        ctx2.games = [GAMES["wuwa"]]
+        ctx2.state = st
+        ctx2.fetcher = _OkMediaFetcher()
+        ctx2.webhook = wh2
+        with patch.object(kuro_mod, "launcher_media", new=AsyncMock(return_value={})):
+            asyncio.run(maintenance.run(ctx2))
+        assert len(wh2.edits) == 1
+        assert f"<t:{end_13}:t>" in json.dumps(wh2.edits[0][1])
+        assert m_entry["end_ts"] == end_13
+        assert m_entry["media_url"] == art_launch and m_entry["media_tier"] == 2
+
+    # 2. Official TBA postponement suppresses unconfirmed cadence estimates until rescheduled.
+    postpone_it = Item(
+        "hoyolab", "genshin", "8001", "https://www.hoyolab.com/article/8001",
+        "Version 7.3 Update Postponement Notice",
+        "Dear Travelers, due to project schedule adjustments, the Version 7.3 update will be postponed until further notice.",
+        1796000000,
+    )
+    sched_recs = {
+        "7.1": {"status": "posted", "data": {"version": "7.1", "maint_start_ts": 1790128800}, "prov": {"maint_start_ts": [50, 1790000000]}},
+        "7.2": {"status": "posted", "data": {"version": "7.2", "maint_start_ts": 1793757600}, "prov": {"maint_start_ts": [50, 1793600000]}},
+    }
+    plans_postponed = maintenance.resolve_version_plans(
+        GAMES["genshin"], sched_recs, [postpone_it], {"live": "7.2"}, {}, 1797200000
+    )
+    assert plans_postponed["7.3"]["postponed"] is True
+    assert plans_postponed["7.3"]["maint_start_ts"] is None
+    assert plans_postponed["7.3"]["preinstall_ts"] is None
+
+    resched_it = Item(
+        "hoyolab", "genshin", "8002", "https://www.hoyolab.com/article/8002",
+        "Version 7.3 Update Maintenance Preview",
+        "Update maintenance begins 2026/12/23 06:00 (UTC+8) and is estimated to take 5 hours.",
+        1797500000,
+    )
+    plans_resched = maintenance.resolve_version_plans(
+        GAMES["genshin"], sched_recs, [postpone_it, resched_it], {"live": "7.2"}, {}, 1797600000
+    )
+    assert plans_resched["7.3"]["postponed"] is False
+    assert plans_resched["7.3"]["maint_provenance"] == "official"
+    assert plans_resched["7.3"]["maint_start_ts"] is not None
+
+    # 3. Kuro `bg_hash` corroborates same-asset `?auth_key=` renewal and rejects Phase II `bg_hash` swaps!
+    u_tok1 = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/bg.mp4?auth_key=1794400000-0-0-a"
+    u_tok2 = "https://hw-media-cdn-mingchao.kurogame.com/akiwebsite/website2.0/video/bg.mp4?auth_key=1794500000-0-0-b"
+    m_locked = maintenance._build_asset_meta(u_tok1, "3.8", extra={"bg_hash": "dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf"})
+    m_same = maintenance._build_asset_meta(u_tok2, "3.8", extra={"bg_hash": "dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf"})
+    m_phase2 = maintenance._build_asset_meta(u_tok2, "3.8", extra={"bg_hash": "99999999999999999999999999999999"})
+    assert maintenance._corroborated_same_asset(u_tok2, m_same, u_tok1, m_locked, "3.8") is True
+    assert maintenance._corroborated_same_asset(u_tok2, m_phase2, u_tok1, m_locked, "3.8") is False
+
+def test_maintenance_postponement_survives_old_notices_and_new_notice_reschedules():
+    from gamexpress import maintenance
+
+    postponed_at = 1796000000
+    saved = {"7.3": {"data": {"version": "7.3", "maint_postponed": True},
+                     "prov": {"maint_postponed": [50, postponed_at]}}}
+    def notice(source, ts):
+        return Item(source, "genshin", str(ts), "https://example.com/notice", "Version 7.3 Update Maintenance Notice",
+                    "Update maintenance begins 2026/12/23 06:00 (UTC+8) and takes 5 hours.", ts)
+    for old in (notice("hoyolab", postponed_at - 1), notice("x", postponed_at + 1)):
+        plan = maintenance.resolve_version_plans(GAMES["genshin"], saved, [old], {}, {}, postponed_at + 100)["7.3"]
+        assert plan["postponed"] and plan["maint_start_ts"] is None
+    newer = notice("hoyolab", postponed_at + 1)
+    plan = maintenance.resolve_version_plans(GAMES["genshin"], saved, [newer], {}, {}, postponed_at + 100)["7.3"]
+    assert not plan["postponed"] and plan["maint_provenance"] == "official" and plan["maint_start_ts"]
+
+
+def test_maintenance_timing_notice_persists_and_peer_merge_respects_resolution():
+    from gamexpress import maintenance
+
+    now = 1796000000
+    game = GAMES["genshin"]
+    postponed = Item("hoyolab", "genshin", "p", "https://example.com/p",
+                     "Version 7.3 Update Postponement Notice",
+                     "Version 7.3 update will be postponed until further notice.", now)
+    initial = maintenance.resolve_version_plans(game, {}, [postponed], {}, {}, now + 1)["7.3"]
+    assert initial["postponed"] and initial["timing_notice"]
+    local_versions = {"7.3": {"timing_notice": initial["timing_notice"]}}
+    later = maintenance.resolve_version_plans(game, {}, [], {}, {}, now + 3600,
+                                              maintenance_versions=local_versions)["7.3"]
+    assert later["postponed"] and later["maint_start_ts"] is None
+    new = Item("hoyolab", "genshin", "r", "https://example.com/r",
+               "Version 7.3 Update Maintenance Notice",
+               "Update maintenance begins 2026/12/23 06:00 (UTC+8) and takes 5 hours.", now + 10)
+    resolved = maintenance.resolve_version_plans(game, {}, [new], {}, {}, now + 20,
+                                                 maintenance_versions=local_versions)["7.3"]
+    assert not resolved["postponed"] and resolved["timing_notice"]["start_ts"]
+    local_versions["7.3"]["timing_notice"] = resolved["timing_notice"]
+    with tempfile.TemporaryDirectory() as tmp:
+        state = State(Path(tmp) / "state.json")
+        state.maintenance_record("genshin")["versions"] = local_versions
+        peer = {"maintenance": {"genshin": {"versions": {"7.3": {"timing_notice": initial["timing_notice"]}}}}}
+        state.merge_peer(peer, include_maintenance=True)
+        saved = state.maintenance_record("genshin")["versions"]["7.3"]["timing_notice"]
+        assert saved == resolved["timing_notice"]
+        plan = maintenance.resolve_version_plans(game, {}, [], {}, {}, now + 3600,
+                                                 maintenance_versions=local_versions)["7.3"]
+        assert not plan["postponed"] and plan["maint_start_ts"] == resolved["maint_start_ts"]
+
+
+def test_postponement_with_original_date_does_not_revive_original_window():
+    item = Item("hoyolab", "genshin", "tba", "https://example.com/tba", "Version 7.3 Update Postponement Notice",
+                "Version 7.3 update originally scheduled for 2026/12/23 06:00 (UTC+8) "
+                "will be postponed until further notice.", 1796000000)
+    result = schedule.extract(GAMES["genshin"], item)
+    assert result and result.fields.get("maint_postponed") and "maint_start_ts" not in result.fields
+
+
+def test_extension_uses_timestamp_after_extension_phrase_not_unrelated_date():
+    item = Item("kuro", "wuwa", "ext", "https://example.com/ext", "Version 3.8 Maintenance Extension Notice",
+                "Maintenance originally ending 2026/11/12 11:00 (UTC+8) will be extended until "
+                "2026/11/12 13:00 (UTC+8); rewards expire on 2026/11/13 13:00 (UTC+8).", 1794427200)
+    result = schedule.extract(GAMES["wuwa"], item)
+    assert result and result.fields["maint_end_ts"] == 1794459600
+
+
+def test_range_rejects_invalid_zone_minutes():
+    assert not find_datetimes("2026/09/30 04:00 (UTC+08:99)", 1790000000)
+    assert not find_time_ranges("2026/09/30 04:00 - 11:00 (UTC+08:99)", 1790000000)
+    assert not find_time_ranges("2026/09/30 04:00 (UTC+08:99) - 11:00 (UTC+08:00)", 1790000000)
+
+
+def test_news_youtube_embeds_render_watch_links_for_all_games_without_guessing():
+    from copy import deepcopy
+
+    from gamexpress.textutil import news_blocks
+
+    # The actual player form from the HSR screenshot; no network or production write.
+    video = "rCxNRV9gdzo"
+    embed = f"https://www.youtube.com/embed/{video}?enablejsapi=1&enablejsapi=1"
+    blocks = news_blocks(f'<p>Before</p><iframe src="{embed}"></iframe><p>After</p>')
+    assert any(b.get("url") == embed for b in blocks)
+    for game_key in ("genshin", "starrail", "zzz", "wuwa", "hna", "ananta"):
+        item = news_item(title="Trailer", body="")
+        item.game = game_key
+        item.article_blocks = deepcopy(blocks)
+        original = deepcopy(item)
+        for timestamps in (False, True):
+            for expanded in (False, True):
+                pages = cards.news_payloads(GAMES[game_key], item, timestamps=timestamps, expand_full=expanded)
+                assert all(not cards.validate_payload(page) for page in pages)
+                texts = [c.get("content", "") for p in pages for co in p["components"]
+                         for c in co["components"] if c["type"] == 10]
+                assert f"https://www.youtube.com/watch?v={video}" in texts
+                assert not any("Open original media" in t for t in texts)
+                assert texts.index("Before") < texts.index(f"https://www.youtube.com/watch?v={video}") < texts.index("After")
+        assert item == original
+
+    for source in (f"https://youtu.be/{video}", f"https://youtube.com/shorts/{video}",
+                   f"https://www.youtube-nocookie.com/embed/{video}",
+                   f"https://www.youtube.com/watch?feature=share&v={video}"):
+        assert cards._youtube_watch_url(source) == f"https://www.youtube.com/watch?v={video}"
+    assert cards._youtube_watch_url(f"https://youtube.com/embed/{video}?start=45") == (
+        f"https://www.youtube.com/watch?v={video}&t=45"
+    )
+    assert cards._youtube_watch_url(f"https://youtu.be/{video}?t=45s") == (
+        f"https://www.youtube.com/watch?v={video}&t=45s"
+    )
+    # Trailing slashes and the `/watch/` variant appear in copied HoYoLAB/Quill links.
+    for source in (f"https://youtu.be/{video}/", f"https://www.youtube.com/watch/?v={video}",
+                   f"https://m.youtube.com/watch?v={video}", f"https://music.youtube.com/watch?v={video}",
+                   f"https://www.youtube.com/embed/{video}/?start=45"):
+        assert cards._youtube_watch_url(source) is not None, source
+    for invalid in (f"https://youtube.com.evil.example/embed/{video}",
+                    f"https://youtube.com@evil.example/embed/{video}",
+                    f"https://youtube.com/embed/{video}x", "https://youtube.com/channel/example",
+                    f"https://youtube.com/watch?v={video}&v=dQw4w9WgXcQ"):
+        assert cards._youtube_watch_url(invalid) is None
+    other = news_item(body="")
+    other.article_blocks = [{"kind": "link", "url": "https://example.org/player/123"}]
+    payload = cards.news_payloads(GAMES["starrail"], other)
+    assert "[Open original media](https://example.org/player/123)" in json.dumps(payload)
+    native = news_item(body="")
+    native.article_blocks = [{"kind": "video", "url": "https://example.org/video.mp4"}]
+    assert "https://example.org/video.mp4" in json.dumps(cards.news_payloads(GAMES["starrail"], native))
+
+
+def test_reveal_ping_default_off_isolation_and_multi_era_plus_unseen_future_classifier():
+    """Verify default-off reveal-ping config isolation, multi-era + unseen-future detection, and
+    strict video / outfit / rerun / showcase / event exclusions."""
+    from gamexpress import config, reveal_ping
+
+    img_blk = {"kind": "image", "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/20/portrait.jpg"}
+
+    # 1. Config isolation: OFF by default; never inherits `PING_ROLE_ID` or `PING_NEWS`.
+    s_default = config.load_settings({
+        "PING_ROLE_ID": "111111111111111111",
+        "PING_NEWS_REVEAL": "222222222222222222",
+    })
+    assert s_default.news_reveal_ping is False
+    assert not s_default.reveal_ping("genshin")
+
+    s_no_role = config.load_settings({
+        "NEWS_REVEAL_PING": "1",
+        "PING_ROLE_ID": "111111111111111111",
+        "PING_NEWS": "333333333333333333",
+    })
+    assert s_no_role.news_reveal_ping is True
+    assert not s_no_role.reveal_ping("genshin")
+
+    # Exactly two settings: one switch, one role list that covers every game.
+    s_all = config.load_settings({"NEWS_REVEAL_PING": "1", "PING_NEWS_REVEAL": "222222222222222222"})
+    assert {s_all.reveal_ping(g).text for g in ("genshin", "starrail", "zzz", "wuwa", "hna", "ananta")} == {
+        "<@&222222222222222222>"}
+    assert config.load_settings({"NEWS_REVEAL_PING": "1",
+                                 "PING_NEWS_REVEAL": "222222222222222222, 444444444444444444"}
+                                ).reveal_ping("genshin").roles == ["222222222222222222", "444444444444444444"]
+    assert not config.load_settings({"NEWS_REVEAL_PING": "1", "PING_NEWS_REVEAL": "none"}).reveal_ping("zzz")
+    assert not config.load_settings({
+        "NEWS_REVEAL_PING": "1",
+        "PING_NEWS_REVEAL": "222222222222222222",
+        "NO_PING": "1",
+    }).reveal_ping("wuwa")
+    # A stale per-game variable from an older draft must not resurrect the removed override.
+    assert config.load_settings({
+        "NEWS_REVEAL_PING": "1",
+        "PING_NEWS_REVEAL": "222222222222222222",
+        "PING_NEWS_REVEAL_GI": "444444444444444444",
+        "PING_REVEAL": "555555555555555555",
+    }).reveal_ping("genshin").text == "<@&222222222222222222>"
+
+    # `known_rerun_names` baseline seeds historical roster silently on cold start:
+    g_rec: dict = {}
+    reveal_ping.ensure_reveal_baseline(g_rec, 1793242800, known_rerun_names=["Shorekeeper", "Power of Ten — Suoming"])
+    assert "shorekeeper" in g_rec["reveal_chars"] and "suoming" in g_rec["reveal_chars"]
+
+    # 2. Multi-era positive templates (2020 -> 2026 -> future power labels).
+    positives = [
+        # Genshin V2-V7 `◆` dossier (Moon Wheel / future Snezhnaya/Khaenri'ah power key)
+        ("genshin", "Candlight's Lingering Radiance · Linnea", (
+            '"A warm breeze from Nod-Krai..."\n◆ Name: Linnea\n◆ Title: Frostweaver\n'
+            '◆ Moon Wheel: Cryo\n◆ Constellation: Lucerna Borealis'
+        ), "Linnea"),
+        ("genshin", "Echoes Beyond the Firmament", (
+            '◆ Name: Dainsleif\n◆ Title: Bough Keeper\n◆ Abyssal Core: Khaenri\'ah\n◆ Constellation: Viator'
+        ), "Dainsleif"),
+        # Early Genshin V2/V3 `◆` bullet dossier without `Name:` key
+        ("genshin", '"Astute Luminary" · Nahida', (
+            '◆ Physic of Purity\n◆ Lesser Lord Kusanali\n◆ Gnosis: Dendro\n◆ Constellation: Sapientia Oromasdis'
+        ), "Nahida"),
+        # Old Genshin V1 `[Character Tales]` & `Character Introduction`
+        ("genshin", '[Character Tales] - "Vago Mundo" Zhongli', '"Osmanthus wine tastes the same..."', "Zhongli"),
+        ("genshin", 'Character Introduction — "Lone Glimmer" Skirk', '"From beyond the rift..."', "Skirk"),
+        # HSR V1-V4 (`Extraterrestrial`, `Amphoreus`, `Aha Instant` incl. Oct 2026 minimal quote-only post)
+        ("starrail", "Extraterrestrial Satellite Communication | Dan Heng • Imbibitor Lunae", '"My past..."', "Dan Heng • Imbibitor Lunae"),
+        ("starrail", "Amphoreus' Saga of Heroes | Castorice", '"Life and death walk hand in hand."', "Castorice"),
+        ("starrail", "Aha Instant | Ellen", '"Do you guys have shark tail care services here too?"', "Ellen"),
+        # Reddit archive titles are useful formatting examples, not original HoYoLAB captures.
+        ("starrail", '"Extraterrestrial Satellite Communication" | Rappa', '"Quote."', "Rappa"),
+        ("starrail", '"Amphoreus\' Saga of Heroes" | #Castorice', '"Quote."', "Castorice"),
+        ("zzz", 'Agent Record | "Trigger"', '"Quote."', "Trigger"),
+        # ZZZ `Agent Record` + early `[Agent Record]`
+        ("zzz", "Agent Record | Miyabi", '"Order cannot be broken."', "Miyabi"),
+        ("zzz", '"Leave the housekeeping to me." — Victoria: Lycaon', '[Agent Record]\nVoice: Kobayashi Chikahiro', "Lycaon"),
+        # WuWa `Stars Intertwined`, `Resonator Reveal`, and `Profile Reveal` (canonicalized to `"suoming"`)
+        ("wuwa", "Post-Lament Anthropocene: Stars Intertwined | Suoming", '"Every variable is accounted for."', "Suoming"),
+        ("wuwa", "Profile Reveal | Power of Ten — Suoming", '"Calculations complete."', "Suoming"),
+        # Captured Kuro profile titles use em dashes without spaces.
+        ("wuwa", "Profile Reveal | Howling Flame—Lupa", '"Quote."', "Lupa"),
+        ("wuwa", "Profile Reveal | Magnetism Before Light—Augusta", '"Quote."', "Augusta"),
+        ("wuwa", "Resonator Reveal | Rebecca", '"Let us tear Night City apart!"', "Rebecca"),
+        # Legacy Kuro separator `Profile Reveal:` (archived articles 451/475/512/542/621/…).
+        ("wuwa", "Profile Reveal: Snow Waltz — Sanhua", '"Quote."', "Sanhua"),
+        ("wuwa", "Profile Reveal: Mistcloak Strike — Aalto", '"Quote."', "Aalto"),
+        ("wuwa", "Profile Reveal: Dragon's Breath — Mortefi", '"Quote."', "Mortefi"),
+        # Form-suffixed names are one character (`Rover: Aero`, `Yangyang: Xuanling`).
+        ("wuwa", "Profile Reveal | Vessel of Sounds — Rover: Aero", '"Quote."', "Rover: Aero"),
+        ("wuwa", "Profile Reveal | Voices of Azure Plume - Yangyang: Xuanling", '"Quote."', "Yangyang: Xuanling"),
+        ("wuwa", "Post-Lament Anthropocene: Stars Intertwined | Yangyang: Xuanling", '"Quote."', "Yangyang: Xuanling"),
+        # Layer 2 unseen future planet/arc series (`<New Series> | <Character>`) across HSR 5.0 / HNA / Ananta
+        ("starrail", "Lushaka's Deep-Sea Chronicle | Nereia", (
+            '"Beneath the sunken spires, every tide remembers its oath."\n'
+            'Nereia gazes across the abyssal trench.\nEnglish Voice: Jane Doe'
+        ), "Nereia"),
+        ("hna", "Sovereign Nexus Dossier | Seraphina", (
+            '"Bind your Anima to mine, and no rift shall part us."\nAffiliation: Astral Sanctum\nSeraphina awaits.'
+        ), "Seraphina"),
+    ]
+    for gkey, title, body, expected_char in positives:
+        it = Item(
+            "kuro" if gkey == "wuwa" else "hoyolab", gkey, "p1", "https://www.hoyolab.com/article/1",
+            title, body, 1792206000,
+            article_blocks=[{"kind": "text", "text": body}, img_blk],
+        )
+        m = reveal_ping.classify_character_reveal(gkey, it)
+        assert m is not None, f"missed positive reveal {gkey}: {title!r}"
+        assert m.character == expected_char, f"{title!r} -> {m.character!r} != {expected_char!r}"
+
+    # Canonical key collapses `Stars Intertwined | Suoming` and `Profile Reveal | Power of Ten — Suoming`!
+    assert reveal_ping.canonical_character_key("Suoming") == reveal_ping.canonical_character_key("Power of Ten — Suoming") == "suoming"
+    # A form suffix keeps the base character: one character can never ping twice for its forms.
+    assert reveal_ping.canonical_character_key("Rover: Aero") == reveal_ping.canonical_character_key("Rover: Electro") == "rover"
+    assert reveal_ping.canonical_character_key("Yangyang: Xuanling") == reveal_ping.canonical_character_key("Yangyang") == "yangyang"
+
+    # 3. Strict hard exclusions: ANY video post, trailer, showcase, outfit, rerun, comic episode, or event -> None!
+    negatives = [
+        # Drip-looking title WITH native video block (e.g. ZZZ 12:05 PM Agent Record Short!)
+        ("zzz", "Agent Record | Miyabi", '"Order cannot be broken."', [
+            {"kind": "text", "text": '"Order cannot be broken."'},
+            {"kind": "video", "url": "https://vod-static.hoyolab.com/agent_short.mp4"},
+        ], []),
+        # Drip-looking title WITH unavailable native video placeholder
+        ("starrail", "Aha Instant | Astra Yao", "[Native video unavailable; open original post]", [
+            {"kind": "text", "text": "[Native video unavailable; open original post]"}, img_blk,
+        ], []),
+        # Drip-looking title WITH YouTube Shorts / watch link
+        ("wuwa", "Post-Lament Anthropocene: Stars Intertwined | Suoming", '"Quote here."', [
+            {"kind": "text", "text": '"Quote here."'}, img_blk,
+        ], ["https://www.youtube.com/shorts/abc123XYZ89"]),
+        # WuWa rerun series (`Resonator Review` is for reruns, NEVER new characters!)
+        ("wuwa", "Post-Lament Anthropocene: Resonator Review | Shorekeeper", '"Welcome home."', [
+            {"kind": "text", "text": '"Welcome home."'}, img_blk,
+        ], []),
+        # Genshin `Character Introduction and Skill Showcase` (pre-banner kit post, NOT drip!)
+        ("genshin", "Character Introduction and Skill Showcase — \"Frostweaver\" Linnea", '"Quote..."\n◆ Name: Linnea\n◆ Title: Frostweaver\n◆ Moon Wheel: Cryo', [
+            {"kind": "text", "text": '◆ Name: Linnea\n◆ Title: Frostweaver\n◆ Moon Wheel: Cryo'}, img_blk,
+        ], []),
+        # Outfits / skins / costumes (vertical portrait + quote, NOT a new character!)
+        ("genshin", 'Outfit Teaser: Shenhe "Frostflower Dew"', '"A fitting garment for the lantern rite."', [
+            {"kind": "text", "text": '"A fitting garment for the lantern rite."'}, img_blk,
+        ], []),
+        ("wuwa", "Outfit Showcase | Peach Blossom — Jinhsi", '"Spring returns to Jinzhou."', [
+            {"kind": "text", "text": '"Spring returns to Jinzhou."'}, img_blk,
+        ], []),
+        # Gag comic / episode serial (`monitor 1645.txt` real HSR post!)
+        ("starrail", '"The Laughter Outsmarts miHoYo" Episode 6 | Retreat', '"Run away before Aha notices!"', [
+            {"kind": "text", "text": '"Run away before Aha notices!"'}, img_blk,
+        ], []),
+        # Web event / banner / weapon / patch notices
+        ("zzz", '"Cyber Miracle Healer" Web Event Now Live!', "Event Duration: 2026/10/20 - 2026/10/30", [
+            {"kind": "text", "text": "Event Duration: 2026/10/20 - 2026/10/30"}, img_blk,
+        ], []),
+        ("starrail", "Character Preview | Valeriy", '"Check out Valeriy skills!"', [
+            {"kind": "text", "text": '"Check out Valeriy skills!"'}, img_blk,
+        ], []),
+        ("wuwa", "Resonator Combat Showcase | Suoming", '"Watch Suoming in combat!"', [
+            {"kind": "text", "text": '"Watch Suoming in combat!"'}, img_blk,
+        ], []),
+        ("wuwa", "Echo Showcase | Lorelei", '"A phantom echoing over Rinascita."', [
+            {"kind": "text", "text": '"A phantom echoing over Rinascita."'}, img_blk,
+        ], []),
+    ]
+    for gkey, title, body, blocks, links in negatives:
+        it = Item(
+            "kuro" if gkey == "wuwa" else "hoyolab", gkey, "n1", "https://www.hoyolab.com/article/2",
+            title, body, 1792206300,
+            images=[img_blk["url"]], links=links, article_blocks=blocks,
+        )
+        assert reveal_ping.classify_character_reveal(gkey, it) is None, f"false positive on {gkey}: {title!r}"
+
+
+    # Embedded video links and body URLs are also excluded even with a reveal-like title.
+    for blocks, text in [
+        ([{"kind": "link", "url": "https://www.youtube.com/embed/rCxNRV9gdzo?enablejsapi=1"}], ""),
+        ([{"kind": "text", "text": "https://www.youtube.com/watch?v=rCxNRV9gdzo"}], ""),
+        ([], "https://www.youtube.com/shorts/rCxNRV9gdzo"),
+    ]:
+        item = Item("hoyolab", "starrail", "video", "https://example.org",
+                    "Extraterrestrial Satellite Communication | Jane", text, 100, article_blocks=blocks)
+        assert reveal_ping.classify_character_reveal("starrail", item) is None
+    one = reveal_ping.RevealMatch("One", "one", "test")
+    two = reveal_ping.RevealMatch("Two", "two", "test")
+    record = {}
+    reveal_ping.commit_reveal_delivery(record, one, published_ts=1000, now=1100, pinged=True)
+    assert reveal_ping.evaluate_reveal_ping_decision(record, two, published_ts=1000) == (False, "same_publication_time")
+    assert reveal_ping.evaluate_reveal_ping_decision(record, two, published_ts=1010) == (False, "same_publication_time")
+    assert reveal_ping.evaluate_reveal_ping_decision(record, two, published_ts=1020) == (True, "new_character_reveal")
+    assert reveal_ping.evaluate_reveal_ping_decision(record, two, published_ts=1300) == (True, "new_character_reveal")
+    # Previously persisted exact-second keys still group into the same minute.
+    assert reveal_ping.evaluate_reveal_ping_decision({"reveal_times": {"1001": 1100}}, two, published_ts=1019) == (False, "same_publication_time")
+
+def test_reveal_ping_same_time_single_ping_wave_different_times_recheck_edit_and_peer_merge():
+    """End-to-end `run_news` proof of:
+    1) Zero pings when `NEWS_REVEAL_PING=0` (default).
+    2) Equal-timestamp characters ping once; a different-time character pings separately,
+       and recognized follow-up profiles stay silent.
+    3) Different-time new character drop (hours later / next day) pings once at its own reveal time.
+    4) Post-publish CMS `rechecks` edit keeps visible `<@&ROLE_ID>` header pill without re-pinging (`parse: []`).
+    5) `State.merge_peer(include_news=True)` syncs `reveal_chars` & `last_reveal_ping_ts` across failover."""
+    from unittest.mock import patch
+
+    from gamexpress.runner import run_news
+    from gamexpress.sources import kuro
+
+    role_id = "987654321098765432"
+    img_url = "https://upload-os-bbs.hoyolab.com/upload/2026/10/29/reveal.jpg"
+
+    def _make_reveal(aid: str, title: str, body: str, pub_ts: int, *, with_video: bool = False) -> Item:
+        blocks = [{"kind": "text", "text": body}, {"kind": "image", "url": img_url}]
+        if with_video:
+            blocks.append({"kind": "video", "url": "https://vod-static.hoyolab.com/pv.mp4"})
+        return Item(
+            "kuro", "wuwa", aid, f"https://wutheringwaves.kurogames.com/en/main/news/detail/{aid}",
+            title, body, pub_ts, images=[img_url], article_blocks=blocks, author="Wuthering Waves",
+        )
+
+    # 1. Default OFF (`NEWS_REVEAL_PING` unset) -> delivers card with `allowed_mentions={"parse": []}` & no role text.
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx_off = make_ctx(
+            Path(tmp) / "off.json",
+            NEWS_ENABLED="1",
+            NEWS_GAMES="wuwa",
+            PING_NEWS_REVEAL=role_id,
+            DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok",
+        )
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx_off))
+        ctx_off.now += 60
+        row_a = {"id": "6001", "ts": ctx_off.now - 10}
+        art_a = _make_reveal("6001", "Post-Lament Anthropocene: Stars Intertwined | Solaria", '"Light guides us."', row_a["ts"])
+        with (
+            patch.object(kuro, "discover_news", return_value=[row_a]),
+            patch.object(kuro, "news_article", return_value=art_a),
+            patch("gamexpress.media.news_media_available", return_value=True),
+        ):
+            asyncio.run(run_news(ctx_off))
+        assert len(ctx_off.webhook.sent) == 1
+        sent0 = ctx_off.webhook.sent[0]["payload"]
+        assert sent0["allowed_mentions"] == {"parse": []}
+        assert role_id not in json.dumps(sent0)
+
+    # 2. Enabled (`NEWS_REVEAL_PING=1`): same-time 11:00 AM double drop -> ONLY 1 ping; micro-stagger +5m -> separately pinged;
+    #    next-day Profile Reveal for 2nd character -> suppressed; new character at 6:00 PM -> PINGS 1 time!
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx_on = make_ctx(
+            Path(tmp) / "on.json",
+            NEWS_ENABLED="1",
+            NEWS_GAMES="wuwa",
+            NEWS_REVEAL_PING="1",
+            PING_NEWS_REVEAL=role_id,
+            DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok",
+        )
+        base_11am = 1793242800  # 11:00:00 UTC+8
+        ctx_on.now = base_11am - 600
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx_on))
+
+        # 11:01 AM run: TWO new characters (`Solaria` & `Noctis`) announced at 11:00 AM, plus a video trailer!
+        ctx_on.now = base_11am + 60
+        rows_wave1 = [
+            {"id": "6101", "ts": base_11am + 6},
+            {"id": "6102", "ts": base_11am + 8},
+            {"id": "6103", "ts": base_11am + 9},
+        ]
+        arts_wave1 = {
+            "6101": _make_reveal("6101", "Post-Lament Anthropocene: Stars Intertwined | Solaria", '"Dawn breaks."', base_11am + 6),
+            "6102": _make_reveal("6102", "Post-Lament Anthropocene: Stars Intertwined | Noctis", '"Dusk falls."', base_11am + 8),
+            "6103": _make_reveal("6103", "Post-Lament Anthropocene: Stars Intertwined | Ignis", '"Watch video!"', base_11am + 9, with_video=True),
+        }
+        with (
+            patch.object(kuro, "discover_news", return_value=rows_wave1),
+            patch.object(kuro, "news_article", side_effect=lambda _f, _g, r: arts_wave1[r["id"]]),
+            patch("gamexpress.media.news_media_available", return_value=True),
+        ):
+            asyncio.run(run_news(ctx_on))
+
+        posts = [s["payload"] for s in ctx_on.webhook.sent if s["method"] == "POST"]
+        assert len(posts) == 3
+        p1, p2, p3 = posts
+        # Solaria (first in wave) pings once:
+        assert p1["allowed_mentions"] == {"parse": [], "roles": [role_id]}
+        assert f"<@&{role_id}>" in p1["components"][0]["components"][0]["content"]
+        # Noctis (same 11:00 AM drop) & Ignis (video post) do NOT ping:
+        assert p2["allowed_mentions"] == {"parse": []} and role_id not in json.dumps(p2)
+        assert p3["allowed_mentions"] == {"parse": []} and role_id not in json.dumps(p3)
+        ww_rec = ctx_on.state.news_record("wuwa")
+        assert "solaria" in ww_rec["reveal_chars"] and "noctis" in ww_rec["reveal_chars"]
+        assert "ignis" not in ww_rec["reveal_chars"]
+
+        # 11:06 AM (+5m): micro-staggered 3rd character (`Zephyr` at 11:05 AM) AND CMS typo fix on `6101` (`Solaria`)!
+        ctx_on.now = base_11am + 360
+        art_6101_edited = _make_reveal("6101", "Post-Lament Anthropocene: Stars Intertwined | Solaria", '"Dawn breaks brightly."', base_11am + 6)
+        row_6104 = {"id": "6104", "ts": base_11am + 300}
+        art_6104 = _make_reveal("6104", "Post-Lament Anthropocene: Stars Intertwined | Zephyr", '"Winds rise."', base_11am + 300)
+        arts_wave1b = {**arts_wave1, "6101": art_6101_edited, "6104": art_6104}
+        with (
+            patch.object(kuro, "discover_news", return_value=rows_wave1 + [row_6104]),
+            patch.object(kuro, "news_article", side_effect=lambda _f, _g, r: arts_wave1b[r["id"]]),
+            patch("gamexpress.media.news_media_available", return_value=True),
+        ):
+            asyncio.run(run_news(ctx_on))
+
+        # `Zephyr` at +5m is a different publication time -> separately pinged!
+        posts = [s["payload"] for s in ctx_on.webhook.sent if s["method"] == "POST"]
+        patches = [s["payload"] for s in ctx_on.webhook.sent if s["method"] == "PATCH"]
+        assert len(posts) == 4
+        p4 = posts[3]
+        assert p4["allowed_mentions"] == {"parse": [], "roles": [role_id]}
+        assert "zephyr" in ww_rec["reveal_chars"]
+        # `6101` CMS edit preserved `<@&ROLE_ID>` in header text while `edit` kept `allowed_mentions={"parse": []}`!
+        assert len(patches) == 1
+        edited_payload = patches[0]
+        assert edited_payload["allowed_mentions"] == {"parse": []}
+        assert f"<@&{role_id}>" in edited_payload["components"][0]["components"][0]["content"]
+
+        # 6:00 PM same day (+7 hours, DIFFERENT announcement time!): `Vespera` drops AND `Profile Reveal — Noctis` drops!
+        ts_6pm = base_11am + 7 * 3600
+        ctx_on.now = ts_6pm + 60
+        rows_6pm = [
+            {"id": "6105", "ts": ts_6pm},
+            {"id": "6106", "ts": ts_6pm + 60},
+        ]
+        arts_6pm = {
+            "6105": _make_reveal("6105", "Profile Reveal | Shadow Weaver — Noctis", '"Dusk profile."', ts_6pm),
+            "6106": _make_reveal("6106", "Post-Lament Anthropocene: Stars Intertwined | Vespera", '"Evening star."', ts_6pm + 60),
+        }
+        with (
+            patch.object(kuro, "discover_news", return_value=rows_6pm),
+            patch.object(kuro, "news_article", side_effect=lambda _f, _g, r: arts_6pm[r["id"]]),
+            patch("gamexpress.media.news_media_available", return_value=True),
+        ):
+            asyncio.run(run_news(ctx_on))
+
+        posts = [s["payload"] for s in ctx_on.webhook.sent if s["method"] == "POST"]
+        assert len(posts) == 6
+        p_noctis_prof, p_vespera = posts[4], posts[5]
+        # `Profile Reveal — Noctis` was already recorded from the 11:00 AM wave -> NO ping!
+        assert p_noctis_prof["allowed_mentions"] == {"parse": []}
+        # `Vespera` is a brand-new character at a different time (6:00 PM) -> PINGS 1 TIME!
+        assert p_vespera["allowed_mentions"] == {"parse": [], "roles": [role_id]}
+        assert f"<@&{role_id}>" in p_vespera["components"][0]["components"][0]["content"]
+
+        # Peer merge imports character and timestamp deduplication state onto standby.
+        standby = State(Path(tmp) / "standby.json")
+        standby.merge_peer(ctx_on.state.data, include_news=True)
+        sb_ww = standby.news_record("wuwa")
+        assert {"solaria", "noctis", "zephyr", "vespera"} <= set(sb_ww["reveal_chars"])
+        assert sb_ww["reveal_times"] == ww_rec["reveal_times"]
+
+
+
+def test_reveal_distinct_timestamps_in_same_run_and_ambiguous_hold():
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress.discord import SendResult
+    from gamexpress.runner import run_news
+    from gamexpress.sources import kuro
+
+    role = "987654321098765432"
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="wuwa",
+                       NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
+                       DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        ctx.now = 1793240000
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now += 600
+        rows = [{"id": "1", "ts": ctx.now - 301}, {"id": "2", "ts": ctx.now - 1}]
+        def article(_f, _g, row):
+            name = "Solaria" if row["id"] == "1" else "Noctis"
+            return Item("kuro", "wuwa", row["id"], "https://example.org/" + row["id"],
+                        "Resonator Reveal | " + name, "Quote", row["ts"],
+                        article_blocks=[{"kind": "text", "text": "Quote"}])
+        with (patch.object(kuro, "discover_news", return_value=rows),
+              patch.object(kuro, "news_article", side_effect=article),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        posts = [x["payload"] for x in ctx.webhook.sent if x["method"] == "POST"]
+        assert len(posts) == 2
+        assert all(x["allowed_mentions"] == {"parse": [], "roles": [role]} for x in posts)
+
+        # An indeterminate first POST is held and its same-time sibling cannot ping again.
+        ctx.now += 300
+        rows = [{"id": "3", "ts": ctx.now - 1}, {"id": "4", "ts": ctx.now - 1}]
+        def new_article(_f, _g, row):
+            name = "Stella" if row["id"] == "3" else "Vespera"
+            return Item("kuro", "wuwa", row["id"], "https://example.org/" + row["id"],
+                        "Resonator Reveal | " + name, "Quote", row["ts"],
+                        article_blocks=[{"kind": "text", "text": "Quote"}])
+        sender = AsyncMock(side_effect=[SendResult(False, 0, ambiguous=True), SendResult(True, 200, message_id="ok")])
+        with (patch.object(kuro, "discover_news", return_value=rows),
+              patch.object(kuro, "news_article", side_effect=new_article),
+              patch("gamexpress.media.news_media_available", return_value=True),
+              patch.object(ctx.webhook, "send", sender)):
+            asyncio.run(run_news(ctx))
+        assert sender.await_count == 2
+        assert sender.await_args_list[0].args[1]["allowed_mentions"] == {"parse": [], "roles": [role]}
+        assert sender.await_args_list[1].args[1]["allowed_mentions"] == {"parse": []}
+        assert ctx.state.news_record("wuwa")["records"]["3"]["ambiguous"] is True
+
+
+def test_reveal_ping_near_limit_reflows_without_losing_article():
+    import copy
+    from unittest.mock import patch
+
+    from gamexpress.cards import news_payloads, validate_payload
+    from gamexpress.runner import run_news
+    from gamexpress.sources import kuro
+
+    role = "987654321098765432"
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="wuwa",
+                       NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
+                       DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        ctx.now = 1793242200
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now = 1793242860
+        row = {"id": "x", "ts": 1793242806}
+        article = Item("kuro", "wuwa", "x", "https://example.com/x", "Resonator Reveal | Stella", "", row["ts"],
+                       article_blocks=[{"kind": "text", "text": "x" * 3887}])
+        original = news_payloads(GAMES["wuwa"], article)
+        overflowing = copy.deepcopy(original[0])
+        overflowing["components"][0]["components"][0]["content"] += f" · <@&{role}>"
+        assert not validate_payload(original[0])
+        assert validate_payload(overflowing) == ["4001 text chars > 4000"]
+        with (patch.object(kuro, "discover_news", return_value=[row]),
+              patch.object(kuro, "news_article", return_value=article),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        posts = [x["payload"] for x in ctx.webhook.sent if x["method"] == "POST"]
+        assert len(posts) == 2 and all(not validate_payload(p) for p in posts)
+        assert posts[0]["allowed_mentions"] == {"parse": [], "roles": [role]}
+        assert posts[1]["allowed_mentions"] == {"parse": []}
+        assert posts[0]["components"][0]["components"][0]["content"].endswith(f" · <@&{role}>")
+        original_kids = [c for container in original[0]["components"] for c in container["components"]]
+        posted_kids = [c for post in posts for container in post["components"] for c in container["components"]]
+        posted_kids[0] = copy.deepcopy(original_kids[0])
+        assert posted_kids == original_kids
+        assert ctx.state.news_record("wuwa")["records"]["x"]["status"] == "posted"
+        assert not any("reveal mention did not fit" in warning for warning in ctx.warnings)
+        assert ctx.state.news_record("wuwa").get("reveal_times")
+
+
+
+
+def test_reveal_ping_near_limit_uses_safe_word_split_in_first_card():
+    from unittest.mock import patch
+
+    from gamexpress.cards import news_payloads, validate_payload
+    from gamexpress.runner import run_news
+    from gamexpress.sources import kuro
+
+    role = "987654321098765432"
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="wuwa",
+                       NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
+                       DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        ctx.now = 1793242200
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now = 1793242860
+        row = {"id": "x", "ts": 1793242806}
+        body = "word " * 777 + "xx"
+        article = Item("kuro", "wuwa", "x", "https://example.com/x", "Resonator Reveal | Stella", "", row["ts"],
+                       article_blocks=[{"kind": "text", "text": body}])
+        original = news_payloads(GAMES["wuwa"], article)
+        assert len(original) == 1
+        with (patch.object(kuro, "discover_news", return_value=[row]),
+              patch.object(kuro, "news_article", return_value=article),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        posts = [x["payload"] for x in ctx.webhook.sent if x["method"] == "POST"]
+        assert len(posts) == 2 and all(not validate_payload(p) for p in posts)
+        first_kids = posts[0]["components"][0]["components"]
+        second_kids = posts[1]["components"][0]["components"]
+        assert first_kids[0]["content"].endswith(f" · <@&{role}>")
+        assert first_kids[1]["type"] == second_kids[0]["type"] == 10
+        assert first_kids[1]["content"] + second_kids[0]["content"] == body
+        assert second_kids[1:] == original[0]["components"][0]["components"][2:]
+
+def test_reveal_ping_near_limit_continuation_resumes_after_failure():
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress.runner import run_news
+    from gamexpress.sources import kuro
+
+    role = "987654321098765432"
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        opts = dict(NEWS_ENABLED="1", NEWS_GAMES="wuwa", NEWS_REVEAL_PING="1",
+                    PING_NEWS_REVEAL=role,
+                    DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        ctx = make_ctx(path, **opts)
+        ctx.now = 1793242200
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now = 1793242860
+        row = {"id": "x", "ts": 1793242806}
+        article = Item("kuro", "wuwa", "x", "https://example.com/x", "Resonator Reveal | Stella", "", row["ts"],
+                       article_blocks=[{"kind": "text", "text": "x" * 3887}])
+        send = AsyncMock(side_effect=[SendResult(True, 200, message_id="page1"), SendResult(False, 500)])
+        with (patch.object(kuro, "discover_news", return_value=[row]),
+              patch.object(kuro, "news_article", return_value=article),
+              patch("gamexpress.media.news_media_available", return_value=True),
+              patch.object(ctx.webhook, "send", send)):
+            asyncio.run(run_news(ctx))
+        rec = ctx.state.news_record("wuwa")["records"]["x"]
+        assert rec["status"] == "partial" and rec["messages"] == ["page1"]
+        assert rec["reveal_ping"] == f"<@&{role}>"
+        continuation = send.await_args_list[1].args[1]
+        retry = make_ctx(path, **opts)
+        retry.state = State.load(path)
+        retry.now = ctx.now + 1
+        send_retry = AsyncMock(return_value=SendResult(True, 200, message_id="page2"))
+        with (patch.object(kuro, "discover_news", return_value=[row]),
+              patch.object(kuro, "news_article", return_value=article),
+              patch("gamexpress.media.news_media_available", return_value=True),
+              patch.object(retry.webhook, "send", send_retry)):
+            asyncio.run(run_news(retry))
+        assert send_retry.await_count == 1
+        assert send_retry.await_args.args[1] == continuation
+        assert retry.state.news_record("wuwa")["records"]["x"]["status"] == "posted"
+        assert retry.state.news_record("wuwa")["records"]["x"]["messages"] == ["page1", "page2"]
+
+
+def test_reveal_ping_refuses_a_video_whatever_slot_it_arrives_in():
+    """`Hard Rule 0` (never ping a video post) must not depend on the block kind a publisher uses.
+
+    HoYoLAB publishes a video as `vod` -> `kind="video"`, which the classifier already refused.
+    A direct `.mp4`/`.webm` delivered in an image slot is the same evidence, so it must be
+    refused too; every real still-image reveal still pings, and the mention-free card is what
+    gets delivered.
+    """
+    import json as _json
+
+    from gamexpress.models import Item
+    from gamexpress.reveal_ping import classify_character_reveal
+    from gamexpress.textutil import news_blocks
+
+    still = "https://upload-os-bbs.hoyolab.com/upload/2026/10/30/still.png"
+    rows = [("bold", "◆Name: Mitya"), ("bold", "◆Title: Rules Set at Naught"),
+            ("bold", "◆ Stellar Linchpin: Electro"), ("bold", "◆Constellation: Nodus Gordianus")]
+
+    def build(media_kind, url):
+        ops = []
+        for kind, value in rows:
+            ops.append({"insert": value, "attributes": {"bold": True}} if kind == "bold"
+                       else {"insert": value})
+            ops.append({"insert": "\n"})
+        ops.append({"insert": {media_kind: url}})
+        blocks = news_blocks("", _json.dumps(ops))
+        body = "\n\n".join(b["text"].strip() for b in blocks if b["kind"] == "text" and b["text"].strip())
+        return Item("hoyolab", "genshin", "z", "https://www.hoyolab.com/article/1",
+                    "Genius At Play", body, 1793160008, author="Official", official=True,
+                    article_blocks=blocks)
+
+    assert classify_character_reveal("genshin", build("image", still)) is not None
+    for url in ("https://upload-os-bbs.hoyolab.com/upload/2026/10/30/clip.mp4",
+                "https://upload-os-bbs.hoyolab.com/upload/2026/10/30/clip.webm",
+                "https://upload-os-bbs.hoyolab.com/upload/2026/10/30/clip.mov"):
+        assert classify_character_reveal("genshin", build("image", url)) is None, url
+    # the publisher's own video slot stays refused, as it always was (`news_blocks` emits this
+    # shape once the Quill `vod` id is resolved through the article's video map)
+    native = build("image", still)
+    native.article_blocks = [b for b in native.article_blocks if b.get("url") != still] + [
+        {"kind": "video", "url": "https://upload-os-bbs.hoyolab.com/upload/2026/10/30/clip.mp4"}]
+    assert classify_character_reveal("genshin", native) is None
+    # a linked video elsewhere in the article is still refused too
+    linked = build("image", still)
+    assert classify_character_reveal("genshin", linked) is not None
+    linked.article_blocks = linked.article_blocks + [
+        {"kind": "link", "url": "https://www.youtube.com/watch?v=psifFhA2QAA"}]
+    assert classify_character_reveal("genshin", linked) is None
+
+
+def test_reveal_ping_collapses_a_full_name_variant_but_not_a_different_character():
+    """ZZZ publishes `Agent Record | Evelyn` and `Agent Record | Evelyn Chevalier` minutes apart.
+
+    A corroborated alias inside the retention window must not ping twice; a later reveal of a
+    genuinely different name (or the same variant years later) still can.
+    """
+    from gamexpress import reveal_ping
+    from gamexpress.reveal_ping import (
+        RevealMatch,
+        canonical_character_key,
+        commit_reveal_delivery,
+        evaluate_reveal_ping_decision,
+    )
+
+    def match(name):
+        return RevealMatch(name, canonical_character_key(name), "zzz_agent_record")
+
+    record: dict = {}
+    first = match("Evelyn")
+    assert evaluate_reveal_ping_decision(record, first, published_ts=1793000000) == (True, "new_character_reveal")
+    commit_reveal_delivery(record, first, published_ts=1793000000, now=1793000060, pinged=True)
+    assert evaluate_reveal_ping_decision(record, match("Evelyn Chevalier"),
+                                         published_ts=1793000900) == (False, "same_character_variant")
+    # A different character that merely shares a word is NOT a variant.
+    assert evaluate_reveal_ping_decision({"reveal_chars": {"the herta": 1793000000}}, match("Herta"),
+                                         published_ts=1793000600)[0] is True
+    # Two years later the fuller name is a new reveal again, not a retained suppression.
+    assert evaluate_reveal_ping_decision(record, match("Evelyn Chevalier"),
+                                         published_ts=1793000000 + 2 * 365 * 86400)[0] is True
+    # A shared word is NOT a variant: only corroborated aliases collapse, so a genuinely
+    # different character that merely starts with the same token still pings.
+    assert reveal_ping._same_character_variant("march", "march 7th") is False
+    assert reveal_ping._same_character_variant("saber", "saber alter") is False
+    assert reveal_ping._same_character_variant("evelyn", "evelyn chevalier") is True
+    assert reveal_ping._same_character_variant("herta", "the herta") is False
+    for prior, candidate in (("march", "March 7th"), ("saber", "Saber Alter")):
+        assert evaluate_reveal_ping_decision({"reveal_chars": {prior: 1793000000}}, match(candidate),
+                                             published_ts=1793000900)[0] is True, candidate
+
+
+def test_reveal_ping_form_names_collapse_to_one_character_after_a_real_commit():
+    """`Rover: Aero` and `Rover: Electro` are one character, and a later full-name form of an
+    already-pinged character stays silent instead of announcing the same Agent twice."""
+    from gamexpress.models import Item
+    from gamexpress.reveal_ping import (
+        classify_character_reveal,
+        commit_reveal_delivery,
+        evaluate_reveal_ping_decision,
+    )
+
+    def item(title):
+        return Item(
+            "kuro", "wuwa", title, "https://example.org/1", title, '"Quote."', 1793000000,
+            article_blocks=[{"kind": "text", "text": '"Quote."'},
+                            {"kind": "image", "url": "https://example.org/a.jpg"}],
+        )
+
+    aero = classify_character_reveal("wuwa", item("Profile Reveal | Vessel of Sounds — Rover: Aero"))
+    electro = classify_character_reveal("wuwa", item("Profile Reveal | Vessel of Sounds — Rover: Electro"))
+    assert aero is not None and electro is not None
+    assert (aero.character, electro.character) == ("Rover: Aero", "Rover: Electro")
+    record: dict = {}
+    assert evaluate_reveal_ping_decision(record, aero, published_ts=1793000000) == (True, "new_character_reveal")
+    commit_reveal_delivery(record, aero, published_ts=1793000000, now=1793000060, pinged=True)
+    assert evaluate_reveal_ping_decision(record, electro, published_ts=1793086400) == (False, "already_pinged_character")
+    # The base name of the same character is equally already known.
+    assert evaluate_reveal_ping_decision({"reveal_chars": {"yangyang": 1793000000}},
+                                         classify_character_reveal(
+                                             "wuwa", item("Post-Lament Anthropocene: Stars Intertwined | Yangyang: Xuanling")),
+                                         published_ts=1793000900) == (False, "already_pinged_character")
+
+
+def test_reveal_ping_edit_guard_skips_reflow_and_lost_mention_instead_of_truncating():
+    """A backstage CMS edit must never publish a shorter card than the one already posted.
+
+    Scenario: the reveal mention fitted when the article was posted. A later edit lengthens the
+    article, so re-attaching the mention needs a continuation page. `zip(msgs, payloads)` would
+    silently drop that page; the guard must skip the edit and warn instead of truncating content.
+    """
+    from unittest.mock import patch
+
+    from gamexpress.runner import run_news
+    from gamexpress.sources import kuro
+
+    role = "987654321098765432"
+    ts = 1793242806
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "state.json"
+        opts = dict(NEWS_ENABLED="1", NEWS_GAMES="wuwa", NEWS_REVEAL_PING="1",
+                    PING_NEWS_REVEAL=role,
+                    DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        ctx = make_ctx(path, **opts)
+        ctx.now = ts - 1200
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now = ts + 60
+        row = {"id": "x", "ts": ts}
+        short = Item("kuro", "wuwa", "x", "https://example.com/x", "Resonator Reveal | Stella", "", ts,
+                     article_blocks=[{"kind": "text", "text": "Short reveal body."}])
+        with (patch.object(kuro, "discover_news", return_value=[row]),
+              patch.object(kuro, "news_article", return_value=short),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        rec = ctx.state.news_record("wuwa")["records"]["x"]
+        assert rec["status"] == "posted" and len(rec["messages"]) == 1
+        assert rec.get("reveal_ping") == f"<@&{role}>"
+
+        # Same article id, edited body that no longer satisfies the 4,000-character limit alone.
+        grown = Item("kuro", "wuwa", "x", "https://example.com/x", "Resonator Reveal | Stella", "", ts,
+                     article_blocks=[{"kind": "text", "text": "x" * 3887}])
+        edited_row = dict(row, modified_ts=ts + 3600)
+        ctx.now = ts + 4200
+        with (patch.object(kuro, "discover_news", return_value=[edited_row]),
+              patch.object(kuro, "news_article", return_value=grown),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        assert not [s for s in ctx.webhook.sent if s["method"] == "PATCH"], \
+            "edit must be held, not posted truncated"
+        assert any("skipped in-place edit" in w for w in ctx.warnings), ctx.warnings
+        assert len(ctx.state.news_record("wuwa")["records"]["x"]["messages"]) == 1
+        # The held edit is retried, not abandoned: the same article edited again to a body that
+        # fits with its mention is applied in place on the next run (no permanent stale card).
+        retry = Item("kuro", "wuwa", "x", "https://example.com/x", "Resonator Reveal | Stella", "", ts,
+                     article_blocks=[{"kind": "text", "text": "Edited short reveal body."}])
+        retry_row = dict(row, modified_ts=ts + 7200)
+        ctx.now = ts + 7800
+        with (patch.object(kuro, "discover_news", return_value=[retry_row]),
+              patch.object(kuro, "news_article", return_value=retry),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        patches = [s for s in ctx.webhook.sent if s["method"] == "PATCH"]
+        assert len(patches) == 1, patches
+        assert f"<@&{role}>" in json.dumps(patches[0]["payload"]), "mention restored on the retried edit"
+
+
+def test_run_summary_never_writes_into_the_operator_notes_folder():
+    """`polishing and refining/` is operator/agent notes only — the monitor must never write there.
+
+    An earlier draft archived the step summary into that folder whenever a run had warnings or
+    errors. That made a 5-minute monitor commit a file the operator keeps by hand, so the archive
+    is gone: the summary stays in the job summary, the warnings/errors stay in the annotations,
+    and the live commit step stages only state plus the discovered announcement id.
+    """
+    import yaml
+
+    root = Path(__file__).resolve().parents[1]
+    workflow = (root / ".github" / "workflows" / "monitor.yml").read_text(encoding="utf-8")
+    wf = yaml.safe_load(workflow)
+    steps = wf["jobs"]["monitor"]["steps"]
+    persist = next(s for s in steps if s.get("id") == "persist_state")
+    assert "polishing and refining" not in workflow, \
+        "the monitor must not read or write the operator notes folder"
+    assert "GITHUB_STEP_SUMMARY" not in persist["run"], "the commit step must not inspect the summary"
+    assert "<<'PY'" not in persist["run"], "the commit step must stay plain shell"
+    assert 'git add state/state.json' in persist["run"]
+    assert 'git add -f config/program_announcements.json' in persist["run"]
+    assert "result=unchanged" in persist["run"] and "result=pushed" in persist["run"]
+    names = [s.get("name") for s in steps]
+    assert "Summarize live state persistence" in names
+
+
+def test_live_news_probe_cli_guards_without_network():
+    """The read-only live probe is a developer tool: it must exist, reject unknown games, and
+    never reach the network from a test (it requires an explicit game argument).
+
+    `tools/` is a dev-only directory and is not synced to a production repo, so the check is
+    skipped there instead of failing: a guard that asserts a file the deployment never carries is
+    how a green PR turns into a red production CI run.
+    """
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    probe = Path(__file__).resolve().parents[1] / "tools" / "live_news_probe.py"
+    if not probe.is_file():
+        return                      # production checkout: no dev tools, nothing to guard
+    for argv in ([], ["not-a-game"], ["genshin", "extra"]):
+        proc = subprocess.run([sys.executable, str(probe), *argv],
+                              capture_output=True, text=True, timeout=120)
+        assert proc.returncode != 0, argv
+        assert "Pass one of: genshin, starrail, zzz, wuwa" in (proc.stderr + proc.stdout), argv
+
+
+def test_reveal_ping_location_matches_user_astra_yao_capture():
+    """The published ping-location capture puts the mention after the source byline timestamp."""
+    import copy
+    from unittest.mock import patch
+
+    from gamexpress.cards import news_payloads
+    from gamexpress.runner import run_news
+    from gamexpress.sources import hoyolab
+
+    role = "1296268365593186426"
+    timestamp = 1793160008
+    body = "Astra Yao speaks of her music and New Eridu."
+    image = "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/14ab33dbc78de84b8970f5d103a6dcc7_6351797617886405560.png"
+    article = Item("hoyolab", "starrail", "47228524", "https://www.hoyolab.com/article/47228524",
+                   "Extraterrestrial Satellite Communication | Astra Yao", body, timestamp,
+                   article_blocks=[{"kind": "image", "url": image}, {"kind": "text", "text": body}],
+                   author="Honkai: Star Rail")
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="starrail", NEWS_REVEAL_PING="1",
+                       PING_NEWS_REVEAL=role,
+                       DISCORD_WEBHOOK_NEWS_STARRAIL="https://discord.com/api/webhooks/100000000000000099/hsr_tok")
+        ctx.now = timestamp - 60
+        with patch.object(hoyolab, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now = timestamp + 30
+        row = {"id": "47228524", "ts": timestamp}
+        with (patch.object(hoyolab, "discover_news", return_value=[row]),
+              patch.object(hoyolab, "news_article", return_value=article),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        posts = [s["payload"] for s in ctx.webhook.sent if s["method"] == "POST"]
+        assert len(posts) == 1
+        header = posts[0]["components"][0]["components"][0]["content"]
+        assert header == ("## [Extraterrestrial Satellite Communication | Astra Yao]"
+                          "(https://www.hoyolab.com/article/47228524)\n"
+                          "-# HoYoLAB · Honkai: Star Rail · <t:1793160008:f> · <@&1296268365593186426>")
+        plain = news_payloads(GAMES["starrail"], article)[0]
+        restored = copy.deepcopy(posts[0])
+        restored["components"][0]["components"][0]["content"] = plain["components"][0]["components"][0]["content"]
+        restored["allowed_mentions"] = plain["allowed_mentions"]
+        assert restored == plain
+        assert posts[0]["allowed_mentions"] == {"parse": [], "roles": [role]}
+
+
+def test_reveal_ping_covers_every_game_from_its_oldest_format_to_a_future_one():
+    """Every game, every era: 2020 WuWa/Genshin titles through 2026 and an unseen future series.
+
+    The publish pattern changed several times per game (``Profile Reveal:`` -> ``Profile Reveal |``
+    -> ``Stars Intertwined``, ``[Character Tales]`` -> ``◆`` dossier, quoted -> unquoted series,
+    and future names nobody has seen yet). Each row here is a title shape the publisher really
+    used, or a structural shape reserved for series that do not exist yet.
+    """
+    from gamexpress.config import load_games
+    from gamexpress.models import Item
+    from gamexpress.reveal_ping import classify_character_reveal
+
+    games = load_games()
+    img = "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/era.png"
+    rows = [
+        # Genshin 2020 -> 2021 -> 2022 -> 2024 -> 2026 -> future region
+        ("genshin", '[Character Tales] - "Vago Mundo" Zhongli',
+         '"Osmanthus wine tastes the same as I remember..."', "Zhongli"),
+        ("genshin", 'Character Introduction — "Lone Glimmer" Skirk', '"From beyond the rift..."', "Skirk"),
+        ("genshin", '"Astute Luminary" · Nahida',
+         "◆ Physic of Purity\n◆ Lesser Lord Kusanali\n◆ Gnosis: Dendro", "Nahida"),
+        ("genshin", "Candlight's Lingering Radiance · Linnea",
+         '◆ Name: Linnea\n◆ Title: Frostweaver\n◆ Moon Wheel: Cryo\n◆ Constellation: Lucerna Borealis',
+         "Linnea"),
+        ("genshin", "Echoes Beyond the Firmament",
+         "◆ Name: Dainsleif\n◆ Title: Bough Keeper\n◆ Abyssal Core: Khaenri'ah\n"
+         "◆ Constellation: Viator", "Dainsleif"),
+        ("genshin", "The Pale Star · Columbina",
+         '\"Hush, the sleigh bells ring.\"\n◆ Name: Columbina\n◆ Title: Damselette\n'
+         "◆ Snezhnaya Sigil: Cryo\n◆ Constellation: Columbina", "Columbina"),
+        # Star Rail 2023 -> 2024 -> 2025 -> 2026 -> future planet
+        ("starrail", "Extraterrestrial Satellite Communication | Dan Heng • Imbibitor Lunae",
+         '"My past..."', "Dan Heng • Imbibitor Lunae"),
+        ("starrail", '"Extraterrestrial Satellite Communication" | Rappa', '"Quote."', "Rappa"),
+        ("starrail", "Amphoreus' Saga of Heroes | Castorice", '"Life and death."', "Castorice"),
+        ("starrail", "Aha Instant | Ellen", '"Shark tail care services?"', "Ellen"),
+        ("starrail", "Lushaka's Deep-Sea Chronicle | Nereia",
+         '"Every tide remembers its oath."\nNereia watches the trench.\nEnglish Voice: Jane Doe', "Nereia"),
+        # ZZZ 2024 early body marker -> 2025 -> 2026 -> full-name alias
+        ("zzz", '"Leave the housekeeping to me." — Victoria: Lycaon',
+         "[Agent Record]\nVoice: Kobayashi Chikahiro", "Lycaon"),
+        ("zzz", "Agent Record | Miyabi", '"Order cannot be broken."', "Miyabi"),
+        ("zzz", 'Agent Record | "Trigger"', '"Quote."', "Trigger"),
+        ("zzz", "Agent Record | Evelyn Chevalier", '"Quote."', "Evelyn Chevalier"),
+        # WuWa 2023 legacy separator -> 2024 -> 2025 series -> 2026 form-suffixed name
+        ("wuwa", "Profile Reveal: Snow Waltz — Sanhua", '"Quote."', "Sanhua"),
+        ("wuwa", "Profile Reveal | Howling Flame—Lupa", '"Quote."', "Lupa"),
+        ("wuwa", "Post-Lament Anthropocene: Stars Intertwined | Suoming", '"Every variable."', "Suoming"),
+        ("wuwa", "Resonator Reveal | Rebecca", '"Tear Night City apart!"', "Rebecca"),
+        ("wuwa", "Profile Reveal | Vessel of Sounds — Rover: Aero", '"Quote."', "Rover: Aero"),
+        # HNA / ANANTA: no corpus exists, so these pin the structural fallback only
+        ("hna", "Sovereign Nexus Dossier | Seraphina",
+         '"Bind your Anima to mine."\nAffiliation: Astral Sanctum\nSeraphina awaits.', "Seraphina"),
+        ("ananta", "Esper Manifest | Kaede",
+         '"The city never sleeps."\nKaede watches the skyline.\nAffiliation: NTE Division', "Kaede"),
+    ]
+    for gk, title, body, expected in rows:
+        it = Item("kuro" if gk == "wuwa" else "hoyolab", gk, "era", "https://www.hoyolab.com/article/1",
+                  title, body, 1793160008, article_blocks=[{"kind": "text", "text": body},
+                                                           {"kind": "image", "url": img}],
+                  author=games[gk].name)
+        match = classify_character_reveal(gk, it)
+        assert match is not None, f"{gk}: missed era pattern {title!r}"
+        assert match.character == expected, f"{gk}: {title!r} -> {match.character!r}"
+    assert {gk for gk, *_ in rows} == set(games), "every configured game needs at least one era row"
+
+    # A long, lore-heavy reveal is still recognised, but only with the strongest evidence
+    # (opening quote AND a dossier key); a long notice with just one of them is not.
+    pad = "lorem ipsum dolor sit amet consectetur adipiscing elit " * 200
+    def long_item(title, body):
+        return Item("hoyolab", "hna", "long", "https://www.hoyolab.com/article/2", title, body, 0,
+                    article_blocks=[{"kind": "text", "text": body},
+                                    {"kind": "image", "url": img}], official=True)
+    assert classify_character_reveal("hna", long_item(
+        "Sovereign Nexus Dossier | Seraphina",
+        '"Bind your Anima to mine."\nAffiliation: Astral Sanctum\nSeraphina awaits. ' + pad))
+    assert classify_character_reveal("hna", long_item(
+        "Sovereign Nexus Dossier | Seraphina", '"Just a quote." Seraphina waves. ' + pad)) is None
+    assert classify_character_reveal("hna", long_item(
+        "Skyline Festival Preview | Seraphina", "Affiliation: none\nCome join us. " + pad)) is None
+
+
+def test_reveal_ping_reads_the_bold_dossier_keys_of_real_2026_genshin_reveals():
+    """The two live Genshin 2026 reveals the ping must cover: HoYoLAB 46884007 and 44627867.
+
+    Both ship their dossier keys bold, so `news_blocks` renders `**◆Name: Mitya**`. Reading the
+    raw body meant the classifier saw the marker instead of the key and returned nothing, so a
+    real character reveal would never ping. These rows are built through the same renderer the
+    monitor uses, and an event notice reusing the same bold diamond style must still be refused.
+    """
+    import json as _json
+
+    from gamexpress.models import Item
+    from gamexpress.reveal_ping import classify_character_reveal
+    from gamexpress.textutil import news_blocks
+
+    def article(lines, title, url):
+        ops = []
+        for kind, value in lines:
+            if kind == "bold":
+                ops.append({"insert": value, "attributes": {"bold": True}})
+            elif kind == "text":
+                ops.append({"insert": value})
+            elif kind == "image":
+                ops.append({"insert": {"image": value}})
+            ops.append({"insert": "\n"})
+        blocks = news_blocks("", _json.dumps(ops))
+        body = "\n\n".join(b["text"].strip() for b in blocks if b["kind"] == "text" and b["text"].strip())
+        return Item("hoyolab", "genshin", "real", url, title, body, 1790688000,
+                    author="Genshin Impact Official", official=True, article_blocks=blocks)
+
+    mitya = article([
+        ("bold", '"Research differs from production — efficiency is not the gold standard. I have '
+                 'worked alongside many gifted individuals, and I know well that talent and '
+                 'eccentricity tend to go hand in hand. But the one thing that never disappoints '
+                 'is the \'answers\' they provide."'),
+        ("bold", '— Pierro, "The Jester," responding to the insinuation that Mitya holds special privileges'),
+        ("bold", '"I\'ve applied for his scarf to be granted greater authority to help prevent leaks '
+                 'of classified information. In the vast majority of security inquiries, bystanders '
+                 'are considered innocent."'),
+        ("bold", "— Valeriy, Commander, Special Assignments Battalion"),
+        ("image", "https://upload-os-bbs.hoyolab.com/upload/2026/09/29/8f0bde142f28b3a1133c63e695e81879_6081038353579938138.jpg"),
+        ("bold", "◆Name: Mitya"),
+        ("bold", "◆Title: Rules Set at Naught"),
+        ("bold", "◆Specialist, Royal Energy Commission of Snezhnaya"),
+        ("bold", "◆ Stellar Linchpin: Electro"),
+        ("bold", "◆Constellation: Nodus Gordianus"),
+        ("image", "https://upload-os-bbs.hoyolab.com/upload/2026/09/29/8d76066dee924164670129f5114f8988_8224757694395123489.jpg"),
+        ("text", "Experts tend to be remarkably efficient, capable of producing astonishing results in "
+                 "very little time. Yet for them, \"attendance requirements\" designed around the pace "
+                 "of the average researcher amount to a cage."),
+        ("text", "Whiling away the hours would be easy enough. But the world has so much more to offer, "
+                 "and wouldn't it be a shame to miss out on all that color?"),
+        ("text", "And so, the energy expert who ought to be buried in important work can often be found "
+                 "wandering the streets of Snezhnograd, enjoying the leisure his talent has bought him."),
+        ("image", "https://upload-os-bbs.hoyolab.com/upload/2026/09/29/dc6aa91f72225f746af800230a3c2705_353369609675142195.jpg"),
+    ], "Genius At Play", "https://www.hoyolab.com/article/46884007")
+
+    nicole = article([
+        ("bold", '"...\'Editor of Magical Memory Bubbles,\'\'Staunch Supporter of Squirrels,\' '
+                 '\'A Super-Creative Who Needs Only Think to Get Things Done\'..."'),
+        ("bold", '"Alice? Why are the titles on the spell formula getting longer and longer?"'),
+        ("bold", "— Thus did a voiceless mage protest, albeit in vain."),
+        ("image", "https://upload-os-bbs.hoyolab.com/upload/2026/04/13/972930a4d2df07cbf0355f19d88cca4b_4111369890015020086.jpg"),
+        ("bold", "◆ Name: Nicole"),
+        ("bold", "◆ Title: Clamor Within"),
+        ("bold", '◆ The Silent "Mage," the Voiceless "Angel"'),
+        ("bold", "◆ Vision: Pyro"),
+        ("bold", "◆ Constellation: Reliquiarium"),
+        ("image", "https://upload-os-bbs.hoyolab.com/upload/2026/04/13/78f66be51451bd3c35cc38d4ea2aabe9_8961028175076266051.jpg"),
+        ("text", 'Many of the stories Nicole envisions begin with a phrase as old as stories '
+                 'themselves: "Long, long ago..."'),
+        ("text", "Perhaps, for some authors, \"long ago\" is less the threshold of a tale than a refuge "
+                 "from all further questioning."),
+        ("image", "https://upload-os-bbs.hoyolab.com/upload/2026/04/13/8ce29ca9591c05ee793d00f847c8f1b4_5501542614350986949.jpg"),
+    ], "The Divine Laid Down, Metaphor Makes Plain the Heart",
+        "https://www.hoyolab.com/article/44627867")
+
+    for item, expected in ((mitya, "Mitya"), (nicole, "Nicole")):
+        assert "**◆" in item.text, "the renderer must keep the bold markers this guards"
+        match = classify_character_reveal("genshin", item)
+        assert match is not None, f"{item.url}: real reveal no longer classified"
+        assert match.character == expected
+        assert match.rule == "diamond_dossier"
+        # The card itself is valid under both page policies (the dossier never breaks the split).
+        for expand in (False, True):
+            pages = cards.news_payloads(GAMES["genshin"], item, expand_full=expand)
+            assert pages and all(not cards.validate_payload(p) for p in pages)
+
+    # Same bold diamond style, but an event notice: no Name/Title pair, so it is not a character.
+    notice = article([
+        ("bold", "◆ Event Duration: October 25 - November 5"),
+        ("bold", "◆ Participation Requirements: Adventure Rank 20"),
+        ("bold", "◆ Event Rewards: Primogems and Mora"),
+        ("text", "Take part in the new seasonal event and claim your rewards before it ends."),
+        ("text", "Event duration and rewards are subject to change; see the in-game notice."),
+    ], "Seasonal Event Notice", "https://www.hoyolab.com/article/1")
+    assert classify_character_reveal("genshin", notice) is None
+
+
+def test_news_default_policy_smart_fits_a_long_article_instead_of_excerpting_it():
+    """`NEWS_EXPAND_FULL` unset/off still delivers the whole article, page after page.
+
+    The old default truncated anything past the two-page / 7,000-character envelope to one
+    excerpt. The default policy now uses the same smart container fitting as the expanded policy
+    (markdown-safe, nothing dropped, same payload shape), so only an article that cannot fit
+    inside `NEWS_DEFAULT_MAX_PAGES` still falls back to the labelled excerpt.
+    """
+    import re
+
+    paragraph = "Official event details and schedule notes for this version. "
+    body = "\n\n".join(f"Section {n}: " + paragraph * 55 for n in range(1, 4))
+    item = news_item(body=body)
+
+    pages = cards.news_payloads(GAMES["genshin"], item)
+    assert 2 <= len(pages) <= cards.NEWS_DEFAULT_MAX_PAGES
+    assert all(not cards.validate_payload(p) for p in pages)
+    assert "Excerpt" not in json.dumps(pages)
+    # Page 1 opens the card, every continuation is labelled, buttons close the last page only.
+    assert pages[0]["components"][0]["components"][0]["content"].startswith("## [")
+    for number, page in enumerate(pages[1:-1], start=2):
+        assert page["components"][0]["components"][0]["content"] == f"-# Page {number}"
+        assert sum(c["type"] == 1 for c in page["components"][0]["components"]) == 0
+    if len(pages) > 1:
+        assert pages[-1]["components"][0]["components"][0]["content"] == f"-# Page {len(pages)}"
+    assert pages[-1]["components"][0]["components"][-1]["type"] == 1
+    assert all(p["allowed_mentions"] == {"parse": []} for p in pages)
+    # Nothing was dropped: every section sentence survives, in order.
+    delivered = "".join(
+        c["content"] for page in pages for c in page["components"][0]["components"]
+        if c["type"] == 10 and not c["content"].startswith(("## ", "-# Page"))
+    )
+    for n in range(1, 4):
+        assert delivered.count(f"Section {n}:") == 1
+    assert delivered.count("Official event details and schedule notes") == 3 * 55
+    assert len(re.findall(r"Section \d:", delivered)) == 3
+
+    # The switch stays compatible: with `NEWS_EXPAND_FULL=1` the same article is delivered whole
+    # as well, in the same shape (only the page boundaries may differ, since that policy keeps its
+    # own, larger ceilings).
+    expanded = cards.news_payloads(GAMES["genshin"], item, expand_full=True)
+    assert 2 <= len(expanded) <= cards.NEWS_EXPAND_MAX_PAGES
+    assert all(not cards.validate_payload(p) for p in expanded)
+    assert "Excerpt" not in json.dumps(expanded)
+    expanded_text = "".join(
+        c["content"] for page in expanded for c in page["components"][0]["components"]
+        if c["type"] == 10 and not c["content"].startswith(("## ", "-# Page"))
+    )
+    assert expanded_text == delivered
+
+    # An article past the default ceiling still falls back honestly to one labelled excerpt.
+    huge = news_item(body=body * 3)
+    excerpt = cards.news_payloads(GAMES["genshin"], huge)
+    assert len(excerpt) == 1 and not cards.validate_payload(excerpt[0])
+    assert "**Excerpt — this article exceeds the delivery safety limit.**" in json.dumps(excerpt, ensure_ascii=False)
+
+
+def test_reveal_ping_bold_dossier_keys_work_for_every_game_and_both_layers():
+    """The renderer bolds dossier lines for every game, so both matchers must read through it.
+
+    Layer 1 covers the named publisher series (Genshin `◆`, Star Rail, ZZZ, WuWa, HNA) and Layer 2
+    covers a series nobody has seen yet. A bold key must match in both, and a bold `◆` event
+    notice must still be refused - the marker is formatting, never evidence.
+    """
+    import json as _json
+
+    from gamexpress.models import Item
+    from gamexpress.reveal_ping import classify_character_reveal
+    from gamexpress.textutil import news_blocks
+
+    img = ("image", "https://upload-os-bbs.hoyolab.com/upload/2026/10/29/bold.png")
+
+    def build(game, title, rows):
+        ops = []
+        for kind, value in rows:
+            if kind == "bold":
+                ops.append({"insert": value, "attributes": {"bold": True}})
+            elif kind == "text":
+                ops.append({"insert": value})
+            elif kind == "image":
+                ops.append({"insert": {"image": value}})
+            ops.append({"insert": "\n"})
+        blocks = news_blocks("", _json.dumps(ops))
+        body = "\n\n".join(b["text"].strip() for b in blocks
+                            if b["kind"] == "text" and b["text"].strip())
+        return Item("kuro" if game == "wuwa" else "hoyolab", game, "z", "https://x/1", title, body, 0,
+                    author="Official", official=True, article_blocks=blocks)
+
+    rows = [
+        # (game, title, body rows, expected character)
+        ("genshin", "Genius At Play",
+         [("bold", '"Research differs from production."'),
+          ("bold", "◆Name: Mitya"), ("bold", "◆Title: Rules Set at Naught"),
+          ("bold", "◆ Stellar Linchpin: Electro"), ("bold", "◆Constellation: Nodus Gordianus"),
+          img, ("text", "Experts tend to be remarkably efficient, capable of producing results.")],
+         "Mitya"),
+        ("genshin", "The Divine Laid Down, Metaphor Makes Plain the Heart",
+         [("bold", '"Long, long ago..."'),
+          ("bold", "◆ Name: Nicole"), ("bold", "◆ Title: Clamor Within"),
+          ("bold", "◆ Vision: Pyro"), ("bold", "◆ Constellation: Reliquiarium"),
+          img, ("text", "Many of the stories Nicole envisions begin with a phrase as old as stories.")],
+         "Nicole"),
+        # Layer 2 only: an unseen series whose only dossier key is bold.
+        ("starrail", "Lushaka's Deep-Sea Chronicle | Nereia",
+         [("bold", '"Every tide remembers its oath."'), ("bold", "◆ Path: Remembrance"), img,
+          ("text", "Nereia watches the trench from the shore, counting the lanterns of the fleet.")],
+         "Nereia"),
+        ("zzz", "Agent Record | Evelyn Chevalier",
+         [("bold", '"Quote of the agent."'), ("bold", "◆ Faction: Defence Force"), img,
+          ("text", "Evelyn Chevalier stands guard at the harbour gate.")],
+         "Evelyn Chevalier"),
+        ("wuwa", "Profile Reveal | Eternal Blaze — Changli",
+         [("bold", '"A blade remembers."'), ("bold", "◆ Attribute: Fusion"), img,
+          ("text", "Changli counsels the young magistrate through the long night.")],
+         "Changli"),
+        ("hna", "Sovereign Nexus Dossier | Seraphina",
+         [("bold", '"Bind your Anima to mine."'), ("bold", "◆ Affiliation: Astral Sanctum"), img,
+          ("text", "Seraphina awaits the summons at the edge of the sanctum.")],
+         "Seraphina"),
+        ("ananta", "Esper Manifest | Kaede",
+         [("bold", '"The city never sleeps."'), ("bold", "◆ Affiliation: NTE Division"), img,
+          ("text", "Kaede watches the skyline until the last light fails.")],
+         "Kaede"),
+    ]
+    for game, title, body_rows, expected in rows:
+        item = build(game, title, body_rows)
+        assert "**◆" in item.text, f"{game}: the bold marker must survive the renderer"
+        match = classify_character_reveal(game, item)
+        assert match is not None, f"{game}: bold dossier key no longer classified ({title!r})"
+        assert match.character == expected, (game, title, match.character)
+        for expand in (False, True):
+            pages = cards.news_payloads(GAMES[game], item, expand_full=expand)
+            assert pages and all(not cards.validate_payload(p) for p in pages), (game, expand)
+
+    assert {row[0] for row in rows} == set(GAMES), "every configured game needs a bold-dossier row"
+
+    # The same bold `◆` style on an event notice is not a character, in either layer.
+    notice = build("starrail", "Skyline Festival Preview | Nereia",
+                   [("bold", "◆ Event Duration: October 25 - November 5"),
+                    ("bold", "◆ Participation Requirements: Adventure Rank 20"), img,
+                    ("text", "Come join the festival and claim your rewards before it ends.")])
+    assert classify_character_reveal("starrail", notice) is None
+
+
+def test_news_default_policy_keeps_an_unbreakable_4000_to_7000_article_whole():
+    """An article just past 4,000 characters is delivered, not excerpted - even as one paragraph.
+
+    The legacy two-page packer only cuts between blank lines, so a single long paragraph between
+    4,000 and 7,000 characters used to fall through to the one-container excerpt while the same
+    text rendered in full under `NEWS_EXPAND_FULL=1`. The smart fitter is now the fallback there,
+    so page count depends on the text budget alone.
+    """
+    sentence = "A newcomer walks the harbour at dusk and the lamps answer one by one. "
+    for key in ("genshin", "starrail", "hna", "zzz", "wuwa"):
+        for target in (4200, 6900, 7200):
+            body = (sentence * (target // len(sentence) + 1))[:target]
+            assert "\n" not in body          # a single paragraph: no safe blank-line boundary
+            item = news_item(body=body)
+            pages = cards.news_payloads(GAMES[key], item)
+            assert 2 <= len(pages) <= cards.NEWS_DEFAULT_MAX_PAGES, (key, target, len(pages))
+            assert all(not cards.validate_payload(p) for p in pages), (key, target)
+            assert "Excerpt" not in json.dumps(pages), (key, target)
+            delivered = "".join(
+                c["content"] for page in pages for c in page["components"][0]["components"]
+                if c["type"] == 10 and not c["content"].startswith(("## ", "-# Page")))
+            # The renderer trims page-edge whitespace; every character of prose survives.
+            assert delivered.replace("\n", "").strip() == body.replace("\n", "").strip(), (key, target)
+            labels = [c["content"] for page in pages for c in page["components"][0]["components"]
+                      if c["type"] == 10 and c["content"].startswith("-# Page")]
+            assert labels == [f"-# Page {n}" for n in range(1, len(pages) + 1)], (key, labels)
+
+
+def test_reveal_ping_renumbers_pages_and_keeps_every_article_whole():
+    """The mention must not produce an unlabelled message or a stale page number.
+
+    When the byline mention pushes page one over budget, its trailing block moves into a new
+    message placed ahead of the pages that already existed. A card that was numbered 1..N would
+    otherwise be delivered as `Page 1`, an unlabelled message, then `Page 2`..`Page N`. Every page
+    is renumbered in delivery order, the article stays complete, and the mention stays last on
+    page one for every game that can receive it.
+    """
+    from unittest.mock import patch
+
+    from gamexpress.models import Item
+    from gamexpress.runner import run_news
+    from gamexpress.sources import hoyolab, kuro
+
+    role = "1296268365593186426"
+    hook = "https://discord.com/api/webhooks/100000000000000099/g_tok"
+    img = "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/29/ping.png"
+    titles = {
+        "genshin": ('"Astute Luminary" · Nahida',
+                    "◆ Physic of Purity\n◆ Lesser Lord Kusanali\n◆ Gnosis: Dendro"),
+        "starrail": ("Extraterrestrial Satellite Communication | Dan Heng • Imbibitor Lunae",
+                     '"My past, my future."'),
+        "zzz": ("Agent Record | Miyabi", '"Order cannot be broken."'),
+        "wuwa": ("Profile Reveal | Eternal Blaze — Changli", '"A blade remembers."'),
+        "hna": ("Sovereign Nexus Dossier | Seraphina",
+                '"Bind your Anima to mine."\nAffiliation: Astral Sanctum\nSeraphina awaits.'),
+    }
+    filler = "Paragraph about this new character's past and combat style. " * 80
+    tail = "FINAL-MARKER-SENTINEL"
+    for gk, (title, head) in titles.items():
+        for repeats in (1, 3):
+            text = head + "\n" + filler * repeats + tail
+            article = Item("kuro" if gk == "wuwa" else "hoyolab", gk, "p1",
+                           "https://www.hoyolab.com/article/1", title, text, 1793160008,
+                           article_blocks=[{"kind": "text", "text": text},
+                                           {"kind": "image", "url": img}],
+                           author=GAMES[gk].name, official=True)
+            source = kuro if gk == "wuwa" else hoyolab
+            with tempfile.TemporaryDirectory() as tmp:
+                env = dict(NEWS_ENABLED="1", NEWS_GAMES=gk, NEWS_REVEAL_PING="1",
+                           PING_NEWS_REVEAL=role,
+                           **{f"DISCORD_WEBHOOK_NEWS_{g}": hook for g in
+                              ("GENSHIN", "STARRAIL", "ZZZ", "WUWA", "HNA", "ANANTA", "GI", "HSR")})
+                ctx = make_ctx(Path(tmp) / "state.json", **env)
+                ctx.now = 1793160000
+                with patch.object(source, "discover_news", return_value=[]):
+                    asyncio.run(run_news(ctx))
+                ctx.now = 1793160030
+                row = {"id": "p1", "ts": 1793160008}
+                with (patch.object(source, "discover_news", return_value=[row]),
+                      patch.object(source, "news_article", return_value=article),
+                      patch("gamexpress.media.news_media_available", return_value=True)):
+                    asyncio.run(run_news(ctx))
+                posts = [p["payload"] for p in ctx.webhook.sent if p["method"] == "POST"]
+            case = f"{gk} repeats={repeats}"
+            assert posts, f"{case}: nothing posted ({ctx.warnings})"
+            assert all(not cards.validate_payload(p) for p in posts), case
+            assert posts[0]["allowed_mentions"] == {"parse": [], "roles": [role]}, case
+            assert all(p["allowed_mentions"] == {"parse": []} for p in posts[1:]), case
+            byline = posts[0]["components"][0]["components"][0]["content"].splitlines()[-1]
+            assert byline.rstrip().endswith(f"<@&{role}>"), (case, byline)
+            assert tail in json.dumps(posts, ensure_ascii=False), case
+            assert "Excerpt" not in json.dumps(posts, ensure_ascii=False), case
+            labels = [c["content"] for p in posts for co in p["components"]
+                      for c in co["components"] if c["type"] == 10 and c["content"].startswith("-# Page")]
+            assert labels == [f"-# Page {n}" for n in range(1, len(posts) + 1)], (case, labels)
+
+
+def test_reveal_ping_reflow_is_identical_under_both_page_policies():
+    """The page-one reflow must behave the same with `NEWS_EXPAND_FULL` off and on.
+
+    A byline mention only reflows when page one already sits inside the mention's own width of
+    the 4,000-character cap. That is the single place where the reveal ping and the container
+    fitting touch, so both policies are driven through the real `run_news`: the tail of page one
+    moves into a new message ahead of the pages that already existed, every page is renumbered
+    in delivery order, and the article stays whole. Without the renumber the card would be
+    delivered as `Page 1`, an unlabelled message, then `Page 2`.. (the shape the fix removed).
+    """
+    import copy
+    from unittest.mock import patch
+
+    from gamexpress import cards
+    from gamexpress.config import load_games
+    from gamexpress.models import Item
+    from gamexpress.runner import run_news
+    from gamexpress.sources import hoyolab, kuro
+
+    games = load_games()
+    role = "1296268365593186426"
+    hook = "https://discord.com/api/webhooks/100000000000000099/g_tok"
+    img = "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/30/reflow.png"
+    titles = {
+        "genshin": ('"Astute Luminary" · Nahida',
+                    "◆ Physic of Purity\n◆ Lesser Lord Kusanali\n◆ Gnosis: Dendro"),
+        "starrail": ("Extraterrestrial Satellite Communication | Dan Heng • Imbibitor Lunae",
+                     '"My past, my future."'),
+        "zzz": ("Agent Record | Miyabi", '"Order cannot be broken."'),
+        "wuwa": ("Profile Reveal | Eternal Blaze — Changli", '"A blade remembers."'),
+        "hna": ("Sovereign Nexus Dossier | Seraphina",
+                '"Bind your Anima to mine."\nAffiliation: Astral Sanctum'),
+    }
+    tail = "FINAL-MARKER-SENTINEL"
+    # Paragraph shapes whose first page lands within the mention's width. Ordered so the first
+    # hit is the smallest article; a game whose budget never fills that far falls back to the
+    # single-page reflow below (wuwa today).
+    shapes = ((150, 26), (150, 25), (80, 47), (200, 20), (60, 62), (150, 27), (150, 28))
+
+    def build(gk, paras, plen=150):
+        title, head = titles[gk]
+        body = head + "\n" + "\n\n".join("p" * (plen - 2) + " w" for _ in range(paras)) + "\n\n" + tail
+        return Item("kuro" if gk == "wuwa" else "hoyolab", gk, "p1",
+                    "https://www.hoyolab.com/article/1", title, body, 1793160008,
+                    article_blocks=[{"kind": "text", "text": body}, {"kind": "image", "url": img}],
+                    author=games[gk].name, official=True)
+
+    def plain(gk, item, expand):
+        return cards.news_payloads(games[gk], item, expand_full=expand)
+
+    mention_width = len(f" · <@&{role}>")
+
+    def layout(gk, expand):
+        """A paged article whose page one is nearly full, or None when the budget never fills."""
+        for plen, paras in shapes:
+            item = build(gk, paras, plen)
+            pls = plain(gk, item, expand)
+            if len(pls) >= 2 and cards.text_length(pls[0].get("components") or []) >= 3975:
+                return item, len(pls)
+        return None, 0
+
+    def single_page(gk, expand):
+        """A ONE-message card that the mention alone pushes over the cap (wuwa's budget today)."""
+        for n in range(3700, 4000):
+            item = Item("kuro" if gk == "wuwa" else "hoyolab", gk, "p1",
+                        "https://www.hoyolab.com/article/1", titles[gk][0], "", 1793160008,
+                        article_blocks=[{"kind": "text", "text": "x" * n}])
+            pls = plain(gk, item, expand)
+            if len(pls) == 1:
+                used = cards.text_length(pls[0].get("components") or [])
+                # the mention itself must be what overflows: 4000 exactly is still valid
+                if used <= cards.MAX_TEXT_TOTAL < used + mention_width:
+                    return item
+        return None
+
+    async def deliver(gk, item, expand, ping):
+        source = kuro if gk == "wuwa" else hoyolab
+        with tempfile.TemporaryDirectory() as tmp:
+            env = dict(NEWS_ENABLED="1", NEWS_GAMES=gk,
+                       **{f"DISCORD_WEBHOOK_NEWS_{g}": hook for g in
+                          ("GENSHIN", "STARRAIL", "ZZZ", "WUWA", "HNA", "ANANTA", "GI", "HSR")})
+            if expand:
+                env["NEWS_EXPAND_FULL"] = "1"
+            if ping:
+                env.update(NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role)
+            ctx = make_ctx(Path(tmp) / "state.json", **env)
+            ctx.now = 1793160000
+            with patch.object(source, "discover_news", return_value=[]):
+                await run_news(ctx)
+            ctx.now = 1793160030
+            with (patch.object(source, "discover_news",
+                               return_value=[{"id": "p1", "ts": 1793160008}]),
+                  patch.object(source, "news_article", return_value=copy.deepcopy(item)),
+                  patch("gamexpress.media.news_media_available", return_value=True)):
+                await run_news(ctx)
+            return ([s["payload"] for s in ctx.webhook.sent if s["method"] == "POST"], ctx.warnings)
+
+    def labels_of(posts):
+        return [c["content"] for p in posts for co in p["components"]
+                for c in co["components"] if c["type"] == 10 and c["content"].startswith("-# Page")]
+
+    paged = single = 0
+    for gk in titles:
+        for expand in (False, True):
+            item, plain_pages = layout(gk, expand)
+            if item is None:
+                # No paged shape fills page one for this game: use a single-page card instead
+                # (wuwa's page budget leaves room only at the very top of the cap).
+                item = single_page(gk, expand)
+                assert item is not None, (gk, expand)
+            off, _ = asyncio.run(deliver(gk, item, expand, False))
+            on, warnings = asyncio.run(deliver(gk, item, expand, True))
+            case = f"{gk} expand={expand} pages={plain_pages}"
+            assert len(on) == len(off) + 1, (case, len(off), len(on), warnings)
+            assert all(not cards.validate_payload(p) for p in on), case
+            assert on[0]["allowed_mentions"] == {"parse": [], "roles": [role]}, case
+            assert all(p["allowed_mentions"] == {"parse": []} for p in on[1:]), case
+            header = on[0]["components"][0]["components"][0]["content"]
+            assert header.splitlines()[-1].rstrip().endswith(f"<@&{role}>"), (case, header)
+            assert sum(json.dumps(p).count(f"<@&{role}>") for p in on) == 1, case
+            if plain_pages:
+                paged += 1
+                # the unpinged card was already numbered; that is what forces the renumber
+                assert labels_of(off) == [f"-# Page {n}" for n in range(1, len(off) + 1)], case
+                assert labels_of(on) == [f"-# Page {n}" for n in range(1, len(on) + 1)], (case, labels_of(on))
+                assert tail in json.dumps(on, ensure_ascii=False), case
+                assert "Excerpt" not in json.dumps(on, ensure_ascii=False), case
+            else:
+                # a single unlabelled card keeps its shape: two unlabelled messages, mention once
+                single += 1
+                assert labels_of(off) == [] and labels_of(on) == [], case
+    assert paged >= 8 and single >= 1, (paged, single)
+
+
+def test_reveal_ping_prefix_on_every_game_survives_both_page_policies():
+    """End-to-end `run_news` for every game with a news adapter, short and oversized articles.
+
+    The mention must sit in the byline at the TOP of the card (after the source/game/time, before
+    any body text), page one must carry the roles and every continuation must carry none, and the
+    documented page policies must hold: default = 1 message (or one labelled excerpt for an
+    oversized article), `NEWS_EXPAND_FULL=1` = the whole article across bounded pages.
+    """
+    import copy
+    from unittest.mock import patch
+
+    from gamexpress import cards
+    from gamexpress.config import load_games
+    from gamexpress.models import Item
+    from gamexpress.runner import run_news
+    from gamexpress.sources import hoyolab, kuro
+
+    games = load_games()
+    role = "1296268365593186426"
+    hook = "https://discord.com/api/webhooks/100000000000000099/g_tok"
+    img = "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/ping.png"
+    titles = {
+        "genshin": ('"Astute Luminary" · Nahida',
+                    "◆ Physic of Purity\n◆ Lesser Lord Kusanali\n◆ Gnosis: Dendro", "Nahida"),
+        "starrail": ("Extraterrestrial Satellite Communication | Dan Heng • Imbibitor Lunae",
+                     '"My past, my future."', "Dan Heng • Imbibitor Lunae"),
+        "zzz": ("Agent Record | Miyabi", '"Order cannot be broken."', "Miyabi"),
+        "wuwa": ("Profile Reveal | Eternal Blaze — Changli", '"A blade remembers."', "Changli"),
+        "hna": ("Sovereign Nexus Dossier | Seraphina",
+                '"Bind your Anima to mine."\nAffiliation: Astral Sanctum\nSeraphina awaits.', "Seraphina"),
+    }
+    filler = "Paragraph about this new character's past and combat style. " * 200
+    tail = "FINAL-MARKER-SENTINEL"
+    assert set(titles) == {k for k, g in games.items() if (g.hoyolab_gid or g.kuro_news)}
+
+    for gk, (title, body, expected) in titles.items():
+        for long_body in (False, True):
+            for expand in (False, True):
+                text = body + ("\n" + filler + tail if long_body else "")
+                article = Item("kuro" if gk == "wuwa" else "hoyolab", gk, "p1",
+                               "https://www.hoyolab.com/article/1", title, text, 1793160008,
+                               article_blocks=[{"kind": "text", "text": text},
+                                               {"kind": "image", "url": img}],
+                               author=games[gk].name)
+                source = kuro if gk == "wuwa" else hoyolab
+                with tempfile.TemporaryDirectory() as tmp:
+                    env = dict(NEWS_ENABLED="1", NEWS_GAMES=gk, NEWS_REVEAL_PING="1",
+                               PING_NEWS_REVEAL=role,
+                               **{f"DISCORD_WEBHOOK_NEWS_{g}": hook for g in
+                                  ("GENSHIN", "STARRAIL", "ZZZ", "WUWA", "HNA", "ANANTA", "GI", "HSR")})
+                    if expand:
+                        env["NEWS_EXPAND_FULL"] = "1"
+                    ctx = make_ctx(Path(tmp) / "state.json", **env)
+                    ctx.now = 1793160000
+                    with patch.object(source, "discover_news", return_value=[]):
+                        asyncio.run(run_news(ctx))
+                    ctx.now = 1793160030
+                    row = {"id": "p1", "ts": 1793160008}
+                    with (patch.object(source, "discover_news", return_value=[row]),
+                          patch.object(source, "news_article", return_value=article),
+                          patch("gamexpress.media.news_media_available", return_value=True)):
+                        asyncio.run(run_news(ctx))
+                    posts = [s["payload"] for s in ctx.webhook.sent if s["method"] == "POST"]
+                case = f"{gk} long={long_body} expand={expand}"
+                assert posts, f"{case}: nothing posted ({ctx.warnings})"
+                assert all(not cards.validate_payload(p) for p in posts), case
+                header = posts[0]["components"][0]["components"][0]["content"]
+                byline = header.splitlines()[-1]
+                assert byline.startswith("-# ") and byline.rstrip().endswith(f"<@&{role}>"), (case, byline)
+                assert header.splitlines()[0].startswith("## ["), case
+                assert posts[0]["allowed_mentions"] == {"parse": [], "roles": [role]}, case
+                assert all(p["allowed_mentions"] == {"parse": []} for p in posts[1:]), case
+                # The mention is the only difference from the untouched card. An oversized
+                # article is an excerpt (or a reflowed page set) whose budget shrinks by the
+                # mention itself, so there the header plus validity are what is compared.
+                plain = cards.news_payloads(games[gk], article, expand_full=expand)
+                plain_header = plain[0]["components"][0]["components"][0]["content"]
+                assert byline.replace(f" · <@&{role}>", "") == plain_header.splitlines()[-1], case
+                restored = copy.deepcopy(posts[0])
+                restored["components"][0]["components"][0]["content"] = plain_header
+                restored["allowed_mentions"] = plain[0]["allowed_mentions"]
+                # At the page boundary the mention itself changes where the reflow cuts, so a
+                # byte-identical card is only required when the article is not at that boundary.
+                if not long_body:
+                    assert restored == plain[0], case
+                if not long_body:
+                    assert len(posts) == 1 or expand, case
+                elif expand:
+                    assert 2 <= len(posts) <= cards.NEWS_EXPAND_MAX_PAGES, case
+                    assert tail in json.dumps(posts), case
+                    assert "Excerpt" not in json.dumps(posts), case
+                else:
+                    # The default policy smart fits the whole article too, so the mention can
+                    # never be the reason a readable article is truncated to an excerpt.
+                    assert 2 <= len(posts) <= cards.NEWS_DEFAULT_MAX_PAGES, case
+                    assert tail in json.dumps(posts), case
+                    assert "Excerpt" not in json.dumps(posts), case
+                assert expected  # the era test pins classification for this title
+
+
+def test_reveal_author_video_and_historical_quoted_title_guards():
+    """Requirement-derived reconstructions, not independently fetched historical captures."""
+    from dataclasses import replace
+
+    from gamexpress.reveal_ping import classify_character_reveal
+
+    article = Item("hoyolab", "starrail", "quoted", "https://www.hoyolab.com/article/1",
+                   '\"Extraterrestrial Satellite Communication\" Black Swan', '"A memory awaits."', 1793160000)
+    for title, name in (
+        ('"Extraterrestrial Satellite Communication" Black Swan', "Black Swan"),
+        ('“Extraterrestrial Satellite Communication” Firefly', "Firefly"),
+        ('"Extraterrestrial Satellite Communication" | #Archer', "Archer"),
+    ):
+        match = classify_character_reveal("starrail", replace(article, title=title))
+        assert match is not None and match.character == name
+    assert classify_character_reveal("starrail", replace(article, official=False)) is None
+    for title in ('Extraterrestrial Satellite CommunicationBlack Swan',
+                  '"Extraterrestrial Satellite Communication" Winners Reveal'):
+        assert classify_character_reveal("starrail", replace(article, title=title)) is None
+    for url in ("https://www.youtube-nocookie.com/embed/rCxNRV9gdzo",
+                "https://youtube-nocookie.com/embed/rCxNRV9gdzo?start=12"):
+        for updated in (replace(article, links=[url]),
+                        replace(article, article_blocks=[{"kind": "link", "url": url}]),
+                        replace(article, text=url)):
+            assert classify_character_reveal("starrail", updated) is None
+    dossier = replace(article, game="genshin", title="Dancer Twirling in the Silent Snow",
+                      text="◆ Name: Odette\n◆ Title: Swirling Snow\n◆ Constellation: Cygnus Olor")
+    assert classify_character_reveal("genshin", dossier) is not None
+    assert classify_character_reveal("genshin", replace(dossier, author="Miliastra Wonderland")) is None
+    assert classify_character_reveal("genshin", replace(dossier, author=" MILIASTRA Wonderland ")) is None
+
+
+def test_maintenance_all_games_exact_boundaries_and_restart_dedup():
+    """Exercise real resolver/delivery with explicit operator timing, not live date claims."""
+    from dataclasses import replace
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.sources import kuro, launcher
+
+    preload = 1793592000
+    start = preload + 2 * 86400
+    for key in GAMES:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "state.json"
+            ctx = make_ctx(path, now=preload - 60, items={key: []}, versions={key: {}},
+                           MAINTENANCE_ENABLED="1",
+                           MAINTENANCE_GAMES=key, ONLY="maintenance",
+                           **{f"DISCORD_WEBHOOK_MAINTENANCE_{key.upper()}": HOOK})
+            ctx.games = [replace(GAMES[key], cadence=None)]
+            ctx.settings.dry_run = ctx.settings.test_mode = False
+            ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "preload-id"),
+                                                SendResult(True, 200, "maintenance-id")])
+            ctx.overrides = {key: {"9.0": {"preinstall_ts": preload,
+                                          "maint_start_ts": start, "maint_end_ts": start + 5 * 3600}}}
+            ctx.fetcher = types.SimpleNamespace(verify_media=AsyncMock(return_value=False))
+            with (patch.object(launcher, "hoyoplay_basic_info", new=AsyncMock(return_value={})),
+                  patch.object(kuro, "launcher_media", new=AsyncMock(return_value={}))):
+                asyncio.run(maintenance.run(ctx))
+                assert ctx.webhook.sends == [], key
+                for boundary, label in ((preload, "Pre-Load Started"), (start, "Maintenance Started")):
+                    ctx.now = boundary - 1
+                    previous = len(ctx.webhook.sends)
+                    asyncio.run(maintenance.run(ctx))
+                    assert len(ctx.webhook.sends) == previous, key
+                    ctx.now = boundary
+                    asyncio.run(maintenance.run(ctx))
+                    posts = ctx.webhook.sends[previous:]
+                    assert len(posts) == 1, (key, label, ctx.warnings)
+                    payload = posts[0]
+                    assert label in json.dumps(payload)
+                    assert f"<t:{boundary}:" in json.dumps(payload)
+                    assert payload["allowed_mentions"] == {"parse": []}
+                    ctx.state = State.load(path)
+                    previous = len(ctx.webhook.sends)
+                    asyncio.run(maintenance.run(ctx))
+                    assert len(ctx.webhook.sends) == previous, (key, label)
+                saved = State.load(path).maintenance_record(key)["versions"]["9.0"]
+                assert saved["preload"]["status"] == saved["maintenance"]["status"] == "posted"
 
 
 if __name__ == "__main__":

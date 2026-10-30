@@ -73,8 +73,9 @@ class FoundTime:
 def _offset(m: re.Match, default_offset: float | None) -> float | None:
     if m.group("tzname"):
         sign = -1 if m.group("tzsign") in "-−–" else 1
-        hours = int(m.group("tzh")) + (int(m.group("tzm") or 0) / 60)
-        if hours > 14:
+        minutes = int(m.group("tzm") or 0)
+        hours = int(m.group("tzh")) + minutes / 60
+        if minutes >= 60 or hours > 14:
             return None
         return sign * hours
     if m.groupdict().get("zone"):
@@ -169,39 +170,64 @@ def find_datetimes(text: str, ref_ts: int | float | None = None,
 
 
 _RANGE_SEP = r"\s*(?:-|–|—|~|〜|to|until)\s*"
+_TZ_OPT1 = (
+    r"(?:\s*[\(（]?\s*(?:UTC|GMT)\s*(?P<tzsign1>[+\-−–])\s*(?P<tzh1>\d{1,2})"
+    r"(?::?(?P<tzm1>\d{2}))?\s*[\)）]?)?"
+)
 _TZ_REQ = r"\s*[\(（]?\s*(?:UTC|GMT)\s*(?P<tzsign>[+\-−–])\s*(?P<tzh>\d{1,2})(?::?(?P<tzm>\d{2}))?\s*[\)）]?"
-# 2026/09/30 04:00 - 11:00 (UTC+8)   |   2026/09/30 04:00 - 2026/09/30 11:00 (UTC+8)
+# 2026/09/30 04:00 - 11:00 (UTC+8)   |   2026/09/30 04:00 (UTC+8) - 2026/09/30 11:00 (UTC+8)
 _RE_RANGE_YMD = re.compile(
     r"(?P<y>\d{4})[/\-.](?P<mo>\d{1,2})[/\-.](?P<d>\d{1,2})" + _JOIN +
-    r"(?P<h>\d{1,2}):(?P<mi>\d{2})" + _RANGE_SEP +
+    r"(?P<h>\d{1,2}):(?P<mi>\d{2})" + _TZ_OPT1 + _RANGE_SEP +
     r"(?:(?P<y2>\d{4})[/\-.](?P<mo2>\d{1,2})[/\-.](?P<d2>\d{1,2})" + _JOIN + r")?"
     r"(?P<h2>\d{1,2}):(?P<mi2>\d{2})" + _TZ_REQ, re.I)
-# September 30, 2026, 04:00 - 11:00 (UTC+8)
+# September 30, 2026, 04:00 - 11:00 (UTC+8)  |  December 31, 2027, 23:00 - January 1, 2028, 04:00 (UTC+8)
 _RE_RANGE_NAMED = re.compile(
     r"\b(?P<mon>" + _MONTH_NAMES + r")\.?\s+(?P<d>\d{1,2})(?:st|nd|rd|th)?(?:\s*,?\s*(?P<y>\d{4}))?" + _JOIN +
-    r"(?P<h>\d{1,2}):(?P<mi>\d{2})" + _RANGE_SEP + r"(?P<h2>\d{1,2}):(?P<mi2>\d{2})" + _TZ_REQ, re.I)
+    r"(?P<h>\d{1,2}):(?P<mi>\d{2})" + _TZ_OPT1 + _RANGE_SEP +
+    r"(?:(?P<mon2>" + _MONTH_NAMES + r")\.?\s+(?P<d2>\d{1,2})(?:st|nd|rd|th)?(?:\s*,?\s*(?P<y2>\d{4}))?" + _JOIN + r")?"
+    r"(?P<h2>\d{1,2}):(?P<mi2>\d{2})" + _TZ_REQ, re.I)
 
 
 def find_time_ranges(text: str, ref_ts: int | float | None = None) -> list[tuple[int, int]]:
-    """Maintenance windows written as ranges where the offset follows the END time."""
+    """Maintenance windows written as ranges where the offset follows the END time (or both ends)."""
     ref = datetime.fromtimestamp(ref_ts or datetime.now(timezone.utc).timestamp(), timezone.utc)
     out: list[tuple[int, int]] = []
     for rx in (_RE_RANGE_YMD, _RE_RANGE_NAMED):
         for m in rx.finditer(text or ""):
             gd = m.groupdict()
             try:
-                month = MONTHS[gd["mon"].lower()] if gd.get("mon") else int(gd["mo"])
+                month = MONTHS[gd["mon"].lower().rstrip(".")] if gd.get("mon") else int(gd["mo"])
                 day = int(gd["d"])
                 year = int(gd["y"]) if gd.get("y") else _infer_year(month, day, ref)
                 if year is None:
                     continue
-                sign = -1 if gd["tzsign"] in "-−–" else 1
-                tz = timezone(timedelta(hours=sign * (int(gd["tzh"]) + int(gd.get("tzm") or 0) / 60)))
-                start = datetime(year, month, day, int(gd["h"]), int(gd["mi"]), tzinfo=tz)
-                if gd.get("y2"):
-                    end = datetime(int(gd["y2"]), int(gd["mo2"]), int(gd["d2"]), int(gd["h2"]), int(gd["mi2"]), tzinfo=tz)
+                sign2 = -1 if gd["tzsign"] in "-−–" else 1
+                off2 = sign2 * (int(gd["tzh"]) + int(gd.get("tzm") or 0) / 60)
+                if int(gd.get("tzm") or 0) >= 60 or abs(off2) > 14:
+                    continue
+                tz2 = timezone(timedelta(hours=off2))
+                if gd.get("tzsign1") and gd.get("tzh1"):
+                    sign1 = -1 if gd["tzsign1"] in "-−–" else 1
+                    off1 = sign1 * (int(gd["tzh1"]) + int(gd.get("tzm1") or 0) / 60)
+                    if int(gd.get("tzm1") or 0) >= 60 or abs(off1) > 14:
+                        continue
+                    tz1 = timezone(timedelta(hours=off1))
                 else:
-                    end = start.replace(hour=int(gd["h2"]), minute=int(gd["mi2"]))
+                    tz1 = tz2
+                start = datetime(year, month, day, int(gd["h"]), int(gd["mi"]), tzinfo=tz1)
+                if gd.get("mon2") and gd.get("d2"):
+                    month2 = MONTHS[gd["mon2"].lower().rstrip(".")]
+                    day2 = int(gd["d2"])
+                    if gd.get("y2"):
+                        year2 = int(gd["y2"])
+                    else:
+                        year2 = year + 1 if (month2, day2) < (month, day) else year
+                    end = datetime(year2, month2, day2, int(gd["h2"]), int(gd["mi2"]), tzinfo=tz2)
+                elif gd.get("y2"):
+                    end = datetime(int(gd["y2"]), int(gd["mo2"]), int(gd["d2"]), int(gd["h2"]), int(gd["mi2"]), tzinfo=tz2)
+                else:
+                    end = datetime(year, month, day, int(gd["h2"]), int(gd["mi2"]), tzinfo=tz2)
                     if end <= start:
                         end += timedelta(days=1)
             except (ValueError, KeyError):

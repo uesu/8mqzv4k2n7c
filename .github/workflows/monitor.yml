@@ -186,8 +186,12 @@ jobs:
         run: python -m gamexpress run
 
       - name: LIVE · commit state (also after a partial failure, so nothing is ever posted twice)
+        id: persist_state
         if: always() && inputs.mode == 'live' && steps.run.conclusion != 'skipped'
         run: |
+          # Only tracked run output is staged here: state and the discovered announcement id. The
+          # run summary stays in the job summary and its warnings/errors stay in the annotations;
+          # no operator notes folder is read or written by this workflow.
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add state/state.json 2>/dev/null || true
@@ -197,16 +201,37 @@ jobs:
           # what lets a later test run resolve the same announcement by id through fxtwitter and show
           # the real link and the real key art. Same pattern as posted_tweets.json in the X monitor.
           git add -f config/program_announcements.json 2>/dev/null || true
-          if git diff --cached --quiet; then echo "state unchanged — nothing to commit"; exit 0; fi
+          if git diff --cached --quiet; then
+            echo "state unchanged — nothing to commit"
+            echo "result=unchanged" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git commit -m "auto: update state [skip ci]"
           for i in 1 2 3 4 5; do
             if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "result=pushed" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             sleep $((i * 3))
           done
           echo "::error::could not push state/state.json after 5 attempts"
           exit 1
+
+      - name: Summarize live state persistence
+        if: always() && inputs.mode == 'live'
+        env:
+          PERSIST_OUTCOME: ${{ steps.persist_state.outcome }}
+          PERSIST_RESULT: ${{ steps.persist_state.outputs.result }}
+        run: |
+          case "${PERSIST_OUTCOME}:${PERSIST_RESULT}" in
+            success:unchanged) result="no staged changes observed — state staging errors may have been hidden by the persistence step" ;;
+            success:pushed) result="committed and pushed" ;;
+            failure:*) result="failed — inspect the state persistence step" ;;
+            cancelled:*) result="cancelled — repository persistence not confirmed" ;;
+            *) result="not confirmed — persistence step did not complete with a recognized result" ;;
+          esac
+          printf '\n### Repository persistence\n- %s\n' "$result" >> "$GITHUB_STEP_SUMMARY" ||
+            printf 'Could not append repository persistence summary\n' >&2
 
       # ══ TEST — REAL DATA, posted to the real channels as 🧪 TEST, state never saved ═══
       - name: TEST · webhooks — is every secret there and pointing at the right channel?

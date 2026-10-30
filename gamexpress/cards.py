@@ -24,7 +24,7 @@ from __future__ import annotations
 import logging
 import re
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import parse_qs, quote, urlsplit
 
 from .config import Game, Ping, Settings
 from .textutil import strip_invisible, truncate
@@ -136,6 +136,38 @@ def safe_url(url: str | None) -> str | None:
     if any(ch.isspace() or ord(ch) < 0x20 or ord(ch) == 0x7F for ch in u):
         return None
     return u.replace("(", "%28").replace(")", "%29")
+
+
+def _youtube_watch_url(url: str) -> str | None:
+    """Canonicalize a verified YouTube video URL without guessing from another host or article."""
+    try:
+        parsed = urlsplit(url)
+        if parsed.scheme.lower() not in ("http", "https") or parsed.username or parsed.password:
+            return None
+        host = (parsed.hostname or "").lower()
+        path = parsed.path.rstrip("/") or "/"
+        parts = path.strip("/").split("/")
+        query = parse_qs(parsed.query)
+        candidate = None
+        if host in ("youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com",
+                    "youtube-nocookie.com", "www.youtube-nocookie.com"):
+            if path == "/watch":
+                values = query.get("v", [])
+                candidate = values[0] if len(values) == 1 else None
+            elif len(parts) == 2 and parts[0] in ("embed", "shorts", "live", "v"):
+                candidate = parts[1]
+        elif host in ("youtu.be", "www.youtu.be") and len(parts) == 1:
+            candidate = parts[0]
+        if candidate and re.fullmatch(r"[A-Za-z0-9_-]{11}", candidate):
+            result = f"https://www.youtube.com/watch?v={candidate}"
+            # Preserve an unambiguous, numeric start offset from a watch or embedded player.
+            starts = query.get("t") or query.get("start") or []
+            if len(starts) == 1 and re.fullmatch(r"\d{1,9}s?", starts[0]):
+                result += f"&t={starts[0]}"
+            return result
+    except ValueError:
+        pass
+    return None
 
 
 def _is_x_url(url: str) -> bool:
@@ -516,6 +548,9 @@ def mark_test(payload: dict, note: str = TEST_NOTE) -> dict:
 NEWS_DONATE = "https://ko-fi.com/jieunlatte"
 NEWS_COMMUNITY = "https://discord.gg/HyrVP9wRXu"
 NEWS_EXPAND_MAX_PAGES = 12
+# Default policy: whole-article smart fitting across at most this many messages
+# (~4,000 text chars each) instead of truncating a long article to one excerpt.
+NEWS_DEFAULT_MAX_PAGES = 4
 NEWS_EXPAND_MAX_CHARS = 120000
 NEWS_EXPAND_MAX_MEDIA = 120
 
@@ -655,6 +690,127 @@ def _split_expanded_text(content: str, max_chars: int) -> list[str] | None:
     return out if out and "".join(out) == content else None
 
 
+
+def _smart_fit_news(
+    units: list[dict],
+    *,
+    page_prefix,
+    page_payload,
+    max_pages: int,
+) -> tuple[list[dict] | None, str]:
+    """Fit the WHOLE article into at most `max_pages` messages, or explain why it cannot be.
+
+    "Dynamic smart container fitting": paragraphs are kept whole, and only a paragraph that does
+    not fit the room left on the open page is continued in the next message - always at a
+    markdown-safe boundary, never inside a link, bold run, or bracket. Nothing is dropped, and
+    the page shape is the one the card already uses (title/byline + cover on page one,
+    `-# Page n` + divider on continuations, buttons on the last page), so the JSON structure is
+    identical under every policy and only the ceilings differ.
+    """
+    limit_notice = ("**Excerpt — this article exceeds the delivery safety limit.** "
+                    "Read Post opens the complete article and remaining media.")
+    content_notice = ("**Excerpt — this article contains content that exceeds single-message limits.** "
+                      "Read Post opens the complete article and remaining media.")
+
+    page_units: list[dict] = []
+    for unit in units:
+        if unit["type"] != 10:
+            page_units.append(unit)
+            continue
+        pieces = _split_expanded_text(unit["content"], max(1, MAX_TEXT_TOTAL - 32))
+        if pieces is None:
+            return None, content_notice
+        page_units.extend(text(piece) for piece in pieces)
+
+    if not any(unit["type"] == 10 for unit in page_units):
+        return None, limit_notice
+
+    pages, current = [], page_prefix(1)
+    have_body = False
+    index = 0
+    while index < len(page_units):
+        unit = page_units[index]
+        trial = list(current)
+        if unit["type"] == 10 and have_body and trial[-1]["type"] == 10:
+            trial[-1] = text(trial[-1]["content"] + unit["content"])
+        else:
+            trial.append(unit)
+        if not validate_payload(page_payload(trial, final=True)):
+            current, have_body = trial, True
+            index += 1
+            continue
+        # The next unit does not fit: continue it in the exact room still open on this page.
+        if unit["type"] == 10:
+            room = MAX_TEXT_TOTAL - text_length(current) - 40
+            pieces = _split_expanded_text(unit["content"], room) if room > 160 else None
+            if pieces and len(pieces) > 1:
+                trial = list(current)
+                if have_body and trial[-1]["type"] == 10:
+                    trial[-1] = text(trial[-1]["content"] + pieces[0])
+                else:
+                    trial.append(text(pieces[0]))
+                if not validate_payload(page_payload(trial, final=True)):
+                    current, have_body = trial, True
+                    page_units[index] = text("".join(pieces[1:]))
+                    continue
+        if not have_body or len(pages) >= max_pages:
+            return None, limit_notice
+        pages.append(page_payload(current))
+        current, have_body = page_prefix(len(pages) + 1) + [unit], True
+        if validate_payload(page_payload(current, final=True)):
+            return None, content_notice
+        index += 1
+    if not have_body:
+        return None, limit_notice
+    pages.append(page_payload(current, final=True))
+    if 1 <= len(pages) <= max_pages and all(not validate_payload(page) for page in pages):
+        return pages, ""
+    return None, content_notice
+
+
+
+
+_PAGE_LABEL_RE = re.compile(r"^-# Page \d+$")
+
+
+def renumber_page_labels(payloads: list[dict]) -> list[dict]:
+    """Keep `-# Page n` labels truthful after the reveal mention reflowed page one.
+
+    The mention can push a trailing block of page one into a new message placed before the pages
+    that already existed. Only a card that was ALREADY numbered is touched: single-message cards
+    keep the untouched shape, and a card that never had labels never gains one. A label is
+    rewritten in place, and a missing one is inserted only when that keeps the page valid.
+    """
+    numbered = any(
+        child.get("type") == 10 and _PAGE_LABEL_RE.match(str(child.get("content", "")).strip())
+        for payload in payloads for container in payload.get("components") or []
+        for child in container.get("components") or []
+    )
+    if not numbered:
+        return payloads
+    for index, payload in enumerate(payloads, start=1):
+        containers = payload.get("components") or []
+        if not containers:
+            continue
+        kids = containers[0].get("components") or []
+        existing = next(
+            (child for child in kids
+             if child.get("type") == 10 and _PAGE_LABEL_RE.match(str(child.get("content", "")).strip())),
+            None,
+        )
+        if existing is not None:
+            existing["content"] = f"-# Page {index}"
+            continue
+        at = 1 if kids and kids[0].get("type") == 10 and str(kids[0].get("content", "")).startswith("## ") else 0
+        trial = kids[:at] + [text(f"-# Page {index}"), sep()] + kids[at:]
+        probe = {"flags": payload.get("flags"), "allowed_mentions": payload.get("allowed_mentions"),
+                 "components": [{**containers[0], "components": trial}]}
+        if not validate_payload(probe):
+            containers[0]["components"] = trial
+    return payloads
+
+
+
 def news_payloads(
     game: Game,
     item,
@@ -735,7 +891,9 @@ def news_payloads(
         if not url:
             raise ValueError("unsupported article media URL")
         if block["kind"] == "link" or (block["kind"] == "video" and not re.search(r"\.(?:mp4|webm)(?:[?#]|$)", url, re.I)):
-            units.append(text(f"[Open original media]({url})"))
+            # Embedded YouTube URLs are player endpoints; show a usable watch link instead.
+            # Other hosts retain the existing fallback rather than guessing a video match.
+            units.append(text(_youtube_watch_url(url) or f"[Open original media]({url})"))
         else:
             # A separate inline gallery preserves each text/image relationship.
             units.append(gallery([url]))
@@ -896,7 +1054,30 @@ def news_payloads(
                 pages.append(page_payload(current, final=True))
                 if len(pages) == 2 and all(not validate_payload(page) for page in pages):
                     return pages
-        # Never publish a partial full article: fall through to the excerpt.
+        # The legacy two-page packer keeps the exact bytes it always produced, but it can fail on
+        # an article that is inside its character ceiling and still unbreakable for it: one long
+        # paragraph with no blank line, or a paragraph whose markdown cannot be cut safely. The
+        # smart fitter continues such a paragraph at a word boundary instead of truncating the
+        # article, so the card is complete under the default policy as well.
+        pages, notice = _smart_fit_news(
+            units, page_prefix=page_prefix, page_payload=page_payload,
+            max_pages=max(1, NEWS_DEFAULT_MAX_PAGES),
+        )
+        if pages:
+            return pages
+        excerpt_notice = notice
+
+    # Beyond the old two-page / 7,000-character envelope the card used to be truncated to one
+    # excerpt. The whole article is now smart fitted across pages, and only an article that
+    # cannot fit inside the default page ceiling still falls back to that labelled excerpt.
+    else:
+        pages, notice = _smart_fit_news(
+            units, page_prefix=page_prefix, page_payload=page_payload,
+            max_pages=max(1, NEWS_DEFAULT_MAX_PAGES),
+        )
+        if pages:
+            return pages
+        excerpt_notice = notice
 
     # Oversized article: retain the opening text, ONE lead image, and source access.
     # This deliberately replaces the previous multi-message full-body policy.
@@ -1811,6 +1992,11 @@ def beta_payloads_with_map(
             if eq_parts_line:
                 eq_parts.append(f"*Parts: {eq_parts_line}*")
             eq_parts.extend(_format_equipment_stats_line(game.key, eq_stats, eq_sub, eq_wclass))
+            eq_overview = strip_invisible(str(getattr(eq, "overview", "") or "")).strip()
+            if eq_overview:
+                # A revised weapon reads like a person describing it, not only like a diff.
+                eq_parts.append("")
+                eq_parts.append(eq_overview)
             is_weapon_eq = (
                 any(k in display_cat.lower() for k in ("weapon", "w-engine", "light cone"))
                 and not eq_set_kind

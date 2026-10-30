@@ -44,7 +44,7 @@ from .discord import webhook_fingerprint
 from .http import Probe
 from .media import twimg_orig, upgrade
 from .sources import hoyolab, kuro, launcher
-from .state import stable_hash
+from .state import stable_hash, timing_notice_key
 from .textutil import find_version, version_key
 
 log = logging.getLogger("gamexpress.maintenance")
@@ -160,6 +160,7 @@ def _build_asset_meta(
         "version": str(raw.get("version") or version or "").strip(),
         "full_version": str(raw.get("full_version") or "").strip(),
         "hash": str(raw.get("hash") or "").strip(),
+        "bg_hash": str(raw.get("bg_hash") or "").strip(),
         "size": str(raw.get("size") or "").strip(),
         "asset_id": str(raw.get("asset_id") or "").strip(),
         "slot": str(raw.get("slot") or "").strip(),
@@ -184,7 +185,7 @@ def _corroborated_same_asset(
     versions. Renewal is approved only when:
       1. `scheme + host + path` match `locked_url`.
       2. Version matches `expected_version` and zero metadata fields conflict with `locked_meta`.
-      3. At least one positive asset binder corroborates identity (`hash`, `asset_id`,
+      3. At least one positive asset binder corroborates identity (`hash`, `bg_hash`, `asset_id`,
          version-stamped path `/3.7/...`, matching CDN upload date path `/YYYY/MM/DD/`,
          `explicit_link` version tag, or matching `full_version` + `size`).
     """
@@ -196,17 +197,19 @@ def _corroborated_same_asset(
         return False
 
     # Any conflicting binding attribute immediately disqualifies renewal.
-    for key in ("full_version", "hash", "size", "asset_id", "upload_ts", "path_version"):
+    for key in ("full_version", "hash", "bg_hash", "size", "asset_id", "upload_ts", "path_version"):
         lv = locked_meta.get(key)
         cv = cand_meta.get(key)
         if lv and cv and lv != cv:
             return False
         # If the locked asset had an explicit content hash or asset_id and the candidate dropped
         # or changed it, refuse to assume the bytes stayed identical on a mutable path.
-        if key in ("hash", "asset_id") and lv and not cv:
+        if key in ("hash", "bg_hash", "asset_id") and lv and not cv:
             return False
 
     if cand_meta.get("hash") and cand_meta.get("hash") == locked_meta.get("hash"):
+        return True
+    if cand_meta.get("bg_hash") and cand_meta.get("bg_hash") == locked_meta.get("bg_hash"):
         return True
     if cand_meta.get("asset_id") and cand_meta.get("asset_id") == locked_meta.get("asset_id"):
         return True
@@ -336,7 +339,8 @@ def resolve_version_plans(
         if not str(ver).startswith("_") and isinstance(game_overrides[ver], dict) and version_key(ver) != (0, 0):
             candidate_versions.add(str(ver))
     for ver, m_entry in maint_vers.items():
-        if isinstance(m_entry, dict) and m_entry.get("observed_preinstall_ts") and version_key(ver) != (0, 0):
+        if (isinstance(m_entry, dict) and (m_entry.get("observed_preinstall_ts") or m_entry.get("timing_notice"))
+                and version_key(ver) != (0, 0)):
             candidate_versions.add(str(ver))
     for field_name in ("live", "pre"):
         ver = (versions_info or {}).get(field_name)
@@ -358,7 +362,7 @@ def resolve_version_plans(
         countdown_min_rank = schedule.PRIORITY["countdown"]
         official_seed_data: dict = {}
         official_seed_prov: dict = {}
-        for k_field in ("preinstall_ts", "maint_start_ts", "maint_end_ts", "images", "version"):
+        for k_field in ("preinstall_ts", "maint_start_ts", "maint_end_ts", "maint_postponed", "images", "version"):
             prov_pair = raw_prev_prov.get(k_field)
             rank_val = prov_pair[0] if isinstance(prov_pair, (list, tuple)) and prov_pair else 0
             if k_field in ("images", "version") and raw_prev_data.get(k_field):
@@ -366,6 +370,27 @@ def resolve_version_plans(
             elif k_field not in raw_prev_est and official_min_rank <= rank_val < 100 and raw_prev_data.get(k_field):
                 official_seed_data[k_field] = raw_prev_data[k_field]
                 official_seed_prov[k_field] = list(prov_pair)
+        saved_notice = persisted_vstate.get("timing_notice")
+        saved_key = timing_notice_key(saved_notice)
+        current_key = max(tuple(official_seed_prov.get("maint_start_ts", [0, 0])),
+                          tuple(official_seed_prov.get("maint_postponed", [0, 0])))
+        if saved_key > (0, 0) and saved_key >= current_key:
+            prior_end, prior_end_prov = official_seed_data.get("maint_end_ts"), official_seed_prov.get("maint_end_ts")
+            for key in ("maint_start_ts", "maint_end_ts", "maint_postponed"):
+                official_seed_data.pop(key, None)
+                official_seed_prov.pop(key, None)
+            if saved_notice["postponed"]:
+                official_seed_data["maint_postponed"] = True
+                official_seed_prov["maint_postponed"] = list(saved_key)
+            else:
+                official_seed_data["maint_start_ts"] = int(saved_notice["start_ts"])
+                official_seed_prov["maint_start_ts"] = list(saved_key)
+                if saved_notice.get("end_ts"):
+                    official_seed_data["maint_end_ts"] = int(saved_notice["end_ts"])
+                    official_seed_prov["maint_end_ts"] = list(saved_key)
+                if prior_end and prior_end_prov and tuple(prior_end_prov) >= saved_key:
+                    official_seed_data["maint_end_ts"] = prior_end
+                    official_seed_prov["maint_end_ts"] = prior_end_prov
         official_rec = {"data": official_seed_data, "prov": official_seed_prov}
 
         # Merge official items ONLY onto official provenance so prior rank-100 overrides can never
@@ -375,6 +400,16 @@ def resolve_version_plans(
         )
         est_fields = set(merged_official.get("estimated") or [])
         prov = official_rec.get("prov") or {}
+        is_postponed = bool(merged_official.get("maint_postponed"))
+        notice_prov = prov.get("maint_postponed" if is_postponed else "maint_start_ts")
+        timing_notice = None
+        if isinstance(notice_prov, (list, tuple)) and len(notice_prov) >= 2:
+            timing_notice = {"postponed": is_postponed, "rank": notice_prov[0], "ts": notice_prov[1]}
+            if not is_postponed and merged_official.get("maint_start_ts"):
+                timing_notice["start_ts"] = int(merged_official["maint_start_ts"])
+                timing_notice["end_ts"] = merged_official.get("maint_end_ts")
+            if timing_notice_key(timing_notice) == (0, 0):
+                timing_notice = None
 
         pre_ts: int | None = None
         pre_est = False
@@ -397,6 +432,7 @@ def resolve_version_plans(
         if raw_start and "maint_start_ts" not in est_fields and prov.get("maint_start_ts", [50])[0] >= official_min_rank:
             start_ts = int(raw_start)
             maint_prov = "official"
+            is_postponed = False
             raw_end = merged_official.get("maint_end_ts")
             if raw_end and "maint_end_ts" not in est_fields and int(raw_end) > start_ts:
                 end_ts = int(raw_end)
@@ -416,6 +452,7 @@ def resolve_version_plans(
                 start_ts = ov_start
                 maint_est = False
                 maint_prov = "override"
+                is_postponed = False
                 if ov_end:
                     end_ts = ov_end
                 elif ov.get("maint_hours"):
@@ -444,7 +481,8 @@ def resolve_version_plans(
         est_src_label = str((raw_prev_data.get("estimate_sources") or [""])[0] or "countdown")
         prev_start_rank = (raw_prev_prov.get("maint_start_ts") or [0])[0]
         if (
-            start_ts is None
+            not is_postponed
+            and start_ts is None
             and "maint_start_ts" not in ov
             and countdown_min_rank <= prev_start_rank < official_min_rank
             and raw_prev_data.get("maint_start_ts")
@@ -457,7 +495,8 @@ def resolve_version_plans(
             maint_src = est_src_label
         prev_pre_rank = (raw_prev_prov.get("preinstall_ts") or [0])[0]
         if (
-            pre_ts is None
+            not is_postponed
+            and pre_ts is None
             and "preinstall_ts" not in ov
             and (countdown_min_rank <= prev_pre_rank < official_min_rank or (maint_est and raw_prev_data.get("preinstall_ts")))
             and raw_prev_data.get("preinstall_ts")
@@ -470,7 +509,8 @@ def resolve_version_plans(
 
         # 4b. Documented cadence fallback for preload when maintenance start is known and game has cadence.
         if (
-            pre_ts is None
+            not is_postponed
+            and pre_ts is None
             and start_ts is not None
             and game.cadence is not None
             and raw_pre
@@ -494,6 +534,8 @@ def resolve_version_plans(
             "maint_estimated": maint_est,
             "maint_provenance": maint_prov,
             "maint_source": maint_src,
+            "postponed": is_postponed,
+            "timing_notice": timing_notice,
             "schedule_images": list(merged_official.get("images") or []),
             "override": ov if isinstance(ov, dict) else {},
         }
@@ -532,7 +574,7 @@ def resolve_version_plans(
                     "schedule_images": [],
                     "override": ov if isinstance(ov, dict) else {},
                 }
-            else:
+            elif not existing.get("postponed"):
                 if existing["preinstall_ts"] is None and "preinstall_ts" not in ov and guess.get("preinstall_ts"):
                     existing["preinstall_ts"] = int(guess["preinstall_ts"])
                     existing["preinstall_estimated"] = True
@@ -969,6 +1011,12 @@ async def _run_game_maintenance(
         # and restarts never move an observation timestamp forward with `ctx.now`.
         obs_changed = False
         for ver, plan in plans.items():
+            notice = plan.get("timing_notice")
+            if timing_notice_key(notice) > (0, 0):
+                vstate = versions_state.setdefault(ver, {})
+                if timing_notice_key(notice) >= timing_notice_key(vstate.get("timing_notice")) and vstate.get("timing_notice") != notice:
+                    vstate["timing_notice"] = copy.deepcopy(notice)
+                    obs_changed = True
             if plan.get("preinstall_observed") and plan.get("preinstall_ts"):
                 vstate = versions_state.setdefault(ver, {})
                 if not vstate.get("observed_preinstall_ts"):
@@ -1050,24 +1098,17 @@ async def _run_game_maintenance(
                         msg_id = entry.get("message_id")
                         attempts = int(entry.get("edit_attempts") or 0)
                         edit_count = int(entry.get("edit_count") or 0)
-                        if (
-                            status == "posted"
-                            and msg_id
-                            and attempts < MAX_LATE_MEDIA_ATTEMPTS
-                            and edit_count < MAX_LATE_EDITS
-                            and 0 <= ctx.now - posted_at <= LATE_MEDIA_EDIT_WINDOW_S
-                        ):
-                            cur_url_unusable = False
-                            if cur_tier in (1, 2, 3) and cur_url:
-                                cur_url_unusable = not await _verify_url(
-                                    ctx.fetcher, cur_url, ctx.now, cache=verified_cache
-                                )
+                        in_media_window = 0 <= ctx.now - posted_at <= LATE_MEDIA_EDIT_WINDOW_S
+                        in_timing_window = 0 <= ctx.now - posted_at <= ACTIVE_WINDOW_S
+                        if status == "posted" and msg_id and in_timing_window:
                             expected_end = int(end_ts) if (kind == "maintenance" and end_ts) else None
                             end_ts_shifted = (
                                 kind == "maintenance"
                                 and prov_tag in ("official", "override")
-                                and "end_ts" in entry
-                                and entry.get("end_ts") != expected_end
+                                and (
+                                    ("end_ts" in entry and entry.get("end_ts") != expected_end)
+                                    or ("end_ts" not in entry and expected_end is not None)
+                                )
                             )
                             auth_ts_upgrade = (
                                 (
@@ -1077,33 +1118,49 @@ async def _run_game_maintenance(
                                 )
                                 or end_ts_shifted
                             )
-                            if cur_tier > 1 or cur_url_unusable or auth_ts_upgrade:
-                                binfo = await get_basic_info() if game.launcher.get("type") == "hoyoplay" else {}
-                                kmedia = await get_kuro_media() if game.launcher.get("type") == "kuro" else {}
-                                staged_vstate = copy.deepcopy(vstate)
-                                staged_all = copy.deepcopy(versions_state)
-                                new_tier, new_url = await resolve_launch_media(
-                                    ctx,
-                                    game,
-                                    ver,
-                                    plan,
-                                    staged_vstate,
-                                    basic_info=binfo,
-                                    program_pins=program_pins,
-                                    kuro_media=kmedia,
-                                    versions_state=staged_all,
-                                    verified_cache=verified_cache,
+                            # Media failures must not exhaust the separate official timing correction budget.
+                            timing_attempts = int(entry.get("timing_edit_attempts") or 0)
+                            timing_edits = int(entry.get("timing_edit_count") or 0)
+                            media_allowed = attempts < MAX_LATE_MEDIA_ATTEMPTS and edit_count < MAX_LATE_EDITS
+                            timing_allowed = timing_attempts < MAX_LATE_MEDIA_ATTEMPTS and timing_edits < MAX_LATE_EDITS
+                            auth_ts_upgrade = auth_ts_upgrade and timing_allowed
+                            cur_url_unusable = False
+                            if media_allowed and in_media_window and cur_tier in (1, 2, 3) and cur_url:
+                                cur_url_unusable = not await _verify_url(
+                                    ctx.fetcher, cur_url, ctx.now, cache=verified_cache
                                 )
-                                for s_ver, s_state in staged_all.items():
-                                    if isinstance(s_state, dict) and s_state.get("seen_media"):
-                                        dst = versions_state.setdefault(s_ver, {})
-                                        if dst.get("seen_media") != s_state["seen_media"]:
-                                            dst["seen_media"] = s_state["seen_media"]
-                                            if not ephemeral:
-                                                ctx.state.save()
+                            want_media_check = media_allowed and in_media_window and (cur_tier > 1 or cur_url_unusable)
+                            if want_media_check or auth_ts_upgrade:
+                                if in_media_window and media_allowed:
+                                    binfo = await get_basic_info() if game.launcher.get("type") == "hoyoplay" else {}
+                                    kmedia = await get_kuro_media() if game.launcher.get("type") == "kuro" else {}
+                                    staged_vstate = copy.deepcopy(vstate)
+                                    staged_all = copy.deepcopy(versions_state)
+                                    new_tier, new_url = await resolve_launch_media(
+                                        ctx,
+                                        game,
+                                        ver,
+                                        plan,
+                                        staged_vstate,
+                                        basic_info=binfo,
+                                        program_pins=program_pins,
+                                        kuro_media=kmedia,
+                                        versions_state=staged_all,
+                                        verified_cache=verified_cache,
+                                    )
+                                    for s_ver, s_state in staged_all.items():
+                                        if isinstance(s_state, dict) and s_state.get("seen_media"):
+                                            dst = versions_state.setdefault(s_ver, {})
+                                            if dst.get("seen_media") != s_state["seen_media"]:
+                                                dst["seen_media"] = s_state["seen_media"]
+                                                if not ephemeral:
+                                                    ctx.state.save()
+                                else:
+                                    staged_vstate = vstate
+                                    new_tier, new_url = cur_tier, (cur_url or None)
                                 should_edit = (
-                                    (bool(new_url) and new_tier < cur_tier)
-                                    or (cur_url_unusable and (new_url or "") != cur_url)
+                                    (in_media_window and bool(new_url) and new_tier < cur_tier)
+                                    or (in_media_window and cur_url_unusable and (new_url or "") != cur_url)
                                     or auth_ts_upgrade
                                 )
                                 if should_edit:
@@ -1136,15 +1193,22 @@ async def _run_game_maintenance(
                                             if kind == "maintenance":
                                                 entry["end_ts"] = expected_end
                                         entry["edited_at"] = ctx.now
-                                        entry["edit_attempts"] = 0
-                                        entry["edit_count"] = int(entry.get("edit_count") or 0) + 1
+                                        if auth_ts_upgrade:
+                                            entry["timing_edit_attempts"] = 0
+                                            entry["timing_edit_count"] = timing_edits + 1
+                                        else:
+                                            entry["edit_attempts"] = 0
+                                            entry["edit_count"] = edit_count + 1
                                         if not ephemeral:
                                             ctx.state.save()
                                         ctx.report.append(
                                             f"🖼️ {game.short} {ver} {kind}: updated card silently (tier {cur_tier}->{new_tier})"
                                         )
                                     else:
-                                        entry["edit_attempts"] = attempts + 1
+                                        if auth_ts_upgrade:
+                                            entry["timing_edit_attempts"] = timing_attempts + 1
+                                        else:
+                                            entry["edit_attempts"] = attempts + 1
                                         if not ephemeral:
                                             ctx.state.save()
                                         ctx.warnings.append(

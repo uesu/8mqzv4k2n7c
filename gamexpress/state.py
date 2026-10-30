@@ -45,6 +45,21 @@ def _safe_int(value, default: int = 0) -> int:
         return default
 
 
+def timing_notice_key(value) -> tuple[int, int]:
+    """Ordering of persisted official maintenance notices; malformed peer state is ignored."""
+    if not isinstance(value, dict) or not isinstance(value.get("postponed"), bool):
+        return (0, 0)
+    rank, ts = _safe_int(value.get("rank")), _safe_int(value.get("ts"))
+    if not (38 <= rank < 100 and ts > 0):
+        return (0, 0)
+    if not value["postponed"]:
+        start = _safe_int(value.get("start_ts"))
+        end = _safe_int(value.get("end_ts"))
+        if start <= 0 or (value.get("end_ts") is not None and end <= start):
+            return (0, 0)
+    return (rank, ts)
+
+
 class State:
     def __init__(self, path: Path, data: dict | None = None) -> None:
         self.path = path
@@ -202,6 +217,19 @@ class State:
                         mstage = _safe_int(mval[1], -1) if isinstance(mval, list) and len(mval) == 3 else -1
                         if ostage > mstage:
                             my_rechecks[key] = list(oval)
+                for slot in ("reveal_chars", "reveal_times"):
+                    theirs = other.get(slot)
+                    if isinstance(theirs, dict):
+                        ours = _as_dict_slot(mine, slot)
+                        for key, value in theirs.items():
+                            if isinstance(key, str) and isinstance(value, int):
+                                ours[key] = max(_safe_int(ours.get(key), 0), value)
+                        if len(ours) > 200:
+                            for key in sorted(ours, key=lambda k: (_safe_int(ours[k], 0), k))[:-200]:
+                                ours.pop(key, None)
+                if "reveal_seeded_at" in other:
+                    mine["reveal_seeded_at"] = max(_safe_int(mine.get("reveal_seeded_at"), 0),
+                                                   _safe_int(other.get("reveal_seeded_at"), 0))
         if include_maintenance:
             peer_maint = peer.get("maintenance")
             for game, other in (peer_maint.items() if isinstance(peer_maint, dict) else ()):
@@ -220,6 +248,10 @@ class State:
                     if not isinstance(vrec, dict):
                         continue
                     dst = _as_dict_slot(versions, ver)
+                    other_notice = vrec.get("timing_notice")
+                    if timing_notice_key(other_notice) > timing_notice_key(dst.get("timing_notice")):
+                        dst["timing_notice"] = copy.deepcopy(other_notice)
+                        imported += 1
                     if "launch_media" in vrec and "launch_media" not in dst:
                         dst["launch_media"] = copy.deepcopy(vrec["launch_media"])
                     if isinstance(vrec.get("seen_media"), list) and vrec["seen_media"]:
