@@ -3032,17 +3032,31 @@
       },
       "AHABLESSYOU": {
         "first_seen": 1793361637,
-        "gate": "only ennead, ogc",
-        "last_seen": 1793361637,
+        "gate": "redeem-validated",
+        "last_seen": 1793361919,
+        "message_id": "1565698167666639064",
+        "msg_codes": [
+          "AHABLESSYOU",
+          "NEVERGONNAGIVE",
+          "NEVERGONNAMAKE"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793361919,
         "rewards": [
           "Stellar Jade ×100",
           "Refined Aether ×4"
         ],
         "sources": [
           "ennead",
-          "ogc"
+          "fandom",
+          "ogc",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
       },
       "AT45Q": {
         "first_seen": 1790323430,
@@ -3268,31 +3282,59 @@
       },
       "NEVERGONNAGIVE": {
         "first_seen": 1793360418,
-        "gate": "only ennead, ogc",
-        "last_seen": 1793360418,
+        "gate": "redeem-validated",
+        "last_seen": 1793361919,
+        "message_id": "1565698167666639064",
+        "msg_codes": [
+          "AHABLESSYOU",
+          "NEVERGONNAGIVE",
+          "NEVERGONNAMAKE"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793361919,
         "rewards": [
           "Stellar Jade ×100",
           "Traveler's Guide ×50000"
         ],
         "sources": [
           "ennead",
-          "ogc"
+          "fandom",
+          "ogc",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
       },
       "NEVERGONNAMAKE": {
         "first_seen": 1793361021,
-        "gate": "only ennead, ogc",
-        "last_seen": 1793361021,
+        "gate": "redeem-validated",
+        "last_seen": 1793361919,
+        "message_id": "1565698167666639064",
+        "msg_codes": [
+          "AHABLESSYOU",
+          "NEVERGONNAGIVE",
+          "NEVERGONNAMAKE"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793361919,
         "rewards": [
           "Stellar Jade ×100",
           "Traveler's Guide ×5"
         ],
         "sources": [
           "ennead",
-          "ogc"
+          "fandom",
+          "ogc",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
       },
       "NSJR3B97ZZ5X": {
         "first_seen": 1790323430,
