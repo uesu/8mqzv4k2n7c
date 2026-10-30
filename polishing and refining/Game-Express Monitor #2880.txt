@@ -1,0 +1,1139 @@
+https://github.com/uesu/8mqzv4k2n7c/actions/runs/41043645275
+
+2026-10-30T10:50:13.0715235Z Current runner version: '2.338.0'
+2026-10-30T10:50:13.0741723Z ##[group]Runner Image Provisioner
+2026-10-30T10:50:13.0742862Z Hosted Compute Agent
+2026-10-30T10:50:13.0743554Z Version: 20261021.618
+2026-10-30T10:50:13.0744272Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-30T10:50:13.0745075Z Build Date: 2026-10-21T00:45:21Z
+2026-10-30T10:50:13.0745921Z Worker ID: {09edf3c9-7045-4bb5-9ecf-7c0b17e180fa}
+2026-10-30T10:50:13.0746719Z Region: westus3
+2026-10-30T10:50:13.0747409Z Cloud: Azure
+2026-10-30T10:50:13.0747969Z ##[endgroup]
+2026-10-30T10:50:13.0749532Z ##[group]Operating System
+2026-10-30T10:50:13.0750264Z Ubuntu
+2026-10-30T10:50:13.0750863Z 24.04.5
+2026-10-30T10:50:13.0751464Z LTS
+2026-10-30T10:50:13.0752192Z ##[endgroup]
+2026-10-30T10:50:13.0752859Z ##[group]Runner Image
+2026-10-30T10:50:13.0753619Z Image: ubuntu-24.04
+2026-10-30T10:50:13.0754253Z Version: 20261025.353.1
+2026-10-30T10:50:13.0755540Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-30T10:50:13.0757053Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-10-30T10:50:13.0758083Z ##[endgroup]
+2026-10-30T10:50:13.0759291Z ##[group]GITHUB_TOKEN Permissions
+2026-10-30T10:50:13.0761244Z Contents: write
+2026-10-30T10:50:13.0762192Z Metadata: read
+2026-10-30T10:50:13.0762942Z ##[endgroup]
+2026-10-30T10:50:13.0766027Z Secret source: Actions
+2026-10-30T10:50:13.0767602Z Cache mode: write
+2026-10-30T10:50:13.0768395Z Prepare workflow directory
+2026-10-30T10:50:13.1315773Z Prepare all required actions
+2026-10-30T10:50:13.1362586Z Getting action download info
+2026-10-30T10:50:13.4334310Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-10-30T10:50:13.5069877Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-10-30T10:50:14.1528370Z Download action repository 'astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e' (SHA:07a047e608db84b3d8c06cd9a7c7dcc9c355c18e)
+2026-10-30T10:50:14.9158935Z Complete job name: monitor
+2026-10-30T10:50:15.0210127Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-10-30T10:50:15.0212218Z with:
+2026-10-30T10:50:15.0213183Z   ref: main
+2026-10-30T10:50:15.0214176Z   repository: uesu/8mqzv4k2n7c
+2026-10-30T10:50:15.0222136Z   token: ***
+2026-10-30T10:50:15.0223118Z   ssh-strict: true
+2026-10-30T10:50:15.0224113Z   ssh-user: git
+2026-10-30T10:50:15.0225128Z   persist-credentials: true
+2026-10-30T10:50:15.0226223Z   clean: true
+2026-10-30T10:50:15.0227258Z   sparse-checkout-cone-mode: true
+2026-10-30T10:50:15.0228417Z   fetch-depth: 1
+2026-10-30T10:50:15.0229414Z   fetch-tags: false
+2026-10-30T10:50:15.0230433Z   show-progress: true
+2026-10-30T10:50:15.0231468Z   lfs: false
+2026-10-30T10:50:15.0232604Z   submodules: false
+2026-10-30T10:50:15.0233646Z   set-safe-directory: true
+2026-10-30T10:50:15.0234845Z   allow-unsafe-pr-checkout: false
+2026-10-30T10:50:15.0236316Z env:
+2026-10-30T10:50:15.0237266Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:50:15.0239703Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:50:15.0240863Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:50:15.0243325Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:50:15.0245907Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:50:15.0248356Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:50:15.0250753Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:50:15.0253322Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:50:15.0255756Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:50:15.0256954Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:50:15.0258393Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:50:15.0320136Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:50:15.0335775Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:50:15.0339871Z   TEST: webhooks
+2026-10-30T10:50:15.0341059Z   NO_PING: 0
+2026-10-30T10:50:15.0342162Z   PING_FLAG: 
+2026-10-30T10:50:15.0343121Z   GAME_ARG: 
+2026-10-30T10:50:15.0344082Z ##[endgroup]
+2026-10-30T10:50:15.2797004Z Syncing repository: uesu/8mqzv4k2n7c
+2026-10-30T10:50:15.2802115Z ##[group]Getting Git version info
+2026-10-30T10:50:15.2804935Z Working directory is '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-10-30T10:50:15.2809212Z [command]/usr/bin/git version
+2026-10-30T10:50:15.2844810Z git version 2.56.0
+2026-10-30T10:50:15.2868230Z ##[endgroup]
+2026-10-30T10:50:15.2879149Z Temporarily overriding HOME='/home/runner/work/_temp/ff5649df-ccaa-4bbc-988e-21e200deb7f1' before making global git config changes
+2026-10-30T10:50:15.2884728Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-30T10:50:15.2889471Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-30T10:50:15.2929822Z Deleting the contents of '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-10-30T10:50:15.2934368Z ##[group]Determining repository object format
+2026-10-30T10:50:15.7240984Z ##[endgroup]
+2026-10-30T10:50:15.7244522Z ##[group]Initializing the repository
+2026-10-30T10:50:15.7255020Z [command]/usr/bin/git init /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-30T10:50:15.7350886Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-30T10:50:15.7353336Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-30T10:50:15.7355428Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-30T10:50:15.7357225Z hint: call:
+2026-10-30T10:50:15.7358509Z hint:
+2026-10-30T10:50:15.7359997Z hint: 	git config --global init.defaultBranch <name>
+2026-10-30T10:50:15.7361539Z hint:
+2026-10-30T10:50:15.7363351Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-30T10:50:15.7366261Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-30T10:50:15.7367849Z hint:
+2026-10-30T10:50:15.7369072Z hint: 	git branch -m <name>
+2026-10-30T10:50:15.7370548Z hint:
+2026-10-30T10:50:15.7372199Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-30T10:50:15.7374126Z Initialized empty Git repository in /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/
+2026-10-30T10:50:15.7377782Z [command]/usr/bin/git remote add origin https://github.com/uesu/8mqzv4k2n7c
+2026-10-30T10:50:15.7417935Z ##[endgroup]
+2026-10-30T10:50:15.7419216Z ##[group]Disabling automatic garbage collection
+2026-10-30T10:50:15.7423043Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-30T10:50:15.7459882Z ##[endgroup]
+2026-10-30T10:50:15.7461143Z ##[group]Setting up auth
+2026-10-30T10:50:15.7462335Z Removing SSH command configuration
+2026-10-30T10:50:15.7465590Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-30T10:50:15.7510478Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-30T10:50:15.7835767Z Removing HTTP extra header
+2026-10-30T10:50:15.7842918Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-30T10:50:15.7875904Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-30T10:50:15.8050192Z Removing includeIf entries pointing to credentials config files
+2026-10-30T10:50:15.8056106Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-30T10:50:15.8088818Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-30T10:50:15.8272211Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-30T10:50:15.8309288Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path /home/runner/work/_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:50:15.8338158Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:50:15.8368344Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:50:15.8398986Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:50:15.8428016Z ##[endgroup]
+2026-10-30T10:50:15.8429323Z ##[group]Fetching the repository
+2026-10-30T10:50:15.8435126Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/main*:refs/remotes/origin/main* +refs/tags/main*:refs/tags/main*
+2026-10-30T10:50:16.7919996Z From https://github.com/uesu/8mqzv4k2n7c
+2026-10-30T10:50:16.7921372Z  * [new branch]      main       -> origin/main
+2026-10-30T10:50:16.7923721Z ##[endgroup]
+2026-10-30T10:50:16.7924295Z ##[group]Determining the checkout info
+2026-10-30T10:50:16.7929868Z [command]/usr/bin/git branch --list --remote origin/main
+2026-10-30T10:50:16.7955587Z   origin/main
+2026-10-30T10:50:16.7959762Z ##[endgroup]
+2026-10-30T10:50:16.7964412Z [command]/usr/bin/git sparse-checkout disable
+2026-10-30T10:50:16.8008069Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-30T10:50:16.8036826Z ##[group]Checking out the ref
+2026-10-30T10:50:16.8040835Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-10-30T10:50:16.8378165Z Switched to a new branch 'main'
+2026-10-30T10:50:16.8381787Z branch 'main' set up to track 'origin/main'.
+2026-10-30T10:50:16.8386996Z ##[endgroup]
+2026-10-30T10:50:16.8427070Z [command]/usr/bin/git log -1 --format=%H
+2026-10-30T10:50:16.8450900Z 93b473be3498cd088f4358eaf8fd19973e41862c
+2026-10-30T10:50:16.8689643Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-10-30T10:50:16.8690077Z with:
+2026-10-30T10:50:16.8690323Z   python-version: 3.14.9
+2026-10-30T10:50:16.8690604Z   check-latest: false
+2026-10-30T10:50:16.8693309Z   token: ***
+2026-10-30T10:50:16.8693670Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-10-30T10:50:16.8694227Z   update-environment: true
+2026-10-30T10:50:16.8694512Z   allow-prereleases: false
+2026-10-30T10:50:16.8694786Z   freethreaded: false
+2026-10-30T10:50:16.8695036Z env:
+2026-10-30T10:50:16.8695264Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:50:16.8695903Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:50:16.8696189Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:50:16.8696870Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:50:16.8697618Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:50:16.8698324Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:50:16.8698972Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:50:16.8699689Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:50:16.8700343Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:50:16.8700640Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:50:16.8701014Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:50:16.8721002Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:50:16.8725576Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:50:16.8726732Z   TEST: webhooks
+2026-10-30T10:50:16.8726972Z   NO_PING: 0
+2026-10-30T10:50:16.8727206Z   PING_FLAG: 
+2026-10-30T10:50:16.8727435Z   GAME_ARG: 
+2026-10-30T10:50:16.8727675Z ##[endgroup]
+2026-10-30T10:50:16.9807989Z ##[group]Installed versions
+2026-10-30T10:50:16.9840105Z Successfully set up CPython (3.14.9)
+2026-10-30T10:50:16.9841873Z ##[endgroup]
+2026-10-30T10:50:16.9999819Z ##[group]Run astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
+2026-10-30T10:50:17.0000271Z with:
+2026-10-30T10:50:17.0000513Z   version: latest-known
+2026-10-30T10:50:17.0000796Z   activate-environment: false
+2026-10-30T10:50:17.0001082Z   no-project: false
+2026-10-30T10:50:17.0001405Z   working-directory: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-30T10:50:17.0004189Z   github-token: ***
+2026-10-30T10:50:17.0004444Z   enable-cache: auto
+2026-10-30T10:50:17.0005047Z   cache-dependency-glob: **/*requirements*.txt
+**/*requirements*.in
+**/*constraints*.txt
+**/*constraints*.in
+**/pyproject.toml
+**/uv.lock
+**/*.py.lock
+
+2026-10-30T10:50:17.0005688Z   restore-cache: true
+2026-10-30T10:50:17.0005946Z   save-cache: auto
+2026-10-30T10:50:17.0006189Z   prune-cache: false
+2026-10-30T10:50:17.0006437Z   cache-python: false
+2026-10-30T10:50:17.0006698Z   ignore-nothing-to-cache: false
+2026-10-30T10:50:17.0006990Z   ignore-empty-workdir: false
+2026-10-30T10:50:17.0007344Z   download-from-astral-mirror: true
+2026-10-30T10:50:17.0007647Z   add-problem-matchers: true
+2026-10-30T10:50:17.0007911Z   quiet: false
+2026-10-30T10:50:17.0008293Z   resolution-strategy: highest
+2026-10-30T10:50:17.0008565Z env:
+2026-10-30T10:50:17.0008792Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:50:17.0009438Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:50:17.0009718Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:50:17.0010355Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:50:17.0011046Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:50:17.0011691Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:50:17.0012535Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:50:17.0013221Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:50:17.0013870Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:50:17.0014168Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:50:17.0014551Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:50:17.0033431Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:50:17.0037952Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:50:17.0039129Z   TEST: webhooks
+2026-10-30T10:50:17.0039364Z   NO_PING: 0
+2026-10-30T10:50:17.0039590Z   PING_FLAG: 
+2026-10-30T10:50:17.0039812Z   GAME_ARG: 
+2026-10-30T10:50:17.0040102Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:17.0040548Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T10:50:17.0040988Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:17.0041384Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:17.0042132Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:17.0042550Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T10:50:17.0042898Z ##[endgroup]
+2026-10-30T10:50:17.2523789Z Fetching manifest data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+2026-10-30T10:50:17.3152891Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+2026-10-30T10:50:17.5135485Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/b5734fb6-fb5b-4b05-a39b-27cad1d797c4 -f /home/runner/work/_temp/3496d34b-3a7c-4b91-a9dc-3f3e02bd3fe9
+2026-10-30T10:50:17.8091199Z Added /home/runner/.local/bin to the path
+2026-10-30T10:50:17.8094760Z Added /opt/hostedtoolcache/uv/0.13.5/x86_64 to the path
+2026-10-30T10:50:17.8095835Z Set UV_PYTHON_INSTALL_DIR to /home/runner/work/_temp/uv-python-dir
+2026-10-30T10:50:17.8096628Z Added /home/runner/work/_temp/uv-python-dir to the path
+2026-10-30T10:50:17.8107848Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+2026-10-30T10:50:17.8108807Z Successfully installed uv version 0.13.5
+2026-10-30T10:50:18.8043199Z Searching files using cache dependency glob: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/pyproject.toml,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/uv.lock,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*.py.lock
+2026-10-30T10:50:18.8380367Z /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/requirements.txt
+2026-10-30T10:50:18.8482773Z Found 1 files to hash.
+2026-10-30T10:50:18.8551019Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-30T10:50:19.0457889Z Cache hit for: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-30T10:50:20.1161463Z Received 6598642 of 6598642 (100.0%), 7.4 MBs/sec
+2026-10-30T10:50:20.1162551Z Cache Size: ~6 MB (6598642 B)
+2026-10-30T10:50:20.1193869Z [command]/usr/bin/tar -xf /home/runner/work/_temp/ccad7ed0-3e28-4d1a-95c9-1c3696567121/cache.tzst -P -C /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c --use-compress-program unzstd
+2026-10-30T10:50:20.1583006Z Cache restored successfully
+2026-10-30T10:50:20.1590047Z cache restored from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-10-30T10:50:20.2723246Z ##[group]Run uv pip install -r requirements.txt -q
+2026-10-30T10:50:20.2723738Z [36;1muv pip install -r requirements.txt -q[0m
+2026-10-30T10:50:20.2739916Z shell: /usr/bin/bash -e {0}
+2026-10-30T10:50:20.2740214Z env:
+2026-10-30T10:50:20.2740453Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:50:20.2741272Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:50:20.2741583Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:50:20.2742447Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:50:20.2743161Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:50:20.2743826Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:50:20.2744463Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:50:20.2745138Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:50:20.2745779Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:50:20.2746078Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:50:20.2746454Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:50:20.2764675Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:50:20.2768987Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:50:20.2770280Z   TEST: webhooks
+2026-10-30T10:50:20.2770526Z   NO_PING: 0
+2026-10-30T10:50:20.2770756Z   PING_FLAG: 
+2026-10-30T10:50:20.2770984Z   GAME_ARG: 
+2026-10-30T10:50:20.2771279Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.2771734Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T10:50:20.2772388Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.2772834Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.2773246Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.2773659Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T10:50:20.2774098Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-30T10:50:20.2774514Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-30T10:50:20.2774858Z   UV_SYSTEM_PYTHON: 1
+2026-10-30T10:50:20.2775113Z ##[endgroup]
+2026-10-30T10:50:20.4209025Z ##[group]Run python -m gamexpress validate || true
+2026-10-30T10:50:20.4209462Z [36;1mpython -m gamexpress validate || true[0m
+2026-10-30T10:50:20.4222860Z shell: /usr/bin/bash -e {0}
+2026-10-30T10:50:20.4223156Z env:
+2026-10-30T10:50:20.4223391Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:50:20.4224088Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:50:20.4224379Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:50:20.4225027Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:50:20.4225727Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:50:20.4226387Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:50:20.4227040Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:50:20.4227708Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:50:20.4228349Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:50:20.4228635Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:50:20.4229002Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:50:20.4247343Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:50:20.4252136Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:50:20.4253364Z   TEST: webhooks
+2026-10-30T10:50:20.4253627Z   NO_PING: 0
+2026-10-30T10:50:20.4253869Z   PING_FLAG: 
+2026-10-30T10:50:20.4254125Z   GAME_ARG: 
+2026-10-30T10:50:20.4254449Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.4254945Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T10:50:20.4255425Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.4256043Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.4256485Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:20.4256926Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T10:50:20.4257392Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-30T10:50:20.4257830Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-30T10:50:20.4258182Z ##[endgroup]
+2026-10-30T10:50:22.5268262Z Game-Express 93b473b | features=['beta', 'codes', 'maintenance', 'news', 'schedule'] | instance=alpha (primary) | dry_run=False
+2026-10-30T10:50:22.5269184Z peer_state_url=— | X=on | nitter instances=27 | token=set
+2026-10-30T10:50:22.5269643Z Reddit=on | reddit instances=27 | proxies=3 | feed_token=set
+2026-10-30T10:50:22.5270377Z news=on | news games=genshin,hna,starrail,wuwa,zzz | article count cap=none | timestamps=off | expand full=off | group long strips=on | dedicated destinations only
+2026-10-30T10:50:22.5271505Z maintenance=on | maintenance games=genshin,starrail,wuwa,zzz | dedicated destinations only
+2026-10-30T10:50:22.6595500Z beta=on | beta games=genshin,starrail,wuwa,zzz | ping=off (no PING_BETA set) | budget=chars≤4 changed≤8 equip≤12 requests≤48 repoll≥30m
+2026-10-30T10:50:22.6596881Z emoji: title=✓, youtube=✓, twitch=✓, source=✓, redeem=✓
+2026-10-30T10:50:22.6597595Z   ✓ genshin   Genshin Impact        
+2026-10-30T10:50:22.6598718Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI]
+2026-10-30T10:50:22.6599833Z       codes[✓ DISCORD_WEBHOOK_CODES_GENSHIN | no ping]
+2026-10-30T10:50:22.6600603Z       news[✓ DISCORD_WEBHOOK_NEWS_GENSHIN | no ping]
+2026-10-30T10:50:22.6601553Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_GENSHIN | <@&1296268365593186426>]
+2026-10-30T10:50:22.6602666Z       beta[✓ DISCORD_WEBHOOK_BETA_GENSHIN | no ping]
+2026-10-30T10:50:22.6604697Z       X=GenshinImpact Reddit=Genshin_Impact code_sources=hoyolab:2,seria:genshin,humbao:GENSHIN,ogc:genshin,ennead:genshin,fandom:genshin-impact/Promotional_Code,codehub:genshin-impact,reddit:Genshin_Impact,x 4★/phase=3
+2026-10-30T10:50:22.6606566Z       beta=gi changelog=https://gi.gachabase.net/changelog/beta?lang=en
+2026-10-30T10:50:22.6607424Z   ✓ starrail  Honkai: Star Rail     
+2026-10-30T10:50:22.6608396Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR]
+2026-10-30T10:50:22.6609446Z       codes[✓ DISCORD_WEBHOOK_CODES_STARRAIL | no ping]
+2026-10-30T10:50:22.6610204Z       news[✓ DISCORD_WEBHOOK_NEWS_STARRAIL | no ping]
+2026-10-30T10:50:22.6611118Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_STARRAIL | <@&1296268365593186426>]
+2026-10-30T10:50:22.6612153Z       beta[✓ DISCORD_WEBHOOK_BETA_STARRAIL | no ping]
+2026-10-30T10:50:22.6614166Z       X=honkaistarrail Reddit=HonkaiStarRail code_sources=hoyolab:6,seria:hkrpg,humbao:HSR,ogc:starrail,ennead:starrail,fandom:honkai-star-rail/Redemption_Code,codehub:honkai-star-rail,reddit:HonkaiStarRail,x 4★/phase=3
+2026-10-30T10:50:22.6615998Z       beta=hsr changelog=https://hsr.gachabase.net/changelog/beta?lang=en
+2026-10-30T10:50:22.6616768Z   ✓ zzz       Zenless Zone Zero     
+2026-10-30T10:50:22.6617759Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ]
+2026-10-30T10:50:22.6618837Z       codes[✓ DISCORD_WEBHOOK_CODES_ZZZ | no ping]
+2026-10-30T10:50:22.6619561Z       news[✓ DISCORD_WEBHOOK_NEWS_ZZZ | no ping]
+2026-10-30T10:50:22.6620475Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_ZZZ | <@&1296268365593186426>]
+2026-10-30T10:50:22.6621357Z       beta[✓ DISCORD_WEBHOOK_BETA_ZZZ | no ping]
+2026-10-30T10:50:22.6623414Z       X=ZZZ_EN Reddit=ZZZ_Official code_sources=hoyolab:8,seria:nap,humbao:ZZZ,ogc:zenless,ennead:zenless,fandom:zenless-zone-zero/Redemption_Code,codehub:zenless-zone-zero,reddit:ZZZ_Official,x 4★/phase=2
+2026-10-30T10:50:22.6625082Z       beta=zzz changelog=https://zzz.gachabase.net/changelog/beta?lang=en
+2026-10-30T10:50:22.6626263Z   ✓ wuwa      Wuthering Waves       
+2026-10-30T10:50:22.6627410Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA]
+2026-10-30T10:50:22.6628528Z       codes[✓ DISCORD_WEBHOOK_CODES_WUWA | no ping]
+2026-10-30T10:50:22.6629259Z       news[✓ DISCORD_WEBHOOK_NEWS_WUWA | no ping]
+2026-10-30T10:50:22.6630140Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_WUWA | <@&1296268365593186426>]
+2026-10-30T10:50:22.6631065Z       beta[✓ DISCORD_WEBHOOK_BETA_WUWA | no ping]
+2026-10-30T10:50:22.6632994Z       X=Wuthering_Waves Reddit=WutheringWaves code_sources=ogc:wuwa,wuthering.gg,fandom:wutheringwaves/Redemption_Code,codehub:wuthering-waves,reddit:WutheringWaves,x 4★/phase=3
+2026-10-30T10:50:22.6634449Z       beta=ww changelog=—
+2026-10-30T10:50:22.6634984Z   ✓ hna       Honkai: Nexus Anima   
+2026-10-30T10:50:22.6635976Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA]
+2026-10-30T10:50:22.6637373Z       codes[✓ DISCORD_WEBHOOK_CODES_HNA | no ping]
+2026-10-30T10:50:22.6638083Z       news[✓ DISCORD_WEBHOOK_NEWS_HNA | no ping]
+2026-10-30T10:50:22.6638753Z       maintenance[— none | <@&1296268365593186426>]
+2026-10-30T10:50:22.6639463Z       beta[✓ DISCORD_WEBHOOK_NEWS_HNA | no ping]
+2026-10-30T10:50:22.6641177Z       X=HonkaiNA Reddit=HonkaiNexusAnima code_sources=hoyolab:9,fandom:honkai-nexus-anima/Redemption_Code,reddit:HonkaiNexusAnima,x 4★/phase=count not set (set four_star_count at launch)
+2026-10-30T10:50:22.6642869Z   ✓ ananta    ANANTA                
+2026-10-30T10:50:22.6643924Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA]
+2026-10-30T10:50:22.6645018Z       codes[✓ DISCORD_WEBHOOK_CODES_ANANTA | no ping]
+2026-10-30T10:50:22.6645684Z       news[— none | no ping]
+2026-10-30T10:50:22.6646265Z       maintenance[— none | <@&1296268365593186426>]
+2026-10-30T10:50:22.6646910Z       beta[— none | no ping]
+2026-10-30T10:50:22.6648336Z       X=Ananta_EN Reddit=AnantaOfficial code_sources=fandom:ananta/Redemption_Code,reddit:AnantaOfficial,x 4★/phase=count not set (set four_star_count at launch)
+2026-10-30T10:50:22.6720697Z config OK
+2026-10-30T10:50:22.7122421Z ##[group]Run python -m gamexpress run
+2026-10-30T10:50:22.7122885Z [36;1mpython -m gamexpress run[0m
+2026-10-30T10:50:22.7137088Z shell: /usr/bin/bash -e {0}
+2026-10-30T10:50:22.7137386Z env:
+2026-10-30T10:50:22.7137635Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:50:22.7138332Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:50:22.7138620Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:50:22.7139289Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:50:22.7140005Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:50:22.7140652Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:50:22.7141295Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:50:22.7142255Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:50:22.7143040Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:50:22.7143336Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:50:22.7143708Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:50:22.7161329Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:50:22.7165981Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:50:22.7167099Z   TEST: webhooks
+2026-10-30T10:50:22.7167347Z   NO_PING: 0
+2026-10-30T10:50:22.7167585Z   PING_FLAG: 
+2026-10-30T10:50:22.7167835Z   GAME_ARG: 
+2026-10-30T10:50:22.7168139Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:22.7168601Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T10:50:22.7169051Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:22.7169463Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:22.7169861Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:50:22.7170266Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T10:50:22.7170686Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-30T10:50:22.7171079Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-30T10:50:22.7171399Z   ONLY: 
+2026-10-30T10:50:22.7171615Z   GAME: 
+2026-10-30T10:50:22.7171825Z   REPOST: 
+2026-10-30T10:50:22.7172253Z ##[endgroup]
+2026-10-30T10:50:26.4756090Z 10:50:26 INFO    gamexpress.http: [nitter] https://nitter.cf/ZZZ_EN/rss -> HTTP 530
+2026-10-30T10:50:26.4832483Z 10:50:26 INFO    gamexpress.http: [nitter] https://nitter.cf/GenshinImpact/rss -> HTTP 530
+2026-10-30T10:50:26.5047162Z 10:50:26 INFO    gamexpress.http: [nitter] https://nitter.cf/honkaistarrail/rss -> HTTP 530
+2026-10-30T10:50:26.5109355Z 10:50:26 INFO    gamexpress.http: [nitter] https://nitter.cf/HonkaiNA/rss -> HTTP 530
+2026-10-30T10:50:26.5166637Z 10:50:26 INFO    gamexpress.http: [nitter] https://xitter.cf/ZZZ_EN/rss -> HTTP 530
+2026-10-30T10:50:26.5205592Z 10:50:26 INFO    gamexpress.http: [nitter] https://xitter.cf/honkaistarrail/rss -> HTTP 530
+2026-10-30T10:50:26.5238020Z 10:50:26 INFO    gamexpress.http: [nitter] https://xitter.cf/Wuthering_Waves/rss -> HTTP 530
+2026-10-30T10:50:26.5304123Z 10:50:26 INFO    gamexpress.http: [nitter] https://nitter.cf/Ananta_EN/rss -> HTTP 530
+2026-10-30T10:50:26.5353957Z 10:50:26 INFO    gamexpress.http: [nitter] https://nitter.cf/Wuthering_Waves/rss -> HTTP 530
+2026-10-30T10:50:26.5354862Z 10:50:26 INFO    gamexpress.http: [nitter] https://xitter.cf/GenshinImpact/rss -> HTTP 530
+2026-10-30T10:50:26.5536927Z 10:50:26 INFO    gamexpress.http: [nitter] https://xitter.cf/HonkaiNA/rss -> HTTP 530
+2026-10-30T10:50:26.5795067Z 10:50:26 INFO    gamexpress.http: [nitter] https://xitter.cf/Ananta_EN/rss -> HTTP 530
+2026-10-30T10:50:27.2606715Z 10:50:27 INFO    gamexpress.http: [nitter] https://nitter.cf/honkaistarrail/status/2115971952212930929/rss -> HTTP 530
+2026-10-30T10:50:27.2875454Z 10:50:27 INFO    gamexpress.http: [nitter] https://xitter.cf/honkaistarrail/status/2115971952212930929/rss -> HTTP 530
+2026-10-30T10:50:27.2881643Z 10:50:27 INFO    gamexpress.http: [nitter] https://nitter.cf/GenshinImpact/status/2116062558566171047/rss -> HTTP 530
+2026-10-30T10:50:27.3080353Z 10:50:27 INFO    gamexpress.http: [nitter] https://xitter.cf/GenshinImpact/status/2116062558566171047/rss -> HTTP 530
+2026-10-30T10:50:27.3145580Z 10:50:27 INFO    gamexpress.http: [nitter] https://nitter.cf/GenshinImpact/status/2116062546046193680/rss -> HTTP 530
+2026-10-30T10:50:27.4849717Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapawt.org/GenshinImpact/status/2116062546046193680/rss -> HTTP 530
+2026-10-30T10:50:27.4872422Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapawt.org/honkaistarrail/status/2115971952212930929/rss -> HTTP 530
+2026-10-30T10:50:27.5010423Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapawt.org/GenshinImpact/status/2116062558566171047/rss -> HTTP 530
+2026-10-30T10:50:27.6458612Z 10:50:27 INFO    gamexpress.http: [nitter] https://nitter.meowing.monster/HonkaiNA/rss -> HTTP 429
+2026-10-30T10:50:27.6954015Z 10:50:27 INFO    gamexpress.http: [nitter] https://nitter.meowing.monster/Ananta_EN/rss -> HTTP 429
+2026-10-30T10:50:27.7657739Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapaw.org/honkaistarrail/status/2115971952212930929/rss -> HTTP 530
+2026-10-30T10:50:27.7687230Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapaw.org/GenshinImpact/status/2116062546046193680/rss -> HTTP 530
+2026-10-30T10:50:27.7801152Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapaw.org/GenshinImpact/status/2116062558566171047/rss -> HTTP 530
+2026-10-30T10:50:27.8247813Z 10:50:27 INFO    gamexpress: [zzz] 0 official item(s) matched in the last 72h (live 3.3, pre-install —)
+2026-10-30T10:50:27.8949317Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapawt.net/GenshinImpact/status/2116062546046193680/rss -> HTTP 530
+2026-10-30T10:50:27.8976956Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapawt.net/honkaistarrail/status/2115971952212930929/rss -> HTTP 530
+2026-10-30T10:50:27.9064587Z 10:50:27 INFO    gamexpress.http: [nitter] https://teapawt.net/GenshinImpact/status/2116062558566171047/rss -> HTTP 530
+2026-10-30T10:50:28.2880015Z 10:50:28 INFO    gamexpress.http: [nitter] https://xitter.gq/honkaistarrail/status/2115971952212930929/rss -> HTTP 530
+2026-10-30T10:50:28.3020672Z 10:50:28 INFO    gamexpress.http: [nitter] https://xitter.gq/GenshinImpact/status/2116062546046193680/rss -> HTTP 530
+2026-10-30T10:50:28.3038410Z 10:50:28 INFO    gamexpress.http: [nitter] https://xitter.gq/GenshinImpact/status/2116062558566171047/rss -> HTTP 530
+2026-10-30T10:50:28.7591319Z 10:50:28 INFO    gamexpress.http: [nitter] https://nitter.gq/GenshinImpact/status/2116062558566171047/rss -> HTTP 530
+2026-10-30T10:50:28.7616206Z 10:50:28 INFO    gamexpress.http: [nitter] https://nitter.gq/GenshinImpact/status/2116062546046193680/rss -> HTTP 530
+2026-10-30T10:50:28.7640603Z 10:50:28 INFO    gamexpress.http: [nitter] https://nitter.gq/honkaistarrail/status/2115971952212930929/rss -> HTTP 530
+2026-10-30T10:50:28.9686210Z 10:50:28 INFO    gamexpress: [starrail] 1 official item(s) matched in the last 72h (live 4.6, pre-install —)
+2026-10-30T10:50:28.9878131Z 10:50:28 INFO    gamexpress: [wuwa] 3 official item(s) matched in the last 72h (live 3.7, pre-install —)
+2026-10-30T10:50:29.0074781Z 10:50:29 INFO    gamexpress: [genshin] 2 official item(s) matched in the last 72h (live 7.1, pre-install —)
+2026-10-30T10:50:29.8368904Z 10:50:29 INFO    gamexpress.http: [nitter] https://teapawt.org/HonkaiNA/rss -> HTTP 530
+2026-10-30T10:50:29.8492540Z 10:50:29 INFO    gamexpress.http: [nitter] https://teapawt.net/HonkaiNA/rss -> HTTP 530
+2026-10-30T10:50:29.8525420Z 10:50:29 INFO    gamexpress.http: [nitter] https://teapaw.org/HonkaiNA/rss -> HTTP 530
+2026-10-30T10:50:30.8392261Z 10:50:30 INFO    gamexpress.http: [nitter] https://teapawt.org/Ananta_EN/rss -> HTTP 530
+2026-10-30T10:50:30.8439917Z 10:50:30 INFO    gamexpress.http: [nitter] https://teapawt.net/Ananta_EN/rss -> HTTP 530
+2026-10-30T10:50:30.8757452Z 10:50:30 INFO    gamexpress.http: [nitter] https://teapaw.org/Ananta_EN/rss -> HTTP 530
+2026-10-30T10:50:31.1816777Z 10:50:31 INFO    gamexpress: [hna] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-10-30T10:50:32.8604611Z 10:50:32 INFO    gamexpress: [ananta] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-10-30T10:50:41.3167726Z 10:50:41 WARNING gamexpress.http: news media rejected: host=static.nanoka.cc status=404
+2026-10-30T10:50:41.5017477Z 10:50:41 WARNING gamexpress.http: news media rejected: host=static.nanoka.cc status=404
+2026-10-30T10:50:41.6904993Z 10:50:41 INFO    gamexpress.http: [beta-data] https://static.nanoka.cc/ww/3.7/en/character/1512.json -> HTTP 404
+2026-10-30T10:51:05.1400927Z 10:51:05 INFO    gamexpress.beta: [wuwa] beta: delivered 5 page(s) for v3.8.3
+2026-10-30T10:51:05.1474959Z 10:51:05 INFO    gamexpress: sources: bannerfeed: 1 ok / 0 fail; beta-data: 6 ok / 1 fail; beta-manifest: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; fxtwitter: 6 ok / 0 fail; hoyolab: 12 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 0 ok / 2 fail (media GET/status/signature validation failed); nitter: 12 ok / 40 fail; reddit: 6 ok / 0 fail
+2026-10-30T10:51:05.1494768Z 10:51:05 INFO    gamexpress: 
+2026-10-30T10:51:05.1495630Z ### Game-Express 93b473b — alpha (primary)
+2026-10-30T10:51:05.1496281Z - 📰 GI news: discovered=5, eligible=5, attempted=0, delivered=0, deferred/error=0
+2026-10-30T10:51:05.1497036Z - 📰 HSR news: discovered=2, eligible=2, attempted=0, delivered=0, deferred/error=0
+2026-10-30T10:51:05.1497757Z - 📰 ZZZ news: discovered=1, eligible=1, attempted=0, delivered=0, deferred/error=0
+2026-10-30T10:51:05.1498452Z - 📰 WW news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+2026-10-30T10:51:05.1499136Z - 📰 HNA news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+2026-10-30T10:51:05.1499714Z - 🧪 WW 3.8.3 beta (v3.8.3): 5 page(s) — Lily
+2026-10-30T10:51:05.1500294Z - repository commit/push: not observed here; see the subsequent workflow persistence step.
+2026-10-30T10:51:05.1503180Z - sources: bannerfeed: 1 ok / 0 fail; beta-data: 6 ok / 1 fail; beta-manifest: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; fxtwitter: 6 ok / 0 fail; hoyolab: 12 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 0 ok / 2 fail (media GET/status/signature validation failed); nitter: 12 ok / 40 fail; reddit: 6 ok / 0 fail
+2026-10-30T10:51:05.1505410Z - ⏱️ run took 42.0s
+2026-10-30T10:51:05.1936777Z ##[group]Run # Only tracked run output is staged here: state and the discovered announcement id. The
+2026-10-30T10:51:05.1937502Z [36;1m# Only tracked run output is staged here: state and the discovered announcement id. The[0m
+2026-10-30T10:51:05.1938109Z [36;1m# run summary stays in the job summary and its warnings/errors stay in the annotations;[0m
+2026-10-30T10:51:05.1938642Z [36;1m# no operator notes folder is read or written by this workflow.[0m
+2026-10-30T10:51:05.1939091Z [36;1mgit config user.name "github-actions[bot]"[0m
+2026-10-30T10:51:05.1939569Z [36;1mgit config user.email "41898282+github-actions[bot]@users.noreply.github.com"[0m
+2026-10-30T10:51:05.1940047Z [36;1mgit add state/state.json 2>/dev/null || true[0m
+2026-10-30T10:51:05.1940552Z [36;1m# config/program_announcements.json travels WITH the commit, not with the state: a nitter[0m
+2026-10-30T10:51:05.1941229Z [36;1m# timeline only reaches back a few days, but the card is re-rendered for the whole version[0m
+2026-10-30T10:51:05.1941849Z [36;1m# and every mode=test run starts from an empty state. Committing the discovered tweet id is[0m
+2026-10-30T10:51:05.1942619Z [36;1m# what lets a later test run resolve the same announcement by id through fxtwitter and show[0m
+2026-10-30T10:51:05.1943232Z [36;1m# the real link and the real key art. Same pattern as posted_tweets.json in the X monitor.[0m
+2026-10-30T10:51:05.1943791Z [36;1mgit add -f config/program_announcements.json 2>/dev/null || true[0m
+2026-10-30T10:51:05.1944362Z [36;1mif git diff --cached --quiet; then[0m
+2026-10-30T10:51:05.1944724Z [36;1m  echo "state unchanged — nothing to commit"[0m
+2026-10-30T10:51:05.1945092Z [36;1m  echo "result=unchanged" >> "$GITHUB_OUTPUT"[0m
+2026-10-30T10:51:05.1945415Z [36;1m  exit 0[0m
+2026-10-30T10:51:05.1945648Z [36;1mfi[0m
+2026-10-30T10:51:05.1945922Z [36;1mgit commit -m "auto: update state [skip ci]"[0m
+2026-10-30T10:51:05.1946255Z [36;1mfor i in 1 2 3 4 5; do[0m
+2026-10-30T10:51:05.1946762Z [36;1m  if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then[0m
+2026-10-30T10:51:05.1947325Z [36;1m    echo "result=pushed" >> "$GITHUB_OUTPUT"[0m
+2026-10-30T10:51:05.1947644Z [36;1m    exit 0[0m
+2026-10-30T10:51:05.1947876Z [36;1m  fi[0m
+2026-10-30T10:51:05.1948116Z [36;1m  sleep $((i * 3))[0m
+2026-10-30T10:51:05.1948419Z [36;1mdone[0m
+2026-10-30T10:51:05.1948757Z [36;1mecho "::error::could not push state/state.json after 5 attempts"[0m
+2026-10-30T10:51:05.1949151Z [36;1mexit 1[0m
+2026-10-30T10:51:05.1961752Z shell: /usr/bin/bash -e {0}
+2026-10-30T10:51:05.1962150Z env:
+2026-10-30T10:51:05.1962400Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:51:05.1963104Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:51:05.1963398Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:51:05.1964065Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:51:05.1964796Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:51:05.1965439Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:51:05.1966092Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:51:05.1966767Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:51:05.1967444Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:51:05.1967750Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:51:05.1968123Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:51:05.1985596Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:51:05.1989948Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:51:05.1991082Z   TEST: webhooks
+2026-10-30T10:51:05.1991320Z   NO_PING: 0
+2026-10-30T10:51:05.1991556Z   PING_FLAG: 
+2026-10-30T10:51:05.1991787Z   GAME_ARG: 
+2026-10-30T10:51:05.1992152Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:05.1992605Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T10:51:05.1993046Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:05.1993446Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:05.1993847Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:05.1994422Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T10:51:05.1994880Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-30T10:51:05.1995298Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-30T10:51:05.1995648Z ##[endgroup]
+2026-10-30T10:51:05.2437515Z [main 33e3448] auto: update state [skip ci]
+2026-10-30T10:51:05.2438086Z  1 file changed, 133 insertions(+), 80 deletions(-)
+2026-10-30T10:51:05.6082523Z From https://github.com/uesu/8mqzv4k2n7c
+2026-10-30T10:51:05.6083057Z  * branch            main       -> FETCH_HEAD
+2026-10-30T10:51:05.6155838Z Current branch main is up to date.
+2026-10-30T10:51:06.8588335Z To https://github.com/uesu/8mqzv4k2n7c
+2026-10-30T10:51:06.8588931Z    93b473b..33e3448  HEAD -> main
+2026-10-30T10:51:06.8714222Z ##[group]Run case "${PERSIST_OUTCOME}:${PERSIST_RESULT}" in
+2026-10-30T10:51:06.8714693Z [36;1mcase "${PERSIST_OUTCOME}:${PERSIST_RESULT}" in[0m
+2026-10-30T10:51:06.8715341Z [36;1m  success:unchanged) result="no staged changes observed — state staging errors may have been hidden by the persistence step" ;;[0m
+2026-10-30T10:51:06.8716001Z [36;1m  success:pushed) result="committed and pushed" ;;[0m
+2026-10-30T10:51:06.8716453Z [36;1m  failure:*) result="failed — inspect the state persistence step" ;;[0m
+2026-10-30T10:51:06.8716966Z [36;1m  cancelled:*) result="cancelled — repository persistence not confirmed" ;;[0m
+2026-10-30T10:51:06.8717551Z [36;1m  *) result="not confirmed — persistence step did not complete with a recognized result" ;;[0m
+2026-10-30T10:51:06.8718005Z [36;1mesac[0m
+2026-10-30T10:51:06.8718391Z [36;1mprintf '\n### Repository persistence\n- %s\n' "$result" >> "$GITHUB_STEP_SUMMARY" ||[0m
+2026-10-30T10:51:06.8718987Z [36;1m  printf 'Could not append repository persistence summary\n' >&2[0m
+2026-10-30T10:51:06.8731806Z shell: /usr/bin/bash -e {0}
+2026-10-30T10:51:06.8732405Z env:
+2026-10-30T10:51:06.8732653Z   PYTHONUNBUFFERED: 1
+2026-10-30T10:51:06.8733338Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-10-30T10:51:06.8733642Z   DISCORD_WEBHOOK_CODES: 
+2026-10-30T10:51:06.8734290Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-10-30T10:51:06.8735008Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-10-30T10:51:06.8735661Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-10-30T10:51:06.8736311Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-10-30T10:51:06.8736989Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-10-30T10:51:06.8737645Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-10-30T10:51:06.8737942Z   DISCORD_WEBHOOK_URL: 
+2026-10-30T10:51:06.8738316Z   NITTER_RSS_TOKEN: ***
+2026-10-30T10:51:06.8755719Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-10-30T10:51:06.8760042Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-10-30T10:51:06.8761320Z   TEST: webhooks
+2026-10-30T10:51:06.8761561Z   NO_PING: 0
+2026-10-30T10:51:06.8761796Z   PING_FLAG: 
+2026-10-30T10:51:06.8762167Z   GAME_ARG: 
+2026-10-30T10:51:06.8762465Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:06.8762912Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-10-30T10:51:06.8763354Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:06.8763755Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:06.8764154Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-10-30T10:51:06.8764692Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-10-30T10:51:06.8765123Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-10-30T10:51:06.8765520Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-30T10:51:06.8765865Z   PERSIST_OUTCOME: success
+2026-10-30T10:51:06.8766133Z   PERSIST_RESULT: pushed
+2026-10-30T10:51:06.8766409Z ##[endgroup]
+2026-10-30T10:51:06.8970503Z Post job cleanup.
+2026-10-30T10:51:07.0078371Z UV_CACHE_DIR is already set to /home/runner/work/_temp/setup-uv-cache
+2026-10-30T10:51:07.0083233Z UV_PYTHON_INSTALL_DIR is already set to /home/runner/work/_temp/uv-python-dir
+2026-10-30T10:51:07.0085338Z Cache hit occurred on key setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d, not saving cache.
+2026-10-30T10:51:07.1246696Z Post job cleanup.
+2026-10-30T10:51:07.2569920Z Post job cleanup.
+2026-10-30T10:51:07.3456567Z [command]/usr/bin/git version
+2026-10-30T10:51:07.3495987Z git version 2.56.0
+2026-10-30T10:51:07.3531079Z Temporarily overriding HOME='/home/runner/work/_temp/496ddf13-54ee-4e1b-a750-e0af2da43e9f' before making global git config changes
+2026-10-30T10:51:07.3532628Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-30T10:51:07.3536215Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-10-30T10:51:07.3571240Z Removing SSH command configuration
+2026-10-30T10:51:07.3577979Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-30T10:51:07.3616811Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-30T10:51:07.3812908Z Removing HTTP extra header
+2026-10-30T10:51:07.3818998Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-30T10:51:07.3859365Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-30T10:51:07.4070982Z Removing includeIf entries pointing to credentials config files
+2026-10-30T10:51:07.4080330Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-30T10:51:07.4106264Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-10-30T10:51:07.4107509Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-10-30T10:51:07.4108572Z includeif.gitdir:/github/workspace/.git.path
+2026-10-30T10:51:07.4109449Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-30T10:51:07.4113293Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-10-30T10:51:07.4133657Z /home/runner/work/_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:51:07.4143124Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-1bc69d17\-6d6b\-47bd\-b326\-60c33eeda384\.config
+2026-10-30T10:51:07.4188326Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-10-30T10:51:07.4216578Z /home/runner/work/_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:51:07.4219344Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-1bc69d17\-6d6b\-47bd\-b326\-60c33eeda384\.config
+2026-10-30T10:51:07.4283787Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-10-30T10:51:07.4297638Z /github/runner_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:51:07.4311859Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-1bc69d17\-6d6b\-47bd\-b326\-60c33eeda384\.config
+2026-10-30T10:51:07.4371105Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-10-30T10:51:07.4402836Z /github/runner_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config
+2026-10-30T10:51:07.4417343Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-1bc69d17\-6d6b\-47bd\-b326\-60c33eeda384\.config
+2026-10-30T10:51:07.4447822Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-30T10:51:07.4641316Z Removing credentials config '/home/runner/work/_temp/git-credentials-1bc69d17-6d6b-47bd-b326-60c33eeda384.config'
+2026-10-30T10:51:07.4809902Z Cleaning up orphan processes
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Wuthering Waves - 3.8 Beta] Patch Notes: v3.8.3\nResource: [nanoka](https://ww.nanoka.cc/) / [encore](https://encore.moe/new?v=Beta)"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "## [Lily](https://ww.nanoka.cc/character/1512/)\n**Attribute:** Spectro | **Weapon:** Pistols | **Rarity:** ★★★★★\n**Base HP:** 16712.5 | **Base ATK:** 287.5 | **Base DEF:** 1100\n**Stat Bonuses:** Healing Bonus +12% | HP +12%\n-# Full current kit — complete before/after text is unavailable; no direction is inferred.\n\n**Lily**'s full kit for this revision — 15 blocks. Nothing is marked as up or down: no earlier copy could be compared.\n\n### Normal Attack Changes\n* **Normal Attack** **[Mend and Cleanse]:**\n    * **Basic Attack:**\n        * **[CHANGED]** Press repeatedly or hold Normal Attack to perform up to 4 consecutive attacks, dealing Spectro DMG.\n    * **Mid-air Attack:**\n        * **[CHANGED]** Consume STA to perform a Plunging Attack, dealing Spectro DMG.\n    * **Dodge Counter:**\n        * **[CHANGED]** Press Normal Attack shortly after a successful Dodge to attack the target, dealing Spectro DMG. Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 4.\n    * *(Lv. 10)* Basic Attack Stage 1 DMG: **74.28%** | Basic Attack Stage 2 DMG: **25.17%+25.17%*3** | Basic Attack Stage 3 DMG: **106.09%**\n    * Basic Attack Stage 4 DMG: **39.77%*3+39.77%** | Plunging Attack DMG: **114.52%** | Dodge Counter DMG: **99.41%**\n    * Mid-air Attack STA Cost: **30**\n\n### Resonance Skill Changes\n* **Resonance Skill** **[Dream Blend]:**\n    * **Resonance Skill - Nightmare Blend:**\n        * **[CHANGED]** Lily starts with Heavy Attack - Woven Fairytale by default. When Heavy Attack - Woven Fairytale is active, press Resonance Skill to deal Spectro DMG to nearby targets, then switch to Heavy Attack - Woven Phantasm.\n        * **[CHANGED]** This skill shares a Cooldown with Resonance Skill - Reverie Blend.\n    * **Resonance Skill - Reverie Blend:**\n        * **[CHANGED]** When Heavy Attack - Woven Phantasm is active, press Resonance Skill to deal Spectro DMG to nearby targets, then switch to Heavy Attack - Woven Fairytale.\n        * **[CHANGED]** This skill shares a Cooldown with Resonance Skill - Nightmare Blend.\n    * *(Lv. 10)* Resonance Skill - Reverie Blend DMG: **159.05%** | Resonance Skill - Nightmare Blend DMG: **159.05%** | Resonance Skill - Reverie Blend/Nightmare Blend Cooldown: **5s**\n    * Resonance Skill - Reverie Blend/Nightmare Blend Concerto Regen: **8**"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Wuthering Waves 3.8.3 Beta • Page 1/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Resonance Liberation Changes\n* **Resonance Liberation** **[Into the Dream Cradle]:**\n    * **[CHANGED]** Casting this skill sends Lily into Slumberland and grants Cradle Lullaby to Resonators in the team.\n    * **[CHANGED]** Casting this skill also grants Lily a Shield equal to **100%** of her Max HP for **4s**. This Shield does not carry over to the incoming Resonator.\n    * **[CHANGED]** Can be cast in mid-air close to the ground.\n    * **Slumber:**\n        * **[CHANGED]** Lasts for **50s**. When Lily is in Slumberland, she heals the nearby active Resonator every **3s**. During Slumberland, use directional input to command Dreambind to deal Spectro DMG to nearby targets. Dreambind pulls in targets within a certain range every **5s**, and stops attacking **10s** after movement stops. Press Resonance Liberation again during Slumberland to end it early.\n        * **[CHANGED]** When Lily is in Slumberland, when a Resonator in the team casts Intro Skill, targets within a certain range are pulled in, triggered once every **10s**. Lily is immune to interruption during Slumberland and takes **50%** less DMG.\n        * **[CHANGED]** Switching to another Resonator during Slumberland keeps Lily on the field. Lily leaves the field when Slumberland ends, or earlier if she gets too far from the active Resonator.\n    * **Cradle Lullaby:**\n        * **[CHANGED]** Lasts for **25s**. While this effect is active, each Intro Skill cast by a Resonator in the team grants 1 stack of Dream Aroma. This effect is removed when Lily is the incoming Resonator.\n    * **Dream Aroma:**\n        * **[CHANGED]** Stacks up to 4 times. Each stack increases the ATK of all Resonators on the team by **0.1%** for every **1%** of Lily's Energy Regen above **190%**, up to **7%**. This effect is removed when Lily is the incoming Resonator or when Cradle Lullaby ends.\n    * *(Lv. 10)* Cooldown: **25s** | Resonance Cost: **175** | Concerto Regen: **20**\n    * Slumberland Healing: **546+1.09% HP** | Dreambind Continuous DMG: **19.89%**\n\n### Inherent Skill Changes\n* **Inherent Skill** **[Woven Scent]:**\n    * **[CHANGED]** Casting Intro Skill - Eternal Bloom additionally restores 10 points of Concerto Energy, triggered once every **20s**.\n    * **[CHANGED]** Casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End additionally restores 15 points of Concerto Energy, triggered once every **20s**.\n\n* **Inherent Skill** **[Flowers for You]:**\n    * **[CHANGED]** While the active Resonator has **50%** or more HP, Lily grants them **10%** DMG Reduction.\n    * **[CHANGED]** When a Resonator in the team takes a fatal blow, they will not be downed and will instead gain a Shield equal to **10%** of Lily's Max HP for **10s**. This effect can be triggered once every 5 min.\n    * **[CHANGED]** Casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End grants Floral Blessing to all Resonators in the team.\n    * **Floral Blessing:**\n        * **[CHANGED]** Lasts for **60s**. When a Resonator in the team takes DMG that brings their HP below **50%** of their Max HP, they restore HP equal to **50%** of their Max HP, and Floral Blessing is removed. This effect can be triggered once every **120s**."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Wuthering Waves 3.8.3 Beta • Page 2/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Intro Skill Changes\n* **Intro Skill** **[Blooming Dream]:**\n    * **First Bloom:**\n        * **[CHANGED]** Attack the target, dealing Spectro DMG. Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.\n    * **Eternal Bloom:**\n        * **[CHANGED]** After casting Resonance Liberation - Into the Dream Cradle, Lily's next Intro Skill First Bloom is replaced with Eternal Bloom. When cast, it attacks the target, dealing Spectro DMG.\n        * **[CHANGED]** For every **1%** of Lily's Energy Regen exceeding **100%**, this skill gains an additional **0.5%** Crit. Rate, up to **80%**, and an additional **1%** Crit. DMG, up to **160%**.\n        * **[CHANGED]** Casting the skill grants Deep Dream Fragrance for **8s**. Casting Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm consumes Deep Dream Fragrance to additionally grant 100 points of Dreambell Chime.\n        * **[CHANGED]** Press Normal Attack shortly after casting this skill to cast Basic Attack Stage 3.\n    * *(Lv. 10)* Intro Skill - First Bloom DMG: **46.92%+46.92%*3** | Intro Skill - Eternal Bloom DMG: **36.09% HP** | Concerto Regen: **10**\n\n### Forte Circuit Changes\n* **Forte Circuit** **[Dreamland of Flowers]:**\n    * **Dream Perfume:**\n        * **[CHANGED]** Lily can hold up to 300 points.\n        * **[CHANGED]** Basic Attack, Mid-air Attack, and Dodge Counter restore Dream Perfume on hit.\n        * **[CHANGED]** After casting Resonance Skill - Reverie Blend or Resonance Skill - Nightmare Blend, restore 130 points of Dream Perfume.\n        * **[CHANGED]** Casting Intro Skill - Eternal Bloom restores 130 points of Dream Perfume.\n    * **Heavy Attack - Woven Fairytale:**\n        * **[CHANGED]** When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Fairytale, consuming all Dream Perfume to grant 1 stack of Dream Shelter. During the skill, she pulls in nearby targets and continuously deals Spectro DMG to them. She also heals all Resonators in the team every second for **2s**.\n        * **[CHANGED]** Casting Heavy Attack - Woven Fairytale grants Lily Wish of Praying Dream, which can be gained once every **25s**. When Lily has Wish of Praying Dream, this Heavy Attack - Woven Fairytale consumes Wish of Praying Dream to increase the healing by **400%**.\n        * **[CHANGED]** Switching to another Resonator during Heavy Attack - Woven Fairytale stops the skills immediately.\n        * **[CHANGED]** Lily continuously gains Dreambell Chime during the skill.\n        * **[CHANGED]** When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Fairytale's Finale. Heavy Attack - Fairytale's Finale is automatically cast at the end of Heavy Attack - Woven Fairytale. Casting Heavy Attack - Fairytale's Finale consumes all Dreambell Chime.\n    * **Heavy Attack - Fairytale's Finale:**\n        * **[CHANGED]** Attack targets within range, dealing Spectro DMG.\n        * **[CHANGED]** For every **1%** of Lily's Energy Regen exceeding **100%**, this skill gains an additional **0.5%** Crit. Rate, up to **80%**, and an additional **1%** Crit. DMG, up to **160%**.\n        * **[CHANGED]** Casting the skill grants Lily Sillage for **6s**. Casting Outro Skill consumes Sillage and grants Silvered Dream to Resonators in the team. This effect can be triggered once every **20s**.\n    * **Heavy Attack - Woven Phantasm:**\n        * **[CHANGED]** When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Phantasm, consuming all Dream Perfume to grant 1 stack of Dream Shelter. During the skill, she pulls in nearby targets and continuously deals Spectro DMG to them. She also heals all Resonators in the team every second for **2s**."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Wuthering Waves 3.8.3 Beta • Page 3/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **[CHANGED]** Casting Heavy Attack - Woven Phantasm grants Lily Wish of Praying Dream, which can be gained once every **25s**. When Lily has Wish of Praying Dream, this Heavy Attack - Woven Phantasm consumes Wish of Praying Dream to increase the healing by **400%**.\n    * **[CHANGED]** Switching to another Resonator during Heavy Attack - Woven Phantasm stops the skill immediately.\n    * **[CHANGED]** Lily continuously gains Dreambell Chime during the skill.\n    * **[CHANGED]** When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Phantasm's End. Heavy Attack - Phantasm's End is automatically cast at the end of Heavy Attack - Woven Phantasm. Casting Heavy Attack - Phantasm's End consumes all Dreambell Chime.\n* **Heavy Attack - Phantasm's End:**\n    * **[CHANGED]** Attack targets within range, dealing Spectro DMG.\n    * **[CHANGED]** For every **1%** of Lily's Energy Regen exceeding **100%**, this skill gains an additional **0.5%** Crit. Rate, up to **80%**, and an additional **1%** Crit. DMG, up to **160%**.\n    * **[CHANGED]** Casting this skill grants Lily Sillage for **6s**. Casting Outro Skill consumes Sillage and grants Silvered Dream to Resonators in the team. This effect can be triggered once every **20s**.\n* **Silvered Dream:**\n    * **[CHANGED]** Lasts for **30s**.\n    * **[CHANGED]** When the Resonator with this effect is the Active Resonator and can trigger Unison Response, each stack of Unison Boon on the team increases their ATK by **0.1%** for every **1%** of Lily's Energy Regen above **190%**, up to **7%**, counting up to 4 stacks of Unison Boon.\n    * **[CHANGED]** The active Resonator's Echo Skill Crit. Rate and Echo Skill Crit. DMG are increased. Every **0.7%** of Lily's Energy Regen above **190%** increases Echo Skill Crit. Rate by **0.1%**, up to **10%**. Every **0.7%** of Lily's Energy Regen above **190%** increases Echo Skill Crit. DMG by **0.2%**, up to **20%**.\n    * **[CHANGED]** All Resonators in the team gain resistance to interruption.\n* **Dream Shelter:**\n    * **[CHANGED]** Casting Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm grants 1 stack of Dream Shelter, stacking up to 1 time. Receiving damage from an enemy target consumes 1 stack of Dream Shelter to grant Lily immunity to interruption and reduce the DMG taken by **60%** for **1s**. This effect can be triggered once every **1s**.\n* *(Lv. 10)* Heavy Attack - Woven Fairytale Healing: **351+0.70% HP** | Heavy Attack - Woven Phantasm Healing: **351+0.70% HP** | Heavy Attack - Woven Fairytale Healing with Wish of Praying Dream: **1758+3.53% HP**\n* Heavy Attack - Woven Phantasm Healing with Wish of Praying Dream: **1758+3.53% HP** | Heavy Attack - Woven Fairytale DMG: **24.86%+24.86%*19** | Heavy Attack - Woven Phantasm DMG: **21.61%*23**\n* Heavy Attack - Fairytale's Finale DMG: **35.79% HP** | Heavy Attack - Phantasm's End DMG: **35.79% HP** | Heavy Attack - Woven Fairytale/Woven Phantasm Concerto Regen per Second: **10**\n* Heavy Attack - Fairytale's Finale/Phantasm's End Concerto Regen: **10**\n\n### Outro Skill Changes\n* **Outro Skill** **[Blooming Fragrance]:**\n    * **[CHANGED]** Resonators in the team gain **25%** All DMG Amplification for **30s**.\n\n### Tune Break Changes\n* **Tune Break** **[Pistols]:**\n    * **[CHANGED]** When the target's Off-Tune Level is full, the Resonator may cast Tune Break on the target."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Wuthering Waves 3.8.3 Beta • Page 4/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Resonance Chain Changes\n* **Sequence Node 1** **[Look, White Flowers from the Ruins of Dreams]:**\n    * **[CHANGED]** Lily is immune to interruption while channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while casting Heavy Attack - Fairytale's Finale or Heavy Attack - Phantasm's End.\n    * **[CHANGED]** While Cradle Lullaby is active, each Intro Skill cast by a Resonator in the team now grants 2 stacks of Dream Aroma.\n\n* **Sequence Node 2** **[Listen, a Requiem from the Dream Cradle]:**\n    * **[CHANGED]** While Cradle Lullaby is active, when a Resonator in the team casts an Intro Skill, each stack of Dream Aroma additionally increases Crit. Rate by **2%** and Crit. DMG by **6%**.\n\n* **Sequence Node 3** **[May Your Soul Wander No More]:**\n    * **[CHANGED]** Casting Intro Skill - Eternal Bloom additionally grants Lily 25 points of Concerto Energy and 170 points of Dream Perfume.\n    * **[CHANGED]** While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, Lily gains Dreambell Chime faster, and the healing provided is increased by **50%**.\n\n* **Sequence Node 4** **[May Your Past Sink into Silence]:**\n    * **[CHANGED]** While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, and while in Slumberland, healing provided is increased by **30%**.\n\n* **Sequence Node 5** **[May You Find Peace in Endless Light]:**\n    * **[CHANGED]** While Lily is in Slumberland, the pull-in effect range is increased by **50%** when a Resonator in the team casts Intro Skill.\n\n* **Sequence Node 6** **[May My Reverie Never End]:**\n    * **[CHANGED]** The Spectro DMG dealt by Heavy Attack - Fairytale's Finale, Heavy Attack - Phantasm's End, and Intro Skill - Eternal Bloom is further increased by **400%**."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Wuthering Waves 3.8.3 Beta • Page 5/5"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
