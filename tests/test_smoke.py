@@ -18617,6 +18617,49 @@ def test_feature5_every_games_changelog_group_names_are_read():
         assert all(e["url"] for e in revs[0]["entries"])
 
 
+def test_feature5_every_nanoka_endpoint_the_cards_read_is_the_one_the_site_serves():
+    """Pin the two URL shapes every beta card depends on, for every game and every kind.
+
+    `static.nanoka.cc/<ns>/<revision>/<kind>.json` is the listing index and
+    `…/<ns>/<revision>/<locale>/<kind>/<id>.json` the per-item detail — the shapes the served
+    pages themselves reference (captured 2026-10-30). They live in one function each, so a stray
+    edit would otherwise 404 every card of that kind with nothing to catch it.
+    """
+    from gamexpress import beta as beta_mod
+
+    class RecordingFetcher:
+        def __init__(self):
+            self.urls = []
+
+        async def get_json(self, url, **_kw):
+            self.urls.append(url)
+            return {}
+
+    rev = "3.4.1+19997538"
+    for ns, kinds in beta_mod.NANOKA_KINDS.items():
+        for role in ("weapon", "relic"):
+            fetcher = RecordingFetcher()
+            asyncio.run(beta_mod._detail(fetcher, ns, rev, kinds[role]["detail"], "12345"))
+            assert fetcher.urls == [
+                f"https://static.nanoka.cc/{ns}/{rev}/en/{kinds[role]['detail']}/12345.json"], (
+                ns, role, fetcher.urls)
+            fetcher = RecordingFetcher()
+            asyncio.run(beta_mod._listing(fetcher, ns, rev, kinds[role]["listing"]))
+            assert fetcher.urls == [
+                f"https://static.nanoka.cc/{ns}/{rev}/{kinds[role]['listing']}.json"], (
+                ns, role, fetcher.urls)
+
+    # The kinds each game actually names, so a rename is a test failure and not a silent 404.
+    assert {ns: (beta_mod.NANOKA_KINDS[ns]["weapon"]["detail"],
+                 beta_mod.NANOKA_KINDS[ns]["relic"]["detail"])
+            for ns in beta_mod.NANOKA_KINDS} == {
+        "zzz": ("weapon", "equipment"),
+        "hsr": ("lightcone", "relicset"),
+        "gi": ("weapon", "artifact"),
+        "ww": ("weapon", "echo"),
+    }
+
+
 def test_feature5_a_listed_group_with_no_card_kind_is_reported_not_swallowed():
     """ZZZ lists Bangboo; the card has no Bangboo kind, so the run says so instead of hiding it."""
     from gamexpress import beta as beta_mod
