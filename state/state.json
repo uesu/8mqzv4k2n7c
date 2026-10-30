@@ -4265,6 +4265,13 @@
             "provenance": "estimated",
             "status": "seeded",
             "ts": 1789959600
+          },
+          "timing_notice": {
+            "end_ts": 1790132400,
+            "postponed": false,
+            "rank": 50,
+            "start_ts": 1790114400,
+            "ts": 1790118002
           }
         },
         "7.2": {}
@@ -4285,6 +4292,13 @@
             "provenance": "official",
             "status": "seeded",
             "ts": 1790229600
+          },
+          "timing_notice": {
+            "end_ts": 1790564400,
+            "postponed": false,
+            "rank": 50,
+            "start_ts": 1790546400,
+            "ts": 1790229608
           }
         },
         "4.7": {}
@@ -4305,6 +4319,13 @@
             "provenance": "official",
             "status": "seeded",
             "ts": 1790560800
+          },
+          "timing_notice": {
+            "end_ts": 1790737200,
+            "postponed": false,
+            "rank": 50,
+            "start_ts": 1790712000,
+            "ts": 1790072775
           }
         },
         "3.8": {}
@@ -4325,6 +4346,13 @@
             "provenance": "official",
             "status": "seeded",
             "ts": 1792382400
+          },
+          "timing_notice": {
+            "end_ts": 1792551600,
+            "postponed": false,
+            "rank": 50,
+            "start_ts": 1792533600,
+            "ts": 1792382705
           }
         },
         "3.4": {}
@@ -5654,7 +5682,7 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners_checked_ts": 1793340318,
-          "banners_search_ts": 1793329522,
+          "banners_search_ts": 1793340898,
           "estimate_sources": [
             "version cadence"
           ],
