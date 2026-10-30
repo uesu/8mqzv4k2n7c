@@ -19170,6 +19170,236 @@ def test_feature5_equipment_explanation_is_rendered_once_under_the_title():
     assert BetaEquipment(id="zzz:1", name="New Engine").overview == ""
 
 
+def test_feature5_direction_reads_the_kit_not_the_number():
+    """A cheaper Ultimate or a shorter cooldown is a buff; an unmeasurable threshold is neither.
+
+    The published guide is explicit: `[BUFF]`/`[NERF]` follow what the change does in play, and
+    when the direction genuinely cannot be established the tag is dropped rather than guessed. A
+    card that reads "Max Energy 140 → 130 [NERF]" is confidently wrong.
+    """
+    from gamexpress import beta as beta_mod
+
+    line, tag = beta_mod._change_line("Max Energy: 140", "Max Energy: 130")
+    assert tag == "[BUFF]" and "~~140~~ → **130**" in line
+    assert "*(cheaper to use)*" in line          # the guide's "attach the why" rule
+
+    line, tag = beta_mod._change_line("Cooldown: 16s", "Cooldown: 17s")
+    assert tag == "[NERF]" and "*(the skill comes back later)*" in line
+
+    line, tag = beta_mod._change_line("Charge time: 2s", "Charge time: 1.5s")
+    assert tag == "[BUFF]" and "*(faster to execute)*" in line
+
+    # `Stack requirement` is governed by the word nearest the number (requirement = a cost).
+    line, tag = beta_mod._change_line("Stack requirement: 4", "Stack requirement: 3")
+    assert tag == "[BUFF]" and "*(easier to trigger)*" in line
+
+    # A threshold can be a requirement (higher = worse) or a trigger floor (higher = better):
+    # the card refuses to pick and says [CHANGED] with no direction and no invented reason.
+    for old, new in (("Anomaly Mastery threshold: 140", "Anomaly Mastery threshold: 150"),
+                     ("HP threshold: 30% of Max HP", "HP threshold: 40% of Max HP")):
+        line, tag = beta_mod._change_line(old, new)
+        assert tag == "[CHANGED]" and "*(" not in line, line
+
+    # A plain power number keeps its direction and needs no explanation.
+    line, tag = beta_mod._change_line("DMG Multiplier: 220% of ATK", "DMG Multiplier: 200% of ATK")
+    assert tag == "[NERF]" and "*(" not in line
+
+    # The same reasoning reaches the skill-value table, which renders its own line.
+    params = beta_mod._diff_params(
+        [{"name": "Max Energy", "text": "140", "value": 140}],
+        [{"name": "Max Energy", "text": "130", "value": 130}],
+    )
+    assert params and params[0][1] == "[BUFF]" and "*(cheaper to use)*" in params[0][0]
+
+
+def test_feature5_a_name_or_type_swap_is_changed_not_a_text_fix():
+    """Terminology moved, not prose: `RES PEN type narrowed` is [CHANGED] per the format guide."""
+    from gamexpress import beta as beta_mod
+
+    line, tag = beta_mod._change_line("RES PEN: All-Type 15%", "RES PEN: Quantum 15%")
+    assert tag == "[CHANGED]" and "15%" in line
+
+    line, tag = beta_mod._change_line(
+        "Consumes [Embers] to empower", "Consumes [Blazing Flame] to empower")
+    assert tag == "[CHANGED]"
+
+    line, tag = beta_mod._change_line("Name: Twittering Quartet", "Name: Chirrup Quartet")
+    assert tag == "[CHANGED]"
+
+    # Prose-only edits stay [TEXT FIX] — the tag still means "wording, nothing functional".
+    line, tag = beta_mod._change_line(
+        "Deals damage to a random enemy", "Deals damage to one random enemy")
+    assert tag == "[TEXT FIX]"
+
+    # A rewrite touching several fragments is prose even when its first words are capitalised:
+    # only a lone swapped term is allowed to be read as a rename.
+    line, tag = beta_mod._change_line(
+        "Grants a shield to the whole squad", "Gives a shield to the entire squad")
+    assert tag == "[TEXT FIX]", line
+    line, tag = beta_mod._change_line("Grants", "Gives")
+    assert tag == "[CHANGED]", line      # a lone capitalised swap with no context: not prose
+
+
+def test_feature5_a_retired_block_is_one_statement_in_every_diff_path():
+    """Both diff paths state a retirement once, instead of one bullet per dropped line."""
+    from gamexpress import beta as beta_mod
+
+    old_section = BetaSectionEntry(
+        title="Special Attack: Aftershock", category="Special Attack",
+        lines=["Swings her staff forward and gains 20 Entry Points on activation.",
+               "Character is invulnerable while using this skill.",
+               "Counts as an Aftershock, at most once every 8s."])
+    new_section = BetaSectionEntry(
+        title="Special Attack: Aftershock", category="Special Attack",
+        lines=["Unleashes a new rush attack dealing 300% ATK."])
+    lines, _tags = beta_mod._diff_section(old_section, new_section)
+    removed = [ln for ln in lines if "Removed from this revision" in ln]
+    assert len(removed) == 1, lines
+    assert removed[0].startswith("**[CHANGED]** Removed from this revision — ~~")
+    assert "more lines no longer published" in removed[0] or "1 more line" in removed[0]
+    assert not any(ln.startswith("**[CHANGED]** Removed: ~~") for ln in lines)
+
+    # A rename is stated once even when the block also renames its title.
+    prev = BetaSectionEntry(title="Special Attack: Pursuit Slash", category="Special Attack",
+                            lines=["Unleashes a quick upward slash dealing Fire DMG."])
+    cur = BetaSectionEntry(title="Special Attack: Fire Snatch", category="Special Attack",
+                           lines=["Unleashes a quick upward slash dealing Fire DMG.",
+                                  "Chains into Basic 3."])
+    renamed = [ln for ln in beta_mod._diff_section(prev, cur)[0] if "Renamed from" in ln]
+    assert len(renamed) == 1
+
+
+def test_feature5_a_mixed_build_revision_is_called_out_on_the_card():
+    """Hoyo pushed 3.4.2 material inside a 3.4.1 hotfix; a card must not present it as settled.
+
+    Two independent signals: the changelog flagging itself, and a hotfix that renames or adds far
+    more than a hotfix normally does. Either way the note names the part that can be trusted.
+    """
+    from gamexpress import beta as beta_mod
+
+    assert beta_mod._data_warning(
+        "Partial data: this revision mixes 3.4.1 and 3.4.2 builds.") == "Partial data"
+    assert beta_mod._data_warning("Datamined values, take it with a grain of salt.") == "Datamined"
+    assert beta_mod._data_warning("Buff duration partially offset by the new node.") == ""
+    assert beta_mod._data_warning("No tracked changes detected for this revision.") == ""
+    # A generic beta banner is on every page: it must never flag a whole revision.
+    assert beta_mod._data_warning("Beta values may change before release.") == ""
+    assert beta_mod._data_warning("This build is not final.") == ""
+    assert beta_mod._data_warning("Mixed data from 3.4.1 and 3.4.2.") == "Mixed data"
+
+    upstream = beta_mod._mixed_build_note(
+        upstream="Partial data", hotfix=False, structural=0, values=0)
+    assert upstream.startswith("**Note:** the changelog flags this revision itself")
+    assert "point values below are the part to trust" in upstream
+
+    structural = beta_mod._mixed_build_note(
+        upstream="", hotfix=True, structural=9, values=2)
+    assert structural.startswith("**Note:** this hotfix renames or adds 9 blocks")
+    assert "may come from another build" in structural
+
+    # No hotfix, or no measured value to stand behind -> no caveat invented.
+    assert beta_mod._mixed_build_note(upstream="", hotfix=False, structural=30, values=9) == ""
+    assert beta_mod._mixed_build_note(upstream="", hotfix=True, structural=9, values=0) == ""
+    assert beta_mod._mixed_build_note(upstream="", hotfix=True, structural=2, values=4) == ""
+
+
+def test_feature5_parse_changelog_flags_partial_data_per_revision():
+    """The flag belongs to the revision it was written in, never to the whole page."""
+    from gamexpress import beta as beta_mod
+
+    text = "\n\n".join([
+        "# CHANGELOG - v3.4.X",
+        "## v3.4.1 Rev. 19997538 \\| 29th October 2026",
+        "### Agents", "UPDATED",
+        "Partial data — some of this is 3.4.2 material, take it with a grain of salt.",
+        "",
+        "## v3.4.1 Rev. 19851435 \\| 24th October 2026",
+        "### Agents", "UPDATED",
+        "[![](https://i.gachabase.net/x/1661.png)](https://zzz.gachabase.net/agents/1661/1661/beta?lang=en)",
+    ])
+    revs = beta_mod.parse_changelog(text)
+    assert [r["data_warning"] for r in revs][0] == "Partial data"
+    assert revs[1]["data_warning"] == ""
+
+
+def _mixed_build_fetcher(manifest, beta_kit, live_kit, changelog):
+    class MixedFetcher:
+        async def get_json(self, url, **_kw):
+            if url.endswith("/manifest.json"):
+                return manifest
+            if "/zzz/3.3/" in url and "/character/1661" in url:
+                return json.loads(json.dumps(live_kit))
+            if "/zzz/" in url and "/character/1661" in url:
+                return json.loads(json.dumps(beta_kit))
+            return None
+
+        async def get_text(self, _url, **_kw):
+            return changelog
+
+        async def verify_media(self, _url):
+            return True
+
+    return MixedFetcher()
+
+
+def test_feature5_mixed_build_caveat_reaches_the_header_and_the_summary():
+    """End to end: the caveat is one line under the patch header, plus a run-summary entry."""
+    from gamexpress import beta as beta_mod
+
+    version = "3.4.1+19997538"
+    manifest = {"zzz": {"live": "3.3", "latest": version,
+                        "available": ["3.3", "3.4.1+19851435", version],
+                        "new": {"character": [], "weapon": [], "equipment": []}}}
+    beta_kit = json.loads(json.dumps(_beta_json("zzz_character_1661.json")))
+    live_kit = json.loads(json.dumps(beta_kit))
+    live_kit["skill"]["basic"]["description"][0]["desc"] = (
+        "Press  to activate:\nUnleashes up to 2 attacks forward, dealing Ether DMG;")
+    # A rename sweep, exactly what a mixed build looks like in the data.
+    for node in beta_kit["skill"].values():
+        for row in (node.get("description") or []):
+            if isinstance(row, dict) and isinstance(row.get("desc"), str):
+                row["desc"] = row["desc"].replace("Robin", "Sable")
+    changelog = _released_changelog(_RELEASED_ENTRY_1661).replace(
+        "UPDATED",
+        "UPDATED\n\nPartial data: this revision mixes 3.4.1 and 3.4.2, "
+        "take it with a grain of salt.",
+    )
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json",
+                        _mixed_build_fetcher(manifest, beta_kit, live_kit, changelog),
+                        BETA_ENABLED="1", DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        record = ctx.state.beta_record("zzz")
+        record["source_version"] = "3.4.1+19851435"      # the revision this one replaces
+        record["latest_rev"] = "previous"
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert patch and patch.characters
+        assert patch.build_note.startswith("**Note:** the changelog flags this revision itself")
+        assert "point values" in patch.build_note and len(patch.build_note) <= 320
+        assert any("mixed-data caveat on the card" in line for line in ctx.report)
+
+        payloads = cards.beta_payloads(GAMES["zzz"], patch)
+        assert payloads and all(cards.validate_payload(p) == [] for p in payloads)
+        header = payloads[0]["components"][0]["components"][0]["content"]
+        assert header.count("**Note:** the changelog flags") == 1
+        assert header.index("Resource:") < header.index("**Note:**")
+        # The caveat is a header line, not repeated on every page.
+        whole = json.dumps(payloads)
+        assert whole.count("the changelog flags this revision itself") == 1
+
+    # A clean revision carries no note at all.
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json",
+                        _mixed_build_fetcher(manifest, beta_kit, live_kit,
+                                             _released_changelog(_RELEASED_ENTRY_1661)),
+                        BETA_ENABLED="1", DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
+                                                 beta_mod._budget(ctx)))
+        assert patch and patch.build_note == ""
+        assert not any("mixed-data caveat" in line for line in ctx.report)
+
+
 _RELEASED_ENTRY_1661 = (
     "[![](https://i.gachabase.net/x/q:50/f:webp/plain/zzz/assets/1661.png)\\\n"
     "\\\nRobin](https://zzz.gachabase.net/agents/1661/1661/beta?lang=en) "

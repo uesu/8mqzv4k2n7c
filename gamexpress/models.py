@@ -143,6 +143,9 @@ class BetaPatch:
     # Tracked items the changelog listed for this revision. When it exceeds what the card
     # delivered, the run summary says so instead of a gap passing unseen (no log access needed).
     listed: int = 0
+    # Caveat printed under the card header when the revision's data may mix two builds (upstream
+    # pushed next-version material into a hotfix). Empty for an ordinary revision.
+    build_note: str = ""
 
 
 @dataclass

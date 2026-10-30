@@ -1700,6 +1700,10 @@ def beta_payloads_with_map(
     ]
     if ping_obj and not silent and ping_obj.text:
         header_lines.append(f"- {ping_obj.text}")
+    build_note = strip_invisible(str(getattr(patch, "build_note", "") or "")).strip()
+    if build_note:
+        # Once, under the Resource line: the caveat belongs to the whole revision, not to one card.
+        header_lines.append(build_note)
     patch_header_str = "\n".join(header_lines)
 
     characters = list(getattr(patch, "characters", ()) or ())

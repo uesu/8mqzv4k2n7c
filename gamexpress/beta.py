@@ -634,12 +634,26 @@ def inline_diff(old: str, new: str, keep: int = 4, max_blocks: int = 6,
 # number belongs to neither it is reported as a plain [CHANGED], which is always honest.
 _BAD_SUBJECT_RE = re.compile(
     r"\b(?:cost|costs|consume[sd]?|consumption|cooldown|cd|(?:damage|dmg) taken|taken|"
-    r"penalt(?:y|ies)|loss|charge time|time|interval|delay|requirement|required|"
-    r"max energy|ultimate cost|minimum|threshold)\b", re.I)
+    r"penalt(?:y|ies)|loss|charge time|cast time|interval|delay|requirement|required|"
+    r"(?:damage|dmg) (?:taken|received)|"
+    r"max energy|ultimate cost)\b", re.I)
 _GOOD_SUBJECT_RE = re.compile(
     r"\b(?:dmg|damage|multiplier|ratio|rate|crit|bonus|buff|heal|restor\w+|recover\w+|"
     r"shield|pen(?:etration)?|shred|ignore|resist|mastery|proficiency|amplif\w+|boost|"
     r"atk|attack|hp|def(?:en[cs]e)?|spd|speed|impact)\b", re.I)
+# A threshold, a duration, a stack count or a range can go either way in play: a higher Anomaly
+# Mastery threshold is harder to reach (a nerf) while a higher HP threshold triggers a shield
+# sooner (a buff). Neither the number nor the wording settles it, so the card refuses to guess and
+# says [CHANGED] — the same rule as "unsure? remove the directional tag".
+_AMBIGUOUS_SUBJECT_RE = re.compile(
+    r"\b(?:threshold|minimum|duration|stacks?|count|number of|range|tier|level|chance)\b", re.I)
+# The three subject classes in one pass. `_direction` runs for every changed fragment on every card,
+# so it scans once per scope instead of six times, and the class of the match is its group name.
+_SUBJECT_RE = re.compile(
+    rf"(?P<bad>{_BAD_SUBJECT_RE.pattern})|(?P<good>{_GOOD_SUBJECT_RE.pattern})"
+    rf"|(?P<ambiguous>{_AMBIGUOUS_SUBJECT_RE.pattern})",
+    re.I,
+)
 # "reduced by 40%" measures the size of a cut, not the size of the thing being cut.
 _REDUCTION_RE = re.compile(
     r"\b(?:reduc\w+|decreas\w+|lower\w+|less|down|drop\w*|mitigat\w+|sheds?)\s*"
@@ -660,10 +674,26 @@ def _direction(label: str, old: float, new: float) -> str:
     number = matches[-1] if matches else None
     before = text[max(0, number.start() - 90):number.start()] if number else text[-90:]
     is_reduction = bool(_REDUCTION_RE.search(before))
-    bad = bool(_BAD_SUBJECT_RE.search(text))
-    # "DMG taken" is one bad thing, not the good word "DMG" plus the bad word "taken".
-    good = bool(_GOOD_SUBJECT_RE.search(_BAD_SUBJECT_RE.sub(" ", text)))
+    # Which word actually governs this number. The closest subject BEFORE the number wins, so
+    # `Stack requirement` reads as a cost (nearest = requirement) while `Anomaly Mastery threshold`
+    # reads as a threshold (nearest = threshold, ambiguous). "DMG taken" is one bad thing, not the
+    # good word `DMG` plus the bad word `taken`, hence the longer-phrase-wins tie-break.
+    # A label like `1st-Hit DMG Multiplier` has no words before its number, so the whole label is
+    # the fallback scope instead of concluding that nothing matched.
+    kind = ""
+    for scope in (before, text):
+        end, length = -1, 0
+        for match in _SUBJECT_RE.finditer(scope):
+            # Same end position: the longer phrase wins, so `damage taken` stays one bad thing
+            # instead of reading as the good word `damage` plus the bad word `taken`.
+            if (match.end(), len(match.group(0))) > (end, length):
+                end, length, kind = match.end(), len(match.group(0)), match.lastgroup or ""
+        if kind:
+            break
+    bad, good, ambiguous = kind == "bad", kind == "good", kind == "ambiguous"
     up = new > old
+    if ambiguous:
+        return "[CHANGED]"
     if is_reduction and bad:                 # a bigger cut of something bad
         return "[BUFF]" if up else "[NERF]"
     if is_reduction and good and not bad:    # a bigger cut of something good
@@ -673,6 +703,68 @@ def _direction(label: str, old: float, new: float) -> str:
     if good:
         return "[BUFF]" if up else "[NERF]"
     return "[CHANGED]"
+
+
+# Why a tag that looks backwards is right — the guide's "(Lower Ultimate cost — faster rotations)".
+# Only the cases where the raw number points the other way get a clause, so a card is not a wall of
+# commentary: a multiplier going up is self-evident, an Ultimate costing less is not.
+_DIRECTION_WHY = (
+    (re.compile(r"\b(?:max(?:imum)? energy|ultimate cost|energy cost|cost|consumption|consume[sd]?)\b",
+                re.I),
+     "cheaper to use", "more expensive to use"),
+    (re.compile(r"\b(?:cooldown|cd|cool-down|recharge)\b", re.I),
+     "the skill comes back sooner", "the skill comes back later"),
+    (re.compile(r"\b(?:charge time|cast time|attack time|startup|interval|delay)\b", re.I),
+     "faster to execute", "slower to execute"),
+    (re.compile(r"\b(?:requirement|required)\b", re.I),
+     "easier to trigger", "harder to trigger"),
+    (re.compile(r"\b(?:damage|dmg) taken\b|\bpenalt|\bloss\b", re.I),
+     "less damage taken", "more damage taken"),
+)
+
+
+def _direction_reason(label: str, tag: str, up: bool) -> str:
+    """A short "(why)" for a tag that reads backwards against the number, else nothing."""
+    if tag not in ("[BUFF]", "[NERF]"):
+        return ""
+    flipped = (tag == "[BUFF]" and not up) or (tag == "[NERF]" and up)
+    if not flipped:
+        return ""
+    for pattern, up_reason, down_reason in _DIRECTION_WHY:
+        if pattern.search(str(label or "")):
+            reason = up_reason if tag == "[BUFF]" else down_reason
+            return reason
+    return ""
+
+
+_TERMINOLOGY_RE = re.compile(
+    r"\b(?:name[sd]?|renam\w+|terminolog\w+|referred to as|type[sd]?|reclassif\w+|"
+    r"known as|called)\b", re.I)
+
+
+def _is_terminology(context: str, old_part: str, new_part: str, *, single: bool = True) -> bool:
+    """A name / type / keyword swap is [CHANGED], not a wording fix.
+
+    The guide is explicit: `RES PEN type narrowed from All-Type → Quantum (value remains 15%)` is
+    [CHANGED], and so is a renamed reaction or a renamed skill. Prose-only edits stay [TEXT FIX].
+
+    `single` says this is the only fragment that moved in the line. A rewrite touching several
+    fragments is prose by construction (`Grants a shield to the whole squad` -> `Gives a shield to
+    the entire squad`), so the capital-letter guess below is only consulted for a lone swap —
+    otherwise every sentence-initial verb change would read as a renamed skill.
+    """
+    if "[" in str(old_part) or "[" in str(new_part):
+        return True
+    if _TERMINOLOGY_RE.search(str(context or "")):
+        return True
+    if not single:
+        return False
+    for part in (str(old_part or "").strip(), str(new_part or "").strip()):
+        if part[:1].isupper() and any(ch.isalpha() for ch in part):
+            words = re.sub(r"[-+]?\d+(?:\.\d+)?%?s?", "", part).strip()
+            if words and words[:1].isupper():
+                return True     # `All-Type` -> `Quantum`: two proper nouns, no number moved
+    return False
 
 
 def _numbers(text: str) -> list[float]:
@@ -717,23 +809,31 @@ def _change_line(old_frag: str, new_frag: str, label: str = "") -> tuple[str, st
     if not parts:
         return f"**[CHANGED]** {body}", "[CHANGED]"
     tags: list[str] = []
+    reasons: dict[str, str] = {}
     for old_part, new_part in parts:
+        context = label or _changed_context(new_frag, new_part)
         o_nums, n_nums = _numbers(old_part), _numbers(new_part)
         if len(o_nums) == 1 and len(n_nums) == 1 and o_nums[0] != n_nums[0]:
-            tags.append(_direction(label or _changed_context(new_frag, new_part), o_nums[0], n_nums[0]))
+            part_tag = _direction(context, o_nums[0], n_nums[0])
+            reason = _direction_reason(context, part_tag, n_nums[0] > o_nums[0])
         elif len(o_nums) == len(n_nums) and len(o_nums) >= 2 and o_nums != n_nums:
             diffs = [b - a for a, b in zip(o_nums, n_nums) if a != b]
             if diffs and (all(d > 0 for d in diffs) or all(d < 0 for d in diffs)):
                 first_pair = next((a, b) for a, b in zip(o_nums, n_nums) if a != b)
-                tags.append(
-                    _direction(label or _changed_context(new_frag, new_part), first_pair[0], first_pair[1])
-                )
+                part_tag = _direction(context, first_pair[0], first_pair[1])
+                reason = _direction_reason(context, part_tag, first_pair[1] > first_pair[0])
             else:
-                tags.append("[CHANGED]")
+                part_tag, reason = "[CHANGED]", ""
         elif o_nums != n_nums:
-            tags.append("[CHANGED]")
+            part_tag, reason = "[CHANGED]", ""
         else:
-            tags.append("[TEXT FIX]")
+            # Numbers unchanged: a name / type / keyword swap is a [CHANGED], prose is [TEXT FIX].
+            part_tag = ("[CHANGED]" if _is_terminology(context, old_part, new_part,
+                                                      single=len(parts) == 1) else "[TEXT FIX]")
+            reason = ""
+        tags.append(part_tag)
+        if reason and part_tag not in reasons:
+            reasons[part_tag] = reason
     # One line can carry several changes: the strongest statement wins, and a direction we
     # cannot reason about never outranks a plain change.
     for candidate in ("[BUFF]", "[NERF]", "[CHANGED]", "[NEW]", "[TEXT FIX]"):
@@ -744,12 +844,29 @@ def _change_line(old_frag: str, new_frag: str, label: str = "") -> tuple[str, st
         tag = "[CHANGED]"
     if not body:
         body = str(new_frag or "")
-    return f"**{tag}** {body}", tag
+    reason = reasons.get(tag, "")
+    suffix = f" *({reason})*" if reason else ""
+    return f"**{tag}** {body}{suffix}", tag
 
 
 # A removed block keeps one readable excerpt; the rest of its retired text is counted, not quoted,
 # because a second post should get shorter, not longer.
 _REMOVED_EXCERPT = 150
+
+
+def _removed_statement(old_lines: list[str]) -> str:
+    """One bullet for any number of retired lines: excerpt first, the rest counted."""
+    kept = [str(line).strip() for line in old_lines if str(line).strip()]
+    if not kept:
+        return ""
+    excerpt = kept[0]
+    if len(excerpt) > _REMOVED_EXCERPT:
+        excerpt = excerpt[: _REMOVED_EXCERPT - 1].rstrip() + "\u2026"
+    line = f"**[CHANGED]** Removed from this revision — ~~{excerpt}~~"
+    if len(kept) > 1:
+        rest = len(kept) - 1
+        line += f" *(+{rest} more line{'' if rest == 1 else 's'} no longer published)*"
+    return line
 
 
 def _norm_title(title: str) -> str:
@@ -828,8 +945,10 @@ def _diff_params(prev: Any, cur: Any) -> list[tuple[str, str]]:
         if len(o_nums) == 1 and len(n_nums) == 1 and o_nums[0] != n_nums[0]:
             tag = _direction(name, o_nums[0], n_nums[0])
             verb = "increased" if n_nums[0] > o_nums[0] else "reduced"
+            reason = _direction_reason(name, tag, n_nums[0] > o_nums[0])
+            suffix = f" *({reason})*" if reason else ""
             out.append((f"**{tag}** {name} {verb} from "
-                        f"~~**{was.get('text')}**~~ → **{p.get('text')}**.", tag))
+                        f"~~**{was.get('text')}**~~ → **{p.get('text')}**.{suffix}", tag))
         else:
             out.append((f"**[CHANGED]** {name}: ~~{was.get('text')}~~ → "
                         f"**{p.get('text')}**.", "[CHANGED]"))
@@ -904,13 +1023,15 @@ def _diff_section(prev: Any, cur: Any) -> tuple[list[str], list[str]]:
                         lines.append((f"**[CHANGED]** {new_ln}", "[CHANGED]"))
                 for extra in cur_lines[j1 + len(pairs):j2]:
                     lines.append((f"**[NEW]** {extra}", "[NEW]"))
-                lines.extend((f"**[CHANGED]** Removed: ~~{old_ln}~~", "[CHANGED]")
-                             for old_ln in prev_lines[i1 + len(pairs):i2])
+                dropped = prev_lines[i1 + len(pairs):i2]
+                if dropped:
+                    lines.append((_removed_statement(dropped), "[CHANGED]"))
             elif opcode == "insert":
                 lines.extend((f"**[NEW]** {new_ln}", "[NEW]") for new_ln in cur_lines[j1:j2])
             elif opcode == "delete":
-                lines.extend((f"**[CHANGED]** Removed: ~~{old_ln}~~", "[CHANGED]")
-                             for old_ln in prev_lines[i1:i2])
+                removed = _removed_statement(prev_lines[i1:i2])
+                if removed:
+                    lines.append((removed, "[CHANGED]"))
 
     if not lines:
         return [], []
@@ -1003,7 +1124,8 @@ def diff_kits(prev_sections: list, cur_sections: list) -> tuple[list[Any], int]:
         else:
             marker = "[CHANGED]"
         title = str(getattr(section, "title", ""))
-        if _norm_title(getattr(previous, "title", "")) != key:
+        if (_norm_title(getattr(previous, "title", "")) != key
+                and not any("Renamed from" in line for line in change_lines)):
             change_lines.insert(0, f"**[CHANGED]** Renamed from ~~{getattr(previous, 'title', '')}~~ → **{title}**.")
         out.append(BetaSectionEntry(
             title=title, category=str(getattr(section, "category", "")), tag=marker,
@@ -1020,13 +1142,7 @@ def diff_kits(prev_sections: list, cur_sections: list) -> tuple[list[Any], int]:
         old = [line for line in _section_lines(previous) if not line.startswith("-#")]
         if not old:
             continue                # only a source note: nothing a reader could act on
-        excerpt = old[0].strip()
-        if len(excerpt) > _REMOVED_EXCERPT:
-            excerpt = excerpt[: _REMOVED_EXCERPT - 1].rstrip() + "…"
-        line = f"**[CHANGED]** Removed from this revision — ~~{excerpt}~~"
-        if len(old) > 1:
-            rest = len(old) - 1
-            line += f" *(+{rest} more line{'' if rest == 1 else 's'} no longer published)*"
+        line = _removed_statement(old)
         out.append(BetaSectionEntry(
             title=str(getattr(previous, "title", "")),
             category=str(getattr(previous, "category", "")), tag="[CHANGED]",
@@ -1093,6 +1209,27 @@ def _normalize_changelog(markdown: str) -> str:
     # number of backslashes varies between page renders, so collapse every run of them.
     text = re.sub(r"\\+[ \t]*\n[ \t]*", "\n", text)
     return re.sub(r"\n{3,}", "\n\n", text)
+
+
+# Upstream sometimes publishes one build inside another's revision. On 2026-10-30 ZZZ served
+# 3.4.2 material inside the 3.4.1 hotfix 19997538, and both the changelog and the tracker's own news
+# comment said so ("Hoyo mistakenly pushed 3.4.2 stuff to 3.4.1 hotfix"). A revision like that is
+# not settled data, so the card repeats the caveat instead of presenting mixed values as final.
+# Only phrases that say the DATA is mixed or partial. A generic beta disclaimer ("values may
+# change") is on every page and must never flag a whole revision, so it is deliberately not here.
+_DATA_WARNING_RE = re.compile(
+    r"(?:partial (?:data|build|update|numbers)|incomplete (?:data|build|update)|"
+    r"mixed (?:data|build|revision|update)|two (?:different )?builds|different build|"
+    r"datamined?|take (?:this|it) with (?:a )?(?:huge )?grain of salt|"
+    r"work in progress|wip build)",
+    re.I,
+)
+
+
+def _data_warning(text: str) -> str:
+    """The phrase a source used to flag its own revision as mixed/partial, or "" when it did not."""
+    match = _DATA_WARNING_RE.search(str(text or ""))
+    return re.sub(r"\s+", " ", match.group(0)).strip() if match else ""
 
 
 class _ChangelogHTML(HTMLParser):
@@ -1170,6 +1307,7 @@ class _ChangelogHTML(HTMLParser):
                 self._has_chs_link
                 or bool(re.search(r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", joined, re.I))
             )
+            self.revisions[-1]["data_warning"] = _data_warning(joined)
         self.body = []
         self._entries_by_path = {}
         self._pending_diffs = {}
@@ -1518,6 +1656,7 @@ def _parse_gachabase_data(raw: str, base_url: str = "") -> list[dict]:
                 "entries": entries,
                 "no_changes": bool(present) and not entries,
                 "zh_check_advised": False,
+                "data_warning": "",
             })
     out.sort(key=lambda r: int(re.findall(r"\d+", r["label"])[-1]), reverse=True)
     return out
@@ -1653,6 +1792,7 @@ def parse_changelog(markdown: str, *, base_url: str = "") -> list[dict]:
                 has_chs_link
                 or bool(re.search(r"\b(?:double[- ]check|cross[- ]check)\s+with\s+chinese\b", block, re.I))
             ),
+            "data_warning": _data_warning(block),
         })
     return revs
 
@@ -4698,7 +4838,17 @@ def _short_name(label: str, limit: int = 48) -> str:
     return text if len(text) <= limit else text[: limit - 1].rstrip() + "\u2026"
 
 
-def _movement_clause(ranked: list[tuple[str, float]], *, direction: str) -> str:
+def _join_clauses(parts: list[str]) -> str:
+    """`a, b, and c` — a sentence, not a run-on of `and`s."""
+    kept = [part for part in parts if part]
+    if not kept:
+        return ""
+    if len(kept) == 1:
+        return kept[0]
+    return ", ".join(kept[:-1]) + ", and " + kept[-1]
+
+
+def _movement_clause(ranked: list[tuple[str, float]]) -> str:
     """`the only block that moved is Robin Attack, and nothing nerfed` — no invented magnitude."""
     if not ranked:
         return ""
@@ -4710,7 +4860,7 @@ def _movement_clause(ranked: list[tuple[str, float]], *, direction: str) -> str:
     else:
         clause = (f"most of the movement is in {names[0]} and {names[1]}, with "
                   f"{_count(len(names) - 2, 'more block', 'more blocks')} touched")
-    return clause + direction
+    return clause
 
 
 def _revision_explanation(
@@ -4777,10 +4927,10 @@ def _revision_explanation(
         lead = f"**{name}** is rebalanced in this revision"
     elif buffs:
         lead = f"**{name}** comes out ahead in this revision"
-        direction = ", and nothing was nerfed" if no_down else ""
+        direction = "nothing was nerfed" if no_down else ""
     elif nerfs:
         lead = f"**{name}** is toned down in this revision"
-        direction = ", and nothing was buffed" if no_up else ""
+        direction = "nothing was buffed" if no_up else ""
     elif structural and quiet:
         lead = (f"**{name}**'s kit is reworked in this revision — the mechanics are rebuilt "
                 "and no value changes")
@@ -4797,15 +4947,15 @@ def _revision_explanation(
     else:
         lead = f"**{name}**'s kit changes in this revision"
 
-    moved_clause = _movement_clause(ranked, direction=direction) if ranked else ""
+    moved_clause = _movement_clause(ranked) if ranked else ""
     new_names = [_short_name(title) for title in new_titles[:2] if title not in per_block]
     new_clause = ""
     if new_names and (moved_clause or not (retired or renamed or structural)):
         new_clause = (f"{_join_words(new_names)} "
                       f"{'are' if len(new_names) > 1 else 'is'} new here")
-    tail = ", and ".join(part for part in (moved_clause, new_clause) if part)
-    if tail and not moved_clause:
-        tail += ", and no existing value moved"
+    if not moved_clause and new_clause:
+        new_clause = f"{new_clause}, and no existing value moved"
+    tail = _join_clauses([moved_clause, direction, new_clause])
     if tail:
         lead = f"{lead} — {tail}"
     sentence = f"{lead}."
@@ -5151,6 +5301,43 @@ def _change_tally(sections: list) -> str:
             word += "es" if word.endswith(("ch", "sh", "x", "s")) else "s"
         parts.append(f"{n} {word}")
     return ", ".join(parts)
+
+
+def _card_churn(sections: list) -> tuple[int, int]:
+    """(structural churn, measured value moves) in one card's change lines.
+
+    Structural churn is the part a mixed build corrupts most easily — renames, reworks, retirements
+    and brand-new blocks. Value moves are the part that survives both builds and can be trusted.
+    """
+    structural = values = 0
+    for section in sections or ():
+        for raw in (getattr(section, "lines", ()) or ()):
+            line = str(raw or "")
+            if (re.search(r"\bRenamed from\b|\bRemoved from this revision\b|\bRemoved:\s*~~", line)
+                    or line.startswith(("**[NEW]", "**[REWORK]"))):
+                structural += 1
+            elif line.startswith(("**[BUFF]**", "**[NERF]**")) and "~~" in line:
+                values += 1
+    return structural, values
+
+
+def _mixed_build_note(*, upstream: str, hotfix: bool, structural: int, values: int) -> str:
+    """A caveat for a revision whose data may mix two builds, or "" when nothing suggests it.
+
+    Two independent reasons, both honest about what is known:
+      * the source itself said so (a changelog that flags partial/mixed data), or
+      * a hotfix renames or adds far more than a hotfix normally does, which is what mixed data
+        looks like when nobody states it.
+    Either way the note names the reliable part (the point values) instead of withholding the card.
+    """
+    if upstream:
+        return (f"**Note:** the changelog flags this revision itself — \u201c{upstream}\u201d — so read "
+                "renames and new mechanics as provisional; the point values below are the part to trust.")
+    if hotfix and structural >= 6 and values:
+        return (f"**Note:** this hotfix renames or adds {structural} blocks — more churn than a hotfix "
+                "normally carries — so part of it may come from another build. Point values are the "
+                "part to trust; renames and new mechanics may still move.")
+    return ""
 
 
 async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatch | None:
@@ -5902,6 +6089,34 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 diff_url=current.diff_url, page_url=current.page_url,
             ))
         equip_count += 1
+
+    # Mixed-build caveat: stated once, on the card, for every game. A revision that carries data
+    # from more than one build must not read as settled — see `_mixed_build_note`.
+    structural = values = 0
+    for char in patch.characters:
+        churn, moves = _card_churn(char.sections)
+        structural += churn
+        values += moves
+    eq_sections = [
+        BetaSectionEntry(title=eq.name, category=eq.category_label, tag=eq.tag,
+                         lines=list(eq.lines or ()))
+        for eq in patch.equipment
+    ]
+    churn, moves = _card_churn(eq_sections)
+    structural += churn
+    values += moves
+    upstream_warning = str(source_revision.get("data_warning") or "") if source_revision else ""
+    hotfix = bool(previous_ver and previous_ver != version
+                  and _major_minor(previous_ver) == _major_minor(version))
+    patch.build_note = _mixed_build_note(
+        upstream=upstream_warning, hotfix=hotfix, structural=structural, values=values
+    )
+    if patch.build_note:
+        ctx.report.append(
+            f"{game.short} {version}: mixed-data caveat on the card "
+            f"({structural} renamed/new block(s), {values} measured value change(s)"
+            + (f", changelog says: {upstream_warning}" if upstream_warning else "") + ")"
+        )
 
     patch.batch_id = stable_hash([patch.rev_id, sorted(patch.item_keys)]) if patch.item_keys else ""
     if not patch.characters and not patch.equipment:

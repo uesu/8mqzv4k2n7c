@@ -106,14 +106,23 @@ def sample_payloads(kind: str = "all", game: str = "", *, mark: bool = False,
             "Each stack of [Radiant Edge] consumed increases this skill's CRIT DMG by 12%.",
             "Restores 10 points of Concerto Energy. This effect can trigger once every 20s.",
         ]
+        # Game-accurate labels: `role` is a weapon for GI/WuWa, a Path for HSR and a Specialty for
+        # ZZZ in the real cards, so the sample must not print "Weapon: Defense".
+        sample_shape = {
+            "genshin": ("Cryo", "Polearm", "Weapons"),
+            "starrail": ("Quantum", "Preservation", "Light Cones"),
+            "zzz": ("Ether", "Defense", "W-Engines"),
+            "wuwa": ("Glacio", "Sword", "Weapons"),
+        }
         for key in ("genshin", "starrail", "zzz", "wuwa"):
             if game and key != game:
                 continue
             if key not in games:
                 continue
+            sample_element, sample_role, sample_equip_label = sample_shape[key]
             sample_char = BetaCharacter(
                 id=f"{key}:sample", name="Sample Newcomer", rarity=5,
-                element="Ether", role="Defense",
+                element=sample_element, role=sample_role,
                 subtext="-# Sample kit — offline preview data, not a real beta entry",
                 stats_lines=["Lv. 60 — HP 8754 · ATK 750 · DEF 706", "CRIT Rate 5%", "CRIT DMG 50%"],
                 sections=[
@@ -127,7 +136,7 @@ def sample_payloads(kind: str = "all", game: str = "", *, mark: bool = False,
                 is_new=True,
             )
             sample_equip = BetaEquipment(
-                id=f"{key}:sample-equip", name="Sample Signature", category_label="W-Engines",
+                id=f"{key}:sample-equip", name="Sample Signature", category_label=sample_equip_label,
                 rarity=5, tag="[NEW]", stats_line="Base ATK 713", effect_title="Sample Effect",
                 lines=["Increases the equipper's CRIT Rate by 24%.",
                        "When the equipper applies a shield, squad DEF increases by 10% for 10s."],
