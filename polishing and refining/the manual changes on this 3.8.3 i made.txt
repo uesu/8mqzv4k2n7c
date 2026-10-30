@@ -1,0 +1,150 @@
+{
+  "attachments": [],
+  "webhook_id": "1487043342578618456",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [WW - 3.8.3 Beta] Patch Notes: Rev. 3.8.1 → 3.8.3\nResource: [nanoka](https://ww.nanoka.cc/)"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://media.discordapp.net/attachments/placeholder",
+                "proxy_url": "https://media.discordapp.net/attachments/placeholder",
+                "width": 2560,
+                "height": 1440,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "## **Lily**\n**Attribute:** Spectro | **Weapon:** Pistols | **Rarity:** ★★★★★\n**Combat Role:** Support and Healer | **Base HP:** 16,713 | **Base ATK:** 288 | **Base DEF:** 1,100\n\nLily receives a sweeping rework across nearly her entire kit. Her Forte Circuit is overhauled: Woven Fairytale/Phantasm now grant [Dream Shelter] on cast (pull and DMG moved to channel), lose 10% DMG Reduction, and see base healing drastically cut (Wish-enhanced healing unchanged). [Silvered Dream] buffs shift from flat to ER-dependent scaling. [Woven Scent] reworks from channel-based to Intro Skill trigger. Slumberland loses its \"takes no DMG\" clause. RC5 reworks from +40% DMG to +50% pull-in range; RC6 DMG bonus drops 500% → 400%.\n\n### **Base Kit Changes**\n\n*   **Normal Attack** **[Mend and Cleanse]:**\n    *   **[ADJUSTMENT]** Damage data rebalanced across stages. Stage 1: ~~**74.28%**~~ → **63.62%**. Stage 2 per-hit: ~~**25.17%**~~ → **29.15%**. Stage 3: ~~**106.09%**~~ → **95.43%**. Stage 4 per-hit: ~~**39.77%**~~ → **38.45%**. Stun, Toughness, and Weakness Break values adjusted proportionally. Dodge Counter and Plunging Attack unchanged.\n\n*   **Resonance Skill** **[Dream Blend]:**\n    *   **[TEXT FIX]** Removed redundant \"dealing Spectro DMG to nearby targets\" from the mode-switch clause in both Nightmare Blend and Reverie Blend. The skill's 159.05% DMG is unchanged.\n    *   **[ADJUSTMENT]** Damage data: Energy generation ~~**2.5**~~ → **0**, Stun ~~**8**~~ → **0**.\n\n*   **Forte Circuit** **[Dreamland of Flowers]:**\n    *   **[TEXT FIX]** Dream Perfume restoration wording: ~~\"Casting\"~~ → **\"After casting\"** Resonance Skill.\n    *   **[REWORK — Woven Fairytale]:** *Old:* Consumes Dream Perfume to pull in targets and deal Spectro DMG on cast; gains 10% DMG Reduction during channel.\n    *   **[REWORK — Woven Fairytale]:** *New:* Consumes Dream Perfume to grant 1 stack of [Dream Shelter] on cast; during channel, pulls in targets and continuously deals Spectro DMG. *(10% DMG Reduction removed; Dream Shelter is new on cast)*\n    *   **[NERF]** Base healing: ~~**1172 + 2.35% HP**~~ → **351 + 0.70% HP**. *(Wish of Praying Dream enhanced healing unchanged at 1758 + 3.53% HP — the 400% multiplier compensates for the lower base)*\n    *   **[REWORK — Woven Phantasm]:** Same structural changes as Fairytale — cast grants [Dream Shelter]; pull and continuous DMG happen during channel.\n    *   **[ADJUSTMENT]** Woven Phantasm DMG restructured: ~~**45.19% × 11**~~ → **21.61% × 23**. *(Total ~497% essentially unchanged; more hits at lower per-hit value)*\n    *   **[TEXT FIX]** Removed duplicate word: \"Woven ~~Woven~~ Phantasm\"."
+        },
+        {
+          "id": 5,
+          "type": 9,
+          "components": [
+            {
+              "id": 6,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1487043342578618456",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Lily (cont.)**\n\n### **Forte Circuit (cont.)**\n\n*   **Heavy Attack** **[Fairytale's Finale / Phantasm's End]:**\n    *   **[BUFF]** [Sillage] → [Silvered Dream] trigger cooldown reduced from ~~**25s**~~ → **20s**. *(Silvered Dream can be applied to the team more frequently via Outro Skill)*\n\n*   **[Silvered Dream]:**\n    *   **[REWORK — ATK Buff]:** *Old:* Active Resonator's ATK increased by flat **7%** per [Unison Boon] stack on the team.\n    *   **[REWORK — ATK Buff]:** *New:* Each [Unison Boon] stack increases ATK by **0.1%** for every 1% of Lily's Energy Regen above 190%, up to **7%**, counting up to 4 stacks. *(Matches old flat 7% at exactly 260% ER; lower below 260%)*\n    *   **[REWORK — Echo Crit Buffs]:** *Old:* Flat **10%** Echo Skill Crit Rate and flat **20%** Echo Skill Crit DMG.\n    *   **[REWORK — Echo Crit Buffs]:** *New:* Every **0.7%** ER above 190% grants **0.1%** Echo Skill Crit Rate (cap **10%**) and **0.2%** Echo Skill Crit DMG (cap **20%**). *(Matches old flat values at 260% ER; scales down below that)*\n    *   **[TEXT FIX]** \"All ~~nearby~~ Resonators in the team gain resistance to interruption\" — removed \"nearby\".\n\n### **Inherent Skill Changes**\n\n*   **Woven Scent:**\n    *   **[REWORK]:** *Old:* During Woven Fairytale/Phantasm channel, Lily restores **6** Concerto Energy per second for 3s (18 total), once every 20s.\n    *   **[REWORK]:** *New:* Casting [Intro Skill - Eternal Bloom] additionally restores **10** Concerto Energy, once every 20s. *(Trigger moved from channel to Intro Skill; total per trigger reduced 18 → 10)*\n    *   **[BUFF]** Finale/Phantasm's End Concerto Energy: ~~**10**~~ → **15** per trigger, once every 20s.\n\n### **Resonance Liberation Changes**\n\n*   **Into the Dream Cradle:**\n    *   **[NERF]** Slumberland: removed \"and she takes no DMG while in Slumberland.\" *(Lily still takes 50% less DMG from the earlier clause, but is no longer fully damage-immune while off-field in Slumberland)*\n\n*   **[Dream Aroma]:**\n    *   **[REWORK]:** *Old:* Each stack increases all Resonators' ATK by flat **7%**, stacking up to 4 times (28% max).\n    *   **[REWORK]:** *New:* Each stack increases ATK by **0.1%** per 1% ER above 190%, up to **7%** per stack. *(Same ER-dependent scaling as Silvered Dream; matches old 7% at 260% ER)*\n\n### **Intro Skill Changes**\n\n*   **Blooming Dream:**\n    *   **[ADJUSTMENT]** Damage data restructured: [Eternal Bloom] element changed from ~~Physical~~ → **Spectro**, scaling property from ~~ATK~~ → **HP**. Several internal damage entries consolidated."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1487043342578618456",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## **Lily (cont.)**\n\n### **Resonance Chain Changes**\n\n*   **RC1** **[Look, White Flowers from the Ruins of Dreams]:**\n    *   No changes.\n\n*   **RC2** **[Listen, a Requiem from the Dream Cradle]:**\n    *   No changes.\n\n*   **RC3** **[May Your Soul Wander No More]:**\n    *   No changes.\n\n*   **RC4** **[May Your Past Sink into Silence]:**\n    *   No changes.\n\n*   **RC5** **[May You Find Peace in Endless Light]:**\n    *   **[REWORK]:** *Old Effect:* The DMG Multipliers of [Heavy Attack - Fairytale's Finale], [Heavy Attack - Phantasm's End], and [Intro Skill - Eternal Bloom] are increased by **40%**.\n    *   **[REWORK]:** *New Effect:* While Lily is in [Slumberland], the pull-in effect range is increased by **50%** when a Resonator in the team casts [Intro Skill]. *(Complete shift from personal DMG buff to team grouping utility)*\n\n*   **RC6** **[May My Reverie Never End]:**\n    *   **[NERF]** Spectro DMG bonus to [Fairytale's Finale], [Phantasm's End], and [Eternal Bloom] reduced from ~~**500%**~~ → **400%**. *(Combined with RC5 losing its +40% DMG multiplier, total bonus to these skills drops from 540% → 400%)*"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
