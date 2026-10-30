@@ -5374,7 +5374,7 @@
       "4.7": {
         "calendar": {
           "banners": [],
-          "ts": 1793315721
+          "ts": 1793326820
         },
         "data": {
           "announcement_locked": true,
@@ -5386,8 +5386,8 @@
             ]
           },
           "banners_checked_ts": 1793322039,
-          "banners_search_ts": 1793315721,
-          "calendar_ts": 1793315721,
+          "banners_search_ts": 1793326820,
+          "calendar_ts": 1793326820,
           "estimate_sources": [
             "version cadence"
           ],
