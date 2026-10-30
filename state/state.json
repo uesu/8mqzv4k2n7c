@@ -4746,8 +4746,8 @@
     },
     "starrail": {
       "cursor": [
-        1793361607,
-        "47251829"
+        1793362507,
+        "47252000"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -4766,6 +4766,11 @@
           1793361637,
           1,
           "49f06a012af74ce2"
+        ],
+        "47252000": [
+          1793362521,
+          0,
+          "72f2de832666f04d"
         ]
       },
       "records": {
@@ -4855,6 +4860,13 @@
           ],
           "status": "posted",
           "ts": 1793361607
+        },
+        "47252000": {
+          "messages": [
+            "1565700705849704520"
+          ],
+          "status": "posted",
+          "ts": 1793362507
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -5833,7 +5845,7 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1793329202,
-          "banners_checked_ts": 1793351422,
+          "banners_checked_ts": 1793362521,
           "banners_search_ts": 1793351723,
           "estimate_sources": [
             "version cadence"
