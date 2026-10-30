@@ -5442,7 +5442,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1793376049
+          "ts": 1793387120
         },
         "data": {
           "announcement_locked": true,
@@ -5464,8 +5464,8 @@
             ]
           },
           "banners_checked_ts": 1793002222,
-          "banners_search_ts": 1793376049,
-          "calendar_ts": 1793376049,
+          "banners_search_ts": 1793387120,
+          "calendar_ts": 1793387120,
           "estimate_sources": [
             "version cadence"
           ],
@@ -5829,12 +5829,14 @@
               "Jing Yuan"
             ]
           },
-          "banners_checked_ts": 1793365519,
+          "banners_checked_ts": 1793387120,
           "banners_search_ts": 1793370022,
           "banners_settled": [
             "phase1",
             "phase1_4",
-            "phase2"
+            "phase2",
+            "phase2_4",
+            "reruns"
           ],
           "calendar_ts": 1793370022,
           "estimate_sources": [
@@ -5905,7 +5907,8 @@
             1793370022
           ],
           "b_phase2_4_by": [
-            "calendar"
+            "calendar",
+            "wiki"
           ],
           "b_phase2_by": [
             "calendar",
@@ -5979,8 +5982,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793376049,
-          "banners_search_ts": 1793376049,
+          "banners_checked_ts": 1793387120,
+          "banners_search_ts": 1793387120,
           "banners_settled": [
             "phase1",
             "phase2",
