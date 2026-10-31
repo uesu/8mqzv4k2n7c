@@ -1692,6 +1692,15 @@ def _parse_gachabase_data(raw: str, base_url: str = "") -> list[dict]:
             if not isinstance(rev_num, int) or not ver:
                 continue
             present = [key for key in _DATA_SECTIONS if isinstance(rev.get(key), list)]
+            # A list on the revision that no card kind knows about (a group gachabase starts
+            # streaming later, such as Genshin's materials) would otherwise disappear here with
+            # nothing downstream able to notice: `present` only ever names known keys.
+            # Only a group that actually carries entries: an empty placeholder list drops
+            # nothing, and warning about it would be noise the reader learns to ignore.
+            unknown = sorted(
+                key for key, value in rev.items()
+                if value and isinstance(value, list) and key not in _DATA_SECTIONS
+            )
             if not present:
                 continue                 # lists not streamed: never guess "no changes"
             entries: list[dict] = []
@@ -1729,6 +1738,7 @@ def _parse_gachabase_data(raw: str, base_url: str = "") -> list[dict]:
                 "no_changes": bool(present) and not entries,
                 "zh_check_advised": False,
                 "data_warning": "",
+                "unknown_groups": unknown,
             })
     out.sort(key=lambda r: int(re.findall(r"\d+", r["label"])[-1]), reverse=True)
     return out
@@ -4517,7 +4527,9 @@ def _meta_label(game_key: str, field: str) -> str:
     if field == "faction":
         return "Faction" if game_key == "zzz" else "Affiliation"
     if field == "sub_type":
-        return "Type"
+        # Every reader but WuWa's Encore one puts the item's *substat* here — the card prints it
+        # as `**Substat:** CRIT DMG 48%` — so that is what the label says.
+        return "Substat"
     if field == "weapon_class":
         return "Weapon class"
     if field == "set_kind":
@@ -4574,6 +4586,14 @@ def _metadata_changes(game_key: str, previous: Any, current: Any,
         if require_both and not (old_text and new_text):
             # Against the live build a field can be missing because the released reader never
             # published it. "Faction set to X" would be an artifact of the baseline, not a change.
+            continue
+        # WuWa's Encore reader stores the weapon type in both fields (`weapon_class = sub_type`),
+        # which is what keeps `**Substat:**` from repeating the class already in the badge.
+        # Reported as metadata it would be the same change twice, so the weapon-class row is left
+        # to say it once.
+        if (field == "sub_type" and "weapon_class" in fields
+                and old_text == str(getattr(previous, "weapon_class", "") or "").strip()
+                and new_text == str(getattr(current, "weapon_class", "") or "").strip()):
             continue
         label = _meta_label(game_key, field)
         if old_text and new_text:
@@ -4955,6 +4975,69 @@ _ENCORE_DIFF = "https://encore.moe/diff"
 _ENCORE_ROUTES = {"character": "character", "weapon": "weapon", "relic": "echo", "echo": "echo"}
 
 
+_ENCORE_VERSION_RE = re.compile(r"\d+(?:\.\d+){2}")
+
+
+def _encore_diff_url(item_id: str, route: str, game_version: str, res_version: str,
+                     previous: tuple[str, str] = ("", "")) -> str:
+    """Encore's comparison page, pinned to patch labels Encore itself has indexed.
+
+    The page only resolves labels from the picker it fills for that game version: one it does
+    not index renders `Comparison failed: API error: 404`, one it never crawled (`Beta_3.8.0`)
+    renders `No comparison data available` — observed 2026-10-31, and both read like a broken
+    link. Nanoka's revision numbers are not that list, so they are never guessed with.
+
+    `previous` is the beta the last posted card compared (its snapshot's own `GameVer`/`ResVer`,
+    which our snapshots already record). When it is known the link is a real before/after across
+    the two betas — the delta the card itself describes. Otherwise the current beta is compared
+    with itself, which still renders the item's full text and covers an item that is new in this
+    beta, so there is always something to open. Both sides are always Encore's own labels, which
+    is what keeps the link valid into 4.0 and beyond with no code change.
+    """
+    route = _ENCORE_ROUTES.get(str(route or ""), "")
+    if not item_id or not route:
+        return ""
+    game = str(game_version or "").strip()
+    res = str(res_version or "").strip()
+    if not (_ENCORE_VERSION_RE.fullmatch(game) and _ENCORE_VERSION_RE.fullmatch(res)):
+        return ""
+    # `Beta_<x.y.0>` is a version's own base, not a published beta patch: the page renders
+    # `No comparison data available` for it (`Beta_3.8.0` vs `Beta_3.8.3`, observed 2026-10-31).
+    # A version that has only just started at 4.0.0 reports exactly that, so refuse the label and
+    # let the caller fall back rather than link a page that says nothing.
+    if res == game:
+        return ""
+    # Defensive: a pairwise helper must never raise into `build_patch` and cost a whole card.
+    if not isinstance(previous, (list, tuple)) or len(previous) < 2:
+        previous = ("", "")
+    prev_game, prev_res = (str(previous[0] or "").strip(), str(previous[1] or "").strip())
+    # A previous beta that is itself a version base (`3.8.0`) is not a label the site publishes
+    # either — `Beta_3.8.0 vs Beta_3.8.3` answered `No comparison data available` on 2026-10-31.
+    if (_ENCORE_VERSION_RE.fullmatch(prev_game) and _ENCORE_VERSION_RE.fullmatch(prev_res)
+            and prev_res != prev_game
+            and (prev_game, prev_res) != (game, res)):
+        # Two betas the site has both published; across versions too, which the page renders.
+        return (
+            f"{_ENCORE_DIFF}?firstGameVer={prev_game}&secondGameVer={game}"
+            f"&firstVer=Beta_{prev_res}&secondVer=Beta_{res}&route={route}&id={item_id}&lang=en"
+        )
+    patch = f"Beta_{res}"
+    return (
+        f"{_ENCORE_DIFF}?firstGameVer={game}&secondGameVer={game}"
+        f"&firstVer={patch}&secondVer={patch}&route={route}&id={item_id}&lang=en"
+    )
+
+
+def _encore_snapshot_beta(snapshot: Any) -> tuple[str, str]:
+    """The `(GameVer, ResVer)` a snapshot recorded, when Encore served it. Else ("", "")."""
+    if not isinstance(snapshot, dict) or snapshot.get("provider") != "encore":
+        return ("", "")
+    revision = snapshot.get("provider_revision")
+    if not isinstance(revision, (list, tuple)) or len(revision) < 2:
+        return ("", "")
+    return (str(revision[0] or "").strip(), str(revision[1] or "").strip())
+
+
 def _beta_patch_parts(version: str) -> list[str]:
     """`3.8.1` -> ['3', '8', '1']; anything else yields [] and no link is invented.
 
@@ -4968,12 +5051,12 @@ def _beta_patch_parts(version: str) -> list[str]:
     return parts
 
 
-def _encore_diff_url(item_id: str, route: str, first_version: str, second_version: str) -> str:
-    """The Encore diff page for one item across two beta patches, or "" when it cannot be built.
+def _encore_pair_url(item_id: str, route: str, first_version: str, second_version: str) -> str:
+    """The two revisions this card compared, as a last resort when Encore's own beta is unknown.
 
-    Every part of the query is a value the card actually compared: the two beta patch versions.
-    A comparison it cannot name (cold start, the same patch twice, an unreadable build id) returns
-    "" instead of a link that would open an empty comparison.
+    Not preferred: those are nanoka's revision numbers, and Encore only resolves patch labels it
+    has indexed itself. It is kept because it is what shipped before the indexed build was
+    available, so a failed metadata read degrades to the old link instead of losing it.
     """
     route = _ENCORE_ROUTES.get(str(route or ""), "")
     if not item_id or not route:
@@ -4990,10 +5073,20 @@ def _encore_diff_url(item_id: str, route: str, first_version: str, second_versio
 
 
 def _diff_url(ns: str, role: str, item_id: str, name: str,
-              previous_version: str, current_version: str, set_kind: str = "") -> str:
-    """The revision-diff link for one item, in whichever database serves that game."""
+              previous_version: str, current_version: str, set_kind: str = "", *,
+              encore_beta: tuple[str, str] = ("", ""),
+              encore_prev: tuple[str, str] = ("", "")) -> str:
+    """The revision-diff link for one item, in whichever database serves that game.
+
+    WuWa is the one game whose link is not built from the two versions being compared: Encore
+    only resolves patch labels it has indexed, so the caller passes its current beta
+    (`encore_beta`) instead. Without it the link falls back to the two revisions compared, which
+    is what shipped before — a degraded link rather than a lost one.
+    """
     if ns == "ww":
-        return _encore_diff_url(item_id, role, previous_version, current_version)
+        game_version, res_version = encore_beta
+        return (_encore_diff_url(item_id, role, game_version, res_version, encore_prev)
+                or _encore_pair_url(item_id, role, previous_version, current_version))
     return _generated_diff_url(ns, role, item_id, name, previous_version, current_version,
                                set_kind)
 
@@ -6059,6 +6152,15 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         ctx.warnings.append(
             f"{game.short} beta: {len(unkinded)} listed change(s) have no card kind "
             f"({', '.join(labels)}) — skipped")
+    unknown_groups = [
+        str(key) for key in ((source_revision or {}).get("unknown_groups") or []) if str(key)
+    ]
+    if unknown_groups:
+        # Reported rather than parsed: a group nobody defined a card kind for cannot be carded,
+        # but it must never look like a revision that simply had nothing in it.
+        ctx.warnings.append(
+            f"{game.short} beta: changelog lists group(s) with no card kind "
+            f"({', '.join(unknown_groups)}) — not read")
     requests = (2 + extra_ch_reqs) if _changelog_url(game) else 1
     previous_ver = str(record.get("source_version") or "").strip()
     # When GachaBase is unreachable (on 2026-10-30 it answered 403 to
@@ -6168,6 +6270,33 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         if deferred_reason:
             ctx.warnings.append(f"{game.short} beta: Encore build changed {deferred_reason}; deferred")
         return None
+
+    encore_beta: tuple[str, str] = ("", "")
+    encore_beta_read = False
+
+    async def encore_beta_pair() -> tuple[str, str]:
+        """Encore's own current beta (GameVer, ResVer), read at most once per run.
+
+        Its comparison page only resolves patch labels from the picker it fills for that game
+        version: `Beta_3.4.0` (never offered) answers `Comparison failed: API error: 404` and
+        `Beta_3.8.0` (never crawled) answers `No comparison data available` — both observed
+        2026-10-31. Nanoka revision numbers are not that list. Called lazily, and only while the
+        request budget has room, so a link can never cost a card; ("", "") simply means no link.
+        """
+        nonlocal requests, encore_beta, encore_beta_read
+        if encore_beta_read or ns != "ww":
+            return encore_beta
+        encore_beta_read = True
+        for api in (ENCORE_API, ENCORE_BACKUP_API):
+            if requests + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
+                break
+            requests += 1
+            row = _encore_metadata(await ctx.fetcher.get_json(
+                f"{api}/new?v=Beta", source="beta-encore", retries=1))
+            if row:
+                encore_beta = (row[0], row[1])
+                break
+        return encore_beta
 
     for entry in char_entries:
         item_id = _entry_id(entry)
@@ -6281,7 +6410,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         page_url = ("" if entry.get("synthetic") else str(entry.get("url") or "")) or \
             _item_page_url(ns, "character", item_id, name)
         diff_url = (str(entry.get("diff") or "") or
-                    _diff_url(ns, "character", item_id, name, previous_revision, version))
+                    _diff_url(ns, "character", item_id, name, previous_revision, version,
+                              encore_beta=await encore_beta_pair(),
+                              encore_prev=_encore_snapshot_beta(previous_snapshot)))
         if "_encore" in data:
             page_url = f"https://encore.moe/character/{item_id}?lang=en&v=Beta"
 
@@ -6696,7 +6827,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                            set_kind=str(fields.get("set_kind") or ""))
         diff_url = (str(entry.get("diff") or "") or
                     _diff_url(ns, role, item_id, name, previous_revision, version,
-                              set_kind=str(fields.get("set_kind") or "")))
+                              set_kind=str(fields.get("set_kind") or ""),
+                              encore_beta=await encore_beta_pair(),
+                              encore_prev=_encore_snapshot_beta(previous_snapshot)))
         if "_encore" in data:
             page_url = f"https://encore.moe/weapon/{item_id}?lang=en&v=Beta"
             rarity = data.get("rarity")
