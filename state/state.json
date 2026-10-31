@@ -6118,8 +6118,8 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1793329202,
-          "banners_checked_ts": 1793438718,
-          "banners_search_ts": 1793439026,
+          "banners_checked_ts": 1793449828,
+          "banners_search_ts": 1793449828,
           "estimate_sources": [
             "version cadence"
           ],
