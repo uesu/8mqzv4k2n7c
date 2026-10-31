@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793446821,
+      "last_poll": 1793448924,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793446821,
+      "last_poll": 1793448924,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793446821,
+      "last_poll": 1793448924,
       "latest_rev": "1ce49e698ba2de12",
       "locked_images": {},
       "revisions": {
@@ -517,7 +517,7 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793446821,
+      "last_poll": 1793448924,
       "latest_rev": "db88b87c5aa4dfb3",
       "locked_images": {
         "zzz:1331": {
@@ -3033,7 +3033,7 @@
       "AHABLESSYOU": {
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1793405421,
+        "last_seen": 1793448924,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -3289,7 +3289,7 @@
       "NEVERGONNAGIVE": {
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1793405421,
+        "last_seen": 1793448924,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -3322,7 +3322,7 @@
       "NEVERGONNAMAKE": {
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1793405421,
+        "last_seen": 1793448924,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
