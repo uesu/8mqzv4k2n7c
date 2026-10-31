@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793412923,
+      "last_poll": 1793415022,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793412923,
+      "last_poll": 1793415022,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793412923,
+      "last_poll": 1793415022,
       "latest_rev": "1ce49e698ba2de12",
       "locked_images": {},
       "revisions": {
@@ -517,7 +517,7 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793412923,
+      "last_poll": 1793415022,
       "latest_rev": "db88b87c5aa4dfb3",
       "locked_images": {
         "zzz:1331": {
@@ -2200,7 +2200,7 @@
       },
       "DATG5HG1PL89": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Mora ×10000",
           "Adventurer's Experience ×10",
@@ -2249,7 +2249,7 @@
       },
       "EPIC2026": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "40 primogems, five hero's wit, and 20k mora",
         "sources": [
           "codehub",
@@ -2263,7 +2263,7 @@
       "EXPERTMITYA": {
         "first_seen": 1792758316,
         "gate": "2 independent sources",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1563167785264095293",
         "msg_codes": [
           "EXPERTMITYA"
@@ -2304,7 +2304,7 @@
       },
       "GENSHINGIFT": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Hero's Wit ×3",
           "Primogem ×50"
@@ -2407,7 +2407,7 @@
       "HOUROFRUIN": {
         "first_seen": 1792757115,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1563161402670325781",
         "msg_codes": [
           "HOUROFRUIN"
@@ -2462,7 +2462,7 @@
       "NEEI8A8341OW": {
         "first_seen": 1790840103,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1555120875471118347",
         "msg_codes": [
           "NEEI8A8341OW",
@@ -2488,7 +2488,7 @@
       "NEEI986K5X6R": {
         "first_seen": 1791403234,
         "gate": "only ennead",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -2501,7 +2501,7 @@
       "NEEIJB764CA3": {
         "first_seen": 1791148221,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1556418291717898373",
         "msg_codes": [
           "NEEIJB764CA3"
@@ -2553,7 +2553,7 @@
       "OKTCHX26J57Q": {
         "first_seen": 1792482628,
         "gate": "only ennead, ogc",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Mora ×10,000",
           "Adventurer's Experience ×10",
@@ -2570,7 +2570,7 @@
       "OKTCV81F9H8D": {
         "first_seen": 1791952819,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1559905206463102999",
         "msg_codes": [
           "OKTCV81F9H8D"
@@ -2599,7 +2599,7 @@
       "OPERACOLLAB": {
         "first_seen": 1790840103,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1555120875471118347",
         "msg_codes": [
           "NEEI8A8341OW",
@@ -2645,7 +2645,7 @@
       "PHOTOTIME": {
         "first_seen": 1792759219,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1563171493708431512",
         "msg_codes": [
           "PHOTOTIME"
@@ -2672,7 +2672,7 @@
       "PJ2KEBRAYSRM": {
         "first_seen": 1792761916,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1563181539594870856",
         "msg_codes": [
           "PJ2KEBRAYSRM"
@@ -2765,7 +2765,7 @@
       "PNKZ3WLNN8G6": {
         "first_seen": 1790332129,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1552990319136477316",
         "msg_codes": [
           "PNKZ3WLNN8G6"
@@ -2807,7 +2807,7 @@
       "QYJWQVRI39BE": {
         "first_seen": 1792813821,
         "gate": "only ennead",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -2872,7 +2872,7 @@
       },
       "VESNAONPATROL": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "Primogem*40;Mora*20000;Hero's Wit*3",
         "sources": [
           "codehub",
@@ -2884,7 +2884,7 @@
       },
       "WA8MJCETGXLR": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": null,
         "sources": [
           "fandom"
@@ -2921,7 +2921,7 @@
       },
       "Y6JYMKV6JKSL": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "Primogem*60;Adventurer's Experience*5",
         "sources": [
           "codehub",
@@ -2980,7 +2980,7 @@
       },
       "4TKSX77Y58QK": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "30 stellar jade, three traveler’s guides, five condensed aether, four lost gold fragments, and 20k credits",
         "sources": [
           "codehub",
@@ -2992,7 +2992,7 @@
       },
       "5S6ZHRWTDNJB": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "60 stellar jade",
         "sources": [
           "codehub",
@@ -3077,7 +3077,7 @@
       },
       "BESTCOFFEEEVER": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Express Special Blend - Rustic Infusion ×2",
           "Express Special Blend: Rustic Infusion ×2",
@@ -3115,7 +3115,7 @@
       },
       "CREATIONNYMPH": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "60 stellar jade and one fuel",
         "sources": [
           "codehub",
@@ -3129,7 +3129,7 @@
       },
       "CTK5DRQVT48F": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": null,
         "sources": [
           "codehub",
@@ -3140,7 +3140,7 @@
       "DSLSPNBREASP": {
         "first_seen": 1792556421,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1562351094334758915",
         "msg_codes": [
           "DSLSPNBREASP"
@@ -3166,7 +3166,7 @@
       },
       "FAREWELL": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "60 stellar jade and one fuel",
         "sources": [
           "codehub",
@@ -3200,7 +3200,7 @@
       },
       "IFYOUAREREADINGTHIS": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "60 stellar jade and one fuel",
         "sources": [
           "codehub",
@@ -3351,7 +3351,7 @@
       },
       "NSJR3B97ZZ5X": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Credit ×10,000",
           "Credit ×10000",
@@ -3365,7 +3365,7 @@
       },
       "OMEGA": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "60 stellar jade and one fuel",
         "sources": [
           "ennead",
@@ -3379,7 +3379,7 @@
       "PEARLAPPRAISE": {
         "first_seen": 1790840103,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1555120883767443517",
         "msg_codes": [
           "PEARLAPPRAISE",
@@ -3446,7 +3446,7 @@
       },
       "STARRAILFATE2026": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "The Fluffy Multi-Functional Fan Glowstick ×2",
           "Traveler's Guide ×3"
@@ -3459,7 +3459,7 @@
       },
       "STARRAILGIFT": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "50 stellar jade, 10k credits, two traveler’s guides, and five bottled soda",
         "sources": [
           "codehub",
@@ -4024,7 +4024,7 @@
       },
       "WUTHERINGGIFT": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": [
           "Astrite ×50",
           "Medium Energy Bag ×2",
@@ -4084,7 +4084,7 @@
       "HOLLOWRUN33": {
         "first_seen": 1792729837,
         "gate": "redeem-validated",
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "message_id": "1563046991062114367",
         "msg_codes": [
           "HOLLOWRUN33"
@@ -4249,7 +4249,7 @@
       },
       "ZENLESSGIFT": {
         "first_seen": 1790323430,
-        "last_seen": 1793371521,
+        "last_seen": 1793415022,
         "rewards": "50 polychrome, two official investigator logs, three w-engine power supplies, and one bangboo algorithm module",
         "sources": [
           "codehub",
