@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793439026,
+      "last_poll": 1793440835,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793439026,
+      "last_poll": 1793440835,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793439026,
+      "last_poll": 1793440835,
       "latest_rev": "1ce49e698ba2de12",
       "locked_images": {},
       "revisions": {
@@ -517,7 +517,7 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793439026,
+      "last_poll": 1793440835,
       "latest_rev": "db88b87c5aa4dfb3",
       "locked_images": {
         "zzz:1331": {
@@ -4520,11 +4520,6 @@
       "floor": 1792395075,
       "paused": false,
       "rechecks": {
-        "47240755": [
-          1793268041,
-          2,
-          "8c571a1685d2dc07"
-        ],
         "47247786": [
           1793331025,
           2,
@@ -5063,11 +5058,6 @@
       "floor": 1792395921,
       "paused": false,
       "rechecks": {
-        "47240756": [
-          1793268041,
-          2,
-          "f228a55e8ed43cf4"
-        ],
         "47260187": [
           1793420421,
           2,
