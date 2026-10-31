@@ -21665,10 +21665,17 @@ def test_feature5_encore_diff_link_pins_the_patch_encore_has_indexed():
         "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
         "&firstVer=Beta_3.8.1&secondVer=Beta_3.8.3&route=echo&id=6000038&lang=en"
     )
-    # Across a version boundary too — verified live 2026-10-31 (Beta_3.7.3 vs Beta_3.8.3).
+    # Never across a game-version boundary: 3.7 (released) is not an earlier patch of 3.8's beta.
+    # The link is the current beta compared with itself instead.
     assert beta_mod._encore_diff_url("6000038", "echo", "3.8.0", "3.8.3", ("3.7.0", "3.7.3")) == (
-        "https://encore.moe/diff?firstGameVer=3.7.0&secondGameVer=3.8.0"
-        "&firstVer=Beta_3.7.3&secondVer=Beta_3.8.3&route=echo&id=6000038&lang=en"
+        "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
+        "&firstVer=Beta_3.8.3&secondVer=Beta_3.8.3&route=echo&id=6000038&lang=en"
+    )
+    # Within one cycle the previous beta is named, including consecutive patches (3.8.2 -> 3.8.3),
+    # both verified live 2026-10-31 (Lily's Basic Attack Stage 1 changed between them).
+    assert beta_mod._encore_diff_url("1512", "character", "3.8.0", "3.8.3", ("3.8.0", "3.8.2")) == (
+        "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
+        "&firstVer=Beta_3.8.2&secondVer=Beta_3.8.3&route=character&id=1512&lang=en"
     )
     # The same beta twice collapses to the single-patch form rather than a no-op range.
     assert beta_mod._encore_diff_url("6000038", "echo", "3.8.0", "3.8.3",
@@ -21678,10 +21685,13 @@ def test_feature5_encore_diff_link_pins_the_patch_encore_has_indexed():
     assert beta_mod._encore_snapshot_beta(
         {"provider": "encore", "provider_revision": ["3.8.0", "3.8.1", "9162983"]}
     ) == ("3.8.0", "3.8.1")
-    # A version's own base is not a published beta patch: `No comparison data available`.
-    assert beta_mod._encore_diff_url("6000038", "echo", "3.8.0", "3.8.0") == ""
-    assert beta_mod._encore_diff_url("6000038", "echo", "4.0.0", "4.0.0") == ""
-    # …on either side of the comparison.
+    # The current beta is always pinned, even when ResVer equals GameVer. That case is not verified
+    # on the live site yet (no new cycle exists to measure), so it is not refused by a guessed rule.
+    assert beta_mod._encore_diff_url("6000038", "echo", "3.9.0", "3.9.0") == (
+        "https://encore.moe/diff?firstGameVer=3.9.0&secondGameVer=3.9.0"
+        "&firstVer=Beta_3.9.0&secondVer=Beta_3.9.0&route=echo&id=6000038&lang=en")
+    # The one observed base (`Beta_3.8.0`, answers "No comparison data") is never named as the
+    # previous side; the link falls back to comparing the current beta with itself.
     assert "firstVer=Beta_3.8.3&secondVer=Beta_3.8.3" in beta_mod._encore_diff_url(
         "6000038", "echo", "3.8.0", "3.8.3", ("3.8.0", "3.8.0"))
     # A malformed previous pair must degrade, never raise into build_patch and cost a card.
@@ -21763,6 +21773,125 @@ def test_feature5_a_second_beta_links_the_two_betas_the_card_just_compared():
     ), second.characters[0].diff_url
 
 
+def test_feature5_a_new_game_version_links_across_the_cycle_change():
+    """A new game version (3.8 -> 3.9) starts its own cycle; nothing is compared across it.
+
+    Checked through the card path. A same-cycle bump is a delta between the two betas posted. A
+    cycle change is a fresh baseline: the link compares the new beta with itself, and the card
+    never diffs a 3.9 beta against a 3.8 one. Whether `Beta_3.9.0` resolves on the live site is
+    unverified until that beta exists; this test pins the link's shape, not the page.
+    """
+    import copy
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import State
+
+    class Encore:
+        def __init__(self, game, res):
+            self.game, self.res, self.changed = game, res, False
+
+        async def get_json(self, url, **_kw):
+            if "/new?" in url:
+                return [{"GameVer": self.game, "ResVer": self.res, "Changelist": "1"}]
+            if "/character/" in url:
+                raw = copy.deepcopy(_beta_json("encore_lily_live.json"))
+                if self.changed and raw.get("Skills"):
+                    raw["Skills"][0]["SkillDescribe"] = "Deals **999%** Spectro DMG."
+                return raw
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    cases = (
+        (("3.8.0", "3.8.1"), ("3.8.0", "3.8.3"),
+         "firstGameVer=3.8.0&secondGameVer=3.8.0&firstVer=Beta_3.8.1&secondVer=Beta_3.8.3"),
+        # A cycle change is NOT a diff: 3.8 released/beta is a different build from 3.9's first beta.
+        (("3.8.0", "3.8.3"), ("3.9.0", "3.9.1"),
+         "firstGameVer=3.9.0&secondGameVer=3.9.0&firstVer=Beta_3.9.1&secondVer=Beta_3.9.1"),
+        (("3.8.0", "3.8.3"), ("3.9.0", "3.9.0"),
+         "firstGameVer=3.9.0&secondGameVer=3.9.0&firstVer=Beta_3.9.0&secondVer=Beta_3.9.0"),
+    )
+    for first_build, second_build, expected in cases:
+        manifest = {"ww": {"latest": first_build[1], "available": [first_build[1]],
+                           "new": {"character": [1512], "weapon": [], "echo": []}}}
+        fetcher = Encore(*first_build)
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["wuwa"])
+            first = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                    beta_mod._budget(ctx)))
+            assert len(first.characters) == 1, first_build
+            beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), first, status="posted")
+            ctx.state.save()
+
+            fetcher.game, fetcher.res, fetcher.changed = second_build[0], second_build[1], True
+            manifest["ww"]["latest"] = second_build[1]
+            manifest["ww"]["available"].append(second_build[1])
+            ctx.state = State.load(ctx.settings.state_path)
+            second = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                     beta_mod._budget(ctx)))
+        assert len(second.characters) == 1, second_build
+        url = second.characters[0].diff_url
+        assert expected + "&route=character&id=1512&lang=en" in url, url
+
+
+def test_feature5_each_beta_compares_only_its_own_cycle_in_sequence():
+    """3.8.1 -> 3.8.2 -> 3.8.3 each name the previous beta; a cycle change starts over.
+
+    The card posts one beta at a time. Each comparison is against the beta posted before it, in
+    the same game version. Encore's base (`Beta_3.8.0`) is not offered, so the first beta of a
+    cycle is its own baseline. Verified live 2026-10-31 for 3.8.1->3.8.2 and 3.8.2->3.8.3.
+    """
+    import copy
+
+    from gamexpress import beta as beta_mod
+    from gamexpress.state import State
+
+    class Encore:
+        def __init__(self):
+            self.game, self.res, self.version = "3.8.0", "3.8.1", 0
+
+        async def get_json(self, url, **_kw):
+            if "/new?" in url:
+                return [{"GameVer": self.game, "ResVer": self.res, "Changelist": "1"}]
+            if "/character/" in url:
+                raw = copy.deepcopy(_beta_json("encore_lily_live.json"))
+                if self.version and raw.get("Skills"):
+                    raw["Skills"][0]["SkillDescribe"] = f"Deals **{self.version}%** Spectro DMG."
+                return raw
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    fetcher = Encore()
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["wuwa"])
+        seen = []
+        for step, (game, res, version) in enumerate([
+            ("3.8.0", "3.8.1", 0), ("3.8.0", "3.8.2", 1), ("3.8.0", "3.8.3", 2),
+            ("3.9.0", "3.9.0", 3),
+        ]):
+            fetcher.game, fetcher.res, fetcher.version = game, res, version
+            manifest = {"ww": {"latest": res, "available": [res],
+                               "new": {"character": [1512], "weapon": [], "echo": []}}}
+            ctx.state = State.load(ctx.settings.state_path)
+            patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
+                                                    beta_mod._budget(ctx)))
+            assert len(patch.characters) == 1, (step, res)
+            seen.append(patch.characters[0].diff_url)
+            beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), patch, status="posted")
+            ctx.state.save()
+
+    tail = "&route=character&id=1512&lang=en"
+    assert seen[0].endswith("firstVer=Beta_3.8.1&secondVer=Beta_3.8.1" + tail), seen[0]
+    assert seen[1].endswith("firstVer=Beta_3.8.1&secondVer=Beta_3.8.2" + tail), seen[1]
+    assert seen[2].endswith("firstVer=Beta_3.8.2&secondVer=Beta_3.8.3" + tail), seen[2]
+    # New cycle: no 3.8 build is compared with a 3.9 build.
+    assert seen[3].endswith("firstVer=Beta_3.9.0&secondVer=Beta_3.9.0" + tail), seen[3]
+    assert "firstGameVer=3.8.0" not in seen[3]
+
+
 def test_feature5_a_wuwa_echo_card_links_its_own_comparison():
     """Echoes were the one WuWa kind with no diff link; Encore serves them as `route=echo`."""
     from gamexpress import beta as beta_mod
@@ -21796,6 +21925,36 @@ def test_feature5_a_wuwa_echo_card_links_its_own_comparison():
     dump = json.dumps(payloads, ensure_ascii=False)
     assert "&route=echo&id=6000041&lang=en" in dump, dump
     assert all(not cards.validate_payload(p) for p in payloads)
+
+
+def test_feature5_all_three_wuwa_routes_match_the_live_verified_steps():
+    """Character, weapon and echo, each 3.8.1 -> 3.8.2 -> 3.8.3, built exactly as the card builds them.
+
+    Every URL below was opened on encore.moe on 2026-10-31 and rendered `Beta_3.8.x vs Beta_3.8.y`
+    with no error: Lily 1512 (Basic Attack Stage 1 changed 3.8.2 -> 3.8.3), weapon 21030076
+    (Lullaby, no change in either step), echo 6000038 (Hooscamp, Lingering Tunes/Sierra Gale).
+    """
+    from gamexpress import beta as beta_mod
+
+    steps = [("3.8.1", "3.8.2"), ("3.8.2", "3.8.3")]
+    cases = [
+        ("character", "1512", "character"),
+        ("weapon", "21030076", "weapon"),
+        ("relic", "6000038", "echo"),
+    ]
+    for role, item_id, route in cases:
+        for previous, current in steps:
+            url = beta_mod._diff_url(
+                "ww", role, item_id, "Name", previous, current,
+                encore_beta=("3.8.0", current),          # Encore's current beta for this step
+                encore_prev=("3.8.0", previous),         # the beta the last card posted
+            )
+            expected = (
+                "https://encore.moe/diff?firstGameVer=3.8.0&secondGameVer=3.8.0"
+                f"&firstVer=Beta_{previous}&secondVer=Beta_{current}"
+                f"&route={route}&id={item_id}&lang=en"
+            )
+            assert url == expected, (role, previous, current, url)
 
 
 def test_feature5_every_game_uses_the_diff_database_that_serves_it():
