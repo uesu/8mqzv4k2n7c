@@ -44,13 +44,31 @@ _BRACKET = re.compile(r"\[([^\[\]\n]{1,40})\]")
 _COLON = re.compile(r"[:：]\s*")
 _DIGIT = re.compile(r"\d")
 _BAD_TERM_CHARS = re.compile(r"[:：「」\"“”{}]")
+_MARKUP = re.compile(r"[<>\\_]|\\n|\n")
+_SENTENCE_PUNCT = re.compile(r"[。！？!?…，,；;]")
+_SENTENCE_END = re.compile(r"[.!?…]$")
+MIN_CJK_CHARS = 2
+MAX_TERM_CHARS = 20
+MAX_TERM_WORDS = 8
 
 
 def _clean_term(zh: str, en: str) -> tuple[str, str] | None:
+    """A CN -> EN pair is a glossary term only if it is a short, clean name or phrase.
+
+    Rejected: single CJK characters (substring replacement would corrupt longer words), digits
+    (values change per item), markup or tag text, sentence punctuation or sentence endings, and
+    long English that reads as a sentence.
+    """
     zh, en = zh.strip(), en.strip()
     if not zh or not en or not _CJK.search(zh) or _CJK.search(en):
         return None
-    if _BAD_TERM_CHARS.search(zh) or _BAD_TERM_CHARS.search(en) or len(en) > SHORT_WHOLE_MAX_EN:
+    if len(_CJK.findall(zh)) < MIN_CJK_CHARS or len(zh) > MAX_TERM_CHARS:
+        return None
+    if _DIGIT.search(zh) or _DIGIT.search(en) or _MARKUP.search(zh) or _MARKUP.search(en):
+        return None
+    if _SENTENCE_PUNCT.search(zh) or _SENTENCE_END.search(en) or _BAD_TERM_CHARS.search(zh):
+        return None
+    if _BAD_TERM_CHARS.search(en) or len(en) > SHORT_WHOLE_MAX_EN or len(en.split()) > MAX_TERM_WORDS:
         return None
     return zh, en
 

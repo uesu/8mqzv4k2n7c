@@ -1,0 +1,1509 @@
+{
+  "game": "zzz",
+  "namespace": "zzz",
+  "version": "3.4.2+20052336",
+  "generated_at": "2026-11-01T20:52:56Z",
+  "source": "https://static.nanoka.cc/zzz/3.4.2+20052336/{en,zh}/<kind>/<id>.json",
+  "items_listed": 245,
+  "items_with_pairs": 245,
+  "encore_items_with_pairs": 0,
+  "rules": {
+    "min_support": 2,
+    "min_share": 0.9
+  },
+  "terms": [
+    {
+      "zh": "属性异常积蓄值提升",
+      "en": "Anomaly Buildup Increase",
+      "support": 13,
+      "items_with_term": 13,
+      "example_items": [
+        "bangboo/53001",
+        "bangboo/53002",
+        "bangboo/53007",
+        "bangboo/53010",
+        "bangboo/54001"
+      ]
+    },
+    {
+      "zh": "每秒回复生命百分比",
+      "en": "Percent HP Recovered Per Second",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1421",
+        "character/1451"
+      ]
+    },
+    {
+      "zh": "主动攻击伤害倍率",
+      "en": "Active Attack DMG Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/54003",
+        "character/1121"
+      ]
+    },
+    {
+      "zh": "主动攻击失衡倍率",
+      "en": "Active Attack Daze Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/54003",
+        "character/1121"
+      ]
+    },
+    {
+      "zh": "回复的生命值提升",
+      "en": "HP Recovery Increase",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "bangboo/53003",
+        "bangboo/53008",
+        "bangboo/54018"
+      ]
+    },
+    {
+      "zh": "回复的能量值提升",
+      "en": "Energy Generation Increase",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/54004",
+        "bangboo/54018"
+      ]
+    },
+    {
+      "zh": "回旋斩击伤害倍率",
+      "en": "Spinning Slash DMG Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1061",
+        "character/1191"
+      ]
+    },
+    {
+      "zh": "回旋斩击失衡倍率",
+      "en": "Spinning Slash Daze Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1061",
+        "character/1191"
+      ]
+    },
+    {
+      "zh": "基础能量自动回复",
+      "en": "Base Energy Regen",
+      "support": 13,
+      "items_with_term": 13,
+      "example_items": [
+        "character/1031",
+        "character/1121",
+        "character/1131",
+        "character/1151",
+        "character/1171"
+      ]
+    },
+    {
+      "zh": "失衡期间集中爆发",
+      "en": "Burst DMG during Stun",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1041",
+        "character/1241"
+      ]
+    },
+    {
+      "zh": "终结一击伤害倍率",
+      "en": "Finishing Move DMG Multiplier",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1171",
+        "character/1251",
+        "character/1261",
+        "character/1271",
+        "character/1351"
+      ]
+    },
+    {
+      "zh": "终结一击失衡倍率",
+      "en": "Finishing Move Daze Multiplier",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1171",
+        "character/1251",
+        "character/1261",
+        "character/1271",
+        "character/1351"
+      ]
+    },
+    {
+      "zh": "连续招架失衡倍率",
+      "en": "Chain Defensive Daze Multiplier",
+      "support": 59,
+      "items_with_term": 59,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "连续攻击伤害倍率",
+      "en": "Consecutive Attack DMG Multiplier",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "character/1131",
+        "character/1261",
+        "character/1271",
+        "character/1331"
+      ]
+    },
+    {
+      "zh": "连续攻击失衡倍率",
+      "en": "Consecutive Attack Daze Multiplier",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "character/1131",
+        "character/1261",
+        "character/1271",
+        "character/1331"
+      ]
+    },
+    {
+      "zh": "额外爆炸伤害倍率",
+      "en": "Additional Explosion DMG Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1331",
+        "character/1621"
+      ]
+    },
+    {
+      "zh": "冰属性伤害加成",
+      "en": "Ice DMG Bonus",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1051",
+        "character/1091",
+        "character/1141",
+        "character/1191",
+        "character/1291"
+      ]
+    },
+    {
+      "zh": "可触发次数提升",
+      "en": "Additional Activations",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/53008",
+        "bangboo/54003"
+      ]
+    },
+    {
+      "zh": "新艾利都治安局",
+      "en": "New Eridu Public Security",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1241",
+        "character/1251",
+        "character/1261",
+        "character/1271",
+        "character/1521"
+      ]
+    },
+    {
+      "zh": "新艾利都防卫军",
+      "en": "New Eridu Defense Force",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1041",
+        "character/1301",
+        "character/1361",
+        "character/1381",
+        "character/1461"
+      ]
+    },
+    {
+      "zh": "火属性伤害加成",
+      "en": "Fire DMG Bonus",
+      "support": 11,
+      "items_with_term": 11,
+      "example_items": [
+        "character/1041",
+        "character/1101",
+        "character/1121",
+        "character/1151",
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "电属性伤害加成",
+      "en": "Electric DMG Bonus",
+      "support": 13,
+      "items_with_term": 13,
+      "example_items": [
+        "character/1011",
+        "character/1111",
+        "character/1181",
+        "character/1201",
+        "character/1221"
+      ]
+    },
+    {
+      "zh": "轻招架失衡倍率",
+      "en": "Light Defensive Daze Multiplier",
+      "support": 59,
+      "items_with_term": 59,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "重招架失衡倍率",
+      "en": "Heavy Defensive Daze Multiplier",
+      "support": 59,
+      "items_with_term": 59,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "风属性伤害加成",
+      "en": "Wind DMG Bonus",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1561",
+        "character/1621"
+      ]
+    },
+    {
+      "zh": "以太伤害加成",
+      "en": "Ether DMG Bonus",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1031",
+        "character/1241",
+        "character/1311",
+        "character/1331",
+        "character/1371"
+      ]
+    },
+    {
+      "zh": "伤害额外提升",
+      "en": "Additional DMG Increase",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/53013",
+        "bangboo/54002"
+      ]
+    },
+    {
+      "zh": "冷却时间减少",
+      "en": "Cooldown Reduction",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/54011",
+        "bangboo/54017"
+      ]
+    },
+    {
+      "zh": "发动所需能量",
+      "en": "Energy Cost to Use",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1111",
+        "character/1131",
+        "character/1171",
+        "character/1571",
+        "character/1621"
+      ]
+    },
+    {
+      "zh": "发动能量消耗",
+      "en": "Activation Energy Cost",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1141",
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "回复的生命值",
+      "en": "HP Recovery",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/53003",
+        "bangboo/54023"
+      ]
+    },
+    {
+      "zh": "射击伤害倍率",
+      "en": "Shot DMG Multiplier",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "bangboo/54013",
+        "character/1291",
+        "character/1361",
+        "character/1571"
+      ]
+    },
+    {
+      "zh": "射击失衡倍率",
+      "en": "Shot Daze Multiplier",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "bangboo/54013",
+        "character/1291",
+        "character/1361",
+        "character/1571"
+      ]
+    },
+    {
+      "zh": "引爆伤害倍率",
+      "en": "Explosion DMG Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1101",
+        "character/1321"
+      ]
+    },
+    {
+      "zh": "引爆失衡倍率",
+      "en": "Explosion Daze Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1101",
+        "character/1321"
+      ]
+    },
+    {
+      "zh": "攻击力百分比",
+      "en": "Percent ATK",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "weapon/12001",
+        "weapon/12002",
+        "weapon/12004",
+        "weapon/12007",
+        "weapon/12010"
+      ]
+    },
+    {
+      "zh": "斩击伤害倍率",
+      "en": "Slash DMG Multiplier",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "bangboo/53016",
+        "character/1091",
+        "character/1291"
+      ]
+    },
+    {
+      "zh": "斩击失衡倍率",
+      "en": "Slash Daze Multiplier",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "bangboo/53016",
+        "character/1091",
+        "character/1291"
+      ]
+    },
+    {
+      "zh": "最大伤害倍率",
+      "en": "Maximum DMG Multiplier",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1061",
+        "character/1171",
+        "character/1311"
+      ]
+    },
+    {
+      "zh": "最大失衡倍率",
+      "en": "Maximum Daze Multiplier",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1061",
+        "character/1171",
+        "character/1311"
+      ]
+    },
+    {
+      "zh": "毁伤伤害倍率",
+      "en": "Maim DMG Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1601",
+        "character/1611"
+      ]
+    },
+    {
+      "zh": "物理伤害加成",
+      "en": "Physical DMG Bonus",
+      "support": 11,
+      "items_with_term": 11,
+      "example_items": [
+        "character/1021",
+        "character/1061",
+        "character/1081",
+        "character/1261",
+        "character/1281"
+      ]
+    },
+    {
+      "zh": "生命值百分比",
+      "en": "Percent HP",
+      "support": 13,
+      "items_with_term": 13,
+      "example_items": [
+        "weapon/12006",
+        "weapon/12015",
+        "weapon/13007",
+        "weapon/13014",
+        "weapon/13019"
+      ]
+    },
+    {
+      "zh": "能量自动回复",
+      "en": "Energy Regen",
+      "support": 38,
+      "items_with_term": 38,
+      "example_items": [
+        "bangboo/53003",
+        "character/1031",
+        "character/1071",
+        "character/1121",
+        "character/1131"
+      ]
+    },
+    {
+      "zh": "蓄力伤害倍率",
+      "en": "Charged Attack DMG Multiplier",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1031",
+        "character/1141",
+        "character/1171"
+      ]
+    },
+    {
+      "zh": "蓄力失衡倍率",
+      "en": "Charged Daze Multiplier",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1031",
+        "character/1141",
+        "character/1171"
+      ]
+    },
+    {
+      "zh": "蓄力能量消耗",
+      "en": "Charged Attack Energy Cost",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1031",
+        "character/1141"
+      ]
+    },
+    {
+      "zh": "追击伤害倍率",
+      "en": "Follow-Up DMG Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1091",
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "追击失衡倍率",
+      "en": "Follow-Up Daze Multiplier",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1091",
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "追击能量消耗",
+      "en": "Follow-Up Energy Cost",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1091",
+        "character/1121",
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "防御力百分比",
+      "en": "Percent DEF",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "weapon/12013",
+        "weapon/12014",
+        "weapon/12016",
+        "weapon/13010",
+        "weapon/13017"
+      ]
+    },
+    {
+      "zh": "卡吕冬之子",
+      "en": "Sons of Calydon",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1071",
+        "character/1151",
+        "character/1161",
+        "character/1171",
+        "character/1281"
+      ]
+    },
+    {
+      "zh": "坎卜斯黑枝",
+      "en": "Krampus Compliance Authority",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1341",
+        "character/1471",
+        "character/1481",
+        "character/1541",
+        "character/1641"
+      ]
+    },
+    {
+      "zh": "基础攻击力",
+      "en": "Base ATK",
+      "support": 161,
+      "items_with_term": 161,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "基础防御力",
+      "en": "Base DEF",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "weapon/12016",
+        "weapon/13017",
+        "weapon/13021",
+        "weapon/13022",
+        "weapon/14160"
+      ]
+    },
+    {
+      "zh": "失衡值提升",
+      "en": "Daze Increase",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "bangboo/53004",
+        "bangboo/54016",
+        "character/1071"
+      ]
+    },
+    {
+      "zh": "强化特殊技",
+      "en": "EX Special Attack",
+      "support": 65,
+      "items_with_term": 65,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "攻击力提升",
+      "en": "ATK Increase",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "bangboo/53017",
+        "bangboo/54010",
+        "character/1151"
+      ]
+    },
+    {
+      "zh": "生命值回复",
+      "en": "HP Recovery",
+      "support": 7,
+      "items_with_term": 7,
+      "example_items": [
+        "bangboo/53008",
+        "bangboo/54010",
+        "bangboo/54015",
+        "bangboo/54018",
+        "character/1311"
+      ]
+    },
+    {
+      "zh": "罗斯凯利法",
+      "en": "Roscaelifer",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1561",
+        "character/1571",
+        "character/1591",
+        "character/1601",
+        "character/1611"
+      ]
+    },
+    {
+      "zh": "获得代理人",
+      "en": "Obtain Agent",
+      "support": 59,
+      "items_with_term": 59,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "伤害倍率",
+      "en": "DMG Multiplier",
+      "support": 104,
+      "items_with_term": 104,
+      "example_items": [
+        "bangboo/53001",
+        "bangboo/53002",
+        "bangboo/53004",
+        "bangboo/53005",
+        "bangboo/53006"
+      ]
+    },
+    {
+      "zh": "伤害提升",
+      "en": "DMG Increase",
+      "support": 20,
+      "items_with_term": 20,
+      "example_items": [
+        "bangboo/53006",
+        "bangboo/53009",
+        "bangboo/53011",
+        "bangboo/53013",
+        "bangboo/53014"
+      ]
+    },
+    {
+      "zh": "冲刺攻击",
+      "en": "Dash Attack",
+      "support": 62,
+      "items_with_term": 62,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "冷却时间",
+      "en": "Cooldown",
+      "support": 42,
+      "items_with_term": 42,
+      "example_items": [
+        "bangboo/53001",
+        "bangboo/53002",
+        "bangboo/53003",
+        "bangboo/53004",
+        "bangboo/53005"
+      ]
+    },
+    {
+      "zh": "反制支援",
+      "en": "Counter Assist",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1601",
+        "character/1611",
+        "character/1661"
+      ]
+    },
+    {
+      "zh": "回避支援",
+      "en": "Evasive Assist",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1081",
+        "character/1181",
+        "character/1211",
+        "character/1241",
+        "character/1311"
+      ]
+    },
+    {
+      "zh": "失衡倍率",
+      "en": "Daze Multiplier",
+      "support": 104,
+      "items_with_term": 104,
+      "example_items": [
+        "bangboo/53001",
+        "bangboo/53002",
+        "bangboo/53004",
+        "bangboo/53005",
+        "bangboo/53006"
+      ]
+    },
+    {
+      "zh": "妄想天使",
+      "en": "Angels of Delusion",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1491",
+        "character/1501",
+        "character/1511"
+      ]
+    },
+    {
+      "zh": "异常掌控",
+      "en": "Anomaly Mastery",
+      "support": 16,
+      "items_with_term": 16,
+      "example_items": [
+        "character/1131",
+        "character/1181",
+        "character/1221",
+        "character/1261",
+        "character/1281"
+      ]
+    },
+    {
+      "zh": "异常精通",
+      "en": "Anomaly Proficiency",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "character/1091",
+        "character/1131",
+        "character/1171",
+        "character/1181",
+        "character/1211"
+      ]
+    },
+    {
+      "zh": "快速支援",
+      "en": "Quick Assist",
+      "support": 63,
+      "items_with_term": 63,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "招架支援",
+      "en": "Defensive Assist",
+      "support": 59,
+      "items_with_term": 59,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "支援点数",
+      "en": "Assist Points",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1601",
+        "character/1661"
+      ]
+    },
+    {
+      "zh": "支援突击",
+      "en": "Assist Follow-Up",
+      "support": 62,
+      "items_with_term": 62,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "普通攻击",
+      "en": "Basic Attack",
+      "support": 63,
+      "items_with_term": 63,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "暴击伤害",
+      "en": "CRIT DMG",
+      "support": 69,
+      "items_with_term": 69,
+      "example_items": [
+        "bangboo/53001",
+        "bangboo/53002",
+        "bangboo/53004",
+        "bangboo/53005",
+        "bangboo/53006"
+      ]
+    },
+    {
+      "zh": "未明界域",
+      "en": "Unknown Realm",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1651",
+        "character/1661"
+      ]
+    },
+    {
+      "zh": "极限闪避",
+      "en": "Perfect Dodge",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1601",
+        "character/1651",
+        "character/1661"
+      ]
+    },
+    {
+      "zh": "核心被动",
+      "en": "Core Passive",
+      "support": 62,
+      "items_with_term": 62,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "白祇重工",
+      "en": "Belobog Heavy Industries",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "character/1101",
+        "character/1111",
+        "character/1121",
+        "character/1181"
+      ]
+    },
+    {
+      "zh": "终末裁决",
+      "en": "Terminating Verdict",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1291",
+        "weapon/14154"
+      ]
+    },
+    {
+      "zh": "能量回复",
+      "en": "Energy Generation",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "bangboo/53012",
+        "bangboo/53017",
+        "bangboo/54004",
+        "bangboo/54018",
+        "bangboo/54022"
+      ]
+    },
+    {
+      "zh": "能量消耗",
+      "en": "Energy Cost",
+      "support": 43,
+      "items_with_term": 43,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1041",
+        "character/1071",
+        "character/1081"
+      ]
+    },
+    {
+      "zh": "锐能消耗",
+      "en": "Sharpness Cost",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1601",
+        "character/1611"
+      ]
+    },
+    {
+      "zh": "闪能消耗",
+      "en": "Adrenaline Cost",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1051",
+        "character/1371",
+        "character/1441",
+        "character/1471",
+        "character/1531"
+      ]
+    },
+    {
+      "zh": "闪避反击",
+      "en": "Dodge Counter",
+      "support": 62,
+      "items_with_term": 62,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "额外能力",
+      "en": "Additional Ability",
+      "support": 63,
+      "items_with_term": 63,
+      "example_items": [
+        "bangboo/54024",
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041"
+      ]
+    },
+    {
+      "zh": "骑士精神",
+      "en": "Knight's Chivalry",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "bangboo/53017",
+        "character/1531"
+      ]
+    },
+    {
+      "zh": "骑士飞踢",
+      "en": "Starlight Knight Flying Kick",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1531",
+        "weapon/13007"
+      ]
+    },
+    {
+      "zh": "云岿山",
+      "en": "Yunkui Summit",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "character/1371",
+        "character/1391",
+        "character/1421",
+        "character/1431"
+      ]
+    },
+    {
+      "zh": "冰属性",
+      "en": "Ice",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1051",
+        "character/1091",
+        "character/1131",
+        "character/1141",
+        "character/1191"
+      ]
+    },
+    {
+      "zh": "冲击力",
+      "en": "Impact",
+      "support": 22,
+      "items_with_term": 22,
+      "example_items": [
+        "character/1011",
+        "character/1071",
+        "character/1101",
+        "character/1141",
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "反舌鸟",
+      "en": "Mockingbird",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1291",
+        "character/1331"
+      ]
+    },
+    {
+      "zh": "天琴座",
+      "en": "Stars of Lyra",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1311",
+        "character/1321"
+      ]
+    },
+    {
+      "zh": "怪啖屋",
+      "en": "Spook Shack",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1051",
+        "character/1401",
+        "character/1411",
+        "character/1441",
+        "character/1451"
+      ]
+    },
+    {
+      "zh": "支援技",
+      "en": "Assist",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1071",
+        "character/1581",
+        "character/1621"
+      ]
+    },
+    {
+      "zh": "攻击力",
+      "en": "ATK",
+      "support": 80,
+      "items_with_term": 80,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1061"
+      ]
+    },
+    {
+      "zh": "暴击率",
+      "en": "CRIT Rate",
+      "support": 99,
+      "items_with_term": 99,
+      "example_items": [
+        "bangboo/53001",
+        "bangboo/53002",
+        "bangboo/53004",
+        "bangboo/53005",
+        "bangboo/53006"
+      ]
+    },
+    {
+      "zh": "火属性",
+      "en": "Fire",
+      "support": 14,
+      "items_with_term": 14,
+      "example_items": [
+        "character/1041",
+        "character/1101",
+        "character/1121",
+        "character/1151",
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "特殊技",
+      "en": "Special Attack",
+      "support": 61,
+      "items_with_term": 61,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "狡兔屋",
+      "en": "Cunning Hares",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1081",
+        "character/1531"
+      ]
+    },
+    {
+      "zh": "生命值",
+      "en": "HP",
+      "support": 21,
+      "items_with_term": 21,
+      "example_items": [
+        "character/1051",
+        "character/1341",
+        "character/1371",
+        "character/1441",
+        "character/1451"
+      ]
+    },
+    {
+      "zh": "电属性",
+      "en": "Electric",
+      "support": 14,
+      "items_with_term": 14,
+      "example_items": [
+        "character/1011",
+        "character/1111",
+        "character/1181",
+        "character/1201",
+        "character/1211"
+      ]
+    },
+    {
+      "zh": "登场技",
+      "en": "Entry Skill",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "character/1341",
+        "character/1431",
+        "character/1631",
+        "character/1661"
+      ]
+    },
+    {
+      "zh": "穿透率",
+      "en": "PEN Ratio",
+      "support": 10,
+      "items_with_term": 10,
+      "example_items": [
+        "character/1181",
+        "character/1211",
+        "character/1591",
+        "character/1611",
+        "character/1621"
+      ]
+    },
+    {
+      "zh": "终结技",
+      "en": "Ultimate",
+      "support": 63,
+      "items_with_term": 63,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "连携技",
+      "en": "Chain Attack",
+      "support": 66,
+      "items_with_term": 66,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "防御力",
+      "en": "DEF",
+      "support": 11,
+      "items_with_term": 11,
+      "example_items": [
+        "character/1121",
+        "character/1611",
+        "weapon/12013",
+        "weapon/12014",
+        "weapon/12016"
+      ]
+    },
+    {
+      "zh": "风属性",
+      "en": "Wind",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1561",
+        "character/1621",
+        "character/1631"
+      ]
+    },
+    {
+      "zh": "以太",
+      "en": "Ether",
+      "support": 10,
+      "items_with_term": 10,
+      "example_items": [
+        "character/1031",
+        "character/1241",
+        "character/1311",
+        "character/1331",
+        "character/1371"
+      ]
+    },
+    {
+      "zh": "击破",
+      "en": "Stun",
+      "support": 34,
+      "items_with_term": 34,
+      "example_items": [
+        "character/1011",
+        "character/1101",
+        "character/1141",
+        "character/1161",
+        "character/1251"
+      ]
+    },
+    {
+      "zh": "命破",
+      "en": "Rupture",
+      "support": 14,
+      "items_with_term": 14,
+      "example_items": [
+        "character/1051",
+        "character/1371",
+        "character/1441",
+        "character/1471",
+        "character/1531"
+      ]
+    },
+    {
+      "zh": "异常",
+      "en": "Anomaly",
+      "support": 34,
+      "items_with_term": 34,
+      "example_items": [
+        "character/1091",
+        "character/1171",
+        "character/1181",
+        "character/1221",
+        "character/1261"
+      ]
+    },
+    {
+      "zh": "强攻",
+      "en": "Attack",
+      "support": 44,
+      "items_with_term": 44,
+      "example_items": [
+        "character/1021",
+        "character/1041",
+        "character/1061",
+        "character/1081",
+        "character/1111"
+      ]
+    },
+    {
+      "zh": "打击",
+      "en": "Strike",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "character/1031",
+        "character/1051",
+        "character/1071",
+        "character/1101",
+        "character/1121"
+      ]
+    },
+    {
+      "zh": "支援",
+      "en": "Support",
+      "support": 21,
+      "items_with_term": 22,
+      "example_items": [
+        "character/1031",
+        "character/1131",
+        "character/1151",
+        "character/1211",
+        "character/1311"
+      ]
+    },
+    {
+      "zh": "斩击",
+      "en": "Slash",
+      "support": 36,
+      "items_with_term": 36,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1041",
+        "character/1061",
+        "character/1071"
+      ]
+    },
+    {
+      "zh": "涅槃",
+      "en": "Nirvana",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1291",
+        "character/1641"
+      ]
+    },
+    {
+      "zh": "物理",
+      "en": "Physical",
+      "support": 14,
+      "items_with_term": 14,
+      "example_items": [
+        "character/1021",
+        "character/1061",
+        "character/1071",
+        "character/1081",
+        "character/1261"
+      ]
+    },
+    {
+      "zh": "穿透",
+      "en": "Pierce",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1081",
+        "character/1111",
+        "character/1171",
+        "character/1181",
+        "character/1201"
+      ]
+    },
+    {
+      "zh": "锋御",
+      "en": "Armorer",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1601",
+        "character/1611",
+        "character/1661",
+        "weapon/12016",
+        "weapon/13017"
+      ]
+    },
+    {
+      "zh": "闪避",
+      "en": "Dodge",
+      "support": 62,
+      "items_with_term": 62,
+      "example_items": [
+        "character/1011",
+        "character/1021",
+        "character/1031",
+        "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "防护",
+      "en": "Defense",
+      "support": 19,
+      "items_with_term": 19,
+      "example_items": [
+        "character/1071",
+        "character/1121",
+        "character/1271",
+        "character/1341",
+        "character/1421"
+      ]
+    }
+  ],
+  "review": {
+    "filter": "clean_term v2 (2026-11-02): >=2 CJK chars, no digits/markup/sentence punctuation, English not a sentence",
+    "terms_before": 188,
+    "terms_after": 124
+  }
+}

@@ -22412,7 +22412,14 @@ def test_feature5_zh_en_glossary_learns_terms_from_aligned_sections_and_drops_co
         (sec("Dodge: One", ["[Dodge]"]), sec("闪避：一", ["[闪避]"])),
         (sec("Dodge: Two", ["[Evade]"]), sec("闪避：二", ["[闪避]"])),  # conflicting "闪避"
     ]
-    gloss = beta_mod._zh_en_glossary(pairs)
+    # Isolate from the reviewed generated file so only the learning rule is under test.
+    import tempfile
+    _saved = beta_mod._ZZZ_GENERATED_GLOSSARY_PATH
+    beta_mod._ZZZ_GENERATED_GLOSSARY_PATH = Path(tempfile.gettempdir()) / "no-such-zzz-glossary.json"
+    try:
+        gloss = beta_mod._zh_en_glossary(pairs)
+    finally:
+        beta_mod._ZZZ_GENERATED_GLOSSARY_PATH = _saved
     assert gloss["普通攻击"] == "Basic Attack"
     assert gloss["燎身爪"] == "Burning Claw"
     assert gloss["虎啸"] == "Tiger's Roar"
@@ -22497,6 +22504,22 @@ def test_glossary_build_votes_need_support_and_share():
     assert [(t["zh"], t["en"], t["support"]) for t in kept] == [("落羽生花", "Featherbloom", 9)]
     # 4 of 5 agree (80%): below the share threshold, dropped rather than guessed.
     assert gb.aggregate(items(["Featherbloom"] * 4 + ["Falling Feathers Bloom"])) == []
+
+
+def test_glossary_build_term_filter_rejects_noise_and_keeps_names():
+    """Review of the first all-games run found single characters (女->Female would corrupt longer
+    words), markup and tags, digits, dialogue sentences and sentence-like English. Those must not
+    become terms; real names and phrases must still pass."""
+    from gamexpress import glossary_build as gb
+
+    for zh, en in [("女", "Female"), ("冰", "Cryo"), ("12秒", "12s"), ("要回归幕后了。", "Better stay behind the scenes…"),
+                   ("Icon_Special> 发动", "Icon_Special> to activate"), ("<te href=260005>奇美拉</te>", "<te href=260005>Chimera</te>"),
+                   ("发动后，点按", "Press to activate"), ("失衡", "Stun and Daze, then the enemy is knocked back."),
+                   ("<color=#FFFFFF>招架</color>", "Parry"), ("派蒙\\n", "Paimon")]:
+        assert gb._clean_term(zh, en) is None, (zh, en)
+    for zh, en in [("失衡倍率", "Daze Multiplier"), ("击破", "Stun"), ("连续招架失衡倍率", "Chain Defensive Daze Multiplier"),
+                   ("共鸣技能·追光", "Resonance Skill - Spotlight"), ("云岿山", "Yunkui Summit"), ("薇薇安", "Vivian")]:
+        assert gb._clean_term(zh, en) == (zh, en), (zh, en)
 
 
 def test_glossary_build_full_run_uses_fake_fetcher_and_rejects_excluded_games():
