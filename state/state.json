@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793525717,
+      "last_poll": 1793527520,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793525717,
+      "last_poll": 1793527520,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793525717,
+      "last_poll": 1793527520,
       "latest_rev": "1ce49e698ba2de12",
       "locked_images": {},
       "revisions": {
@@ -517,37 +517,37 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793525717,
-      "latest_rev": "7588d5554f61edb3",
+      "last_poll": 1793527520,
+      "latest_rev": "e4abf671f8fef17e",
       "locked_images": {
         "zzz:1331": {
           "locked": true,
-          "ts": 1793517623,
+          "ts": 1793527520,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole41.webp"
         },
         "zzz:1391": {
           "locked": true,
-          "ts": 1793517623,
+          "ts": 1793527520,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole43.webp"
         },
         "zzz:14160": {
           "locked": true,
-          "ts": 1793517623,
+          "ts": 1793527520,
           "url": "https://static.nanoka.cc/assets/zzz/Weapon_S_1601.webp"
         },
         "zzz:14166": {
           "locked": true,
-          "ts": 1793517623,
+          "ts": 1793527520,
           "url": "https://static.nanoka.cc/assets/zzz/Weapon_S_1661.webp"
         },
         "zzz:1601": {
           "locked": true,
-          "ts": 1793517623,
+          "ts": 1793527520,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp"
         },
         "zzz:1661": {
           "locked": true,
-          "ts": 1793517623,
+          "ts": 1793527520,
           "url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp"
         }
       },
@@ -757,12 +757,60 @@
           "source_version": "3.4.1+19997538",
           "status": "posted",
           "ts": 1793330421
+        },
+        "e4abf671f8fef17e": {
+          "batches": {
+            "504f024028aaa8bf": {
+              "messages": [
+                "1566393060382740501",
+                "1566393084475088948"
+              ],
+              "signature": "0b4dba357f3a4658",
+              "status": "posted",
+              "ts": 1793527520
+            }
+          },
+          "characters": {
+            "zzz:1331": 0,
+            "zzz:1391": 1
+          },
+          "label": "v3.4.2 Rev. 20052336",
+          "messages": [
+            "1566393060382740501",
+            "1566393084475088948"
+          ],
+          "more": false,
+          "probe": {
+            "changed": [],
+            "checked": 200,
+            "previous": "3.4.2+20049556",
+            "requests": 400,
+            "total": 245,
+            "unreadable": 0,
+            "version": "3.4.2+20052336"
+          },
+          "processed": [
+            "bangboo:zzz:54024",
+            "character:zzz:1331",
+            "character:zzz:1391",
+            "character:zzz:1601",
+            "character:zzz:1651",
+            "character:zzz:1661",
+            "relic:zzz:34300",
+            "relic:zzz:34400",
+            "weapon:zzz:14160",
+            "weapon:zzz:14166"
+          ],
+          "source_revision": "3.4.2+20052336",
+          "source_version": "3.4.2+20052336",
+          "status": "posted",
+          "ts": 1793527520
         }
       },
       "route": "5f931f917050e29a",
       "snapshots": {
         "zzz:1331": {
-          "content_signature": "5f34a728255a03c3",
+          "content_signature": "1fef75049f140810",
           "data": {
             "element": "Ether",
             "id": "zzz:1331",
@@ -1278,6 +1326,18 @@
                 "params": [],
                 "title": "Mindscape Cinema 6 — \"Vivian\"",
                 "values_label": ""
+              },
+              {
+                "category": "Potential Awakening",
+                "defs": [],
+                "lines": [
+                  "(Test1)[普通攻击：落羽生花]造成的异常积蓄效率提升50%；薇薇安自身的异常掌控提升30点；薇薇安造成的[异放]伤害提升50%。",
+                  "-# 🌐 Sourced from CN/CHS beta data — EN localization pending."
+                ],
+                "meta": "憧憬的轮廓 VI",
+                "params": [],
+                "title": "Potential: 潜能觉醒：星月诗篇",
+                "values_label": ""
               }
             ],
             "stats_header": "Base Stats",
@@ -1294,13 +1354,13 @@
           },
           "kind": "character",
           "norm_rev": 2,
-          "revision": "3.4.2+20049556",
-          "signature": "6fa4b0cba915ea4a",
+          "revision": "3.4.2+20052336",
+          "signature": "b1ff32c4754af6b0",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:1391": {
-          "content_signature": "44321326ff853ff4",
+          "content_signature": "78c9cee5081d9455",
           "data": {
             "element": "Fire",
             "id": "zzz:1391",
@@ -1809,6 +1869,19 @@
                 "params": [],
                 "title": "Mindscape Cinema 6 — Roar of My Inner Tiger",
                 "values_label": ""
+              },
+              {
+                "category": "Potential Awakening",
+                "defs": [],
+                "lines": [
+                  "(Test1)[虎啸]状态下，角色的[连携技]/[终结技]造成的最终伤害提升10%/30%；[普通攻击：「虎威」]造成的失衡提升50%，[冲刺攻击：恶虎七式·山君鼎戏·「虎威」] 造成的失衡提升50%；",
+                  "[虎啸]状态下的角色攻击命中敌人时，使其失衡易伤倍率提升25%，失衡结束时移除该效果。",
+                  "-# 🌐 Sourced from CN/CHS beta data — EN localization pending."
+                ],
+                "meta": "猛虎下山 VI",
+                "params": [],
+                "title": "Potential: 潜能觉醒：侠肝义胆",
+                "values_label": ""
               }
             ],
             "stats_header": "Base Stats",
@@ -1825,10 +1898,10 @@
           },
           "kind": "character",
           "norm_rev": 2,
-          "revision": "3.4.2+20049556",
-          "signature": "f4b041deffc8524b",
+          "revision": "3.4.2+20052336",
+          "signature": "7380a4c364b0757e",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:14160": {
           "content_signature": "199ba27dda14e615",
@@ -1853,13 +1926,13 @@
           },
           "equip_norm_rev": 1,
           "kind": "weapon",
-          "revision": "3.4.2+20049556",
+          "revision": "3.4.2+20052336",
           "signature": "e1bd198fd7553aa6",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:14166": {
-          "content_signature": "bf08ed5ce7dcde26",
+          "content_signature": "f859bb4b4c2b6eb2",
           "data": {
             "category_label": "W-Engines",
             "effect_title": "Robin Test Engine",
@@ -1867,7 +1940,8 @@
             "image_url": "https://static.nanoka.cc/assets/zzz/Weapon_S_1661.webp",
             "image_urls": [],
             "lines": [
-              "When the equipper applies a shield, the whole squad's Laceration DMG is increased by 16% for 20s. Repeated triggers extend the duration, up to a maximum of 30s. Only one instance of this effect can exist in the same squad. When the equipper launches an Aftershock, the whole squad's DMG is increased by 10% for 20s, stacking up to 2 times. Repeated triggers refresh the duration. Only one instance of this effect can exist in the same squad."
+              "When the equipper applies a shield, the whole squad's Laceration DMG is increased by 16%/18.4%/20.8%/23.2%/25.6% for 20s. Repeated triggers extend the duration, up to a maximum of 30s. Only one instance of this effect can exist in the same squad. When the equipper launches an Aftershock, the whole squad's DMG is increased by 10%/11.5%/13%/14.5%/16% for 20s, stacking up to 2 times. Repeated triggers refresh the duration. Only one instance of this effect can exist in the same squad.",
+              "-# 🌐 Values synced with authoritative CN/CHS beta data."
             ],
             "name": "Robin's Exclusive W-Engine",
             "page_url": "https://zzz.gachabase.net/w-engines/14166/robin-s-exclusive-w-engine/beta?lang=en",
@@ -1880,10 +1954,10 @@
           },
           "equip_norm_rev": 1,
           "kind": "weapon",
-          "revision": "3.4.2+20049556",
-          "signature": "b28d077bf3951c6e",
+          "revision": "3.4.2+20052336",
+          "signature": "0118162842886f6f",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:1601": {
           "content_signature": "bc23e6e41bede7b3",
@@ -2797,10 +2871,10 @@
           },
           "kind": "character",
           "norm_rev": 2,
-          "revision": "3.4.2+20049556",
+          "revision": "3.4.2+20052336",
           "signature": "376df630003b141b",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:1651": {
           "content_signature": "51e3e0406b9b4095",
@@ -3315,10 +3389,10 @@
           },
           "kind": "character",
           "norm_rev": 2,
-          "revision": "3.4.2+20049556",
+          "revision": "3.4.2+20052336",
           "signature": "558ca9a4c4ec6c5a",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:1661": {
           "content_signature": "2e9e628057ec9275",
@@ -3836,10 +3910,10 @@
           },
           "kind": "character",
           "norm_rev": 2,
-          "revision": "3.4.2+20049556",
+          "revision": "3.4.2+20052336",
           "signature": "dceb9258cd1ee7ed",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:34300": {
           "content_signature": "dd2f0265db66df9d",
@@ -3863,10 +3937,10 @@
             "weapon_class": ""
           },
           "kind": "relic",
-          "revision": "3.4.2+20049556",
+          "revision": "3.4.2+20052336",
           "signature": "5eea4776fe032a6f",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:34400": {
           "content_signature": "59ba357a616d5786",
@@ -3890,10 +3964,10 @@
             "weapon_class": ""
           },
           "kind": "relic",
-          "revision": "3.4.2+20049556",
+          "revision": "3.4.2+20052336",
           "signature": "a9768faad1a5fab6",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         },
         "zzz:54024": {
           "content_signature": "7eaa4c9d547915c6",
@@ -3921,14 +3995,14 @@
             "weapon_class": ""
           },
           "kind": "bangboo",
-          "revision": "3.4.2+20049556",
+          "revision": "3.4.2+20052336",
           "signature": "c90227f9b3b11539",
           "truncated": false,
-          "ts": 1793517623
+          "ts": 1793527520
         }
       },
-      "source_revision": "3.4.2+20049556",
-      "source_version": "3.4.2+20049556"
+      "source_revision": "3.4.2+20052336",
+      "source_version": "3.4.2+20052336"
     }
   },
   "bootstrapped": {
