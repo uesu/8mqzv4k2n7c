@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793527520,
+      "last_poll": 1793529622,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793527520,
+      "last_poll": 1793529622,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793527520,
+      "last_poll": 1793529622,
       "latest_rev": "1ce49e698ba2de12",
       "locked_images": {},
       "revisions": {
@@ -517,7 +517,7 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793527520,
+      "last_poll": 1793529622,
       "latest_rev": "e4abf671f8fef17e",
       "locked_images": {
         "zzz:1331": {
@@ -775,6 +775,7 @@
             "zzz:1391": 1
           },
           "label": "v3.4.2 Rev. 20052336",
+          "late_checks": 1,
           "messages": [
             "1566393060382740501",
             "1566393084475088948"
@@ -7424,7 +7425,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1793518518
+          "ts": 1793529622
         },
         "data": {
           "announcement_locked": true,
@@ -7446,8 +7447,8 @@
             ]
           },
           "banners_checked_ts": 1793002222,
-          "banners_search_ts": 1793518518,
-          "calendar_ts": 1793518518,
+          "banners_search_ts": 1793529622,
+          "calendar_ts": 1793529622,
           "estimate_sources": [
             "version cadence"
           ],
@@ -7964,8 +7965,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793518518,
-          "banners_search_ts": 1793518518,
+          "banners_checked_ts": 1793529622,
+          "banners_search_ts": 1793529622,
           "banners_settled": [
             "phase1",
             "phase2",
