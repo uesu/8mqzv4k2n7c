@@ -20787,7 +20787,7 @@ def test_feature5_unreadable_changelog_still_diffs_the_build_listings():
         # The block was found without the changelog …
         assert any("/zzz/3.4.1+19997538/en/weapon/14166.json" in url for _k, url in fetcher.calls)
         # … the run summary says the coverage was narrower, and no warning was raised for it.
-        assert any("changelog unavailable; new and listing-changed items only" in r
+        assert any("changelog unavailable; per-item probe compared" in r
                    for r in ctx.report), ctx.report
         assert not any("changelog" in w for w in ctx.warnings), ctx.warnings
 
@@ -26367,3 +26367,58 @@ def test_feature5_a_metadata_mover_is_labelled_and_a_localization_is_not_a_renam
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def test_probe_view_ignores_art_keys_but_not_game_text():
+    from gamexpress import beta as beta_mod
+
+    before = {"icon": "a", "name": "Caesar", "kit": {"image": "x", "desc": "Parry", "role_icon": "r"}}
+    art_only = {"icon": "b", "name": "Caesar", "kit": {"image": "y", "desc": "Parry", "role_icon": "s"}}
+    text_change = {"icon": "a", "name": "Caesar", "kit": {"image": "x", "desc": "Parry twice"}}
+    assert beta_mod._probe_view(before) == {"name": "Caesar", "kit": {"desc": "Parry"}}
+    assert beta_mod._probe_view(before) == beta_mod._probe_view(art_only)
+    assert beta_mod._probe_view(before) != beta_mod._probe_view(text_change)
+
+
+def test_probe_finds_changed_items_by_detail_and_counts_unreadable_sides():
+    from types import SimpleNamespace
+
+    from gamexpress import beta as beta_mod
+
+    prev = {"1071": {"name": "Caesar", "skill": "Old", "icon": "a"},
+            "1072": {"name": "X", "skill": "same"},
+            "1073": {"name": "Y", "skill": "gone-now"}}
+    cur = {"1071": {"name": "Caesar", "skill": "New", "icon": "b"},
+           "1072": {"name": "X", "skill": "same", "image": "z"}}
+
+    class Fetcher:
+        def __init__(self):
+            self.urls = []
+
+        async def get_json(self, url, **_kw):
+            self.urls.append(url)
+            table = prev if "3.4.1+19997538" in url else cur
+            return table.get(url.rsplit("/", 1)[-1].removesuffix(".json"))
+
+    fetcher = Fetcher()
+    ctx = SimpleNamespace(fetcher=fetcher)
+    targets = {"character": ("character", ["1071", "1072", "1073"])}
+    out = asyncio.run(beta_mod._probe_listing_changes(
+        ctx, "zzz", targets, "3.4.1+19997538", "3.4.2+20049556", set(), 400))
+    assert out["changed"] == [["character", "1071"]]
+    assert out["checked"] == 3 and out["total"] == 3 and out["unreadable"] == 1
+    assert out["requests"] == 6 and len(fetcher.urls) == 6
+    assert all("/zzz/" in u and "/character/" in u for u in fetcher.urls)
+
+    # The cap is honoured and the shortfall is visible, not silent.
+    capped = asyncio.run(beta_mod._probe_listing_changes(
+        SimpleNamespace(fetcher=Fetcher()), "zzz", targets,
+        "3.4.1+19997538", "3.4.2+20049556", set(), 4))
+    assert capped["checked"] == 2 and capped["total"] == 3 and capped["requests"] == 4
+
+    # Items already delivered for this revision are not probed again.
+    done = {beta_mod._entry_key("zzz", "character", "1072")}
+    skipped = asyncio.run(beta_mod._probe_listing_changes(
+        SimpleNamespace(fetcher=Fetcher()), "zzz", targets,
+        "3.4.1+19997538", "3.4.2+20049556", done, 400))
+    assert skipped["total"] == 2 and skipped["checked"] == 2

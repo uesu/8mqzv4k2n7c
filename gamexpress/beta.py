@@ -6073,6 +6073,59 @@ def _mixed_build_note(*, upstream: str, hotfix: bool, structural: int, values: i
     return ""
 
 
+# Per-item probe for a revision whose changelog is blocked. The changelog is the only list that
+# says which items changed, so when it is unreadable every item's detail is compared between the
+# previous build and this one. Own cap, not the run-wide request budget: it runs once per blocked
+# revision and its result is saved on the revision record, so a deferred revision never re-probes.
+BETA_PROBE_MAX_REQUESTS = 400
+_PROBE_NOISE_KEYS = frozenset({"icon", "image", "icon_path", "inter_knot_icon", "role_icon",
+                               "avatar_piece_id", "image_url"})
+
+
+def _probe_view(value):
+    """Detail JSON with art and icon keys removed, so only game text and numbers can differ."""
+    if isinstance(value, dict):
+        return {str(k): _probe_view(v) for k, v in value.items()
+                if str(k) not in _PROBE_NOISE_KEYS and not str(k).endswith("_icon")}
+    if isinstance(value, list):
+        return [_probe_view(v) for v in value]
+    return value
+
+
+async def _probe_listing_changes(ctx, ns: str, targets: dict, previous_ver: str, version: str,
+                                 done_keys: set, limit: int) -> dict:
+    """Which listed items differ between two builds, read from their own detail files.
+
+    `targets` maps role -> (detail kind, item ids). Items already processed are skipped. Both
+    sides are fetched for each item, so an unreadable side is counted and never reported as a
+    change. The result says how far it got (`checked` of `total`) so partial coverage is stated.
+    """
+    changed: list[list[str]] = []
+    checked = total = unreadable = requests = 0
+    for role in CARD_ROLES:
+        if role not in targets:
+            continue
+        detail_kind, ids = targets[role]
+        if not detail_kind:
+            continue
+        pending = [i for i in ids if _entry_key(ns, role, i) not in done_keys]
+        total += len(pending)
+        for item_id in pending:
+            if requests + 2 > limit:
+                break
+            requests += 2
+            checked += 1
+            prev = await _detail(ctx.fetcher, ns, previous_ver, detail_kind, item_id)
+            cur = await _detail(ctx.fetcher, ns, version, detail_kind, item_id)
+            if not prev or not cur:
+                unreadable += 1
+                continue
+            if stable_hash(_probe_view(prev)) != stable_hash(_probe_view(cur)):
+                changed.append([role, item_id])
+    return {"version": version, "previous": previous_ver, "changed": changed, "checked": checked,
+            "total": total, "unreadable": unreadable, "requests": requests}
+
+
 async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatch | None:
     """Build the next bounded beta card batch without guessing unavailable source data."""
     ns = _game_ns(game)
@@ -6196,6 +6249,13 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         and _major_minor(previous_ver) == _major_minor(version)
         and budget["max_requests"] >= 12
     ):
+        probe_targets: dict[str, tuple[str, list[str]]] = {}
+        detail_kinds = {
+            "character": str(kinds["new_keys"].get("character") or ""),
+            "weapon": str((kinds.get("weapon") or {}).get("detail") or ""),
+            "relic": str((kinds.get("relic") or {}).get("detail") or ""),
+            "bangboo": str((kinds.get("bangboo") or {}).get("detail") or ""),
+        }
         for role in CARD_ROLES:
             # Only ZZZ publishes Bangboo listings; the other games have no such kind.
             list_kind = str(kinds["new_keys"].get(role) or "")
@@ -6208,9 +6268,29 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             cur_idx = await _listing(ctx.fetcher, ns, version, list_kind)
             if not prev_idx or not cur_idx:
                 continue
+            ids = [str(item_id) for item_id in cur_idx if str(item_id).isdigit()]
+            probe_targets[role] = (detail_kinds.get(role, ""), ids)
             for item_id, value in cur_idx.items():
                 if str(item_id).isdigit() and prev_idx.get(item_id) != value:
                     source_entries.append(_fallback_entry(ns, role, str(item_id)))
+        cached_probe = (saved or {}).get("probe") if isinstance(saved, dict) else None
+        if isinstance(cached_probe, dict) and cached_probe.get("version") == version:
+            probe = cached_probe
+        else:
+            done_keys = set((saved or {}).get("processed") or []) if isinstance(saved, dict) else set()
+            probe = await _probe_listing_changes(
+                ctx, ns, probe_targets, previous_ver, version, done_keys, BETA_PROBE_MAX_REQUESTS)
+        patch.probe = probe
+        for role, item_id in probe.get("changed") or []:
+            source_entries.append(_fallback_entry(ns, str(role), str(item_id)))
+        if int(probe.get("checked") or 0) < int(probe.get("total") or 0):
+            patch.coverage_note = (
+                f"changelog unavailable; per-item probe checked {probe.get('checked')} of "
+                f"{probe.get('total')} items this run — the rest are not compared")
+        else:
+            patch.coverage_note = (
+                f"changelog unavailable; per-item probe compared {probe.get('checked')} items"
+                f" ({probe.get('unreadable') or 0} unreadable)")
 
     char_entries, equip_entries = _candidate_entries(
         ns, kinds, source_entries, snapshots, new_char_ids, new_weapon_ids, new_relic_ids,
@@ -7177,6 +7257,8 @@ def _settle_beta_patch(ctx, record: dict, patch: BetaPatch, *, status: str) -> N
     processed.update(patch.item_keys)
     entry["processed"] = sorted(processed)
     entry["more"] = bool(patch.more)
+    if patch.probe:
+        entry["probe"] = dict(patch.probe)
     entry["status"] = "partial" if patch.more else status
 
     snapshots = record.setdefault("snapshots", {})

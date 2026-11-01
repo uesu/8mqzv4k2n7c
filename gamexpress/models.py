@@ -143,6 +143,8 @@ class BetaPatch:
     # Set when the changelog could not be read and the card was built from the data listings
     # instead — narrower coverage, stated in the run summary rather than hidden.
     coverage_note: str = ""
+    # Per-item probe result for a blocked-changelog revision (saved on the record, reused on resume).
+    probe: dict = field(default_factory=dict)
     # Tracked items the changelog listed for this revision. When it exceeds what the card
     # delivered, the run summary says so instead of a gap passing unseen (no log access needed).
     listed: int = 0
