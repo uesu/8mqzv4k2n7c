@@ -4489,6 +4489,15 @@ _ZH_TITLE_SPLIT_RE = re.compile(r"[:：]\s*")
 
 _ZZZ_SEED_GLOSSARY_PATH = Path(__file__).parent / "data" / "zzz_zh_en_glossary.json"
 _zzz_seed_cache: dict[str, str] | None = None
+_ZZZ_GENERATED_GLOSSARY_PATH = Path(__file__).parent / "data" / "glossary" / "zzz.json"
+
+
+def _zzz_generated_glossary() -> dict[str, str]:
+    """Reviewed terms from `gamexpress build-glossary --game zzz` (none until that file exists)."""
+    if not _ZZZ_GENERATED_GLOSSARY_PATH.exists():
+        return {}
+    raw = json.loads(_ZZZ_GENERATED_GLOSSARY_PATH.read_text(encoding="utf-8"))
+    return {str(row["zh"]): str(row["en"]) for row in raw.get("terms", [])}
 
 
 def _zzz_seed_glossary() -> dict[str, str]:
@@ -4533,7 +4542,8 @@ def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]]) -> d
             for z, e in zip(zh_terms, en_terms):
                 add(z, e)
     learned = {zh: next(iter(ens)) for zh, ens in seen.items() if len(ens) == 1}
-    return {**learned, **_zzz_seed_glossary()}
+    # Priority: the verified seed, then terms learned from this item, then the generated file.
+    return {**_zzz_generated_glossary(), **learned, **_zzz_seed_glossary()}
 
 
 def _zh_en_apply(text: str, glossary: dict[str, str]) -> str:

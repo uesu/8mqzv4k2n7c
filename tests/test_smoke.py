@@ -22450,6 +22450,116 @@ def test_feature5_zzz_seed_glossary_is_verified_terms_and_wins_over_learned_ones
     assert beta_mod._zh_en_apply("薇薇安的异常掌控", gloss) == "Vivian的Anomaly Mastery"
 
 
+def test_glossary_build_string_alignment_trusts_only_matching_structure():
+    """Title parts and bracket terms pair only when both sides have the same count; a CN string
+    with an EN side still in Chinese contributes nothing; a bad EN with CJK is never a term."""
+    from gamexpress import glossary_build as gb
+
+    pairs = gb.string_pairs("普通攻击：落羽生花", "Basic Attack: Featherbloom")
+    assert ("落羽生花", "Featherbloom") in pairs and ("普通攻击", "Basic Attack") in pairs
+    assert gb.string_pairs("[失衡]与[虎啸]", "[Stun] and [Tiger's Roar]") == [
+        ("失衡", "Stun"), ("虎啸", "Tiger's Roar")]
+    # Count mismatch on brackets: no bracket pairs are guessed.
+    assert gb.string_pairs("[失衡][虎啸]", "[Stun]") == []
+    assert gb.string_pairs("普通攻击", "普通攻击") == []  # EN still Chinese
+    assert gb._clean_term("失衡", "Stun: fast") is None  # colon in an EN term is not a term
+
+
+def test_glossary_build_walks_parallel_records_and_skips_lagging_en():
+    from gamexpress import glossary_build as gb
+
+    en = {"name": "Vivian", "skill": {"basic": {"description": [
+        {"name": "Basic Attack: Featherbloom", "desc": "Hits [Stun] then [Tiger's Roar]."},
+        {"name": "Basic Attack: Lagging", "desc": "还没翻译的说明 [失衡]"},
+    ]}}}
+    zh = {"name": "薇薇安", "skill": {"basic": {"description": [
+        {"name": "普通攻击：落羽生花", "desc": "命中[失衡]后施加[虎啸]。"},
+        {"name": "普通攻击：拖延", "desc": "还没翻译的说明 [失衡]"},
+    ]}}}
+    got = gb.item_pairs(en, zh)
+    assert ("薇薇安", "Vivian") in got and ("落羽生花", "Featherbloom") in got
+    assert ("失衡", "Stun") in got and ("虎啸", "Tiger's Roar") in got
+    # The second description's EN still has the Chinese bracket text: no pair from that string.
+    assert not any(z == "失衡" and e != "Stun" for z, e in got)
+    assert gb.item_pairs(None, zh) == [] and gb.item_pairs(en, None) == []
+
+
+def test_glossary_build_votes_need_support_and_share():
+    from gamexpress import glossary_build as gb
+
+    def items(readings: list[str]) -> dict[str, list[tuple[str, str]]]:
+        return {f"c/{i}": [("落羽生花", en)] for i, en in enumerate(readings)}
+
+    # One item is never enough.
+    assert gb.aggregate(items(["Featherbloom"])) == []
+    # 9 of 10 items agree: kept with support 9.
+    kept = gb.aggregate(items(["Featherbloom"] * 9 + ["Falling Feathers Bloom"]))
+    assert [(t["zh"], t["en"], t["support"]) for t in kept] == [("落羽生花", "Featherbloom", 9)]
+    # 4 of 5 agree (80%): below the share threshold, dropped rather than guessed.
+    assert gb.aggregate(items(["Featherbloom"] * 4 + ["Falling Feathers Bloom"])) == []
+
+
+def test_glossary_build_full_run_uses_fake_fetcher_and_rejects_excluded_games():
+    import asyncio
+
+    from gamexpress import glossary_build as gb
+
+    en_char = {"name": "Vivian", "skill": {"basic": {"description": [
+        {"name": "Basic Attack: Featherbloom", "desc": "[Stun] then [Tiger's Roar]."}]}}}
+    zh_char = {"name": "薇薇安", "skill": {"basic": {"description": [
+        {"name": "普通攻击：落羽生花", "desc": "[失衡]后[虎啸]。"}]}}}
+    calls: list[str] = []
+
+    class FakeFetcher:
+        async def get_json(self, url, **kw):
+            calls.append(url)
+            if url == gb.MANIFEST_URL:
+                return {"zzz": {"latest": "9.9.9"}}
+            if url.endswith("/zzz/9.9.9/character.json"):
+                return {"1331": {}, "1391": {}}
+            if "/9.9.9/en/character/" in url:
+                return en_char
+            if "/9.9.9/zh/character/" in url:
+                return zh_char
+            return None
+
+    async def run():
+        return await gb.build_game(FakeFetcher(), "zzz", max_items=10)
+
+    result = asyncio.run(run())
+    terms = {(t["zh"], t["en"]): t["support"] for t in result["terms"]}
+    assert terms[("落羽生花", "Featherbloom")] == 2  # two items agree
+    assert terms[("失衡", "Stun")] == 2 and terms[("虎啸", "Tiger's Roar")] == 2
+    assert result["items_listed"] == 2 and result["items_with_pairs"] == 2
+    assert result["version"] == "9.9.9" and result["namespace"] == "zzz"
+    # HNA and Ananta are out of scope until they ship.
+    for game in ("hna", "ananta"):
+        try:
+            asyncio.run(gb.build_game(FakeFetcher(), game))
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"{game} must not build a glossary")
+    # A manifest with no version fails loudly instead of building an empty file.
+    class NoVersion(FakeFetcher):
+        async def get_json(self, url, **kw):
+            return {} if url == gb.MANIFEST_URL else None
+    try:
+        asyncio.run(gb.build_game(NoVersion(), "zzz"))
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("missing manifest version must raise")
+
+
+def test_glossary_build_generated_zzz_terms_sit_below_learned_and_seed():
+    from gamexpress import beta as beta_mod
+
+    assert beta_mod._zzz_generated_glossary() == {} or isinstance(
+        beta_mod._zzz_generated_glossary(), dict)
+    assert beta_mod._zh_en_glossary([])["落羽生花"] == "Featherbloom"  # seed wins even with no learning
+
+
 def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted():
     """CN moved in an earlier beta and was posted; a later beta where EN catches up to that CN
     value (CN unchanged since) must post nothing, because CN is the source of truth."""
