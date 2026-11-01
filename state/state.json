@@ -8003,8 +8003,8 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1793329202,
-          "banners_checked_ts": 1793548519,
-          "banners_search_ts": 1793548519,
+          "banners_checked_ts": 1793559636,
+          "banners_search_ts": 1793559636,
           "estimate_sources": [
             "version cadence"
           ],
