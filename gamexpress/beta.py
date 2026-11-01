@@ -4482,6 +4482,61 @@ def _equipment_from_snapshot(snapshot: Any) -> BetaEquipment | None:
     )
 
 
+_ZH_TERM_BRACKET_RE = re.compile(r"\[([^\[\]\n]{1,40})\]")
+_ZH_CJK_RE = re.compile(r"[\u4e00-\u9fff]")
+_ZH_TITLE_SPLIT_RE = re.compile(r"[:：]\s*")
+
+
+def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]]) -> dict[str, str]:
+    """Chinese term -> English term, learned from the same item's already-localized sections.
+
+    Only two alignments are trusted: title parts split on the colon (same part count on both
+    sides) and bracketed status/skill names in the same order (same count on both sides). A term
+    that maps to two different English strings is dropped, so a wrong alignment cannot leak
+    into a card. A term that is not learned stays in Chinese under the pending label.
+    """
+    seen: dict[str, set[str]] = {}
+
+    def add(zh: str, en: str) -> None:
+        zh, en = zh.strip(), en.strip()
+        if zh and en and _ZH_CJK_RE.search(zh) and not _ZH_CJK_RE.search(en):
+            seen.setdefault(zh, set()).add(en)
+
+    for en_sec, zh_sec in pairs:
+        zh_parts = _ZH_TITLE_SPLIT_RE.split(str(zh_sec.title or ""))
+        en_parts = _ZH_TITLE_SPLIT_RE.split(str(en_sec.title or ""))
+        if len(zh_parts) == len(en_parts):
+            for z, e in zip(zh_parts, en_parts):
+                add(z, e)
+        zh_terms = _ZH_TERM_BRACKET_RE.findall("\n".join(zh_sec.lines))
+        en_terms = _ZH_TERM_BRACKET_RE.findall("\n".join(en_sec.lines))
+        if len(zh_terms) == len(en_terms):
+            for z, e in zip(zh_terms, en_terms):
+                add(z, e)
+    return {zh: next(iter(ens)) for zh, ens in seen.items() if len(ens) == 1}
+
+
+def _zh_en_apply(text: str, glossary: dict[str, str]) -> str:
+    """Replace learned Chinese terms in one line, longest term first."""
+    for zh in sorted(glossary, key=len, reverse=True):
+        text = text.replace(zh, glossary[zh])
+    return text
+
+
+def _clone_sections_localized(sections: list[BetaSectionEntry], tag: str,
+                              glossary: dict[str, str]) -> list[BetaSectionEntry]:
+    out = _clone_sections(sections, tag)
+    if not glossary:
+        return out
+    for sec in out:
+        sec.title = _zh_en_apply(str(sec.title or ""), glossary)
+        sec.lines = [_zh_en_apply(str(x), glossary) for x in sec.lines]
+        for row in sec.params:
+            if isinstance(row.get("text"), str):
+                row["text"] = _zh_en_apply(row["text"], glossary)
+    return out
+
+
 def _clone_sections(sections: list[BetaSectionEntry], tag: str) -> list[BetaSectionEntry]:
     return [BetaSectionEntry(
         title=section.title, category=section.category, tag=tag, meta=section.meta,
@@ -5314,6 +5369,7 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
             matched_zh_ids.add(id(zh_secs[idx]))
             pairs_to_sync.append((es, zh_secs[idx]))
 
+    glossary = _zh_en_glossary(pairs_to_sync)
     changed_any = False
     for en_sec, zh_sec in pairs_to_sync:
         sec_changed = False
@@ -5403,7 +5459,7 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
                     continue
                 if zs_slot is not None and zs_slot in es_slots:
                     continue
-            cloned = _clone_sections([zs], "[NEW]")[0]
+            cloned = _clone_sections_localized([zs], "[NEW]", glossary)[0]
             if not any("CN/CHS" in x for x in cloned.lines):
                 cloned.lines.append("-# 🌐 Sourced from CN/CHS beta data — EN localization pending.")
             en_secs.append(cloned)
@@ -6179,6 +6235,16 @@ def _probe_view(value):
     return value
 
 
+def _probe_cache_reusable(cached, version: str) -> bool:
+    """A saved probe is reused for the same version only if it covered every item or was run with
+    the current cap. One saved under an older, smaller cap is re-run, so its tail is compared."""
+    if not isinstance(cached, dict) or cached.get("version") != version:
+        return False
+    if int(cached.get("checked") or 0) >= int(cached.get("total") or 0):
+        return True
+    return int(cached.get("cap") or 0) == BETA_PROBE_MAX_REQUESTS
+
+
 async def _probe_listing_changes(ctx, ns: str, targets: dict, previous_ver: str, version: str,
                                  done_keys: set, limit: int) -> dict:
     """Which listed items differ between two builds, read from their own detail files.
@@ -6210,7 +6276,7 @@ async def _probe_listing_changes(ctx, ns: str, targets: dict, previous_ver: str,
             if stable_hash(_probe_view(prev)) != stable_hash(_probe_view(cur)):
                 changed.append([role, item_id])
     return {"version": version, "previous": previous_ver, "changed": changed, "checked": checked,
-            "total": total, "unreadable": unreadable, "requests": requests}
+            "total": total, "unreadable": unreadable, "requests": requests, "cap": limit}
 
 
 async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatch | None:
@@ -6361,7 +6427,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 if str(item_id).isdigit() and prev_idx.get(item_id) != value:
                     source_entries.append(_fallback_entry(ns, role, str(item_id)))
         cached_probe = (saved or {}).get("probe") if isinstance(saved, dict) else None
-        if isinstance(cached_probe, dict) and cached_probe.get("version") == version:
+        # A saved probe is reused only if it covered every item, or was run with this cap. A probe
+        # saved under the old 400-request cap (which skipped the tail) is re-run once.
+        if _probe_cache_reusable(cached_probe, version):
             probe = cached_probe
         else:
             done_keys = set((saved or {}).get("processed") or []) if isinstance(saved, dict) else set()

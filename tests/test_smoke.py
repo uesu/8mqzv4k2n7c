@@ -22378,6 +22378,51 @@ def test_feature5_probe_budget_covers_every_zzz_listed_item():
     assert beta_mod.BETA_PROBE_MAX_REQUESTS >= 2 * 245
 
 
+def test_feature5_partial_probe_saved_under_the_old_cap_is_rerun_once():
+    """A probe saved before the cap was raised (checked 200 of 245, no cap recorded) is not reused:
+    its tail was never compared. A complete probe, or one run with the current cap, is reused."""
+    from gamexpress import beta as beta_mod
+
+    v = "3.4.2+20052336"
+    old = {"version": v, "checked": 200, "total": 245, "changed": []}
+    full = {"version": v, "checked": 245, "total": 245, "changed": []}
+    partial_now = {"version": v, "checked": 200, "total": 245,
+                   "cap": beta_mod.BETA_PROBE_MAX_REQUESTS}
+    assert not beta_mod._probe_cache_reusable(old, v)
+    assert not beta_mod._probe_cache_reusable(full, "other")
+    assert beta_mod._probe_cache_reusable(full, v)
+    assert beta_mod._probe_cache_reusable(partial_now, v)
+    assert not beta_mod._probe_cache_reusable(None, v)
+
+
+def test_feature5_zh_en_glossary_learns_terms_from_aligned_sections_and_drops_conflicts():
+    """Terms come only from the same item's already-localized EN/CN sections (matching title
+    parts and bracket order). A term with two different English readings is never applied."""
+    from gamexpress import beta as beta_mod
+
+    def sec(title, lines):
+        return beta_mod.BetaSectionEntry(title=title, category="Skills", tag="", meta="",
+                                         lines=list(lines), params=[], defs=[], values_label="")
+
+    pairs = [
+        (sec("Basic Attack: Burning Claw", ["Deals [Stun] damage, [Tiger's Roar] applies."]),
+         sec("普通攻击：燎身爪", ["造成[失衡]伤害，施加[虎啸]。"])),
+        (sec("Assist: Roar", ["Gains [Tiger's Roar]."]),
+         sec("连携：咆哮", ["获得[虎啸]。"])),
+        (sec("Dodge: One", ["[Dodge]"]), sec("闪避：一", ["[闪避]"])),
+        (sec("Dodge: Two", ["[Evade]"]), sec("闪避：二", ["[闪避]"])),  # conflicting "闪避"
+    ]
+    gloss = beta_mod._zh_en_glossary(pairs)
+    assert gloss["普通攻击"] == "Basic Attack"
+    assert gloss["燎身爪"] == "Burning Claw"
+    assert gloss["虎啸"] == "Tiger's Roar"
+    assert gloss["失衡"] == "Stun"
+    assert "闪避" not in gloss  # two different readings: dropped, never guessed
+    assert beta_mod._zh_en_apply("施加[虎啸]，造成[失衡]", gloss) == "施加[Tiger's Roar]，造成[Stun]"
+    # A term with no English reading stays Chinese, to be shown under the pending label.
+    assert "新潜能" in beta_mod._zh_en_apply("新潜能", gloss)
+
+
 def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted():
     """CN moved in an earlier beta and was posted; a later beta where EN catches up to that CN
     value (CN unchanged since) must post nothing, because CN is the source of truth."""
