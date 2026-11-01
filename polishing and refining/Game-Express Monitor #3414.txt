@@ -1,0 +1,1861 @@
+https://github.com/uesu/8mqzv4k2n7c/actions/runs/41284370216#summary-124782567013
+
+https://github.com/uesu/8mqzv4k2n7c/actions/runs/41284370216
+
+Game-Express 03a4cfc — alpha (primary)
+📰 GI news: discovered=4, eligible=4, attempted=0, delivered=0, deferred/error=0
+📰 HSR news: discovered=14, eligible=14, attempted=0, delivered=0, deferred/error=0
+📰 ZZZ news: discovered=3, eligible=3, attempted=0, delivered=0, deferred/error=0
+📰 WW news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+📰 HNA news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+ZZZ 3.4.2+20049556: mixed-data caveat on the card (28 renamed/new block(s), 3 measured value change(s))
+🧪 ZZZ 3.4.2 beta (v3.4.2 Rev. 20049556): 20 page(s) — Kafka, Robin, Vivian, Sunbringer, 5 equipment entr(ies); changelog unavailable; new and listing-changed items only
+repository commit/push: not observed here; see the subsequent workflow persistence step.
+sources: bannerfeed: 1 ok / 0 fail; beta-changelog: 0 ok / 4 fail (HTTP 403); beta-data: 27 ok / 0 fail; beta-manifest: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; hoyolab: 14 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 2 ok / 0 fail; nitter: 25 ok / 0 fail; reddit: 6 ok / 0 fail
+⏱️ run took 118.8s
+Repository persistence
+committed and pushed
+
+2026-11-01T07:20:13.2451842Z Current runner version: '2.338.2'
+2026-11-01T07:20:13.2477834Z ##[group]Runner Image Provisioner
+2026-11-01T07:20:13.2478871Z Hosted Compute Agent
+2026-11-01T07:20:13.2479654Z Version: 20261021.618
+2026-11-01T07:20:13.2480495Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-11-01T07:20:13.2481387Z Build Date: 2026-10-21T00:45:21Z
+2026-11-01T07:20:13.2482608Z Worker ID: {fa5f92ed-09f8-44be-b551-a6dc9d4ee891}
+2026-11-01T07:20:13.2483570Z Region: westus
+2026-11-01T07:20:13.2484319Z Cloud: Azure
+2026-11-01T07:20:13.2485013Z ##[endgroup]
+2026-11-01T07:20:13.2486727Z ##[group]Operating System
+2026-11-01T07:20:13.2487578Z Ubuntu
+2026-11-01T07:20:13.2488271Z 24.04.5
+2026-11-01T07:20:13.2488900Z LTS
+2026-11-01T07:20:13.2489657Z ##[endgroup]
+2026-11-01T07:20:13.2490316Z ##[group]Runner Image
+2026-11-01T07:20:13.2491153Z Image: ubuntu-24.04
+2026-11-01T07:20:13.2491828Z Version: 20261025.353.1
+2026-11-01T07:20:13.2493565Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261025.353/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-01T07:20:13.2495396Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261025.353
+2026-11-01T07:20:13.2496506Z ##[endgroup]
+2026-11-01T07:20:13.2497855Z ##[group]GITHUB_TOKEN Permissions
+2026-11-01T07:20:13.2500268Z Contents: write
+2026-11-01T07:20:13.2501037Z Metadata: read
+2026-11-01T07:20:13.2501722Z ##[endgroup]
+2026-11-01T07:20:13.2504206Z Secret source: Actions
+2026-11-01T07:20:13.2505453Z Cache mode: write
+2026-11-01T07:20:13.2506639Z Prepare workflow directory
+2026-11-01T07:20:13.3135621Z Prepare all required actions
+2026-11-01T07:20:13.3188572Z Getting action download info
+2026-11-01T07:20:13.6598859Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-01T07:20:13.7697363Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-11-01T07:20:14.1631345Z Download action repository 'astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e' (SHA:07a047e608db84b3d8c06cd9a7c7dcc9c355c18e)
+2026-11-01T07:20:14.6694064Z Complete job name: monitor
+2026-11-01T07:20:14.7595217Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-11-01T07:20:14.7596484Z with:
+2026-11-01T07:20:14.7597028Z   ref: main
+2026-11-01T07:20:14.7597580Z   repository: uesu/8mqzv4k2n7c
+2026-11-01T07:20:14.7602175Z   token: ***
+2026-11-01T07:20:14.7602771Z   ssh-strict: true
+2026-11-01T07:20:14.7603335Z   ssh-user: git
+2026-11-01T07:20:14.7603913Z   persist-credentials: true
+2026-11-01T07:20:14.7604522Z   clean: true
+2026-11-01T07:20:14.7605090Z   sparse-checkout-cone-mode: true
+2026-11-01T07:20:14.7605743Z   fetch-depth: 1
+2026-11-01T07:20:14.7606298Z   fetch-tags: false
+2026-11-01T07:20:14.7606870Z   show-progress: true
+2026-11-01T07:20:14.7607442Z   lfs: false
+2026-11-01T07:20:14.7607983Z   submodules: false
+2026-11-01T07:20:14.7608553Z   set-safe-directory: true
+2026-11-01T07:20:14.7609211Z   allow-unsafe-pr-checkout: false
+2026-11-01T07:20:14.7610141Z env:
+2026-11-01T07:20:14.7610692Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:20:14.7612277Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:20:14.7612943Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:20:14.7614305Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:20:14.7615759Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:20:14.7617155Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:20:14.7618503Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:20:14.7619893Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:20:14.7621286Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:20:14.7621943Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:20:14.7622908Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:20:14.7740907Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:20:14.7750351Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:20:14.7752986Z   TEST: webhooks
+2026-11-01T07:20:14.7753675Z   NO_PING: 0
+2026-11-01T07:20:14.7754216Z   PING_FLAG: 
+2026-11-01T07:20:14.7754749Z   GAME_ARG: 
+2026-11-01T07:20:14.7755279Z ##[endgroup]
+2026-11-01T07:20:15.0890214Z Syncing repository: uesu/8mqzv4k2n7c
+2026-11-01T07:20:15.0893713Z ##[group]Getting Git version info
+2026-11-01T07:20:15.0894856Z Working directory is '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-11-01T07:20:15.0899379Z [command]/usr/bin/git version
+2026-11-01T07:20:15.1043890Z git version 2.56.0
+2026-11-01T07:20:15.1067840Z ##[endgroup]
+2026-11-01T07:20:15.1079383Z Temporarily overriding HOME='/home/runner/work/_temp/192cdfcc-b947-4b80-9d3f-8cb616213f84' before making global git config changes
+2026-11-01T07:20:15.1087384Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-01T07:20:15.1089975Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-11-01T07:20:15.1147694Z Deleting the contents of '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-11-01T07:20:15.1152920Z ##[group]Determining repository object format
+2026-11-01T07:20:15.4670429Z ##[endgroup]
+2026-11-01T07:20:15.4672821Z ##[group]Initializing the repository
+2026-11-01T07:20:15.4679542Z [command]/usr/bin/git init /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-11-01T07:20:15.4839724Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-01T07:20:15.4841280Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-01T07:20:15.4842799Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-01T07:20:15.4844138Z hint: call:
+2026-11-01T07:20:15.4844756Z hint:
+2026-11-01T07:20:15.4845475Z hint: 	git config --global init.defaultBranch <name>
+2026-11-01T07:20:15.4846313Z hint:
+2026-11-01T07:20:15.4847467Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-01T07:20:15.4848662Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-01T07:20:15.4849803Z hint:
+2026-11-01T07:20:15.4850879Z hint: 	git branch -m <name>
+2026-11-01T07:20:15.4852243Z hint:
+2026-11-01T07:20:15.4853689Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-01T07:20:15.4855427Z Initialized empty Git repository in /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/
+2026-11-01T07:20:15.4872867Z [command]/usr/bin/git remote add origin https://github.com/uesu/8mqzv4k2n7c
+2026-11-01T07:20:15.4945112Z ##[endgroup]
+2026-11-01T07:20:15.4946368Z ##[group]Disabling automatic garbage collection
+2026-11-01T07:20:15.4950535Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-01T07:20:15.5001885Z ##[endgroup]
+2026-11-01T07:20:15.5003497Z ##[group]Setting up auth
+2026-11-01T07:20:15.5004229Z Removing SSH command configuration
+2026-11-01T07:20:15.5008802Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-01T07:20:15.5076999Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-01T07:20:15.5519717Z Removing HTTP extra header
+2026-11-01T07:20:15.5526066Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-01T07:20:15.5577607Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-01T07:20:15.5825253Z Removing includeIf entries pointing to credentials config files
+2026-11-01T07:20:15.5830422Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-01T07:20:15.5879571Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-01T07:20:15.6144007Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-01T07:20:15.6212553Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path /home/runner/work/_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:20:15.6265118Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:20:15.6318842Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:20:15.6374583Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:20:15.6420123Z ##[endgroup]
+2026-11-01T07:20:15.6421848Z ##[group]Fetching the repository
+2026-11-01T07:20:15.6428432Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/main*:refs/remotes/origin/main* +refs/tags/main*:refs/tags/main*
+2026-11-01T07:20:16.4467913Z From https://github.com/uesu/8mqzv4k2n7c
+2026-11-01T07:20:16.4470165Z  * [new branch]      main       -> origin/main
+2026-11-01T07:20:16.4474508Z ##[endgroup]
+2026-11-01T07:20:16.4475917Z ##[group]Determining the checkout info
+2026-11-01T07:20:16.4480412Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-01T07:20:16.4524234Z   origin/main
+2026-11-01T07:20:16.4531093Z ##[endgroup]
+2026-11-01T07:20:16.4535298Z [command]/usr/bin/git sparse-checkout disable
+2026-11-01T07:20:16.4604250Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-01T07:20:16.4652690Z ##[group]Checking out the ref
+2026-11-01T07:20:16.4655650Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-01T07:20:16.5349731Z Switched to a new branch 'main'
+2026-11-01T07:20:16.5360283Z branch 'main' set up to track 'origin/main'.
+2026-11-01T07:20:16.5381407Z ##[endgroup]
+2026-11-01T07:20:16.5443812Z [command]/usr/bin/git log -1 --format=%H
+2026-11-01T07:20:16.5486289Z 03a4cfc0c8d42db96c982db1b3083a9dbd584732
+2026-11-01T07:20:16.5919161Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-11-01T07:20:16.5921117Z with:
+2026-11-01T07:20:16.5922382Z   python-version: 3.14.9
+2026-11-01T07:20:16.5923658Z   check-latest: false
+2026-11-01T07:20:16.5934990Z   token: ***
+2026-11-01T07:20:16.5936599Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-11-01T07:20:16.5938850Z   update-environment: true
+2026-11-01T07:20:16.5940171Z   allow-prereleases: false
+2026-11-01T07:20:16.5941475Z   freethreaded: false
+2026-11-01T07:20:16.5942790Z env:
+2026-11-01T07:20:16.5943864Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:20:16.5946832Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:20:16.5948190Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:20:16.5951272Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:20:16.5954775Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:20:16.5957924Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:20:16.5961024Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:20:16.5964429Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:20:16.5967603Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:20:16.5969008Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:20:16.5970690Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:20:16.6050139Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:20:16.6070282Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:20:16.6075559Z   TEST: webhooks
+2026-11-01T07:20:16.6076664Z   NO_PING: 0
+2026-11-01T07:20:16.6077730Z   PING_FLAG: 
+2026-11-01T07:20:16.6078809Z   GAME_ARG: 
+2026-11-01T07:20:16.6079890Z ##[endgroup]
+2026-11-01T07:20:16.7307919Z ##[group]Installed versions
+2026-11-01T07:20:16.7350708Z Successfully set up CPython (3.14.9)
+2026-11-01T07:20:16.7353597Z ##[endgroup]
+2026-11-01T07:20:16.7859419Z ##[group]Run astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e
+2026-11-01T07:20:16.7861304Z with:
+2026-11-01T07:20:16.7862519Z   version: latest-known
+2026-11-01T07:20:16.7863764Z   activate-environment: false
+2026-11-01T07:20:16.7865455Z   no-project: false
+2026-11-01T07:20:16.7867140Z   working-directory: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-11-01T07:20:16.7878110Z   github-token: ***
+2026-11-01T07:20:16.7879263Z   enable-cache: auto
+2026-11-01T07:20:16.7881701Z   cache-dependency-glob: **/*requirements*.txt
+**/*requirements*.in
+**/*constraints*.txt
+**/*constraints*.in
+**/pyproject.toml
+**/uv.lock
+**/*.py.lock
+
+2026-11-01T07:20:16.7884489Z   restore-cache: true
+2026-11-01T07:20:16.7885635Z   save-cache: auto
+2026-11-01T07:20:16.7886739Z   prune-cache: false
+2026-11-01T07:20:16.7887873Z   cache-python: false
+2026-11-01T07:20:16.7889051Z   ignore-nothing-to-cache: false
+2026-11-01T07:20:16.7890355Z   ignore-empty-workdir: false
+2026-11-01T07:20:16.7891720Z   download-from-astral-mirror: true
+2026-11-01T07:20:16.7894224Z   add-problem-matchers: true
+2026-11-01T07:20:16.7895939Z   quiet: false
+2026-11-01T07:20:16.7897307Z   resolution-strategy: highest
+2026-11-01T07:20:16.7898535Z env:
+2026-11-01T07:20:16.7899574Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:20:16.7902415Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:20:16.7903709Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:20:16.7906407Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:20:16.7909317Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:20:16.7912206Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:20:16.7914931Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:20:16.7917765Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:20:16.7920514Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:20:16.7921785Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:20:16.7923677Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:20:16.7997224Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:20:16.8015288Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:20:16.8019950Z   TEST: webhooks
+2026-11-01T07:20:16.8021014Z   NO_PING: 0
+2026-11-01T07:20:16.8022153Z   PING_FLAG: 
+2026-11-01T07:20:16.8023312Z   GAME_ARG: 
+2026-11-01T07:20:16.8024558Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:16.8026399Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-11-01T07:20:16.8028286Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:16.8030015Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:16.8032177Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:16.8033996Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-11-01T07:20:16.8035539Z ##[endgroup]
+2026-11-01T07:20:17.0145947Z Fetching manifest data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+2026-11-01T07:20:17.0684687Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+2026-11-01T07:20:17.2434642Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/25acf8c9-3834-48b4-8283-dac875a11948 -f /home/runner/work/_temp/0be28b1e-9376-43c0-b182-07cb7fad7c35
+2026-11-01T07:20:17.5570748Z Added /home/runner/.local/bin to the path
+2026-11-01T07:20:17.5571513Z Added /opt/hostedtoolcache/uv/0.13.5/x86_64 to the path
+2026-11-01T07:20:17.5572524Z Set UV_PYTHON_INSTALL_DIR to /home/runner/work/_temp/uv-python-dir
+2026-11-01T07:20:17.5573359Z Added /home/runner/work/_temp/uv-python-dir to the path
+2026-11-01T07:20:17.5579659Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+2026-11-01T07:20:17.5580347Z Successfully installed uv version 0.13.5
+2026-11-01T07:20:18.5264246Z Searching files using cache dependency glob: /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*requirements*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.txt,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*constraints*.in,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/pyproject.toml,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/uv.lock,/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/**/*.py.lock
+2026-11-01T07:20:18.5676080Z /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/requirements.txt
+2026-11-01T07:20:18.5810220Z Found 1 files to hash.
+2026-11-01T07:20:18.5909550Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-11-01T07:20:18.8295827Z Cache hit for: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-11-01T07:20:20.1140600Z Received 2404338 of 6598642 (36.4%), 2.3 MBs/sec
+2026-11-01T07:20:20.1596836Z Received 6598642 of 6598642 (100.0%), 6.0 MBs/sec
+2026-11-01T07:20:20.1597614Z Cache Size: ~6 MB (6598642 B)
+2026-11-01T07:20:20.1627627Z [command]/usr/bin/tar -xf /home/runner/work/_temp/f4c7b44f-b034-4fe6-bb5a-ca563bf6aaf1/cache.tzst -P -C /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c --use-compress-program unzstd
+2026-11-01T07:20:20.2100369Z Cache restored successfully
+2026-11-01T07:20:20.2109625Z cache restored from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d
+2026-11-01T07:20:20.3269967Z ##[group]Run uv pip install -r requirements.txt -q
+2026-11-01T07:20:20.3270491Z [36;1muv pip install -r requirements.txt -q[0m
+2026-11-01T07:20:20.3296087Z shell: /usr/bin/bash -e {0}
+2026-11-01T07:20:20.3296396Z env:
+2026-11-01T07:20:20.3296635Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:20:20.3297569Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:20:20.3297878Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:20:20.3298592Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:20:20.3299356Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:20:20.3300067Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:20:20.3300763Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:20:20.3301475Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:20:20.3302510Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:20:20.3302829Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:20:20.3303225Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:20:20.3323422Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:20:20.3328269Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:20:20.3329765Z   TEST: webhooks
+2026-11-01T07:20:20.3330006Z   NO_PING: 0
+2026-11-01T07:20:20.3330239Z   PING_FLAG: 
+2026-11-01T07:20:20.3330466Z   GAME_ARG: 
+2026-11-01T07:20:20.3330787Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.3331286Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-11-01T07:20:20.3331758Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.3332505Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.3332931Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.3333349Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-11-01T07:20:20.3333792Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-11-01T07:20:20.3334213Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-11-01T07:20:20.3334556Z   UV_SYSTEM_PYTHON: 1
+2026-11-01T07:20:20.3334810Z ##[endgroup]
+2026-11-01T07:20:20.4586995Z ##[group]Run python -m gamexpress validate || true
+2026-11-01T07:20:20.4587453Z [36;1mpython -m gamexpress validate || true[0m
+2026-11-01T07:20:20.4610206Z shell: /usr/bin/bash -e {0}
+2026-11-01T07:20:20.4610501Z env:
+2026-11-01T07:20:20.4610735Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:20:20.4611483Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:20:20.4611787Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:20:20.4612872Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:20:20.4613650Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:20:20.4614369Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:20:20.4615055Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:20:20.4615763Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:20:20.4616493Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:20:20.4616795Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:20:20.4617188Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:20:20.4636517Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:20:20.4641394Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:20:20.4642879Z   TEST: webhooks
+2026-11-01T07:20:20.4643119Z   NO_PING: 0
+2026-11-01T07:20:20.4643343Z   PING_FLAG: 
+2026-11-01T07:20:20.4643570Z   GAME_ARG: 
+2026-11-01T07:20:20.4643870Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.4644348Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-11-01T07:20:20.4645033Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.4645461Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.4645879Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:20.4646294Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-11-01T07:20:20.4646735Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-11-01T07:20:20.4647150Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-11-01T07:20:20.4647487Z ##[endgroup]
+2026-11-01T07:20:22.5188014Z Game-Express 03a4cfc | features=['beta', 'codes', 'maintenance', 'news', 'schedule'] | instance=alpha (primary) | dry_run=False
+2026-11-01T07:20:22.5189576Z peer_state_url=— | X=on | nitter instances=27 | token=set
+2026-11-01T07:20:22.5190324Z Reddit=on | reddit instances=27 | proxies=3 | feed_token=set
+2026-11-01T07:20:22.5191706Z news=on | news games=genshin,hna,starrail,wuwa,zzz | article count cap=none | timestamps=off | expand full=off | group long strips=on | dedicated destinations only
+2026-11-01T07:20:22.5193930Z maintenance=on | maintenance games=genshin,starrail,wuwa,zzz | dedicated destinations only
+2026-11-01T07:20:22.6691525Z beta=on | beta games=genshin,starrail,wuwa,zzz | ping=off (no PING_BETA set) | budget=chars≤4 changed≤8 equip≤12 requests≤48 repoll≥30m
+2026-11-01T07:20:22.6693317Z emoji: title=✓, youtube=✓, twitch=✓, source=✓, redeem=✓
+2026-11-01T07:20:22.6694097Z   ✓ genshin   Genshin Impact        
+2026-11-01T07:20:22.6695307Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI]
+2026-11-01T07:20:22.6696608Z       codes[✓ DISCORD_WEBHOOK_CODES_GENSHIN | no ping]
+2026-11-01T07:20:22.6697426Z       news[✓ DISCORD_WEBHOOK_NEWS_GENSHIN | no ping]
+2026-11-01T07:20:22.6698427Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_GENSHIN | <@&1296268365593186426>]
+2026-11-01T07:20:22.6699483Z       beta[✓ DISCORD_WEBHOOK_BETA_GENSHIN | no ping]
+2026-11-01T07:20:22.6701724Z       X=GenshinImpact Reddit=Genshin_Impact code_sources=hoyolab:2,seria:genshin,humbao:GENSHIN,ogc:genshin,ennead:genshin,fandom:genshin-impact/Promotional_Code,codehub:genshin-impact,reddit:Genshin_Impact,x 4★/phase=3
+2026-11-01T07:20:22.6704016Z       beta=gi changelog=https://gi.gachabase.net/changelog/beta?lang=en
+2026-11-01T07:20:22.6704920Z   ✓ starrail  Honkai: Star Rail     
+2026-11-01T07:20:22.6706045Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR]
+2026-11-01T07:20:22.6707213Z       codes[✓ DISCORD_WEBHOOK_CODES_STARRAIL | no ping]
+2026-11-01T07:20:22.6708026Z       news[✓ DISCORD_WEBHOOK_NEWS_STARRAIL | no ping]
+2026-11-01T07:20:22.6709007Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_STARRAIL | <@&1296268365593186426>]
+2026-11-01T07:20:22.6709963Z       beta[✓ DISCORD_WEBHOOK_BETA_STARRAIL | no ping]
+2026-11-01T07:20:22.6712437Z       X=honkaistarrail Reddit=HonkaiStarRail code_sources=hoyolab:6,seria:hkrpg,humbao:HSR,ogc:starrail,ennead:starrail,fandom:honkai-star-rail/Redemption_Code,codehub:honkai-star-rail,reddit:HonkaiStarRail,x 4★/phase=3
+2026-11-01T07:20:22.6714526Z       beta=hsr changelog=https://hsr.gachabase.net/changelog/beta?lang=en
+2026-11-01T07:20:22.6715420Z   ✓ zzz       Zenless Zone Zero     
+2026-11-01T07:20:22.6716591Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ]
+2026-11-01T07:20:22.6717780Z       codes[✓ DISCORD_WEBHOOK_CODES_ZZZ | no ping]
+2026-11-01T07:20:22.6718535Z       news[✓ DISCORD_WEBHOOK_NEWS_ZZZ | no ping]
+2026-11-01T07:20:22.6719494Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_ZZZ | <@&1296268365593186426>]
+2026-11-01T07:20:22.6720449Z       beta[✓ DISCORD_WEBHOOK_BETA_ZZZ | no ping]
+2026-11-01T07:20:22.6722629Z       X=ZZZ_EN Reddit=ZZZ_Official code_sources=hoyolab:8,seria:nap,humbao:ZZZ,ogc:zenless,ennead:zenless,fandom:zenless-zone-zero/Redemption_Code,codehub:zenless-zone-zero,reddit:ZZZ_Official,x 4★/phase=2
+2026-11-01T07:20:22.6724956Z       beta=zzz changelog=https://zzz.gachabase.net/changelog/beta?lang=en
+2026-11-01T07:20:22.6725880Z   ✓ wuwa      Wuthering Waves       
+2026-11-01T07:20:22.6727064Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA]
+2026-11-01T07:20:22.6728244Z       codes[✓ DISCORD_WEBHOOK_CODES_WUWA | no ping]
+2026-11-01T07:20:22.6729008Z       news[✓ DISCORD_WEBHOOK_NEWS_WUWA | no ping]
+2026-11-01T07:20:22.6729975Z       maintenance[✓ DISCORD_WEBHOOK_MAINTENANCE_WUWA | <@&1296268365593186426>]
+2026-11-01T07:20:22.6730892Z       beta[✓ DISCORD_WEBHOOK_BETA_WUWA | no ping]
+2026-11-01T07:20:22.6732894Z       X=Wuthering_Waves Reddit=WutheringWaves code_sources=ogc:wuwa,wuthering.gg,fandom:wutheringwaves/Redemption_Code,codehub:wuthering-waves,reddit:WutheringWaves,x 4★/phase=3
+2026-11-01T07:20:22.6734470Z       beta=ww changelog=—
+2026-11-01T07:20:22.6735038Z   ✓ hna       Honkai: Nexus Anima   
+2026-11-01T07:20:22.6736207Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA]
+2026-11-01T07:20:22.6737700Z       codes[✓ DISCORD_WEBHOOK_CODES_HNA | no ping]
+2026-11-01T07:20:22.6738515Z       news[✓ DISCORD_WEBHOOK_NEWS_HNA | no ping]
+2026-11-01T07:20:22.6739266Z       maintenance[— none | <@&1296268365593186426>]
+2026-11-01T07:20:22.6740014Z       beta[✓ DISCORD_WEBHOOK_NEWS_HNA | no ping]
+2026-11-01T07:20:22.6741908Z       X=HonkaiNA Reddit=HonkaiNexusAnima code_sources=hoyolab:9,fandom:honkai-nexus-anima/Redemption_Code,reddit:HonkaiNexusAnima,x 4★/phase=count not set (set four_star_count at launch)
+2026-11-01T07:20:22.6743844Z   ✓ ananta    ANANTA                
+2026-11-01T07:20:22.6745045Z       schedule[✓ DISCORD_WEBHOOK_SCHEDULE | <@&1296268365593186426> | 🪞 also DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA]
+2026-11-01T07:20:22.6746283Z       codes[✓ DISCORD_WEBHOOK_CODES_ANANTA | no ping]
+2026-11-01T07:20:22.6747003Z       news[— none | no ping]
+2026-11-01T07:20:22.6747685Z       maintenance[— none | <@&1296268365593186426>]
+2026-11-01T07:20:22.6748381Z       beta[— none | no ping]
+2026-11-01T07:20:22.6749933Z       X=Ananta_EN Reddit=AnantaOfficial code_sources=fandom:ananta/Redemption_Code,reddit:AnantaOfficial,x 4★/phase=count not set (set four_star_count at launch)
+2026-11-01T07:20:22.6828063Z config OK
+2026-11-01T07:20:22.7239842Z ##[group]Run python -m gamexpress run
+2026-11-01T07:20:22.7240229Z [36;1mpython -m gamexpress run[0m
+2026-11-01T07:20:22.7260783Z shell: /usr/bin/bash -e {0}
+2026-11-01T07:20:22.7261069Z env:
+2026-11-01T07:20:22.7261303Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:20:22.7262271Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:20:22.7262628Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:20:22.7263339Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:20:22.7264082Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:20:22.7264766Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:20:22.7265446Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:20:22.7266168Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:20:22.7266854Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:20:22.7267154Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:20:22.7267532Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:20:22.7286884Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:20:22.7292263Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:20:22.7293632Z   TEST: webhooks
+2026-11-01T07:20:22.7293879Z   NO_PING: 0
+2026-11-01T07:20:22.7294108Z   PING_FLAG: 
+2026-11-01T07:20:22.7294331Z   GAME_ARG: 
+2026-11-01T07:20:22.7294636Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:22.7295099Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-11-01T07:20:22.7295562Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:22.7295974Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:22.7296388Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:20:22.7296802Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-11-01T07:20:22.7297241Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-11-01T07:20:22.7297653Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-11-01T07:20:22.7297981Z   ONLY: 
+2026-11-01T07:20:22.7298190Z   GAME: 
+2026-11-01T07:20:22.7298410Z   REPOST: 
+2026-11-01T07:20:22.7298631Z ##[endgroup]
+2026-11-01T07:20:25.3694583Z 07:20:25 INFO    gamexpress.x: [x:HonkaiNA] https://xitter.cf: HTTP 200 but 0 entries (bot check / stale) — next
+2026-11-01T07:20:25.3713374Z 07:20:25 INFO    gamexpress.x: [x:HonkaiNA] https://nitter.cf: HTTP 200 but 0 entries (bot check / stale) — next
+2026-11-01T07:20:25.5934631Z 07:20:25 INFO    gamexpress: [zzz] 0 official item(s) matched in the last 72h (live 3.3, pre-install —)
+2026-11-01T07:20:25.9631335Z 07:20:25 INFO    gamexpress: [ananta] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-11-01T07:20:26.4149970Z 07:20:26 INFO    gamexpress: [wuwa] 3 official item(s) matched in the last 72h (live 3.7, pre-install —)
+2026-11-01T07:20:26.6998761Z 07:20:26 INFO    gamexpress: [starrail] 5 official item(s) matched in the last 72h (live 4.6, pre-install —)
+2026-11-01T07:20:26.7688644Z 07:20:26 INFO    gamexpress: [genshin] 3 official item(s) matched in the last 72h (live 7.1, pre-install —)
+2026-11-01T07:20:27.0097365Z 07:20:27 INFO    gamexpress: [hna] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+2026-11-01T07:20:33.8030164Z 07:20:33 INFO    gamexpress.http: [beta-changelog] https://zzz.gachabase.net/changelog/beta -> HTTP 403
+2026-11-01T07:20:33.8261410Z 07:20:33 INFO    gamexpress.http: [beta-changelog] https://zzz.gachabase.net/changelog/beta -> HTTP 403
+2026-11-01T07:20:33.8508788Z 07:20:33 INFO    gamexpress.http: [beta-changelog] https://zzz.gachabase.net/ -> HTTP 403
+2026-11-01T07:20:33.8768084Z 07:20:33 INFO    gamexpress.http: [beta-changelog] https://zzz.gachabase.net/changelog/beta/__data.json -> HTTP 403
+2026-11-01T07:20:33.8770487Z 07:20:33 INFO    gamexpress.beta: ZZZ beta: changelog unavailable (https://zzz.gachabase.net/changelog/beta?lang=en); using static manifest fallback
+2026-11-01T07:22:22.0346744Z 07:22:22 INFO    gamexpress.beta: [zzz] beta: delivered 20 page(s) for v3.4.2 Rev. 20049556
+2026-11-01T07:22:22.0516601Z 07:22:22 INFO    gamexpress: sources: bannerfeed: 1 ok / 0 fail; beta-changelog: 0 ok / 4 fail (HTTP 403); beta-data: 27 ok / 0 fail; beta-manifest: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; hoyolab: 14 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 2 ok / 0 fail; nitter: 25 ok / 0 fail; reddit: 6 ok / 0 fail
+2026-11-01T07:22:22.0544226Z 07:22:22 INFO    gamexpress: 
+2026-11-01T07:22:22.0545059Z ### Game-Express 03a4cfc — alpha (primary)
+2026-11-01T07:22:22.0545981Z - 📰 GI news: discovered=4, eligible=4, attempted=0, delivered=0, deferred/error=0
+2026-11-01T07:22:22.0547091Z - 📰 HSR news: discovered=14, eligible=14, attempted=0, delivered=0, deferred/error=0
+2026-11-01T07:22:22.0548220Z - 📰 ZZZ news: discovered=3, eligible=3, attempted=0, delivered=0, deferred/error=0
+2026-11-01T07:22:22.0549224Z - 📰 WW news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+2026-11-01T07:22:22.0550280Z - 📰 HNA news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+2026-11-01T07:22:22.0551409Z - ZZZ 3.4.2+20049556: mixed-data caveat on the card (28 renamed/new block(s), 3 measured value change(s))
+2026-11-01T07:22:22.0553418Z - 🧪 ZZZ 3.4.2 beta (v3.4.2 Rev. 20049556): 20 page(s) — Kafka, Robin, Vivian, Sunbringer, 5 equipment entr(ies); changelog unavailable; new and listing-changed items only
+2026-11-01T07:22:22.0554819Z - repository commit/push: not observed here; see the subsequent workflow persistence step.
+2026-11-01T07:22:22.0558058Z - sources: bannerfeed: 1 ok / 0 fail; beta-changelog: 0 ok / 4 fail (HTTP 403); beta-data: 27 ok / 0 fail; beta-manifest: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; hoyolab: 14 ok / 0 fail; hoyoplay: 1 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; news-media: 2 ok / 0 fail; nitter: 25 ok / 0 fail; reddit: 6 ok / 0 fail
+2026-11-01T07:22:22.0561041Z - ⏱️ run took 118.8s
+2026-11-01T07:22:22.1040820Z ##[group]Run # Only tracked run output is staged here: state and the discovered announcement id. The
+2026-11-01T07:22:22.1041628Z [36;1m# Only tracked run output is staged here: state and the discovered announcement id. The[0m
+2026-11-01T07:22:22.1042630Z [36;1m# run summary stays in the job summary and its warnings/errors stay in the annotations;[0m
+2026-11-01T07:22:22.1043219Z [36;1m# no operator notes folder is read or written by this workflow.[0m
+2026-11-01T07:22:22.1043669Z [36;1mgit config user.name "github-actions[bot]"[0m
+2026-11-01T07:22:22.1044156Z [36;1mgit config user.email "41898282+github-actions[bot]@users.noreply.github.com"[0m
+2026-11-01T07:22:22.1044672Z [36;1mgit add state/state.json 2>/dev/null || true[0m
+2026-11-01T07:22:22.1045207Z [36;1m# config/program_announcements.json travels WITH the commit, not with the state: a nitter[0m
+2026-11-01T07:22:22.1045952Z [36;1m# timeline only reaches back a few days, but the card is re-rendered for the whole version[0m
+2026-11-01T07:22:22.1046618Z [36;1m# and every mode=test run starts from an empty state. Committing the discovered tweet id is[0m
+2026-11-01T07:22:22.1047279Z [36;1m# what lets a later test run resolve the same announcement by id through fxtwitter and show[0m
+2026-11-01T07:22:22.1047938Z [36;1m# the real link and the real key art. Same pattern as posted_tweets.json in the X monitor.[0m
+2026-11-01T07:22:22.1048533Z [36;1mgit add -f config/program_announcements.json 2>/dev/null || true[0m
+2026-11-01T07:22:22.1048972Z [36;1mif git diff --cached --quiet; then[0m
+2026-11-01T07:22:22.1049349Z [36;1m  echo "state unchanged — nothing to commit"[0m
+2026-11-01T07:22:22.1049743Z [36;1m  echo "result=unchanged" >> "$GITHUB_OUTPUT"[0m
+2026-11-01T07:22:22.1050073Z [36;1m  exit 0[0m
+2026-11-01T07:22:22.1050301Z [36;1mfi[0m
+2026-11-01T07:22:22.1050758Z [36;1mgit commit -m "auto: update state [skip ci]"[0m
+2026-11-01T07:22:22.1051098Z [36;1mfor i in 1 2 3 4 5; do[0m
+2026-11-01T07:22:22.1051638Z [36;1m  if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"; then[0m
+2026-11-01T07:22:22.1052499Z [36;1m    echo "result=pushed" >> "$GITHUB_OUTPUT"[0m
+2026-11-01T07:22:22.1052821Z [36;1m    exit 0[0m
+2026-11-01T07:22:22.1053056Z [36;1m  fi[0m
+2026-11-01T07:22:22.1053291Z [36;1m  sleep $((i * 3))[0m
+2026-11-01T07:22:22.1053553Z [36;1mdone[0m
+2026-11-01T07:22:22.1053919Z [36;1mecho "::error::could not push state/state.json after 5 attempts"[0m
+2026-11-01T07:22:22.1054321Z [36;1mexit 1[0m
+2026-11-01T07:22:22.1074535Z shell: /usr/bin/bash -e {0}
+2026-11-01T07:22:22.1074826Z env:
+2026-11-01T07:22:22.1075056Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:22:22.1075785Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:22:22.1076086Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:22:22.1076800Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:22:22.1077575Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:22:22.1078272Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:22:22.1078978Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:22:22.1079690Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:22:22.1080391Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:22:22.1080698Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:22:22.1081087Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:22:22.1100244Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:22:22.1105392Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:22:22.1106728Z   TEST: webhooks
+2026-11-01T07:22:22.1106967Z   NO_PING: 0
+2026-11-01T07:22:22.1107207Z   PING_FLAG: 
+2026-11-01T07:22:22.1107436Z   GAME_ARG: 
+2026-11-01T07:22:22.1107732Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:22.1108203Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-11-01T07:22:22.1108670Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:22.1109083Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:22.1109494Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:22.1109919Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-11-01T07:22:22.1110358Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-11-01T07:22:22.1110768Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-11-01T07:22:22.1111105Z ##[endgroup]
+2026-11-01T07:22:22.2016163Z [main 84b3f2a] auto: update state [skip ci]
+2026-11-01T07:22:22.2016825Z  1 file changed, 1997 insertions(+), 182 deletions(-)
+2026-11-01T07:22:22.4914133Z From https://github.com/uesu/8mqzv4k2n7c
+2026-11-01T07:22:22.4914559Z  * branch            main       -> FETCH_HEAD
+2026-11-01T07:22:22.5009978Z Current branch main is up to date.
+2026-11-01T07:22:23.7607040Z To https://github.com/uesu/8mqzv4k2n7c
+2026-11-01T07:22:23.7607593Z    03a4cfc..84b3f2a  HEAD -> main
+2026-11-01T07:22:23.7700430Z ##[group]Run case "${PERSIST_OUTCOME}:${PERSIST_RESULT}" in
+2026-11-01T07:22:23.7700916Z [36;1mcase "${PERSIST_OUTCOME}:${PERSIST_RESULT}" in[0m
+2026-11-01T07:22:23.7701598Z [36;1m  success:unchanged) result="no staged changes observed — state staging errors may have been hidden by the persistence step" ;;[0m
+2026-11-01T07:22:23.7702657Z [36;1m  success:pushed) result="committed and pushed" ;;[0m
+2026-11-01T07:22:23.7703143Z [36;1m  failure:*) result="failed — inspect the state persistence step" ;;[0m
+2026-11-01T07:22:23.7703713Z [36;1m  cancelled:*) result="cancelled — repository persistence not confirmed" ;;[0m
+2026-11-01T07:22:23.7704346Z [36;1m  *) result="not confirmed — persistence step did not complete with a recognized result" ;;[0m
+2026-11-01T07:22:23.7704848Z [36;1mesac[0m
+2026-11-01T07:22:23.7705267Z [36;1mprintf '\n### Repository persistence\n- %s\n' "$result" >> "$GITHUB_STEP_SUMMARY" ||[0m
+2026-11-01T07:22:23.7705892Z [36;1m  printf 'Could not append repository persistence summary\n' >&2[0m
+2026-11-01T07:22:23.7726411Z shell: /usr/bin/bash -e {0}
+2026-11-01T07:22:23.7726710Z env:
+2026-11-01T07:22:23.7726945Z   PYTHONUNBUFFERED: 1
+2026-11-01T07:22:23.7727661Z   DISCORD_WEBHOOK_SCHEDULE: ***
+2026-11-01T07:22:23.7727963Z   DISCORD_WEBHOOK_CODES: 
+2026-11-01T07:22:23.7728657Z   DISCORD_WEBHOOK_CODES_GENSHIN: ***
+2026-11-01T07:22:23.7729398Z   DISCORD_WEBHOOK_CODES_STARRAIL: ***
+2026-11-01T07:22:23.7730089Z   DISCORD_WEBHOOK_CODES_HNA: ***
+2026-11-01T07:22:23.7730778Z   DISCORD_WEBHOOK_CODES_ZZZ: ***
+2026-11-01T07:22:23.7731499Z   DISCORD_WEBHOOK_CODES_WUWA: ***
+2026-11-01T07:22:23.7732506Z   DISCORD_WEBHOOK_CODES_ANANTA: ***
+2026-11-01T07:22:23.7732817Z   DISCORD_WEBHOOK_URL: 
+2026-11-01T07:22:23.7733199Z   NITTER_RSS_TOKEN: ***
+2026-11-01T07:22:23.7752428Z   GE_SECRETS_JSON: {
+  "DISCORD_WEBHOOK_NEWS_HNA": "***",
+  "DISCORD_WEBHOOK_CODES_HNA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HNA": "***",
+  "DISCORD_WEBHOOK_NEWS_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_STARRAIL": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_GENSHIN": "***",
+  "DISCORD_WEBHOOK_BETA_ZZZ": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_STARRAIL": "***",
+  "DISCORD_WEBHOOK_CODES_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_WUWA": "***",
+  "DISCORD_WEBHOOK_NEWS_STARRAIL": "***",
+  "DISCORD_WEBHOOK_NEWS_GENSHIN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_HSR": "***",
+  "DISCORD_WEBHOOK_CODES_ZZZ": "***",
+  "github_token": "***",
+  "NITTER_RSS_TOKEN": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_WUWA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE": "***",
+  "DISCORD_WEBHOOK_NEWS_ZZZ": "***",
+  "DISCORD_WEBHOOK_BETA_WUWA": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_ZZZ": "***",
+  "DISCORD_WEBHOOK_CODES_STARRAIL": "***",
+  "BUMP_PAT": "***",
+  "DISCORD_WEBHOOK_MAINTENANCE_WUWA": "***",
+  "DISCORD_WEBHOOK_BETA_GENSHIN": "***",
+  "DISCORD_WEBHOOK_CODES_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ZZZ": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_ANANTA": "***",
+  "DISCORD_WEBHOOK_SCHEDULE_MIRROR_GI": "***",
+  "REDDIT_FEED_TOKEN": "***"
+}
+2026-11-01T07:22:23.7757242Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "BETA_ENABLED": "1",
+  "MAINTENANCE_ENABLED": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_ENABLED": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-01T07:22:23.7758479Z   TEST: webhooks
+2026-11-01T07:22:23.7758719Z   NO_PING: 0
+2026-11-01T07:22:23.7758950Z   PING_FLAG: 
+2026-11-01T07:22:23.7759384Z   GAME_ARG: 
+2026-11-01T07:22:23.7759686Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:23.7760149Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib/pkgconfig
+2026-11-01T07:22:23.7760607Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:23.7761019Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:23.7761423Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.9/x64
+2026-11-01T07:22:23.7762270Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.9/x64/lib
+2026-11-01T07:22:23.7762782Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-11-01T07:22:23.7763207Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-11-01T07:22:23.7763564Z   PERSIST_OUTCOME: success
+2026-11-01T07:22:23.7763835Z   PERSIST_RESULT: pushed
+2026-11-01T07:22:23.7764094Z ##[endgroup]
+2026-11-01T07:22:23.7992518Z Post job cleanup.
+2026-11-01T07:22:23.9207815Z UV_CACHE_DIR is already set to /home/runner/work/_temp/setup-uv-cache
+2026-11-01T07:22:23.9213533Z UV_PYTHON_INSTALL_DIR is already set to /home/runner/work/_temp/uv-python-dir
+2026-11-01T07:22:23.9215779Z Cache hit occurred on key setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.14.9-07fe9b28e361c8b81187762c3ff752692b62320d9fe7f80e129369648333ac9d, not saving cache.
+2026-11-01T07:22:24.0365512Z Post job cleanup.
+2026-11-01T07:22:24.1797471Z Post job cleanup.
+2026-11-01T07:22:24.2789348Z [command]/usr/bin/git version
+2026-11-01T07:22:24.2836969Z git version 2.56.0
+2026-11-01T07:22:24.2876054Z Temporarily overriding HOME='/home/runner/work/_temp/858b8443-2844-4f4f-b48d-ad125e7f8cc6' before making global git config changes
+2026-11-01T07:22:24.2877778Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-01T07:22:24.2883369Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-11-01T07:22:24.2924001Z Removing SSH command configuration
+2026-11-01T07:22:24.2930177Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-01T07:22:24.2977866Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-01T07:22:24.3322938Z Removing HTTP extra header
+2026-11-01T07:22:24.3330864Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-01T07:22:24.3395396Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-01T07:22:24.3721082Z Removing includeIf entries pointing to credentials config files
+2026-11-01T07:22:24.3731862Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-01T07:22:24.3773169Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-11-01T07:22:24.3774643Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-11-01T07:22:24.3784848Z includeif.gitdir:/github/workspace/.git.path
+2026-11-01T07:22:24.3785608Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-01T07:22:24.3787472Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-11-01T07:22:24.3855039Z /home/runner/work/_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:22:24.3862355Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-3420644a\-ad35\-4d56\-a6ef\-e34cd9c412fd\.config
+2026-11-01T07:22:24.3943931Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-11-01T07:22:24.3993306Z /home/runner/work/_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:22:24.4006786Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-3420644a\-ad35\-4d56\-a6ef\-e34cd9c412fd\.config
+2026-11-01T07:22:24.4067839Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-01T07:22:24.4110657Z /github/runner_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:22:24.4120015Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-3420644a\-ad35\-4d56\-a6ef\-e34cd9c412fd\.config
+2026-11-01T07:22:24.4174453Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-01T07:22:24.4213571Z /github/runner_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config
+2026-11-01T07:22:24.4224684Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-3420644a\-ad35\-4d56\-a6ef\-e34cd9c412fd\.config
+2026-11-01T07:22:24.4281467Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-01T07:22:24.4559442Z Removing credentials config '/home/runner/work/_temp/git-credentials-3420644a-ad35-4d56-a6ef-e34cd9c412fd.config'
+2026-11-01T07:22:24.4716762Z Cleaning up orphan processes
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [ZZZ - 3.4.2 Beta] Patch Notes: Rev. 3.4.1 → 3.4.2\nResource: [gachabase](https://zzz.gachabase.net/changelog/beta?lang=en) / [nanoka](https://zzz.nanoka.cc/)\n**Note:** this hotfix renames or adds 28 blocks — more churn than a hotfix normally carries — so part of it may come from another build. Point values are the part to trust; renames and new mechanics may still move."
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "## [Kafka](https://zzz.gachabase.net/agents/1651/kafka/beta?lang=en)\n**Attribute:** Electric | **Specialty:** Anomaly | **Rarity:** S-Rank | **Attack Type:** Slash\n**Faction:** Unknown Realm\n**Base HP:** 7788 | **Base ATK:** 872 | **Base DEF:** 612 | **CRIT Rate:** 5% | **CRIT DMG:** 50% | **Impact:** 86 | **Anomaly Mastery:** 112 | **Anomaly Proficiency:** 114 | **PEN Ratio:** 0%\n\n**Kafka** is an S-Rank Electric Anomaly Agent affiliated with **Unknown Realm** revolving around [Electric Arc], [Disorder], [Polarity Disorder] with CRIT scaling, Anomaly buildup, Daze / Stun.\n\n### Basic Attack\n* **Basic Attack** **[Basic Attack]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** Unleashes up to four attacks forward, dealing Electric DMG.\n    * **[NEW]** When the final hit of the 4th attack strikes an enemy suffering from an Attribute Anomaly, triggers [Electric Arc] once, dealing DMG equal to **3%** of the original [Disorder] effect, plus additional DMG equal to [TBD]% of Kafka's Anomaly Proficiency. [Electric Arc] bounces to nearby enemies up to 3 times, with each bounce dealing **50%** less DMG than the previous one.\n    * **[NEW]** Character is invulnerable while performing the 4th attack.\n        * ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build.\n    * *(Lv. 12)* 1st-Hit DMG Multiplier: **140.5%** | 2nd-Hit DMG Multiplier: **147.4%** | 3rd-Hit DMG Multiplier: **334.4%**\n    * 4th-Hit DMG Multiplier: **925.8%** | 1st-Hit Daze Multiplier: **58.4%** | 2nd-Hit Daze Multiplier: **65.7%**\n    * 3rd-Hit Daze Multiplier: **151.7%** | 4th-Hit Daze Multiplier: **427.4%**\n\n* **Basic Attack** **[Hold]:**\n    * **[NEW]** With at least 80 Personal Resources, hold to consume 80 </Term> and activate:\n    * **[NEW]** Unleash an attack on enemies in front, dealing massive Electric DMG.\n    * **[NEW]** When the skill's final hit strikes an enemy suffering from Electric Attribute Anomaly, it does not trigger an Attribute Anomaly, but instead refreshes the duration of the target's Electric Attribute Anomaly.\n    * **[NEW]** When the skill's final hit strikes an enemy suffering from an Attribute Anomaly, it triggers a special [Disorder] effect, [Polarity Disorder], dealing DMG equal to **90%** of the original [Disorder] effect. [Polarity Disorder] does not remove the target's Attribute Anomaly.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1972.8%** | Daze Multiplier: **418.4%**\n\n### Dodge\n* **Dodge** **[Dodge]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** A quick dash dodge.\n    * **[NEW]** Character is invulnerable while using this skill.\n\n* **Dash Attack** **[Dash Attack]:**\n    * **[NEW]** Press during a dodge to activate:\n    * **[NEW]** Perform an attack at enemies in front, dealing Electric DMG.\n    * *(Lv. 12)* DMG Multiplier: **201.6%** | Daze Multiplier: **59.3%**\n\n* **Dodge Counter** **[Dodge Counter]:**\n    * **[NEW]** Press during a [Perfect Dodge] to activate:\n    * **[NEW]** Perform a quick slash forward, dealing Electric DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **711.8%** | Daze Multiplier: **361.2%**"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 1/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Assist\n* **Quick Assist** **[Assist]:**\n    * **[NEW]** When the active character is launched, press to activate:\n    * **[NEW]** Perform a swift slash forward, dealing Electric DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **166.5%** | Daze Multiplier: **98.1%**\n\n* **Defensive Assist** **[Defensive Assist]:**\n    * **[NEW]** When the on-field character is about to be attacked, press to activate:\n    * **[NEW]** Parries the enemy's attack, dealing massive Daze.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* Light Defensive Daze Multiplier: **371.9%** | Heavy Defensive Daze Multiplier: **443.7%** | Chain Defensive Daze Multiplier: **179.7%**\n\n* **Assist Follow-Up** **[Assault]:**\n    * **[NEW]** Press after a [Defensive Assist] to activate:\n    * **[NEW]** Unleash a swift slash forward, dealing Electric DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **873.2%** | Daze Multiplier: **445.1%**\n\n### Special Attack & EX Special Attack\n* **Special Attack** **[Upward Slash]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** Slashes enemies in front, dealing Electric DMG.\n    * *(Lv. 12)* DMG Multiplier: **65.7%** | Daze Multiplier: **38.9%**\n\n* **Special Attack** **[Enter Domain]:**\n    * **[NEW]** With enough Energy, press to activate:\n    * **[NEW]** Unleashes a forward slash, dealing Electric DMG;\n    * **[NEW]** Enters [Kafka's Domain] and activates Vital View. While in [Kafka's Domain], [EX Special Attack: Slash] or [EX Special Attack: Shot] can be activated consecutively;\n    * **[NEW]** While in [Kafka's Domain], press or wait for a period of time to exit [Kafka's Domain]. If [Kafka's Domain] is exited this way and no EX Special Attack was activated during this round, 20 Energy is consumed;\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **206.1%** | Daze Multiplier: **85.1%**\n\n* **EX Special Attack** **[Slash]:**\n    * **[NEW]** In [Kafka's Domain], press to activate:\n    * **[NEW]** Consume Energy to unleash a forward slash, dealing Electric DMG.\n    * **[NEW]** In each [Kafka's Domain], [EX Special Attack: Slash] or [EX Special Attack: Shot] can be activated up to 3 times in a row. Hold to activate the final [EX Special Attack: Slash] early.\n    * **[NEW]** When the skill's final hit strikes an enemy suffering from an Attribute Anomaly, it triggers [Electric Arc] once, dealing DMG equal to **7%** of the original [Disorder] effect, plus additional DMG equal to [TBD]% of Kafka's Anomaly Proficiency. [Electric Arc] bounces to nearby enemies up to 3 times, and each bounce deals **50%** less DMG than the previous one.\n    * **[NEW]** When the skill's final hit strikes an enemy suffering from an Electric Attribute Anomaly, it does not trigger an Attribute Anomaly, and the DMG dealt by [Electric Arc] ignores **20%** of the target's Electric RES.\n    * **[NEW]** Character is invulnerable while using this skill.\n        * ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build.\n    * *(Lv. 12)* DMG Multiplier: **786.9%** | Daze Multiplier: **270.1%** | Final Round DMG Multiplier: **786.9%**\n    * Final Round Daze Multiplier: **270.1%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 2/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **EX Special Attack** **[Shot]:**\n    * **[NEW]** While in [Kafka's Domain], press to activate:\n    * **[NEW]** Consume Energy and fire shots at surrounding enemies, dealing Electric DMG.\n    * **[NEW]** Each [Kafka's Domain] allows up to 3 consecutive rounds of [EX Special Attack: Slash] or [EX Special Attack: Shot]. Hold to trigger the final round of [EX Special Attack: Shot] early.\n    * **[NEW]** When this skill hits an enemy not affected by an Electric Attribute Anomaly, Anomaly Buildup Rate increases by **50%**.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **456.8%** | Daze Multiplier: **281.7%** | Final Round DMG Multiplier: **456.8%**\n    * Final Round Daze Multiplier: **281.7%**\n\n### Chain Attack & Ultimate\n* **Chain Attack** **[QTE]:**\n    * **[NEW]** When a [Chain Attack] is triggered, select the character to activate:\n    * **[NEW]** Unleashes consecutive attacks forward, dealing massive Electric DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **2139.8%** | Daze Multiplier: **493.3%**\n\n* **Ultimate** **[Ultimate]:**\n    * **[NEW]** When Decibel Rating is at [Maximum], press to activate:\n    * **[NEW]** Unleash a rapid flurry of slashes, dealing massive Electric DMG;\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **4025.6%** | Daze Multiplier: **248.7%**\n\n### Core Passive & Additional Ability\n* **Core Passive** **[Kafka]:**\n    * **[NEW]** Kafka's Anomaly Proficiency increases by 120. When using an EX Special Attack, she recovers 10 [Personal Resources].\n    * **[NEW]** When an enemy under an Attribute Anomaly attacks, it triggers 1 [Electric Arc], dealing DMG equal to **3%** of the original [Disorder] effect's DMG, plus additional DMG equal to **500%** of Kafka's Anomaly Proficiency. [Electric Arc] bounces to nearby enemies up to 3 times, with each bounce dealing **50%** less DMG than the previous one. Can trigger on each enemy once every **10s**. Upon triggering, Kafka recovers 3 [Personal Resources]. This effect can trigger once every **10s**. All DMG dealt by Kafka's [Electric Arc] is considered [Disorder] DMG.\n    * **[NEW]** Disorder DMG dealt by the whole squad is increased by **35%**.\n\n* **Additional Ability** **[Kafka]:**\n    * **[NEW]** Triggers when another character in your squad is an [Assist] Character or [Anomaly] Character:\n    * **[NEW]** When Kafka applies [Shock] to an enemy, its duration is extended by **3s**.\n    * **[NEW]** Upon entering combat or when other squad members apply an Attribute Anomaly to an enemy, if Kafka's initial Energy Regen exceeds **120%**, every **12%** of Energy Regen above that threshold increases her Anomaly Mastery by 7, up to a maximum increase of 140, lasting **30s**. Repeated triggers reset the duration.\n\n### Mindscape Cinema\n* **Mindscape Cinema 1:**\n    * **[NEW]** [Disorder] DMG dealt by all characters in the squad can trigger a critical hit, with a Base CRIT Rate of **100%** and CRIT DMG of **25%**.\n    * **[NEW]** DMG dealt by Kafka's [Electric Arc] ignores **12%** of the target's Electric RES.\n\n* **Mindscape Cinema 2:**\n    * **[NEW]** Kafka's Anomaly Buildup Rate increases by **15%**.\n    * **[NEW]** While in [Kafka's Domain], Kafka's DMG increases by **25%**. After exiting [Kafka's Domain], this effect lasts for another **8s**.\n\n* **Mindscape Cinema 3:**\n    * **[NEW]** Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2\n\n* **Mindscape Cinema 4:**\n    * **[NEW]** When any squad member triggers [Disorder], Kafka recovers 150 Decibels. This effect can trigger once every **10s**.\n\n* **Mindscape Cinema 5:**\n    * **[NEW]** Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 3/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **Mindscape Cinema 6:**\n    * **[NEW]** During a single [Kafka's Domain], [EX Special Attack] can be activated consecutively up to 6 times. Each [EX Special Attack] activation causes subsequent [EX Special Attack: Slash] and the [Electric Arc] it triggers during the same [Kafka's Domain] to ignore **15%** of the target's DEF, up to a maximum of **60%**. Resets upon exiting [Kafka's Domain].\n    * **[NEW]** After using [Basic Attack: Hold], Kafka's ATK increases by 200 for **30s**. Repeated triggers reset the duration.\n    * **[NEW]** After using [Ultimate], the Energy Cost of the next 6 [EX Special Attack]s is reduced to **50%** of the original. Repeated triggers reset the number of uses."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 4/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/tvlHFt5nNs82KwhgM2a2cRMUAoMToO8BGXMW3x7CcKw/https/static.nanoka.cc/assets/zzz/IconRole1661.webp",
+                "width": 1552,
+                "height": 2292,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "## [Robin](https://zzz.gachabase.net/agents/1661/robin/beta?lang=en)\n**Attribute:** Ether | **Specialty:** Defense | **Rarity:** S-Rank | **Attack Type:** Strike\n**Faction:** Unknown Realm\n**Base HP:** 8754 | **Base ATK:** 750 | **Base DEF:** 706 | **CRIT Rate:** 5% | **CRIT DMG:** 50% | **Impact:** 90 | **Anomaly Mastery:** 96 | **Anomaly Proficiency:** 95 | **PEN Ratio:** 0%\n-# [Revision diff](https://zzz.gachabase.net/diff/agents/1661/robin?prev=beta_3.4.1_19997538&cur=beta_3.4.2_20049556&lang=en) against 3.4.1+19997538 • 1 buff, 2 nerfs, 5 new mechanics, 1 rework, 1 adjustment, 3 changes • 1 unchanged block(s) omitted\n\n**Robin** is rebalanced in this revision — the only block that moved is Basic Attack, and Dodge is new here. The other 1 block is untouched and reads exactly as it does on 3.4.1+19997538.\n\n### Basic Attack Changes\n* **[Basic Attack]:**\n    * **[BUFF]** 1st-Hit Daze Multiplier increased from ~~**22.5%**~~ → **36%**.\n    * **[NERF]** 2nd-Hit Daze Multiplier reduced from ~~**52.1%**~~ → **51.6%**.\n    * **[NERF]** 3rd-Hit Daze Multiplier reduced from ~~**153.1%**~~ → **140.1%**.\n    * **[NEW]** Press to activate:\n    * **[NEW]** Unleashes up to 3 attacks forward, dealing Ether DMG;\n\n### Dodge Changes\n* **[Dodge]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** A quick dash dodge.\n    * **[NEW]** Character is invulnerable while using this skill.\n\n* **[Dash Attack]:**\n    * **[NEW]** Press during a dodge to activate:\n    * **[NEW]** Perform an attack forward, dealing Ether DMG.\n    * *(Lv. 12)* DMG Multiplier: **252.6%** | Daze Multiplier: **74.9%**\n\n* **[Dodge Counter]:**\n    * **[NEW]** Press during a [Perfect Dodge] to activate:\n    * **[NEW]** Swing the staff to attack enemies in front, dealing Ether DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **663.4%** | Daze Multiplier: **338.9%**\n\n### Assist Changes\n* **[Entry Skill]:**\n    * **[NEW]** When at least 140 [Entry Points] are available, switching this character on-field or holding consumes 100 [Entry Points] to activate:\n    * **[NEW]** Unleashes an Energy blast at enemies in front, dealing massive Ether DMG;\n    * **[NEW]** This skill counts as a [Quick Assist] and exits the [Off-Field Guard] state upon activation;\n    * **[NEW]** Provides all squad members with a [Guardian Shield] equal to **4%** of this character's initial Max HP, lasting **20s**;\n    * **[NEW]** Triggers a Quick Assist upon activation. Switching characters within **1.5s** causes Robin to automatically unleash [Special Attack: Off-Field].\n    * *(Lv. 12)* DMG Multiplier: **2969%** | Daze Multiplier: **264%**\n\n* **[Quick Assist]:**\n    * **[NEW]** When the active character is launched, press to activate:\n    * **[NEW]** Swing a staff to attack enemies in front, dealing Ether DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **74.8%** | Daze Multiplier: **44.8%**\n\n* **[Defensive Assist]:**\n    * **[NEW]** When the on-field character is about to be attacked, press to activate:\n    * **[NEW]** Parries the enemy's attack, dealing massive Daze.\n    * **[NEW]** This skill excels at parrying enemy attacks and reduces the consumption of [Assist Points] when the character is under intense attacks.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* Light Defensive Daze Multiplier: **407.7%** | Heavy Defensive Daze Multiplier: **514.4%** | Chain Defensive Daze Multiplier: **250.4%**"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 5/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **[Assist Follow-Up]:**\n    * **[NEW]** Press after a [Defensive Assist] to activate:\n    * **[NEW]** Swings her staff to attack enemies in front, dealing Ether DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * **[NEW]** Triggers a Quick Assist upon activation. Switching characters within **1.5s** causes Robin to automatically unleash [Special Attack: Off-Field].\n    * *(Lv. 12)* DMG Multiplier: **919.1%** | Daze Multiplier: **470.6%**\n\n* **Counter Assist** **[Grapple]:**\n    * **[NEW]** When you or the on-field character is about to be hit by certain enemy Control Skills, press to activate:\n    * **[NEW]** Grapple with the enemy. On a successful grapple, neutralize the enemy's Control Skill, deal Ether DMG, and gain 1 [Buff Enhance Point].\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **2423.9%** | Daze Multiplier: **1087.4%**\n\n* **Assist Follow-Up** **[Grapple Synergy Strike]:**\n    * **[NEW]** When other squad members activate a [Counter Assist] and trigger a [Shutdown], automatically activates:\n    * **[NEW]** Fires a powerful laser forward, dealing massive Ether DMG;\n    * **[NEW]** Character is invulnerable while using this skill;\n    * **[NEW]** [Assist Follow-Up: Grapple Synergy Strike] is considered an Aftershock.\n    * *(Lv. 12)* DMG Multiplier: **159.8%** | Daze Multiplier: **62.6%**\n\n### Special Attack & EX Special Attack Changes\n* **Special Attack** **[Off-Field]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** Leap high into the air and unleash an Energy Blast around yourself, dealing massive Ether DMG.\n    * **[NEW]** During skill activation, Anti-Interrupt level increases, and DMG taken is reduced by **40%**.\n    * **[NEW]** After activation, triggers a Quick Assist. After switching out, Robin enters the [Off-Field Guard] state for **80s**. Repeated triggers refresh the duration. At the same time, grants all squad members a [Guardian Shield] equal to **2%** of Robin's initial Max HP, lasting **15s**.\n    * **[NEW]** While Robin is in the [Off-Field Guard] state, she cannot be manually switched in except via [Chain Attack], [Entry Skill], or [Counter Assist]. Robin exits the [Off-Field Guard] state upon being switched in.\n    * **[NEW]** During the [Off-Field Guard] state, all squad members gain a DEF boost. When Robin's initial Max HP exceeds 16,000, every 1,000 additional HP grants [TBD] DEF, up to a maximum of [TBD] DEF. This effect persists for **15s** after Robin's [Off-Field Guard] state ends.\n        * ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build.\n    * *(Lv. 12)* DMG Multiplier: **338.6%** | Daze Multiplier: **200.1%**\n\n* **Special Attack** **[Aftershock]:**\n    * **[NEW]** While Robin is in the [Off-Field Guard] state, she automatically activates this skill when the squad's active character hits an enemy with any attack:\n    * **[NEW]** Swings her staff to attack enemies in front, dealing Ether DMG;\n    * **[NEW]** Character is invulnerable while using this skill;\n    * **[NEW]** Upon activation, gains 20 [Entry Points] and grants all squad members a [Guardian Shield] equal to **4%** of her initial Max HP for **15s**;\n    * **[NEW]** [Special Attack: Aftershock] counts as an Aftershock and can be triggered at most once every **10s**.\n    * *(Lv. 12)* DMG Multiplier: **280.8%** | Daze Multiplier: **82.5%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 6/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **EX Special Attack** **[Enhanced Aftershock]:**\n    * **[NEW]** When activating [Special Attack: Aftershock], if Energy is at least 40, it is upgraded to [EX Special Attack: Enhanced Aftershock]:\n    * **[NEW]** Continuously consumes a total of 40 Energy to fire a powerful laser forward, dealing massive Ether DMG.\n    * **[NEW]** Robin increases the heavy attack's DMG by an additional amount equal to [TBD]% of her Max HP.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * **[NEW]** Upon activation, gains 20 [Entry Points] and grants all squad members a [Guardian Shield] equal to **8%** of her initial Max HP, lasting **15s**.\n    * **[NEW]** [EX Special Attack: Enhanced Aftershock] is considered an Aftershock.\n        * ⚠️ [TBD] marks an unresolved client formula placeholder in this beta build.\n    * *(Lv. 12)* DMG Multiplier: **1036.1%** | Daze Multiplier: **305.8%**\n\n### Chain Attack & Ultimate Changes\n* **[Chain Attack]:**\n    * **[NEW]** When a [Chain Attack] is triggered, select the character to activate:\n    * **[NEW]** Fires a powerful laser forward, dealing massive Ether DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * **[NEW]** Triggers Quick Assist upon activation. Switching characters within **1.5s** causes Robin to automatically unleash [Special Attack: Off-Field].\n    * *(Lv. 12)* DMG Multiplier: **1379%** | Daze Multiplier: **154.4%**\n\n* **[Ultimate]:**\n    * **[NEW]** When Decibel Rating is at [Maximum], press to activate:\n    * **[NEW]** Guides a powerful Energy blast with song, dealing massive Ether DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * **[NEW]** Upon activation, converts each Agent's [Guardian Shield] across the whole squad into their own HP at a ratio of **50%**.\n    * **[NEW]** After activation, triggers a Quick Assist. If you switch characters within **1.5s**, Robin automatically uses [Special Attack: Off-Field].\n    * *(Lv. 12)* DMG Multiplier: **4564.6%** | Daze Multiplier: **166.2%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 7/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Core Passive & Additional Ability Changes\n* **Core Passive:**\n    * **[NEW]** When Robin uses certain skills, she grants all squad members a [Guardian Shield] of varying strength based on her initial Max HP, lasting **15s**. When a character gains [Guardian Shield] again, the shield amount stacks and its duration is extended, up to a maximum of **60s**. The shield amount cannot exceed **12%** of Robin's initial Max HP;\n    * **[NEW]** Each time a squad member gains [Guardian Shield], their DMG dealt increases by **25%** for **20s**. Repeated triggers refresh the duration;\n    * **[NEW]** Using [Special Attack: Off-Field] triggers a Quick Assist. After being switched out, Robin enters the [Off-Field Guard] state for **80s**. While in [Off-Field Guard], Robin gains [Entry Points] when she unleashes Aftershocks, up to a maximum of 140 points;\n    * **[NEW]** When Robin has 120 or more [Entry Points], she can be actively switched in via her [Entry Skill]. Upon switching in, 120 [Entry Points] are automatically consumed to unleash her [Entry Skill], and Robin exits the [Off-Field Guard] state;\n    * **[NEW]** When using her [Entry Skill], Robin gains 1 [Buff Enhance Point], up to a maximum of 1;\n    * **[NEW]** Upon entering the [Off-Field Guard] state, if Robin has a [Buff Enhance Point], 1 [Buff Enhance Point] is consumed to further increase the DEF boost provided by [Off-Field Guard] and its cap by **25%**;\n    * **[NEW]** If a Quick Assist is triggered after using an Entry Skill, Ultimate, Chain Attack, or Assist Follow-Up, and characters are switched within **1.5s**, Robin automatically stays on the field to unleash [Special Attack: Off-Field], during which she is invulnerable;\n    * **[NEW]** Robin gains 1 [Buff Enhance Point] when performing a [Counter Assist] or [Chain Parry];\n    * **[NEW]** After a [Chain Parry], if Robin is not the active character, she automatically unleashes [Special Attack: Off-Field], during which she is invulnerable;\n    * **[NEW]** Each time any squad member triggers Maim, Robin recovers 15 Energy.\n\n* **Additional Ability** **[PlaceHolder]:**\n    * **[NEW]** When another character in your squad is an [Armorer] or [Stun] Character:\n    * **[NEW]** Upon entering the battlefield, gain 1 [Buff Enhance Point]. In Investigation Zone mode, this effect can trigger once every 180 seconds;\n    * **[NEW]** [Stun] Characters in the whole squad gain 800 ATK.\n\n### Mindscape Cinema Changes\n* **Mindscape Cinema 1:**\n    * **[ADJUSTMENT]** Renamed from ~~Mindscape Cinema 3~~ → **Mindscape Cinema 1**.\n    * **[REWORK]** *Old:* Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2 → *New:* When Robin uses her Entry Skill, she gains 2 stack(s) of [Defense Points], up to a max of 2 [Defense Points]. While she has [Defense Points], if the active Character has a [Guardian Shield] and takes DMG exceeding the current [Guardian Shield], 1 stack of [Defense Points] is consumed to block the excess DMG. Upon entering the battlefield, gain 2 stacks of [Defense Points]. In Investigation Zone mode, this effect can trigger once every **180s** at most. Each time an [Buff Enhance Point] is consumed, DMG dealt by all squad members ignores **20%** of enemy defense for **80s**. Repeated triggers refresh the duration.\n\n* **Mindscape Cinema 2:**\n    * **[NEW]** When Robin triggers an [Aftershock], DMG dealt by all squad members ignores **15%** of the enemy's RES for **20s**. Repeated triggers refresh the duration.\n\n* **Mindscape Cinema 4:**\n    * **[NEW]** Robin's DMG increases by **10%**. When activating [Special Attack: Aftershock], if no skill upgrade has been triggered, it is upgraded to [EX Special Attack: Enhanced Aftershock]. This effect can trigger once every **60s**."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 8/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **Mindscape Cinema 5:**\n    * **[NEW]** Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2\n\n* **Mindscape Cinema 6:**\n    * **[NEW]** [EX Special Attack: Enhanced Aftershock] is guaranteed to trigger a critical hit when it hits an enemy. The heavy attack DMG bonus that [EX Special Attack: Enhanced Aftershock] gains based on Max HP is increased to **200%** of its original value.\n\n### Assist Changes\n* **[Assist]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 318.5% · Daze Multiplier 94.4%~~\n\n### Special Attack & EX Special Attack Changes\n* **[Special Attack & EX Special Attack]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 1365.6% · Daze Multiplier 305.8%~~\n\n### Chain Attack & Ultimate Changes\n* **[Chain Attack & Ultimate]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 4564.6% · Daze Multiplier 166.2%~~"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 9/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/IconRole41.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/PVgDPL_vOHw47-IU4S8-DAUJ1dlNZoJjICaKJqt8Zf4/https/static.nanoka.cc/assets/zzz/IconRole41.webp",
+                "width": 1468,
+                "height": 2680,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "## [Vivian](https://zzz.gachabase.net/agents/1331/vivian/beta?lang=en)\n**Attribute:** Ether | **Specialty:** Anomaly | **Rarity:** S-Rank | **Attack Type:** Slash\n**Faction:** Mockingbird\n**Base HP:** 7673 | **Base ATK:** 880 | **Base DEF:** 606 | **CRIT Rate:** 5% | **CRIT DMG:** 50% | **Impact:** 86 | **Anomaly Mastery:** 144 | **Anomaly Proficiency:** 118 | **PEN Ratio:** 0%\n-# [Revision diff](https://zzz.gachabase.net/diff/agents/1331/vivian?prev=beta_3.4.1_19997538&cur=beta_3.4.2_20049556&lang=en) against 3.4.1+19997538 • 7 new mechanics, 4 reworks, 4 changes, 1 wording fix • 21 unchanged block(s) omitted\n\n**Vivian**'s kit is reworked in this revision — the mechanics are rebuilt and no value changes. The other 21 blocks are untouched and read exactly as they do on 3.4.1+19997538.\n\n### Basic Attack Changes\n* **Basic Attack** **[Noblewoman - Waltz]:**\n    * **[CHANGED]** ~~Press while in~~ → **While in** ~~the Noblewoman~~ → **[Noblewoman**~~state~~ → **] state**, **press or hold** to activate:\n    * **[CHANGED]** ~~Dash forward~~ → **Performs a forward** ~~with an~~ → **rush** attack that deals Ether DMG and restores 1 ~~Flight Feather~~ → **[Flight Feather**~~upon hitting~~ → **] upon hitting** ~~an enemy~~ → **a target**.\n    * **[REWORK]** *Old:* Character is invulnerable while using this skill. → *New:* If a Perfect Dodge is triggered during the rush, restores 1 additional [Flight Feather].\n    * **[REWORK]** *Old:* If a Perfect Dodge is triggered during the dash, gain 1 additional Flight Feather. → *New:* The first time [Noblewoman - Waltz] is activated while in [Noblewoman] state, gain one chance to return to [Noblewoman] state by repeatedly pressing or holding upon activating this skill.\n    * **[CHANGED]** If ~~Flight~~ → **you have [Flight** ~~Feathers are available after~~ → **Feather] after** ~~the skill, enter~~ → **using this skill, enter** ~~the Fluttering Frock~~ → **[Fluttering Frock**] state, which can be canceled by holding ~~when the skill~~ → **upon activating this skill**~~is used~~.\n    * **[NEW]** Noblewoman - Waltz has enhanced dodge capabilities.\n\n### Dodge Changes\n* **Dodge** **[Ladylike Taunt]:**\n    * **[NEW]** While in [Noblewoman] state, drag the joystick to activate:\n    * **[NEW]** Vivian enters the [Taunt] state. When she is about to be attacked, she automatically dodges and activates Noblewoman - Waltz, guaranteeing a Perfect Dodge before the dash ends.\n    * **[NEW]** If this state is maintained for a period of time without holding the joystick, Vivian will also automatically activate [Noblewoman - Waltz], guaranteeing a Perfect Dodge before the dash ends.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * **[NEW]** The [Taunt] state can remain on field."
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 10/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### Special Attack & EX Special Attack Changes\n* **EX Special Attack** **[Violet Requiem]:**\n    * **[NEW]** Consecutive Attack DMG Multiplier: **44%**.\n    * **[NEW]** Consecutive Attack Daze Multiplier: **33%**.\n    * **[NEW]** Additional Explosion DMG Multiplier: **440%**.\n    * **[TEXT FIX]** With enough ~~Energy, press~~ → **energy, press** **or hold** to activate:\n    * **[CHANGED]** ~~Unleash a powerful~~ → **Unleashes a powerful** ~~forward~~ → **attack forward**~~attack that deals massive Ether DMG and~~ → **, dealing massive Ether DMG and** ~~grants 3~~ → **restoring 3** ~~Flight~~ → **[Flight** ~~Feathers.~~ → **Feather];**\n    * **[REWORK]** *Old:* Character is invulnerable while using this skill. → *New:* Activating while in the [Fluttering Frock] state changes the form of the skill;\n    * **[REWORK]** *Old:* Enter the Fluttering Frock state after using the skill. Hold during the skill to enter the Noblewoman state. → *New:* When the skill hits a target, keep holding to enter the [Lady's Lunge] state, performing a continuous attack of up to four spins. A flash appears during this time. Releasing during the flash triggers an explosion. When the explosion hits a target suffering from an Anomaly, it triggers [Abloom] once, dealing DMG equal to **50%** of [Basic Attack: Featherbloom], and automatically maintains the [Lady's Lunge] state;\n    * **[NEW]** Each excess point of [Flight Feather] or [Guard Feather] is converted into [Afterecho], stacking up to 3 times. During [Lady's Lunge], each spin can consume 1 stack of [Afterecho] to convert it back into [Flight Feather];\n    * **[NEW]** Character is invulnerable while using this skill;\n    * **[NEW]** After using this skill, Vivian enters the [Fluttering Frock] state. Hold upon activating this skill to enter the [Noblewoman] state instead."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 11/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/IconRole1601.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/8WG5Mlo6DKGpIOvOAAI1wUlrpjsMsEy4hxTKb0lX_js/https/static.nanoka.cc/assets/zzz/IconRole1601.webp",
+                "width": 1920,
+                "height": 2588,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "## [Sunbringer](https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en)\n**Attribute:** Fire (Genesis Flare) | **Specialty:** Armorer | **Rarity:** S-Rank | **Attack Type:** Slash\n**Faction:** Roscaelifer\n**Base HP:** 5736 | **Base ATK:** 626 | **Base DEF:** 441 | **CRIT Rate:** 33.8% | **CRIT DMG:** 50% | **Impact:** 93 | **Anomaly Mastery:** 78 | **Anomaly Proficiency:** 77 | **PEN Ratio:** 0% | **Laceration DMG:** 150%\n-# [Revision diff](https://zzz.gachabase.net/diff/agents/1601/sunbringer?prev=beta_3.4.1_19997538&cur=beta_3.4.2_20049556&lang=en) against 3.4.1+19997538 • 5 changes\n\n**Sunbringer**'s kit is trimmed in this revision — 5 blocks retired, and no value moved. Every block moved against 3.4.1+19997538.\n\n### Basic Attack Changes\n* **Basic Attack** **[Thornbreaker]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** Lindverne performs up to four consecutive attacks forward, dealing Genesis Flare DMG;\n    * **[NEW]** During the fourth attack, repeatedly press or hold to perform an extended slash against enemies;\n    * **[NEW]** When the heavy attack of the fourth attack hits an enemy with [Gash], all [Gash] stacks on the target are consumed, up to 3 stacks; for each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG;\n    * **[NEW]** Character is invulnerable during the fourth attack;\n    * **[NEW]** During the third and fourth attacks, Anti-Interrupt Level is increased and DMG taken is reduced by **40%**.\n    * *(Lv. 12)* 1st-Hit DMG Multiplier: **118.4%** | 2nd-Hit DMG Multiplier: **169.4%** | 3rd-Hit DMG Multiplier: **342.6%**\n    * 4th-Hit DMG Multiplier: **650.2%** | 1st-Hit Daze Multiplier: **50.9%** | 2nd-Hit Daze Multiplier: **82.1%**\n    * 3rd-Hit Daze Multiplier: **174.5%** | 4th-Hit Daze Multiplier: **345.2%** | Maim DMG Multiplier: **161.9%**\n\n* **Basic Attack** **[Bannerbearer]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** Eldreda performs up to 4 consecutive attacks forward, dealing Genesis Flare DMG.\n    * **[NEW]** When the 4th attack's heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n    * **[NEW]** During the 3rd and 4th attacks, Anti-Interrupt Level is increased and DMG taken is reduced by **40%**.\n    * *(Lv. 12)* 1st-Hit DMG Multiplier: **76.5%** | 2nd-Hit DMG Multiplier: **167%** | 3rd-Hit DMG Multiplier: **254.8%**\n    * 4th-Hit DMG Multiplier: **378.1%** | 1st-Hit Daze Multiplier: **32.5%** | 2nd-Hit Daze Multiplier: **79.2%**\n    * 3rd-Hit Daze Multiplier: **131%** | 4th-Hit Daze Multiplier: **203.8%** | Maim DMG Multiplier: **161.9%**\n\n* **Basic Attack** **[Bannerbearer - Converging Edge]:**\n    * **[NEW]** When [Wishfire] is sufficient, hold to activate:\n    * **[NEW]** Switch to Eldreda and attack, dealing Genesis Flare DMG;\n    * **[NEW]** Character is invulnerable while using this skill;\n    * **[NEW]** Gain [Chain Teeth] and [Flag Order] after using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1651.5%** | Daze Multiplier: **642.1%**\n\n### Dodge Changes\n* **Dodge** **[Phase Fold]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** Lindverne performs a quick dash dodge.\n    * **[NEW]** Character is invulnerable while using this skill.\n\n* **Dash Attack** **[Void Slash Rush]:**\n    * **[NEW]** Press during a dodge to activate:\n    * **[NEW]** Lindverne slashes forward, dealing Genesis Flare DMG.\n    * *(Lv. 12)* DMG Multiplier: **69.7%** | Daze Multiplier: **49.5%**"
+        },
+        {
+          "id": 4,
+          "type": 9,
+          "components": [
+            {
+              "id": 5,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 12/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **Dodge Counter** **[Smoldering Fire Reignition]:**\n    * **[NEW]** When [Perfect Dodge] is triggered, press to activate:\n    * **[NEW]** Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.\n    * **[NEW]** After using this skill, press to quickly chain into the 3rd hit of [Basic Attack].\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **743.5%** | Daze Multiplier: **448.5%**\n\n* **Dodge** **[Spatial Reconstruction]:**\n    * **[NEW]** Press to activate:\n    * **[NEW]** Eldreda performs a quick dash dodge.\n    * **[NEW]** Character is invulnerable while using this skill.\n\n* **Dash Attack** **[Reality Reversal]:**\n    * **[NEW]** Press during a dodge to activate:\n    * **[NEW]** Eldreda thrusts forward, dealing Genesis Flare DMG.\n    * *(Lv. 12)* DMG Multiplier: **69.8%** | Daze Multiplier: **50.7%**\n\n* **Dodge** **[Patrol]:**\n    * **[NEW]** Hold while moving joystick to activate:\n    * **[NEW]** Eldreda enters the [Nightglide] state, allowing high-speed movement.\n    * **[NEW]** While in the [Nightglide] state, control direction with joystick. Release joystick to stop.\n    * **[NEW]** Character is invulnerable at the moment this skill activates.\n\n* **Dash Attack** **[Patrol - Shadow Realm Raid]:**\n    * **[NEW]** In [Nightglide] state, press to activate:\n    * **[NEW]** Eldreda unleashes a swift sweeping attack, dealing Genesis Flare DMG.\n    * *(Lv. 12)* DMG Multiplier: **219.3%** | Daze Multiplier: **157.3%**\n\n* **Dodge Counter** **[Cold Flame Returning Edge]:**\n    * **[NEW]** Press during a [Perfect Dodge] to activate:\n    * **[NEW]** Eldreda launches consecutive attacks forward, dealing Genesis Flare DMG.\n    * **[NEW]** After using this skill, press to follow up with the 4th hit of [Basic Attack].\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **679.2%** | Daze Multiplier: **412.5%**\n\n### Assist Changes\n* **Quick Assist** **[Dauntless Aid]:**\n    * **[NEW]** When the active character is launched, press to activate:\n    * **[NEW]** Lindverne unleashes a consecutive attack forward, dealing Genesis Flare DMG.\n    * **[NEW]** After activating this skill, press to quickly chain into the 3rd hit of [Basic Attack].\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **197.8%** | Daze Multiplier: **141.8%**\n\n* **Quick Assist** **[Path of the Gleaming Edge]:**\n    * **[NEW]** When the active character is launched, press to activate:\n    * **[NEW]** Eldreda unleashes a consecutive attack forward, dealing Genesis Flare DMG.\n    * **[NEW]** After using this skill, press to chain into the 4th hit of her [Basic Attack].\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **173.2%** | Daze Multiplier: **124.3%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 13/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **Defensive Assist** **[Oath of Steadfastness]:**\n    * **[NEW]** When the on-field character is about to be attacked, press to activate:\n    * **[NEW]** Dracaene parries the enemy's attack, accumulating massive Daze.\n    * **[NEW]** When Lindverne or Eldreda is on field, this skill can also be activated by switching to the next character.\n    * **[NEW]** When Sunbringer is in the squad, squad members have increased priority for triggering [Defensive Assist]. If you press to switch to the next character when the on-field character is about to be attacked, Dracaene's priority for triggering [Defensive Assist] is further increased.\n    * **[NEW]** This skill excels at parrying enemy attacks and reduces the consumption of [Assist Points] when the character is under intense attacks.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* Light Defensive Daze Multiplier: **407.7%** | Heavy Defensive Daze Multiplier: **514.4%** | Chain Defensive Daze Multiplier: **250.4%**\n\n* **Counter Assist** **[Fortress of Hope]:**\n    * **[NEW]** When Dracaene or the on-field Character is about to be hit by certain enemy Control Skills, press to activate:\n    * **[NEW]** Dracaene grapples with the monster. If she wins the grapple, she neutralizes the enemy's Control Skill and deals Genesis Flare DMG;\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1684.7%** | Daze Multiplier: **919.3%**\n\n* **Assist Follow-Up** **[Lighthouse, Towering in the Sky]:**\n    * **[NEW]** After activating a [Counter Assist], press to activate:\n    * **[NEW]** Dracaene unleashes a powerful attack, dealing massive Genesis Flare DMG. When the heavy attack hits an enemy, it directly applies 1 stack of [Gash] to the target.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **899.7%** | Daze Multiplier: **566.9%**\n\n* **Assist Follow-Up** **[Undying Passion]:**\n    * **[NEW]** Press after Dracaene's [Defensive Assist] to activate:\n    * **[NEW]** Lindverne unleashes a quick forward slash, followed by an explosion, dealing Genesis Flare DMG.\n    * **[NEW]** After using this skill, press to quickly chain into the 4th hit of the [Basic Attack].\n    * **[NEW]** Repeatedly press or hold during this skill to perform an extended slash on enemies.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1055.6%** | Daze Multiplier: **671.2%**\n\n* **Assist Follow-Up** **[Faith Unwavering]:**\n    * **[NEW]** Press after Dracaene activates a [Defensive Assist] to activate:\n    * **[NEW]** Eldreda performs a quick forward Slash, then triggers an explosion, dealing Genesis Flare DMG;\n    * **[NEW]** After using this skill, press to follow up with the 4th hit of the [Basic Attack];\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **964.9%** | Daze Multiplier: **609.8%**\n\n### Special Attack & EX Special Attack Changes\n* **Special Attack** **[Night Blaze]:**\n    * **[NEW]** Press or hold to activate:\n    * **[NEW]** Switch to Lindverne and launch an attack, dealing Genesis Flare DMG.\n    * *(Lv. 12)* DMG Multiplier: **98.4%** | Daze Multiplier: **71%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 14/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **EX Special Attack** **[Night Blaze - Dawnrise]:**\n    * **[NEW]** When Sharpness is sufficient, press to activate:\n    * **[NEW]** Eldreda attacks while Lindverne joins in a Synergy attack, with Lindverne remaining on the field in the end, dealing Genesis Flare DMG.\n    * **[NEW]** When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1189.4%** | Daze Multiplier: **743.7%**\n\n* **EX Special Attack** **[Night Blaze - Dawnrise (Modified)]:**\n    * **[NEW]** When Sharpness is sufficient, press after the final hit of [Basic Attack: Thornbreaker], [Dodge Counter: Smoldering Fire Reignition], [Assist Follow-Up: Undying Passion], [Ultimate: \"By This Wish, All Things Remade\"], or [EX Special Attack: Kindled Lamp - Gloom's End (Modified)] to activate:\n    * **[NEW]** Eldreda attacks while Lindverne and Dracaene join in a Synergy attack, with Lindverne remaining on the field in the end, dealing Genesis Flare DMG.\n    * **[NEW]** When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a max of 3 stacks. For each [Gash] stack consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1196%** | Daze Multiplier: **665.1%**\n\n* **EX Special Attack** **[Night Blaze - End of the Long Dark]:**\n    * **[NEW]** When you have [Chain Teeth], press to activate:\n    * **[NEW]** Eldreda consumes [Chain Teeth] to attack while Lindverne and Dracaene join in a Synergy attack, with Lindverne remaining on the field in the end, dealing massive Genesis Flare DMG;\n    * **[NEW]** After using this skill, press to quickly chain into the 4th hit of your [Basic Attack];\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **2578.4%** | Daze Multiplier: **1027.5%**\n\n* **Special Attack** **[Kindled Lamp]:**\n    * **[NEW]** Press or hold to activate:\n    * **[NEW]** Switches in Eldreda to launch an attack, dealing Genesis Flare DMG.\n    * *(Lv. 12)* DMG Multiplier: **96.3%** | Daze Multiplier: **69%**\n\n* **EX Special Attack** **[Kindled Lamp - Gloom's End]:**\n    * **[NEW]** When Sharpness is sufficient, press to activate:\n    * **[NEW]** Lindverne attacks while Eldreda joins in a Synergy attack, with Eldreda remaining on the field in the end, dealing Genesis Flare DMG.\n    * **[NEW]** When the heavy attack hits an enemy with [Gash], consume all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, trigger [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1167.6%** | Daze Multiplier: **658.4%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 15/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **EX Special Attack** **[Kindled Lamp - Gloom's End (Modified)]:**\n    * **[NEW]** When Sharpness is sufficient, press after the final hit of [Basic Attack: Bannerbearer], [Dodge Counter: Cold Flame Returning Edge], [Assist Follow-Up: Faith Unwavering], [Ultimate: \"Onward, Together\"], or [EX Special Attack: Night Blaze - Dawnrise (Modified)] to activate:\n    * **[NEW]** Lindverne attacks while Eldreda and Dracaene join in a Synergy attack, with Eldreda remaining on the field in the end, dealing Genesis Flare DMG.\n    * **[NEW]** When the heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each stack of [Gash] consumed, triggers [Maim] on the target once, dealing additional AoE Genesis Flare DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **1225%** | Daze Multiplier: **761.9%**\n\n* **EX Special Attack** **[Kindled Lamp - Torch of Eternal Day]:**\n    * **[NEW]** When you have [Flag Order], press to activate:\n    * **[NEW]** Lindverne consumes [Flag Order] to attack while Eldreda and Dracaene join in a Synergy attack, after which Eldreda delivers a Finishing Move and remains on the field, dealing massive Genesis Flare DMG;\n    * **[NEW]** After using this skill, press to chain into the 4th hit of [Basic Attack];\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **2338.6%** | Daze Multiplier: **605.8%**\n\n### Chain Attack & Ultimate Changes\n* **Chain Attack** **[Building Dreams for All]:**\n    * **[NEW]** When a [Chain Attack] is triggered, select the character to activate:\n    * **[NEW]** Lindverne attacks while Eldreda joins in a Synergy attack, with Lindverne remaining on the field in the end, dealing Genesis Flare DMG.\n    * **[NEW]** When a heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to 3 stacks. For each [Gash] stack consumed, [Maim] is triggered once on the target, dealing additional AoE Genesis Flare DMG.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * **[NEW]** When Lindverne triggers a Daze Chain Attack window, Lindverne can be directly selected to activate this skill.\n    * *(Lv. 12)* DMG Multiplier: **1485%** | Daze Multiplier: **407.7%**\n\n* **Ultimate** **[\"Onward, Together\"]:**\n    * **[NEW]** When Decibel Rating is at [Maximum], press to activate:\n    * **[NEW]** Lindverne launches a Synergy attack with Eldreda and Dracaene, remaining on the field, dealing massive Genesis Flare DMG;\n    * **[NEW]** While holding [Flag Order], consume [Flag Order] to convert it into [Wish Core];\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **3737.5%** | Daze Multiplier: **476.7%**\n\n* **Chain Attack** **[In the Name of Sunbringer]:**\n    * **[NEW]** When a [Chain Attack] is triggered, select the character to activate:\n    * **[NEW]** Eldreda attacks while Lindverne joins in a Synergy attack, with Eldreda remaining on the field in the end, dealing Genesis Flare DMG;\n    * **[NEW]** After using this skill, press to follow up with the 4th hit of her [Basic Attack];\n    * **[NEW]** When a heavy attack hits an enemy with [Gash], it consumes all [Gash] stacks on the target, up to a max of 3 stacks. For each stack of [Gash] consumed, [Maim] is triggered once on the target, dealing additional AoE Genesis Flare DMG;\n    * **[NEW]** Character is invulnerable while using this skill;\n    * **[NEW]** When Eldreda triggers a Daze Chain Attack window, she can be selected directly to activate this skill.\n    * *(Lv. 12)* DMG Multiplier: **1485%** | Daze Multiplier: **407.7%**"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 16/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **Ultimate** **[\"By This Wish, All Things Remade\"]:**\n    * **[NEW]** With a [Wish Core], press to activate:\n    * **[NEW]** Eldreda warps space in mid-air to unleash an attack, followed by a Finishing Move, dealing Genesis Flare DMG and removing all [Ember Scar] from enemies.\n    * **[NEW]** When activated, extends the Daze duration of all enemies currently in Daze by **1s**.\n    * **[NEW]** This skill is not considered a heavy attack.\n    * **[NEW]** Character is invulnerable while using this skill.\n    * *(Lv. 12)* DMG Multiplier: **2709.8%** | Daze Multiplier: **1060.8%**\n\n### Core Passive & Additional Ability Changes\n* **Core Passive** **[Dream Manifestation = Genesis Reconstruction]:**\n    * **[NEW]** Sunbringer's skills deal Sharp DMG, with DEF used as the skill DMG Multiplier. Some Sharp DMG builds up Gash. When Gash is full, the enemy enters [Gash]. [Gash] can stack up to 3 times. When certain heavy attacks from Sunbringer's skills hit an enemy in the [Gash] state, 1 stack of [Gash] is consumed to deal AoE DMG once;\n    * **[NEW]** When Sharp DMG triggers a critical hit, it does not benefit from CRIT DMG Bonus and uses Laceration DMG Bonus instead. If CRIT Rate exceeds **100%** and a critical hit has been triggered, an additional Laceration check is made based on the excess CRIT Rate. Triggering Laceration applies Laceration DMG Bonus one additional time. For every **1%** initial CRIT DMG Sunbringer has, Sunbringer's initial CRIT Rate increases by **0.35%**;\n    * **[NEW]** Sunbringer recovers 60 Sharpness upon entering the battlefield. In Investigation Zone mode, this effect can trigger once every **180s**;\n    * **[NEW]** When Sunbringer enters combat, Sunbringer gains [Midnight Sun], increasing CRIT Rate by **40%** and ignoring **20%** of the target's DEF when dealing DMG. [Midnight Sun] lasts **20s**. While Sunbringer is off field or Dracaene is on field, its duration does not decrease. Sunbringer regains [Midnight Sun] when activating any [EX Special Attack] or [Basic Attack: Bannerbearer - Converging Edge];\n    * **[NEW]** Daze dealt by Dracaene's [Defensive Assist] is increased by **50%**. Gash Buildup Rate of Eldreda's and Lindverne's [Assist Follow-Up] is increased by **15%**, and DMG dealt is increased by **20%**;\n    * **[NEW]** When any Agent in the squad triggers [Maim], Sunbringer gains 40 [Wishfire] for each stack of [Gash] removed, up to a maximum of 160 [Wishfire]. With at least 120 [Wishfire], Sunbringer can consume 120 [Wishfire] to activate [Basic Attack: Bannerbearer - Converging Edge];\n    * **[NEW]** When a teammate triggers [Maim], if Sunbringer has enough [Wishfire], [Quick Assist] is triggered. When Sunbringer switches on field via [Quick Assist], 120 [Wishfire] is consumed to directly activate [Basic Attack: Bannerbearer - Converging Edge]. This effect can trigger once every **3s**;\n    * **[NEW]** When Sunbringer's [Basic Attack: Bannerbearer - Converging Edge], [EX Special Attack: Night Blaze - End of the Long Dark], [EX Special Attack: Kindled Lamp - Torch of Eternal Day], [Ultimate: \"Onward, Together\"], or [Ultimate: \"By This Wish, All Things Remade\"] hits an enemy and deals DMG, the target accumulates [Ember Scar], with the amount of [Ember Scar] equal to **65%** of the actual DMG dealt by the skill. When the Finishing Move of Eldreda's [EX Special Attack: Kindled Lamp - Torch of Eternal Day] or [Ultimate: \"By This Wish, All Things Remade\"] hits an enemy, all [Ember Scar] is removed, triggering 1 [Ashfall] effect and directly deducting an equal amount of HP.\n    * **[NEW]** When an enemy is defeated, Sunbringer recovers 40 [Wishfire]. This effect can trigger once every **60s**."
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 17/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "* **Additional Ability** **[Mark of a Leader]:**\n    * **[NEW]** When another character in your squad is a [Stun] Character, [Defense] Character, or [Armorer] Character:\n    * **[NEW]** When Sunbringer uses any [EX Special Attack] or [Dash Attack: Patrol - Shadow Realm Raid], all [Armorer] Agents in the whole squad enter the [United Will] state. While in the [United Will] state, Laceration DMG increases by **25%** for **45s**. Re-entering the [United Will] state refreshes the duration.\n\n### Mindscape Cinema Changes\n* **Mindscape Cinema 1** **[The Reclusive Void Hunter]:**\n    * **[NEW]** When Sunbringer enters the battlefield, she immediately gains 120 [Wishfire]. This effect can trigger once every **180s** in Investigation Zone mode. Sunbringer's Gash Buildup Rate is increased by **10%**, and DMG dealt by her skills ignore **15%** of the enemy's Fire RES.\n\n* **Mindscape Cinema 2** **[The Heir's Banner of Rebellion]:**\n    * **[NEW]** Sunbringer increases the [Ember Scar] accumulated by enemies by **20%**. When Sunbringer's other skills hit enemies and deal DMG, the target also accumulates [Ember Scar], with the amount of [Ember Scar] equal to **15%** of the actual DMG dealt by the skill. When Sunbringer's attacks hit a normal enemy or an Elite, if the enemy's [Ember Scar] is greater than or equal to its current HP, all of its [Ember Scar] is removed and the enemy is instantly executed.\n\n* **Mindscape Cinema 3** **[Measured Hope]:**\n    * **[NEW]** Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2\n\n* **Mindscape Cinema 4** **[Phantom of the Devotee]:**\n    * **[NEW]** Upon entering the battlefield, Sunbringer immediately gains 1,000 Decibels. This effect can trigger once every **180s** in Investigation Zone mode. Sunbringer's DMG is increased by **15%**.\n\n* **Mindscape Cinema 5** **[Where We Belong]:**\n    * **[NEW]** Basic Attack, Dodge, Assist, Special Attack, and Chain Attack Lv. +2\n\n* **Mindscape Cinema 6** **[Hope of Day Break]:**\n    * **[NEW]** When Sunbringer activates [Ultimate: \"By This Wish, All Things Remade\"], she quickly follows up with a special [EX Special Attack: Kindled Lamp - Torch of Eternal Day], triggering an additional [Ashfall] effect that deals DMG equal to **150%** of the [Ember Scar] accumulated on the target by that [Ultimate: \"By This Wish, All Things Remade\"]. DMG dealt by Sunbringer's skills ignores **20%** of the target's DEF.\n\n### Basic Attack Changes\n* **[Basic Attack]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 1722.5% · Daze Multiplier 226.3%~~\n\n### Dodge Changes\n* **[Dodge]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 228.4% · Daze Multiplier 157.3%~~\n\n### Assist Changes\n* **[Assist]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 1006.7% · Daze Multiplier 609.8%~~\n\n### Special Attack & EX Special Attack Changes\n* **[Special Attack & EX Special Attack]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 2441.1% · Daze Multiplier 605.8%~~\n\n### Chain Attack & Ultimate Changes\n* **[Chain Attack & Ultimate]:**\n    * **[CHANGED]** Removed from this revision — ~~**Values (Lv. 12):** DMG Multiplier 2827% · Daze Multiplier 674.7%~~"
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 18/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## W-Engines Changes"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/Weapon_S_1661.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/IhMVqlH5zQ_EOVWfUdYaE7aGbLVUQd-shdVWYmznSyA/https/static.nanoka.cc/assets/zzz/Weapon_S_1661.webp",
+                "width": 156,
+                "height": 156,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "### [Robin's Exclusive W-Engine](https://zzz.gachabase.net/w-engines/14166/robin-s-exclusive-w-engine/beta?lang=en) (S-Rank W-Engine — Defense)\n**Substat:** HP% 30%\n\n**Robin's Exclusive W-Engine** gains new material in this revision. The rest of the effect is untouched.\n\n* **[CHANGED]** Effect renamed from ~~~~ → **Robin Test Engine**.\n* **[NEW]** When the equipper applies a shield, the whole squad's Laceration DMG is increased by **16%** for **20s**. Repeated triggers extend the duration, up to a maximum of **30s**. Only one instance of this effect can exist in the same squad. When the equipper launches an Aftershock, the whole squad's DMG is increased by **10%** for **20s**, stacking up to 2 times. Repeated triggers refresh the duration. Only one instance of this effect can exist in the same squad.\n-# [Revision diff](https://zzz.gachabase.net/diff/w-engines/14166/robin-s-exclusive-w-engine?prev=beta_3.4.1_19997538&cur=beta_3.4.2_20049556&lang=en)\n\n## Drive Discs Changes\n\n### [Rank Stele](https://zzz.gachabase.net/drive-discs/34300/rank-stele/beta?lang=en)\n*Drive Disc Set*\n\n**Rank Stele** is reworded in this revision — no value moved. The rest of the effect is untouched.\n\n* **[TEXT FIX]** 4-Piece: Increases the equipper's CRIT Rate by **12%**. When the equipper deals Fire Sharp DMG, ~~it ignores~~ → **they ignore** **16%** of the enemy's DEF.\n-# [Revision diff](https://zzz.gachabase.net/diff/drive-discs/34300/rank-stele?prev=beta_3.4.1_19851435&cur=beta_3.4.2_20049556&lang=en)\n\n### [Crimson Wing Nocturne](https://zzz.gachabase.net/drive-discs/34400/crimson-wing-nocturne/beta?lang=en)\n*Drive Disc Set*\n\n**Crimson Wing Nocturne** is reworded in this revision — no value moved. The rest of the effect is untouched.\n\n* **[TEXT FIX]** 4-Piece: When the equipper's CRIT Rate is at least **50%**, **their** CRIT DMG increases by **30%**, and ~~Daze inflicted by~~ → **the Daze inflicted by** **their** attacks increases by **5%**. When the equipper is a [Stun] Character, using an [EX Special Attack] or [Chain Attack] increases Sharp DMG dealt by all squad members by **8%** for **25s**, and repeated triggers reset the duration. Only one instance of this effect can exist in the same squad.\n-# [Revision diff](https://zzz.gachabase.net/diff/drive-discs/34400/crimson-wing-nocturne?prev=beta_3.4.1_19851435&cur=beta_3.4.2_20049556&lang=en)\n\n## Bangboo\n\n### [Charley](https://zzz.gachabase.net/bangboo/54024/charley/beta?lang=en) (S-Rank)\n**Impact:** 103 | **CRIT Rate:** 50% | **CRIT DMG:** 100% | **PEN Ratio:** 0% | **Anomaly Mastery:** 110\n\n* **[NEW]** Active Skill — Formation Breaker Vanguard: [Active Skill] Upon activating this skill, command three Airspace Patrol Bangboo Soldiers to attack enemies, dealing Physical DMG.\n* **[NEW]** Active Skill attributes (Lv. 6): DMG Multiplier **1200%** · Daze Multiplier **439.5%** · Cooldown **25s**\n* **[NEW]** Additional Ability — Unfallen Banner: [Additional Ability] Triggered when [Sunbringer] is in your squad: Sleepwalkerboo grants [A Bangboo's Helping Hand] to [Sunbringer]. While under [A Bangboo's Helping Hand], all DMG dealt by the character increases by **2.5%** (this DMG Bonus is calculated independently). [Active Skill] DMG increases by **30%**.\n* **[NEW]** Additional Ability attributes (Lv. 1): [A Bangboo's Helping Hand] Status DMG Up **2.5%** · Active Skill DMG Up **30%**\n* **[NEW]** Bangboo Chain Attack — Absolute Legion: [Bangboo Chain Attack] Waves a scepter to command three Airspace Patrol Bangboo Soldiers to unleash a powerful Chain Attack, dealing massive Physical DMG.\n* **[NEW]** Bangboo Chain Attack attributes (Lv. 6): DMG Multiplier **1618.5%** · Daze Multiplier **231%**"
+        },
+        {
+          "id": 5,
+          "type": 9,
+          "components": [
+            {
+              "id": 6,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 19/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## W-Engines Changes"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://static.nanoka.cc/assets/zzz/Weapon_S_1601.webp",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/8zqLhghDKbSQr5AZcrEQYXDD_oo4dPcMYh1P7NCh-ko/https/static.nanoka.cc/assets/zzz/Weapon_S_1601.webp",
+                "width": 156,
+                "height": 156,
+                "content_type": "image/webp"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "### [W-Engine (ID 14160)](https://zzz.gachabase.net/w-engines/14160/14160/beta?lang=en) (S-Rank W-Engine — Armorer)\n**Substat:** DEF% 48%\n\n**W-Engine (ID 14160)** gains new material in this revision. The rest of the effect is untouched.\n\n* **[CHANGED]** CRIT Rate **+20%/22%/24%/26%/28%**. When the equipper uses an [EX Special Attack], the Character gains the [Enhance] effect for **25s**. This effect is also gained immediately when the equipper enters combat, and repeated triggers reset the duration. While [Enhance] is active, the equipper's Fire DMG is increased by **20%/23%/26%/29%/32%**, and Fire Sharp DMG is increased by **10%/11.5%/13%/14.5%/16%**.\n* **[NEW]** -# 🌐 Values synced with authoritative CN/CHS beta data.\n-# [Revision diff](https://zzz.gachabase.net/diff/w-engines/14160/14160?prev=beta_3.4.1_19997538&cur=beta_3.4.2_20049556&lang=en)"
+        },
+        {
+          "id": 5,
+          "type": 9,
+          "components": [
+            {
+              "id": 6,
+              "type": 10,
+              "content": "-# Zenless Zone Zero 3.4.2 Beta • Page 20/20"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
