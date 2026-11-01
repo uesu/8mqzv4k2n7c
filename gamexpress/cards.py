@@ -1721,7 +1721,8 @@ def beta_payloads_with_map(
     for char in characters:
         char_id = str(getattr(char, "id", "") or getattr(char, "name", ""))
         char_name = strip_invisible(str(getattr(char, "name", "") or "Unknown")).strip()
-        rarity = int(getattr(char, "rarity", 5) or 5)
+        # 0 is an explicit "rarity not read" (a changelog-only card), not a missing value to default.
+        rarity = int(getattr(char, "rarity", 5))
         element = strip_invisible(str(getattr(char, "element", "") or "")).strip()
         role = strip_invisible(str(getattr(char, "role", "") or "")).strip()
         faction = strip_invisible(str(getattr(char, "faction", "") or "")).strip()

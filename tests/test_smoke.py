@@ -19627,11 +19627,13 @@ def test_feature5_late_changelog_entries_are_delivered_for_a_settled_revision():
         assert asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
                                                 beta_mod._budget(ctx))) is None
         assert ctx.state.beta_record("zzz")["revisions"][rev_id]["late_checks"] == 2
-        # The third poll stops before any page request at all.
+        # The third poll reads only the changelog (one request, the hotfix watch on an open cycle)
+        # and stops before any page request at all.
         calls_before = len(fetcher.calls)
         assert asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest,
                                                 beta_mod._budget(ctx))) is None
-        assert len(fetcher.calls) == calls_before
+        new_calls = fetcher.calls[calls_before:]
+        assert all("changelog" in u for u in new_calls), new_calls
         assert ctx.state.beta_record("zzz")["revisions"][rev_id]["late_checks"] == 2
 
     # The window is bounded: past BETA_LATE_RECHECK_H a settled revision costs no request.
@@ -19642,7 +19644,158 @@ def test_feature5_late_changelog_entries_are_delivered_for_a_settled_revision():
         settled_record(ctx2, ts=1793000000)
         assert asyncio.run(beta_mod.build_patch(ctx2, GAMES["zzz"], manifest,
                                                 beta_mod._budget(ctx2))) is None
-        assert quiet.calls == []
+        # At most the one primary changelog read for the hotfix watch; no page or fallback requests.
+        assert all("changelog" in u for u in quiet.calls), quiet.calls
+        assert len(quiet.calls) <= 1
+
+
+_HOTFIX_CHANGELOG_MD = r"""# CHANGELOG - v3.4.X
+
+## v3.4.2 Rev. 20053876 \| 1st November 2026
+
+### Agents
+
+UPDATED
+
+[![](https://i.gachabase.net/aaa/q:50/f:webp/plain/zzz/assets/a.png)\
+\
+Ju Fufu](https://zzz.gachabase.net/agents/1391/ju-fufu/beta?lang=en) [See Changes](https://zzz.gachabase.net/diff/agents/1391/ju-fufu?prev=beta_3.4.2_20052336&cur=beta_3.4.2_20053876&lang=en)
+
+UPDATED
+
+[![](https://i.gachabase.net/bbb/q:50/f:webp/plain/zzz/assets/b.png)\
+\
+Vivian](https://zzz.gachabase.net/agents/1331/vivian/beta?lang=en) [See Changes](https://zzz.gachabase.net/diff/agents/1331/vivian?prev=beta_3.4.2_20052336&cur=beta_3.4.2_20053876&lang=en)
+
+## v3.4.2 Rev. 20052336 \| 1st November 2026
+
+No tracked changes detected for this revision.
+"""
+
+
+def test_feature5_gachabase_hotfix_is_found_when_the_manifest_lags():
+    """ZZZ 3.4.2 Rev. 20053876 was on gachabase while nanoka's manifest still listed 20052336 as
+    latest. The version walk must consider the changelog revision, or the hotfix never posts."""
+    from gamexpress import beta as beta_mod
+
+    revs = beta_mod.parse_changelog(_HOTFIX_CHANGELOG_MD, base_url="https://zzz.gachabase.net/changelog/beta?lang=en")
+    assert beta_mod._changelog_beta_versions(revs) == ["3.4.2+20053876", "3.4.2+20052336"]
+
+    manifest_zzz = {"latest": "3.4.2+20052336", "available": ["3.3", "3.4.2+20049556", "3.4.2+20052336"],
+                    "live": "3.3"}
+    record = {"source_version": "3.4.2+20052336", "revisions": {}}
+    live = (3, 3)
+    # Without the changelog the manifest has nothing newer: the old behaviour, nothing to post.
+    assert beta_mod._next_data_version(record, manifest_zzz, live_cycle=live) == ""
+    # With the changelog revisions, the hotfix is the next version to deliver.
+    assert beta_mod._next_data_version(
+        record, manifest_zzz, live_cycle=live,
+        extra_versions=beta_mod._changelog_beta_versions(revs)) == "3.4.2+20053876"
+    # Once delivered, the walk stops (no repost loop).
+    record2 = {"source_version": "3.4.2+20053876", "revisions": {}}
+    assert beta_mod._next_data_version(
+        record2, manifest_zzz, live_cycle=live,
+        extra_versions=beta_mod._changelog_beta_versions(revs)) == ""
+    # A live or past cycle never reads as new, even if the changelog lists it.
+    assert beta_mod._next_data_version(
+        {"source_version": "3.3"}, {"latest": "3.3", "available": ["3.3"], "live": "3.3"},
+        live_cycle=(3, 3), extra_versions=["3.3+19000000"]) == ""
+
+
+def test_feature5_hotfix_build_patch_runs_end_to_end_when_nanoka_has_no_detail_yet():
+    """The hotfix is on gachabase only. nanoka serves no per-revision file for it yet. The poll must
+    still pick it, read the changelog, and never crash or post anything it cannot source."""
+    import tempfile
+
+    from gamexpress import beta as beta_mod
+
+    class HotfixFetcher:
+        def __init__(self):
+            self.calls: list[str] = []
+
+        async def get_text(self, url, **_kw):
+            self.calls.append(url)
+            return _HOTFIX_CHANGELOG_MD if "changelog/beta" in url else None
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url == beta_mod.MANIFEST_URL:
+                return {"zzz": {"latest": "3.4.2+20052336",
+                                "available": ["3.3", "3.4.2+20049556", "3.4.2+20052336"],
+                                "live": "3.3", "new": {}}}
+            return None  # no per-revision detail, EN or CN, for 3.4.2+20053876
+
+        async def get_bytes(self, *_a, **_kw):
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    manifest = {"zzz": {"latest": "3.4.2+20052336",
+                        "available": ["3.3", "3.4.2+20049556", "3.4.2+20052336"],
+                        "live": "3.3", "new": {}}}
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = HotfixFetcher()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        record = ctx.state.beta_record("zzz")
+        record["source_version"] = "3.4.2+20052336"
+        ctx.state.save()
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+        # The revision is selected from gachabase. Its kit files are not on nanoka yet, so nothing is
+        # posted and the characters are deferred (retried on later polls), never a crash or a guess.
+        assert any("changelog/beta" in u for u in fetcher.calls)
+        assert patch is not None and patch.source_version == "3.4.2+20053876"
+        # Gachabase-only and no kit files: the card is built from the changelog row (Chinese -, English
+        # Changes + Full, the disclaimer), not deferred. Nothing is guessed from the missing kit.
+        assert [c.name for c in patch.characters] == ["Ju Fufu", "Vivian"]
+        ju = patch.characters[0]
+        assert ju.rarity == 0  # rarity not read: the card omits the rarity line
+        assert ju.page_url == "https://zzz.gachabase.net/agents/1391/ju-fufu/beta?lang=en"
+        lines = ju.overview.split("\n")
+        assert lines[0] == "|- Chinese: -"
+        assert lines[1].startswith("|- English: [Changes](https://zzz.gachabase.net/diff/agents/1391/ju-fufu?")
+        assert lines[1].endswith("([Full](https://zzz.gachabase.net/agents/1391/ju-fufu/beta?lang=en))")
+        assert "Disclaimer" in ju.subtext
+        assert ctx.warnings and all("deferred" not in w for w in ctx.warnings)
+
+
+def test_feature5_changelog_card_only_for_gachabase_only_revisions():
+    """If nanoka's manifest already lists the revision, a missing kit is a nanoka gap: it defers and
+    never posts a changelog card (that card would be posted again when the full kit arrives)."""
+    import tempfile
+
+    from gamexpress import beta as beta_mod
+
+    class ListedFetcher:
+        async def get_text(self, url, **_kw):
+            return _HOTFIX_CHANGELOG_MD if "changelog/beta" in url else None
+
+        async def get_json(self, url, **_kw):
+            if url == beta_mod.MANIFEST_URL:
+                return {"zzz": {"latest": "3.4.2+20053876",
+                                "available": ["3.3", "3.4.2+20049556", "3.4.2+20052336", "3.4.2+20053876"],
+                                "live": "3.3", "new": {}}}
+            return None
+
+        async def get_bytes(self, *_a, **_kw):
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    manifest = {"zzz": {"latest": "3.4.2+20053876",
+                        "available": ["3.3", "3.4.2+20049556", "3.4.2+20052336", "3.4.2+20053876"],
+                        "live": "3.3", "new": {}}}
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", ListedFetcher(), BETA_ENABLED="1",
+                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
+        record = ctx.state.beta_record("zzz")
+        record["source_version"] = "3.4.2+20052336"
+        ctx.state.save()
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+        assert patch is not None and patch.characters == []
+        assert any("no kit data for id 1391; deferred" in w for w in ctx.warnings)
 
 
 def test_feature5_released_agent_diffs_against_the_live_build_not_the_whole_kit():
@@ -22504,6 +22657,29 @@ def test_glossary_build_votes_need_support_and_share():
     assert [(t["zh"], t["en"], t["support"]) for t in kept] == [("落羽生花", "Featherbloom", 9)]
     # 4 of 5 agree (80%): below the share threshold, dropped rather than guessed.
     assert gb.aggregate(items(["Featherbloom"] * 4 + ["Falling Feathers Bloom"])) == []
+
+
+def test_glossary_build_keeps_each_items_own_name_and_drops_conflicts():
+    """Item names occur on one item each, so the vote alone dropped them (薇薇安 -> Vivian was lost).
+    The item's own name pair is kept; two different EN names for one CN name are dropped."""
+    from gamexpress import glossary_build as gb
+
+    en = {"name": "Vivian Banshee", "skill": {"basic": "Basic Attack: Featherbloom"}}
+    zh = {"name": "薇薇安·班希", "skill": {"basic": "普通攻击：落羽生花"}}
+    assert gb.identity_pair(en, zh) == ("薇薇安·班希", "Vivian Banshee")
+    assert gb.identity_pair({"skill": {}}, zh) is None             # no EN name
+    assert gb.identity_pair(en, {"name": "Vivian"}) is None        # CN name missing its CJK
+    assert gb.identity_pair(None, zh) is None
+    # A name on one item is kept with its own support; the vote-based term still needs support 2.
+    terms = gb.aggregate({"character/1331": []}, {"character/1331": ("薇薇安·班希", "Vivian Banshee")})
+    assert [(t["zh"], t["en"]) for t in terms] == [("薇薇安·班希", "Vivian Banshee")]
+    # Two items disagree on one CN name: dropped, never guessed.
+    conflict = gb.aggregate({}, {"weapon/1": ("音擎甲", "Armor A"), "weapon/2": ("音擎甲", "Armor B")})
+    assert conflict == []
+    # A name already voted by pairs is not overwritten.
+    voted = gb.aggregate({"a": [("薇薇安", "Vivian")], "b": [("薇薇安", "Vivian")]},
+                         {"character/1331": ("薇薇安", "Vivian Banshee")})
+    assert [(t["zh"], t["en"]) for t in voted] == [("薇薇安", "Vivian")]
 
 
 def test_glossary_build_term_filter_rejects_noise_and_keeps_names():

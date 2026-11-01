@@ -3863,15 +3863,41 @@ def _take_shared_request(budget: dict, count: int = 1) -> bool:
     return True
 
 
+async def _changelog_watch_text(ctx, game: Game) -> str | None:
+    """The primary changelog page, read once for the hotfix watch (no fallbacks yet).
+
+    A quiet poll costs exactly this one request. When a version is chosen, the full fallback chain
+    in `_fetch_changelog_revisions` reuses this text instead of reading the primary URL again.
+    """
+    ch_url = _changelog_url(game)
+    if not ch_url:
+        return None
+    hdrs = dict(_GACHABASE_HEADERS) if "gachabase.net" in ch_url.lower() else None
+    return await ctx.fetcher.get_text(ch_url, source="beta-changelog", headers=hdrs, retries=0)
+
+
+def _parse_changelog_text(text: str | None, base_url: str) -> list[dict]:
+    if not text:
+        return []
+    return parse_changelog(text, base_url=base_url) or _parse_gachabase_data(text, base_url=base_url)
+
+
 async def _fetch_changelog_revisions(
-    ctx, game: Game, budget: dict | None = None, current_requests: int = 2
+    ctx, game: Game, budget: dict | None = None, current_requests: int = 2,
+    *, primed: tuple[str | None] | None = None,
 ) -> tuple[list[dict], int]:
-    """Read all available beta revisions once; an unavailable/403 changelog falls back cleanly."""
+    """Read all available beta revisions once; an unavailable/403 changelog falls back cleanly.
+
+    `primed` is the primary page already read this poll by the hotfix watch (None = it failed).
+    """
     ch_url = _changelog_url(game)
     if not ch_url:
         return [], 0
     hdrs = dict(_GACHABASE_HEADERS) if "gachabase.net" in ch_url.lower() else None
-    text = await ctx.fetcher.get_text(ch_url, source="beta-changelog", headers=hdrs, retries=1)
+    if primed is not None:
+        text = primed[0]
+    else:
+        text = await ctx.fetcher.get_text(ch_url, source="beta-changelog", headers=hdrs, retries=1)
     extra = 0
     if text is None and "?" in ch_url:
         alt_url = ch_url.split("?", 1)[0]
@@ -4025,13 +4051,82 @@ def _available_beta_versions(
     return versions
 
 
+def _beta_cycle_open(m_game: dict, live_cycle: tuple[int, int] | None) -> bool:
+    """True while the manifest's latest beta is in a cycle newer than the live build.
+
+    A live or past cycle makes no changelog read at all (zero extra calls). An open cycle reads the
+    changelog once per poll, which is how a hotfix the manifest has not listed yet is still found.
+    """
+    latest = str(m_game.get("latest") or "").strip()
+    if not _is_beta_version_string(latest):
+        return False
+    return live_cycle is None or _major_minor(latest) > live_cycle
+
+
+_CHANGELOG_ONLY_DISCLAIMER = ("**Disclaimer:** While English has been updated this revision, it may still "
+                              "not be up to date with the actual kit, so double check with Chinese!")
+
+
+def _changelog_only_character(entry: dict, ns: str, version: str, now: int) -> BetaCharacter | None:
+    """A card built from the gachabase changelog row alone, for a revision nanoka has no kit for.
+
+    Same layout as the gachabase post: the Chinese and English lines, `Changes` (the diff) and
+    `Full` (the page). CN is `-` because the changelog only ever reports an EN change here: the CN
+    kit is not read, so nothing is claimed about it. Returns None when the row has no name.
+    """
+    name = str(entry.get("name") or "").strip()
+    if not name:
+        return None
+    url = str(entry.get("url") or "")
+    diff = str(entry.get("diff") or "")
+    if diff:
+        english = f"English: [Changes]({diff}) ([Full]({url}))" if url else f"English: [Changes]({diff})"
+    else:
+        english = f"English: [Full]({url})" if url else "English: -"
+    # The language lines are the card body (overview), not kit blocks, so they carry no [CHANGED]
+    # tag and no kit heading. Rarity 0 hides the rarity line: the kit was never read. The diff is
+    # already the `Changes` link, so no separate revision-diff line is shown.
+    return BetaCharacter(
+        id=_entry_key(ns, "character", str(entry.get("name") or name)),
+        name=name,
+        rarity=0,
+        overview=f"|- Chinese: -\n|- {english}",
+        subtext=_CHANGELOG_ONLY_DISCLAIMER,
+        diff_url="", page_url=url, is_new=False,
+    )
+
+
+def _changelog_beta_versions(revisions: list[dict]) -> list[str]:
+    """`3.4.2+20053876` for every changelog revision label `v3.4.2 Rev. 20053876`.
+
+    nanoka's manifest can lag a hotfix that gachabase already lists (ZZZ 3.4.2 Rev. 20053876,
+    2026-11-02). The changelog is the source the card is read from, so its revisions are candidates too.
+    """
+    out: list[str] = []
+    for revision in revisions or []:
+        label = str(revision.get("label") or "")
+        build = _revision_build(label)
+        cycle = re.search(r"(\d+\.\d+(?:\.\d+)?)", label)
+        if build is None or cycle is None:
+            continue
+        version = f"{cycle.group(1)}+{build}"
+        if version not in out:
+            out.append(version)
+    return out
+
+
 def _next_data_version(
     record: dict,
     m_game: dict,
     *,
     live_cycle: tuple[int, int] | None = None,
+    extra_versions: list[str] | tuple[str, ...] = (),
 ) -> str:
-    """Walk a beta revision at a time; never publish a beta cycle that is already live."""
+    """Walk a beta revision at a time; never publish a beta cycle that is already live.
+
+    `extra_versions` are gachabase changelog revisions the manifest may not list yet. They are
+    candidates only when their build is newer than the one already delivered.
+    """
     for revision in (record.get("revisions") or {}).values():
         if (isinstance(revision, dict) and revision.get("status") in ("partial", "ambiguous")
                 and revision.get("source_version")):
@@ -4039,6 +4134,13 @@ def _next_data_version(
             if live_cycle is None or _major_minor(in_flight) > live_cycle:
                 return in_flight
     versions = _available_beta_versions(m_game, live_cycle=live_cycle)
+    extras = [
+        v for v in extra_versions
+        if v not in versions and _is_beta_version_string(v)
+        and (live_cycle is None or _major_minor(v) > live_cycle)
+    ]
+    if extras:
+        versions = versions + extras
     if not versions:
         return ""
     raw_latest = str(m_game.get("latest") or "").strip()
@@ -4046,7 +4148,7 @@ def _next_data_version(
     last = str(record.get("source_version") or "").strip()
     if not last:
         return latest
-    if last in versions:
+    if last in versions and not extras:
         pos = versions.index(last)
         return versions[pos + 1] if pos + 1 < len(versions) else ""
     previous_build = _revision_build(last)
@@ -6324,7 +6426,20 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     record = ctx.state.beta_record(game.key)
     _upgrade_legacy_beta_record(record)
     live_cycle = _live_cycle(ctx, game, m_game)
-    version = _next_data_version(record, m_game, live_cycle=live_cycle)
+    # One changelog read per poll serves both the version walk and the card below.
+    watched = False
+    watch_text: str | None = None
+    if _changelog_url(game) and _beta_cycle_open(m_game, live_cycle) and _take_shared_request(budget):
+        watched = True  # the shared budget already took this one request
+        watch_text = await _changelog_watch_text(ctx, game)
+    watch_revisions = _parse_changelog_text(watch_text, _changelog_url(game))
+    changelog_extra = _changelog_beta_versions(watch_revisions)
+    version = _next_data_version(record, m_game, live_cycle=live_cycle,
+                                 extra_versions=changelog_extra)
+    # A revision only gachabase lists (nanoka's manifest has not got it yet): when its kit files are
+    # missing too, the card is built from the changelog alone (see `_changelog_only_character`).
+    gachabase_only = bool(version) and version in changelog_extra and version not in set(
+        _available_beta_versions(m_game, live_cycle=live_cycle))
     late_version = ""
     if not version:
         late_version = _late_revision(record, int(getattr(ctx, "now", 0) or 0))
@@ -6338,10 +6453,14 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     has_live_build = bool(live_build and live_build != version)
 
 
-    if _changelog_url(game) and not _take_shared_request(budget):
-        ctx.warnings.append(f"{game.short} beta: run-wide request budget reached before changelog; deferred")
-        return None
-    revisions, extra_ch_reqs = await _fetch_changelog_revisions(ctx, game, budget, 2)
+    if watched:
+        revisions, extra_ch_reqs = await _fetch_changelog_revisions(
+            ctx, game, budget, 2, primed=(watch_text,))
+    else:
+        if _changelog_url(game) and not _take_shared_request(budget):
+            ctx.warnings.append(f"{game.short} beta: run-wide request budget reached before changelog; deferred")
+            return None
+        revisions, extra_ch_reqs = await _fetch_changelog_revisions(ctx, game, budget, 2)
     changelog_missing = bool(_changelog_url(game)) and not revisions
     source_revision = _changelog_for_version(revisions, version)
     rev_label, rev_key = _revision_label(source_revision, version)
@@ -6638,6 +6757,13 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     built = {"sections": []}
                 _reconcile_en_with_zh_kit(built, builder(zh_data), game.key)
         if not data:
+            only = _changelog_only_character(entry, ns, version, ctx.now) if gachabase_only else None
+            if only is not None:
+                patch.characters.append(only)
+                patch.item_keys.append(_entry_key(ns, "character", item_id))
+                ctx.warnings.append(f"{game.short} beta: {version} is on gachabase only; "
+                                    f"posted {only.name} from the changelog")
+                continue
             ctx.warnings.append(f"{game.short} beta: no kit data for id {item_id}; deferred")
             patch.more = True
             continue

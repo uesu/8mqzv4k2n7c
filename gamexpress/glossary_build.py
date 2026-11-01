@@ -126,8 +126,28 @@ def item_pairs(en_record: dict | None, zh_record: dict | None) -> list[tuple[str
     return sorted(set(raw))
 
 
-def aggregate(per_item: dict[str, list[tuple[str, str]]]) -> list[dict[str, Any]]:
-    """Vote across items: keep a CN term only when one EN reading has enough support and share."""
+def identity_pair(en_record: dict | None, zh_record: dict | None) -> tuple[str, str] | None:
+    """The item's own display name, CN -> EN (`薇薇安·班希` -> `Vivian Banshee`), if it is clean.
+
+    A name belongs to one item, so the vote below would always drop it (support 1). It is kept
+    instead on its own authority: the item's EN and CN records name it in the same field.
+    """
+    if not isinstance(en_record, dict) or not isinstance(zh_record, dict):
+        return None
+    en_name = str(en_record.get("name") or "").strip()
+    zh_name = str(zh_record.get("name") or "").strip()
+    if not en_name or not zh_name:
+        return None
+    return _clean_term(zh_name, en_name)
+
+
+def aggregate(per_item: dict[str, list[tuple[str, str]]],
+              identities: dict[str, tuple[str, str]] | None = None) -> list[dict[str, Any]]:
+    """Vote across items: keep a CN term only when one EN reading has enough support and share.
+
+    `identities` (item key -> its own name pair) add item names. A name is kept only when every
+    item that carries that CN name gives the same EN name, so a conflict drops it.
+    """
     votes: dict[str, Counter] = {}
     seen_in: dict[str, set[str]] = {}
     for item_id, pairs in per_item.items():
@@ -143,6 +163,18 @@ def aggregate(per_item: dict[str, list[tuple[str, str]]]) -> list[dict[str, Any]
         examples = sorted(i for i in seen_in[zh] if any(p == (zh, en) for p in per_item[i]))
         terms.append({"zh": zh, "en": en, "support": support, "items_with_term": total,
                       "example_items": examples[:MAX_EXAMPLE_ITEMS]})
+    names: dict[str, Counter] = {}
+    name_items: dict[str, list[str]] = {}
+    for item_id, (zh, en) in (identities or {}).items():
+        names.setdefault(zh, Counter())[en] += 1
+        name_items.setdefault(zh, []).append(item_id)
+    for zh, counter in names.items():
+        if zh in votes or len(counter) != 1:
+            continue  # a term already voted, or two EN names for one CN name: never guess
+        en = next(iter(counter))
+        count = counter[en]
+        terms.append({"zh": zh, "en": en, "support": count, "items_with_term": count,
+                      "example_items": sorted(name_items[zh])[:MAX_EXAMPLE_ITEMS]})
     terms.sort(key=lambda t: (-len(t["zh"]), t["zh"]))
     return terms
 
@@ -206,19 +238,20 @@ async def build_game(fetcher, game: str, *, max_items: int = 400) -> dict[str, A
         ids = _item_ids(await _listing(fetcher, ns, version, listing_kind))
         targets.extend((kind, i) for i in ids[:max_items])
 
-    async def one(kind: str, item_id: str) -> tuple[str, list[tuple[str, str]]]:
+    async def one(kind: str, item_id: str) -> tuple[str, list[tuple[str, str]], tuple[str, str] | None]:
         en = await _detail(fetcher, ns, version, kind, item_id, locale="en")
         zh = await _detail(fetcher, ns, version, kind, item_id, locale="zh")
-        return f"{kind}/{item_id}", item_pairs(en, zh)
+        return f"{kind}/{item_id}", item_pairs(en, zh), identity_pair(en, zh)
 
     results = await asyncio.gather(*(one(k, i) for k, i in targets))
-    per_item = {key: pairs for key, pairs in results if pairs}
+    per_item = {key: pairs for key, pairs, _ident in results if pairs}
+    identities = {key: ident for key, _pairs, ident in results if ident}
     encore_items = 0
     if game == "wuwa":
         encore = await _encore_pairs(fetcher, max_items=max_items)
         encore_items = len(encore)
         per_item.update(encore)
-    terms = aggregate(per_item)
+    terms = aggregate(per_item, identities)
     return {
         "game": game,
         "namespace": ns,
