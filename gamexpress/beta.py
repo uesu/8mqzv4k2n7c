@@ -4504,11 +4504,11 @@ def _stat_diff(prev: BetaCharacter, current: BetaCharacter) -> list[BetaSectionE
             for old, new in pairs:
                 lines.append(_change_line(old, new)[0])
             for extra in new_lines[j1 + len(pairs):j2]:
-                lines.append(f"**[NEW]** {extra}")
+                lines.append(_tagged("NEW", extra))
             lines.extend(f"**[CHANGED]** Removed: ~~{line}~~"
                          for line in old_lines[i1 + len(pairs):i2])
         elif opcode == "insert":
-            lines.extend(f"**[NEW]** {line}" for line in new_lines[j1:j2])
+            lines.extend(_tagged("NEW", line) for line in new_lines[j1:j2])
         elif opcode == "delete":
             lines.extend(f"**[CHANGED]** Removed: ~~{line}~~" for line in old_lines[i1:i2])
     return [BetaSectionEntry(title="Profile & Base Stats", category="Profile Changes",
@@ -4612,18 +4612,34 @@ def _metadata_changes(game_key: str, previous: Any, current: Any,
     return lines
 
 
+def _tagged(tag: str, line: str) -> str:
+    """`**[TAG]** line`, except a `-#` source note, which stays subtext and never becomes a bullet."""
+    return line if line.startswith("-#") else f"**[{tag}]** {line}"
+
+
+def _real_effect_title(title: str) -> str:
+    """An effect title we can publish. Gachabase's Beta page carries a literal `Robin Test Engine`
+    placeholder; a test string is not a rename, so it is treated as no title at all."""
+    t = (title or "").strip()
+    if not t or "~~" in t or re.search(r"\btest\b", t, re.I):
+        return ""
+    return t
+
+
 def _diff_equipment(previous: BetaEquipment, current: BetaEquipment) -> BetaEquipment | None:
     changes: list[str] = []
     if previous.stats_line != current.stats_line:
         changes.append(_change_line(previous.stats_line, current.stats_line)[0])
-    if previous.effect_title != current.effect_title:
-        if current.effect_title.strip():
-            changes.append(f"**[CHANGED]** Effect renamed from ~~{previous.effect_title}~~ → "
-                           f"**{current.effect_title}**.")
-        elif previous.effect_title.strip():
+    old_title, new_title = _real_effect_title(previous.effect_title), _real_effect_title(current.effect_title)
+    if old_title != new_title:
+        if new_title and old_title:
+            changes.append(f"**[CHANGED]** Effect renamed from ~~{old_title}~~ → **{new_title}**.")
+        elif new_title:
+            changes.append(f"**[CHANGED]** Effect name is now **{new_title}**.")
+        elif old_title:
             # The new EN name is not in this build yet. Saying so beats `→ ****`, which Discord
             # renders as bold-nothing and reads like a rendering bug.
-            changes.append(f"**[CHANGED]** Effect renamed from ~~{previous.effect_title}~~ → "
+            changes.append(f"**[CHANGED]** Effect renamed from ~~{old_title}~~ → "
                            "*new name not in this build yet*.")
     old_lines, new_lines = previous.lines, current.lines
     matcher = difflib.SequenceMatcher(None, old_lines, new_lines, autojunk=False)
@@ -4633,11 +4649,11 @@ def _diff_equipment(previous: BetaEquipment, current: BetaEquipment) -> BetaEqui
         if opcode == "replace":
             pairs = list(zip(old_lines[i1:i2], new_lines[j1:j2]))
             changes.extend(_change_line(old, new)[0] for old, new in pairs)
-            changes.extend(f"**[NEW]** {line}" for line in new_lines[j1 + len(pairs):j2])
+            changes.extend(_tagged("NEW", line) for line in new_lines[j1 + len(pairs):j2])
             changes.extend(f"**[CHANGED]** Removed: ~~{line}~~"
                            for line in old_lines[i1 + len(pairs):i2])
         elif opcode == "insert":
-            changes.extend(f"**[NEW]** {line}" for line in new_lines[j1:j2])
+            changes.extend(_tagged("NEW", line) for line in new_lines[j1:j2])
         elif opcode == "delete":
             changes.extend(f"**[CHANGED]** Removed: ~~{line}~~" for line in old_lines[i1:i2])
     if not changes:
@@ -6051,8 +6067,8 @@ def _mixed_build_note(*, upstream: str, hotfix: bool, structural: int, values: i
         return (f"**Note:** the changelog flags this revision itself — \u201c{upstream}\u201d — so read "
                 "renames and new mechanics as provisional; the point values below are the part to trust.")
     if hotfix and structural >= 6 and values:
-        return (f"**Note:** this hotfix renames or adds {structural} blocks — more churn than a hotfix "
-                "normally carries — so part of it may come from another build. Point values are the "
+        return (f"**Note:** this patch renames or adds {structural} blocks — more churn than a typical "
+                "hotfix carries — so part of it may come from another build. Point values are the "
                 "part to trust; renames and new mechanics may still move.")
     return ""
 

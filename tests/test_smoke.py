@@ -20317,7 +20317,7 @@ def test_feature5_a_mixed_build_revision_is_called_out_on_the_card():
 
     structural = beta_mod._mixed_build_note(
         upstream="", hotfix=True, structural=9, values=2)
-    assert structural.startswith("**Note:** this hotfix renames or adds 9 blocks")
+    assert structural.startswith("**Note:** this patch renames or adds 9 blocks")
     assert "may come from another build" in structural
 
     # No hotfix, or no measured value to stand behind -> no caveat invented.
@@ -20673,14 +20673,36 @@ def test_feature5_diff_lines_never_render_empty_bold_or_a_literal_subtext_marker
     from gamexpress import beta as beta_mod
     from gamexpress.models import BetaEquipment
 
+    # A real title that disappears says so; a `Test` placeholder is never published as a rename.
     previous = BetaEquipment(id="zzz:14166", name="Robin's W-Engine",
-                             effect_title="Robin Test Engine", lines=["+5% HP"], tag="[NEW]")
+                             effect_title="Robin Crimson Engine", lines=["+5% HP"], tag="[NEW]")
     current = BetaEquipment(id="zzz:14166", name="Robin's W-Engine",
                             effect_title="", lines=["+6% HP"], tag="[CHANGED]")
     lines = beta_mod._diff_equipment(previous, current).lines
-    assert ("**[CHANGED]** Effect renamed from ~~Robin Test Engine~~ → "
+    assert ("**[CHANGED]** Effect renamed from ~~Robin Crimson Engine~~ → "
             "*new name not in this build yet*.") in lines
     assert not any("****" in line for line in lines)
+
+    # The live Beta page showed `Robin Test Engine` as the title: no `~~~~` rename, no test name.
+    placeholder = BetaEquipment(id="zzz:14166", name="Robin's W-Engine",
+                                effect_title="Robin Test Engine", lines=["+5% HP"], tag="[NEW]")
+    for old, new in ((placeholder, current), (current, placeholder)):
+        out = beta_mod._diff_equipment(old, new)
+        text = " ".join(out.lines) if out else ""
+        assert "Test Engine" not in text and "~~~~" not in text
+    named = BetaEquipment(id="zzz:14166", name="Robin's W-Engine",
+                          effect_title="Robin Crimson Engine", lines=["+5% HP"], tag="[NEW]")
+    assert "**[CHANGED]** Effect name is now **Robin Crimson Engine**." in beta_mod._diff_equipment(
+        placeholder, named).lines
+
+    # A CN/CHS source note stays subtext in an equipment diff, never a `[NEW]` bullet.
+    note = "-# 🌐 Values synced with authoritative CN/CHS beta data."
+    synced = BetaEquipment(id="zzz:14160", name="W-Engine (ID 14160)",
+                           effect_title="", lines=["+5% HP", note], tag="[CHANGED]")
+    base = BetaEquipment(id="zzz:14160", name="W-Engine (ID 14160)",
+                         effect_title="", lines=["+5% HP"], tag="[NEW]")
+    rendered = beta_mod._diff_equipment(base, synced).lines
+    assert note in rendered and not any("[NEW]** -#" in x or "[CHANGED]** -#" in x for x in rendered)
 
     note = "-# 🌐 CN/CHS client values updated (20%/22%/24%); EN text lags in this build."
     rendered, tag = beta_mod._change_line("", note)
