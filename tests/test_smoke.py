@@ -22370,6 +22370,14 @@ def test_feature5_cn_decides_whether_a_zzz_w_engine_diff_changed_in_either_direc
     assert "Read from CN beta data" in body
 
 
+def test_feature5_probe_budget_covers_every_zzz_listed_item():
+    """A blocked-changelog revision is probed once and saved, so the cap must cover all ZZZ items
+    (245 listed in 3.4.2 hotfix 20052336). Otherwise the tail is never compared."""
+    from gamexpress import beta as beta_mod
+
+    assert beta_mod.BETA_PROBE_MAX_REQUESTS >= 2 * 245
+
+
 def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted():
     """CN moved in an earlier beta and was posted; a later beta where EN catches up to that CN
     value (CN unchanged since) must post nothing, because CN is the source of truth."""

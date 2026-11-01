@@ -6161,7 +6161,10 @@ def _mixed_build_note(*, upstream: str, hotfix: bool, structural: int, values: i
 # says which items changed, so when it is unreadable every item's detail is compared between the
 # previous build and this one. Own cap, not the run-wide request budget: it runs once per blocked
 # revision and its result is saved on the revision record, so a deferred revision never re-probes.
-BETA_PROBE_MAX_REQUESTS = 400
+# Two requests per item (previous and current build). 600 covers 300 items: ZZZ lists 245, so one
+# blocked-changelog run compares every item instead of silently skipping the tail (W-Engine 14166 in
+# hotfix 20052336 sat past the old 200-item cut-off and was never compared).
+BETA_PROBE_MAX_REQUESTS = 600
 _PROBE_NOISE_KEYS = frozenset({"icon", "image", "icon_path", "inter_knot_icon", "role_icon",
                                "avatar_piece_id", "image_url"})
 
