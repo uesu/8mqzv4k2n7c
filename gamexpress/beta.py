@@ -4489,14 +4489,15 @@ _ZH_TITLE_SPLIT_RE = re.compile(r"[:：]\s*")
 
 _ZZZ_SEED_GLOSSARY_PATH = Path(__file__).parent / "data" / "zzz_zh_en_glossary.json"
 _zzz_seed_cache: dict[str, str] | None = None
-_ZZZ_GENERATED_GLOSSARY_PATH = Path(__file__).parent / "data" / "glossary" / "zzz.json"
+_GLOSSARY_DIR = Path(__file__).parent / "data" / "glossary"
 
 
-def _zzz_generated_glossary() -> dict[str, str]:
-    """Reviewed terms from `gamexpress build-glossary --game zzz` (none until that file exists)."""
-    if not _ZZZ_GENERATED_GLOSSARY_PATH.exists():
+def _generated_glossary(game_key: str) -> dict[str, str]:
+    """Reviewed terms from `gamexpress build-glossary --game <game>` (none until that file exists)."""
+    path = _GLOSSARY_DIR / f"{game_key}.json"
+    if not path.exists():
         return {}
-    raw = json.loads(_ZZZ_GENERATED_GLOSSARY_PATH.read_text(encoding="utf-8"))
+    raw = json.loads(path.read_text(encoding="utf-8"))
     return {str(row["zh"]): str(row["en"]) for row in raw.get("terms", [])}
 
 
@@ -4513,7 +4514,8 @@ def _zzz_seed_glossary() -> dict[str, str]:
     return dict(_zzz_seed_cache)
 
 
-def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]]) -> dict[str, str]:
+def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]],
+                    game_key: str = "zzz") -> dict[str, str]:
     """Chinese term -> English term: the verified seed, plus terms learned from the same item's
     already-localized sections.
 
@@ -4542,8 +4544,9 @@ def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]]) -> d
             for z, e in zip(zh_terms, en_terms):
                 add(z, e)
     learned = {zh: next(iter(ens)) for zh, ens in seen.items() if len(ens) == 1}
-    # Priority: the verified seed, then terms learned from this item, then the generated file.
-    return {**_zzz_generated_glossary(), **learned, **_zzz_seed_glossary()}
+    # Priority: the verified seed (ZZZ only), then terms learned from this item, then the generated file.
+    seed = _zzz_seed_glossary() if game_key == "zzz" else {}
+    return {**_generated_glossary(game_key), **learned, **seed}
 
 
 def _zh_en_apply(text: str, glossary: dict[str, str]) -> str:
@@ -5347,7 +5350,7 @@ async def _cn_kit_pair(ctx, ns: str, kind: str, item_id: str, prev_ver: str, cur
     return out
 
 
-def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
+def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict, game_key: str = "zzz") -> bool:
     """Patch stale/broken EN numbers or missing sections using authoritative CN/CHS beta data."""
     zh_secs: list[BetaSectionEntry] = list(zh_built.get("sections") or [])
     if not zh_secs:
@@ -5399,7 +5402,7 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
             matched_zh_ids.add(id(zh_secs[idx]))
             pairs_to_sync.append((es, zh_secs[idx]))
 
-    glossary = _zh_en_glossary(pairs_to_sync)
+    glossary = _zh_en_glossary(pairs_to_sync, game_key)
     changed_any = False
     for en_sec, zh_sec in pairs_to_sync:
         sec_changed = False
@@ -6633,7 +6636,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             if zh_data:
                 if not built:
                     built = {"sections": []}
-                _reconcile_en_with_zh_kit(built, builder(zh_data))
+                _reconcile_en_with_zh_kit(built, builder(zh_data), game.key)
         if not data:
             ctx.warnings.append(f"{game.short} beta: no kit data for id {item_id}; deferred")
             patch.more = True
@@ -6744,7 +6747,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             zh_data = await _detail(
                 ctx.fetcher, ns, version, char_detail_kind, item_id, locale="zh"
             )
-            if zh_data and _reconcile_en_with_zh_kit(built, builder(zh_data)):
+            if zh_data and _reconcile_en_with_zh_kit(built, builder(zh_data), game.key):
                 full.sections = _clone_sections(list(built.get("sections") or []), "[NEW]")
                 cur_snap = _character_snapshot(full, version, ctx.now)
 
@@ -6856,8 +6859,8 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 elif cn["verdict"] == "changed":
                     en_prev = {"sections": _clone_sections(list(previous.sections), "[CHANGED]")}
                     en_cur = {"sections": _clone_sections(list(full.sections), "[NEW]")}
-                    _reconcile_en_with_zh_kit(en_prev, {"sections": cn_prev_secs})
-                    _reconcile_en_with_zh_kit(en_cur, {"sections": cn_cur_secs})
+                    _reconcile_en_with_zh_kit(en_prev, {"sections": cn_prev_secs}, game.key)
+                    _reconcile_en_with_zh_kit(en_cur, {"sections": cn_cur_secs}, game.key)
                     previous.sections = list(en_prev["sections"])
                     full.sections = list(en_cur["sections"])
                     cmp_mode = "diff"

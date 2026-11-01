@@ -22414,12 +22414,12 @@ def test_feature5_zh_en_glossary_learns_terms_from_aligned_sections_and_drops_co
     ]
     # Isolate from the reviewed generated file so only the learning rule is under test.
     import tempfile
-    _saved = beta_mod._ZZZ_GENERATED_GLOSSARY_PATH
-    beta_mod._ZZZ_GENERATED_GLOSSARY_PATH = Path(tempfile.gettempdir()) / "no-such-zzz-glossary.json"
+    _saved = beta_mod._GLOSSARY_DIR
+    beta_mod._GLOSSARY_DIR = Path(tempfile.mkdtemp()) / "no-glossary-here"
     try:
         gloss = beta_mod._zh_en_glossary(pairs)
     finally:
-        beta_mod._ZZZ_GENERATED_GLOSSARY_PATH = _saved
+        beta_mod._GLOSSARY_DIR = _saved
     assert gloss["普通攻击"] == "Basic Attack"
     assert gloss["燎身爪"] == "Burning Claw"
     assert gloss["虎啸"] == "Tiger's Roar"
@@ -22522,6 +22522,33 @@ def test_glossary_build_term_filter_rejects_noise_and_keeps_names():
         assert gb._clean_term(zh, en) == (zh, en), (zh, en)
 
 
+def test_all_games_glossary_loads_per_game_and_seed_stays_zzz_only():
+    """Each game reads its own reviewed file; the verified ZZZ seed never leaks into another game."""
+    import tempfile
+
+    from gamexpress import beta as beta_mod
+    from gamexpress import glossary_build as gb
+
+    for game in ("zzz", "starrail", "genshin", "wuwa"):
+        terms = beta_mod._generated_glossary(game)
+        assert terms, f"{game} reviewed glossary is missing or empty"
+        for zh, en in terms.items():
+            assert gb._clean_term(zh, en) == (zh, en), (game, zh, en)
+    # Seed (ZZZ-only) is applied to ZZZ and never to another game.
+    assert beta_mod._zh_en_glossary([], "zzz")["落羽生花"] == "Featherbloom"
+    assert "落羽生花" not in beta_mod._zh_en_glossary([], "starrail")
+    # Per-game file is used: a game with no file gets nothing generated.
+    saved = beta_mod._GLOSSARY_DIR
+    beta_mod._GLOSSARY_DIR = Path(tempfile.mkdtemp())
+    try:
+        assert beta_mod._generated_glossary("genshin") == {}
+    finally:
+        beta_mod._GLOSSARY_DIR = saved
+    # Reviewed terms apply to lines of that game's text.
+    star = beta_mod._zh_en_glossary([], "starrail")
+    assert beta_mod._zh_en_apply("终结技伤害提升", star).startswith("Ultimate")
+
+
 def test_glossary_build_full_run_uses_fake_fetcher_and_rejects_excluded_games():
     import asyncio
 
@@ -22578,8 +22605,7 @@ def test_glossary_build_full_run_uses_fake_fetcher_and_rejects_excluded_games():
 def test_glossary_build_generated_zzz_terms_sit_below_learned_and_seed():
     from gamexpress import beta as beta_mod
 
-    assert beta_mod._zzz_generated_glossary() == {} or isinstance(
-        beta_mod._zzz_generated_glossary(), dict)
+    assert isinstance(beta_mod._generated_glossary("zzz"), dict)
     assert beta_mod._zh_en_glossary([])["落羽生花"] == "Featherbloom"  # seed wins even with no learning
 
 
