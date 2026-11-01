@@ -22296,6 +22296,80 @@ def test_feature5_cn_decides_whether_a_zzz_agent_diff_changed_in_either_directio
     assert "read from CN beta data" in (card.subtext or "")
 
 
+def test_feature5_cn_decides_whether_a_zzz_w_engine_diff_changed_in_either_direction():
+    """Equipment follows the same CN rule as agents: an EN-only wording edit with CN unchanged is
+    not posted, and a CN-only value move is posted with the CN number."""
+    from gamexpress import beta as beta_mod
+
+    base = _beta_json("zzz_weapon_14166.json")
+    listing = _beta_json("zzz_weapon_listing.json")
+
+    def weapon(desc_pct: str, desc_extra: str = "") -> dict:
+        data = json.loads(json.dumps(base))
+        data["talents"]["1"]["desc"] = data["talents"]["1"]["desc"].replace(
+            "DEF increases by 10%", f"DEF increases by {desc_pct}") + desc_extra
+        return data
+
+    v1 = weapon("10%")
+    manifest = {"zzz": {
+        "live": "3.3", "latest": "3.4.1+19834130",
+        "available": ["3.3", "3.4.1+19834130"],
+        "new": {"character": [], "weapon": [14166], "equipment": []},
+    }}
+
+    def run(en_v2: dict, zh_v2: dict):
+        latest = {"rev": "19834130"}
+
+        class Fetcher:
+            async def get_text(self, url, **_kw):
+                if latest["rev"] == "19834130":
+                    return "## v3.4.1 Rev. 19834130 | 23rd October 2026\n"
+                return "## v3.4.1 Rev. 19850203 | 24th October 2026\n"
+
+            async def get_json(self, url, **_kw):
+                if url.endswith("/weapon.json"):
+                    # 14166 is not in the 3.3 live build: it is revealed in 19834130.
+                    if "/3.3/" in url:
+                        return {k: v for k, v in listing.items() if k != "14166"}
+                    return listing
+                old_build = "19834130" in url or "/3.3/" in url
+                if "/zh/weapon/14166" in url:
+                    return v1 if old_build else zh_v2
+                if "/en/weapon/14166" in url:
+                    return v1 if old_build else en_v2
+                return None
+
+            async def verify_media(self, _url):
+                return True
+
+        local = json.loads(json.dumps(manifest))
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx = _beta_ctx(Path(tmp) / "state.json", Fetcher(), BETA_ENABLED="1", games=["zzz"])
+            p1 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], local, beta_mod._budget(ctx)))
+            assert p1 and len(p1.equipment) == 1
+            beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), p1, status="posted")
+            ctx.state.save()
+            ctx.state = State.load(ctx.settings.state_path)
+            latest["rev"] = "19850203"
+            local["zzz"]["latest"] = "3.4.1+19850203"
+            local["zzz"]["available"].append("3.4.1+19850203")
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], local, beta_mod._budget(ctx)))
+
+    # EN reworded the line, CN did not move: nothing to post.
+    en_only = weapon("10%", " (reworded in EN only)")
+    p_en = run(en_only, weapon("10%"))
+    assert not (p_en and p_en.equipment)
+
+    # CN moved the DEF value, EN still shows the old text: the CN value is what gets posted.
+    p_cn = run(weapon("10%"), weapon("16%"))
+    assert p_cn and len(p_cn.equipment) == 1
+    body = "\n".join(p_cn.equipment[0].lines)
+    # The DEF value moved in CN (10% -> 16%); the unchanged DMG clause is not marked as changed.
+    assert "~~10%~~ → **16%** for 10s" in body
+    assert "DMG increases by 10% for 15s" in body
+    assert "Read from CN beta data" in body
+
+
 def test_feature5_post_merge_edge_cases_and_ci_annotation_hygiene():
     """Cover CN/EN word-order safety, retry last_poll, Page-1 equipment packing, and epoch merges."""
     import importlib.util

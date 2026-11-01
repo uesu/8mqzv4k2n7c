@@ -46,6 +46,7 @@ DESIGN GUARANTEES
 from __future__ import annotations
 
 import asyncio
+import copy
 import difflib
 import json
 import logging
@@ -5413,6 +5414,42 @@ def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
     return changed_any
 
 
+async def _cn_equipment_pair(ctx, ns: str, kind: str, item_id: str, role: str,
+                             prev_ver: str, cur_ver: str, listing_entry: dict | None,
+                             budget: dict, requests: int) -> dict:
+    """CN verdict for a W-Engine, Drive Disc or Bangboo: "equal", "changed", or None (unknown).
+
+    Same rule as agents: CN decides whether anything changed, and the CN values are what a
+    changed item shows. The fields compared are the ones a card prints, not the raw JSON.
+    """
+    out: dict = {"verdict": None, "prev": None, "cur": None, "requests": requests}
+    if not prev_ver or not cur_ver or prev_ver == cur_ver:
+        return out
+    listing = listing_entry if isinstance(listing_entry, dict) else {}
+
+    async def read(version: str) -> dict | None:
+        if out["requests"] + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
+            return None
+        out["requests"] += 1
+        zh = await _detail(ctx.fetcher, ns, version, kind, item_id, locale="zh")
+        return _equip_from_detail(ns, kind, zh, listing) if zh else None
+
+    cur_fields = await read(cur_ver)
+    prev_fields = await read(prev_ver)
+    if not cur_fields or not prev_fields:
+        return out
+
+    def _fingerprint(fields: dict) -> str:
+        keep = {k: fields.get(k) for k in (
+            "sub_type", "weapon_class", "set_kind", "set_parts", "stats_line", "effect_title")}
+        keep["lines"] = [ln for ln in (fields.get("lines") or []) if not str(ln).startswith("-#")]
+        return stable_hash(keep)
+
+    same = _fingerprint(prev_fields) == _fingerprint(cur_fields)
+    out.update(verdict="equal" if same else "changed", prev=prev_fields, cur=cur_fields)
+    return out
+
+
 def _reconcile_en_with_zh_equipment(current: BetaEquipment, zh_fields: dict) -> bool:
     """Resolve `[value unavailable]` / `[TBD]` / `???` or numeric lag on equipment via `/zh/`."""
     zh_lines = list(zh_fields.get("lines") or [])
@@ -7116,6 +7153,31 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 # read, so there is nothing to diff. The existing snapshot path says exactly that
                 # instead of printing a released item as a brand-new one.
                 eq_cmp = "snapshot"
+        # CN decides for equipment too (W-Engine, Drive Disc, Bangboo): an EN-only edit with CN
+        # unchanged is not posted, and a CN value move is posted with the CN numbers.
+        eq_cn_driven = False
+        if previous is not None and "_encore" not in data and eq_cmp in ("diff", "equal"):
+            cn_prev_ver = live_build if released_eq is not None else previous_revision
+            cn = await _cn_equipment_pair(
+                ctx, ns, detail_kind, item_id, role, cn_prev_ver, version,
+                listing_entry, budget, requests)
+            requests = cn["requests"]
+            if cn["verdict"] == "equal":
+                eq_cmp = "equal"
+            elif cn["verdict"] == "changed":
+                # Placeholder reconciliation only fills `[TBD]`/`???`; a plain numeric move in CN
+                # would not reach the EN lines. CN is the reference, so the diff reads its lines.
+                prev_eq = copy.copy(previous)
+                prev_eq.lines = [str(x) for x in (cn["prev"].get("lines") or [])]
+                cur_eq = copy.copy(current)
+                cur_eq.lines = [str(x) for x in (cn["cur"].get("lines") or [])]
+                if cn["cur"].get("stats_line"):
+                    cur_eq.stats_line = str(cn["cur"]["stats_line"])
+                    prev_eq.stats_line = str(cn["prev"].get("stats_line") or "")
+                previous = prev_eq
+                current = cur_eq
+                eq_cmp = "diff"
+                eq_cn_driven = True
         patch.snapshots[snap_key] = eq_snap
         if eq_gallery:
             patch.snapshots[snap_key]["gallery_urls"] = list(eq_gallery)
@@ -7132,6 +7194,10 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             patch.equipment.append(current)
         elif eq_cmp == "diff":
             changed = _diff_equipment(previous, current)
+            if changed and eq_cn_driven:
+                changed.lines = [
+                    "-# 🌐 Read from CN beta data (EN text not updated yet)", *changed.lines,
+                ]
             if changed:
                 compared = f"the released {live_build} build" if released_eq is not None else ""
                 if not patch.diff_range:
