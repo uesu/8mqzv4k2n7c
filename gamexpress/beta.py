@@ -5221,6 +5221,46 @@ def _patch_placeholder_line_from_zh(en_ln: str, zh_ln: str, placeholder_re: str)
     return out, changed
 
 
+async def _cn_kit_pair(ctx, ns: str, kind: str, item_id: str, prev_ver: str, cur_ver: str,
+                       builder, budget: dict, requests: int, cur_zh: dict | None = None) -> dict:
+    """Compare the CN kit at two revisions. `verdict` is "equal", "changed", or None (unknown).
+
+    None means CN could not be read for one side, so the caller keeps the EN verdict. The request
+    count is returned because every read here spends the same shared budget as the rest of a run.
+    """
+    out: dict = {"verdict": None, "prev": None, "cur": None, "requests": requests}
+    if not prev_ver or not cur_ver or prev_ver == cur_ver or builder is None:
+        return out
+    if cur_zh is None:
+        if out["requests"] + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
+            return out
+        out["requests"] += 1
+        cur_zh = await _detail(ctx.fetcher, ns, cur_ver, kind, item_id, locale="zh")
+    if out["requests"] + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
+        return out
+    out["requests"] += 1
+    prev_zh = await _detail(ctx.fetcher, ns, prev_ver, kind, item_id, locale="zh")
+    if not prev_zh or not cur_zh:
+        return out
+    prev_built = builder(prev_zh) or {}
+    cur_built = builder(cur_zh) or {}
+    prev_secs = list(prev_built.get("sections") or [])
+    cur_secs = list(cur_built.get("sections") or [])
+    if not prev_secs or not cur_secs:
+        return out
+    # Metadata counts too: a reclassified agent (role, element, faction, attack type, rarity)
+    # changes with no skill text moving, and CN would show it the same way.
+    def _fingerprint(built: dict, secs: list) -> str:
+        meta = {k: built.get(k) for k in (
+            "role", "element", "special_element", "camp", "attack_type", "subtext", "rarity",
+            "stats_lines")}
+        return stable_hash({"meta": meta, "sections": [_section_snapshot(x) for x in secs]})
+
+    same = _fingerprint(prev_built, prev_secs) == _fingerprint(cur_built, cur_secs)
+    out.update(verdict="equal" if same else "changed", prev=prev_secs, cur=cur_secs)
+    return out
+
+
 def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict) -> bool:
     """Patch stale/broken EN numbers or missing sections using authoritative CN/CHS beta data."""
     zh_secs: list[BetaSectionEntry] = list(zh_built.get("sections") or [])
@@ -6653,6 +6693,37 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             # the labelled full snapshot below, because waiting cannot fix it.
             patch.more = True
             continue
+        # CN is the accuracy reference for a diff. EN can lag behind CN, so an EN-only change can be
+        # stale and an EN-equal kit can still carry a CN change. Compare the CN kit at the two
+        # revisions: that decides changed vs unchanged, and where CN moved, its numbers replace the
+        # EN ones in the before/after (EN text stays for the labels).
+        cn_driven = False
+        if (
+            previous is not None
+            and "_encore" not in data
+            and builder is not None
+            and cmp_mode in ("diff", "equal")
+        ):
+            cn_prev_ver = live_build if released is not None else prior_revision
+            cn = await _cn_kit_pair(
+                ctx, ns, char_detail_kind, item_id, cn_prev_ver, version, builder,
+                budget, requests, zh_data,
+            )
+            requests = cn["requests"]
+            if cn["verdict"] is not None:
+                cn_prev_secs, cn_cur_secs = cn["prev"], cn["cur"]
+                if cn["verdict"] == "equal":
+                    # CN has no change: an EN-only difference is stale EN text, not a new value.
+                    cmp_mode = "equal"
+                elif cn["verdict"] == "changed":
+                    en_prev = {"sections": _clone_sections(list(previous.sections), "[CHANGED]")}
+                    en_cur = {"sections": _clone_sections(list(full.sections), "[NEW]")}
+                    _reconcile_en_with_zh_kit(en_prev, {"sections": cn_prev_secs})
+                    _reconcile_en_with_zh_kit(en_cur, {"sections": cn_cur_secs})
+                    previous.sections = list(en_prev["sections"])
+                    full.sections = list(en_cur["sections"])
+                    cmp_mode = "diff"
+                    cn_driven = True
         patch.snapshots[snap_key] = cur_snap
         if eidolon_imgs:
             patch.snapshots[snap_key]["gallery_urls"] = list(eidolon_imgs)
@@ -6707,7 +6778,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 tally = _change_tally(diff_sections)
                 full.subtext = (f"-# Revision diff against {old_rev}"
                                 + (f" • {tally}" if tally else "")
-                                + (f" • {unchanged} unchanged block(s) omitted" if unchanged else ""))
+                                + (f" • {unchanged} unchanged block(s) omitted" if unchanged else "")
+                                + (" • 🌐 read from CN beta data (EN text not updated yet)"
+                                   if cn_driven else ""))
                 full.overview = _synthesize_kit_overview(
                     game.key, name, built, full.sections, is_new=False, mode="diff",
                     unchanged=unchanged, compared_to=old_rev,

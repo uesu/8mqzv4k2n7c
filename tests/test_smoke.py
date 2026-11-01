@@ -16773,6 +16773,8 @@ class _RecordingFetcher:
 
     async def get_json(self, url, **_kw):
         self.calls.append(url)
+        if "/zh/" in url:
+            return None  # CN is not published in these captured fixtures
         for key, value in self.files.items():
             if key in url and isinstance(value, dict):
                 return value
@@ -19674,6 +19676,10 @@ def test_feature5_released_agent_diffs_against_the_live_build_not_the_whole_kit(
             self.calls = []
 
         async def get_json(self, url, **_kw):
+
+            if "/zh/" in url:
+
+                return None  # CN not published in this fixture
             self.calls.append(url)
             if url.endswith("/manifest.json"):
                 return manifest
@@ -19729,6 +19735,8 @@ def test_feature5_released_agent_with_no_visible_change_posts_nothing():
 
     class SameKitFetcher:
         async def get_json(self, url, **_kw):
+            if "/zh/" in url:
+                return None  # CN not published in this fixture
             if url.endswith("/manifest.json"):
                 return manifest
             if "/character/1661" in url:
@@ -22180,10 +22188,11 @@ def test_feature5_cn_chs_crosscheck_reconciles_lagging_en_values_and_placeholder
 
         async def get_json(self, url, **_kw):
             self.calls.append(url)
+            # Served by version path, as the static host does: the 19834130 build is v1.
             if "/zh/character/1601" in url:
-                return v1_zh if phase["n"] == 1 else v2_zh
+                return v1_zh if "19834130" in url else v2_zh
             if "/en/character/1601" in url:
-                return v1_en if phase["n"] == 1 else v2_en
+                return v1_en if "19834130" in url else v2_en
             return None
 
         async def verify_media(self, _url):
@@ -22211,6 +22220,80 @@ def test_feature5_cn_chs_crosscheck_reconciles_lagging_en_values_and_placeholder
         assert p2 and len(p2.characters) == 1 and p2.characters[0].is_new is False
         p2_body = "\n".join(ln for s in p2.characters[0].sections for ln in s.lines)
         assert "[BUFF]" in p2_body and "~~**138.4%**~~ → **168.8%**" in p2_body
+
+
+def test_feature5_cn_decides_whether_a_zzz_agent_diff_changed_in_either_direction():
+    """CN is the reference for a diff: an EN-only edit with CN unchanged posts nothing, and a CN-only
+    value move posts the CN numbers even when EN did not change."""
+    from gamexpress import beta as beta_mod
+
+    base_en = _beta_json("zzz_character_1601.json")
+    v1_en = json.loads(json.dumps(base_en))
+    v1_en["skill"]["basic"]["description"].append({
+        "name": "Basic Attack: Thornbreaker",
+        "desc": "Deals 85% Ether DMG.",
+        "param": [{"name": "1st-Hit DMG Multiplier", "param": {
+            "1601101": {"main": 6910, "growth": 630, "format": "%"}}}],
+    })
+    v1_zh = json.loads(json.dumps(v1_en))
+    v1_zh["skill"]["basic"]["description"][-1]["desc"] = "造成 85% 以太伤害。"
+    def run(v2_en, v2_zh):
+        manifest = {"zzz": {
+            "live": "3.3", "latest": "3.4.1+19834130",
+            "available": ["3.3", "3.4.1+19834130"],
+            "new": {"character": [1601], "weapon": [], "equipment": []},
+        }}
+
+        class Fetcher:
+            def __init__(self):
+                self.calls = []
+
+            async def get_text(self, url, **_kw):
+                self.calls.append(url)
+                if "19834130" in url or "3.3" in url:
+                    return "## v3.4.1 Rev. 19834130 | 23rd October 2026\n"
+                return "## v3.4.1 Rev. 19850203 | 24th October 2026\n"
+
+            async def get_json(self, url, **_kw):
+                self.calls.append(url)
+                if "/zh/character/1601" in url:
+                    return v1_zh if "19834130" in url else v2_zh
+                if "/en/character/1601" in url:
+                    return v1_en if "19834130" in url else v2_en
+                return None
+
+            async def verify_media(self, _url):
+                return True
+
+        with tempfile.TemporaryDirectory() as tmp:
+            fetcher = Fetcher()
+            ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
+            p1 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+            assert p1 and len(p1.characters) == 1
+            beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), p1, status="posted")
+            ctx.state.save()
+            ctx.state = State.load(ctx.settings.state_path)
+            manifest["zzz"]["latest"] = "3.4.1+19850203"
+            manifest["zzz"]["available"].append("3.4.1+19850203")
+            return asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+
+    # EN edited the wording, CN did not move: CN says no change, so nothing is posted.
+    v2_en_only = json.loads(json.dumps(v1_en))
+    v2_en_only["skill"]["basic"]["description"][-1]["desc"] = "Deals 85% Ether DMG (reworded)."
+    p_en_only = run(v2_en_only, json.loads(json.dumps(v1_zh)))
+    assert not (p_en_only and p_en_only.characters)
+
+    # EN is still the old text, but CN moved the multiplier: the CN value is what gets posted.
+    v2_cn_only = json.loads(json.dumps(v1_en))
+    v2_cn_only_zh = json.loads(json.dumps(v1_zh))
+    v2_cn_only_zh["skill"]["basic"]["description"][-1]["param"][0]["param"]["1601101"] = {
+        "main": 8410, "growth": 770, "format": "%"}
+    p_cn_only = run(v2_cn_only, v2_cn_only_zh)
+    assert len(p_cn_only.characters) == 1
+    card = p_cn_only.characters[0]
+    body = "\n".join(ln for s in card.sections for ln in s.lines)
+    assert "138.4%" in body and "168.8%" in body
+    assert "read from CN beta data" in (card.subtext or "")
 
 
 def test_feature5_post_merge_edge_cases_and_ci_annotation_hygiene():

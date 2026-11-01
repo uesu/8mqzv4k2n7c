@@ -279,6 +279,9 @@ class _HarnessFetcher:
         self.calls.append(("json", url))
         if url.endswith("/manifest.json"):
             return copy.deepcopy(self._manifest())
+        # This fixture does not publish a CN kit, so the CN check has nothing to compare.
+        if "/zh/" in url:
+            return None
         ns = next((name for name in ("gi", "hsr", "zzz", "ww") if f"/{name}/" in url), "")
         if not ns:
             return None
