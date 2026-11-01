@@ -4039,7 +4039,7 @@
       "6LS3F3LS5K87": {
         "first_seen": 1790944228,
         "gate": "redeem-validated",
-        "last_seen": 1793505316,
+        "last_seen": 1793548519,
         "message_id": "1555557642519445636",
         "msg_codes": [
           "6LS3F3LS5K87"
@@ -8003,8 +8003,8 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1793329202,
-          "banners_checked_ts": 1793537718,
-          "banners_search_ts": 1793537718,
+          "banners_checked_ts": 1793548519,
+          "banners_search_ts": 1793548519,
           "estimate_sources": [
             "version cadence"
           ],
