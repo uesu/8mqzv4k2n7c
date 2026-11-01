@@ -19746,56 +19746,57 @@ def test_feature5_hotfix_build_patch_runs_end_to_end_when_nanoka_has_no_detail_y
         # posted and the characters are deferred (retried on later polls), never a crash or a guess.
         assert any("changelog/beta" in u for u in fetcher.calls)
         assert patch is not None and patch.source_version == "3.4.2+20053876"
-        # Gachabase-only and no kit files: the card is built from the changelog row (Chinese -, English
-        # Changes + Full, the disclaimer), not deferred. Nothing is guessed from the missing kit.
-        assert [c.name for c in patch.characters] == ["Ju Fufu", "Vivian"]
-        ju = patch.characters[0]
-        assert ju.rarity == 0  # rarity not read: the card omits the rarity line
-        assert ju.page_url == "https://zzz.gachabase.net/agents/1391/ju-fufu/beta?lang=en"
-        lines = ju.overview.split("\n")
-        assert lines[0] == "|- Chinese: -"
-        assert lines[1].startswith("|- English: [Changes](https://zzz.gachabase.net/diff/agents/1391/ju-fufu?")
-        assert lines[1].endswith("([Full](https://zzz.gachabase.net/agents/1391/ju-fufu/beta?lang=en))")
-        assert "Disclaimer" in ju.subtext
-        assert ctx.warnings and all("deferred" not in w for w in ctx.warnings)
+        # Kit files are not on nanoka yet: nothing is guessed or posted from the changelog row alone.
+        # The character is deferred and retried on later polls until the kit is readable.
+        assert patch.characters == []
+        assert any("no kit data for id 1391; deferred" in w for w in ctx.warnings)
 
 
-def test_feature5_changelog_card_only_for_gachabase_only_revisions():
-    """If nanoka's manifest already lists the revision, a missing kit is a nanoka gap: it defers and
-    never posts a changelog card (that card would be posted again when the full kit arrives)."""
-    import tempfile
+def test_feature5_cn_sourced_values_are_bold_like_en_and_placeholders_stay_off_the_card():
+    """CN-sourced kit text follows the same card format as EN: numbers bold (also when a CJK word
+    sits in front of them), arrows kept, bullets nested, and no `(Test1)` marker on the card."""
+    from gamexpress import beta as beta_mod
+    from gamexpress import cards
+    from gamexpress.config import load_games, load_settings
+    from gamexpress.models import BetaCharacter, BetaPatch, BetaSectionEntry
 
+    # A CJK character before a value is a word boundary, so the value is bolded (was skipped).
+    assert cards._bold_beta_numbers("提升50%；异常掌控提升30点") == "提升**50%**；异常掌控提升30点"
+    # EN formatting is unchanged.
+    assert cards._bold_beta_numbers("Deals 50% DMG; ~~30~~ → **40** Anomaly, 1.5s") == \
+        "Deals **50%** DMG; ~~30~~ → **40** Anomaly, **1.5s**"
+    # Strikethrough, links and inline code stay exactly as written.
+    assert cards._bold_beta_numbers("[Link 20%](https://a.b/20%)") == "[Link 20%](https://a.b/20%)"
+
+    cn_sec = BetaSectionEntry(title="Potential", category="Potential Awakening", tag="[NEW]",
+                              lines=["(Test1)[普通攻击：落羽生花]造成的异常积蓄效率提升50%；"])
+    copied = beta_mod._clone_sections([cn_sec], "[NEW]")
+    assert copied[0].lines == ["[普通攻击：落羽生花]造成的异常积蓄效率提升50%；"]
+
+    game = load_games()["zzz"]
+    en_sec = BetaSectionEntry(title="Potential", category="Potential Awakening", tag="[CHANGED]",
+                              lines=["Deals 50% DMG; ~~30~~ → **40** Anomaly"])
+    char = BetaCharacter(name="Vivian", rarity=5, element="Ether", role="Anomaly",
+                         sections=[en_sec] + copied, diff_url="", page_url="", is_new=False)
+    patch = BetaPatch(game_key="zzz", beta_version="3.4.2", rev_label="v3.4.2 Rev. 20052336",
+                      rev_id="20052336", source_version="3.4.2+20052336", characters=[char])
+    body = "\n".join(
+        c.get("content", "") for pl in cards.beta_payloads(game, patch, load_settings())
+        for comp in pl["components"][0]["components"] for c in [comp] if c.get("type") == 10)
+    assert "(Test1)" not in body
+    assert "* **[Potential]:**" in body
+    assert "    * **[CHANGED]** Deals **50%** DMG; ~~30~~ → **40** Anomaly" in body
+    assert "    * **[NEW]** [普通攻击：落羽生花]造成的异常积蓄效率提升**50%**；" in body
+
+
+def test_feature5_placeholder_tokens_never_reach_kit_text():
+    """nanoka's CN data carries `(Test1)` markers in descriptions (the Vivian card showed them)."""
     from gamexpress import beta as beta_mod
 
-    class ListedFetcher:
-        async def get_text(self, url, **_kw):
-            return _HOTFIX_CHANGELOG_MD if "changelog/beta" in url else None
-
-        async def get_json(self, url, **_kw):
-            if url == beta_mod.MANIFEST_URL:
-                return {"zzz": {"latest": "3.4.2+20053876",
-                                "available": ["3.3", "3.4.2+20049556", "3.4.2+20052336", "3.4.2+20053876"],
-                                "live": "3.3", "new": {}}}
-            return None
-
-        async def get_bytes(self, *_a, **_kw):
-            return None
-
-        async def verify_media(self, _url):
-            return True
-
-    manifest = {"zzz": {"latest": "3.4.2+20053876",
-                        "available": ["3.3", "3.4.2+20049556", "3.4.2+20052336", "3.4.2+20053876"],
-                        "live": "3.3", "new": {}}}
-    with tempfile.TemporaryDirectory() as tmp:
-        ctx = _beta_ctx(Path(tmp) / "state.json", ListedFetcher(), BETA_ENABLED="1",
-                        DISCORD_WEBHOOK_BETA=HOOK, games=["zzz"])
-        record = ctx.state.beta_record("zzz")
-        record["source_version"] = "3.4.2+20052336"
-        ctx.state.save()
-        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
-        assert patch is not None and patch.characters == []
-        assert any("no kit data for id 1391; deferred" in w for w in ctx.warnings)
+    assert beta_mod._drop_placeholder_tokens("(Test1)[普通攻击：落羽生花]造成的异常积蓄效率提升50%") == \
+        "[普通攻击：落羽生花]造成的异常积蓄效率提升50%"
+    assert beta_mod._drop_placeholder_tokens("TestKey_PlaceHolder Dash deals 50% DMG") == "Dash deals 50% DMG"
+    assert beta_mod._drop_placeholder_tokens("Normal Attack deals 50% DMG") == "Normal Attack deals 50% DMG"
 
 
 def test_feature5_released_agent_diffs_against_the_live_build_not_the_whole_kit():

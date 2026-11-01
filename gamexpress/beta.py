@@ -958,6 +958,18 @@ def _single_stat_float(text: Any) -> float | None:
         return None
 
 
+_PLACEHOLDER_TOKEN_RE = re.compile(r"\((?:test|wip|tmp)\s*\d*\)|\b[A-Za-z]*(?:TestKey|PlaceHolder)\w*\b", re.I)
+
+
+def _drop_placeholder_tokens(text: str) -> str:
+    """Remove localization placeholders from kit prose: `(Test1)[普通攻击]` -> `[普通攻击]`.
+
+    nanoka's CN data carries these markers inside the description. They are never game text, so
+    they must not reach a card (the Vivian card showed `(Test1)` in its Potential text).
+    """
+    return re.sub(r"[ \t]{2,}", " ", _PLACEHOLDER_TOKEN_RE.sub("", text)).strip()
+
+
 def _section_lines(entry: Any) -> list[str]:
     """The full prose of one kit block: description, its numbers, its mechanic glossary.
 
@@ -965,7 +977,8 @@ def _section_lines(entry: Any) -> list[str]:
     two revisions can be compared value by value. This helper is the one place that knows
     how to flatten a block that arrived with only its structured half.
     """
-    lines = [str(ln) for ln in (getattr(entry, "lines", ()) or ()) if str(ln).strip()]
+    lines = [_drop_placeholder_tokens(str(ln)) for ln in (getattr(entry, "lines", ()) or ())]
+    lines = [ln for ln in lines if ln.strip()]
     if lines:
         return lines
     params = [p for p in (getattr(entry, "params", ()) or ()) if isinstance(p, dict)]
@@ -4063,39 +4076,6 @@ def _beta_cycle_open(m_game: dict, live_cycle: tuple[int, int] | None) -> bool:
     return live_cycle is None or _major_minor(latest) > live_cycle
 
 
-_CHANGELOG_ONLY_DISCLAIMER = ("**Disclaimer:** While English has been updated this revision, it may still "
-                              "not be up to date with the actual kit, so double check with Chinese!")
-
-
-def _changelog_only_character(entry: dict, ns: str, version: str, now: int) -> BetaCharacter | None:
-    """A card built from the gachabase changelog row alone, for a revision nanoka has no kit for.
-
-    Same layout as the gachabase post: the Chinese and English lines, `Changes` (the diff) and
-    `Full` (the page). CN is `-` because the changelog only ever reports an EN change here: the CN
-    kit is not read, so nothing is claimed about it. Returns None when the row has no name.
-    """
-    name = str(entry.get("name") or "").strip()
-    if not name:
-        return None
-    url = str(entry.get("url") or "")
-    diff = str(entry.get("diff") or "")
-    if diff:
-        english = f"English: [Changes]({diff}) ([Full]({url}))" if url else f"English: [Changes]({diff})"
-    else:
-        english = f"English: [Full]({url})" if url else "English: -"
-    # The language lines are the card body (overview), not kit blocks, so they carry no [CHANGED]
-    # tag and no kit heading. Rarity 0 hides the rarity line: the kit was never read. The diff is
-    # already the `Changes` link, so no separate revision-diff line is shown.
-    return BetaCharacter(
-        id=_entry_key(ns, "character", str(entry.get("name") or name)),
-        name=name,
-        rarity=0,
-        overview=f"|- Chinese: -\n|- {english}",
-        subtext=_CHANGELOG_ONLY_DISCLAIMER,
-        diff_url="", page_url=url, is_new=False,
-    )
-
-
 def _changelog_beta_versions(revisions: list[dict]) -> list[str]:
     """`3.4.2+20053876` for every changelog revision label `v3.4.2 Rev. 20053876`.
 
@@ -4673,9 +4653,12 @@ def _clone_sections_localized(sections: list[BetaSectionEntry], tag: str,
 
 
 def _clone_sections(sections: list[BetaSectionEntry], tag: str) -> list[BetaSectionEntry]:
+    # Every section copy goes through here (EN, CN-sourced, localized), so placeholders such as
+    # `(Test1)` are removed on the one path the card reads, not only in `_section_lines`.
     return [BetaSectionEntry(
-        title=section.title, category=section.category, tag=tag, meta=section.meta,
-        lines=list(section.lines), params=[dict(row) for row in section.params],
+        title=_drop_placeholder_tokens(section.title), category=section.category, tag=tag, meta=section.meta,
+        lines=[_drop_placeholder_tokens(str(x)) for x in section.lines],
+        params=[dict(row) for row in section.params],
         defs=list(section.defs), values_label=section.values_label,
     ) for section in sections]
 
@@ -6436,10 +6419,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
     changelog_extra = _changelog_beta_versions(watch_revisions)
     version = _next_data_version(record, m_game, live_cycle=live_cycle,
                                  extra_versions=changelog_extra)
-    # A revision only gachabase lists (nanoka's manifest has not got it yet): when its kit files are
-    # missing too, the card is built from the changelog alone (see `_changelog_only_character`).
-    gachabase_only = bool(version) and version in changelog_extra and version not in set(
-        _available_beta_versions(m_game, live_cycle=live_cycle))
     late_version = ""
     if not version:
         late_version = _late_revision(record, int(getattr(ctx, "now", 0) or 0))
@@ -6757,13 +6736,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     built = {"sections": []}
                 _reconcile_en_with_zh_kit(built, builder(zh_data), game.key)
         if not data:
-            only = _changelog_only_character(entry, ns, version, ctx.now) if gachabase_only else None
-            if only is not None:
-                patch.characters.append(only)
-                patch.item_keys.append(_entry_key(ns, "character", item_id))
-                ctx.warnings.append(f"{game.short} beta: {version} is on gachabase only; "
-                                    f"posted {only.name} from the changelog")
-                continue
             ctx.warnings.append(f"{game.short} beta: no kit data for id {item_id}; deferred")
             patch.more = True
             continue
