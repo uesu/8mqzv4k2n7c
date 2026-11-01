@@ -19934,6 +19934,31 @@ def test_feature5_explanation_never_claims_a_direction_it_did_not_measure():
     assert "the only block that moved is Overclock" in text
 
 
+def test_feature5_a_replaced_kit_says_replaced_not_no_value_moved():
+    """Retired placeholder blocks plus new forms are a replacement, not a trim with no change."""
+    from gamexpress import beta as beta_mod
+
+    # Gachabase 3.4.1 -> 3.4.2: old placeholder-keyed blocks are removed, new forms are added with
+    # their own stat tables. The new blocks have no earlier value, so "no value moved" is false.
+    sections = [
+        BetaSectionEntry(
+            title="Lindverne Skill Normal Title", category="Skill", tag="[CHANGED]",
+            lines=["**[CHANGED]** Removed from this revision."]),
+        BetaSectionEntry(
+            title="Thornbreaker", category="Skill", tag="[NEW]",
+            lines=["**[NEW]** Thornbreaker form added."]),
+        BetaSectionEntry(
+            title="Bannerbearer", category="Skill", tag="[NEW]",
+            lines=["**[NEW]** Bannerbearer form added."]),
+    ]
+    text = beta_mod._revision_explanation("Sunbringer", sections, unchanged=3,
+                                          compared_to="3.4.1")
+    assert text.startswith("**Sunbringer**'s kit is replaced in this revision")
+    assert "no value moved" not in text and "no value changes" not in text
+    assert "Every block moved" not in text
+    assert "no before/after is claimed" in text
+
+
 def test_feature5_a_terminology_pass_says_so_instead_of_looking_like_a_rework():
     """A rename sweep is labelled as one — the reader is told to check the CN text."""
     from gamexpress import beta as beta_mod

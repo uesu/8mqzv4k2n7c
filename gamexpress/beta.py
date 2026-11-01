@@ -5614,6 +5614,7 @@ def _revision_explanation(
     # "no value moved" is a measurement, not a guess: a plain `[CHANGED]` bullet can still carry
     # a before/after pair, so these branches only speak when nothing numeric moved at all.
     quiet = not signed
+    replaced = bool(retired and not renamed and quiet and counts["[NEW]"])
     if buffs and nerfs:
         lead = f"**{name}** is rebalanced in this revision"
     elif buffs:
@@ -5628,6 +5629,12 @@ def _revision_explanation(
     elif structural and quiet:
         lead = (f"**{name}**'s kit is reworked in this revision — the mechanics are rebuilt "
                 "and no value changes")
+    elif replaced:
+        # Old blocks retired and new blocks added: the new blocks have no earlier value, so the
+        # card must not say "no value moved" (that was true only of the retired lines).
+        lead = (f"**{name}**'s kit is replaced in this revision — {_count(retired, 'block')} retired "
+                "and new material added; the new material has no earlier value, so no before/after "
+                "is claimed")
     elif retired and not renamed and quiet:
         lead = (f"**{name}**'s kit is trimmed in this revision — "
                 f"{_count(retired, 'block')} retired, and no value moved")
@@ -5662,7 +5669,7 @@ def _revision_explanation(
                 f"The other {other} is untouched and reads exactly as it does on {compared_to}.")
         if not compared_to:
             rest = f"The other {other} are untouched." if plural else f"The other {other} is untouched."
-    elif compared_to:
+    elif compared_to and not replaced:
         rest = f"Every block moved against {compared_to}."
     else:
         rest = ""
