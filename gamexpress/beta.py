@@ -6854,8 +6854,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             if cn["verdict"] is not None:
                 cn_prev_secs, cn_cur_secs = cn["prev"], cn["cur"]
                 if cn["verdict"] == "equal":
-                    # CN has no change: an EN-only difference is stale EN text, not a new value.
-                    cmp_mode = "equal"
+                    # CN has no change, but an EN-only update is still an update: it is posted as an
+                    # EN diff (CN is kept only as the reference for numbers when CN does move).
+                    pass
                 elif cn["verdict"] == "changed":
                     en_prev = {"sections": _clone_sections(list(previous.sections), "[CHANGED]")}
                     en_cur = {"sections": _clone_sections(list(full.sections), "[NEW]")}

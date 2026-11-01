@@ -22277,11 +22277,11 @@ def test_feature5_cn_decides_whether_a_zzz_agent_diff_changed_in_either_directio
             manifest["zzz"]["available"].append("3.4.1+19850203")
             return asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
 
-    # EN edited the wording, CN did not move: CN says no change, so nothing is posted.
+    # EN edited the wording, CN did not move: an EN-only update is still an update, so it is posted.
     v2_en_only = json.loads(json.dumps(v1_en))
     v2_en_only["skill"]["basic"]["description"][-1]["desc"] = "Deals 85% Ether DMG (reworded)."
     p_en_only = run(v2_en_only, json.loads(json.dumps(v1_zh)))
-    assert not (p_en_only and p_en_only.characters)
+    assert p_en_only and len(p_en_only.characters) == 1
 
     # EN is still the old text, but CN moved the multiplier: the CN value is what gets posted.
     v2_cn_only = json.loads(json.dumps(v1_en))
