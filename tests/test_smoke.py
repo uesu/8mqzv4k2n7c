@@ -22560,6 +22560,58 @@ def test_glossary_build_generated_zzz_terms_sit_below_learned_and_seed():
     assert beta_mod._zh_en_glossary([])["落羽生花"] == "Featherbloom"  # seed wins even with no learning
 
 
+def test_glossary_build_encore_and_key_mismatch_pairs_and_wuwa_build():
+    """Encore records differ in key names by language (fetter group names). Their keys pair by
+    position, short whole strings pair, numbers never make a term, and a WuWa build reads both
+    nanoka and Encore v2 (EN and zh-Hans) with the vote rule applied to the combined items."""
+    import asyncio
+
+    from gamexpress import glossary_build as gb
+
+    en = {"fetter": {"FetterGroups": [{"Name": "Song of Feathered Trace",
+                                       "Fetters": [{"EffectDescription": "Aero DMG + 10%."}]}]}}
+    zh = {"fetter": {"FetterGroups": [{"Name": "羽落空尘之歌",
+                                       "Fetters": [{"EffectDescription": "气动伤害提升10%"}]}]}}
+    got = gb.item_pairs(en, zh)
+    assert ("羽落空尘之歌", "Song of Feathered Trace") in got
+    assert not any(e.startswith("Aero DMG") for _, e in got)  # numbers: not a term
+    assert gb.item_pairs({"Name": {"Content": "Lucilla"}}, {"Name": {"Content": "洛瑟菈"}}) == [
+        ("洛瑟菈", "Lucilla")]
+
+    echo_en = {"Id": 6000215, "MonsterName": "Fog Lionarch",
+               "Skill": {"DescriptionEx": "Summon Fog Lionarch"}}
+    echo_zh = {"Id": 6000215, "MonsterName": "霁息兽尊",
+               "Skill": {"DescriptionEx": "召唤霁息兽尊"}}
+    rows = {"Echo": [{"Id": 6000215}]}
+    calls: list[str] = []
+
+    class FakeFetcher:
+        async def get_json(self, url, **kw):
+            calls.append(url)
+            if url == gb.MANIFEST_URL:
+                return {"ww": {"latest": "3.8.0"}}
+            if url.endswith("/ww/3.8.0/echo.json"):
+                return {"6000215": {}}
+            if "/ww/3.8.0/" in url:
+                return None  # nanoka WuWa items: none in this fixture
+            if url == f"{gb.ENCORE_API}/en/echo":
+                return rows
+            if url == f"{gb.ENCORE_API}/en/character" or url == f"{gb.ENCORE_API}/en/weapon":
+                return {}
+            if url == f"{gb.ENCORE_API}/en/echo/6000215":
+                return echo_en
+            if url == f"{gb.ENCORE_API}/zh-Hans/echo/6000215":
+                return echo_zh
+            return None
+
+    result = asyncio.run(gb.build_game(FakeFetcher(), "wuwa", max_items=5))
+    assert result["encore_items_with_pairs"] == 1
+    assert any("/en/echo/6000215" in u for u in calls) and any("zh-Hans/echo/6000215" in u for u in calls)
+    # One record cannot reach MIN_SUPPORT alone, so nothing is written from Encore here.
+    assert result["terms"] == []
+    assert result["source"].endswith("zh-Hans}/<kind>/<id>")
+
+
 def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted():
     """CN moved in an earlier beta and was posted; a later beta where EN catches up to that CN
     value (CN unchanged since) must post nothing, because CN is the source of truth."""

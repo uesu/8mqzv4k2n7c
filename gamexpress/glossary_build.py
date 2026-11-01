@@ -42,6 +42,7 @@ OUT_DIR = Path(__file__).parent / "data" / "glossary"
 _CJK = re.compile(r"[\u4e00-\u9fff]")
 _BRACKET = re.compile(r"\[([^\[\]\n]{1,40})\]")
 _COLON = re.compile(r"[:：]\s*")
+_DIGIT = re.compile(r"\d")
 _BAD_TERM_CHARS = re.compile(r"[:：「」\"“”{}]")
 
 
@@ -71,7 +72,8 @@ def string_pairs(zh_s: str, en_s: str) -> list[tuple[str, str]]:
     if zb and len(zb) == len(eb):
         for z, e in zip(zb, eb):
             add(z, e)
-    if not zb and len(zh_s.strip()) <= SHORT_WHOLE_MAX_CN and ":" not in en_s and "：" not in zh_s:
+    if (not zb and len(zh_s.strip()) <= SHORT_WHOLE_MAX_CN and ":" not in en_s and "：" not in zh_s
+            and not _DIGIT.search(zh_s) and not _DIGIT.search(en_s)):
         add(zh_s, en_s)
     return out
 
@@ -79,9 +81,16 @@ def string_pairs(zh_s: str, en_s: str) -> list[tuple[str, str]]:
 def walk_pairs(en_node: Any, zh_node: Any, out: list[tuple[str, str]]) -> None:
     """Walk two parallel JSON trees and collect term pairs from matching string leaves."""
     if isinstance(en_node, dict) and isinstance(zh_node, dict):
-        for key, zh_val in zh_node.items():
-            if key in en_node:
+        if zh_node and set(zh_node) <= set(en_node):
+            for key, zh_val in zh_node.items():
                 walk_pairs(en_node[key], zh_val, out)
+        elif len(zh_node) == len(en_node) and len(zh_node) > 0:
+            # Keys that are themselves names differ by language (encore fetter groups): pair them
+            # by position. The key pair is a term; the values are walked as usual.
+            for (zh_key, zh_val), (en_key, en_val) in zip(zh_node.items(), en_node.items()):
+                if _CJK.search(str(zh_key)) and not _CJK.search(str(en_key)):
+                    out.extend(string_pairs(str(zh_key), str(en_key)))
+                walk_pairs(en_val, zh_val, out)
     elif isinstance(en_node, list) and isinstance(zh_node, list) and len(en_node) == len(zh_node):
         for en_val, zh_val in zip(en_node, zh_node):
             walk_pairs(en_val, zh_val, out)
@@ -124,6 +133,36 @@ def _item_ids(listing: dict) -> list[str]:
     return [str(k) for k in listing] if isinstance(listing, dict) else []
 
 
+# Encore (api-v2.encore.moe) is a second WuWa source: the same EN / zh-Hans structure per record.
+ENCORE_API = "https://api-v2.encore.moe/api"
+# kind -> (list key in the EN list response, detail path segment)
+ENCORE_KINDS: dict[str, tuple[str, str]] = {
+    "character": ("roleList", "character"),
+    "weapon": ("weapons", "weapon"),
+    "echo": ("Echo", "echo"),
+}
+
+
+async def _encore_pairs(fetcher, *, max_items: int) -> dict[str, list[tuple[str, str]]]:
+    """Per-record term pairs from Encore's EN and zh-Hans records (WuWa only)."""
+    out: dict[str, list[tuple[str, str]]] = {}
+    for kind, (list_key, path) in ENCORE_KINDS.items():
+        listing = await fetcher.get_json(f"{ENCORE_API}/en/{path}", source="glossary-encore", retries=1)
+        rows = listing.get(list_key) if isinstance(listing, dict) else None
+        ids = [str(r["Id"]) for r in (rows or []) if isinstance(r, dict) and "Id" in r][:max_items]
+
+        async def one(item_id: str, kind: str = kind, path: str = path) -> tuple[str, list]:
+            en = await fetcher.get_json(f"{ENCORE_API}/en/{path}/{item_id}", source="glossary-encore", retries=1)
+            zh = await fetcher.get_json(f"{ENCORE_API}/zh-Hans/{path}/{item_id}", source="glossary-encore",
+                                        retries=1)
+            return f"encore/{kind}/{item_id}", item_pairs(en, zh)
+
+        for key, pairs in await asyncio.gather(*(one(i) for i in ids)):
+            if pairs:
+                out[key] = pairs
+    return out
+
+
 async def build_game(fetcher, game: str, *, max_items: int = 400) -> dict[str, Any]:
     """Fetch EN and CN records for every listed item of one game and vote the glossary."""
     if game not in GLOSSARY_GAMES:
@@ -156,15 +195,22 @@ async def build_game(fetcher, game: str, *, max_items: int = 400) -> dict[str, A
 
     results = await asyncio.gather(*(one(k, i) for k, i in targets))
     per_item = {key: pairs for key, pairs in results if pairs}
+    encore_items = 0
+    if game == "wuwa":
+        encore = await _encore_pairs(fetcher, max_items=max_items)
+        encore_items = len(encore)
+        per_item.update(encore)
     terms = aggregate(per_item)
     return {
         "game": game,
         "namespace": ns,
         "version": version,
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "source": f"{STATIC_BASE}/{ns}/{version}/{{en,zh}}/<kind>/<id>.json",
+        "source": f"{STATIC_BASE}/{ns}/{version}/{{en,zh}}/<kind>/<id>.json"
+        + (f" + {ENCORE_API}/{{en,zh-Hans}}/<kind>/<id>" if game == "wuwa" else ""),
         "items_listed": len(targets),
         "items_with_pairs": len(per_item),
+        "encore_items_with_pairs": encore_items,
         "rules": {"min_support": MIN_SUPPORT, "min_share": MIN_SHARE},
         "terms": terms,
     }
