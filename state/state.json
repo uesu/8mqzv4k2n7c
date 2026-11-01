@@ -4925,7 +4925,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1793492428,
+        "last_seen": 1793535915,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5182,7 +5182,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1793492428,
+        "last_seen": 1793535915,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5216,7 +5216,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1793492428,
+        "last_seen": 1793535915,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -6686,11 +6686,6 @@
       "floor": 1792395921,
       "paused": false,
       "rechecks": {
-        "47252183": [
-          1793363430,
-          2,
-          "d28b921304ee982a"
-        ],
         "47252283": [
           1793363430,
           2,
