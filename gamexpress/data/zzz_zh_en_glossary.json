@@ -1,0 +1,16 @@
+{
+  "_about": "ZZZ Chinese -> English term seed. Only terms verified against official EN and CN records for the same item are listed. Source: nanoka static, zzz 3.4.2+20052336, en/zh character/1331 (Vivian), compared by position in the same skill and extra-level records. Terms not listed here are learned at runtime from each item's aligned sections (beta.py _zh_en_glossary).",
+  "terms": [
+    {"zh": "普通攻击：", "en": "Basic Attack: ", "source": "zzz 3.4.2+20052336 character/1331 skill.basic names (\"Basic Attack: Featherbloom\" <-> \"普通攻击：落羽生花\")"},
+    {"zh": "落羽生花", "en": "Featherbloom", "source": "character/1331 skill.basic (EN \"Basic Attack: Featherbloom\")"},
+    {"zh": "翎羽拂击", "en": "Feathered Strike", "source": "character/1331 skill.basic (EN \"Basic Attack: Feathered Strike\")"},
+    {"zh": "淑女礼仪", "en": "Noblewoman", "source": "character/1331 skill.basic descriptions (EN \"Noblewoman state\")"},
+    {"zh": "裙裾浮游", "en": "Fluttering Frock", "source": "character/1331 skill.basic descriptions (EN \"Fluttering Frock state\")"},
+    {"zh": "飞羽", "en": "Flight Feather", "source": "character/1331 skill.basic descriptions (EN \"Flight Feather\")"},
+    {"zh": "护羽", "en": "Guard Feather", "source": "character/1331 skill.basic descriptions (EN \"Guard Feather\")"},
+    {"zh": "强化特殊技", "en": "EX Special Attack", "source": "character/1331 skill.basic descriptions (EN \"EX Special Attack\")"},
+    {"zh": "异常掌控", "en": "Anomaly Mastery", "source": "character/1331 extra_level prop 31401 (EN \"Anomaly Mastery\" <-> CN \"异常掌控\")"},
+    {"zh": "基础攻击力", "en": "Base ATK", "source": "character/1331 extra_level prop 12101 (EN \"Base ATK\" <-> CN \"基础攻击力\")"},
+    {"zh": "薇薇安", "en": "Vivian", "source": "character/1331 name (EN \"Vivian\" <-> CN \"薇薇安\")"}
+  ]
+}

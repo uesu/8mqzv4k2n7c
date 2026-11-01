@@ -22423,6 +22423,33 @@ def test_feature5_zh_en_glossary_learns_terms_from_aligned_sections_and_drops_co
     assert "新潜能" in beta_mod._zh_en_apply("新潜能", gloss)
 
 
+def test_feature5_zzz_seed_glossary_is_verified_terms_and_wins_over_learned_ones():
+    """The seed holds only terms checked against official EN/CN records (each row names its
+    source). Every row maps CJK to a pure-English string, and a learned term that disagrees with
+    the seed never reaches the card."""
+    from gamexpress import beta as beta_mod
+
+    seed = beta_mod._zzz_seed_glossary()
+    raw = json.loads((beta_mod._ZZZ_SEED_GLOSSARY_PATH).read_text(encoding="utf-8"))
+    assert raw["terms"] and all(row.get("source") for row in raw["terms"])
+    for zh, en in seed.items():
+        assert beta_mod._ZH_CJK_RE.search(zh), zh
+        assert not beta_mod._ZH_CJK_RE.search(en), (zh, en)
+    assert seed["落羽生花"] == "Featherbloom"
+
+    def sec(title, lines):
+        return beta_mod.BetaSectionEntry(title=title, category="Skills", tag="", meta="",
+                                         lines=list(lines), params=[], defs=[], values_label="")
+
+    # A wrong learned reading for 落羽生花 must lose to the verified seed.
+    pairs = [(sec("Basic Attack: Falling Feathers Bloom", ["[Anomaly] hits"]),
+              sec("普通攻击：落羽生花", ["[异常]命中"]))]
+    gloss = beta_mod._zh_en_glossary(pairs)
+    assert gloss["落羽生花"] == "Featherbloom"
+    assert beta_mod._zh_en_apply("普通攻击：落羽生花", gloss) == "Basic Attack: Featherbloom"
+    assert beta_mod._zh_en_apply("薇薇安的异常掌控", gloss) == "Vivian的Anomaly Mastery"
+
+
 def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted():
     """CN moved in an earlier beta and was posted; a later beta where EN catches up to that CN
     value (CN unchanged since) must post nothing, because CN is the source of truth."""

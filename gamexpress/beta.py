@@ -4487,13 +4487,32 @@ _ZH_CJK_RE = re.compile(r"[\u4e00-\u9fff]")
 _ZH_TITLE_SPLIT_RE = re.compile(r"[:：]\s*")
 
 
+_ZZZ_SEED_GLOSSARY_PATH = Path(__file__).parent / "data" / "zzz_zh_en_glossary.json"
+_zzz_seed_cache: dict[str, str] | None = None
+
+
+def _zzz_seed_glossary() -> dict[str, str]:
+    """Verified ZZZ Chinese -> English terms (`data/zzz_zh_en_glossary.json`), read once.
+
+    Every seed entry was checked against an official EN and CN record of the same item, and each
+    row names its source. These win over anything learned at runtime.
+    """
+    global _zzz_seed_cache
+    if _zzz_seed_cache is None:
+        raw = json.loads(_ZZZ_SEED_GLOSSARY_PATH.read_text(encoding="utf-8"))
+        _zzz_seed_cache = {str(row["zh"]): str(row["en"]) for row in raw.get("terms", [])}
+    return dict(_zzz_seed_cache)
+
+
 def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]]) -> dict[str, str]:
-    """Chinese term -> English term, learned from the same item's already-localized sections.
+    """Chinese term -> English term: the verified seed, plus terms learned from the same item's
+    already-localized sections.
 
     Only two alignments are trusted: title parts split on the colon (same part count on both
     sides) and bracketed status/skill names in the same order (same count on both sides). A term
     that maps to two different English strings is dropped, so a wrong alignment cannot leak
-    into a card. A term that is not learned stays in Chinese under the pending label.
+    into a card. A term that is not learned stays in Chinese under the pending label. A learned
+    term never overrides a seed term.
     """
     seen: dict[str, set[str]] = {}
 
@@ -4513,7 +4532,8 @@ def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]]) -> d
         if len(zh_terms) == len(en_terms):
             for z, e in zip(zh_terms, en_terms):
                 add(z, e)
-    return {zh: next(iter(ens)) for zh, ens in seen.items() if len(ens) == 1}
+    learned = {zh: next(iter(ens)) for zh, ens in seen.items() if len(ens) == 1}
+    return {**learned, **_zzz_seed_glossary()}
 
 
 def _zh_en_apply(text: str, glossary: dict[str, str]) -> str:
