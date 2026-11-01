@@ -4543,7 +4543,7 @@
         ],
         "47271766": [
           1793505635,
-          1,
+          2,
           "cefc8050bce1fb75"
         ]
       },
@@ -4850,12 +4850,12 @@
         ],
         "47271769": [
           1793505635,
-          1,
+          2,
           "f78fd1c9289a9ed1"
         ],
         "47271770": [
           1793505635,
-          1,
+          2,
           "faccc01e5586155c"
         ]
       },
@@ -5103,7 +5103,7 @@
         ],
         "47271767": [
           1793505635,
-          1,
+          2,
           "3f9b340ef61bff7d"
         ]
       },
@@ -5527,7 +5527,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1793496626
+          "ts": 1793507430
         },
         "data": {
           "announcement_locked": true,
@@ -5549,8 +5549,8 @@
             ]
           },
           "banners_checked_ts": 1793002222,
-          "banners_search_ts": 1793496626,
-          "calendar_ts": 1793496626,
+          "banners_search_ts": 1793507430,
+          "calendar_ts": 1793507430,
           "estimate_sources": [
             "version cadence"
           ],
@@ -6067,8 +6067,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793496626,
-          "banners_search_ts": 1793496626,
+          "banners_checked_ts": 1793507430,
+          "banners_search_ts": 1793507430,
           "banners_settled": [
             "phase1",
             "phase2",
