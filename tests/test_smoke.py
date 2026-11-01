@@ -22370,6 +22370,73 @@ def test_feature5_cn_decides_whether_a_zzz_w_engine_diff_changed_in_either_direc
     assert "Read from CN beta data" in body
 
 
+def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted():
+    """CN moved in an earlier beta and was posted; a later beta where EN catches up to that CN
+    value (CN unchanged since) must post nothing, because CN is the source of truth."""
+    from gamexpress import beta as beta_mod
+
+    base = _beta_json("zzz_weapon_14166.json")
+    listing = _beta_json("zzz_weapon_listing.json")
+
+    def weapon(desc_pct: str) -> dict:
+        data = json.loads(json.dumps(base))
+        data["talents"]["1"]["desc"] = data["talents"]["1"]["desc"].replace(
+            "DEF increases by 10%", f"DEF increases by {desc_pct}")
+        return data
+
+    # rev -> (EN value, CN value)
+    revs = {
+        "19834130": ("10%", "10%"),  # first beta: nothing moved yet
+        "19850203": ("10%", "16%"),  # CN moved, EN still lags
+        "19860000": ("16%", "16%"),  # EN catches up; CN did not move again
+    }
+    manifest = {"zzz": {
+        "live": "3.3", "latest": "3.4.1+19834130",
+        "available": ["3.3", "3.4.1+19834130"],
+        "new": {"character": [], "weapon": [14166], "equipment": []},
+    }}
+    latest = {"rev": "19834130"}
+
+    class Fetcher:
+        async def get_text(self, url, **_kw):
+            return f"## v3.4.1 Rev. {latest['rev']} | 24th October 2026\n"
+
+        async def get_json(self, url, **_kw):
+            if url.endswith("/weapon.json"):
+                if "/3.3/" in url:
+                    return {k: v for k, v in listing.items() if k != "14166"}
+                return listing
+            if "/3.3/" in url:
+                return weapon("10%")
+            for rev, (en_v, cn_v) in revs.items():
+                if rev in url:
+                    return weapon(cn_v if "/zh/" in url else en_v)
+            return None
+
+        async def verify_media(self, _url):
+            return True
+
+    local = json.loads(json.dumps(manifest))
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", Fetcher(), BETA_ENABLED="1", games=["zzz"])
+        posted = []
+        for rev in ("19834130", "19850203", "19860000"):
+            latest["rev"] = rev
+            local["zzz"]["latest"] = f"3.4.1+{rev}"
+            if f"3.4.1+{rev}" not in local["zzz"]["available"]:
+                local["zzz"]["available"].append(f"3.4.1+{rev}")
+            p = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], local, beta_mod._budget(ctx)))
+            posted.append(list(p.equipment) if p else [])
+            if p:
+                beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), p, status="posted")
+            ctx.state.save()
+            ctx.state = State.load(ctx.settings.state_path)
+
+    assert len(posted[0]) == 1 and posted[0][0].tag == "[NEW]"
+    assert len(posted[1]) == 1 and "16%" in "\n".join(posted[1][0].lines)
+    assert posted[2] == [], "EN caught up to an already-posted CN value; nothing new to post"
+
+
 def test_feature5_post_merge_edge_cases_and_ci_annotation_hygiene():
     """Cover CN/EN word-order safety, retry last_poll, Page-1 equipment packing, and epoch merges."""
     import importlib.util
