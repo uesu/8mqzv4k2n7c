@@ -1,0 +1,1767 @@
+{
+  "game": "starrail",
+  "namespace": "hsr",
+  "version": "4.6.54",
+  "generated_at": "2026-11-01T20:53:03Z",
+  "source": "https://static.nanoka.cc/hsr/4.6.54/{en,zh}/<kind>/<id>.json",
+  "items_listed": 335,
+  "items_with_pairs": 335,
+  "encore_items_with_pairs": 0,
+  "rules": {
+    "min_support": 2,
+    "min_share": 0.9
+  },
+  "terms": [
+    {
+      "zh": "被召唤时，立即获得充能。",
+      "en": "When summoned, immediately gains Charge.",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "卡厄斯兰那的额外回合",
+      "en": "Khaslana's Extra Turn",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1408",
+        "character/1415"
+      ]
+    },
+    {
+      "zh": "放心飞，开拓永相随！",
+      "en": "May the Trailblaze Fly You Starward",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "拯救世界，无需理由",
+      "en": "Save the World. Just Because.",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "明天，栖息聚光之下",
+      "en": "Tomorrow, Rest in Spotlight",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "欢愉万相★主角光环",
+      "en": "Faces of Elation ★ Plot Armor",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "英雄一笑，生死难料",
+      "en": "That Smile Hits Different",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "一起上吧，迷迷！",
+      "en": "Together, Mem!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "全屏段的高空踏歌",
+      "en": "Full-on Aerial Dance",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "名场面酝酿中……",
+      "en": "History in the Making...",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "明天，一同写下！",
+      "en": "Together, We Script Tomorrow!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "来吧，镜头的焦点",
+      "en": "Into the Spotlight",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "物理属性伤害提高",
+      "en": "Physical DMG Boost",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1107",
+        "character/1302"
+      ]
+    },
+    {
+      "zh": "虚数属性伤害提高",
+      "en": "Imaginary DMG Boost",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1004",
+        "character/1207",
+        "character/1213",
+        "character/1304",
+        "character/8005"
+      ]
+    },
+    {
+      "zh": "量子属性伤害提高",
+      "en": "Quantum DMG Boost",
+      "support": 8,
+      "items_with_term": 8,
+      "example_items": [
+        "character/1006",
+        "character/1015",
+        "character/1201",
+        "character/1214",
+        "character/1314"
+      ]
+    },
+    {
+      "zh": "银河传奇，登场！",
+      "en": "The Cosmic Legend Cometh!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "休止符的疗养院",
+      "en": "Sanatorium for Rest Notes",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "冰属性伤害提高",
+      "en": "Ice DMG Boost",
+      "support": 7,
+      "items_with_term": 7,
+      "example_items": [
+        "character/1001",
+        "character/1013",
+        "character/1104",
+        "character/1106",
+        "character/1209"
+      ]
+    },
+    {
+      "zh": "凝眸毁灭的瞬间",
+      "en": "A Destructing Glance",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "劫余重生的希望",
+      "en": "A Surviving Hope",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "包庇旧节拍的诗",
+      "en": "Poem Favors Rhythms of Old",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "古老寒铁的坚守",
+      "en": "Time-Defying Tenacity",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "因缘假合的人身",
+      "en": "An Unwilling Host",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "坠临万界的星芒",
+      "en": "A Falling Star",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "大地芯髓的鸣动",
+      "en": "Earth-Shaking Resonance",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "就决定是你了！",
+      "en": "I Choose You!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "您的最佳观众席",
+      "en": "Best Seat in the House",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "拓宇行天的意志",
+      "en": "A Trailblazing Will",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "控制类负面状态",
+      "en": "Crowd Control debuff",
+      "support": 23,
+      "items_with_term": 23,
+      "example_items": [
+        "character/1013",
+        "character/1107",
+        "character/1109",
+        "character/1110",
+        "character/1203"
+      ]
+    },
+    {
+      "zh": "揭示前路的言灵",
+      "en": "A Leading Whisper",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "无所不能的伙伴",
+      "en": "Almighty Companion",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "永屹城垣的壁垒",
+      "en": "City-Forging Bulwarks",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "火属性伤害提高",
+      "en": "Fire DMG Boost",
+      "support": 7,
+      "items_with_term": 7,
+      "example_items": [
+        "character/1003",
+        "character/1009",
+        "character/1112",
+        "character/1210",
+        "character/1218"
+      ]
+    },
+    {
+      "zh": "点燃光焰的勇气",
+      "en": "Spirit-Warming Flame",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "炽燃不灭的琥珀",
+      "en": "Ever-Burning Amber",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "砌造未来的蓝图",
+      "en": "Trail-Blazing Blueprint",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "穿彻坚冰的烈芒",
+      "en": "Ice-Breaking Light",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "袒护白鸽的冠冕",
+      "en": "Dove in Tophat",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "记忆如往日重现",
+      "en": "Memories Back as Echoes",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "越狱的跨洋彩虹",
+      "en": "Jailbreaking Rainbowwalk",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "陷阵无回的炎枪",
+      "en": "War-Flaming Lance",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "雷属性伤害提高",
+      "en": "Lightning DMG Boost",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1202",
+        "character/1308",
+        "character/1402",
+        "character/1504",
+        "character/1509"
+      ]
+    },
+    {
+      "zh": "风属性伤害提高",
+      "en": "Wind DMG Boost",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1002",
+        "character/1014",
+        "character/1101",
+        "character/1307",
+        "character/1405"
+      ]
+    },
+    {
+      "zh": "驻留文明的誓言",
+      "en": "Nation-Building Oath",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "中场馈赠的雨",
+      "en": "Halftime to Make It Rain",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "伙伴！一起！",
+      "en": "Friends! Together!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "包在我身上！",
+      "en": "Leave It to Me!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "即刻！独奏团",
+      "en": "Now! I'm the Band!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "坏人！麻烦！",
+      "en": "Baddies! Trouble!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "弱点击破状态",
+      "en": "Weakness Break State",
+      "support": 13,
+      "items_with_term": 13,
+      "example_items": [
+        "character/1205",
+        "character/1206",
+        "character/1220",
+        "character/1225",
+        "character/1303"
+      ]
+    },
+    {
+      "zh": "我会！帮你！",
+      "en": "Lemme! Help You!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "效果命中强化",
+      "en": "Effect Hit Rate Boost",
+      "support": 12,
+      "items_with_term": 12,
+      "example_items": [
+        "character/1004",
+        "character/1005",
+        "character/1006",
+        "character/1103",
+        "character/1106"
+      ]
+    },
+    {
+      "zh": "效果抵抗强化",
+      "en": "Effect RES Boost",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "character/1001",
+        "character/1003",
+        "character/1004",
+        "character/1008",
+        "character/1101"
+      ]
+    },
+    {
+      "zh": "无法战斗状态",
+      "en": "Downed State",
+      "support": 19,
+      "items_with_term": 19,
+      "example_items": [
+        "character/1008",
+        "character/1102",
+        "character/1104",
+        "character/1112",
+        "character/1203"
+      ]
+    },
+    {
+      "zh": "星际和平公司",
+      "en": "Interastral Peace Corporation",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1112",
+        "character/1304"
+      ]
+    },
+    {
+      "zh": "暴击伤害强化",
+      "en": "CRIT DMG Boost",
+      "support": 23,
+      "items_with_term": 23,
+      "example_items": [
+        "character/1101",
+        "character/1102",
+        "character/1109",
+        "character/1212",
+        "character/1223"
+      ]
+    },
+    {
+      "zh": "未来的咏唱者",
+      "en": "Chanter of the Future",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "现在的记叙者",
+      "en": "Narrator of the Present",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "相信光的时间",
+      "en": "Believe In the Light",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "神启的转呈者",
+      "en": "Bearer of the Revelation",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "缪斯的新舞伴",
+      "en": "Dancer of the Muse",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "诗篇的裁缝匠",
+      "en": "Seamster of the Ode",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "过往的拾遗者",
+      "en": "Gleaner of the Past",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "迷迷，加油！",
+      "en": "Go, Mem, Go!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "风暴甚是喧嚣",
+      "en": "Let the Storm Rage On",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "守护者召令",
+      "en": "Call of the Guardian",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "安息全垒打",
+      "en": "RIP Home Run",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "摇摆的礼仪",
+      "en": "Swing Dance Etiquette",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "暴击率强化",
+      "en": "CRIT Rate Boost",
+      "support": 32,
+      "items_with_term": 32,
+      "example_items": [
+        "character/1009",
+        "character/1013",
+        "character/1014",
+        "character/1015",
+        "character/1103"
+      ]
+    },
+    {
+      "zh": "未完的尾声",
+      "en": "Unfinished Epilogue",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "欢愉度强化",
+      "en": "Elation Boost",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506"
+      ]
+    },
+    {
+      "zh": "燃起来了！",
+      "en": "We Are So Back!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "磁石与长链",
+      "en": "Magnets and Long Chains",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "筑城者遗宝",
+      "en": "Treasure of the Architects",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "袖珍的事诗",
+      "en": "Petite Parable",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "超击破伤害",
+      "en": "Super Break DMG",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1225",
+        "character/1310",
+        "character/1317",
+        "character/1321",
+        "character/8005"
+      ]
+    },
+    {
+      "zh": "追念之权杖",
+      "en": "Rhapsode's Scepter",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "遗憾…不留",
+      "en": "No... Regrets",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "阿哈咬它！",
+      "en": "Aha, Sic 'Em!",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "不灭三振",
+      "en": "Immortal Third Strike",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "再见安打",
+      "en": "Farewell Hit",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "击破伤害",
+      "en": "Break DMG",
+      "support": 5,
+      "items_with_term": 5,
+      "example_items": [
+        "character/1222",
+        "character/1301",
+        "character/1303",
+        "character/1315",
+        "character/1317"
+      ]
+    },
+    {
+      "zh": "击破强化",
+      "en": "Break Boost",
+      "support": 12,
+      "items_with_term": 12,
+      "example_items": [
+        "character/1210",
+        "character/1214",
+        "character/1222",
+        "character/1225",
+        "character/1301"
+      ]
+    },
+    {
+      "zh": "击破特攻",
+      "en": "Break Effect",
+      "support": 12,
+      "items_with_term": 12,
+      "example_items": [
+        "character/1210",
+        "character/1214",
+        "character/1222",
+        "character/1225",
+        "character/1301"
+      ]
+    },
+    {
+      "zh": "剧院之帽",
+      "en": "Hat of the Theater",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "匹诺康尼",
+      "en": "Penacony",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1301",
+        "character/1312"
+      ]
+    },
+    {
+      "zh": "卫我起舞",
+      "en": "Dance With the One",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "召唤忆灵",
+      "en": "Summon Memosprite",
+      "support": 8,
+      "items_with_term": 8,
+      "example_items": [
+        "character/1402",
+        "character/1407",
+        "character/1409",
+        "character/1413",
+        "character/1415"
+      ]
+    },
+    {
+      "zh": "固定概率",
+      "en": "Fixed Chance",
+      "support": 12,
+      "items_with_term": 12,
+      "example_items": [
+        "character/1002",
+        "character/1101",
+        "character/1107",
+        "character/1108",
+        "character/1111"
+      ]
+    },
+    {
+      "zh": "固有行迹",
+      "en": "Innate Trace",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506"
+      ]
+    },
+    {
+      "zh": "基础概率",
+      "en": "Base Chance",
+      "support": 27,
+      "items_with_term": 27,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "增益效果",
+      "en": "Buff",
+      "support": 8,
+      "items_with_term": 8,
+      "example_items": [
+        "character/1106",
+        "character/1111",
+        "character/1203",
+        "character/1209",
+        "character/1213"
+      ]
+    },
+    {
+      "zh": "好活当赏",
+      "en": "Certified Banger",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506"
+      ]
+    },
+    {
+      "zh": "忆灵天赋",
+      "en": "Memosprite Talent",
+      "support": 8,
+      "items_with_term": 8,
+      "example_items": [
+        "character/1402",
+        "character/1407",
+        "character/1409",
+        "character/1413",
+        "character/1415"
+      ]
+    },
+    {
+      "zh": "快哉快哉",
+      "en": "On Cloud Nine",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "抗性穿透",
+      "en": "RES PEN",
+      "support": 31,
+      "items_with_term": 31,
+      "example_items": [
+        "character/1002",
+        "character/1014",
+        "character/1102",
+        "character/1112",
+        "character/1209"
+      ]
+    },
+    {
+      "zh": "持续效果",
+      "en": "Continuous Effect",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1409",
+        "character/1415"
+      ]
+    },
+    {
+      "zh": "攻击强化",
+      "en": "ATK Boost",
+      "support": 50,
+      "items_with_term": 50,
+      "example_items": [
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005",
+        "character/1006"
+      ]
+    },
+    {
+      "zh": "效果命中",
+      "en": "Effect Hit Rate",
+      "support": 12,
+      "items_with_term": 12,
+      "example_items": [
+        "character/1004",
+        "character/1005",
+        "character/1006",
+        "character/1103",
+        "character/1106"
+      ]
+    },
+    {
+      "zh": "效果抵抗",
+      "en": "Effect RES",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "character/1001",
+        "character/1003",
+        "character/1004",
+        "character/1008",
+        "character/1101"
+      ]
+    },
+    {
+      "zh": "星尘王牌",
+      "en": "Stardust Ace",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "星核猎手",
+      "en": "Stellaron Hunters",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1005",
+        "character/1006",
+        "character/1205"
+      ]
+    },
+    {
+      "zh": "星穹列车",
+      "en": "Astral Express",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/8001"
+      ]
+    },
+    {
+      "zh": "暴击伤害",
+      "en": "CRIT DMG",
+      "support": 23,
+      "items_with_term": 23,
+      "example_items": [
+        "character/1101",
+        "character/1102",
+        "character/1109",
+        "character/1212",
+        "character/1223"
+      ]
+    },
+    {
+      "zh": "欢愉伤害",
+      "en": "Elation DMG",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506"
+      ]
+    },
+    {
+      "zh": "此即应援",
+      "en": "Make Some Noise",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "牵制盗垒",
+      "en": "Perfect Pickoff",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "生命强化",
+      "en": "HP Boost",
+      "support": 44,
+      "items_with_term": 44,
+      "example_items": [
+        "character/1005",
+        "character/1008",
+        "character/1014",
+        "character/1105",
+        "character/1107"
+      ]
+    },
+    {
+      "zh": "真实伤害",
+      "en": "True DMG",
+      "support": 13,
+      "items_with_term": 13,
+      "example_items": [
+        "character/1102",
+        "character/1401",
+        "character/1403",
+        "character/1406",
+        "character/1408"
+      ]
+    },
+    {
+      "zh": "绝活共赏",
+      "en": "Party Trick",
+      "support": 7,
+      "items_with_term": 7,
+      "example_items": [
+        "character/1501",
+        "character/1503",
+        "character/1505",
+        "character/1506",
+        "character/1511"
+      ]
+    },
+    {
+      "zh": "行动延后",
+      "en": "Delay Action",
+      "support": 11,
+      "items_with_term": 11,
+      "example_items": [
+        "character/1004",
+        "character/1108",
+        "character/1225",
+        "character/1303",
+        "character/1310"
+      ]
+    },
+    {
+      "zh": "行动提前",
+      "en": "Action Advance",
+      "support": 31,
+      "items_with_term": 31,
+      "example_items": [
+        "character/1101",
+        "character/1102",
+        "character/1109",
+        "character/1112",
+        "character/1206"
+      ]
+    },
+    {
+      "zh": "贝洛伯格",
+      "en": "Belobog",
+      "support": 11,
+      "items_with_term": 11,
+      "example_items": [
+        "character/1101",
+        "character/1102",
+        "character/1103",
+        "character/1104",
+        "character/1105"
+      ]
+    },
+    {
+      "zh": "负面效果",
+      "en": "Debuff",
+      "support": 24,
+      "items_with_term": 24,
+      "example_items": [
+        "character/1001",
+        "character/1006",
+        "character/1008",
+        "character/1101",
+        "character/1105"
+      ]
+    },
+    {
+      "zh": "跟你爆了",
+      "en": "Screw It, We Ball",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8009",
+        "character/8010"
+      ]
+    },
+    {
+      "zh": "连携攻击",
+      "en": "Joint Attack",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1402",
+        "character/1407",
+        "character/1508",
+        "character/1509",
+        "character/8007"
+      ]
+    },
+    {
+      "zh": "追加攻击",
+      "en": "Follow-Up ATK",
+      "support": 32,
+      "items_with_term": 32,
+      "example_items": [
+        "character/1003",
+        "character/1005",
+        "character/1013",
+        "character/1015",
+        "character/1101"
+      ]
+    },
+    {
+      "zh": "速度强化",
+      "en": "SPD Boost",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "character/1212",
+        "character/1215",
+        "character/1217",
+        "character/1218",
+        "character/1225"
+      ]
+    },
+    {
+      "zh": "防御强化",
+      "en": "DEF Boost",
+      "support": 29,
+      "items_with_term": 29,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1009",
+        "character/1013",
+        "character/1102"
+      ]
+    },
+    {
+      "zh": "附加伤害",
+      "en": "Additional DMG",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "character/1001",
+        "character/1004",
+        "character/1006",
+        "character/1013",
+        "character/1102"
+      ]
+    },
+    {
+      "zh": "随波逐流",
+      "en": "Shuffle Along",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8005",
+        "character/8006"
+      ]
+    },
+    {
+      "zh": "额外回合",
+      "en": "Extra Turn",
+      "support": 14,
+      "items_with_term": 14,
+      "example_items": [
+        "character/1102",
+        "character/1310",
+        "character/1317",
+        "character/1404",
+        "character/1408"
+      ]
+    },
+    {
+      "zh": "强援弱",
+      "en": "The Strong Defend the Weak",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "忆灵技",
+      "en": "Memosprite Skill",
+      "support": 8,
+      "items_with_term": 8,
+      "example_items": [
+        "character/1402",
+        "character/1407",
+        "character/1409",
+        "character/1413",
+        "character/1415"
+      ]
+    },
+    {
+      "zh": "攻击力",
+      "en": "ATK",
+      "support": 50,
+      "items_with_term": 50,
+      "example_items": [
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005",
+        "character/1006"
+      ]
+    },
+    {
+      "zh": "暴击率",
+      "en": "CRIT Rate",
+      "support": 32,
+      "items_with_term": 32,
+      "example_items": [
+        "character/1009",
+        "character/1013",
+        "character/1014",
+        "character/1015",
+        "character/1103"
+      ]
+    },
+    {
+      "zh": "欢愉度",
+      "en": "Elation",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506"
+      ]
+    },
+    {
+      "zh": "欢愉技",
+      "en": "Elation Skill",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506"
+      ]
+    },
+    {
+      "zh": "生先死",
+      "en": "Unwavering Gallantry",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "生命值",
+      "en": "HP",
+      "support": 44,
+      "items_with_term": 44,
+      "example_items": [
+        "character/1005",
+        "character/1008",
+        "character/1014",
+        "character/1105",
+        "character/1107"
+      ]
+    },
+    {
+      "zh": "终结技",
+      "en": "Ultimate",
+      "support": 99,
+      "items_with_term": 99,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "行胜思",
+      "en": "Action Beats Overthinking",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8003",
+        "character/8004"
+      ]
+    },
+    {
+      "zh": "防御力",
+      "en": "DEF",
+      "support": 29,
+      "items_with_term": 29,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1009",
+        "character/1013",
+        "character/1102"
+      ]
+    },
+    {
+      "zh": "反击",
+      "en": "Counter",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "character/1001",
+        "character/1107",
+        "character/1221",
+        "character/1408"
+      ]
+    },
+    {
+      "zh": "坚韧",
+      "en": "Tenacity",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "境界",
+      "en": "Territory",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1407",
+        "character/1408",
+        "character/1510"
+      ]
+    },
+    {
+      "zh": "增笑",
+      "en": "Merrymake",
+      "support": 6,
+      "items_with_term": 6,
+      "example_items": [
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506",
+        "character/1511"
+      ]
+    },
+    {
+      "zh": "天赋",
+      "en": "Talent",
+      "support": 99,
+      "items_with_term": 99,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "奇袭",
+      "en": "Coup de Main",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1412",
+        "character/1415"
+      ]
+    },
+    {
+      "zh": "家人",
+      "en": "Kinship",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1107",
+        "lightcone/23002"
+      ]
+    },
+    {
+      "zh": "战技",
+      "en": "Skill",
+      "support": 99,
+      "items_with_term": 99,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "攻击",
+      "en": "Attack",
+      "support": 96,
+      "items_with_term": 96,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "斗志",
+      "en": "Fighting Will",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "普攻",
+      "en": "Basic ATK",
+      "support": 99,
+      "items_with_term": 99,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "毁伤",
+      "en": "Scourge",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1408",
+        "character/1415"
+      ]
+    },
+    {
+      "zh": "爽点",
+      "en": "Bliss",
+      "support": 4,
+      "items_with_term": 4,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1511",
+        "character/1513"
+      ]
+    },
+    {
+      "zh": "离场",
+      "en": "Departed",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1223",
+        "character/1408"
+      ]
+    },
+    {
+      "zh": "秘技",
+      "en": "Technique",
+      "support": 99,
+      "items_with_term": 99,
+      "example_items": [
+        "character/1001",
+        "character/1002",
+        "character/1003",
+        "character/1004",
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "笑点",
+      "en": "Punchline",
+      "support": 9,
+      "items_with_term": 9,
+      "example_items": [
+        "character/1501",
+        "character/1502",
+        "character/1503",
+        "character/1505",
+        "character/1506"
+      ]
+    },
+    {
+      "zh": "群攻",
+      "en": "AoE",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1213",
+        "character/1308"
+      ]
+    },
+    {
+      "zh": "荆棘",
+      "en": "Thorns",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/1005",
+        "lightcone/23008"
+      ]
+    },
+    {
+      "zh": "蓄势",
+      "en": "Ready for Battle",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8001",
+        "character/8002"
+      ]
+    },
+    {
+      "zh": "辅助",
+      "en": "Support",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1407",
+        "character/1506",
+        "character/1511"
+      ]
+    },
+    {
+      "zh": "迷迷",
+      "en": "Mem",
+      "support": 2,
+      "items_with_term": 2,
+      "example_items": [
+        "character/8007",
+        "character/8008"
+      ]
+    },
+    {
+      "zh": "速度",
+      "en": "SPD",
+      "support": 25,
+      "items_with_term": 25,
+      "example_items": [
+        "character/1212",
+        "character/1215",
+        "character/1217",
+        "character/1218",
+        "character/1225"
+      ]
+    },
+    {
+      "zh": "阿哈",
+      "en": "Aha",
+      "support": 3,
+      "items_with_term": 3,
+      "example_items": [
+        "character/1502",
+        "character/1511",
+        "character/1513"
+      ]
+    }
+  ]
+}
