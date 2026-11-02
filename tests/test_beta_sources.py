@@ -49,6 +49,47 @@ def test_custom_comparison_is_used():
     assert loose.note == "" and loose.source == SOURCE_NANOKA
 
 
+def test_kit_agrees_only_when_every_gachabase_value_is_in_the_nanoka_kit():
+    from gamexpress.beta_sources import kit_agrees
+
+    nanoka = {"sections": [{"lines": ["1st-Hit DMG Multiplier **85.4%**", "Stagger 1,200"]}],
+              "stats_lines": ["ATK 300"]}
+    same = {"tables": [{"rows": [{"value": "85.4%"}, {"value": "1200"}]}]}
+    off = {"tables": [{"rows": [{"value": "91.4%"}]}]}
+    assert kit_agrees(nanoka, same)
+    assert not kit_agrees(nanoka, off)
+    assert not kit_agrees(nanoka, {"tables": []})     # nothing to compare is not agreement
+
+
+def test_jufufu_output_file_matches_the_parser():
+    """The committed Ju Fufu parser output is the parser's own result on the saved pages."""
+    import json
+
+    from gamexpress.gachabase_kit import parse_agent_page
+
+    saved = json.loads((ROOT / "gamexpress" / "data" / "gachabase" / "zzz_jufufu.json")
+                       .read_text(encoding="utf-8"))
+    pages = ROOT / "tests" / "fixtures" / "gachabase"
+    assert saved["locales"]["en"] == parse_agent_page((pages / "jufufu_en.html").read_text(encoding="utf-8"))
+    assert saved["locales"]["chs"] == parse_agent_page((pages / "jufufu_chs.html").read_text(encoding="utf-8"))
+    assert saved["locales"]["en"]["name"] == "Ju Fufu"
+    assert saved["locales"]["chs"]["name"] == "橘福福"
+
+
+def test_portrait_is_the_signed_asset_with_the_agents_own_name():
+    from gamexpress.gachabase_kit import portrait_url
+
+    page = ('<img alt="Ju Fufu" src="https://i.gachabase.net/SIG/q:50/f:webp/plain/zzz/assets/'
+            'b2417de1e996acd49f8809edec5ace3d.png">'
+            '<img alt="Yunkui Summit" src="https://i.gachabase.net/X/plain/zzz/assets/0155.png">'
+            '<img alt="Ju Fufu" src="./local_files/b2417.webp">')
+    assert portrait_url(page, "Ju Fufu").endswith("b2417de1e996acd49f8809edec5ace3d.png")
+    assert portrait_url(page, "Nobody") == ""          # no image carries that name
+    assert portrait_url('<img alt="Ju Fufu" src="https://cdn.gachabase.net/zzz/a.png">',
+                        "Ju Fufu") == ""                # unsigned CDN path is not taken
+    assert portrait_url("", "Ju Fufu") == ""
+
+
 if __name__ == "__main__":
     TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0

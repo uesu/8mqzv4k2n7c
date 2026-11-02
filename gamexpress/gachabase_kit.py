@@ -85,3 +85,24 @@ def parse_agent_page(page: str) -> dict:
         if rows and title:
             tables.append({"title": title, "rows": rows})
     return {"name": _agent_name(page), "tables": tables}
+
+
+_IMG_RE = re.compile(r"<img\b[^>]*>", re.S | re.I)
+_ATTR_RE = re.compile(r"\b(alt|src)=\"([^\"]*)\"")
+
+
+def portrait_url(page: str, name: str) -> str:
+    """The agent's own portrait: the Gachabase `<img alt="<name>">` served from its asset store.
+
+    Only the signed `i.gachabase.net` asset URL is taken (the unsigned CDN path answers 500). Any
+    other image, or an image whose alt is not the agent's name, is not a portrait.
+    """
+    if not name:
+        return ""
+    for tag in _IMG_RE.findall(page or ""):
+        attrs = {k.lower(): _html.unescape(v) for k, v in _ATTR_RE.findall(tag)}
+        src = attrs.get("src", "")
+        if attrs.get("alt", "").strip() == name and src.startswith("https://i.gachabase.net/") \
+                and "/assets/" in src:
+            return src
+    return ""

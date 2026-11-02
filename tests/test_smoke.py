@@ -17350,7 +17350,9 @@ def test_feature5_enabled_run_delivers_one_fixture_character_for_every_released_
         # link can name a patch Encore has indexed. Primary and backup are both tried here
         # because this fetcher serves neither.
         assert sum(kind == "json" for kind, _url in fetcher.calls) == 7
-        assert sum(kind == "text" for kind, _url in fetcher.calls) == 3
+        # Gachabase is read on every carded character too (gi, hsr, zzz): 3 changelog probes plus
+        # 3 agent pages. This fetcher returns no agent text, so nanoka supplies every kit.
+        assert sum(kind == "text" for kind, _url in fetcher.calls) == 6
         assert sum(kind == "media" for kind, _url in fetcher.calls) == 3
         assert any("/ww/3.8.1/en/character/1512.json" in url for _kind, url in fetcher.calls)
 
@@ -18328,6 +18330,40 @@ def test_feature5_encore_build_never_reposts_an_unchanged_kit_across_providers()
         assert patch is not None and patch.source_version == "3.8.4"
         assert not any(c.name == "Lily" for c in patch.characters)
         assert any("another provider; not posted" in w for w in ctx.warnings), ctx.warnings
+
+
+def test_feature5_gachabase_is_read_per_character_and_waits_when_it_is_the_only_source():
+    """nanoka silent + Gachabase has the agent: Gachabase is the source, and with no kit text to
+    build from the card waits (no partial kit is posted), with the reason in the warnings."""
+    from gamexpress import beta as beta_mod
+
+    page = (ROOT / "tests" / "fixtures" / "gachabase" / "jufufu_en.html").read_text(encoding="utf-8")
+    manifest = {"zzz": {"latest": "3.4.2", "live": "3.3.1", "available": ["3.3.1", "3.4.2"],
+                        "new": {"character": [1391], "weapon": [], "relic": [], "bangboo": []}}}
+
+    class GachabaseOnly:
+        def __init__(self):
+            self.urls = []
+
+        async def get_json(self, url, **_kw):
+            self.urls.append(url)
+            return manifest if url.endswith("/manifest.json") else None
+
+        async def get_text(self, url, **_kw):
+            self.urls.append(url)
+            return page if "/agents/1391/" in url else ""
+
+        async def verify_media(self, _url):
+            return False
+
+    with tempfile.TemporaryDirectory() as tmp:
+        fetcher = GachabaseOnly()
+        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, games=["zzz"])
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
+        assert patch is not None
+        assert patch.characters == []
+        assert any("/agents/1391/" in url for url in fetcher.urls)
+        assert any("id 1391 is on Gachabase only" in w for w in ctx.warnings), ctx.warnings
 
 
 def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits():

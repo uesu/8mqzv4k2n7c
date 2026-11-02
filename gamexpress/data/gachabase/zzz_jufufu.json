@@ -1,0 +1,547 @@
+{
+  "game": "zzz",
+  "agent": "Ju Fufu",
+  "source": "https://zzz.gachabase.net/agents/1391/1391/beta?lang=en (saved HTML fixtures)",
+  "locales": {
+    "en": {
+      "name": "Ju Fufu",
+      "tables": [
+        {
+          "title": "Basic Attack: Tiger Seven Forms - Flaming Claw",
+          "rows": [
+            {
+              "label": "1st-Hit DMG Multiplier",
+              "id": "1391001",
+              "value": "85.4%"
+            },
+            {
+              "label": "2nd-Hit DMG Multiplier",
+              "id": "1391002",
+              "value": "91.4%"
+            },
+            {
+              "label": "3rd-Hit DMG Multiplier",
+              "id": "1391003",
+              "value": "63.4%"
+            },
+            {
+              "label": "4th-Hit DMG Multiplier",
+              "id": "1391004",
+              "value": "437.3%"
+            },
+            {
+              "label": "1st-Hit Daze Multiplier",
+              "id": "1391001",
+              "value": "73.8%"
+            },
+            {
+              "label": "2nd-Hit Daze Multiplier",
+              "id": "1391002",
+              "value": "58.9%"
+            },
+            {
+              "label": "3rd-Hit Daze Multiplier",
+              "id": "1391003",
+              "value": "73.8%"
+            },
+            {
+              "label": "4th-Hit Daze Multiplier",
+              "id": "1391004",
+              "value": "201%"
+            }
+          ]
+        },
+        {
+          "title": "Basic Attack: Hu Wei",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391005",
+              "value": "184.8%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391005",
+              "value": "104.5%"
+            }
+          ]
+        },
+        {
+          "title": "Dash Attack: Tiger Seven Forms - Tiger Charge",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391008",
+              "value": "74.2%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391008",
+              "value": "28.3%"
+            }
+          ]
+        },
+        {
+          "title": "Dash Attack: Tiger Seven Forms - Mountain King's Game",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391009",
+              "value": "37.1%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391009",
+              "value": "28.3%"
+            }
+          ]
+        },
+        {
+          "title": "Dash Attack: Tiger Seven Forms - Mountain King's Game - Momentum",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391010",
+              "value": "39%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391010",
+              "value": "13.1%"
+            }
+          ]
+        },
+        {
+          "title": "Dash Attack: Tiger Seven Forms - Mountain King's Game - Hu Wei",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391022",
+              "value": "184.8%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391022",
+              "value": "104.5%"
+            }
+          ]
+        },
+        {
+          "title": "Dodge Counter: Tiger Seven Forms - Reignited Mountain",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391011",
+              "value": "415.7%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391011",
+              "value": "278.8%"
+            }
+          ]
+        },
+        {
+          "title": "Quick Assist: Decisive Stomp",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391015",
+              "value": "151.2%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391015",
+              "value": "57.5%"
+            }
+          ]
+        },
+        {
+          "title": "Defensive Assist: Steadfast Crouching Tiger",
+          "rows": [
+            {
+              "label": "Light Defensive Daze Multiplier",
+              "id": "1391016",
+              "value": "302.5%"
+            },
+            {
+              "label": "Heavy Defensive Daze Multiplier",
+              "id": "1391017",
+              "value": "409.2%"
+            },
+            {
+              "label": "Chain Defensive Daze Multiplier",
+              "id": "1391018",
+              "value": "206.1%"
+            }
+          ]
+        },
+        {
+          "title": "Assist Follow-Up: Feral Blazing Maw",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391019",
+              "value": "815.3%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391019",
+              "value": "385%"
+            }
+          ]
+        },
+        {
+          "title": "Special Attack: Tiger Seven Forms - Mountain-Descending Tiger",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391006",
+              "value": "133.2%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391006",
+              "value": "100.2%"
+            }
+          ]
+        },
+        {
+          "title": "EX Special Attack: Tiger Seven Forms Alt - Mountain-Descending Savage Tiger",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391007",
+              "value": "1053.4%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391007",
+              "value": "516.8%"
+            },
+            {
+              "label": "Energy Cost",
+              "id": "",
+              "value": "60"
+            }
+          ]
+        },
+        {
+          "title": "Chain Attack: Tiger Cauldron Collapse",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391012",
+              "value": "1336.9%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391012",
+              "value": "240.8%"
+            }
+          ]
+        },
+        {
+          "title": "Chain Attack: Suppressing Tiger Cauldron",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391013",
+              "value": "709.8%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391013",
+              "value": "332.7%"
+            }
+          ]
+        },
+        {
+          "title": "Ultimate: Tiger Seven Forms - Raging Tiger Explosion",
+          "rows": [
+            {
+              "label": "DMG Multiplier",
+              "id": "1391014",
+              "value": "3328.1%"
+            },
+            {
+              "label": "Daze Multiplier",
+              "id": "1391014",
+              "value": "1636.3%"
+            }
+          ]
+        }
+      ]
+    },
+    "chs": {
+      "name": "橘福福",
+      "tables": [
+        {
+          "title": "普通攻击：恶虎七式·燎身爪",
+          "rows": [
+            {
+              "label": "一段伤害倍率",
+              "id": "1391001",
+              "value": "85.4%"
+            },
+            {
+              "label": "二段伤害倍率",
+              "id": "1391002",
+              "value": "91.4%"
+            },
+            {
+              "label": "三段伤害倍率",
+              "id": "1391003",
+              "value": "63.4%"
+            },
+            {
+              "label": "四段伤害倍率",
+              "id": "1391004",
+              "value": "437.3%"
+            },
+            {
+              "label": "一段失衡倍率",
+              "id": "1391001",
+              "value": "73.8%"
+            },
+            {
+              "label": "二段失衡倍率",
+              "id": "1391002",
+              "value": "58.9%"
+            },
+            {
+              "label": "三段失衡倍率",
+              "id": "1391003",
+              "value": "73.8%"
+            },
+            {
+              "label": "四段失衡倍率",
+              "id": "1391004",
+              "value": "201%"
+            }
+          ]
+        },
+        {
+          "title": "普通攻击：「虎威」",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391005",
+              "value": "184.8%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391005",
+              "value": "104.5%"
+            }
+          ]
+        },
+        {
+          "title": "冲刺攻击：恶虎七式·虎奔",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391008",
+              "value": "74.2%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391008",
+              "value": "28.3%"
+            }
+          ]
+        },
+        {
+          "title": "冲刺攻击：恶虎七式·山君鼎戏",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391009",
+              "value": "37.1%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391009",
+              "value": "28.3%"
+            }
+          ]
+        },
+        {
+          "title": "冲刺攻击：恶虎七式·山君鼎戏·威势",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391010",
+              "value": "39%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391010",
+              "value": "13.1%"
+            }
+          ]
+        },
+        {
+          "title": "冲刺攻击：恶虎七式·山君鼎戏·「虎威」",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391022",
+              "value": "184.8%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391022",
+              "value": "104.5%"
+            }
+          ]
+        },
+        {
+          "title": "闪避反击：恶虎七式·离火回峰",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391011",
+              "value": "415.7%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391011",
+              "value": "278.8%"
+            }
+          ]
+        },
+        {
+          "title": "快速支援：怒决蹯",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391015",
+              "value": "151.2%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391015",
+              "value": "57.5%"
+            }
+          ]
+        },
+        {
+          "title": "招架支援：岿然虎踞",
+          "rows": [
+            {
+              "label": "轻招架失衡倍率",
+              "id": "1391016",
+              "value": "302.5%"
+            },
+            {
+              "label": "重招架失衡倍率",
+              "id": "1391017",
+              "value": "409.2%"
+            },
+            {
+              "label": "连续招架失衡倍率",
+              "id": "1391018",
+              "value": "206.1%"
+            }
+          ]
+        },
+        {
+          "title": "支援突击：彪形焰颌",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391019",
+              "value": "815.3%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391019",
+              "value": "385%"
+            }
+          ]
+        },
+        {
+          "title": "特殊技：恶虎七式·下山虎",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391006",
+              "value": "133.2%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391006",
+              "value": "100.2%"
+            }
+          ]
+        },
+        {
+          "title": "强化特殊技：恶虎七式改·下山猛虎",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391007",
+              "value": "1053.4%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391007",
+              "value": "516.8%"
+            },
+            {
+              "label": "能量消耗",
+              "id": "",
+              "value": "60点"
+            }
+          ]
+        },
+        {
+          "title": "连携技：虎釜崩",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391012",
+              "value": "1336.9%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391012",
+              "value": "240.8%"
+            }
+          ]
+        },
+        {
+          "title": "连携技：虎釜震煞",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391013",
+              "value": "709.8%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391013",
+              "value": "332.7%"
+            }
+          ]
+        },
+        {
+          "title": "终结技：恶虎七式·猛虎炸开花",
+          "rows": [
+            {
+              "label": "伤害倍率",
+              "id": "1391014",
+              "value": "3328.1%"
+            },
+            {
+              "label": "失衡倍率",
+              "id": "1391014",
+              "value": "1636.3%"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

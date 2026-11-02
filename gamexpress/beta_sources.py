@@ -14,6 +14,7 @@ disagreement is visible instead of silent.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -52,3 +53,36 @@ def choose_source(*, nanoka: Any = None, gachabase: Any = None, encore: Any = No
     if encore_applies and _has(encore):
         return SourceChoice(SOURCE_ENCORE, encore)
     return SourceChoice("")
+
+
+_NUMBER_RE = re.compile(r"\d+(?:\.\d+)?%?")
+
+
+def _section_text(section: Any) -> str:
+    if isinstance(section, dict):
+        return " ".join(str(x) for x in (section.get("lines") or []))
+    return " ".join(str(x) for x in (getattr(section, "lines", None) or []))
+
+
+def kit_numbers(built: Any) -> set[str]:
+    """Every number a built kit prints (`85.4%`, `1.5`), as the text shows it."""
+    if isinstance(built, dict):
+        sections = built.get("sections") or []
+        stats = built.get("stats_lines") or []
+    else:
+        sections, stats = [], []
+    text = " ".join([*(_section_text(s) for s in sections), *(str(x) for x in stats)])
+    return set(_NUMBER_RE.findall(text.replace(",", "")))
+
+
+def kit_agrees(nanoka: Any, gachabase: Any) -> bool:
+    """True when every value Gachabase's skill tables print also appears in nanoka's kit.
+
+    The two databases format a kit differently, so the comparison is on the numbers only: a
+    Gachabase value that nanoka's kit does not contain is a disagreement.
+    """
+    values = {str(row.get("value") or "").replace(",", "")
+              for table in (gachabase or {}).get("tables") or []
+              for row in table.get("rows") or []}
+    values = {v for v in values if v}
+    return bool(values) and values <= kit_numbers(nanoka)

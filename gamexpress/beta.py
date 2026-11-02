@@ -58,9 +58,11 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin, urlsplit
 
+from .beta_sources import SOURCE_ENCORE, SOURCE_GACHABASE, choose_source, kit_agrees
 from .cards import beta_payloads_with_map
 from .config import Game
 from .discord import webhook_fingerprint
+from .gachabase_kit import parse_agent_page, portrait_url
 from .models import BetaCharacter, BetaEquipment, BetaPatch, BetaSectionEntry
 from .state import BETA_FORMAT_EPOCH, stable_hash
 from .textutil import html_to_text
@@ -1964,6 +1966,24 @@ async def _detail(
     url = _detail_url(ns, version, kind, item_id, locale)
     data = await fetcher.get_json(url, source="beta-data", retries=1)
     return data if isinstance(data, dict) else None
+
+
+async def _gachabase_kit(fetcher, ns: str, item_id: str) -> dict:
+    """A character's kit on Gachabase's agent page: `{"name", "tables"}`, or `{}` if unreadable.
+
+    Gachabase is read for every carded character in the games it lists (gi, hsr, zzz), on every
+    poll that cards it. WuWa is not on Gachabase, so it never asks there.
+    """
+    if ns not in ("gi", "hsr", "zzz") or not item_id:
+        return {}
+    url = _fallback_entry(ns, "character", item_id)["url"]
+    page = await fetcher.get_text(url, source="beta-gachabase", headers=dict(_GACHABASE_HEADERS),
+                                  retries=0)
+    if not page:
+        return {}
+    kit = parse_agent_page(page)
+    kit["portrait"] = portrait_url(page, kit.get("name") or "")
+    return kit
 
 
 async def _listing(fetcher, ns: str, version: str, kind: str) -> dict:
@@ -6758,11 +6778,34 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         requests += 1
         builder = _CHARACTER_BUILDERS.get(ns)
         built = builder(data) if data and builder else None
-        if not built or not built.get("sections"):
+        # Three independent databases, one rule (beta_sources.choose_source): nanoka wins when it
+        # has the item; otherwise Gachabase; otherwise Encore (WuWa only). Gachabase is read on
+        # every carded character, so a disagreement with nanoka is reported on the same poll.
+        nanoka_built = built if built and built.get("sections") else None
+        gb_kit: dict = {}
+        if ns in ("gi", "hsr", "zzz") and requests + 1 <= budget["max_requests"] \
+                and _take_shared_request(budget, 1):
+            requests += 1
+            gb_kit = await _gachabase_kit(ctx.fetcher, ns, item_id)
+        gb_tables = gb_kit if gb_kit.get("tables") else None
+        enc_data = None
+        if nanoka_built is None and gb_tables is None and ns == "ww":
             enc_data = await encore_fallback("character", item_id)
-            if enc_data:
-                data = enc_data
-                built = builder(data) if builder else None
+        choice = choose_source(
+            nanoka=nanoka_built, gachabase=gb_tables, encore=enc_data or None,
+            game=game.short, encore_applies=(ns == "ww"), same=kit_agrees)
+        if choice.note:
+            ctx.warnings.append(f"{game.short} beta: {choice.note} (id {item_id})")
+        if choice.source == SOURCE_ENCORE:
+            data = enc_data
+            built = builder(data) if builder else None
+        elif choice.source == SOURCE_GACHABASE:
+            # Gachabase's agent page has the numbers but not the kit text a card is built from,
+            # so the item waits instead of posting a partial kit.
+            ctx.warnings.append(
+                f"{game.short} beta: id {item_id} is on Gachabase only; kit text not readable; deferred")
+            patch.more = True
+            continue
         zh_data: dict | None = None
         if (
             data
@@ -6847,6 +6890,11 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             page_url = f"https://encore.moe/character/{item_id}?lang=en&v=Beta"
 
         candidates = _data_image_candidates(ns, "character", item_id, data)
+        # Media gap-fill: nanoka's art conventions come first (each is preflighted); Gachabase's
+        # agent portrait is used only when nanoka offers no verified image.
+        portrait = str(gb_kit.get("portrait") or "")
+        if portrait and portrait not in candidates:
+            candidates.append(portrait)
         image_entry = {"id": snap_key, "image": entry.get("image"), "candidates": candidates}
         image, requests = await _resolve_image_within_budget(
             ctx.fetcher, image_entry, locked, image_cache, budget, requests
