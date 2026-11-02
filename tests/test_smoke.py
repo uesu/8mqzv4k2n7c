@@ -17349,7 +17349,9 @@ def test_feature5_enabled_run_delivers_one_fixture_character_for_every_released_
         # WuWa additionally asks Encore for its current beta build, once, so its comparison
         # link can name a patch Encore has indexed. Primary and backup are both tried here
         # because this fetcher serves neither.
-        assert sum(kind == "json" for kind, _url in fetcher.calls) == 7
+        # WuWa's carded character is also compared with Encore (its build metadata is read before
+        # and after the detail, on both Encore APIs since this fetcher serves neither): +2 reads.
+        assert sum(kind == "json" for kind, _url in fetcher.calls) == 9
         # Gachabase is read on every carded character too (gi, hsr, zzz): 3 changelog probes plus
         # 3 agent pages. This fetcher returns no agent text, so nanoka supplies every kit.
         assert sum(kind == "text" for kind, _url in fetcher.calls) == 6
@@ -18038,7 +18040,8 @@ def test_feature5_encore_beta_fallback_reads_matching_build_and_keeps_budget():
                    for snap in patch.snapshots.values())
         payloads = cards.beta_payloads(GAMES["wuwa"], patch, None, None)
         assert payloads and all(not cards.validate_payload(payload) for payload in payloads)
-        # The primary source remains sufficient: no Encore HTTP at all on the healthy path.
+        # Encore is compared with nanoka on every carded WuWa character, so its character reads
+        # are bounded by the cards, and nanoka's values still supply the card.
         fetcher = EncoreFetcher("healthy")
         ctx.fetcher = fetcher
         healthy = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
@@ -18046,7 +18049,9 @@ def test_feature5_encore_beta_fallback_reads_matching_build_and_keeps_budget():
         # The primary source still supplies every value. The one Encore read is deliberate: the
         # comparison link has to name a patch label Encore indexes, and only Encore can say which.
         encore_calls = [url for url in fetcher.calls if "encore" in url]
-        assert encore_calls == ["https://api-v2.encore.moe/api/en/new?v=Beta"], encore_calls
+        encore_char = [url for url in encore_calls if "/character/" in url]
+        assert len(encore_char) == len(healthy.characters), encore_calls
+        assert all(url.endswith("?v=Beta") or "/character/" in url for url in encore_calls)
         # Provider switches never manufacture inline buffs/nerfs from schema differences.
         old = next(iter(patch.snapshots.values()))
         assert beta_mod._snapshot_comparison(old, {**old, "provider": "nanoka"}) == "snapshot"

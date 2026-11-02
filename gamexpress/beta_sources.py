@@ -8,9 +8,10 @@ different times. The rule is simple and does not depend on any one of them:
 3. nanoka has none, Encore has data (WuWa only) -> Encore supplies it.
 4. no source has data -> no card; the item waits for the next beta update.
 
-When nanoka and Gachabase both have data, they are compared. A match is a clean post. A mismatch
-still posts from nanoka (it is the first source) and is reported in the returned note, so the
-disagreement is visible instead of silent.
+When nanoka and another database both have data (Gachabase, or Encore for WuWa), they are
+compared. A match posts nanoka. A mismatch still posts nanoka (it is the first source) and the
+returned note names the database that disagreed, so the disagreement is visible, not silent.
+A database that errors or answers 403 simply has no data, and never blocks the others.
 """
 from __future__ import annotations
 
@@ -36,18 +37,26 @@ def _has(data: Any) -> bool:
 
 def choose_source(*, nanoka: Any = None, gachabase: Any = None, encore: Any = None,
                   game: str = "", encore_applies: bool = False,
-                  same: Any = None) -> SourceChoice:
+                  same: Any = None, same_encore: Any = None) -> SourceChoice:
     """Pick the source for one item.
 
-    `same(a, b)` decides whether two databases agree; it defaults to equality. Encore is only
-    consulted for WuWa (`encore_applies`), and only when nanoka has nothing for the item.
+    nanoka wins whenever it has data. Otherwise Gachabase wins if it has data, otherwise Encore
+    (WuWa only). When nanoka has data and another database also has it, the two are compared:
+    a match posts nanoka; a mismatch still posts nanoka and reports which database disagreed.
+    `same` compares nanoka with Gachabase, `same_encore` compares nanoka with Encore (equality
+    by default). A database that is unreadable (no data) never blocks the others.
     """
     compare = same or (lambda a, b: a == b)
+    compare_encore = same_encore or compare
     if _has(nanoka):
+        disagreed = []
         if _has(gachabase) and not compare(nanoka, gachabase):
-            return SourceChoice(SOURCE_NANOKA, nanoka,
-                                note=f"{game}: nanoka and Gachabase differ; posted nanoka")
-        return SourceChoice(SOURCE_NANOKA, nanoka)
+            disagreed.append("Gachabase")
+        if encore_applies and _has(encore) and not compare_encore(nanoka, encore):
+            disagreed.append("Encore")
+        note = (f"{game}: nanoka and {' and '.join(disagreed)} differ; posted nanoka"
+                if disagreed else "")
+        return SourceChoice(SOURCE_NANOKA, nanoka, note=note)
     if _has(gachabase):
         return SourceChoice(SOURCE_GACHABASE, gachabase)
     if encore_applies and _has(encore):
@@ -73,6 +82,12 @@ def kit_numbers(built: Any) -> set[str]:
         sections, stats = [], []
     text = " ".join([*(_section_text(s) for s in sections), *(str(x) for x in stats)])
     return set(_NUMBER_RE.findall(text.replace(",", "")))
+
+
+def kit_numbers_equal(a: Any, b: Any) -> bool:
+    """Two built kits print the same set of numbers (used for Encore against nanoka)."""
+    left, right = kit_numbers(a), kit_numbers(b)
+    return bool(left) and left == right
 
 
 def kit_agrees(nanoka: Any, gachabase: Any) -> bool:

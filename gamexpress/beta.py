@@ -58,7 +58,13 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin, urlsplit
 
-from .beta_sources import SOURCE_ENCORE, SOURCE_GACHABASE, choose_source, kit_agrees
+from .beta_sources import (
+    SOURCE_ENCORE,
+    SOURCE_GACHABASE,
+    choose_source,
+    kit_agrees,
+    kit_numbers_equal,
+)
 from .cards import beta_payloads_with_map
 from .config import Game
 from .discord import webhook_fingerprint
@@ -6788,17 +6794,18 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             requests += 1
             gb_kit = await _gachabase_kit(ctx.fetcher, ns, item_id)
         gb_tables = gb_kit if gb_kit.get("tables") else None
-        enc_data = None
-        if nanoka_built is None and gb_tables is None and ns == "ww":
-            enc_data = await encore_fallback("character", item_id)
+        # WuWa: Encore is read for every carded character so it can be compared with nanoka.
+        enc_data = await encore_fallback("character", item_id) if ns == "ww" else None
+        enc_built = builder(enc_data) if enc_data and builder else None
         choice = choose_source(
-            nanoka=nanoka_built, gachabase=gb_tables, encore=enc_data or None,
-            game=game.short, encore_applies=(ns == "ww"), same=kit_agrees)
+            nanoka=nanoka_built, gachabase=gb_tables, encore=enc_built or None,
+            game=game.short, encore_applies=(ns == "ww"), same=kit_agrees,
+            same_encore=kit_numbers_equal)
         if choice.note:
             ctx.warnings.append(f"{game.short} beta: {choice.note} (id {item_id})")
         if choice.source == SOURCE_ENCORE:
             data = enc_data
-            built = builder(data) if builder else None
+            built = enc_built
         elif choice.source == SOURCE_GACHABASE:
             # Gachabase's agent page has the numbers but not the kit text a card is built from,
             # so the item waits instead of posting a partial kit.

@@ -90,6 +90,30 @@ def test_portrait_is_the_signed_asset_with_the_agents_own_name():
     assert portrait_url("", "Ju Fufu") == ""
 
 
+def test_encore_matching_nanoka_posts_and_mismatch_is_reported_with_nanoka():
+    from gamexpress.beta_sources import kit_numbers_equal
+
+    same_kit = {"sections": [{"lines": ["DMG 85.4%"]}]}
+    other_kit = {"sections": [{"lines": ["DMG 91.4%"]}]}
+    match = choose_source(nanoka=same_kit, encore={"sections": [{"lines": ["DMG 85.4%"]}]},
+                          game="WuWa", encore_applies=True, same_encore=kit_numbers_equal)
+    assert match.source == SOURCE_NANOKA and match.note == ""
+    off = choose_source(nanoka=same_kit, encore=other_kit, game="WuWa", encore_applies=True,
+                        same_encore=kit_numbers_equal)
+    assert off.source == SOURCE_NANOKA and "Encore" in off.note
+    # Encore is never consulted outside WuWa.
+    zzz = choose_source(nanoka=same_kit, encore=other_kit, game="ZZZ", encore_applies=False,
+                        same_encore=kit_numbers_equal)
+    assert zzz.note == ""
+
+
+def test_gachabase_unreachable_403_leaves_nanoka_to_win():
+    """A 403 from Gachabase reads as no data, so nanoka wins with no note."""
+    choice = choose_source(nanoka={"sections": [{"lines": ["x 1%"]}]}, gachabase=None,
+                           game="ZZZ", same=lambda a, b: False)
+    assert choice.source == SOURCE_NANOKA and choice.note == ""
+
+
 if __name__ == "__main__":
     TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0
