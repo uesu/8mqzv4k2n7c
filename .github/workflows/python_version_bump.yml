@@ -115,6 +115,7 @@ jobs:
           python tests/test_smoke.py
           python tests/test_schedule_epithet_and_settled.py
           python tests/test_gachabase_kit.py
+          python tests/test_beta_sources.py
           python tests/test_gachawiki_placeholder.py
           python -m gamexpress preview --out "$RUNNER_TEMP/previews" > /dev/null
 
