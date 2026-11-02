@@ -7022,6 +7022,12 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 game.key, name, built, full.sections, is_new=is_new
             )
             patch.characters.append(full)
+        elif (cmp_mode == "snapshot" and previous_snapshot is not None
+              and previous_snapshot.get("provider", "nanoka") != cur_snap.get("provider", "nanoka")):
+            # Encore's copy and the retained nanoka copy are different formats: nothing is proven
+            # to have changed. Printing the whole kit as [CHANGED] posts an unchanged kit as a
+            # change (the 3.8.4 Lily card did this), so the item posts nothing.
+            ctx.warnings.append(f"{game.short} beta: {name} baseline is another provider; not posted")
         elif cmp_mode == "snapshot":
             full.sections = _clone_sections(full.sections, "[CHANGED]")
             full.is_new = False

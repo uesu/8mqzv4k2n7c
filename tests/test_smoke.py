@@ -18284,6 +18284,52 @@ def test_feature5_encore_only_build_posts_then_settles_quietly():
         assert all(url.endswith("/new?v=Beta") for url in ctx.fetcher.calls)
 
 
+def test_feature5_encore_build_never_reposts_an_unchanged_kit_across_providers():
+    """A retained nanoka baseline and Encore's copy are different formats, so no change is proven.
+
+    The 3.8.4 post did this: the whole Lily kit went out tagged [CHANGED]. Now the item posts
+    nothing and says why in the warnings.
+    """
+    from gamexpress import beta as beta_mod
+
+    manifest = {"ww": {"latest": "3.8.3", "live": "3.7", "available": ["3.7", "3.8.1", "3.8.3"],
+                       "new": {"character": [1512], "weapon": [], "echo": []}}}
+
+    class EncoreOnly:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if url.startswith("https://api-v2.encore.moe/api/en/new?"):
+                return [{"GameVer": "3.8.0", "ResVer": "3.8.4", "Changelist": "1"}]
+            if url.startswith("https://api-v2.encore.moe/api/en/character/"):
+                return _beta_json("encore_lily_live.json")
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", EncoreOnly(), BETA_ENABLED="1", games=["wuwa"])
+        record = ctx.state.beta_record("wuwa")
+        record["source_version"] = "3.8.3"
+        # The retained baseline is a nanoka snapshot of Lily (a different provider than Encore).
+        record.setdefault("snapshots", {})["ww:character:1512"] = {
+            "provider": "nanoka", "kind": "character", "content_signature": "nanoka-lily-old",
+            "truncated": False, "norm_rev": 99,
+            "data": {"id": "ww:1512", "name": "Lily", "rarity": 5, "stats_lines": ["HP 1"],
+                     "sections": [{"title": "Old Skill", "category": "Basic Attack", "tag": "[NEW]",
+                                   "lines": ["old text"]}]},
+        }
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+        assert patch is not None and patch.source_version == "3.8.4"
+        assert not any(c.name == "Lily" for c in patch.characters)
+        assert any("another provider; not posted" in w for w in ctx.warnings), ctx.warnings
+
+
 def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits():
     from gamexpress import beta as beta_mod
 
