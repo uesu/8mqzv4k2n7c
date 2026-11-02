@@ -2,7 +2,7 @@
   "game": "wuwa",
   "namespace": "ww",
   "version": "3.8.3",
-  "generated_at": "2026-11-01T23:57:25Z",
+  "generated_at": "2026-11-02T01:16:56Z",
   "source": "https://static.nanoka.cc/ww/3.8.3/{en,zh}/<kind>/<id>.json + https://api-v2.encore.moe/api/{en,zh-Hans}/<kind>/<id>",
   "items_listed": 386,
   "items_with_pairs": 885,
@@ -6080,6 +6080,15 @@
       "example_items": [
         "character/1607",
         "encore/character/1607"
+      ]
+    },
+    {
+      "zh": "投影·桃夭灼灼",
+      "en": "Projection - Peach Blossom",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/80080007"
       ]
     },
     {
@@ -28326,6 +28335,15 @@
       ]
     },
     {
+      "zh": "安魂",
+      "en": "Lullaby",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/21030076"
+      ]
+    },
+    {
       "zh": "定策",
       "en": "The Strategy",
       "support": 2,
@@ -30046,6 +30064,15 @@
       "example_items": [
         "character/1211",
         "encore/character/1211"
+      ]
+    },
+    {
+      "zh": "莉莉",
+      "en": "Lily",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1512"
       ]
     },
     {

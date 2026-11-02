@@ -2,7 +2,7 @@
   "game": "starrail",
   "namespace": "hsr",
   "version": "4.6.54",
-  "generated_at": "2026-11-01T23:57:09Z",
+  "generated_at": "2026-11-02T01:16:36Z",
   "source": "https://static.nanoka.cc/hsr/4.6.54/{en,zh}/<kind>/<id>.json",
   "items_listed": 335,
   "items_with_pairs": 329,
@@ -23,6 +23,24 @@
       ]
     },
     {
+      "zh": "今日亦是和平的一日",
+      "en": "Today Is Another Peaceful Day",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21034"
+      ]
+    },
+    {
+      "zh": "出云显世与高天神国",
+      "en": "Izumo Gensei and Takama Divine Realm",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/314"
+      ]
+    },
+    {
       "zh": "欢愉万相★主角光环",
       "en": "Faces of Elation ★ Plot Armor",
       "support": 2,
@@ -30,6 +48,15 @@
       "example_items": [
         "character/8009",
         "character/8010"
+      ]
+    },
+    {
+      "zh": "闪耀功勋的魔法少女",
+      "en": "Ever-Glorious Magical Girl",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/129"
       ]
     },
     {
@@ -43,6 +70,114 @@
       ]
     },
     {
+      "zh": "再创天地的救世主",
+      "en": "World-Remaking Deliverer",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/127"
+      ]
+    },
+    {
+      "zh": "决心如汗珠般闪耀",
+      "en": "Resolution Shines As Pearls of Sweat",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21015"
+      ]
+    },
+    {
+      "zh": "净庭教宗的圣骑士",
+      "en": "Knight of Purity Palace",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/103"
+      ]
+    },
+    {
+      "zh": "向着地平线的终点",
+      "en": "Race to the Horizon",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/22008"
+      ]
+    },
+    {
+      "zh": "如果时间是一朵花",
+      "en": "If Time Were a Flower",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23038"
+      ]
+    },
+    {
+      "zh": "当一颗星照亮夜空",
+      "en": "A Star That Lights the Night",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23060"
+      ]
+    },
+    {
+      "zh": "无主荒星茨冈尼亚",
+      "en": "Sigonia, the Unclaimed Desolation",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/313"
+      ]
+    },
+    {
+      "zh": "星如我见的领航员",
+      "en": "As Navigator Isee Sees It",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/131"
+      ]
+    },
+    {
+      "zh": "机心戏梦的钟表匠",
+      "en": "Watchmaker, Master of Dream Machinations",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/118"
+      ]
+    },
+    {
+      "zh": "梦想之地匹诺康尼",
+      "en": "Penacony, Land of the Dreams",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/312"
+      ]
+    },
+    {
+      "zh": "永恒之地翁法罗斯",
+      "en": "Amphoreus, The Eternal Land",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/323"
+      ]
+    },
+    {
+      "zh": "烈阳惊雷的女武神",
+      "en": "Warrior Goddess of Sun and Thunder",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/125"
+      ]
+    },
+    {
       "zh": "物理属性伤害提高",
       "en": "Physical DMG Boost",
       "support": 2,
@@ -50,6 +185,24 @@
       "example_items": [
         "character/1107",
         "character/1302"
+      ]
+    },
+    {
+      "zh": "盗匪荒漠的废土客",
+      "en": "Wastelander of Banditry Desert",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/112"
+      ]
+    },
+    {
+      "zh": "筑城者的贝洛伯格",
+      "en": "Belobog of the Architects",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/304"
       ]
     },
     {
@@ -66,6 +219,33 @@
       ]
     },
     {
+      "zh": "记一位星神的陨落",
+      "en": "On the Fall of an Aeon",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/24000"
+      ]
+    },
+    {
+      "zh": "邂逅于下一个花季",
+      "en": "Until the Flowers Bloom Again",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23058"
+      ]
+    },
+    {
+      "zh": "野穗伴行的快枪手",
+      "en": "Musketeer of Wild Wheat",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/102"
+      ]
+    },
+    {
       "zh": "量子属性伤害提高",
       "en": "Quantum DMG Boost",
       "support": 8,
@@ -79,6 +259,51 @@
       ]
     },
     {
+      "zh": "零号关卡朋克洛德",
+      "en": "Punklorde Stage Zero",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/325"
+      ]
+    },
+    {
+      "zh": "一场谎言的终幕",
+      "en": "The Finale of a Lie",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23056"
+      ]
+    },
+    {
+      "zh": "两个人的演唱会",
+      "en": "Concert for Two",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21043"
+      ]
+    },
+    {
+      "zh": "为了明日的旅途",
+      "en": "For Tomorrow's Journey",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/22002"
+      ]
+    },
+    {
+      "zh": "云无留迹的过客",
+      "en": "Passerby of Wandering Cloud",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/101"
+      ]
+    },
+    {
       "zh": "休止符的疗养院",
       "en": "Sanatorium for Rest Notes",
       "support": 2,
@@ -86,6 +311,33 @@
       "example_items": [
         "character/8005",
         "character/8006"
+      ]
+    },
+    {
+      "zh": "但战斗还未结束",
+      "en": "But the Battle Isn't Over",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23003"
+      ]
+    },
+    {
+      "zh": "假日浴场大冒险",
+      "en": "Holiday Thermae Escapade",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21061"
+      ]
+    },
+    {
+      "zh": "停转的萨尔索图",
+      "en": "Inert Salsotto",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/306"
       ]
     },
     {
@@ -112,6 +364,24 @@
       ]
     },
     {
+      "zh": "凯歌祝捷的英豪",
+      "en": "Hero of Triumphant Song",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/123"
+      ]
+    },
+    {
+      "zh": "别让世界静下来",
+      "en": "Make the World Clamor",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21013"
+      ]
+    },
+    {
       "zh": "劫余重生的希望",
       "en": "A Surviving Hope",
       "support": 2,
@@ -119,6 +389,15 @@
       "example_items": [
         "character/8001",
         "character/8002"
+      ]
+    },
+    {
+      "zh": "劫火莲灯铸炼宫",
+      "en": "Forge of the Kalpagni Lantern",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/316"
       ]
     },
     {
@@ -139,6 +418,51 @@
       "example_items": [
         "character/8003",
         "character/8004"
+      ]
+    },
+    {
+      "zh": "叩问天工的名冶",
+      "en": "Divine-Querying Master Smith",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/132"
+      ]
+    },
+    {
+      "zh": "向浪花掷下盛夏",
+      "en": "Summer Rides the Surf",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23064"
+      ]
+    },
+    {
+      "zh": "向着不可追问处",
+      "en": "Into the Unreachable Veil",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23037"
+      ]
+    },
+    {
+      "zh": "哀歌覆国的诗人",
+      "en": "Poet of Mourning Collapse",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/124"
+      ]
+    },
+    {
+      "zh": "回到大地的飞行",
+      "en": "A Grounded Ascent",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23034"
       ]
     },
     {
@@ -172,6 +496,78 @@
       ]
     },
     {
+      "zh": "奔狼的都蓝王朝",
+      "en": "Duran, Dynasty of Running Wolves",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/315"
+      ]
+    },
+    {
+      "zh": "妖精织梦的乐园",
+      "en": "Arcadia of Woven Dreams",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/321"
+      ]
+    },
+    {
+      "zh": "宝命长存的莳者",
+      "en": "Longevous Disciple",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/113"
+      ]
+    },
+    {
+      "zh": "密林卧雪的猎人",
+      "en": "Hunter of Glacial Forest",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/104"
+      ]
+    },
+    {
+      "zh": "将光阴织成黄金",
+      "en": "Time Woven Into Gold",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23036"
+      ]
+    },
+    {
+      "zh": "幽锁深牢的系囚",
+      "en": "Prisoner in Deep Confinement",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/116"
+      ]
+    },
+    {
+      "zh": "应天涉远的卜者",
+      "en": "Diviner of Distant Reach",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/130"
+      ]
+    },
+    {
+      "zh": "恶海逐波的船长",
+      "en": "Wavestrider Captain",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/126"
+      ]
+    },
+    {
       "zh": "您的最佳观众席",
       "en": "Best Seat in the House",
       "support": 2,
@@ -179,6 +575,42 @@
       "example_items": [
         "character/8005",
         "character/8006"
+      ]
+    },
+    {
+      "zh": "愿旅途永远坦然",
+      "en": "Journey, Forever Peaceful",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21053"
+      ]
+    },
+    {
+      "zh": "愿虹光永驻天空",
+      "en": "Long May Rainbows Adorn the Sky",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23042"
+      ]
+    },
+    {
+      "zh": "戍卫风雪的铁卫",
+      "en": "Guard of Wuthering Snow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/106"
+      ]
+    },
+    {
+      "zh": "戏梦点星的伶人",
+      "en": "Dreamlit Actor",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/133"
       ]
     },
     {
@@ -215,6 +647,24 @@
       ]
     },
     {
+      "zh": "新手任务开始前",
+      "en": "Before the Tutorial Mission Starts",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/22000"
+      ]
+    },
+    {
+      "zh": "无可取代的东西",
+      "en": "Something Irreplaceable",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23002"
+      ]
+    },
+    {
       "zh": "无所不能的伙伴",
       "en": "Almighty Companion",
       "support": 2,
@@ -222,6 +672,51 @@
       "example_items": [
         "character/8007",
         "character/8008"
+      ]
+    },
+    {
+      "zh": "晨昏交界的翔鹰",
+      "en": "Eagle of Twilight Line",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/110"
+      ]
+    },
+    {
+      "zh": "欢迎来到银河城",
+      "en": "Welcome to the Cosmic City",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23057"
+      ]
+    },
+    {
+      "zh": "死水深潜的先驱",
+      "en": "Pioneer Diver of Dead Waters",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/117"
+      ]
+    },
+    {
+      "zh": "毁烬焚骨的大公",
+      "en": "The Ashblazing Grand Duke",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/115"
+      ]
+    },
+    {
+      "zh": "比阳光更明亮的",
+      "en": "Brighter Than the Sun",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23015"
       ]
     },
     {
@@ -235,6 +730,69 @@
       ]
     },
     {
+      "zh": "沉欢醉饮的海隅",
+      "en": "Revelry by the Sea",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/322"
+      ]
+    },
+    {
+      "zh": "沉陆海域露莎卡",
+      "en": "Lushaka, the Sunken Seas",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/317"
+      ]
+    },
+    {
+      "zh": "没有回报的加冕",
+      "en": "A Thankless Coronation",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23045"
+      ]
+    },
+    {
+      "zh": "泛银河商业公司",
+      "en": "Pan-Cosmic Commercial Enterprise",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/303"
+      ]
+    },
+    {
+      "zh": "流星追迹的怪盗",
+      "en": "Thief of Shooting Meteor",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/111"
+      ]
+    },
+    {
+      "zh": "渊思寂虑的巨树",
+      "en": "Giant Tree of Rapt Brooding",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/320"
+      ]
+    },
+    {
+      "zh": "激奏雷电的乐队",
+      "en": "Band of Sizzling Thunder",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/109"
+      ]
+    },
+    {
       "zh": "火属性伤害提高",
       "en": "Fire DMG Boost",
       "support": 7,
@@ -245,6 +803,15 @@
         "character/1112",
         "character/1210",
         "character/1218"
+      ]
+    },
+    {
+      "zh": "灼尽炼狱的新骸",
+      "en": "Reforged in Hellfire",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23059"
       ]
     },
     {
@@ -268,6 +835,51 @@
       ]
     },
     {
+      "zh": "熔岩锻铸的火匠",
+      "en": "Firesmith of Lava-Forging",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/107"
+      ]
+    },
+    {
+      "zh": "献给明日的色彩",
+      "en": "Colors for Tomorrow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23055"
+      ]
+    },
+    {
+      "zh": "理想燃烧的地狱",
+      "en": "The Hell Where Ideals Burn",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23046"
+      ]
+    },
+    {
+      "zh": "生命当付之一炬",
+      "en": "Life Should Be Cast to Flames",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23041"
+      ]
+    },
+    {
+      "zh": "直到明天的明天",
+      "en": "Unto Tomorrow's Morrow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21055"
+      ]
+    },
+    {
       "zh": "砌造未来的蓝图",
       "en": "Trail-Blazing Blueprint",
       "support": 2,
@@ -285,6 +897,87 @@
       "example_items": [
         "character/8003",
         "character/8004"
+      ]
+    },
+    {
+      "zh": "繁星璀璨的天才",
+      "en": "Genius of Brilliant Stars",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/108"
+      ]
+    },
+    {
+      "zh": "纯粹思维的洗礼",
+      "en": "Baptism of Pure Thought",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23020"
+      ]
+    },
+    {
+      "zh": "美梦小镇大冒险",
+      "en": "Dreamville Adventure",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21036"
+      ]
+    },
+    {
+      "zh": "胜利只在朝夕间",
+      "en": "Victory In a Blink",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21050"
+      ]
+    },
+    {
+      "zh": "自匿星芒的隐士",
+      "en": "Self-Enshrouded Recluse",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/128"
+      ]
+    },
+    {
+      "zh": "花花世界迷人眼",
+      "en": "Dazzled by a Flowery World",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23053"
+      ]
+    },
+    {
+      "zh": "荡除蠹灾的铁骑",
+      "en": "Iron Cavalry Against the Scourge",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/119"
+      ]
+    },
+    {
+      "zh": "菇菇嘎嘎历险记",
+      "en": "Mushy Shroomy's Adventures",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21064"
+      ]
+    },
+    {
+      "zh": "街头出身的拳王",
+      "en": "Champion of Streetwise Boxing",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/105"
       ]
     },
     {
@@ -308,6 +1001,33 @@
       ]
     },
     {
+      "zh": "识海迷坠的学者",
+      "en": "Scholar Lost in Erudition",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/122"
+      ]
+    },
+    {
+      "zh": "谎言在风中飘扬",
+      "en": "Lies Dance on the Breeze",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23043"
+      ]
+    },
+    {
+      "zh": "贪噬禁果的异端",
+      "en": "The Edacious Heretic",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/134"
+      ]
+    },
+    {
       "zh": "越狱的跨洋彩虹",
       "en": "Jailbreaking Rainbowwalk",
       "support": 2,
@@ -315,6 +1035,33 @@
       "example_items": [
         "character/8005",
         "character/8006"
+      ]
+    },
+    {
+      "zh": "重循苦旅的司铎",
+      "en": "Sacerdos' Relived Ordeal",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/121"
+      ]
+    },
+    {
+      "zh": "金血铭刻的时代",
+      "en": "Epoch Etched in Golden Blood",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23048"
+      ]
+    },
+    {
+      "zh": "铭记于心的约定",
+      "en": "Indelible Promise",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21042"
       ]
     },
     {
@@ -341,6 +1088,15 @@
       ]
     },
     {
+      "zh": "风举云飞的勇烈",
+      "en": "The Wind-Soaring Valorous",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/120"
+      ]
+    },
+    {
       "zh": "风属性伤害提高",
       "en": "Wind DMG Boost",
       "support": 6,
@@ -354,6 +1110,24 @@
       ]
     },
     {
+      "zh": "飞向粉色的明天",
+      "en": "Fly Into a Pink Tomorrow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/22006"
+      ]
+    },
+    {
+      "zh": "驶向第二次生命",
+      "en": "Sailing Towards a Second Life",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23027"
+      ]
+    },
+    {
       "zh": "驻留文明的誓言",
       "en": "Nation-Building Oath",
       "support": 2,
@@ -361,6 +1135,51 @@
       "example_items": [
         "character/8003",
         "character/8004"
+      ]
+    },
+    {
+      "zh": "骇域漫游的信使",
+      "en": "Messenger Traversing Hackerspace",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/114"
+      ]
+    },
+    {
+      "zh": "黎明恰如此燃烧",
+      "en": "Thus Burns the Dawn",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23044"
+      ]
+    },
+    {
+      "zh": "一场术后对话",
+      "en": "Post-Op Conversation",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21000"
+      ]
+    },
+    {
+      "zh": "一行往日的血",
+      "en": "A Trail of Bygone Blood",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21058"
+      ]
+    },
+    {
+      "zh": "不老者的仙舟",
+      "en": "Fleet of the Ageless",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/302"
       ]
     },
     {
@@ -374,6 +1193,132 @@
       ]
     },
     {
+      "zh": "于那终点再见",
+      "en": "See You at the End",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21062"
+      ]
+    },
+    {
+      "zh": "余生的第一天",
+      "en": "Day One of My New Life",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21002"
+      ]
+    },
+    {
+      "zh": "你将起身歌唱",
+      "en": "Rise and Sing",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23063"
+      ]
+    },
+    {
+      "zh": "偏偏希望无价",
+      "en": "Yet Hope Is Priceless",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23028"
+      ]
+    },
+    {
+      "zh": "到不了的彼岸",
+      "en": "The Unreachable Side",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23009"
+      ]
+    },
+    {
+      "zh": "勿忘她的火焰",
+      "en": "Never Forget Her Flame",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23050"
+      ]
+    },
+    {
+      "zh": "千星荟萃之城",
+      "en": "City of Converging Stars",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/326"
+      ]
+    },
+    {
+      "zh": "命运从未公平",
+      "en": "Inherently Unjust Destiny",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23023"
+      ]
+    },
+    {
+      "zh": "夜色流光溢彩",
+      "en": "Flowing Nightglow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23026"
+      ]
+    },
+    {
+      "zh": "天国@直播间",
+      "en": "Tengoku@Livestream",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/324"
+      ]
+    },
+    {
+      "zh": "天才们的休憩",
+      "en": "Geniuses' Repose",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21020"
+      ]
+    },
+    {
+      "zh": "天才们的问候",
+      "en": "Geniuses' Greetings",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21051"
+      ]
+    },
+    {
+      "zh": "她已闭上双眼",
+      "en": "She Already Shut Her Eyes",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23011"
+      ]
+    },
+    {
+      "zh": "宇宙市场趋势",
+      "en": "Trend of the Universal Market",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21016"
+      ]
+    },
+    {
       "zh": "弱点击破状态",
       "en": "Weakness Break State",
       "support": 13,
@@ -384,6 +1329,24 @@
         "character/1220",
         "character/1225",
         "character/1303"
+      ]
+    },
+    {
+      "zh": "当她决定看见",
+      "en": "When She Decided to See",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23054"
+      ]
+    },
+    {
+      "zh": "故事的下一页",
+      "en": "The Story's Next Page",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21054"
       ]
     },
     {
@@ -426,6 +1389,24 @@
       ]
     },
     {
+      "zh": "早餐的仪式感",
+      "en": "The Seriousness of Breakfast",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21027"
+      ]
+    },
+    {
+      "zh": "星火悄然闪耀",
+      "en": "Flickering Stars",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23061"
+      ]
+    },
+    {
       "zh": "星际和平公司",
       "en": "Interastral Peace Corporation",
       "support": 2,
@@ -433,6 +1414,15 @@
       "example_items": [
         "character/1112",
         "character/1304"
+      ]
+    },
+    {
+      "zh": "暖夜不会漫长",
+      "en": "Warmth Shortens Cold Nights",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21028"
       ]
     },
     {
@@ -459,6 +1449,60 @@
       ]
     },
     {
+      "zh": "梦应归于何处",
+      "en": "Whereabouts Should Dreams Rest",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23025"
+      ]
+    },
+    {
+      "zh": "欢愉满溢祝福",
+      "en": "Elation Brimming With Blessings",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/24006"
+      ]
+    },
+    {
+      "zh": "氤氲麦香的梦",
+      "en": "A Dream Scented in Wheat",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21060"
+      ]
+    },
+    {
+      "zh": "永远的迷境饭",
+      "en": "The Forever Victual",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/22005"
+      ]
+    },
+    {
+      "zh": "海洋为何而歌",
+      "en": "Why Does the Ocean Sing",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23047"
+      ]
+    },
+    {
+      "zh": "爱如此刻永恒",
+      "en": "This Love, Forever",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23052"
+      ]
+    },
+    {
       "zh": "现在的记叙者",
       "en": "Narrator of the Present",
       "support": 2,
@@ -466,6 +1510,15 @@
       "example_items": [
         "character/8007",
         "character/8008"
+      ]
+    },
+    {
+      "zh": "生命的翁瓦克",
+      "en": "Sprightly Vonwacq",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/308"
       ]
     },
     {
@@ -479,6 +1532,15 @@
       ]
     },
     {
+      "zh": "知更鸟•晴歌",
+      "en": "Robin • Summeretto",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1512"
+      ]
+    },
+    {
       "zh": "神启的转呈者",
       "en": "Bearer of the Revelation",
       "support": 2,
@@ -486,6 +1548,33 @@
       "example_items": [
         "character/8007",
         "character/8008"
+      ]
+    },
+    {
+      "zh": "神的瞬息欢愉",
+      "en": "God's Moment of Joy",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/329"
+      ]
+    },
+    {
+      "zh": "纵然山河万程",
+      "en": "Though Worlds Apart",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23051"
+      ]
+    },
+    {
+      "zh": "织造命运之线",
+      "en": "Destiny's Threads Forewoven",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21039"
       ]
     },
     {
@@ -499,6 +1588,51 @@
       ]
     },
     {
+      "zh": "致长夜的星光",
+      "en": "To Evernight's Stars",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23049"
+      ]
+    },
+    {
+      "zh": "花儿不会忘记",
+      "en": "The Flower Remembers",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21057"
+      ]
+    },
+    {
+      "zh": "行于流逝的岸",
+      "en": "Along the Passing Shore",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23024"
+      ]
+    },
+    {
+      "zh": "记忆中的模样",
+      "en": "Memories of the Past",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21004"
+      ]
+    },
+    {
+      "zh": "记忆永不落幕",
+      "en": "Memory's Curtain Never Falls",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/24005"
+      ]
+    },
+    {
       "zh": "诗篇的裁缝匠",
       "en": "Seamster of the Ode",
       "support": 2,
@@ -506,6 +1640,15 @@
       "example_items": [
         "character/8007",
         "character/8008"
+      ]
+    },
+    {
+      "zh": "谐乐静默之后",
+      "en": "After the Charmony Fall",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21045"
       ]
     },
     {
@@ -519,6 +1662,60 @@
       ]
     },
     {
+      "zh": "追逐风的时候",
+      "en": "In Pursuit of the Wind",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21056"
+      ]
+    },
+    {
+      "zh": "那无数个春天",
+      "en": "Those Many Springs",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23029"
+      ]
+    },
+    {
+      "zh": "重塑时光之忆",
+      "en": "Reforged Remembrance",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23022"
+      ]
+    },
+    {
+      "zh": "银河铁道之夜",
+      "en": "Night on the Milky Way",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23000"
+      ]
+    },
+    {
+      "zh": "镂月裁云之意",
+      "en": "Carve the Moon, Weave the Clouds",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21032"
+      ]
+    },
+    {
+      "zh": "长路终有归途",
+      "en": "Long Road Leads Home",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23035"
+      ]
+    },
+    {
       "zh": "风暴甚是喧嚣",
       "en": "Let the Storm Rage On",
       "support": 2,
@@ -526,6 +1723,186 @@
       "example_items": [
         "character/8009",
         "character/8010"
+      ]
+    },
+    {
+      "zh": "黑夜如影随行",
+      "en": "Shadowed by Night",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21047"
+      ]
+    },
+    {
+      "zh": "鼹鼠党欢迎你",
+      "en": "The Moles Welcome You",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21005"
+      ]
+    },
+    {
+      "zh": "不息的演算",
+      "en": "Eternal Calculus",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/24004"
+      ]
+    },
+    {
+      "zh": "与行星相会",
+      "en": "Planetary Rendezvous",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21011"
+      ]
+    },
+    {
+      "zh": "丹恒•腾荒",
+      "en": "Dan Heng • Permansor Terrae",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1414"
+      ]
+    },
+    {
+      "zh": "丹恒•饮月",
+      "en": "Dan Heng • Imbibitor Lunae",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1213"
+      ]
+    },
+    {
+      "zh": "亚空异容所",
+      "en": "Subspace ASC Center",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/330"
+      ]
+    },
+    {
+      "zh": "今日好手气",
+      "en": "Today's Good Luck",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21065"
+      ]
+    },
+    {
+      "zh": "以世界之名",
+      "en": "In the Name of the World",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23004"
+      ]
+    },
+    {
+      "zh": "制胜的瞬间",
+      "en": "Moment of Victory",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23005"
+      ]
+    },
+    {
+      "zh": "吉尔伽美什",
+      "en": "Gilgamesh",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1509"
+      ]
+    },
+    {
+      "zh": "同一种心情",
+      "en": "Shared Feeling",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21007"
+      ]
+    },
+    {
+      "zh": "唯有香如故",
+      "en": "Scent Alone Stays True",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23032"
+      ]
+    },
+    {
+      "zh": "在火的远处",
+      "en": "Flames Afar",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21038"
+      ]
+    },
+    {
+      "zh": "坠星启航地",
+      "en": "Fallen Star Anchorage",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/327"
+      ]
+    },
+    {
+      "zh": "太空封印站",
+      "en": "Space Sealing Station",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/301"
+      ]
+    },
+    {
+      "zh": "奇想蕉乐园",
+      "en": "The Wondrous BananAmusement Park",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/318"
+      ]
+    },
+    {
+      "zh": "姬子•启行",
+      "en": "Himeko • Nova",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1510"
+      ]
+    },
+    {
+      "zh": "孤独的疗愈",
+      "en": "Solitary Healing",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/24003"
+      ]
+    },
+    {
+      "zh": "宇宙大生意",
+      "en": "The Great Cosmic Enterprise",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/22004"
       ]
     },
     {
@@ -549,6 +1926,42 @@
       ]
     },
     {
+      "zh": "寰宇生研院",
+      "en": "Cosmic Life Sciences Institute",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/328"
+      ]
+    },
+    {
+      "zh": "我们是地火",
+      "en": "We Are Wildfire",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21023"
+      ]
+    },
+    {
+      "zh": "托帕&账账",
+      "en": "Topaz & Numby",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1112"
+      ]
+    },
+    {
+      "zh": "折断的龙骨",
+      "en": "Broken Keel",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/310"
+      ]
+    },
+    {
       "zh": "摇摆的礼仪",
       "en": "Swing Dance Etiquette",
       "support": 2,
@@ -556,6 +1969,33 @@
       "example_items": [
         "character/8005",
         "character/8006"
+      ]
+    },
+    {
+      "zh": "星体差分机",
+      "en": "Celestial Differentiator",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/305"
+      ]
+    },
+    {
+      "zh": "星神★阿哈",
+      "en": "Aeon ★ Aha",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1511"
+      ]
+    },
+    {
+      "zh": "晚安与睡颜",
+      "en": "Good Night and Sleep Well",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21001"
       ]
     },
     {
@@ -572,6 +2012,24 @@
       ]
     },
     {
+      "zh": "最后的赢家",
+      "en": "Final Victor",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21037"
+      ]
+    },
+    {
+      "zh": "朗道的选择",
+      "en": "Landau's Choice",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21009"
+      ]
+    },
+    {
       "zh": "未完的尾声",
       "en": "Unfinished Epilogue",
       "support": 2,
@@ -579,6 +2037,15 @@
       "example_items": [
         "character/8007",
         "character/8008"
+      ]
+    },
+    {
+      "zh": "梦的蒙太奇",
+      "en": "Dream's Montage",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21048"
       ]
     },
     {
@@ -592,6 +2059,24 @@
         "character/1503",
         "character/1505",
         "character/1506"
+      ]
+    },
+    {
+      "zh": "猎物的视线",
+      "en": "Eyes of the Prey",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21008"
+      ]
+    },
+    {
+      "zh": "砂金•戏浪",
+      "en": "Aventurine • Waveflair",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1513"
       ]
     },
     {
@@ -615,6 +2100,24 @@
       ]
     },
     {
+      "zh": "繁星竞技场",
+      "en": "Rutilant Arena",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/309"
+      ]
+    },
+    {
+      "zh": "落日时起舞",
+      "en": "Dance at Sunset",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23030"
+      ]
+    },
+    {
       "zh": "袖珍的事诗",
       "en": "Petite Parable",
       "support": 2,
@@ -622,6 +2125,24 @@
       "example_items": [
         "character/8007",
         "character/8008"
+      ]
+    },
+    {
+      "zh": "记忆的质料",
+      "en": "Texture of Memories",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/24002"
+      ]
+    },
+    {
+      "zh": "谧宁拾骨地",
+      "en": "Bone Collection's Serene Demesne",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "relicset/319"
       ]
     },
     {
@@ -648,6 +2169,15 @@
       ]
     },
     {
+      "zh": "银河沦陷日",
+      "en": "The Day The Cosmos Fell",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21040"
+      ]
+    },
+    {
       "zh": "不灭三振",
       "en": "Immortal Third Strike",
       "support": 2,
@@ -655,6 +2185,15 @@
       "example_items": [
         "character/8001",
         "character/8002"
+      ]
+    },
+    {
+      "zh": "于夜色中",
+      "en": "In the Night",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23001"
       ]
     },
     {
@@ -707,6 +2246,15 @@
       ]
     },
     {
+      "zh": "刻律德菈",
+      "en": "Cerydra",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1412"
+      ]
+    },
+    {
       "zh": "剧院之帽",
       "en": "Hat of the Theater",
       "support": 2,
@@ -727,6 +2275,15 @@
       ]
     },
     {
+      "zh": "千冶•刃",
+      "en": "Mortenax Blade",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1507"
+      ]
+    },
+    {
       "zh": "卫我起舞",
       "en": "Dance With the One",
       "support": 2,
@@ -734,6 +2291,15 @@
       "example_items": [
         "character/8005",
         "character/8006"
+      ]
+    },
+    {
+      "zh": "只需等待",
+      "en": "Patience Is All You Need",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23006"
       ]
     },
     {
@@ -747,6 +2313,24 @@
         "character/1409",
         "character/1413",
         "character/1415"
+      ]
+    },
+    {
+      "zh": "后会有期",
+      "en": "We Will Meet Again",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21029"
+      ]
+    },
+    {
+      "zh": "唯有沉默",
+      "en": "Only Silence Remains",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21003"
       ]
     },
     {
@@ -776,6 +2360,15 @@
       ]
     },
     {
+      "zh": "在蓝天下",
+      "en": "Under the Blue Sky",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21019"
+      ]
+    },
+    {
       "zh": "基础概率",
       "en": "Base Chance",
       "support": 27,
@@ -802,6 +2395,15 @@
       ]
     },
     {
+      "zh": "好戏开演",
+      "en": "It's Showtime",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21041"
+      ]
+    },
+    {
       "zh": "好活当赏",
       "en": "Certified Banger",
       "support": 9,
@@ -812,6 +2414,33 @@
         "character/1503",
         "character/1505",
         "character/1506"
+      ]
+    },
+    {
+      "zh": "如泥酣眠",
+      "en": "Sleep Like the Dead",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23012"
+      ]
+    },
+    {
+      "zh": "布洛妮娅",
+      "en": "Bronya",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1101"
+      ]
+    },
+    {
+      "zh": "延长记号",
+      "en": "Fermata",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21022"
       ]
     },
     {
@@ -838,6 +2467,15 @@
       ]
     },
     {
+      "zh": "所见即我",
+      "en": "I Am As You Behold",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23062"
+      ]
+    },
+    {
       "zh": "抗性穿透",
       "en": "RES PEN",
       "support": 31,
@@ -848,6 +2486,15 @@
         "character/1102",
         "character/1112",
         "character/1209"
+      ]
+    },
+    {
+      "zh": "拂晓之前",
+      "en": "Before Dawn",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23010"
       ]
     },
     {
@@ -871,6 +2518,15 @@
         "character/1004",
         "character/1005",
         "character/1006"
+      ]
+    },
+    {
+      "zh": "放个短假",
+      "en": "A Little Getaway",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21066"
       ]
     },
     {
@@ -900,6 +2556,33 @@
       ]
     },
     {
+      "zh": "无处可逃",
+      "en": "Nowhere to Run",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21033"
+      ]
+    },
+    {
+      "zh": "无边曼舞",
+      "en": "Boundless Choreo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21044"
+      ]
+    },
+    {
+      "zh": "时节不居",
+      "en": "Time Waits for No One",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23013"
+      ]
+    },
+    {
       "zh": "星尘王牌",
       "en": "Stardust Ace",
       "support": 2,
@@ -921,6 +2604,15 @@
       ]
     },
     {
+      "zh": "星海巡航",
+      "en": "Cruising in the Stellar Sea",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/24001"
+      ]
+    },
+    {
       "zh": "星穹列车",
       "en": "Astral Express",
       "support": 6,
@@ -934,6 +2626,15 @@
       ]
     },
     {
+      "zh": "春水初生",
+      "en": "River Flows in Spring",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21024"
+      ]
+    },
+    {
       "zh": "暴击伤害",
       "en": "CRIT DMG",
       "support": 23,
@@ -944,6 +2645,15 @@
         "character/1109",
         "character/1212",
         "character/1223"
+      ]
+    },
+    {
+      "zh": "棺的回响",
+      "en": "Echoes of the Coffin",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23008"
       ]
     },
     {
@@ -967,6 +2677,33 @@
       "example_items": [
         "character/8009",
         "character/8010"
+      ]
+    },
+    {
+      "zh": "此时恰好",
+      "en": "Perfect Timing",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21014"
+      ]
+    },
+    {
+      "zh": "此身为剑",
+      "en": "I Shall Be My Own Sword",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23014"
+      ]
+    },
+    {
+      "zh": "游戏尘寰",
+      "en": "Earthly Escapade",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23021"
       ]
     },
     {
@@ -1006,6 +2743,33 @@
       ]
     },
     {
+      "zh": "真理医生",
+      "en": "Dr. Ratio",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1305"
+      ]
+    },
+    {
+      "zh": "秘密誓心",
+      "en": "A Secret Vow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21012"
+      ]
+    },
+    {
+      "zh": "等价交换",
+      "en": "Quid Pro Quo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21021"
+      ]
+    },
+    {
       "zh": "绝活共赏",
       "en": "Party Trick",
       "support": 7,
@@ -1016,6 +2780,15 @@
         "character/1505",
         "character/1506",
         "character/1511"
+      ]
+    },
+    {
+      "zh": "芳华待灼",
+      "en": "Poised to Bloom",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21046"
       ]
     },
     {
@@ -1081,6 +2854,15 @@
       ]
     },
     {
+      "zh": "过往未来",
+      "en": "Past and Future",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21025"
+      ]
+    },
+    {
       "zh": "连携攻击",
       "en": "Joint Attack",
       "support": 6,
@@ -1120,6 +2902,24 @@
       ]
     },
     {
+      "zh": "重返幽冥",
+      "en": "Return to Darkness",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21031"
+      ]
+    },
+    {
+      "zh": "镜中故我",
+      "en": "Past Self in Mirror",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23019"
+      ]
+    },
+    {
       "zh": "防御强化",
       "en": "DEF Boost",
       "support": 29,
@@ -1130,6 +2930,15 @@
         "character/1009",
         "character/1013",
         "character/1102"
+      ]
+    },
+    {
+      "zh": "阿格莱雅",
+      "en": "Aglaea",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1402"
       ]
     },
     {
@@ -1156,6 +2965,15 @@
       ]
     },
     {
+      "zh": "雨一直下",
+      "en": "Incessant Rain",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23007"
+      ]
+    },
+    {
       "zh": "额外回合",
       "en": "Extra Turn",
       "support": 14,
@@ -1166,6 +2984,78 @@
         "character/1317",
         "character/1404",
         "character/1408"
+      ]
+    },
+    {
+      "zh": "不死途",
+      "en": "Ashveil",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1504"
+      ]
+    },
+    {
+      "zh": "克拉拉",
+      "en": "Clara",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1107"
+      ]
+    },
+    {
+      "zh": "加拉赫",
+      "en": "Gallagher",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1301"
+      ]
+    },
+    {
+      "zh": "卡芙卡",
+      "en": "Kafka",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1005"
+      ]
+    },
+    {
+      "zh": "大丽花",
+      "en": "The Dahlia",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1321"
+      ]
+    },
+    {
+      "zh": "大黑塔",
+      "en": "The Herta",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1401"
+      ]
+    },
+    {
+      "zh": "娜塔莎",
+      "en": "Natasha",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1105"
+      ]
+    },
+    {
+      "zh": "希露瓦",
+      "en": "Serval",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1103"
       ]
     },
     {
@@ -1192,6 +3082,24 @@
       ]
     },
     {
+      "zh": "忘归人",
+      "en": "Fugue",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1225"
+      ]
+    },
+    {
+      "zh": "惊魂夜",
+      "en": "Night of Fright",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/23017"
+      ]
+    },
+    {
       "zh": "攻击力",
       "en": "ATK",
       "support": 50,
@@ -1205,6 +3113,15 @@
       ]
     },
     {
+      "zh": "星期日",
+      "en": "Sunday",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1313"
+      ]
+    },
+    {
       "zh": "暴击率",
       "en": "CRIT Rate",
       "support": 32,
@@ -1215,6 +3132,24 @@
         "character/1014",
         "character/1015",
         "character/1103"
+      ]
+    },
+    {
+      "zh": "杰帕德",
+      "en": "Gepard",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1104"
+      ]
+    },
+    {
+      "zh": "桂乃芬",
+      "en": "Guinaifen",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1210"
       ]
     },
     {
@@ -1244,6 +3179,33 @@
       ]
     },
     {
+      "zh": "波提欧",
+      "en": "Boothill",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1315"
+      ]
+    },
+    {
+      "zh": "海瑟音",
+      "en": "Hysilens",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1410"
+      ]
+    },
+    {
+      "zh": "瓦尔特",
+      "en": "Welt",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1004"
+      ]
+    },
+    {
       "zh": "生先死",
       "en": "Unwavering Gallantry",
       "support": 2,
@@ -1267,6 +3229,15 @@
       ]
     },
     {
+      "zh": "知更鸟",
+      "en": "Robin",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1309"
+      ]
+    },
+    {
       "zh": "终结技",
       "en": "Ultimate",
       "support": 99,
@@ -1280,6 +3251,15 @@
       ]
     },
     {
+      "zh": "艾丝妲",
+      "en": "Asta",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1009"
+      ]
+    },
+    {
       "zh": "行胜思",
       "en": "Action Beats Overthinking",
       "support": 2,
@@ -1287,6 +3267,51 @@
       "example_items": [
         "character/8003",
         "character/8004"
+      ]
+    },
+    {
+      "zh": "赛飞儿",
+      "en": "Cipher",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1406"
+      ]
+    },
+    {
+      "zh": "远坂凛",
+      "en": "Rin Tohsaka",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1508"
+      ]
+    },
+    {
+      "zh": "那刻夏",
+      "en": "Anaxa",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1405"
+      ]
+    },
+    {
+      "zh": "长夜月",
+      "en": "Evernight",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1413"
+      ]
+    },
+    {
+      "zh": "阮•梅",
+      "en": "Ruan Mei",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1303"
       ]
     },
     {
@@ -1303,6 +3328,105 @@
       ]
     },
     {
+      "zh": "黑天鹅",
+      "en": "Black Swan",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1307"
+      ]
+    },
+    {
+      "zh": "万敌",
+      "en": "Mydei",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1404"
+      ]
+    },
+    {
+      "zh": "丹恒",
+      "en": "Dan Heng",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1002"
+      ]
+    },
+    {
+      "zh": "乐圮",
+      "en": "Shattered Home",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20009"
+      ]
+    },
+    {
+      "zh": "乱破",
+      "en": "Rappa",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1317"
+      ]
+    },
+    {
+      "zh": "云璃",
+      "en": "Yunli",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1221"
+      ]
+    },
+    {
+      "zh": "佩拉",
+      "en": "Pela",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1106"
+      ]
+    },
+    {
+      "zh": "俱殁",
+      "en": "Mutual Demise",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20016"
+      ]
+    },
+    {
+      "zh": "停云",
+      "en": "Tingyun",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1202"
+      ]
+    },
+    {
+      "zh": "匿影",
+      "en": "Hidden Shadow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20018"
+      ]
+    },
+    {
+      "zh": "卢卡",
+      "en": "Luka",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1111"
+      ]
+    },
+    {
       "zh": "反击",
       "en": "Counter",
       "support": 4,
@@ -1312,6 +3436,24 @@
         "character/1107",
         "character/1221",
         "character/1408"
+      ]
+    },
+    {
+      "zh": "嗤笑",
+      "en": "Sneering",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20023"
+      ]
+    },
+    {
+      "zh": "嘉果",
+      "en": "Fine Fruit",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20008"
       ]
     },
     {
@@ -1349,6 +3491,15 @@
       ]
     },
     {
+      "zh": "天倾",
+      "en": "Collapsing Sky",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20002"
+      ]
+    },
+    {
       "zh": "天赋",
       "en": "Talent",
       "support": 99,
@@ -1372,6 +3523,15 @@
       ]
     },
     {
+      "zh": "姬子",
+      "en": "Himeko",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1003"
+      ]
+    },
+    {
       "zh": "家人",
       "en": "Kinship",
       "support": 2,
@@ -1379,6 +3539,60 @@
       "example_items": [
         "character/1107",
         "lightcone/23002"
+      ]
+    },
+    {
+      "zh": "寒鸦",
+      "en": "Hanya",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1215"
+      ]
+    },
+    {
+      "zh": "希儿",
+      "en": "Seele",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1102"
+      ]
+    },
+    {
+      "zh": "幽邃",
+      "en": "Void",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20004"
+      ]
+    },
+    {
+      "zh": "开疆",
+      "en": "Pioneering",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20017"
+      ]
+    },
+    {
+      "zh": "彦卿",
+      "en": "Yanqing",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1209"
+      ]
+    },
+    {
+      "zh": "戍御",
+      "en": "Defense",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20010"
       ]
     },
     {
@@ -1418,6 +3632,15 @@
       ]
     },
     {
+      "zh": "昔涟",
+      "en": "Cyrene",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1415"
+      ]
+    },
+    {
       "zh": "普攻",
       "en": "Basic ATK",
       "support": 99,
@@ -1431,6 +3654,51 @@
       ]
     },
     {
+      "zh": "景元",
+      "en": "Jing Yuan",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1204"
+      ]
+    },
+    {
+      "zh": "智库",
+      "en": "Data Bank",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20006"
+      ]
+    },
+    {
+      "zh": "桑博",
+      "en": "Sampo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1108"
+      ]
+    },
+    {
+      "zh": "椒丘",
+      "en": "Jiaoqiu",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1218"
+      ]
+    },
+    {
+      "zh": "残泪",
+      "en": "Lingering Tear",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20024"
+      ]
+    },
+    {
       "zh": "毁伤",
       "en": "Scourge",
       "support": 2,
@@ -1438,6 +3706,78 @@
       "example_items": [
         "character/1408",
         "character/1415"
+      ]
+    },
+    {
+      "zh": "流萤",
+      "en": "Firefly",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1310"
+      ]
+    },
+    {
+      "zh": "渊环",
+      "en": "Loop",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20011"
+      ]
+    },
+    {
+      "zh": "溯忆",
+      "en": "Reminiscence",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20022"
+      ]
+    },
+    {
+      "zh": "火花",
+      "en": "Sparxie",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1501"
+      ]
+    },
+    {
+      "zh": "灵砂",
+      "en": "Lingsha",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1222"
+      ]
+    },
+    {
+      "zh": "灵钥",
+      "en": "Passkey",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20013"
+      ]
+    },
+    {
+      "zh": "焚影",
+      "en": "Shadowburn",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20021"
+      ]
+    },
+    {
+      "zh": "爻光",
+      "en": "Yao Guang",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1502"
       ]
     },
     {
@@ -1453,6 +3793,87 @@
       ]
     },
     {
+      "zh": "物穰",
+      "en": "Cornucopia",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20001"
+      ]
+    },
+    {
+      "zh": "玲可",
+      "en": "Lynx",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1110"
+      ]
+    },
+    {
+      "zh": "琥珀",
+      "en": "Amber",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20003"
+      ]
+    },
+    {
+      "zh": "白厄",
+      "en": "Phainon",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1408"
+      ]
+    },
+    {
+      "zh": "白露",
+      "en": "Bailu",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1211"
+      ]
+    },
+    {
+      "zh": "相抗",
+      "en": "Adversarial",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20014"
+      ]
+    },
+    {
+      "zh": "真珠",
+      "en": "Pearl",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1503"
+      ]
+    },
+    {
+      "zh": "睿见",
+      "en": "Sagacity",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20020"
+      ]
+    },
+    {
+      "zh": "砂金",
+      "en": "Aventurine",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1304"
+      ]
+    },
+    {
       "zh": "离场",
       "en": "Departed",
       "support": 2,
@@ -1460,6 +3881,15 @@
       "example_items": [
         "character/1223",
         "character/1408"
+      ]
+    },
+    {
+      "zh": "离弦",
+      "en": "Darting Arrow",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20007"
       ]
     },
     {
@@ -1489,6 +3919,60 @@
       ]
     },
     {
+      "zh": "符玄",
+      "en": "Fu Xuan",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1208"
+      ]
+    },
+    {
+      "zh": "米沙",
+      "en": "Misha",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1312"
+      ]
+    },
+    {
+      "zh": "素裳",
+      "en": "Sushang",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1206"
+      ]
+    },
+    {
+      "zh": "绯英",
+      "en": "Evanescia",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1505"
+      ]
+    },
+    {
+      "zh": "缇宝",
+      "en": "Tribbie",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1403"
+      ]
+    },
+    {
+      "zh": "罗刹",
+      "en": "Luocha",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1203"
+      ]
+    },
+    {
       "zh": "群攻",
       "en": "AoE",
       "support": 2,
@@ -1496,6 +3980,24 @@
       "example_items": [
         "character/1213",
         "character/1308"
+      ]
+    },
+    {
+      "zh": "翡翠",
+      "en": "Jade",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1314"
+      ]
+    },
+    {
+      "zh": "花火",
+      "en": "Sparkle",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1306"
       ]
     },
     {
@@ -1516,6 +4018,69 @@
       "example_items": [
         "character/8001",
         "character/8002"
+      ]
+    },
+    {
+      "zh": "蕃息",
+      "en": "Multiplication",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20015"
+      ]
+    },
+    {
+      "zh": "藿藿",
+      "en": "Huohuo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1217"
+      ]
+    },
+    {
+      "zh": "虎克",
+      "en": "Hook",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1109"
+      ]
+    },
+    {
+      "zh": "论剑",
+      "en": "Swordplay",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/21010"
+      ]
+    },
+    {
+      "zh": "调和",
+      "en": "Mediation",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20019"
+      ]
+    },
+    {
+      "zh": "貊泽",
+      "en": "Moze",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1223"
+      ]
+    },
+    {
+      "zh": "轮契",
+      "en": "Meshing Cogs",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20012"
       ]
     },
     {
@@ -1553,6 +4118,60 @@
       ]
     },
     {
+      "zh": "遐蝶",
+      "en": "Castorice",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1407"
+      ]
+    },
+    {
+      "zh": "银枝",
+      "en": "Argenti",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1302"
+      ]
+    },
+    {
+      "zh": "银狼",
+      "en": "Silver Wolf",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1006"
+      ]
+    },
+    {
+      "zh": "锋镝",
+      "en": "Arrows",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20000"
+      ]
+    },
+    {
+      "zh": "镜流",
+      "en": "Jingliu",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1212"
+      ]
+    },
+    {
+      "zh": "阿兰",
+      "en": "Arlan",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1008"
+      ]
+    },
+    {
       "zh": "阿哈",
       "en": "Aha",
       "support": 3,
@@ -1561,6 +4180,78 @@
         "character/1502",
         "character/1511",
         "character/1513"
+      ]
+    },
+    {
+      "zh": "雪衣",
+      "en": "Xueyi",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1214"
+      ]
+    },
+    {
+      "zh": "青雀",
+      "en": "Qingque",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1201"
+      ]
+    },
+    {
+      "zh": "风堇",
+      "en": "Hyacine",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1409"
+      ]
+    },
+    {
+      "zh": "飞霄",
+      "en": "Feixiao",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1220"
+      ]
+    },
+    {
+      "zh": "驭空",
+      "en": "Yukong",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1207"
+      ]
+    },
+    {
+      "zh": "黄泉",
+      "en": "Acheron",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1308"
+      ]
+    },
+    {
+      "zh": "黑塔",
+      "en": "Herta",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1013"
+      ]
+    },
+    {
+      "zh": "齐颂",
+      "en": "Chorus",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "lightcone/20005"
       ]
     }
   ]

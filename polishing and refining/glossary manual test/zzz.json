@@ -2,7 +2,7 @@
   "game": "zzz",
   "namespace": "zzz",
   "version": "3.4.2+20052336",
-  "generated_at": "2026-11-01T23:57:05Z",
+  "generated_at": "2026-11-02T01:16:28Z",
   "source": "https://static.nanoka.cc/zzz/3.4.2+20052336/{en,zh}/<kind>/<id>.json",
   "items_listed": 245,
   "items_with_pairs": 245,
@@ -216,6 +216,15 @@
       ]
     },
     {
+      "zh": "德玛拉电池Ⅱ型",
+      "en": "Demara Battery Mark II",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13101"
+      ]
+    },
+    {
       "zh": "新艾利都治安局",
       "en": "New Eridu Public Security",
       "support": 6,
@@ -268,6 +277,24 @@
       ]
     },
     {
+      "zh": "知更鸟专属音擎",
+      "en": "Robin's Exclusive W-Engine",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14166"
+      ]
+    },
+    {
+      "zh": "维序者-特化型",
+      "en": "Peacekeeper - Specialized",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13127"
+      ]
+    },
+    {
       "zh": "轻招架失衡倍率",
       "en": "Light Defensive Daze Multiplier",
       "support": 59,
@@ -314,6 +341,15 @@
         "character/1311",
         "character/1331",
         "character/1371"
+      ]
+    },
+    {
+      "zh": "仿制星徽引擎",
+      "en": "Starlight Engine Replica",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13108"
       ]
     },
     {
@@ -449,6 +485,15 @@
       ]
     },
     {
+      "zh": "旋钻机-赤轴",
+      "en": "Drill Rig - Red Axis",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13111"
+      ]
+    },
+    {
       "zh": "最大伤害倍率",
       "en": "Maximum DMG Multiplier",
       "support": 3,
@@ -504,6 +549,15 @@
         "weapon/13007",
         "weapon/13014",
         "weapon/13019"
+      ]
+    },
+    {
+      "zh": "空羽复归之诗",
+      "en": "Ode of Resurrected Wings",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14158"
       ]
     },
     {
@@ -596,6 +650,15 @@
       ]
     },
     {
+      "zh": "雪兔梦游仙境",
+      "en": "Bunny in Wonderland",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33700"
+      ]
+    },
+    {
       "zh": "卡吕冬之子",
       "en": "Sons of Calydon",
       "support": 6,
@@ -606,6 +669,15 @@
         "character/1161",
         "character/1171",
         "character/1281"
+      ]
+    },
+    {
+      "zh": "啄木鸟电音",
+      "en": "Woodpecker Electro",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31000"
       ]
     },
     {
@@ -659,6 +731,24 @@
       ]
     },
     {
+      "zh": "好斗的阿炮",
+      "en": "Kaboom the Cannon",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13115"
+      ]
+    },
+    {
+      "zh": "嵌合编译器",
+      "en": "Fusion Compiler",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14118"
+      ]
+    },
+    {
       "zh": "强化特殊技",
       "en": "EX Special Attack",
       "support": 65,
@@ -680,6 +770,105 @@
         "bangboo/53017",
         "bangboo/54010",
         "character/1151"
+      ]
+    },
+    {
+      "zh": "星徽·比利",
+      "en": "Starlight - Billy",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1531"
+      ]
+    },
+    {
+      "zh": "月光骑士颂",
+      "en": "Moonlight Lullaby",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33400"
+      ]
+    },
+    {
+      "zh": "极地重金属",
+      "en": "Polar Metal",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32500"
+      ]
+    },
+    {
+      "zh": "格列佛探员",
+      "en": "Agent Gulliver",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54014"
+      ]
+    },
+    {
+      "zh": "正版变身器",
+      "en": "Original Transmorpher",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13007"
+      ]
+    },
+    {
+      "zh": "比克布利克",
+      "en": "Birkblick",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54020"
+      ]
+    },
+    {
+      "zh": "法厄同之歌",
+      "en": "Phaethon's Melody",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33000"
+      ]
+    },
+    {
+      "zh": "混沌重金属",
+      "en": "Chaotic Metal",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32300"
+      ]
+    },
+    {
+      "zh": "炎狱重金属",
+      "en": "Inferno Metal",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32200"
+      ]
+    },
+    {
+      "zh": "狸法七变化",
+      "en": "Metanukimorphosis",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14141"
+      ]
+    },
+    {
+      "zh": "獠牙重金属",
+      "en": "Fanged Metal",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32600"
       ]
     },
     {
@@ -709,6 +898,15 @@
       ]
     },
     {
+      "zh": "艾丝弥小姐",
+      "en": "Miss Esme",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54018"
+      ]
+    },
+    {
       "zh": "获得代理人",
       "en": "Obtain Agent",
       "support": 59,
@@ -718,6 +916,78 @@
         "character/1021",
         "character/1031",
         "character/1041",
+        "character/1051"
+      ]
+    },
+    {
+      "zh": "赤红莫库斯",
+      "en": "Red Moccus",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54011"
+      ]
+    },
+    {
+      "zh": "防暴者Ⅵ型",
+      "en": "Riot Suppressor Mark VI",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14124"
+      ]
+    },
+    {
+      "zh": "雷暴重金属",
+      "en": "Thunder Metal",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32400"
+      ]
+    },
+    {
+      "zh": "震星迪斯科",
+      "en": "Shockstar Disco",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31200"
+      ]
+    },
+    {
+      "zh": "云岿如我",
+      "en": "Yunkui Tales",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33100"
+      ]
+    },
+    {
+      "zh": "云霓孤光",
+      "en": "Cloudcleave Radiance",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14143"
+      ]
+    },
+    {
+      "zh": "人为刀俎",
+      "en": "Steam Oven",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13005"
+      ]
+    },
+    {
+      "zh": "伊德海莉",
+      "en": "Yidhari",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
         "character/1051"
       ]
     },
@@ -748,6 +1018,24 @@
       ]
     },
     {
+      "zh": "佩洛伊斯",
+      "en": "Pyrois",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1551"
+      ]
+    },
+    {
+      "zh": "光影刻刀",
+      "en": "Reel Projector",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13016"
+      ]
+    },
+    {
       "zh": "冲刺攻击",
       "en": "Dash Attack",
       "support": 62,
@@ -774,6 +1062,60 @@
       ]
     },
     {
+      "zh": "加农转子",
+      "en": "Cannon Rotor",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14001"
+      ]
+    },
+    {
+      "zh": "十方锻星",
+      "en": "Practiced Perfection",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14140"
+      ]
+    },
+    {
+      "zh": "千面日陨",
+      "en": "Myriad Eclipse",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14129"
+      ]
+    },
+    {
+      "zh": "半糖雪兔",
+      "en": "Half-Sugar Bunny",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14134"
+      ]
+    },
+    {
+      "zh": "原始朋克",
+      "en": "Proto Punk",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31900"
+      ]
+    },
+    {
+      "zh": "双生泣星",
+      "en": "Weeping Gemini",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13008"
+      ]
+    },
+    {
       "zh": "反制支援",
       "en": "Counter Assist",
       "support": 3,
@@ -782,6 +1124,69 @@
         "character/1601",
         "character/1611",
         "character/1661"
+      ]
+    },
+    {
+      "zh": "含羞恶面",
+      "en": "Bashful Demon",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13113"
+      ]
+    },
+    {
+      "zh": "呼啸沙龙",
+      "en": "Wuthering Salon",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33900"
+      ]
+    },
+    {
+      "zh": "咚哒回声",
+      "en": "Boisterous Echoes",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13018"
+      ]
+    },
+    {
+      "zh": "啜泣摇篮",
+      "en": "Weeping Cradle",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14121"
+      ]
+    },
+    {
+      "zh": "喵运当头",
+      "en": "Catty Luck",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13017"
+      ]
+    },
+    {
+      "zh": "嚣枪喧焰",
+      "en": "Bellicose Blaze",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14130"
+      ]
+    },
+    {
+      "zh": "囚徒手记",
+      "en": "Notes From the Chained",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33800"
       ]
     },
     {
@@ -798,6 +1203,15 @@
       ]
     },
     {
+      "zh": "壳中之灵",
+      "en": "Angel in the Shell",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14150"
+      ]
+    },
+    {
       "zh": "失衡倍率",
       "en": "Daze Multiplier",
       "support": 104,
@@ -811,6 +1225,24 @@
       ]
     },
     {
+      "zh": "奔袭獠牙",
+      "en": "Tusks of Fury",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14107"
+      ]
+    },
+    {
+      "zh": "如影相随",
+      "en": "Shadow Harmony",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32900"
+      ]
+    },
+    {
       "zh": "妄想天使",
       "en": "Angels of Delusion",
       "support": 3,
@@ -819,6 +1251,33 @@
         "character/1491",
         "character/1501",
         "character/1511"
+      ]
+    },
+    {
+      "zh": "左轮转子",
+      "en": "Six Shooter",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14003"
+      ]
+    },
+    {
+      "zh": "希格莉德",
+      "en": "Sigrid",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1591"
+      ]
+    },
+    {
+      "zh": "幻变魔方",
+      "en": "Puzzle Sphere",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13012"
       ]
     },
     {
@@ -848,6 +1307,24 @@
       ]
     },
     {
+      "zh": "强音热望",
+      "en": "Marcato Desire",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13015"
+      ]
+    },
+    {
+      "zh": "心弦夜响",
+      "en": "Heartstring Nocturne",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14132"
+      ]
+    },
+    {
       "zh": "快速支援",
       "en": "Quick Assist",
       "support": 63,
@@ -861,6 +1338,51 @@
       ]
     },
     {
+      "zh": "怒目金刚",
+      "en": "Wrathful Vajra",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14147"
+      ]
+    },
+    {
+      "zh": "思络成歌",
+      "en": "Thoughtbop",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14149"
+      ]
+    },
+    {
+      "zh": "折枝剑歌",
+      "en": "Branch & Blade Song",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32700"
+      ]
+    },
+    {
+      "zh": "拂晓生花",
+      "en": "Dawn's Bloom",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33300"
+      ]
+    },
+    {
+      "zh": "拂晓行纪",
+      "en": "The Sky Ablaze",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/34000"
+      ]
+    },
+    {
       "zh": "招架支援",
       "en": "Defensive Assist",
       "support": 59,
@@ -871,6 +1393,15 @@
         "character/1031",
         "character/1041",
         "character/1051"
+      ]
+    },
+    {
+      "zh": "摇摆爵士",
+      "en": "Swing Jazz",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31600"
       ]
     },
     {
@@ -894,6 +1425,69 @@
         "character/1031",
         "character/1041",
         "character/1051"
+      ]
+    },
+    {
+      "zh": "日冕遗蜕",
+      "en": "Sol Exuvia",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14155"
+      ]
+    },
+    {
+      "zh": "时光切片",
+      "en": "Slice of Time",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13002"
+      ]
+    },
+    {
+      "zh": "时流贤者",
+      "en": "Timeweaver",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14122"
+      ]
+    },
+    {
+      "zh": "星徽引擎",
+      "en": "Starlight Engine",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13004"
+      ]
+    },
+    {
+      "zh": "春日融融",
+      "en": "Spring Embrace",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13011"
+      ]
+    },
+    {
+      "zh": "昨夜来电",
+      "en": "Yesterday Calls",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14148"
+      ]
+    },
+    {
+      "zh": "普罗米娅",
+      "en": "Promeia",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1541"
       ]
     },
     {
@@ -923,6 +1517,15 @@
       ]
     },
     {
+      "zh": "朔月裁霜",
+      "en": "Frostfall Sickle",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14154"
+      ]
+    },
+    {
       "zh": "未明界域",
       "en": "Unknown Realm",
       "support": 2,
@@ -930,6 +1533,15 @@
       "example_items": [
         "character/1651",
         "character/1661"
+      ]
+    },
+    {
+      "zh": "机巧心种",
+      "en": "Cordis Germina",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14146"
       ]
     },
     {
@@ -957,6 +1569,222 @@
       ]
     },
     {
+      "zh": "残心青囊",
+      "en": "Zanshin Herb Case",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14120"
+      ]
+    },
+    {
+      "zh": "比格气缸",
+      "en": "Big Cylinder",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13112"
+      ]
+    },
+    {
+      "zh": "沧浪行歌",
+      "en": "White Water Ballad",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33500"
+      ]
+    },
+    {
+      "zh": "河豚电音",
+      "en": "Puffer Electro",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31100"
+      ]
+    },
+    {
+      "zh": "流光咏叹",
+      "en": "Shining Aria",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33600"
+      ]
+    },
+    {
+      "zh": "海妖摇篮",
+      "en": "Kraken's Cradle",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14105"
+      ]
+    },
+    {
+      "zh": "涅槃初翎",
+      "en": "Plume of Rebirth",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14164"
+      ]
+    },
+    {
+      "zh": "淬锋钳刺",
+      "en": "Sharpened Stinger",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14126"
+      ]
+    },
+    {
+      "zh": "深海访客",
+      "en": "Deep Sea Visitor",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14119"
+      ]
+    },
+    {
+      "zh": "混沌爵士",
+      "en": "Chaos Jazz",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31800"
+      ]
+    },
+    {
+      "zh": "激素朋克",
+      "en": "Hormone Punk",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31400"
+      ]
+    },
+    {
+      "zh": "灵魂摇滚",
+      "en": "Soul Rock",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31500"
+      ]
+    },
+    {
+      "zh": "灼心摇壶",
+      "en": "Flamemaker Shaker",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14117"
+      ]
+    },
+    {
+      "zh": "炎炙沸釜",
+      "en": "The Simmering Pot",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13020"
+      ]
+    },
+    {
+      "zh": "烛光诡计",
+      "en": "Candlelit Scheme",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13022"
+      ]
+    },
+    {
+      "zh": "焰心桂冠",
+      "en": "Blazing Laurel",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14116"
+      ]
+    },
+    {
+      "zh": "燃狱齿轮",
+      "en": "Hellfire Gears",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14110"
+      ]
+    },
+    {
+      "zh": "燔火胧夜",
+      "en": "Grill O'Wisp",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13144"
+      ]
+    },
+    {
+      "zh": "牺牲洁纯",
+      "en": "Severed Innocence",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14138"
+      ]
+    },
+    {
+      "zh": "猩红渴望",
+      "en": "Crimson Thirst",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14161"
+      ]
+    },
+    {
+      "zh": "玉壶青冰",
+      "en": "Ice-Jade Teapot",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14125"
+      ]
+    },
+    {
+      "zh": "玲珑妆匣",
+      "en": "Elegant Vanity",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14131"
+      ]
+    },
+    {
+      "zh": "琳琅鎏心",
+      "en": "Joyau Dore",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14156"
+      ]
+    },
+    {
+      "zh": "电波漫步",
+      "en": "Radiowave Journey",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13014"
+      ]
+    },
+    {
       "zh": "白祇重工",
       "en": "Belobog Heavy Industries",
       "support": 4,
@@ -969,6 +1797,33 @@
       ]
     },
     {
+      "zh": "禁罪囚笼",
+      "en": "Incarcerating Grip",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14163"
+      ]
+    },
+    {
+      "zh": "福虓炉炉",
+      "en": "Roaring Fur-nace",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14139"
+      ]
+    },
+    {
+      "zh": "索魂影眸",
+      "en": "Spectral Gaze",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14136"
+      ]
+    },
+    {
       "zh": "终末裁决",
       "en": "Terminating Verdict",
       "support": 2,
@@ -976,6 +1831,15 @@
       "example_items": [
         "character/1291",
         "weapon/14154"
+      ]
+    },
+    {
+      "zh": "绯月银棺",
+      "en": "Crimson Moon Casket",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14162"
       ]
     },
     {
@@ -1002,6 +1866,168 @@
         "character/1041",
         "character/1071",
         "character/1081"
+      ]
+    },
+    {
+      "zh": "自由蓝调",
+      "en": "Freedom Blues",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/31300"
+      ]
+    },
+    {
+      "zh": "艾米莉安",
+      "en": "Amillion",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54005"
+      ]
+    },
+    {
+      "zh": "荆棘玫瑰",
+      "en": "Thorned Rose",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/34200"
+      ]
+    },
+    {
+      "zh": "蕾米埃尔",
+      "en": "Remielle",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1581"
+      ]
+    },
+    {
+      "zh": "血髓秘匣",
+      "en": "Bloodmarrow Coffer",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13021"
+      ]
+    },
+    {
+      "zh": "街头巨星",
+      "en": "Street Superstar",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13001"
+      ]
+    },
+    {
+      "zh": "触电唇彩",
+      "en": "Electro-Lip Gloss",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13009"
+      ]
+    },
+    {
+      "zh": "谶羽之誓",
+      "en": "Feathered Fate",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/34100"
+      ]
+    },
+    {
+      "zh": "贵重骨核",
+      "en": "Precious Fossilized Core",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13006"
+      ]
+    },
+    {
+      "zh": "赛维里安",
+      "en": "Severian",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1631"
+      ]
+    },
+    {
+      "zh": "赤翼夜曲",
+      "en": "Crimson Wing Nocturne",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/34400"
+      ]
+    },
+    {
+      "zh": "超极杰克",
+      "en": "Ultra Jake",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54022"
+      ]
+    },
+    {
+      "zh": "轰鸣座驾",
+      "en": "Roaring Ride",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13128"
+      ]
+    },
+    {
+      "zh": "辉骑面铠",
+      "en": "Starlight Rider Faceplate",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14153"
+      ]
+    },
+    {
+      "zh": "逍遥游球",
+      "en": "Unfettered Game Ball",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14002"
+      ]
+    },
+    {
+      "zh": "鎏金花信",
+      "en": "Gilded Blossom",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13013"
+      ]
+    },
+    {
+      "zh": "钢铁肉垫",
+      "en": "Steel Cushion",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14102"
+      ]
+    },
+    {
+      "zh": "铸梦炉歌",
+      "en": "Dreamlit Hearth",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14145"
       ]
     },
     {
@@ -1041,6 +2067,78 @@
       ]
     },
     {
+      "zh": "阿崔巡查",
+      "en": "Officer Cui",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54012"
+      ]
+    },
+    {
+      "zh": "雨林饕客",
+      "en": "Rainforest Gourmet",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13003"
+      ]
+    },
+    {
+      "zh": "震元奇枢",
+      "en": "Tremor Trigram Vessel",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13142"
+      ]
+    },
+    {
+      "zh": "霓虹妄想",
+      "en": "Neon Fantasies",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14151"
+      ]
+    },
+    {
+      "zh": "霰落星殿",
+      "en": "Hailstorm Shrine",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14109"
+      ]
+    },
+    {
+      "zh": "青溟笼舍",
+      "en": "Qingming Birdcage",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14137"
+      ]
+    },
+    {
+      "zh": "青漪灵鼎",
+      "en": "Cauldron of Clarity",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13019"
+      ]
+    },
+    {
+      "zh": "静听嘉音",
+      "en": "Astral Voice",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/32800"
+      ]
+    },
+    {
       "zh": "额外能力",
       "en": "Additional Ability",
       "support": 63,
@@ -1051,6 +2149,33 @@
         "character/1021",
         "character/1031",
         "character/1041"
+      ]
+    },
+    {
+      "zh": "飞鸟星梦",
+      "en": "Flight of Fancy",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14133"
+      ]
+    },
+    {
+      "zh": "首席跟班",
+      "en": "Chief Sidekick",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14157"
+      ]
+    },
+    {
+      "zh": "骁骑礼赞",
+      "en": "Knight's Extolment",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14159"
       ]
     },
     {
@@ -1074,6 +2199,33 @@
       ]
     },
     {
+      "zh": "鳞齿寻踪",
+      "en": "Serpentine Seeker",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14152"
+      ]
+    },
+    {
+      "zh": "不良布",
+      "en": "Baddieboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53013"
+      ]
+    },
+    {
+      "zh": "乐玩布",
+      "en": "Bild N. Boolok",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53019"
+      ]
+    },
+    {
       "zh": "云岿山",
       "en": "Yunkui Summit",
       "support": 4,
@@ -1083,6 +2235,60 @@
         "character/1391",
         "character/1421",
         "character/1431"
+      ]
+    },
+    {
+      "zh": "企鹅布",
+      "en": "Penguinboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53001"
+      ]
+    },
+    {
+      "zh": "伊埃斯",
+      "en": "Eous",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/55098"
+      ]
+    },
+    {
+      "zh": "伊芙琳",
+      "en": "Evelyn",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1321"
+      ]
+    },
+    {
+      "zh": "克拉蕾",
+      "en": "Claret",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1611"
+      ]
+    },
+    {
+      "zh": "兔能环",
+      "en": "Bunny Band",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13010"
+      ]
+    },
+    {
+      "zh": "共鸣布",
+      "en": "Resonaboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54009"
       ]
     },
     {
@@ -1112,6 +2318,33 @@
       ]
     },
     {
+      "zh": "加班布",
+      "en": "Overtimeboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53014"
+      ]
+    },
+    {
+      "zh": "南宫羽",
+      "en": "Nangong Yu",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1511"
+      ]
+    },
+    {
+      "zh": "卢西娅",
+      "en": "Lucia",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1451"
+      ]
+    },
+    {
       "zh": "反舌鸟",
       "en": "Mockingbird",
       "support": 2,
@@ -1119,6 +2352,33 @@
       "example_items": [
         "character/1291",
         "character/1331"
+      ]
+    },
+    {
+      "zh": "叶瞬光",
+      "en": "Ye Shunguang",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1431"
+      ]
+    },
+    {
+      "zh": "咔嚓仔",
+      "en": "Snap",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54015"
+      ]
+    },
+    {
+      "zh": "圣剑布",
+      "en": "Excaliboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53016"
       ]
     },
     {
@@ -1132,6 +2392,69 @@
       ]
     },
     {
+      "zh": "家政员",
+      "en": "Housekeeper",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13106"
+      ]
+    },
+    {
+      "zh": "寻宝布",
+      "en": "Exploreboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53003"
+      ]
+    },
+    {
+      "zh": "山大王",
+      "en": "King of the Summit",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/33200"
+      ]
+    },
+    {
+      "zh": "左轮布",
+      "en": "Bangvolver",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54013"
+      ]
+    },
+    {
+      "zh": "巴特勒",
+      "en": "Butler",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54004"
+      ]
+    },
+    {
+      "zh": "希希芙",
+      "en": "Cissia",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1521"
+      ]
+    },
+    {
+      "zh": "幽浮布",
+      "en": "Booltergeist",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53021"
+      ]
+    },
+    {
       "zh": "怪啖屋",
       "en": "Spook Shack",
       "support": 5,
@@ -1142,6 +2465,51 @@
         "character/1411",
         "character/1441",
         "character/1451"
+      ]
+    },
+    {
+      "zh": "恶魔布",
+      "en": "Devilboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54003"
+      ]
+    },
+    {
+      "zh": "扑击布",
+      "en": "Sumoboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53004"
+      ]
+    },
+    {
+      "zh": "拘缚者",
+      "en": "The Restrained",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14114"
+      ]
+    },
+    {
+      "zh": "招财布",
+      "en": "Luckyboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53002"
+      ]
+    },
+    {
+      "zh": "插头布",
+      "en": "Plugboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54008"
       ]
     },
     {
@@ -1169,6 +2537,15 @@
       ]
     },
     {
+      "zh": "星之碑",
+      "en": "Rank Stele",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "equipment/34300"
+      ]
+    },
+    {
       "zh": "暴击率",
       "en": "CRIT Rate",
       "support": 99,
@@ -1182,6 +2559,105 @@
       ]
     },
     {
+      "zh": "果核布",
+      "en": "Avocaboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53008"
+      ]
+    },
+    {
+      "zh": "柏妮思",
+      "en": "Burnice",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1171"
+      ]
+    },
+    {
+      "zh": "格斗布",
+      "en": "Brawlerboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53015"
+      ]
+    },
+    {
+      "zh": "格莉丝",
+      "en": "Grace",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1181"
+      ]
+    },
+    {
+      "zh": "梦游布",
+      "en": "Charley",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54024"
+      ]
+    },
+    {
+      "zh": "橘福福",
+      "en": "Ju Fufu",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1391"
+      ]
+    },
+    {
+      "zh": "气压布",
+      "en": "Booressure",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53012"
+      ]
+    },
+    {
+      "zh": "波可娜",
+      "en": "Pulchra",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1351"
+      ]
+    },
+    {
+      "zh": "泪眼布",
+      "en": "Cryboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53007"
+      ]
+    },
+    {
+      "zh": "洛克茜",
+      "en": "Roxy",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1621"
+      ]
+    },
+    {
+      "zh": "潘引壶",
+      "en": "Pan Yinhu",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1421"
+      ]
+    },
+    {
       "zh": "火属性",
       "en": "Fire",
       "support": 14,
@@ -1192,6 +2668,15 @@
         "character/1121",
         "character/1151",
         "character/1161"
+      ]
+    },
+    {
+      "zh": "爱丽丝",
+      "en": "Alice",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1401"
       ]
     },
     {
@@ -1221,6 +2706,15 @@
       ]
     },
     {
+      "zh": "珂蕾妲",
+      "en": "Koleda",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1101"
+      ]
+    },
+    {
       "zh": "生命值",
       "en": "HP",
       "support": 21,
@@ -1231,6 +2725,15 @@
         "character/1371",
         "character/1441",
         "character/1451"
+      ]
+    },
+    {
+      "zh": "电击布",
+      "en": "Electroboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53010"
       ]
     },
     {
@@ -1259,6 +2762,24 @@
       ]
     },
     {
+      "zh": "硫磺石",
+      "en": "The Brimstone",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/14104"
+      ]
+    },
+    {
+      "zh": "磁力布",
+      "en": "Magnetiboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53011"
+      ]
+    },
+    {
       "zh": "穿透率",
       "en": "PEN Ratio",
       "support": 10,
@@ -1272,6 +2793,24 @@
       ]
     },
     {
+      "zh": "纸壳布",
+      "en": "Paperboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53005"
+      ]
+    },
+    {
+      "zh": "纸袋布",
+      "en": "Bagboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53006"
+      ]
+    },
+    {
       "zh": "终结技",
       "en": "Ultimate",
       "support": 63,
@@ -1282,6 +2821,78 @@
         "character/1031",
         "character/1041",
         "character/1051"
+      ]
+    },
+    {
+      "zh": "维琳娜",
+      "en": "Velina",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1561"
+      ]
+    },
+    {
+      "zh": "耀嘉音",
+      "en": "Astra Yao",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1311"
+      ]
+    },
+    {
+      "zh": "聚宝箱",
+      "en": "The Vault",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13103"
+      ]
+    },
+    {
+      "zh": "艾瑞儿",
+      "en": "Ariel",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54023"
+      ]
+    },
+    {
+      "zh": "莱卡恩",
+      "en": "Lycaon",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1141"
+      ]
+    },
+    {
+      "zh": "菲欧妮",
+      "en": "Phoenix",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1641"
+      ]
+    },
+    {
+      "zh": "薇薇安",
+      "en": "Vivian",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1331"
+      ]
+    },
+    {
+      "zh": "裁纸刀",
+      "en": "Box Cutter",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "weapon/13135"
       ]
     },
     {
@@ -1322,6 +2933,51 @@
       ]
     },
     {
+      "zh": "飚速布",
+      "en": "Rocketboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54006"
+      ]
+    },
+    {
+      "zh": "飞靶布",
+      "en": "Boollseye",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53009"
+      ]
+    },
+    {
+      "zh": "骑士布",
+      "en": "Knightboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/53017"
+      ]
+    },
+    {
+      "zh": "鲨牙布",
+      "en": "Sharkboo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54001"
+      ]
+    },
+    {
+      "zh": "丽娜",
+      "en": "Rina",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1211"
+      ]
+    },
+    {
       "zh": "以太",
       "en": "Ether",
       "support": 10,
@@ -1332,6 +2988,24 @@
         "character/1311",
         "character/1331",
         "character/1371"
+      ]
+    },
+    {
+      "zh": "仪玄",
+      "en": "Yixuan",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1371"
+      ]
+    },
+    {
+      "zh": "凯撒",
+      "en": "Caesar",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1071"
       ]
     },
     {
@@ -1348,6 +3022,24 @@
       ]
     },
     {
+      "zh": "千夏",
+      "en": "Sunna",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1491"
+      ]
+    },
+    {
+      "zh": "可琳",
+      "en": "Corin",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1061"
+      ]
+    },
+    {
       "zh": "命破",
       "en": "Rupture",
       "support": 14,
@@ -1358,6 +3050,33 @@
         "character/1441",
         "character/1471",
         "character/1531"
+      ]
+    },
+    {
+      "zh": "妮可",
+      "en": "Nicole",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1031"
+      ]
+    },
+    {
+      "zh": "安东",
+      "en": "Anton",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1111"
+      ]
+    },
+    {
+      "zh": "安比",
+      "en": "Anby",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1011"
       ]
     },
     {
@@ -1384,6 +3103,15 @@
         "character/1061",
         "character/1081",
         "character/1111"
+      ]
+    },
+    {
+      "zh": "悠真",
+      "en": "Harumasa",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1201"
       ]
     },
     {
@@ -1426,6 +3154,42 @@
       ]
     },
     {
+      "zh": "朱鸢",
+      "en": "Zhu Yuan",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1241"
+      ]
+    },
+    {
+      "zh": "柚叶",
+      "en": "Yuzuha",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1411"
+      ]
+    },
+    {
+      "zh": "比利",
+      "en": "Billy",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1081"
+      ]
+    },
+    {
+      "zh": "派派",
+      "en": "Piper",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1281"
+      ]
+    },
+    {
       "zh": "涅槃",
       "en": "Nirvana",
       "support": 2,
@@ -1433,6 +3197,15 @@
       "example_items": [
         "character/1291",
         "character/1641"
+      ]
+    },
+    {
+      "zh": "爱芮",
+      "en": "Aria",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1501"
       ]
     },
     {
@@ -1449,6 +3222,42 @@
       ]
     },
     {
+      "zh": "狮耶",
+      "en": "Belion",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54017"
+      ]
+    },
+    {
+      "zh": "猫又",
+      "en": "Nekomata",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1021"
+      ]
+    },
+    {
+      "zh": "琉音",
+      "en": "Dialyn",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1481"
+      ]
+    },
+    {
+      "zh": "真斗",
+      "en": "Manato",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1441"
+      ]
+    },
+    {
       "zh": "穿透",
       "en": "Pierce",
       "support": 9,
@@ -1459,6 +3268,78 @@
         "character/1171",
         "character/1181",
         "character/1201"
+      ]
+    },
+    {
+      "zh": "罗宾",
+      "en": "Robin",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54016"
+      ]
+    },
+    {
+      "zh": "般岳",
+      "en": "Banyue",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1471"
+      ]
+    },
+    {
+      "zh": "艾莲",
+      "en": "Ellen",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1191"
+      ]
+    },
+    {
+      "zh": "芽芽",
+      "en": "Sprout",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54021"
+      ]
+    },
+    {
+      "zh": "苍角",
+      "en": "Soukaku",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1131"
+      ]
+    },
+    {
+      "zh": "莱特",
+      "en": "Lighter",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1161"
+      ]
+    },
+    {
+      "zh": "诺姆",
+      "en": "Norma",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1571"
+      ]
+    },
+    {
+      "zh": "赛斯",
+      "en": "Seth",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1271"
       ]
     },
     {
@@ -1498,6 +3379,51 @@
         "character/1271",
         "character/1341",
         "character/1421"
+      ]
+    },
+    {
+      "zh": "阿全",
+      "en": "Safety",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54002"
+      ]
+    },
+    {
+      "zh": "阿饭",
+      "en": "Biggest Fan",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "bangboo/54010"
+      ]
+    },
+    {
+      "zh": "雨果",
+      "en": "Hugo",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1291"
+      ]
+    },
+    {
+      "zh": "露西",
+      "en": "Lucy",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1151"
+      ]
+    },
+    {
+      "zh": "青衣",
+      "en": "Qingyi",
+      "support": 1,
+      "items_with_term": 1,
+      "example_items": [
+        "character/1251"
       ]
     }
   ]
