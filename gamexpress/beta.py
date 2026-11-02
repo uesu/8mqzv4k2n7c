@@ -1974,18 +1974,23 @@ async def _detail(
     return data if isinstance(data, dict) else None
 
 
-async def _gachabase_kit(fetcher, ns: str, item_id: str) -> dict:
-    """A character's kit on Gachabase's agent page: `{"name", "tables"}`, or `{}` if unreadable.
+async def _gachabase_kit(ctx, ns: str, item_id: str) -> dict:
+    """A character's kit on Gachabase's agent page: `{"name", "tables", "portrait"}`, or `{}`.
 
-    Gachabase is read for every carded character in the games it lists (gi, hsr, zzz), on every
-    poll that cards it. WuWa is not on Gachabase, so it never asks there.
+    Gachabase is intermittent (its changelog answered HTTP 403 on several monitor runs while nanoka
+    answered every read). So the first failed read in a run marks it unavailable for the rest of
+    that run: nanoka supplies the cards, and the outage is reported once, not once per character.
+    WuWa is not on Gachabase, so it never asks there.
     """
-    if ns not in ("gi", "hsr", "zzz") or not item_id:
+    if ns not in ("gi", "hsr", "zzz") or not item_id or getattr(ctx, "gachabase_down", False):
         return {}
     url = _fallback_entry(ns, "character", item_id)["url"]
-    page = await fetcher.get_text(url, source="beta-gachabase", headers=dict(_GACHABASE_HEADERS),
-                                  retries=0)
+    page = await ctx.fetcher.get_text(url, source="beta-gachabase", headers=dict(_GACHABASE_HEADERS),
+                                      retries=0)
     if not page:
+        ctx.gachabase_down = True
+        ctx.warnings.append("Gachabase gave no answer this run (403 or empty); "
+                            "nanoka supplies the cards and Gachabase is not read again this run")
         return {}
     kit = parse_agent_page(page)
     kit["portrait"] = portrait_url(page, kit.get("name") or "")
@@ -6792,7 +6797,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         if ns in ("gi", "hsr", "zzz") and requests + 1 <= budget["max_requests"] \
                 and _take_shared_request(budget, 1):
             requests += 1
-            gb_kit = await _gachabase_kit(ctx.fetcher, ns, item_id)
+            gb_kit = await _gachabase_kit(ctx, ns, item_id)
         gb_tables = gb_kit if gb_kit.get("tables") else None
         # WuWa: Encore is read for every carded character so it can be compared with nanoka.
         enc_data = await encore_fallback("character", item_id) if ns == "ww" else None

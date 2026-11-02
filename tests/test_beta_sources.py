@@ -114,6 +114,40 @@ def test_gachabase_unreachable_403_leaves_nanoka_to_win():
     assert choice.source == SOURCE_NANOKA and choice.note == ""
 
 
+def test_gachabase_outage_is_reported_once_and_not_retried_in_the_run():
+    import asyncio
+    import types
+
+    from gamexpress import beta as beta_mod
+
+    class Down:
+        def __init__(self):
+            self.calls = 0
+
+        async def get_text(self, url, **_kw):
+            self.calls += 1
+            return None                      # 403 / empty answers read as None
+
+    class Up:
+        async def get_text(self, url, **_kw):
+            return ('<title>Ju Fufu (Agents) | Zenless Zone Zero | Gachabase</title>'
+                    '<table><tr><td>1st-Hit DMG Multiplier 1391001</td><td>85.4%</td></tr></table>')
+
+    ctx = types.SimpleNamespace(fetcher=Down(), warnings=[])
+    for item in ("1391", "1392", "1393"):
+        assert asyncio.run(beta_mod._gachabase_kit(ctx, "zzz", item)) == {}
+    assert ctx.fetcher.calls == 1                       # later characters skip the request
+    assert len([w for w in ctx.warnings if "Gachabase gave no answer" in w]) == 1
+    # Other games and WuWa never ask Gachabase at all.
+    ctx2 = types.SimpleNamespace(fetcher=Down(), warnings=[])
+    assert asyncio.run(beta_mod._gachabase_kit(ctx2, "ww", "1512")) == {}
+    assert ctx2.fetcher.calls == 0
+    # A readable page yields the tables and the portrait.
+    ctx3 = types.SimpleNamespace(fetcher=Up(), warnings=[])
+    kit = asyncio.run(beta_mod._gachabase_kit(ctx3, "zzz", "1391"))
+    assert kit["name"] == "Ju Fufu" and kit["portrait"] == ""   # no skill heading or signed portrait here
+
+
 if __name__ == "__main__":
     TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0

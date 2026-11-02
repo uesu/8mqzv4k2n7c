@@ -17352,9 +17352,9 @@ def test_feature5_enabled_run_delivers_one_fixture_character_for_every_released_
         # WuWa's carded character is also compared with Encore (its build metadata is read before
         # and after the detail, on both Encore APIs since this fetcher serves neither): +2 reads.
         assert sum(kind == "json" for kind, _url in fetcher.calls) == 9
-        # Gachabase is read on every carded character too (gi, hsr, zzz): 3 changelog probes plus
-        # 3 agent pages. This fetcher returns no agent text, so nanoka supplies every kit.
-        assert sum(kind == "text" for kind, _url in fetcher.calls) == 6
+        # 3 changelog probes, then one Gachabase agent read: this fetcher returns no agent text, so
+        # Gachabase is marked down for the run after that one read and nanoka supplies every kit.
+        assert sum(kind == "text" for kind, _url in fetcher.calls) == 4
         assert sum(kind == "media" for kind, _url in fetcher.calls) == 3
         assert any("/ww/3.8.1/en/character/1512.json" in url for _kind, url in fetcher.calls)
 
