@@ -168,9 +168,12 @@ def aggregate(per_item: dict[str, list[tuple[str, str]]],
     for item_id, (zh, en) in (identities or {}).items():
         names.setdefault(zh, Counter())[en] += 1
         name_items.setdefault(zh, []).append(item_id)
+    # Only a term that was KEPT blocks an identity. The name also appears as a pair on its own item
+    # (support 1), and that pair is dropped by the vote: checking `votes` would drop the name too.
+    kept = {term["zh"] for term in terms}
     for zh, counter in names.items():
-        if zh in votes or len(counter) != 1:
-            continue  # a term already voted, or two EN names for one CN name: never guess
+        if zh in kept or len(counter) != 1:
+            continue  # a term already kept, or two EN names for one CN name: never guess
         en = next(iter(counter))
         count = counter[en]
         terms.append({"zh": zh, "en": en, "support": count, "items_with_term": count,

@@ -17774,7 +17774,7 @@ def test_feature5_full_kit_substitution_and_structured_numeric_diff_are_truthful
         [BetaSectionEntry(title="Guard", category="Core", lines=["DMG taken is reduced by 40%."])],
         [BetaSectionEntry(title="Guard", category="Core", lines=["DMG taken is reduced by 35%."])],
     )
-    assert "[NERF]" in lower[0].lines[0] and "~~40%~~ → **35%**" in lower[0].lines[0]
+    assert "[NERF]" in lower[0].lines[0] and "~~**40%**~~ → **35%**" in lower[0].lines[0]
 
 
 
@@ -19192,7 +19192,7 @@ def test_feature5_an_item_the_manifest_calls_new_but_the_live_build_already_ship
     assert card.tag == "[CHANGED]", card.tag
     body = "\n".join(card.lines)
     # Only the row that moved, as a before → after, plus the note saying what it was compared to.
-    assert "~~1158%~~ → **1200%**" in body, body
+    assert "~~**1158%**~~ → **1200%**" in body, body
     assert "Compared with the released 3.3 kit" in body, body
     assert "Additional Ability" not in body and "Bangboo Chain Attack" not in body, body
 
@@ -19370,7 +19370,9 @@ def test_feature5_an_equipment_metadata_move_is_labelled_the_way_the_card_prints
             item(category_label=category, sub_type=new, weapon_class="Sword"),
             fields,
         )
-        assert lines == [f"**[ADJUSTMENT]** Substat changed from ~~{old}~~ → **{new}**."], (game, lines)
+        # Numeric old values are struck bold (house format); a plain name is struck plain.
+        struck = f"~~**{old}**~~" if any(ch.isdigit() for ch in old) else f"~~{old}~~"
+        assert lines == [f"**[ADJUSTMENT]** Substat changed from {struck} → **{new}**."], (game, lines)
 
     # The Encore reader publishes the weapon type in both fields; say it once.
     lines = beta_mod._metadata_changes(
@@ -19615,7 +19617,7 @@ def test_feature5_late_changelog_entries_are_delivered_for_a_settled_revision():
         assert "released 3.3" in card.subtext
         # Only the value that actually moved is on the card, with the old one struck through.
         rendered = "\n".join(line for section in card.sections for line in section.lines)
-        assert "~~3~~ → **4**" in rendered
+        assert "~~**3**~~ → **4**" in rendered
         assert "Celestial Light" not in rendered or "~~3~~" in rendered
         assert patch.listed == 1      # this batch listed exactly what it delivered
         assert ctx.state.beta_record("zzz")["revisions"][rev_id]["late_checks"] == 1
@@ -19752,6 +19754,20 @@ def test_feature5_hotfix_build_patch_runs_end_to_end_when_nanoka_has_no_detail_y
         assert any("no kit data for id 1391; deferred" in w for w in ctx.warnings)
 
 
+def test_feature5_struck_old_values_are_bold_when_numeric_and_plain_for_names():
+    """House format: a changed number is struck bold (`~~**63.1%**~~ → **39.3%**`); a name is
+    struck plain (`~~[Embers]~~`)."""
+    from gamexpress import beta as beta_mod
+
+    assert beta_mod._struck("63.1%") == "~~**63.1%**~~"
+    assert beta_mod._struck("+40") == "~~**+40**~~"
+    assert beta_mod._struck("[Embers]") == "~~[Embers]~~"
+    assert beta_mod._struck("Sword") == "~~Sword~~"
+    assert beta_mod._struck("**20%**") == "~~**20%**~~"  # already bold: not doubled
+    assert beta_mod._diff_parts("DMG Multiplier 63.1%", "DMG Multiplier 39.3%")[0] == \
+        "DMG Multiplier ~~**63.1%**~~ → **39.3%**"
+
+
 def test_feature5_cn_sourced_values_are_bold_like_en_and_placeholders_stay_off_the_card():
     """CN-sourced kit text follows the same card format as EN: numbers bold (also when a CJK word
     sits in front of them), arrows kept, bullets nested, and no `(Test1)` marker on the card."""
@@ -19763,8 +19779,8 @@ def test_feature5_cn_sourced_values_are_bold_like_en_and_placeholders_stay_off_t
     # A CJK character before a value is a word boundary, so the value is bolded (was skipped).
     assert cards._bold_beta_numbers("提升50%；异常掌控提升30点") == "提升**50%**；异常掌控提升30点"
     # EN formatting is unchanged.
-    assert cards._bold_beta_numbers("Deals 50% DMG; ~~30~~ → **40** Anomaly, 1.5s") == \
-        "Deals **50%** DMG; ~~30~~ → **40** Anomaly, **1.5s**"
+    assert cards._bold_beta_numbers("Deals 50% DMG; ~~**30**~~ → **40** Anomaly, 1.5s") == \
+        "Deals **50%** DMG; ~~**30**~~ → **40** Anomaly, **1.5s**"
     # Strikethrough, links and inline code stay exactly as written.
     assert cards._bold_beta_numbers("[Link 20%](https://a.b/20%)") == "[Link 20%](https://a.b/20%)"
 
@@ -19775,7 +19791,7 @@ def test_feature5_cn_sourced_values_are_bold_like_en_and_placeholders_stay_off_t
 
     game = load_games()["zzz"]
     en_sec = BetaSectionEntry(title="Potential", category="Potential Awakening", tag="[CHANGED]",
-                              lines=["Deals 50% DMG; ~~30~~ → **40** Anomaly"])
+                              lines=["Deals 50% DMG; ~~**30**~~ → **40** Anomaly"])
     char = BetaCharacter(name="Vivian", rarity=5, element="Ether", role="Anomaly",
                          sections=[en_sec] + copied, diff_url="", page_url="", is_new=False)
     patch = BetaPatch(game_key="zzz", beta_version="3.4.2", rev_label="v3.4.2 Rev. 20052336",
@@ -19785,7 +19801,7 @@ def test_feature5_cn_sourced_values_are_bold_like_en_and_placeholders_stay_off_t
         for comp in pl["components"][0]["components"] for c in [comp] if c.get("type") == 10)
     assert "(Test1)" not in body
     assert "* **[Potential]:**" in body
-    assert "    * **[CHANGED]** Deals **50%** DMG; ~~30~~ → **40** Anomaly" in body
+    assert "    * **[CHANGED]** Deals **50%** DMG; ~~**30**~~ → **40** Anomaly" in body
     assert "    * **[NEW]** [普通攻击：落羽生花]造成的异常积蓄效率提升**50%**；" in body
 
 
@@ -19862,7 +19878,7 @@ def test_feature5_released_agent_diffs_against_the_live_build_not_the_whole_kit(
         # Only the block that moved is on the card; the other 14 are omitted, not re-posted.
         assert [section.title for section in card.sections] == ["Basic Attack: Robin Attack"]
         assert card.sections[0].tag == "[BUFF]"
-        assert "~~2~~ → **3**" in card.sections[0].lines[0]
+        assert "~~**2**~~ → **3**" in card.sections[0].lines[0]
         assert "released 3.3" in card.subtext and "1 buff" in card.subtext
         assert "14 unchanged block(s) omitted" in card.subtext
         # One read of the released build, and the beta snapshot becomes the next baseline.
@@ -20008,7 +20024,7 @@ def test_feature5_released_weapon_diffs_against_the_live_build():
         eq = patch.equipment[0]
         assert eq.lines[0].startswith("-# Compared with the released 3.3 kit")
         body = "\n".join(eq.lines)
-        assert "~~8%~~ → **10%**" in body
+        assert "~~**8%**~~ → **10%**" in body
 
 
 def _explanation_phoenix_sections() -> list:
@@ -20132,7 +20148,7 @@ def test_feature5_a_terminology_pass_says_so_instead_of_looking_like_a_rework():
             ]),
         BetaSectionEntry(
             title="EX Special Attack: Dazzle Flame", category="EX Special Attack", tag="[CHANGED]",
-            lines=["**[CHANGED]** Renamed from ~~EX Special Attack: Phase 1~~ → "
+            lines=["**[CHANGED]** Renamed from ~~**EX Special Attack: Phase 1**~~ → "
                    "**EX Special Attack: Dazzle Flame**."]),
         BetaSectionEntry(
             title="Chain Attack: Against All Odds", category="Chain Attack", tag="[TEXT FIX]",
@@ -20212,7 +20228,7 @@ def test_feature5_released_diff_card_carries_the_explanation_into_discord():
         assert "**Robin** comes out ahead in this revision" in body
         # The explanation sits above the bullets, and the bullets still carry the strike diff.
         assert body.index("comes out ahead") < body.index("**[BUFF]**")
-        assert "~~2~~ \u2192 **3**" in body
+        assert "~~**2**~~ \u2192 **3**" in body
 
 
 def test_feature5_a_revised_weapon_explains_itself_too():
@@ -20277,7 +20293,7 @@ def test_feature5_direction_reads_the_kit_not_the_number():
     from gamexpress import beta as beta_mod
 
     line, tag = beta_mod._change_line("Max Energy: 140", "Max Energy: 130")
-    assert tag == "[BUFF]" and "~~140~~ → **130**" in line
+    assert tag == "[BUFF]" and "~~**140**~~ → **130**" in line
     assert "*(cheaper to use)*" in line          # the guide's "attach the why" rule
 
     line, tag = beta_mod._change_line("Cooldown: 16s", "Cooldown: 17s")
@@ -20320,15 +20336,15 @@ def test_feature5_every_number_shape_survives_the_word_diff_whole():
 
     for old, new, tag, span in (
         ("Stage 1 DMG: 74.28%", "Stage 1 DMG: 63.62%", "[NERF]",
-         "~~74.28%~~ → **63.62%**"),
+         "~~**74.28%**~~ → **63.62%**"),
         ("DMG Multiplier: 25.17%+25.17%*3", "DMG Multiplier: 29.15%+29.15%*3", "[BUFF]",
-         "~~25.17%+25.17%*3~~ → **29.15%+29.15%*3**"),
+         "~~**25.17%+25.17%*3**~~ → **29.15%+29.15%*3**"),
         ("DMG Multiplier: 39.77%*3+39.77%", "DMG Multiplier: 38.45%*3+38.45%", "[NERF]",
-         "~~39.77%*3+39.77%~~ → **38.45%*3+38.45%**"),
+         "~~**39.77%*3+39.77%**~~ → **38.45%*3+38.45%**"),
         # The multiplier and the rate unit belong to the number they modify.
-        ("deals 2x DMG", "deals 3x DMG", "[BUFF]", "~~2x~~ → **3x**"),
-        ("regenerates 0.5%/s", "regenerates 0.8%/s", "[CHANGED]", "~~0.5%/s~~ → **0.8%/s**"),
-        ("Balance v3.8.1 rules", "Balance v3.8.3 rules", "[CHANGED]", "~~v3.8.1~~ → **v3.8.3**"),
+        ("deals 2x DMG", "deals 3x DMG", "[BUFF]", "~~**2x**~~ → **3x**"),
+        ("regenerates 0.5%/s", "regenerates 0.8%/s", "[CHANGED]", "~~**0.5%/s**~~ → **0.8%/s**"),
+        ("Balance v3.8.1 rules", "Balance v3.8.3 rules", "[CHANGED]", "~~**v3.8.1**~~ → **v3.8.3**"),
     ):
         line, got = beta_mod._change_line(old, new)
         assert got == tag, (old, line, got)
@@ -20336,7 +20352,7 @@ def test_feature5_every_number_shape_survives_the_word_diff_whole():
 
     # A leading sign stays inside the strikethrough instead of being stranded outside it.
     line, _ = beta_mod._change_line("DEF reduction: -5%", "DEF reduction: -7%")
-    assert "~~-5%~~ → **-7%**" in line and "-~~5%~~" not in line
+    assert "~~**-5%**~~ → **-7%**" in line and "-~~5%~~" not in line
 
     # An inserted list entry keeps its separator outside the bold span.
     line, _ = beta_mod._change_line("stage 1, 2, 3", "stage 1, 2, 3, 4")
@@ -20689,7 +20705,7 @@ def test_feature5_legacy_snapshot_for_a_released_agent_diffs_against_the_live_bu
         assert "released 3.3" in card.subtext, card.subtext
         assert "Full current kit" not in card.subtext
         assert [section.title for section in card.sections] == ["Basic Attack: Robin Attack"]
-        assert "~~2~~ → **3**" in card.sections[0].lines[0]
+        assert "~~**2**~~ → **3**" in card.sections[0].lines[0]
 
 
 def test_feature5_released_agent_is_deferred_when_the_live_baseline_cannot_be_read():
@@ -21311,9 +21327,9 @@ def test_feature5_ww_3_8_3_second_revision_is_a_real_before_after_not_a_kit_dump
     text = "\n".join(line for section in card.sections for line in section.lines)
     assert second.diff_range == "Rev. 3.8.1 → 3.8.3"
     assert card.subtext.startswith("-# Revision diff against 3.8.1")
-    assert "~~74.28%~~ → **63.62%**" in text
-    assert "~~25.17%+25.17%*3~~ → **29.15%+29.15%*3**" in text
-    assert "~~400%~~" not in text and "~~500%~~ → **400%**" in text
+    assert "~~**74.28%**~~ → **63.62%**" in text
+    assert "~~**25.17%+25.17%*3**~~ → **29.15%+29.15%*3**" in text
+    assert "~~400%~~" not in text and "~~**500%**~~ → **400%**" in text
     # Only what moved is printed: the untouched 40 Forte lines never come back.
     assert "Trailing filler line" not in text
     # An unchanged block is omitted outright — not listed with a `No changes.` placeholder.
@@ -21523,7 +21539,7 @@ def test_feature5_metadata_helpers_tell_a_rename_from_a_localization():
                            rarity=5, set_kind="2-piece", set_parts="6/6",
                            lines=["ATK +10%."])
     assert beta_mod._metadata_changes("zzz", sets, longer, eq_fields) == [
-        "**[ADJUSTMENT]** Set parts changed from ~~4/6~~ → **6/6**."]
+        "**[ADJUSTMENT]** Set parts changed from ~~**4/6**~~ → **6/6**."]
     # Nothing moved at all: no invented card.
     assert beta_mod._metadata_changes("wuwa", old, old, eq_fields) == []
 
@@ -21698,7 +21714,7 @@ def test_feature5_a_padded_source_line_does_not_disable_the_diff():
     assert len(second.characters) == 1
     card = second.characters[0]
     text = "\n".join(line for section in card.sections for line in section.lines)
-    assert "~~74.28%~~ → **63.62%**" in text
+    assert "~~**74.28%**~~ → **63.62%**" in text
     assert second.diff_range == "Rev. 3.8.1 → 3.8.3"
     # And the untouched sentence is omitted, not re-printed as an unchanged block.
     assert "Press Normal Attack to perform up to 4 attacks." not in text
@@ -21810,7 +21826,7 @@ def test_feature5_clipped_snapshot_rebuilds_the_previous_revision_instead_of_a_k
     text = "\n".join(line for section in card.sections for line in section.lines)
     assert card.subtext.startswith("-# Revision diff against 3.8.1")
     assert patch_obj.diff_range == "Rev. 3.8.1 → 3.8.3"
-    assert "~~74.28%~~ → **64.28%**" in text
+    assert "~~**74.28%**~~ → **64.28%**" in text
     assert "Trailing filler line" not in text
 
 
@@ -22126,7 +22142,7 @@ def test_feature5_a_wuwa_echo_card_links_its_own_comparison():
     equip = BetaEquipment(
         id="ww:6000041", name="Diamondclaw", category_label="Echoes", rarity=5,
         set_kind="Echo", stats_line="ATK 500",
-        lines=["**[BUFF]** ATK ~~10%~~ → **12%**."], diff_url=url,
+        lines=["**[BUFF]** ATK ~~**10%**~~ → **12%**."], diff_url=url,
     )
     patch = BetaPatch(game_key="wuwa", beta_version="3.8.3", rev_label="v3.8.3", rev_id="r",
                       equipment=[equip])
@@ -22225,7 +22241,7 @@ def test_feature5_gachabase_paths_match_the_routes_the_site_itself_serves():
     equip = BetaEquipment(
         id="hsr:330", name="Subspace Asc Center", category_label="Relic Sets", rarity=5,
         set_kind=kind, stats_line="ATK +12%",
-        lines=["**[BUFF]** ATK ~~10%~~ → **12%**."],
+        lines=["**[BUFF]** ATK ~~**10%**~~ → **12%**."],
         page_url=beta_mod._item_page_url("hsr", "relic", "330", "Subspace Asc Center", kind),
         diff_url=beta_mod._diff_url("hsr", "relic", "330", "Subspace Asc Center", "4.6.52",
                                     "4.6.53", set_kind=kind),
@@ -22257,14 +22273,14 @@ def test_feature5_diff_link_renders_on_every_games_card():
             id=f"{ns}:{item_id}", name=name, rarity=5,
             subtext="-# Revision diff against 3.8.1",
             sections=[BetaSectionEntry(title="Skill", category="Skills", tag="[CHANGED]",
-                                       lines=["**[BUFF]** ATK ~~100%~~ → **110%**."])],
+                                       lines=["**[BUFF]** ATK ~~**100%**~~ → **110%**."])],
             diff_url=url,
         )
         eq_url = beta_mod._diff_url(ns, "weapon", "21030076", "Lullaby", "3.8.1", "3.8.3")
         equipment = BetaEquipment(
             id=f"{ns}:21030076", name="Lullaby", category_label="Weapons", rarity=5,
             stats_line="ATK 500", effect_title="Effect",
-            lines=["**[BUFF]** ATK ~~10%~~ → **12%**."], diff_url=eq_url,
+            lines=["**[BUFF]** ATK ~~**10%**~~ → **12%**."], diff_url=eq_url,
         )
         payloads = cards.beta_payloads(
             GAMES[key],
@@ -22519,7 +22535,7 @@ def test_feature5_cn_decides_whether_a_zzz_w_engine_diff_changed_in_either_direc
     assert p_cn and len(p_cn.equipment) == 1
     body = "\n".join(p_cn.equipment[0].lines)
     # The DEF value moved in CN (10% -> 16%); the unchanged DMG clause is not marked as changed.
-    assert "~~10%~~ → **16%** for 10s" in body
+    assert "~~**10%**~~ → **16%** for 10s" in body
     assert "DMG increases by 10% for 15s" in body
     assert "Read from CN beta data" in body
 
@@ -22658,6 +22674,20 @@ def test_glossary_build_votes_need_support_and_share():
     assert [(t["zh"], t["en"], t["support"]) for t in kept] == [("落羽生花", "Featherbloom", 9)]
     # 4 of 5 agree (80%): below the share threshold, dropped rather than guessed.
     assert gb.aggregate(items(["Featherbloom"] * 4 + ["Falling Feathers Bloom"])) == []
+
+
+def test_glossary_build_name_survives_when_it_also_appears_as_a_pair():
+    """Regression: a name is walked as a pair on its own item (support 1, dropped by the vote). The
+    identity term must still be kept, not blocked by that dropped vote (live run 41364548820 had none)."""
+    from gamexpress import glossary_build as gb
+
+    per = {"character/1331": [("薇薇安·班希", "Vivian Banshee")]}
+    ident = {"character/1331": ("薇薇安·班希", "Vivian Banshee")}
+    assert [(t["zh"], t["en"]) for t in gb.aggregate(per, ident)] == [("薇薇安·班希", "Vivian Banshee")]
+    # A CN term that IS kept (support 2) still wins over an identity reading.
+    per2 = {"a": [("薇薇安", "Vivian")], "b": [("薇薇安", "Vivian")]}
+    assert [(t["zh"], t["en"]) for t in gb.aggregate(per2, {"c": ("薇薇安", "Vivian Banshee")})] == [
+        ("薇薇安", "Vivian")]
 
 
 def test_glossary_build_keeps_each_items_own_name_and_drops_conflicts():
@@ -22967,7 +22997,7 @@ def test_feature5_post_merge_edge_cases_and_ci_annotation_hygiene():
             BetaEquipment(
                 id="hsr:relic:330", name="Planar Set", category_label="Relics & Ornaments",
                 rarity=5, set_kind="Planar Ornament Set", tag="[CHANGED]",
-                lines=["**[BUFF]** 2-Piece: Increases ATK by ~~12%~~ → **16%**."],
+                lines=["**[BUFF]** 2-Piece: Increases ATK by ~~**12%**~~ → **16%**."],
             ),
         ],
     )
@@ -24799,32 +24829,32 @@ def test_feature5_weapon_multi_tier_diffs_zh_sync_and_legacy_state_self_heal():
         "Increases CRIT DMG by 6%/7%/8%/9%/10%.",
         "Increases CRIT DMG by 8%/9%/10%/11%/12%.",
     )
-    assert tag_buff == "[BUFF]" and "~~6%/7%/8%/9%/10%~~ → **8%/9%/10%/11%/12%**" in ln_buff
+    assert tag_buff == "[BUFF]" and "~~**6%/7%/8%/9%/10%**~~ → **8%/9%/10%/11%/12%**" in ln_buff
 
     ln_nerf, tag_nerf = beta_mod._change_line(
         "Increases Elemental Mastery by 48/60/72/84/96 for 20s.",
         "Increases Elemental Mastery by 40/50/60/70/80 for 20s.",
     )
-    assert tag_nerf == "[NERF]" and "~~48/60/72/84/96~~ → **40/50/60/70/80**" in ln_nerf
+    assert tag_nerf == "[NERF]" and "~~**48/60/72/84/96**~~ → **40/50/60/70/80**" in ln_nerf
 
     ln_mixed, tag_mixed = beta_mod._change_line(
         "Increases ATK by 12%/15%/18%/21%/24%.",
         "Increases ATK by 10%/14%/18%/22%/26%.",
     )
     assert tag_mixed == "[CHANGED]" and tag_mixed != "[TEXT FIX]"
-    assert "~~12%/15%/18%/21%/24%~~ → **10%/14%/18%/22%/26%**" in ln_mixed
+    assert "~~**12%/15%/18%/21%/24%**~~ → **10%/14%/18%/22%/26%**" in ln_mixed
 
     ln_dur, tag_dur = beta_mod._change_line(
         "Shield lasts for 10/12/14/16/18s.",
         "Shield lasts for 8/10/12/14/16s.",
     )
-    assert tag_dur == "[NERF]" and "~~10/12/14/16/18s~~ → **8/10/12/14/16s**" in ln_dur
+    assert tag_dur == "[NERF]" and "~~**10/12/14/16/18s**~~ → **8/10/12/14/16s**" in ln_dur
 
     ln_red, tag_red = beta_mod._change_line(
         "DMG taken is reduced by 20%/22%/24%/26%/28%.",
         "DMG taken is reduced by 24%/26%/28%/30%/32%.",
     )
-    assert tag_red == "[BUFF]" and "~~20%/22%/24%/26%/28%~~ → **24%/26%/28%/30%/32%**" in ln_red
+    assert tag_red == "[BUFF]" and "~~**20%/22%/24%/26%/28%**~~ → **24%/26%/28%/30%/32%**" in ln_red
 
     # 2. CN `/zh/` sync: (a) fills `[value unavailable]` with full 5-tier progression;
     # (b) upgrades EN R1-only prose (preserving `"3rd"` ordinal!) when CN has matching R1–R5;
@@ -24932,7 +24962,7 @@ def test_feature5_weapon_multi_tier_diffs_zh_sync_and_legacy_state_self_heal():
         assert p_bf is not None and len(p_bf.equipment) == 1
         w_diff = "\n".join(p_bf.equipment[0].lines)
         assert "[BUFF]" in w_diff
-        assert "~~12%/15%/18%/21%/24%~~ → **16%/20%/24%/28%/32%**" in w_diff
+        assert "~~**12%/15%/18%/21%/24%**~~ → **16%/20%/24%/28%/32%**" in w_diff
 
     # 3c: Historical 3.8.1 JSON unavailable -> safe `snapshot` mode (zero bogus R1 -> R1–R5 `[BUFF]`).
     with tempfile.TemporaryDirectory() as tmp:

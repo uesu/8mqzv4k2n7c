@@ -578,6 +578,17 @@ def _spans(text: str) -> list[tuple[str, int, int]]:
     return [(m.group(), m.start(), m.end()) for m in _TOKEN_RE.finditer(str(text or ""))]
 
 
+def _struck(old: str) -> str:
+    """The struck-through old value, in the card's style.
+
+    A value with a number is bold inside the strike (`~~**63.1%**~~`, `~~**+40**~~`), the house
+    format for every changed number. A name is struck plain (`~~[Embers]~~`).
+    """
+    if any(ch.isdigit() for ch in old) and not old.startswith("**"):
+        return f"~~**{old}**~~"
+    return f"~~{old}~~"
+
+
 def _diff_parts(old: str, new: str, keep: int = 4, max_blocks: int | None = None
                 ) -> tuple[str, list[tuple[str, str]]]:
     """Word-level `old` -> `new`, returned as (rendered line, changed fragments)."""
@@ -596,7 +607,7 @@ def _diff_parts(old: str, new: str, keep: int = 4, max_blocks: int | None = None
         # gives those their own `[REWORK]` Old/New shape, and a wall of strikethrough is not an
         # improvement.
         if 0 < len(old_s) <= 120 and 0 < len(new_s) <= 120:
-            return f"~~{old_s}~~ → **{new_s}**", [(old_s, new_s)]
+            return f"{_struck(old_s)} → **{new_s}**", [(old_s, new_s)]
         return new_s, []
     opcodes = list(matcher.get_opcodes())
     blocks: list[list[int]] = []
@@ -634,7 +645,7 @@ def _diff_parts(old: str, new: str, keep: int = 4, max_blocks: int | None = None
         new_part = new_s[new_start:new_end]
         parts.append((old_part, new_part))
         if old_part and new_part:
-            out.append(f"~~{old_part}~~ → **{new_part}**")
+            out.append(f"{_struck(old_part)} → **{new_part}**")
         elif new_part:
             # An insertion: keep the separator it came with outside the bold span, so a new list
             # entry reads `stage 1, 2, 3, **4**` instead of `stage 1, 2, 3**, 4**`.
@@ -1020,7 +1031,7 @@ def _diff_params(prev: Any, cur: Any) -> list[tuple[str, str]]:
             out.append((f"**{tag}** {name} {verb} from "
                         f"~~**{was.get('text')}**~~ → **{p.get('text')}**.{suffix}", tag))
         else:
-            out.append((f"**[CHANGED]** {name}: ~~{was.get('text')}~~ → "
+            out.append((f"**[CHANGED]** {name}: {_struck(str(was.get('text') or ''))} → "
                         f"**{p.get('text')}**.", "[CHANGED]"))
     return out
 
@@ -1067,7 +1078,7 @@ def _diff_section(prev: Any, cur: Any) -> tuple[list[str], list[str]]:
         ))
     if str(getattr(prev, "meta", "")) != str(getattr(cur, "meta", "")):
         lines.append((f"**[ADJUSTMENT]** Targeting/type changed from "
-                      f"~~{getattr(prev, 'meta', '')}~~ → **{getattr(cur, 'meta', '')}**.",
+                      f"{_struck(str(getattr(prev, 'meta', '') or ''))} → **{getattr(cur, 'meta', '')}**.",
                       "[ADJUSTMENT]"))
     if str(getattr(prev, "category", "")) != str(getattr(cur, "category", "")):
         lines.append((f"**[ADJUSTMENT]** Reclassified from "
@@ -4778,11 +4789,11 @@ def _metadata_changes(game_key: str, previous: Any, current: Any,
             continue
         label = _meta_label(game_key, field)
         if old_text and new_text:
-            lines.append(f"**[ADJUSTMENT]** {label} changed from ~~{old_text}~~ → **{new_text}**.")
+            lines.append(f"**[ADJUSTMENT]** {label} changed from {_struck(old_text)} → **{new_text}**.")
         elif new_text:
             lines.append(f"**[ADJUSTMENT]** {label} set to **{new_text}**.")
         else:
-            lines.append(f"**[CHANGED]** {label} no longer published (was ~~{old_text}~~).")
+            lines.append(f"**[CHANGED]** {label} no longer published (was {_struck(old_text)}).")
     return lines
 
 
