@@ -40,8 +40,7 @@ def choose_source(*, nanoka: Any = None, gachabase: Any = None, encore: Any = No
                   same: Any = None, same_encore: Any = None) -> SourceChoice:
     """Pick the source for one item.
 
-    nanoka wins whenever it has data. Otherwise Gachabase wins if it has data, otherwise Encore
-    (WuWa only). When nanoka has data and another database also has it, the two are compared:
+    nanoka is primary. When nanoka is silent: Encore (WuWa only) comes second, Gachabase third. When nanoka has data and another database also has it, the two are compared:
     a match posts nanoka; a mismatch still posts nanoka and reports which database disagreed.
     `same` compares nanoka with Gachabase, `same_encore` compares nanoka with Encore (equality
     by default). A database that is unreadable (no data) never blocks the others.
@@ -57,10 +56,10 @@ def choose_source(*, nanoka: Any = None, gachabase: Any = None, encore: Any = No
         note = (f"{game}: nanoka and {' and '.join(disagreed)} differ; posted nanoka"
                 if disagreed else "")
         return SourceChoice(SOURCE_NANOKA, nanoka, note=note)
-    if _has(gachabase):
-        return SourceChoice(SOURCE_GACHABASE, gachabase)
     if encore_applies and _has(encore):
         return SourceChoice(SOURCE_ENCORE, encore)
+    if _has(gachabase):
+        return SourceChoice(SOURCE_GACHABASE, gachabase)
     return SourceChoice("")
 
 

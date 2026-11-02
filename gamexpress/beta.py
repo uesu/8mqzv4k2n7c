@@ -51,7 +51,6 @@ import difflib
 import json
 import logging
 import re
-from collections import Counter
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -3333,6 +3332,16 @@ def _bangboo_stats_line(data: dict) -> str:
     return " · ".join(parts)
 
 
+_TEST_WORD_RE = re.compile(r"\btest\b", re.I)
+
+
+def _test_placeholder_warning(lines: list[str]) -> list[str]:
+    """Post a test-named source item with a warning, as decided: the name is shown, flagged as a placeholder."""
+    if any(str(ln).lstrip().startswith("**[") and _TEST_WORD_RE.search(str(ln)) for ln in lines):
+        return ["-# ⚠️ This item's name in the source data is a test placeholder; shown as provided.", *lines]
+    return lines
+
+
 def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
     """Pull the display fields of one weapon / relic out of its detail JSON."""
     stats_line = ""
@@ -3672,6 +3681,7 @@ def _equip_from_detail(ns: str, kind: str, data: dict, listing: dict) -> dict:
     if any(unresolved.search(line) for line in lines):
         lines = [unresolved.sub("[value unavailable]", line) for line in lines]
         lines.append("-# ⚠️ Some values are unavailable in this revision's source data.")
+    lines = _test_placeholder_warning(lines)
     return {
         "stats_line": stats_line,
         "effect_title": effect_title,
@@ -3800,17 +3810,25 @@ async def _resolve_image_within_budget(
                 return usable_urls[0], requests
         cache[key] = cached_url
         return cache[key], requests
+    rejected: list[str] = []
     for url in usable_urls:
         if requests + 1 > budget["max_requests"] or not _take_shared_request(budget, 1):
             return "", requests
         requests += 1
         try:
             ok = await fetcher.verify_media(url)
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
             ok = False
+            rejected.append(f"{url} ({type(exc).__name__})")
+        else:
+            if not ok:
+                rejected.append(url)
         if ok:
             cache[key] = url
             return url, requests
+    if usable_urls:
+        # Diagnostic: every candidate failed `verify_media`, so the card posts without an image.
+        log.info("beta image: no verified image for %s; rejected %s", key, "; ".join(rejected))
     cache[key] = ""
     return "", requests
 
@@ -4628,89 +4646,6 @@ _ZH_CJK_RE = re.compile(r"[\u4e00-\u9fff]")
 _ZH_TITLE_SPLIT_RE = re.compile(r"[:：]\s*")
 
 
-_ZZZ_SEED_GLOSSARY_PATH = Path(__file__).parent / "data" / "zzz_zh_en_glossary.json"
-_zzz_seed_cache: dict[str, str] | None = None
-_GLOSSARY_DIR = Path(__file__).parent / "data" / "glossary"
-
-
-def _generated_glossary(game_key: str) -> dict[str, str]:
-    """Reviewed terms from `gamexpress build-glossary --game <game>` (none until that file exists)."""
-    path = _GLOSSARY_DIR / f"{game_key}.json"
-    if not path.exists():
-        return {}
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    return {str(row["zh"]): str(row["en"]) for row in raw.get("terms", [])}
-
-
-def _zzz_seed_glossary() -> dict[str, str]:
-    """Verified ZZZ Chinese -> English terms (`data/zzz_zh_en_glossary.json`), read once.
-
-    Every seed entry was checked against an official EN and CN record of the same item, and each
-    row names its source. These win over anything learned at runtime.
-    """
-    global _zzz_seed_cache
-    if _zzz_seed_cache is None:
-        raw = json.loads(_ZZZ_SEED_GLOSSARY_PATH.read_text(encoding="utf-8"))
-        _zzz_seed_cache = {str(row["zh"]): str(row["en"]) for row in raw.get("terms", [])}
-    return dict(_zzz_seed_cache)
-
-
-def _zh_en_glossary(pairs: list[tuple[BetaSectionEntry, BetaSectionEntry]],
-                    game_key: str = "zzz") -> dict[str, str]:
-    """Chinese term -> English term: the verified seed, plus terms learned from the same item's
-    already-localized sections.
-
-    Only two alignments are trusted: title parts split on the colon (same part count on both
-    sides) and bracketed status/skill names in the same order (same count on both sides). A term
-    that maps to two different English strings is dropped, so a wrong alignment cannot leak
-    into a card. A term that is not learned stays in Chinese under the pending label. A learned
-    term never overrides a seed term.
-    """
-    seen: dict[str, set[str]] = {}
-
-    def add(zh: str, en: str) -> None:
-        zh, en = zh.strip(), en.strip()
-        if zh and en and _ZH_CJK_RE.search(zh) and not _ZH_CJK_RE.search(en):
-            seen.setdefault(zh, set()).add(en)
-
-    for en_sec, zh_sec in pairs:
-        zh_parts = _ZH_TITLE_SPLIT_RE.split(str(zh_sec.title or ""))
-        en_parts = _ZH_TITLE_SPLIT_RE.split(str(en_sec.title or ""))
-        if len(zh_parts) == len(en_parts):
-            for z, e in zip(zh_parts, en_parts):
-                add(z, e)
-        zh_terms = _ZH_TERM_BRACKET_RE.findall("\n".join(zh_sec.lines))
-        en_terms = _ZH_TERM_BRACKET_RE.findall("\n".join(en_sec.lines))
-        if len(zh_terms) == len(en_terms):
-            for z, e in zip(zh_terms, en_terms):
-                add(z, e)
-    learned = {zh: next(iter(ens)) for zh, ens in seen.items() if len(ens) == 1}
-    # Priority: the verified seed (ZZZ only), then terms learned from this item, then the generated file.
-    seed = _zzz_seed_glossary() if game_key == "zzz" else {}
-    return {**_generated_glossary(game_key), **learned, **seed}
-
-
-def _zh_en_apply(text: str, glossary: dict[str, str]) -> str:
-    """Replace learned Chinese terms in one line, longest term first."""
-    for zh in sorted(glossary, key=len, reverse=True):
-        text = text.replace(zh, glossary[zh])
-    return text
-
-
-def _clone_sections_localized(sections: list[BetaSectionEntry], tag: str,
-                              glossary: dict[str, str]) -> list[BetaSectionEntry]:
-    out = _clone_sections(sections, tag)
-    if not glossary:
-        return out
-    for sec in out:
-        sec.title = _zh_en_apply(str(sec.title or ""), glossary)
-        sec.lines = [_zh_en_apply(str(x), glossary) for x in sec.lines]
-        for row in sec.params:
-            if isinstance(row.get("text"), str):
-                row["text"] = _zh_en_apply(row["text"], glossary)
-    return out
-
-
 def _clone_sections(sections: list[BetaSectionEntry], tag: str) -> list[BetaSectionEntry]:
     # Every section copy goes through here (EN, CN-sourced, localized), so placeholders such as
     # `(Test1)` are removed on the one path the card reads, not only in `_section_lines`.
@@ -5427,74 +5362,6 @@ def _upgrade_legacy_beta_record(record: dict) -> bool:
     return True
 
 
-def _kit_needs_zh_check(built: dict | None) -> bool:
-    """True when an EN kit shows placeholders (`???`, `[TBD]`, `/-`) or empty sections."""
-    if not built or not built.get("sections"):
-        return True
-    for sec in built["sections"]:
-        if "???" in (sec.title or "") or _is_key(sec.title):
-            return True
-        for ln in sec.lines:
-            if "???" in ln or "[TBD]" in ln or re.search(r"\d+(?:\.\d+)?%?/-(\s|$|[.,;)])", ln):
-                return True
-    return False
-
-
-def _extract_kit_percents(lines: list[str]) -> list[str]:
-    """Extract combat percentage and explicit duration values (ordinal-immune across CN/EN)."""
-    tokens: list[str] = []
-    for ln in lines:
-        if ln.startswith("-#"):
-            continue
-        tokens.extend(re.findall(r"\d+(?:\.\d+)?%(?:/[+-]?\d+(?:\.\d+)?%)+|\d+(?:\.\d+)?%", ln))
-        for dur in re.findall(r"(?<![A-Za-z0-9./])(\d+(?:\.\d+)?)\s*(?:s\b|sec(?:ond)?s?\b|秒)", ln, re.I):
-            tokens.append(f"{dur}s")
-    return tokens
-
-
-def _extract_numeric_tokens_clean(text: str) -> list[str]:
-    """Extract numeric tokens (`1000`, `24%`, `12%/15%/18%/21%/24%`), normalizing commas."""
-    norm = re.sub(r"(?<=\d),(?=\d{3}\b)", "", text or "")
-    return re.findall(r"\d+(?:\.\d+)?%?(?:/[+-]?\d+(?:\.\d+)?%?)+|\d+(?:\.\d+)?%?", norm)
-
-
-def _patch_placeholder_line_from_zh(en_ln: str, zh_ln: str, placeholder_re: str) -> tuple[str, bool]:
-    """Fill `[TBD]`, `???`, or `[value unavailable]` tokens from aligned CN line."""
-    if not zh_ln or any(tok in zh_ln for tok in ("[TBD]", "???", "[value unavailable]")):
-        return en_ln, False
-    zh_nums = _extract_numeric_tokens_clean(zh_ln)
-    if not zh_nums:
-        return en_ln, False
-    en_without = re.sub(placeholder_re, " ", en_ln)
-    existing_counts = Counter(_extract_numeric_tokens_clean(en_without))
-    unmatched: list[str] = []
-    for n in zh_nums:
-        if existing_counts.get(n, 0) > 0:
-            existing_counts[n] -= 1
-        else:
-            unmatched.append(n)
-    pool = unmatched if unmatched else zh_nums
-    pct_pool = [n for n in pool if n.endswith("%")]
-    changed = False
-    out = en_ln
-    while re.search(placeholder_re, out) and pool:
-        m = re.search(placeholder_re, out)
-        if m is None:
-            break
-        wants_pct = m.group(0).endswith("%")
-        if wants_pct and pct_pool:
-            pick = pct_pool.pop(0)
-            if pick in pool:
-                pool.remove(pick)
-        else:
-            pick = pool.pop(0)
-            if pick in pct_pool:
-                pct_pool.remove(pick)
-        out = out[:m.start()] + pick + out[m.end():]
-        changed = True
-    return out, changed
-
-
 async def _cn_kit_pair(ctx, ns: str, kind: str, item_id: str, prev_ver: str, cur_ver: str,
                        builder, budget: dict, requests: int, cur_zh: dict | None = None) -> dict:
     """Compare the CN kit at two revisions. `verdict` is "equal", "changed", or None (unknown).
@@ -5535,159 +5402,6 @@ async def _cn_kit_pair(ctx, ns: str, kind: str, item_id: str, prev_ver: str, cur
     return out
 
 
-def _reconcile_en_with_zh_kit(en_built: dict, zh_built: dict, game_key: str = "zzz") -> bool:
-    """Patch stale/broken EN numbers or missing sections using authoritative CN/CHS beta data."""
-    zh_secs: list[BetaSectionEntry] = list(zh_built.get("sections") or [])
-    if not zh_secs:
-        return False
-    en_secs: list[BetaSectionEntry] = list(en_built.get("sections") or [])
-    if not en_secs:
-        copied = _clone_sections(zh_secs, "[NEW]")
-        copied[0].lines.append("-# 🌐 Sourced from CN/CHS beta data — EN localization pending.")
-        en_built["sections"] = copied
-        return True
-
-    # Align EN and CN sections by (category_occurrence, slot/positional_index) so missing
-    # intermediate sections in EN never misalign later skills or constellations/mindscapes.
-    def _group_by_cat(secs: list[BetaSectionEntry]) -> tuple[list[str], dict[str, list[BetaSectionEntry]]]:
-        order: list[str] = []
-        by_cat: dict[str, list[BetaSectionEntry]] = {}
-        for s in secs:
-            ck = (s.category or "").strip()
-            if ck not in by_cat:
-                order.append(ck)
-                by_cat[ck] = []
-            by_cat[ck].append(s)
-        return order, by_cat
-
-    en_cats, en_by_cat = _group_by_cat(en_secs)
-    zh_cats, zh_by_cat = _group_by_cat(zh_secs)
-    matched_zh_ids: set[int] = set()
-    pairs_to_sync: list[tuple[BetaSectionEntry, BetaSectionEntry]] = []
-
-    if en_cats == zh_cats or (set(en_cats) & set(zh_cats)):
-        for ck in en_cats:
-            en_list = en_by_cat[ck]
-            zh_list = zh_by_cat.get(ck) or []
-            if not zh_list:
-                continue
-            zh_slots = {_numbered_slot(zs): zs for zs in zh_list if _numbered_slot(zs) is not None}
-            for pos, es in enumerate(en_list):
-                es_slot = _numbered_slot(es)
-                zs = zh_slots.get(es_slot) if es_slot is not None else None
-                if zs is None and pos < len(zh_list) and id(zh_list[pos]) not in matched_zh_ids:
-                    zs = zh_list[pos]
-                if zs is not None:
-                    matched_zh_ids.add(id(zs))
-                    pairs_to_sync.append((es, zs))
-    else:
-        for idx, es in enumerate(en_secs):
-            if idx >= len(zh_secs):
-                break
-            matched_zh_ids.add(id(zh_secs[idx]))
-            pairs_to_sync.append((es, zh_secs[idx]))
-
-    glossary = _zh_en_glossary(pairs_to_sync, game_key)
-    changed_any = False
-    for en_sec, zh_sec in pairs_to_sync:
-        sec_changed = False
-
-        if en_sec.params and zh_sec.params:
-            pair_len = min(len(en_sec.params), len(zh_sec.params))
-            for p_idx in range(pair_len):
-                en_p = en_sec.params[p_idx]
-                zh_p = zh_sec.params[p_idx]
-                if en_p.get("value") != zh_p.get("value") and zh_p.get("text"):
-                    old_txt = str(en_p.get("text") or "")
-                    new_txt = str(zh_p["text"])
-                    en_p["value"] = zh_p.get("value")
-                    en_p["text"] = new_txt
-                    label_prefix = f"{en_p.get('name')}:"
-                    en_sec.lines = [
-                        f"{en_p.get('name')}: {new_txt}"
-                        if ln.startswith(label_prefix) and old_txt in ln
-                        else ln
-                        for ln in en_sec.lines
-                    ]
-                    sec_changed = True
-            if len(zh_sec.params) > len(en_sec.params):
-                for zh_extra in zh_sec.params[len(en_sec.params):]:
-                    if zh_extra.get("name") and zh_extra.get("text"):
-                        en_sec.params.append(dict(zh_extra))
-                        en_sec.lines.append(f"{zh_extra['name']}: {zh_extra['text']}")
-                        sec_changed = True
-
-        updated_lines: list[str] = []
-        for l_idx, ln in enumerate(en_sec.lines):
-            if l_idx < len(zh_sec.lines):
-                zh_ln = zh_sec.lines[l_idx]
-                zh_nums = _extract_numeric_tokens_clean(zh_ln)
-                zh_pcts = [n for n in zh_nums if n.endswith("%")]
-                if "[TBD]" in ln:
-                    ln, did = _patch_placeholder_line_from_zh(ln, zh_ln, r"\[TBD\]%?")
-                    sec_changed = sec_changed or did
-                if "???" in ln:
-                    ln, did = _patch_placeholder_line_from_zh(ln, zh_ln, r"\?\?\?%?")
-                    sec_changed = sec_changed or did
-                if re.search(r"\d+(?:\.\d+)?%?/-(\s|$|[.,;)])", ln) and zh_nums:
-                    pick_tail = zh_pcts[-1] if zh_pcts else zh_nums[-1]
-                    patched = re.sub(
-                        r"(\d+(?:\.\d+)?%?)/-(?=\s|$|[.,;)])", f"\\1/{pick_tail}", ln, count=1
-                    )
-                    if patched != ln:
-                        ln = patched
-                        sec_changed = True
-            updated_lines.append(ln)
-        if sec_changed and not any("[TBD]" in x for x in updated_lines if not x.startswith("-#")):
-            updated_lines = [
-                x for x in updated_lines
-                if not x.startswith("-# ⚠️ [TBD] marks an unresolved")
-            ]
-
-        en_tokens = _extract_kit_percents(updated_lines)
-        zh_tokens = _extract_kit_percents(zh_sec.lines)
-        if sec_changed:
-            if not any("CN/CHS" in x for x in updated_lines):
-                updated_lines.append("-# 🌐 Values synced with authoritative CN/CHS beta data.")
-            en_sec.lines = updated_lines
-            changed_any = True
-        elif (
-            zh_tokens
-            and Counter(en_tokens) != Counter(zh_tokens)
-            and not any("CN/CHS" in x for x in updated_lines)
-        ):
-            preview = ", ".join(zh_tokens[:8])
-            if preview:
-                updated_lines.append(
-                    f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
-                )
-                en_sec.lines = updated_lines
-                changed_any = True
-
-    # Recover any non-empty CN sections whose category/slot was completely missing in EN.
-    if set(en_cats) & set(zh_cats) or len(zh_secs) > len(en_secs):
-        for zs in zh_secs:
-            if id(zs) in matched_zh_ids:
-                continue
-            z_cat = (zs.category or "").strip()
-            if z_cat and z_cat in en_by_cat:
-                es_slots = {_numbered_slot(s) for s in en_by_cat[z_cat] if _numbered_slot(s) is not None}
-                zs_slot = _numbered_slot(zs)
-                if zs_slot is None and len(en_by_cat[z_cat]) >= len(zh_by_cat.get(z_cat) or ()):
-                    continue
-                if zs_slot is not None and zs_slot in es_slots:
-                    continue
-            cloned = _clone_sections_localized([zs], "[NEW]", glossary)[0]
-            if not any("CN/CHS" in x for x in cloned.lines):
-                cloned.lines.append("-# 🌐 Sourced from CN/CHS beta data — EN localization pending.")
-            en_secs.append(cloned)
-            changed_any = True
-        if changed_any:
-            en_built["sections"] = en_secs
-
-    return changed_any
-
-
 async def _cn_equipment_pair(ctx, ns: str, kind: str, item_id: str, role: str,
                              prev_ver: str, cur_ver: str, listing_entry: dict | None,
                              budget: dict, requests: int) -> dict:
@@ -5722,87 +5436,6 @@ async def _cn_equipment_pair(ctx, ns: str, kind: str, item_id: str, role: str,
     same = _fingerprint(prev_fields) == _fingerprint(cur_fields)
     out.update(verdict="equal" if same else "changed", prev=prev_fields, cur=cur_fields)
     return out
-
-
-def _reconcile_en_with_zh_equipment(current: BetaEquipment, zh_fields: dict) -> bool:
-    """Resolve `[value unavailable]` / `[TBD]` / `???` or numeric lag on equipment via `/zh/`."""
-    zh_lines = list(zh_fields.get("lines") or [])
-    if not zh_lines:
-        return False
-    changed = False
-    updated: list[str] = []
-    zh_content = [ln for ln in zh_lines if not ln.startswith("-#")]
-    en_content_idx = 0
-    for ln in current.lines:
-        if ln.startswith("-#"):
-            updated.append(ln)
-            continue
-        zh_ln = zh_content[en_content_idx] if en_content_idx < len(zh_content) else ""
-        en_content_idx += 1
-        if zh_ln:
-            for ph_re, needle in (
-                (r"\[value unavailable\]%?", "[value unavailable]"),
-                (r"\[TBD\]%?", "[TBD]"),
-                (r"\?\?\?%?", "???"),
-            ):
-                if needle in ln:
-                    ln, did = _patch_placeholder_line_from_zh(ln, zh_ln, ph_re)
-                    changed = changed or did
-            if not _MULTI_TIER_SLASH_RE.search(ln) and _MULTI_TIER_SLASH_RE.search(zh_ln):
-                zh_multi_re = re.compile(
-                    r"(?<![A-Za-z0-9_.第])\d+(?:,\d{3})*(?:\.\d+)?%?(?:/[+-]?\d+(?:,\d{3})*(?:\.\d+)?%?)+"
-                    r"|(?<![A-Za-z0-9_.第])\d+(?:,\d{3})*(?:\.\d+)?%?(?!(?:st|nd|rd|th)\b)",
-                    re.I,
-                )
-                en_nums = [s.replace(",", "") for s in _TIER_NUM_RE.findall(ln)]
-                zh_nums = [s.replace(",", "") for s in zh_multi_re.findall(zh_ln)]
-                if (
-                    en_nums
-                    and Counter(en_nums) == Counter(zt.split("/", 1)[0] for zt in zh_nums)
-                    and any("/" in zt for zt in zh_nums)
-                ):
-                    by_r1: dict[str, list[str]] = {}
-                    for zt in zh_nums:
-                        by_r1.setdefault(zt.split("/", 1)[0], []).append(zt)
-
-                    def _upgrade_r1_tok(m: re.Match, _map=by_r1) -> str:
-                        key = m.group(0).replace(",", "")
-                        bucket = _map.get(key)
-                        return bucket.pop(0) if bucket else m.group(0)
-
-                    ln = _TIER_NUM_RE.sub(_upgrade_r1_tok, ln)
-                    changed = True
-        updated.append(ln)
-    if changed and not any("[value unavailable]" in x for x in updated if not x.startswith("-#")):
-        updated = [
-            x for x in updated
-            if "Some values are unavailable in this revision's source data" not in x
-        ]
-    en_eq_toks = _extract_kit_percents(updated)
-    zh_eq_toks = _extract_kit_percents(zh_lines)
-    if changed:
-        if not any("CN/CHS" in x for x in updated):
-            updated.append("-# 🌐 Values synced with authoritative CN/CHS beta data.")
-        current.lines = updated
-        return True
-    en_cmp_toks = (
-        [t.split("/", 1)[0] for t in en_eq_toks]
-        if any("/" in t for t in en_eq_toks) and not any("/" in t for t in zh_eq_toks)
-        else en_eq_toks
-    )
-    if (
-        zh_eq_toks
-        and Counter(en_cmp_toks) != Counter(zh_eq_toks)
-        and not any("CN/CHS" in x for x in updated)
-    ):
-        preview = ", ".join(zh_eq_toks[:8])
-        if preview:
-            updated.append(
-                f"-# 🌐 CN/CHS client values updated ({preview}); EN text lags in this build."
-            )
-            current.lines = updated
-            return True
-    return False
 
 
 _NUM_PAIR_RE = re.compile(r"~~(.+?)~~\s*\u2192\s*\*\*(.+?)\*\*")
@@ -6604,7 +6237,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         patch.no_changes = True
         return patch
 
-    zh_advised = bool(source_revision and source_revision.get("zh_check_advised"))
     new_char_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["character"])
     new_weapon_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["weapon"])
     new_relic_ids = manifest_new_ids(manifest, ns, kinds["new_keys"]["relic"])
@@ -6866,24 +6498,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             data = enc_data
             built = enc_built
 
-        zh_data: dict | None = None
-        if (
-            data
-            and "_encore" not in data
-            and "_gachabase" not in data
-            and builder
-            and (zh_advised or _kit_needs_zh_check(built))
-            and requests + 1 <= budget["max_requests"]
-            and _take_shared_request(budget, 1)
-        ):
-            requests += 1
-            zh_data = await _detail(
-                ctx.fetcher, ns, version, char_detail_kind, item_id, locale="zh"
-            )
-            if zh_data:
-                if not built:
-                    built = {"sections": []}
-                _reconcile_en_with_zh_kit(built, builder(zh_data), game.key)
         if not data:
             ctx.warnings.append(f"{game.short} beta: no kit data for id {item_id}; deferred")
             patch.more = True
@@ -6894,6 +6508,8 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             continue
 
         rarity = _parse_rarity(ns, data.get("rarity"), built.get("rarity") or 5) or 5
+        # CN is never merged into EN text; the CN compare below fetches its own copy when needed.
+        zh_data: dict | None = None
         name = _safe_entry_name(
             entry, data, None, item_id, zh_data=zh_data,
             extra_names=(str(((previous_snapshot or {}).get("data") or {}).get("name") or ""),),
@@ -6985,23 +6601,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
         if "_encore" in data:
             cur_snap.update(provider="encore", provider_revision=data["_encore_revision"])
 
-        if (
-            previous_snapshot is not None
-            and "_encore" not in data
-            and not zh_advised
-            and not _kit_needs_zh_check(built)
-            and _snapshot_comparison(previous_snapshot, cur_snap) == "equal"
-            and builder is not None
-            and requests + 1 <= budget["max_requests"]
-            and _take_shared_request(budget, 1)
-        ):
-            requests += 1
-            zh_data = await _detail(
-                ctx.fetcher, ns, version, char_detail_kind, item_id, locale="zh"
-            )
-            if zh_data and _reconcile_en_with_zh_kit(built, builder(zh_data), game.key):
-                full.sections = _clone_sections(list(built.get("sections") or []), "[NEW]")
-                cur_snap = _character_snapshot(full, version, ctx.now)
 
         prev_char_img = str(((previous_snapshot or {}).get("data") or {}).get("image_url") or "")
         prev_char_gal = [
@@ -7110,12 +6709,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                     # EN diff (CN is kept only as the reference for numbers when CN does move).
                     pass
                 elif cn["verdict"] == "changed":
-                    en_prev = {"sections": _clone_sections(list(previous.sections), "[CHANGED]")}
-                    en_cur = {"sections": _clone_sections(list(full.sections), "[NEW]")}
-                    _reconcile_en_with_zh_kit(en_prev, {"sections": cn_prev_secs}, game.key)
-                    _reconcile_en_with_zh_kit(en_cur, {"sections": cn_cur_secs}, game.key)
-                    previous.sections = list(en_prev["sections"])
-                    full.sections = list(en_cur["sections"])
+                    # CN decides the change; the card shows the CN text itself (no EN merge).
+                    previous.sections = _clone_sections(list(cn_prev_secs), "[CHANGED]")
+                    full.sections = _clone_sections(list(cn_cur_secs), "[NEW]")
                     cmp_mode = "diff"
                     cn_driven = True
         patch.snapshots[snap_key] = cur_snap
@@ -7426,21 +7022,9 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             diff_url=diff_url, page_url=page_url,
         )
         eq_snap = _equipment_snapshot(current, version, ctx.now, role)
-        eq_needs_zh = any(
-            tok in ln
-            for ln in current.lines
-            for tok in ("[value unavailable]", "[TBD]", "???")
-        ) or _is_fallback_name(name)
         if (
             "_encore" not in data
-            and (
-                zh_advised
-                or eq_needs_zh
-                or (
-                    previous_snapshot is not None
-                    and _snapshot_comparison(previous_snapshot, eq_snap) == "equal"
-                )
-            )
+            and _is_fallback_name(name)
             and requests + 1 <= budget["max_requests"]
             and _take_shared_request(budget, 1)
         ):
@@ -7449,11 +7033,6 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 ctx.fetcher, ns, version, detail_kind, item_id, locale="zh"
             )
             if zh_eq_data:
-                zh_fields = _equip_from_detail(
-                    ns, detail_kind, zh_eq_data,
-                    listing_entry if isinstance(listing_entry, dict) else {},
-                )
-                did_zh_eq = _reconcile_en_with_zh_equipment(current, zh_fields)
                 # The CN/CHS name is a note, never the title: an English card that opens with
                 # `知更鸟专属音擎` reads like a broken locale. The zh detail is already being
                 # fetched here to fill missing values, so naming it costs nothing extra.
@@ -7463,9 +7042,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                         current.lines.insert(
                             0, f"-# 🌐 No EN name in this build yet — CN/CHS name: {zh_name}."
                         )
-                if (did_zh_eq or eq_snap["data"].get("name") != current.name
-                        or eq_snap["data"].get("lines") != current.lines):
-                    eq_snap = _equipment_snapshot(current, version, ctx.now, role)
+                eq_snap = _equipment_snapshot(current, version, ctx.now, role)
 
         prev_eq_img = str(((previous_snapshot or {}).get("data") or {}).get("image_url") or "")
         prev_eq_gal = [

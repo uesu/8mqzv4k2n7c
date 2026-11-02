@@ -1077,10 +1077,7 @@ def main(argv: list[str] | None = None) -> int:
     _load_dotenv()
     p = argparse.ArgumentParser(prog="python -m gamexpress", description="Game-Express monitor")
     p.add_argument("command", nargs="?", default="run",
-                   choices=["run", "test-card", "check-webhooks", "preview", "speculate", "validate", "benchmark",
-                            "build-glossary"])
-    p.add_argument("--max-items", type=int, default=400,
-                   help="build-glossary: items checked per kind (default 400)")
+                   choices=["run", "test-card", "check-webhooks", "preview", "speculate", "validate", "benchmark"])
     p.add_argument("--dry-run", action="store_true", help="build + log cards, never post")
     p.add_argument("--only", choices=["schedule", "codes", "news", "maintenance", "beta"],
                    help="run one feature")
@@ -1117,12 +1114,6 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_speculate(args)
     if args.command == "validate":
         return cmd_validate(args)
-    if args.command == "build-glossary":
-        from .glossary_build import OUT_DIR, run_cli
-        if args.game not in ("zzz", "starrail", "genshin", "wuwa"):
-            print("build-glossary needs --game zzz|starrail|genshin|wuwa", file=sys.stderr)
-            return 2
-        return asyncio.run(run_cli(args.game, max_items=args.max_items, out_dir=OUT_DIR))
     if args.command == "benchmark":
         return cmd_benchmark(args)
     if args.command == "test-card":

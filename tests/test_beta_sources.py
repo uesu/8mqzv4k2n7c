@@ -160,3 +160,21 @@ if __name__ == "__main__":
             print(f"  FAIL {fn.__name__}: {exc}")
     print(f"\n{len(TESTS) - failed}/{len(TESTS)} passed")
     sys.exit(1 if failed else 0)
+
+
+def test_wuwa_encore_is_second_and_gachabase_is_third_when_nanoka_is_silent():
+    from gamexpress.beta_sources import SOURCE_ENCORE, SOURCE_GACHABASE, choose_source
+
+    both = choose_source(nanoka=None, gachabase={"v": 2}, encore={"v": 3}, game="ww", encore_applies=True)
+    assert both.source == SOURCE_ENCORE
+    gb_only = choose_source(nanoka=None, gachabase={"v": 2}, encore=None, game="zzz")
+    assert gb_only.source == SOURCE_GACHABASE
+
+
+def test_test_named_heading_posts_with_a_placeholder_warning_and_real_headings_do_not():
+    from gamexpress.beta import _test_placeholder_warning
+
+    flagged = _test_placeholder_warning(["**[Robin Test Engine] *(R1)*:**", "    * **[NEW]** text"])
+    assert flagged[0].startswith("-# ⚠️ This item's name") and "**[Robin Test Engine]" in flagged[1]
+    plain = ["**[Concerto]** *(R1)*:", "    * **[NEW]** Real effect text."]
+    assert _test_placeholder_warning(plain) == plain

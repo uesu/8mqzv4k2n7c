@@ -1380,7 +1380,6 @@ def test_preview_html_renders_cards():
     assert inline("**a** `<b>` [x](https://e.x) <t:1:R>").startswith("<strong>a</strong> <code>&lt;b&gt;</code>")
 
 
-
 # =========================================================================== 1.1.1 (first live runs)
 LIVE_NOW = 1790322634          # 2026-09-25 07:50 UTC — the user's first Test/Monitor runs
 
@@ -1594,7 +1593,6 @@ def test_repost_feedback_and_first_run_notes():
         ctx = make_ctx(sp2, items={"wuwa": [ww]}, now=late + 600, REPOST=" WUWA:3.7 ")    # spaces / case forgiven
         asyncio.run(schedule.run(ctx))
         assert [x["method"] for x in ctx.webhook.sent] == ["POST"] and not any("repost" in r for r in ctx.report)
-
 
 
 # =========================================================================== 1.2.0 (card buttons + countdown estimates)
@@ -3865,7 +3863,6 @@ def test_the_documented_nitter_fleet_size_matches_the_code():
         print("    INFO: fleet documentation check not applicable: all three docs absent; code fleet assertion still checked")
 
 
-
 # =========================================================================== announcement lock (2026-10-09)
 # ZZZ 3.3, live on 2026-10-09: the card's title link and key art switched to ZZZ_EN's 05:00 UTC
 # "Share to Win Master Tape x10" giveaway, which repeats the air time and so classifies as a Special
@@ -5716,7 +5713,6 @@ def test_a_demoted_tail_mirror_costs_no_request_while_the_fleet_answers():
     assert not [u for u in calls if "n0g" in u], calls
 
 
-
 def test_the_notice_carries_phase_one_so_the_hub_cross_check_stays_quiet():
     """Live HSR 4.6 held `prov.b_phase1 = [5, ...]` -- the community banner feed, the LOWEST
     priority in the bot -- and the log said "banner phase1 held a banner TITLE, not a character
@@ -5840,7 +5836,6 @@ def test_a_body_that_arrives_in_several_chunks_is_read_whole():
 
     assert refused is None, "a body over MAX_BYTES must be refused, not truncated and parsed"
     assert "larger than" in health["capped"].last_error
-
 
 
 # ===================================================================== native cycle speculation
@@ -6314,7 +6309,6 @@ def test_build_id_reports_the_commit_in_actions_and_degrades_quietly_outside():
     assert not hasattr(gamexpress, "__version__")
 
 
-
 def test_existing_summary_sanitization_truthful_empty_report_and_failed_output():
     from dataclasses import replace
 
@@ -6721,7 +6715,6 @@ def test_news_preview_samples_are_explicit_and_valid_for_five_games():
     assert all(feature != "news" for feature, _, _ in gxmain.sample_payloads("all"))
 
 
-
 def test_news_hna_native_vod_highest_resolution_source_order_and_no_fake_stats():
     full = {"retcode": 0, "data": {"post": {
         "post": {"game_id": 9, "post_id": "900", "subject": "New Nexus Anima trailer", "created_at": 120,
@@ -6822,7 +6815,6 @@ def test_news_malformed_discovery_rows_never_establish_baseline():
         assert asyncio.run(hoyolab.discover_news(NewsFetcher([data]), GAMES["genshin"], 0)) is None
 
 
-
 def test_news_valid_articles_behind_retry_holes_deliver_in_the_same_run():
     from unittest.mock import patch
 
@@ -6846,7 +6838,6 @@ def test_news_valid_articles_behind_retry_holes_deliver_in_the_same_run():
         game = ctx.state.news_record("genshin")
         assert game["records"]["zzz"]["status"] == "posted"
         assert game["floor"] == ctx.now - 20
-
 
 
 def test_news_selecting_two_games_does_not_fetch_or_bootstrap_the_other_three():
@@ -7142,7 +7133,6 @@ def test_news_decorative_star_gets_space_on_both_sides_idempotently():
     assert cards.news_payloads(GAMES["wuwa"], item)[0] == p
 
 
-
 def test_news_enumerated_entries_compact_without_rewriting_or_crossing_paragraphs():
     value = '1. First\n\n2. Second\n\n3. Third\n\nSection\n\n① Enter\n\n② Redeem\n\nNotes\n\na. One\n\nb. Two'
     item = news_item(body=value)
@@ -7151,7 +7141,6 @@ def test_news_enumerated_entries_compact_without_rewriting_or_crossing_paragraph
     assert body == '1. First\n2. Second\n3. Third\n\nSection\n\n① Enter\n② Redeem\n\nNotes\n\na. One\nb. Two'
     item.article_blocks[0]["text"] = body
     assert cards.news_payloads(GAMES["wuwa"], item)[0] == p
-
 
 
 def test_news_moderate_overflow_two_pages_all_games_and_long_excerpt():
@@ -7199,7 +7188,6 @@ def test_news_moderate_ceiling_and_unsplittable_fallback():
     assert len(pages) == 1 and 'Excerpt' in str(pages)
 
 
-
 def test_news_nested_list_paragraph_keeps_marker_attached_and_square_entries_compact():
     from gamexpress.textutil import news_blocks
     source = '<h1>Eligibility</h1><ul>\n<li>\n<p>Reach Union Level 5.</p>\n</li>\n<li><p><strong>Or complete</strong> the trial.</p></li></ul><p>■ First</p><p><br></p><p>■ Second</p>'
@@ -7228,8 +7216,6 @@ def test_news_single_message_multicontainer_buttons_only_final_container_all_gam
         assert last['components'][-1]['type'] == 1
         assert len(last['components'][-1]['components']) == 3
         assert not cards.validate_payload(pages[0])
-
-
 
 
 def test_news_group_setting_default_and_explicit_values():
@@ -7572,8 +7558,6 @@ def test_news_group_partial_signature_change_holds_no_repost():
         assert any('changed' in w for w in ctx.warnings)
 
 
-
-
 def test_news_group_workflow_variable_blob_and_no_optin_side_effect():
     s = settings(GE_VARS_JSON=json.dumps({'NEWS_GROUP_LONG_STRIPS': '1'}))
     assert s.news_group_long_strips and not s.news_enabled
@@ -7714,7 +7698,6 @@ def test_news_captured_47133580_native_video_payload_and_cdn_preflight():
         assert await Fetcher(Session([Response(200, video, 'video/mp4')])).verify_media(mp4)
         assert await Fetcher(Session([Response(200, jpeg, 'image/jpeg')])).verify_media(cover)
     asyncio.run(run())
-
 
 
 def test_news_full_cover_policy_shared_games_formats_and_explicit_body_images():
@@ -12021,8 +12004,6 @@ asyncio.run(run())
             assert len(scoped_46791577["content"]) < 2000  # scoped excerpt fixture only, not complete article HTML
             fx_dir = Path(__file__).resolve().parent / "fixtures"
             assert not any("46233468" in p.name or "46791577" in p.name for p in fx_dir.iterdir())
-
-
 
 
 def test_zzz_47154012_bracketed_link_label_repro_and_fix():
@@ -17623,7 +17604,6 @@ def test_feature5_media_host_allowlist_covers_the_beta_databases():
     assert '"nanoka.cc"' in src and '"gachabase.net"' in src
 
 
-
 def test_feature5_hotfix_blank_changelog_walks_revisions_and_emits_inline_diff():
     """The supplied ZZZ 19850203 hotfix can be detected even when its page lists no entries."""
     from gamexpress import beta as beta_mod
@@ -17783,7 +17763,6 @@ def test_feature5_full_kit_substitution_and_structured_numeric_diff_are_truthful
     assert "[NERF]" in lower[0].lines[0] and "~~**40%**~~ → **35%**" in lower[0].lines[0]
 
 
-
 def test_feature5_hard_request_budget_reserves_detail_and_media_preflight_calls():
     """A card never crosses BETA_MAX_REQUESTS just because art is resolved after its kit."""
     from gamexpress import beta as beta_mod
@@ -17822,7 +17801,6 @@ def test_feature5_hard_request_budget_reserves_detail_and_media_preflight_calls(
         # build_patch) is <= 4; the second character is deferred instead of crossing the ceiling.
         assert len(fetcher.calls) == 3
         assert all("1661" not in url for _kind, url in fetcher.calls)
-
 
 
 def test_feature5_request_ceiling_is_shared_across_games_not_multiplied_per_game():
@@ -17871,7 +17849,6 @@ def test_feature5_request_ceiling_is_shared_across_games_not_multiplied_per_game
         # The starved game remains eligible next run instead of being marked as polled.
         assert ctx.state.beta_record("genshin")["last_poll"] == ctx.now
         assert not ctx.state.beta_record("zzz").get("last_poll")
-
 
 
 def test_feature5_long_snapshot_comparison_tracks_full_content_without_false_diffs():
@@ -17944,7 +17921,6 @@ def test_feature5_replaced_blocks_preserve_surplus_removed_lines():
     current_equipment = BetaEquipment(id="test", name="Test", lines=["ATK 120"])
     result = beta_mod._diff_equipment(previous_equipment, current_equipment)
     assert any("Removed: ~~HP 200~~" in line for line in result.lines)
-
 
 
 def test_feature5_encore_beta_fallback_reads_matching_build_and_keeps_budget():
@@ -18653,7 +18629,6 @@ def test_feature5_variable_page_counts_resume_after_ten_confirmed_pages():
     with tempfile.TemporaryDirectory() as tmp:
         for count in (5, 12, 21):
             exercise(count, tmp)
-
 
 
 def test_feature5_gachabase_html_revisions_and_changed_existing_ids():
@@ -22369,7 +22344,6 @@ def test_feature5_every_game_uses_the_diff_database_that_serves_it():
         assert "?prev=beta_3.4.1_19836465&cur=beta_3.4.1_19850203&lang=en" in url
 
 
-
 def test_feature5_gachabase_paths_match_the_routes_the_site_itself_serves():
     """The path segments come from the sites' own changelog links (captured 2026-10-30).
 
@@ -22476,83 +22450,6 @@ def test_feature5_header_range_uses_versions_then_build_ids_and_never_fakes_a_pa
     patch.diff_range = "Rev. 3.8.1 → 3.8.3"
     dump = json.dumps(cards.beta_payloads(GAMES["wuwa"], patch), ensure_ascii=False)
     assert "## [WW - 3.8.3 Beta] Patch Notes: Rev. 3.8.1 → 3.8.3" in dump
-
-
-def test_feature5_cn_chs_crosscheck_reconciles_lagging_en_values_and_placeholders():
-    """When EN lags behind CN/CHS (stale multipliers, `/-`, `[TBD]`, or changelog warning), `/zh/` syncs it."""
-    from gamexpress import beta as beta_mod
-
-    base_en = _beta_json("zzz_character_1601.json")
-    v1_en = json.loads(json.dumps(base_en))
-    v1_en["skill"]["basic"]["description"].append({
-        "name": "Basic Attack: Thornbreaker",
-        "desc": "Deals {CAL:Formula()}% Ether DMG and 150%/- bonus DMG.",
-        "param": [{"name": "1st-Hit DMG Multiplier", "param": {
-            "1601101": {"main": 6910, "growth": 630, "format": "%"},
-        }}],
-    })
-    v1_zh = json.loads(json.dumps(v1_en))
-    v1_zh["skill"]["basic"]["description"][-1]["desc"] = "造成 85% 以太伤害，以及 150%/220% 额外伤害。"
-
-    # In v2, EN lags completely behind v1 (identical to v1_zh-synced baseline except stale 138.4%),
-    # while CN (`/zh/`) buffs 1st-Hit DMG Multiplier from 138.4% -> 168.8%!
-    v2_en = json.loads(json.dumps(v1_en))
-    v2_en["skill"]["basic"]["description"][-1]["desc"] = "Deals 85% Ether DMG and 150%/220% bonus DMG."
-    v2_zh = json.loads(json.dumps(v2_en))
-    v2_zh["skill"]["basic"]["description"][-1]["param"][0]["param"]["1601101"] = {
-        "main": 8410, "growth": 770, "format": "%",
-    }
-
-    phase = {"n": 1}
-
-    class BilingualFetcher:
-        def __init__(self):
-            self.calls = []
-
-        async def get_text(self, url, **_kw):
-            self.calls.append(url)
-            if phase["n"] == 1:
-                return "## v3.4.1 Rev. 19834130 | 23rd October 2026\n"
-            return (
-                "## v3.4.1 Rev. 19850203 | 24th October 2026\n"
-                "While English has been updated this revision, it may still not be up to date "
-                "with the actual kit, so double check with Chinese.\n"
-            )
-
-        async def get_json(self, url, **_kw):
-            self.calls.append(url)
-            # Served by version path, as the static host does: the 19834130 build is v1.
-            if "/zh/character/1601" in url:
-                return v1_zh if "19834130" in url else v2_zh
-            if "/en/character/1601" in url:
-                return v1_en if "19834130" in url else v2_en
-            return None
-
-        async def verify_media(self, _url):
-            return True
-
-    manifest = {"zzz": {
-        "live": "3.3", "latest": "3.4.1+19834130",
-        "available": ["3.3", "3.4.1+19834130"],
-        "new": {"character": [1601], "weapon": [], "equipment": []},
-    }}
-    with tempfile.TemporaryDirectory() as tmp:
-        fetcher = BilingualFetcher()
-        ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, BETA_ENABLED="1", games=["zzz"])
-        p1 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
-        assert p1 and len(p1.characters) == 1
-        p1_body = "\n".join(ln for s in p1.characters[0].sections for ln in s.lines)
-        # `[TBD]%` and `150%/-` were both reconciled from `/zh/`!
-        assert "85%" in p1_body and "150%/220%" in p1_body and "CN/CHS" in p1_body
-        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), p1, status="posted")
-
-        phase["n"] = 2
-        manifest["zzz"]["latest"] = "3.4.1+19850203"
-        manifest["zzz"]["available"].append("3.4.1+19850203")
-        p2 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
-        assert p2 and len(p2.characters) == 1 and p2.characters[0].is_new is False
-        p2_body = "\n".join(ln for s in p2.characters[0].sections for ln in s.lines)
-        assert "[BUFF]" in p2_body and "~~**138.4%**~~ → **168.8%**" in p2_body
 
 
 def test_feature5_cn_decides_whether_a_zzz_agent_diff_changed_in_either_direction():
@@ -22728,309 +22625,6 @@ def test_feature5_partial_probe_saved_under_the_old_cap_is_rerun_once():
     assert not beta_mod._probe_cache_reusable(None, v)
 
 
-def test_feature5_zh_en_glossary_learns_terms_from_aligned_sections_and_drops_conflicts():
-    """Terms come only from the same item's already-localized EN/CN sections (matching title
-    parts and bracket order). A term with two different English readings is never applied."""
-    from gamexpress import beta as beta_mod
-
-    def sec(title, lines):
-        return beta_mod.BetaSectionEntry(title=title, category="Skills", tag="", meta="",
-                                         lines=list(lines), params=[], defs=[], values_label="")
-
-    pairs = [
-        (sec("Basic Attack: Burning Claw", ["Deals [Stun] damage, [Tiger's Roar] applies."]),
-         sec("普通攻击：燎身爪", ["造成[失衡]伤害，施加[虎啸]。"])),
-        (sec("Assist: Roar", ["Gains [Tiger's Roar]."]),
-         sec("连携：咆哮", ["获得[虎啸]。"])),
-        (sec("Dodge: One", ["[Dodge]"]), sec("闪避：一", ["[闪避]"])),
-        (sec("Dodge: Two", ["[Evade]"]), sec("闪避：二", ["[闪避]"])),  # conflicting "闪避"
-    ]
-    # Isolate from the reviewed generated file so only the learning rule is under test.
-    import tempfile
-    _saved = beta_mod._GLOSSARY_DIR
-    beta_mod._GLOSSARY_DIR = Path(tempfile.mkdtemp()) / "no-glossary-here"
-    try:
-        gloss = beta_mod._zh_en_glossary(pairs)
-    finally:
-        beta_mod._GLOSSARY_DIR = _saved
-    assert gloss["普通攻击"] == "Basic Attack"
-    assert gloss["燎身爪"] == "Burning Claw"
-    assert gloss["虎啸"] == "Tiger's Roar"
-    assert gloss["失衡"] == "Stun"
-    assert "闪避" not in gloss  # two different readings: dropped, never guessed
-    assert beta_mod._zh_en_apply("施加[虎啸]，造成[失衡]", gloss) == "施加[Tiger's Roar]，造成[Stun]"
-    # A term with no English reading stays Chinese, to be shown under the pending label.
-    assert "新潜能" in beta_mod._zh_en_apply("新潜能", gloss)
-
-
-def test_feature5_zzz_seed_glossary_is_verified_terms_and_wins_over_learned_ones():
-    """The seed holds only terms checked against official EN/CN records (each row names its
-    source). Every row maps CJK to a pure-English string, and a learned term that disagrees with
-    the seed never reaches the card."""
-    from gamexpress import beta as beta_mod
-
-    seed = beta_mod._zzz_seed_glossary()
-    raw = json.loads((beta_mod._ZZZ_SEED_GLOSSARY_PATH).read_text(encoding="utf-8"))
-    assert raw["terms"] and all(row.get("source") for row in raw["terms"])
-    for zh, en in seed.items():
-        assert beta_mod._ZH_CJK_RE.search(zh), zh
-        assert not beta_mod._ZH_CJK_RE.search(en), (zh, en)
-    assert seed["落羽生花"] == "Featherbloom"
-
-    def sec(title, lines):
-        return beta_mod.BetaSectionEntry(title=title, category="Skills", tag="", meta="",
-                                         lines=list(lines), params=[], defs=[], values_label="")
-
-    # A wrong learned reading for 落羽生花 must lose to the verified seed.
-    pairs = [(sec("Basic Attack: Falling Feathers Bloom", ["[Anomaly] hits"]),
-              sec("普通攻击：落羽生花", ["[异常]命中"]))]
-    gloss = beta_mod._zh_en_glossary(pairs)
-    assert gloss["落羽生花"] == "Featherbloom"
-    assert beta_mod._zh_en_apply("普通攻击：落羽生花", gloss) == "Basic Attack: Featherbloom"
-    assert beta_mod._zh_en_apply("薇薇安的异常掌控", gloss) == "Vivian的Anomaly Mastery"
-
-
-def test_glossary_build_string_alignment_trusts_only_matching_structure():
-    """Title parts and bracket terms pair only when both sides have the same count; a CN string
-    with an EN side still in Chinese contributes nothing; a bad EN with CJK is never a term."""
-    from gamexpress import glossary_build as gb
-
-    pairs = gb.string_pairs("普通攻击：落羽生花", "Basic Attack: Featherbloom")
-    assert ("落羽生花", "Featherbloom") in pairs and ("普通攻击", "Basic Attack") in pairs
-    assert gb.string_pairs("[失衡]与[虎啸]", "[Stun] and [Tiger's Roar]") == [
-        ("失衡", "Stun"), ("虎啸", "Tiger's Roar")]
-    # Count mismatch on brackets: no bracket pairs are guessed.
-    assert gb.string_pairs("[失衡][虎啸]", "[Stun]") == []
-    assert gb.string_pairs("普通攻击", "普通攻击") == []  # EN still Chinese
-    assert gb._clean_term("失衡", "Stun: fast") is None  # colon in an EN term is not a term
-
-
-def test_glossary_build_walks_parallel_records_and_skips_lagging_en():
-    from gamexpress import glossary_build as gb
-
-    en = {"name": "Vivian", "skill": {"basic": {"description": [
-        {"name": "Basic Attack: Featherbloom", "desc": "Hits [Stun] then [Tiger's Roar]."},
-        {"name": "Basic Attack: Lagging", "desc": "还没翻译的说明 [失衡]"},
-    ]}}}
-    zh = {"name": "薇薇安", "skill": {"basic": {"description": [
-        {"name": "普通攻击：落羽生花", "desc": "命中[失衡]后施加[虎啸]。"},
-        {"name": "普通攻击：拖延", "desc": "还没翻译的说明 [失衡]"},
-    ]}}}
-    got = gb.item_pairs(en, zh)
-    assert ("薇薇安", "Vivian") in got and ("落羽生花", "Featherbloom") in got
-    assert ("失衡", "Stun") in got and ("虎啸", "Tiger's Roar") in got
-    # The second description's EN still has the Chinese bracket text: no pair from that string.
-    assert not any(z == "失衡" and e != "Stun" for z, e in got)
-    assert gb.item_pairs(None, zh) == [] and gb.item_pairs(en, None) == []
-
-
-def test_glossary_build_votes_need_support_and_share():
-    from gamexpress import glossary_build as gb
-
-    def items(readings: list[str]) -> dict[str, list[tuple[str, str]]]:
-        return {f"c/{i}": [("落羽生花", en)] for i, en in enumerate(readings)}
-
-    # One item is never enough.
-    assert gb.aggregate(items(["Featherbloom"])) == []
-    # 9 of 10 items agree: kept with support 9.
-    kept = gb.aggregate(items(["Featherbloom"] * 9 + ["Falling Feathers Bloom"]))
-    assert [(t["zh"], t["en"], t["support"]) for t in kept] == [("落羽生花", "Featherbloom", 9)]
-    # 4 of 5 agree (80%): below the share threshold, dropped rather than guessed.
-    assert gb.aggregate(items(["Featherbloom"] * 4 + ["Falling Feathers Bloom"])) == []
-
-
-def test_glossary_build_name_survives_when_it_also_appears_as_a_pair():
-    """Regression: a name is walked as a pair on its own item (support 1, dropped by the vote). The
-    identity term must still be kept, not blocked by that dropped vote (live run 41364548820 had none)."""
-    from gamexpress import glossary_build as gb
-
-    per = {"character/1331": [("薇薇安·班希", "Vivian Banshee")]}
-    ident = {"character/1331": ("薇薇安·班希", "Vivian Banshee")}
-    assert [(t["zh"], t["en"]) for t in gb.aggregate(per, ident)] == [("薇薇安·班希", "Vivian Banshee")]
-    # A CN term that IS kept (support 2) still wins over an identity reading.
-    per2 = {"a": [("薇薇安", "Vivian")], "b": [("薇薇安", "Vivian")]}
-    assert [(t["zh"], t["en"]) for t in gb.aggregate(per2, {"c": ("薇薇安", "Vivian Banshee")})] == [
-        ("薇薇安", "Vivian")]
-
-
-def test_glossary_build_keeps_each_items_own_name_and_drops_conflicts():
-    """Item names occur on one item each, so the vote alone dropped them (薇薇安 -> Vivian was lost).
-    The item's own name pair is kept; two different EN names for one CN name are dropped."""
-    from gamexpress import glossary_build as gb
-
-    en = {"name": "Vivian Banshee", "skill": {"basic": "Basic Attack: Featherbloom"}}
-    zh = {"name": "薇薇安·班希", "skill": {"basic": "普通攻击：落羽生花"}}
-    assert gb.identity_pair(en, zh) == ("薇薇安·班希", "Vivian Banshee")
-    assert gb.identity_pair({"skill": {}}, zh) is None             # no EN name
-    assert gb.identity_pair(en, {"name": "Vivian"}) is None        # CN name missing its CJK
-    assert gb.identity_pair(None, zh) is None
-    # A name on one item is kept with its own support; the vote-based term still needs support 2.
-    terms = gb.aggregate({"character/1331": []}, {"character/1331": ("薇薇安·班希", "Vivian Banshee")})
-    assert [(t["zh"], t["en"]) for t in terms] == [("薇薇安·班希", "Vivian Banshee")]
-    # Two items disagree on one CN name: dropped, never guessed.
-    conflict = gb.aggregate({}, {"weapon/1": ("音擎甲", "Armor A"), "weapon/2": ("音擎甲", "Armor B")})
-    assert conflict == []
-    # A name already voted by pairs is not overwritten.
-    voted = gb.aggregate({"a": [("薇薇安", "Vivian")], "b": [("薇薇安", "Vivian")]},
-                         {"character/1331": ("薇薇安", "Vivian Banshee")})
-    assert [(t["zh"], t["en"]) for t in voted] == [("薇薇安", "Vivian")]
-
-
-def test_glossary_build_term_filter_rejects_noise_and_keeps_names():
-    """Review of the first all-games run found single characters (女->Female would corrupt longer
-    words), markup and tags, digits, dialogue sentences and sentence-like English. Those must not
-    become terms; real names and phrases must still pass."""
-    from gamexpress import glossary_build as gb
-
-    for zh, en in [("女", "Female"), ("冰", "Cryo"), ("12秒", "12s"), ("要回归幕后了。", "Better stay behind the scenes…"),
-                   ("Icon_Special> 发动", "Icon_Special> to activate"), ("<te href=260005>奇美拉</te>", "<te href=260005>Chimera</te>"),
-                   ("发动后，点按", "Press to activate"), ("失衡", "Stun and Daze, then the enemy is knocked back."),
-                   ("<color=#FFFFFF>招架</color>", "Parry"), ("派蒙\\n", "Paimon")]:
-        assert gb._clean_term(zh, en) is None, (zh, en)
-    for zh, en in [("失衡倍率", "Daze Multiplier"), ("击破", "Stun"), ("连续招架失衡倍率", "Chain Defensive Daze Multiplier"),
-                   ("共鸣技能·追光", "Resonance Skill - Spotlight"), ("云岿山", "Yunkui Summit"), ("薇薇安", "Vivian")]:
-        assert gb._clean_term(zh, en) == (zh, en), (zh, en)
-
-
-def test_all_games_glossary_loads_per_game_and_seed_stays_zzz_only():
-    """Each game reads its own reviewed file; the verified ZZZ seed never leaks into another game."""
-    import tempfile
-
-    from gamexpress import beta as beta_mod
-    from gamexpress import glossary_build as gb
-
-    for game in ("zzz", "starrail", "genshin", "wuwa"):
-        terms = beta_mod._generated_glossary(game)
-        assert terms, f"{game} reviewed glossary is missing or empty"
-        for zh, en in terms.items():
-            assert gb._clean_term(zh, en) == (zh, en), (game, zh, en)
-    # Seed (ZZZ-only) is applied to ZZZ and never to another game.
-    assert beta_mod._zh_en_glossary([], "zzz")["落羽生花"] == "Featherbloom"
-    assert "落羽生花" not in beta_mod._zh_en_glossary([], "starrail")
-    # Per-game file is used: a game with no file gets nothing generated.
-    saved = beta_mod._GLOSSARY_DIR
-    beta_mod._GLOSSARY_DIR = Path(tempfile.mkdtemp())
-    try:
-        assert beta_mod._generated_glossary("genshin") == {}
-    finally:
-        beta_mod._GLOSSARY_DIR = saved
-    # Reviewed terms apply to lines of that game's text.
-    star = beta_mod._zh_en_glossary([], "starrail")
-    assert beta_mod._zh_en_apply("终结技伤害提升", star).startswith("Ultimate")
-
-
-def test_glossary_build_full_run_uses_fake_fetcher_and_rejects_excluded_games():
-    import asyncio
-
-    from gamexpress import glossary_build as gb
-
-    en_char = {"name": "Vivian", "skill": {"basic": {"description": [
-        {"name": "Basic Attack: Featherbloom", "desc": "[Stun] then [Tiger's Roar]."}]}}}
-    zh_char = {"name": "薇薇安", "skill": {"basic": {"description": [
-        {"name": "普通攻击：落羽生花", "desc": "[失衡]后[虎啸]。"}]}}}
-    calls: list[str] = []
-
-    class FakeFetcher:
-        async def get_json(self, url, **kw):
-            calls.append(url)
-            if url == gb.MANIFEST_URL:
-                return {"zzz": {"latest": "9.9.9"}}
-            if url.endswith("/zzz/9.9.9/character.json"):
-                return {"1331": {}, "1391": {}}
-            if "/9.9.9/en/character/" in url:
-                return en_char
-            if "/9.9.9/zh/character/" in url:
-                return zh_char
-            return None
-
-    async def run():
-        return await gb.build_game(FakeFetcher(), "zzz", max_items=10)
-
-    result = asyncio.run(run())
-    terms = {(t["zh"], t["en"]): t["support"] for t in result["terms"]}
-    assert terms[("落羽生花", "Featherbloom")] == 2  # two items agree
-    assert terms[("失衡", "Stun")] == 2 and terms[("虎啸", "Tiger's Roar")] == 2
-    assert result["items_listed"] == 2 and result["items_with_pairs"] == 2
-    assert result["version"] == "9.9.9" and result["namespace"] == "zzz"
-    # HNA and Ananta are out of scope until they ship.
-    for game in ("hna", "ananta"):
-        try:
-            asyncio.run(gb.build_game(FakeFetcher(), game))
-        except ValueError:
-            pass
-        else:
-            raise AssertionError(f"{game} must not build a glossary")
-    # A manifest with no version fails loudly instead of building an empty file.
-    class NoVersion(FakeFetcher):
-        async def get_json(self, url, **kw):
-            return {} if url == gb.MANIFEST_URL else None
-    try:
-        asyncio.run(gb.build_game(NoVersion(), "zzz"))
-    except RuntimeError:
-        pass
-    else:
-        raise AssertionError("missing manifest version must raise")
-
-
-def test_glossary_build_generated_zzz_terms_sit_below_learned_and_seed():
-    from gamexpress import beta as beta_mod
-
-    assert isinstance(beta_mod._generated_glossary("zzz"), dict)
-    assert beta_mod._zh_en_glossary([])["落羽生花"] == "Featherbloom"  # seed wins even with no learning
-
-
-def test_glossary_build_encore_and_key_mismatch_pairs_and_wuwa_build():
-    """Encore records differ in key names by language (fetter group names). Their keys pair by
-    position, short whole strings pair, numbers never make a term, and a WuWa build reads both
-    nanoka and Encore v2 (EN and zh-Hans) with the vote rule applied to the combined items."""
-    import asyncio
-
-    from gamexpress import glossary_build as gb
-
-    en = {"fetter": {"FetterGroups": [{"Name": "Song of Feathered Trace",
-                                       "Fetters": [{"EffectDescription": "Aero DMG + 10%."}]}]}}
-    zh = {"fetter": {"FetterGroups": [{"Name": "羽落空尘之歌",
-                                       "Fetters": [{"EffectDescription": "气动伤害提升10%"}]}]}}
-    got = gb.item_pairs(en, zh)
-    assert ("羽落空尘之歌", "Song of Feathered Trace") in got
-    assert not any(e.startswith("Aero DMG") for _, e in got)  # numbers: not a term
-    assert gb.item_pairs({"Name": {"Content": "Lucilla"}}, {"Name": {"Content": "洛瑟菈"}}) == [
-        ("洛瑟菈", "Lucilla")]
-
-    echo_en = {"Id": 6000215, "MonsterName": "Fog Lionarch",
-               "Skill": {"DescriptionEx": "Summon Fog Lionarch"}}
-    echo_zh = {"Id": 6000215, "MonsterName": "霁息兽尊",
-               "Skill": {"DescriptionEx": "召唤霁息兽尊"}}
-    rows = {"Echo": [{"Id": 6000215}]}
-    calls: list[str] = []
-
-    class FakeFetcher:
-        async def get_json(self, url, **kw):
-            calls.append(url)
-            if url == gb.MANIFEST_URL:
-                return {"ww": {"latest": "3.8.0"}}
-            if url.endswith("/ww/3.8.0/echo.json"):
-                return {"6000215": {}}
-            if "/ww/3.8.0/" in url:
-                return None  # nanoka WuWa items: none in this fixture
-            if url == f"{gb.ENCORE_API}/en/echo":
-                return rows
-            if url == f"{gb.ENCORE_API}/en/character" or url == f"{gb.ENCORE_API}/en/weapon":
-                return {}
-            if url == f"{gb.ENCORE_API}/en/echo/6000215":
-                return echo_en
-            if url == f"{gb.ENCORE_API}/zh-Hans/echo/6000215":
-                return echo_zh
-            return None
-
-    result = asyncio.run(gb.build_game(FakeFetcher(), "wuwa", max_items=5))
-    assert result["encore_items_with_pairs"] == 1
-    assert any("/en/echo/6000215" in u for u in calls) and any("zh-Hans/echo/6000215" in u for u in calls)
-    # One record cannot reach MIN_SUPPORT alone, so nothing is written from Encore here.
-    assert result["terms"] == []
-    assert result["source"].endswith("zh-Hans}/<kind>/<id>")
-
-
 def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted():
     """CN moved in an earlier beta and was posted; a later beta where EN catches up to that CN
     value (CN unchanged since) must post nothing, because CN is the source of truth."""
@@ -23096,566 +22690,6 @@ def test_feature5_en_catching_up_to_a_cn_change_already_posted_is_not_reposted()
     assert len(posted[0]) == 1 and posted[0][0].tag == "[NEW]"
     assert len(posted[1]) == 1 and "16%" in "\n".join(posted[1][0].lines)
     assert posted[2] == [], "EN caught up to an already-posted CN value; nothing new to post"
-
-
-def test_feature5_post_merge_edge_cases_and_ci_annotation_hygiene():
-    """Cover CN/EN word-order safety, retry last_poll, Page-1 equipment packing, and epoch merges."""
-    import importlib.util
-    import re
-    import shutil
-
-    from gamexpress import beta as beta_mod
-    from gamexpress.models import BetaEquipment, BetaPatch
-
-    # 1. CN/EN clause word-order & ordinal ("1st-Hit" vs "第一段") must NOT trigger false lag notes.
-    en_b = {"sections": [BetaSectionEntry(
-        title="Core Passive",
-        lines=["1st-Hit deals 80% DMG and deals 240% Fire DMG to 3 enemies for 10s."],
-    )]}
-    zh_b_same = {"sections": [BetaSectionEntry(
-        title="核心被动",
-        lines=["在 10 秒内对 3 名敌人造成 240% 火属性伤害。第一段造成 80% 伤害。"],
-    )]}
-    assert beta_mod._reconcile_en_with_zh_kit(en_b, zh_b_same) is False
-    assert not any("CN/CHS" in ln for ln in en_b["sections"][0].lines)
-
-    zh_b_buffed = {"sections": [BetaSectionEntry(
-        title="核心被动",
-        lines=["在 10 秒内对 3 名敌人造成 300% 火属性伤害。第一段造成 80% 伤害。"],
-    )]}
-    assert beta_mod._reconcile_en_with_zh_kit(en_b, zh_b_buffed) is True
-    assert any("300%" in ln and "CN/CHS" in ln for ln in en_b["sections"][0].lines)
-
-    # 2. Pure skill-slot rename is never dropped as untouched and records the old title.
-    prev_slot = [BetaSectionEntry(
-        title="Special Attack: Pursuit Slash", category="Special Attack",
-        lines=["Unleashes a quick upward slash dealing Fire DMG."],
-    )]
-    cur_slot = [BetaSectionEntry(
-        title="Special Attack: Fire Snatch", category="Special Attack",
-        lines=["Unleashes a quick upward slash dealing Fire DMG."],
-    )]
-    renamed_diff, untouched = beta_mod.diff_kits(prev_slot, cur_slot)
-    assert untouched == 0 and len(renamed_diff) == 1
-    assert any("Renamed from ~~Special Attack: Pursuit Slash~~ → **Special Attack: Fire Snatch**" in ln
-               for ln in renamed_diff[0].lines)
-
-    # 3. Vowel-initial element without rarity ("Anemo", "Aero") gets "an", not "a".
-    ov = beta_mod._synthesize_kit_overview(
-        "genshin", "Linnea", {"element": "Anemo", "role": "Sword"}, cur_slot, is_new=True
-    )
-    assert "is an Anemo Sword character" in ov
-
-    # 4. Equipment-only long item packs onto Page 1 alongside header; HSR Planar vs Relics headings split.
-    eq_patch = BetaPatch(
-        game_key="starrail", beta_version="4.7.1", source_version="4.7.1", source_revision="4.7.1",
-        rev_id="r_eq", rev_label="v4.7.1",
-        equipment=[
-            BetaEquipment(
-                id="hsr:relic:329", name="Cavern Set", category_label="Relics & Ornaments",
-                rarity=5, set_kind="Relic Set", tag="[NEW]",
-                lines=["2-Piece: Increases SPD by 6%.", "4-Piece: " + ("Increases CRIT DMG by 24%. " * 140)],
-                image_url="https://static.nanoka.cc/assets/hsr/relicfigures/IconRelic_329_1.webp",
-            ),
-            BetaEquipment(
-                id="hsr:relic:330", name="Planar Set", category_label="Relics & Ornaments",
-                rarity=5, set_kind="Planar Ornament Set", tag="[CHANGED]",
-                lines=["**[BUFF]** 2-Piece: Increases ATK by ~~**12%**~~ → **16%**."],
-            ),
-        ],
-    )
-    eq_pls = cards.beta_payloads(GAMES["starrail"], eq_patch, settings())
-    p1_txt = "\n".join(c.get("content", "") for c in eq_pls[0]["components"][0]["components"] if c.get("type") == 10)
-    assert "### Cavern Set" in p1_txt and "Increases CRIT DMG" in p1_txt
-    all_eq_txt = "\n".join(
-        c.get("content", "") for p in eq_pls for c in p["components"][0]["components"] if c.get("type") == 10
-    )
-    assert "## Relics & Ornaments\n" in all_eq_txt
-    assert "## Planar Ornaments Changes" in all_eq_txt
-
-    # 5. Transient Discord 503 ("will retry") leaves last_poll unstamped AND clears paused=True.
-    manifest = {"ww": {"live": "3.7", "latest": "3.8.1", "available": ["3.7", "3.8.1"],
-                       "new": {"character": [1512], "weapon": [], "echo": []}}}
-
-    class WWFetcher:
-        async def get_json(self, url, **_kw):
-            if url.endswith("/manifest.json"):
-                return manifest
-            if "/ww/" in url and "/character/1512" in url:
-                return _beta_json("ww_character_1512.json")
-            return None
-
-        async def get_text(self, _url, **_kw):
-            return ""
-
-        async def verify_media(self, _url):
-            return True
-
-    with tempfile.TemporaryDirectory() as tmp:
-        st_path = Path(tmp) / "state.json"
-        ctx_fail = _beta_ctx(
-            st_path, WWFetcher(), BETA_ENABLED="1", BETA_MIN_POLL_MINUTES="30",
-            DISCORD_WEBHOOK_BETA=HOOK, games=["wuwa"],
-        )
-        ctx_fail.state.beta_record("wuwa")["paused"] = True
-        ctx_fail.webhook = ScriptedWebhook([], [SendResult(False, 503, error="service unavailable")])
-        asyncio.run(beta_mod.run(ctx_fail))
-        ww_rec = ctx_fail.state.beta_record("wuwa")
-        assert "paused" not in ww_rec
-        assert not ww_rec.get("last_poll")  # must retry next 5m tick, not sleep 30m!
-
-        # 6. Peer failover preserves ambiguous holds across BETA_FORMAT_EPOCH boundaries both ways.
-        s_new = State(Path(tmp) / "s_new.json")
-        s_new.beta_record("zzz")  # epoch 2
-        peer_old = {"beta": {"zzz": {
-            "revisions": {"amb_1": {"status": "ambiguous", "batches": {"b1": {"ambiguous": True}}}},
-            "snapshots": {"zzz:1601": {"name": "Old"}},
-        }}}
-        s_new.merge_peer(peer_old, include_beta=True)
-        assert "amb_1" in s_new.beta_record("zzz")["revisions"]
-        assert "zzz:1601" not in s_new.beta_record("zzz")["snapshots"]
-
-        s_old_local = State(Path(tmp) / "s_old.json")
-        rec_old = s_old_local.beta_record("zzz")
-        rec_old["format_epoch"] = 0
-        rec_old["revisions"] = {
-            "amb_local": {"status": "ambiguous", "batches": {"b1": {"ambiguous": True}}},
-            "posted_old": {"status": "posted"},
-        }
-        peer_epoch2 = {"beta": {"zzz": {
-            "format_epoch": beta_mod.BETA_FORMAT_EPOCH,
-            "revisions": {"new_rev": {"status": "posted", "messages": ["99"]}},
-        }}}
-        s_old_local.merge_peer(peer_epoch2, include_beta=True)
-        merged_revs = s_old_local.beta_record("zzz")["revisions"]
-        assert "amb_local" in merged_revs and "new_rev" in merged_revs and "posted_old" not in merged_revs
-
-        # 7. python_version_bump.py updates sync_prod.yml when present alongside ci/monitor/bump,
-        #    and skips it cleanly in production checkouts where dev-only sync_prod.yml is absent.
-        bump_root = Path(tmp) / "bump_repo"
-        (bump_root / ".github" / "workflows").mkdir(parents=True)
-        (bump_root / ".github" / "scripts").mkdir(parents=True)
-        shutil.copy(
-            ROOT / ".github" / "scripts" / "python_version_bump.py",
-            bump_root / ".github" / "scripts" / "python_version_bump.py",
-        )
-        for wf_name in ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml"):
-            src_wf = ROOT / ".github" / "workflows" / wf_name
-            if src_wf.is_file():
-                txt = src_wf.read_text(encoding="utf-8")
-                txt = re.sub(r"(python-version:\s*')\d+\.\d+\.\d+(')", r"\g<1>3.14.8\2", txt)
-            else:
-                txt = "python-version: '3.14.8'\n"
-            (bump_root / ".github" / "workflows" / wf_name).write_text(txt, encoding="utf-8")
-        spec = importlib.util.spec_from_file_location(
-            "bump_sync_check", bump_root / ".github" / "scripts" / "python_version_bump.py"
-        )
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        rewritten = mod.bump_workflow_files("3.14.9")
-        assert ".github/workflows/sync_prod.yml" in rewritten
-        assert "'3.14.9'" in (bump_root / ".github" / "workflows" / "sync_prod.yml").read_text(encoding="utf-8")
-
-        # Production checkout (no sync_prod.yml): succeeds cleanly and rewrites the 3 synced workflows.
-        (bump_root / ".github" / "workflows" / "sync_prod.yml").unlink()
-        rewritten_prod = mod.bump_workflow_files("3.14.10")
-        assert ".github/workflows/sync_prod.yml" not in rewritten_prod
-        assert ".github/workflows/ci.yml" in rewritten_prod
-        assert "'3.14.10'" in (bump_root / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-
-
-def test_feature5_prime_polish_masked_links_smart_containers_and_hotfix_sync():
-    """Verify Prime Formatting polish: masked links, zero 'Full kit', smart container fit,
-    bilingual CN/EN hotfix changelog parsing, 403 canonical fallback, and epoch-3 reset."""
-    import copy
-
-    from gamexpress import beta as beta_mod
-    from gamexpress.state import BETA_FORMAT_EPOCH, State
-
-    assert BETA_FORMAT_EPOCH >= 3
-    assert "[encore](" in cards.BETA_RESOURCE_LINKS["wuwa"]
-    assert "Encore beta" not in cards.BETA_RESOURCE_LINKS["wuwa"]
-
-    # 1. Masked entity links across all 4 games & zero 'Full kit' text; unnamed slug uses numeric ID.
-    assert beta_mod._item_page_url("zzz", "relic", "34300", "ID 34300") == (
-        "https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=en"
-    )
-    assert beta_mod._item_page_url("zzz", "weapon", "14161", "") == (
-        "https://zzz.gachabase.net/w-engines/14161/14161/beta?lang=en"
-    )
-    sun_raw = _beta_json("zzz_character_1601.json")
-    sun_built = beta_mod._zzz_character(sun_raw)
-    sun = beta_mod.BetaCharacter(
-        id="zzz:1601", name="Sunbringer", rarity=5, element="Fire (Genesis Flare)",
-        role="Armorer", faction="Roscaelifer", attack_type="Strike",
-        subtext="-# Revision diff against 3.4.1+19836465 • 2 unchanged block(s) omitted",
-        stats_lines=sun_built["stats_lines"],
-        sections=beta_mod._clone_sections(sun_built["sections"], "[CHANGED]"),
-        page_url="https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en",
-        diff_url="https://zzz.gachabase.net/diff/agents/1601/sunbringer?prev=beta_3.4.1_19836465&cur=beta_3.4.1_19850203&lang=en",
-        is_new=False,
-    )
-    w_raw = _beta_json("zzz_weapon_14166.json")
-    w_list = _beta_json("zzz_weapon_listing.json")["14166"]
-    wf = beta_mod._equip_from_detail("zzz", "weapon", w_raw, w_list)
-    w_eq = beta_mod.BetaEquipment(
-        id="zzz:14166", name="Robin's Exclusive W-Engine", category_label="W-Engines",
-        rarity=5, sub_type=wf["sub_type"], weapon_class=wf["weapon_class"], tag="[NEW]",
-        stats_line=wf["stats_line"], effect_title=wf["effect_title"], lines=wf["lines"],
-        page_url="https://zzz.gachabase.net/w-engines/14166/robins-exclusive-w-engine/beta?lang=en",
-    )
-    d_eq = beta_mod.BetaEquipment(
-        id="zzz:34300", name="ID 34300", category_label="Drive Discs", rarity=5,
-        set_kind="Drive Disc Set", tag="[NEW]", lines=["2-Piece: DEF +16%."],
-        page_url=beta_mod._item_page_url("zzz", "relic", "34300", "ID 34300"),
-    )
-    zzz_pls = cards.beta_payloads(
-        GAMES["zzz"],
-        beta_mod.BetaPatch(
-            game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1 Rev. 19850203",
-            rev_id="r", characters=[sun], equipment=[w_eq, d_eq],
-        ),
-    )
-    zzz_dump = json.dumps(zzz_pls, ensure_ascii=False)
-    assert all(not cards.validate_payload(p) for p in zzz_pls)
-    assert "## [Sunbringer](https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en)" in zzz_dump
-    assert "### [Robin's Exclusive W-Engine](https://zzz.gachabase.net/w-engines/14166/robins-exclusive-w-engine/beta?lang=en)" in zzz_dump
-    assert "### [ID 34300](https://zzz.gachabase.net/drive-discs/34300/34300/beta?lang=en)" in zzz_dump
-    assert "[Revision diff](https://zzz.gachabase.net/diff/agents/1601/sunbringer" in zzz_dump
-    assert "**Substat:** HP%" in zzz_dump
-    assert "Full kit" not in zzz_dump and "Full Kit" not in zzz_dump
-
-    # 2. Smart dynamic container fit on Encore Lily + Lullaby: zero orphan stat lines across pages.
-    enc_raw = _beta_json("encore_lily_live.json")
-    enc_norm = beta_mod._encore_detail(enc_raw, "character", "1512", ("3.8.0", "3.8.1", "9162983"))
-    enc_built = beta_mod._ww_character(enc_norm)
-    lily = beta_mod.BetaCharacter(
-        id="ww:1512", name="Lily", rarity=5, element=enc_built["element"],
-        role=enc_built["role"], stats_lines=enc_built["stats_lines"],
-        sections=beta_mod._clone_sections(enc_built["sections"], "[NEW]"),
-        page_url="https://encore.moe/character/1512?lang=en&v=Beta", is_new=True,
-    )
-    ew_raw = _beta_json("encore_weapon_live.json")
-    ew_norm = beta_mod._encore_detail(ew_raw, "weapon", "21030076", ("3.8.0", "3.8.1", "9162983"))
-    ewf = beta_mod._equip_from_detail("ww", "weapon", ew_norm, {})
-    lullaby = beta_mod.BetaEquipment(
-        id="ww:21030076", name="Lullaby", category_label="Weapons", rarity=5,
-        sub_type=ewf["sub_type"], weapon_class=ewf["weapon_class"], tag="[NEW]",
-        stats_line=ewf["stats_line"], effect_title=ewf["effect_title"], lines=ewf["lines"],
-        page_url="https://encore.moe/weapon/21030076?lang=en&v=Beta",
-    )
-    ww_pls = cards.beta_payloads(
-        GAMES["wuwa"],
-        beta_mod.BetaPatch(
-            game_key="wuwa", beta_version="3.8.1", rev_label="v3.8.1",
-            rev_id="r", characters=[lily], equipment=[lullaby],
-        ),
-    )
-    assert all(not cards.validate_payload(p) for p in ww_pls)
-    page_texts = [
-        "\n".join(c["content"] for c in p["components"][0]["components"] if c["type"] == 10)
-        for p in ww_pls
-    ]
-    lib_pages = [i for i, t in enumerate(page_texts) if "[Into the Dream Cradle]" in t]
-    heal_pages = [i for i, t in enumerate(page_texts) if "Slumberland Healing" in t]
-    assert lib_pages and lib_pages == heal_pages  # Liberation heading & stat lines stay on one page
-    ww_joined = "\n".join(page_texts)
-    assert "Full kit" not in ww_joined and "Tune Break: Tune Break" not in ww_joined
-    assert "* **Tune Break** **[Pistols]:**" in ww_joined
-    assert "**Substat:** Pistols" not in ww_joined
-    assert "**12%/15%/18%/21%/24%**" in ww_joined and "20/20/20/20/20" not in ww_joined
-    assert "    * Effect values shown" not in ww_joined
-    assert "-# Effect values shown for refinements 1–5." in ww_joined
-
-    # 3. Bilingual CN/EN hotfix HTML & Markdown changelog parsing + generic label rejection.
-    bilingual_html = """<!doctype html>
-    <h2>v3.4.1 Rev. 19850203 | 24th October 2026</h2>
-    <h3>Agents</h3>
-    <div>Sunbringer</div>
-    <a href="/diff/agents/1601/sunbringer?prev=beta_3.4.1_19836465&amp;cur=beta_3.4.1_19850203&amp;lang=chs">Changes</a>
-    <a href="/agents/1601/sunbringer/beta?lang=chs">Full</a>
-    <a href="/diff/agents/1601/sunbringer?prev=beta_3.4.1_19836465&amp;cur=beta_3.4.1_19850203&amp;lang=en">Changes</a>
-    <a href="/agents/1601/sunbringer/beta?lang=en">Full</a>
-    <h3>W-Engines</h3>
-    <a href="/diff/w-engines/14161/14161?prev=beta_3.4.1_19836465&amp;cur=beta_3.4.1_19850203&amp;lang=chs">Changes</a>
-    <a href="/w-engines/14161/14161/beta?lang=chs">Full</a>
-    """
-    revs = beta_mod.parse_changelog(
-        bilingual_html, base_url="https://zzz.gachabase.net/changelog/beta?lang=en"
-    )
-    assert len(revs) == 1 and revs[0]["zh_check_advised"] is True
-    ents = revs[0]["entries"]
-    assert len(ents) == 2
-    assert ents[0]["name"] == "Sunbringer"
-    assert ents[0]["url"].endswith("/agents/1601/sunbringer/beta?lang=en")
-    assert "lang=en" in ents[0]["diff"] and "/diff/agents/1601/sunbringer" in ents[0]["diff"]
-    assert ents[1]["name"] == ""
-    assert ents[1]["url"].endswith("/w-engines/14161/14161/beta?lang=en")
-    assert "lang=en" in ents[1]["diff"]
-    assert beta_mod._safe_entry_name({"name": "Full"}, {"name": "Sunbringer"}, None, "1601") == "Sunbringer"
-
-    # 4. Canonical changelog URL fallback on HTTP 403 (`None`) + CN duration reconciliation with params.
-    en_b = {"sections": [beta_mod.BetaSectionEntry(
-        title="EX Special", category="Special", lines=["Deals 120% DMG; buff lasts 10s.", "DMG: 120%"],
-        params=[{"name": "DMG", "value": 120.0, "text": "120%"}],
-    )]}
-    zh_b = {"sections": [beta_mod.BetaSectionEntry(
-        title="强化特殊技", category="Special", lines=["造成 120% 伤害，增益持续 15 秒。", "伤害: 120%"],
-        params=[{"name": "伤害", "value": 120.0, "text": "120%"}],
-    )]}
-    assert beta_mod._reconcile_en_with_zh_kit(en_b, zh_b) is True
-    assert any("15s" in ln and "CN/CHS" in ln for ln in en_b["sections"][0].lines)
-
-    class Fallback403Fetcher:
-        def __init__(self):
-            self.text_urls = []
-
-        async def get_text(self, url, **kw):
-            self.text_urls.append((url, kw.get("headers")))
-            if "?" in url:
-                return None  # Simulate HTTP 403 on `?lang=en`
-            return bilingual_html
-
-    with tempfile.TemporaryDirectory() as tmp:
-        fb = Fallback403Fetcher()
-        ctx = _beta_ctx(Path(tmp) / "st.json", fb, BETA_ENABLED="1", games=["zzz"])
-        bud = {"max_requests": 10, "_shared_requests_left": 10}
-        got_revs, extra_n = asyncio.run(
-            beta_mod._fetch_changelog_revisions(ctx, GAMES["zzz"], bud, 2)
-        )
-        assert extra_n == 1 and len(got_revs) == 1
-        assert fb.text_urls[0][0].endswith("/changelog/beta?lang=en")
-        assert fb.text_urls[0][1] and "text/html" in fb.text_urls[0][1]["Accept"]
-        assert fb.text_urls[1][0].endswith("/changelog/beta")
-
-        # 5. Epoch-3 reset clears epoch-2 ZZZ (rev 19851435) and WuWa (v3.8.1) while keeping features 1-4.
-        st_live = State(Path(tmp) / "live.json")
-        st_live.data["codes"] = {"zzz": {"ABC": 1}}
-        for gk, ver, rid in (("zzz", "3.4.1+19851435", "c4da864455350ab0"), ("wuwa", "3.8.1", "84d9a78104b696a1")):
-            rec = st_live.beta_record(gk)
-            rec.update({
-                "format_epoch": 2, "latest_rev": rid, "source_version": ver,
-                "revisions": {rid: {"status": "posted", "messages": ["123"]}},
-                "snapshots": {f"{gk}:1": {"name": "Old"}},
-            })
-        peer_copy = copy.deepcopy(st_live.data)
-        for gk in ("zzz", "wuwa"):
-            assert beta_mod._upgrade_legacy_beta_record(st_live.beta_record(gk)) is True
-        st_live.merge_peer(peer_copy, include_beta=True)
-        for gk in ("zzz", "wuwa"):
-            r_after = st_live.beta_record(gk)
-            assert r_after["format_epoch"] == BETA_FORMAT_EPOCH
-            assert r_after["revisions"] == {} and r_after["snapshots"] == {}
-            assert r_after["latest_rev"] == "" and r_after["source_version"] == ""
-        assert st_live.data["codes"] == {"zzz": {"ABC": 1}}
-
-        # Also clears epoch-2 beta records during `prune_beta()` even when `BETA_ENABLED=0` (paused).
-        st_paused = State(Path(tmp) / "paused_live.json")
-        for gk, ver, rid in (("zzz", "3.4.1+19851435", "c4da864455350ab0"), ("wuwa", "3.8.1", "84d9a78104b696a1")):
-            rec_p = st_paused.beta_record(gk)
-            rec_p.update({
-                "format_epoch": 2, "paused": True, "latest_rev": rid, "source_version": ver,
-                "revisions": {rid: {"status": "posted", "messages": ["123"]}},
-                "snapshots": {f"{gk}:1": {"name": "Old"}},
-            })
-        st_paused.prune_beta()
-        for gk in ("zzz", "wuwa"):
-            rp = st_paused.beta_record(gk)
-            assert rp["format_epoch"] == BETA_FORMAT_EPOCH and rp.get("paused") is True
-            assert rp["revisions"] == {} and rp["snapshots"] == {} and rp["source_version"] == ""
-
-
-def test_feature5_zzz_passive_potential_sveltekit_hotfix_and_cn_reconciliation():
-    """Real nanoka ZZZ passive/potential/substat, SvelteKit/403 hotfix diff, CN sync & Epoch 4."""
-    import copy
-
-    from gamexpress import beta as beta_mod
-    from gamexpress.state import BETA_FORMAT_EPOCH
-
-    assert BETA_FORMAT_EPOCH == 4
-    assert beta_mod._dedup_skill_title("Resonance Skill", "Woven Woven Phantasm") == (
-        "Resonance Skill: Woven Phantasm"
-    )
-
-    # 1. Real ZZZ schema: top-level `passive.level`, named Mindscapes, and `potential_detail`.
-    zzz_raw = copy.deepcopy(_beta_json("zzz_character_1661.json"))
-    zzz_raw.get("skill", {}).pop("core", None)
-    zzz_raw["passive"] = {
-        "level": {
-            "1": {"level": 1, "name": ["Core Passive: Solar Aegis", "Additional Ability"], "desc": ["Lv1 +10%.", "Team +8%."]},
-            "7": {"level": 7, "name": ["Core Passive: Solar Aegis", "Additional Ability"], "desc": ["Increases Sheer DMG by 36%.", "When another Defense Agent is in squad, Daze +18%."]},
-        }
-    }
-    zzz_raw["talent"] = {
-        "1": {"name": "Dawnbreaker", "desc": "Upon entering combat, gains 25 Energy and 15% CRIT Rate."}
-    }
-    zzz_raw["potential_detail"] = {
-        "101": {"level": 1, "name": "Radiant Overload", "level_show_name": "Lv. 1", "desc": "DMG +10%."},
-        "106": {"level": 6, "name": "Radiant Overload", "level_show_name": "Lv. 6", "desc": "DMG +32% for 12s."},
-    }
-    z_built = beta_mod._zzz_character(zzz_raw)
-    cats = [s.category for s in z_built["sections"]]
-    assert "Core Passive & Additional Ability" in cats
-    assert "Potential Awakening" in cats
-    mc_sec = next(s for s in z_built["sections"] if s.category == "Mindscape Cinema")
-    assert mc_sec.title == "Mindscape Cinema 1 — Dawnbreaker"
-
-    # ZZZ W-Engine max-modification substat scaling (`rand_property` + `stars`) + Lv.60 Base ATK.
-    zw_raw = copy.deepcopy(_beta_json("zzz_weapon_14166.json"))
-    zw_raw["base_property"] = {"name": "Base ATK", "value": 48, "format": "{0:0.#}"}
-    zw_raw["level"] = {"60": {"rate": 138800}}
-    zw_raw["stars"] = {"5": {"star_rate": 0, "rand_rate": 20000}}
-    zw_raw["rand_property"] = {"name": "HP", "name2": "Percent HP", "value": 1000, "format": "{0:0.#%}"}
-    zw_fields = beta_mod._equip_from_detail("zzz", "weapon", zw_raw, {})
-    assert zw_fields["stats_line"] == "Base ATK 714"
-    assert zw_fields["sub_type"] == "HP% 30%"
-    assert beta_mod._data_image_candidates(
-        "zzz", "relic", "34300", {"icon": "", "icon2": "Suit_34300_2.png"}, {"icon": "Suit_34300_1.png"}
-    ) == [
-        "https://static.nanoka.cc/assets/zzz/Suit_34300_2.webp",
-        "https://static.nanoka.cc/assets/zzz/Suit_34300_1.webp",
-    ]
-
-    z_patch = beta_mod.BetaPatch(
-        game_key="zzz", beta_version="3.4.1", rev_label="v3.4.1 Rev. 19851435", rev_id="z4",
-        characters=[beta_mod.BetaCharacter(
-            id="zzz:1661", name="Sunbringer", rarity=5, element="Fire", role="Defense",
-            stats_lines=z_built["stats_lines"], sections=z_built["sections"],
-            page_url="https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en", is_new=True,
-        )],
-        equipment=[beta_mod.BetaEquipment(
-            id="zzz:weapon:14166", name="Solar Crown", category_label="W-Engines", rarity=5,
-            sub_type=zw_fields["sub_type"], weapon_class=zw_fields["weapon_class"], tag="[NEW]",
-            stats_line=zw_fields["stats_line"], effect_title=zw_fields["effect_title"], lines=zw_fields["lines"],
-            page_url="https://zzz.gachabase.net/w-engines/14166/solar-crown/beta?lang=en",
-        )],
-    )
-    z_pls = cards.beta_payloads(GAMES["zzz"], z_patch)
-    assert all(cards.validate_payload(p) == [] for p in z_pls)
-    z_dump = json.dumps(z_pls)
-    assert "* **Mindscape Cinema 1** **[Dawnbreaker]:**" in z_dump
-    assert "### Core Passive & Additional Ability" in z_dump
-    assert "### Potential Awakening" in z_dump
-    assert "**Substat:** HP% 30%" in z_dump
-
-    # 2. SvelteKit `data:{revisions:[...]}` hydration parser + zero-request CN name & slug fallback.
-    svelte_html = (
-        '<!doctype html><html><script>__sveltekit.resolve({data:{revisions:['
-        '{branch:"live",version:"3.3.4",design_revision:19304006,design_timestamp:1760000000,'
-        'agents:[{status:"added",text:"Ellen",href:"/agents/1091/ellen/live/3.3.4?lang=en"}]},'
-        '{branch:"beta",version:"3.4.1",design_revision:19851435,design_timestamp:1761436800,'
-        'agents:[{status:"modified",text:"Sunbringer",href:"/agents/1601/sunbringer/beta/3.4.1_19851435?lang=chs",'
-        'diff:"/diff/agents/1601/sunbringer?prev=beta_3.4.1_19850203&cur=beta_3.4.1_19851435&lang=chs"}],'
-        'w_engines:[{status:"removed",text:"Old",href:"/w-engines/14100/old/beta/3.4.1_19851435?lang=en"}]}'
-        ']},uses:{}});</script></html>'
-    )
-    sk_revs = beta_mod.parse_changelog(svelte_html, base_url="https://zzz.gachabase.net/?lang=en")
-    assert len(sk_revs) == 1
-    assert sk_revs[0]["label"] == "v3.4.1 Rev. 19851435" and sk_revs[0]["zh_check_advised"] is True
-    assert sk_revs[0]["entries"][0]["url"] == "https://zzz.gachabase.net/agents/1601/sunbringer/beta?lang=en"
-    assert "lang=en" in sk_revs[0]["entries"][0]["diff"]
-
-    # No EN name and no readable identifier: the title stays an honest slot label and the CN
-    # name is carried as a note, so an English card never opens with a CJK title.
-    zh_fallback_name = beta_mod._safe_entry_name(
-        {}, {"name": "Weapon_S_14160_Name"}, {"en": "", "zh": "日冕遗蜕"}, "14160",
-        label="W-Engines",
-    )
-    assert zh_fallback_name == "W-Engine (ID 14160)"
-    assert beta_mod._slug(zh_fallback_name, "14160") == "14160"
-    assert beta_mod._zh_entry_name({"en": "", "zh": "日冕遗蜕"}, None) == "日冕遗蜕"
-
-    # 3. Comma-safe multi-[TBD] CN reconciliation, missing CN section recovery, and equipment CN sync.
-    en_kit = {"sections": [beta_mod.BetaSectionEntry(
-        title="Core Passive", category="Core Passive & Additional Ability",
-        lines=["At 16,000 Max HP, increases ATK by [TBD] and CRIT DMG by [TBD]%."],
-    )]}
-    zh_kit = {"sections": [
-        beta_mod.BetaSectionEntry(
-            title="核心被动", category="Core Passive & Additional Ability",
-            lines=["最大生命值达到 16,000 时，攻击力提升 1,200 点，暴击伤害提升 36%。"],
-        ),
-        beta_mod.BetaSectionEntry(
-            title="Mindscape Cinema 6 — Apex", category="Mindscape Cinema",
-            lines=["Ultimate ignores 25% Fire RES."],
-        ),
-    ]}
-    assert beta_mod._reconcile_en_with_zh_kit(en_kit, zh_kit) is True
-    assert "1200" in en_kit["sections"][0].lines[0] and "36%" in en_kit["sections"][0].lines[0]
-    assert len(en_kit["sections"]) == 2 and en_kit["sections"][1].category == "Mindscape Cinema"
-
-    eq_obj = beta_mod.BetaEquipment(
-        id="ww:weapon:21030076", name="Lullaby", category_label="Weapons", rarity=5,
-        lines=[
-            "Increases ATK by 12% and grants [value unavailable] Basic Attack DMG Bonus.",
-            "-# ⚠️ Some values are unavailable in this revision's source data.",
-        ],
-    )
-    assert beta_mod._reconcile_en_with_zh_equipment(
-        eq_obj, {"lines": ["攻击提升 12%，普攻伤害加成提升 48%。"]}
-    ) is True
-    assert "48%" in eq_obj.lines[0] and "[value unavailable]" not in eq_obj.lines[0]
-    assert not any("Some values are unavailable" in ln for ln in eq_obj.lines)
-
-    # 4. When GachaBase 403s across all endpoints on a hotfix, static `character.json` diff catches buffed old units.
-    class Hotfix403Fetcher:
-        async def get_text(self, url, **_kw):
-            return None
-
-        async def get_json(self, url, **_kw):
-            if url.endswith("/3.4.1+19850203/character.json"):
-                return {"1661": {"en": "Sunbringer", "rev": 1}, "1091": {"en": "Miyabi", "pot": 0}}
-            if url.endswith("/3.4.1+19851435/character.json"):
-                return {"1661": {"en": "Sunbringer", "rev": 1}, "1091": {"en": "Miyabi", "pot": 1}}
-            if url.endswith("/character/1661.json"):
-                return _beta_json("zzz_character_1661.json")
-            if url.endswith("/character/1091.json"):
-                d = copy.deepcopy(_beta_json("zzz_character_1661.json"))
-                d["name"] = "Miyabi"
-                d["potential_detail"] = {"1": {"level": 6, "name": "Frostbite", "desc": "Ice DMG +30%."}}
-                if "/3.3.4/" in url:
-                    # What the released build still says; the beta is the other side of the diff.
-                    d["potential_detail"] = {"1": {"level": 5, "name": "Frostbite", "desc": "Ice DMG +20%."}}
-                return d
-            return None
-
-        async def verify_media(self, _url):
-            return False
-
-    with tempfile.TemporaryDirectory() as tmp:
-        st_path = Path(tmp) / "hotfix.json"
-        ctx = _beta_ctx(st_path, Hotfix403Fetcher(), BETA_ENABLED="1", games=["zzz"])
-        manifest = {
-            "zzz": {
-                "latest": "3.4.1+19850203", "live": "3.3.4",
-                "available": ["3.4.1+19850203"],
-                "new": {"character": [1661], "weapon": [], "equipment": []},
-            }
-        }
-        bgt = beta_mod._budget(ctx)
-        p1 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, bgt))
-        assert p1 and [c.name for c in p1.characters] == ["Robin"]
-        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("zzz"), p1, status="posted")
-
-        manifest["zzz"]["latest"] = "3.4.1+19851435"
-        manifest["zzz"]["available"].append("3.4.1+19851435")
-        p2 = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, bgt))
-        assert p2 and [c.name for c in p2.characters] == ["Miyabi"]
-        assert p2.characters[0].is_new is False
-
-        # Epoch-4 state prune clears Epoch-3 ZZZ Rev. 19851435 and WuWa v3.8.1 cleanly.
-        st_ep3 = State(Path(tmp) / "ep3.json")
-        for gk, ver, rid in (("zzz", "3.4.1+19851435", "c4da864455350ab0"), ("wuwa", "3.8.1", "84d9a78104b696a1")):
-            st_ep3.beta_record(gk).update({
-                "format_epoch": 3, "paused": True, "latest_rev": rid, "source_version": ver,
-                "revisions": {rid: {"status": "posted", "messages": ["999"]}},
-                "snapshots": {f"{gk}:1": {"kind": "character"}},
-            })
-        st_ep3.prune_beta()
-        for gk in ("zzz", "wuwa"):
-            rec_after = st_ep3.beta_record(gk)
-            assert rec_after["format_epoch"] == 4
-            assert rec_after["revisions"] == {} and rec_after["snapshots"] == {} and rec_after["source_version"] == ""
 
 
 def test_feature5_progressive_media_and_gallery_lifecycle_across_all_four_games():
@@ -24582,170 +23616,6 @@ def test_beta_skill_caps_units_and_card_level_badges_across_all_games():
     assert gi_built["sections"][1].values_label == "" and "Stamina Consumption: 15" in gi_built["sections"][1].lines
 
 
-def test_beta_equipment_curves_markup_cn_reconcile_and_ww_baseline_self_heal():
-    import copy
-
-    from gamexpress import beta as beta_mod
-
-    # 1) Markup cleanup (`<Term:...>`, `<highlight>`, `{RUBY_*}`) and list rarity parsing
-    cleaned = beta_mod._clean(
-        "<Term:1042><highlight>Tune Break</highlight> deals {RUBY_B#glacio}Frost{RUBY_E#} DMG."
-    )
-    assert cleaned == "Tune Break deals Frost DMG."
-    assert beta_mod._parse_rarity("ww", [1, 3, 4], 5) == 4
-
-    # 2) WuWa Echo Rank 5 `skill.param[-1]` + Sonata `entry["param"]` interpolation (no `[TBD]`)
-    ww_echo_detail = {
-        "name": "Phantom: Dreamweaver",
-        "rarity": [1, 3, 4],
-        "intensity": "Calamity Class",
-        "skill": {
-            "desc": "<highlight>Summon</highlight> Dreamweaver to deal {0} Spectro DMG. CD: {1}s.",
-            "param": [
-                ["110.00%", "20"],
-                ["135.00%", "20"],
-                ["160.00%", "20"],
-                ["185.00%", "20"],
-                ["210.00%", "15"],
-            ],
-        },
-        "group": {
-            "9": {
-                "name": "Luminous Reverie",
-                "set": {
-                    "2": {"desc": "Spectro DMG + {0}.", "param": ["10%"]},
-                    "5": {"desc": "Casting Intro Skill grants {0} Spectro DMG for {1}s.", "param": ["30%", "15"]},
-                },
-            },
-        },
-    }
-    built_echo = beta_mod._equip_from_detail("ww", "echo", ww_echo_detail, {})
-    echo_txt = "\n".join(built_echo["lines"])
-    assert built_echo["rarity"] == 4
-    assert "210.00%" in echo_txt and "15s" in echo_txt and "110.00%" not in echo_txt
-    assert "Spectro DMG + 10%." in echo_txt and "30% Spectro DMG for 15s" in echo_txt
-    assert "[TBD]" not in echo_txt and "<highlight>" not in echo_txt
-
-    # 3) GI Lv. 90 weapon substat curve (`4.594`) when listing omits substat %
-    gi_weap_cd = beta_mod._equip_from_detail("gi", "weapon", {
-        "name": "Starlit Blade",
-        "rarity": 5,
-        "type": "WEAPON_SWORD_ONE_HAND",
-        "weapon_prop": [
-            {"prop_type": "FIGHT_PROP_BASE_ATTACK", "init_value": 44.3358, "type": "GROW_CURVE_ATTACK_304"},
-            {"prop_type": "FIGHT_PROP_CRITICAL_HURT", "init_value": 0.192, "type": "GROW_CURVE_CRITICAL_301"},
-        ],
-        "refinement": {"1": {"name": "Edge", "desc": "CRIT Rate +8%."}},
-    }, {"atk": 542})
-    assert gi_weap_cd["sub_type"] == "CRIT DMG 88.2%" and "Base ATK 542" in gi_weap_cd["stats_line"]
-    gi_weap_em = beta_mod._equip_from_detail("gi", "weapon", {
-        "name": "Tome of Dawning",
-        "rarity": 5,
-        "type": "WEAPON_CATALYST",
-        "weapon_prop": [
-            {"prop_type": "FIGHT_PROP_BASE_ATTACK", "init_value": 44.3358, "type": "GROW_CURVE_ATTACK_304"},
-            {"prop_type": "FIGHT_PROP_ELEMENT_MASTERY", "init_value": 57.6, "type": "GROW_CURVE_CRITICAL_301"},
-        ],
-        "refinement": {"1": {"name": "Insight", "desc": "EM +40."}},
-    }, {"atk": 542})
-    assert gi_weap_em["sub_type"] == "Elemental Mastery 265"
-
-    # 4) `_numbered_slot` accepts both `str` and `BetaSectionEntry` during CN-EN reconciliation
-    en_sec = beta_mod.BetaSectionEntry(title="E1 — First Light", category="Eidolons", lines=["ATK +???%."])
-    zh_sec = beta_mod.BetaSectionEntry(title="E1 — 初光", category="Eidolons", lines=["攻击力提高24%。"])
-    assert beta_mod._numbered_slot(en_sec) == ("e", "1")
-    en_kit = {"sections": [en_sec]}
-    beta_mod._reconcile_en_with_zh_kit(en_kit, {"sections": [zh_sec]})
-    assert any("24%" in ln for ln in en_kit["sections"][0].lines)
-
-    # 5) Legacy pre-`BETA_NORM_REV` WuWa (`ww:1512`) snapshot self-healing (zero bogus `[NERF]` diffs)
-    ww_base = json.loads((FIX / "beta" / "ww_character_1512.json").read_text(encoding="utf-8"))
-    ww_v1 = copy.deepcopy(ww_base)
-    ww_v1["skill_trees"]["6"]["skill"]["level"]["99"] = {
-        "name": "Intro Skill - Eternal Bloom DMG",
-        "param": [["18.50%"] * 9 + ["36.09%"] + ["50.00%"] * 9 + ["65.86%"]],
-        "format": "{0} HP",
-    }
-    ww_v2_buff = copy.deepcopy(ww_v1)
-    ww_v2_buff["skill_trees"]["6"]["skill"]["level"]["99"]["param"] = [
-        ["18.50%"] * 9 + ["42.00%"] + ["55.00%"] * 9 + ["72.00%"]
-    ]
-
-    # Build a legacy pre-BETA_NORM_REV snapshot (no `norm_rev`, storing old Lv. 20 `65.86%` text)
-    legacy_built = beta_mod._ww_character(ww_v1)
-    for sec in legacy_built["sections"]:
-        sec.lines = [ln.replace("36.09% HP", "65.86%") for ln in sec.lines]
-    legacy_char = beta_mod.BetaCharacter(
-        id="ww:1512", name="Lily", rarity=5, element="Spectro", role="Pistols",
-        subtext="", stats_lines=legacy_built["stats_lines"], sections=legacy_built["sections"],
-        page_url="https://ww.nanoka.cc/character/1512",
-    )
-    legacy_snap = beta_mod._character_snapshot(legacy_char, "3.8.1", 1790000000)
-    legacy_snap.pop("norm_rev", None)
-
-    class SelfHealFetcher:
-        def __init__(self, v2_doc, *, allow_v1=True):
-            self.v2_doc = v2_doc
-            self.allow_v1 = allow_v1
-
-        async def get_json(self, url, **_kw):
-            if url.endswith("/ww/3.8.1/en/character/1512.json"):
-                return copy.deepcopy(ww_v1) if self.allow_v1 else None
-            if url.endswith("/ww/3.8.2/en/character/1512.json"):
-                return copy.deepcopy(self.v2_doc)
-            return None
-
-        async def preflight_media(self, _url):
-            return False
-
-    manifest_382 = {
-        "ww": {
-            "latest": "3.8.2",
-            "available": ["3.8.1", "3.8.2"],
-            "live": "3.7.0",
-            "new": {"character": [1512], "weapon": [], "echo": []},
-        }
-    }
-
-    # Case 5a: 3.8.2 identical to 3.8.1 -> self-heals to `equal` (zero bogus `[NERF]` cards)
-    with tempfile.TemporaryDirectory() as tmp:
-        ctx_eq = _beta_ctx(Path(tmp) / "s1.json", SelfHealFetcher(ww_v1), BETA_ENABLED="1", games=["wuwa"])
-        rec_eq = ctx_eq.state.beta_record("wuwa")
-        rec_eq["format_epoch"] = 4
-        rec_eq["source_version"] = "3.8.1"
-        rec_eq["snapshots"] = {"ww:1512": copy.deepcopy(legacy_snap)}
-        patch_eq = asyncio.run(beta_mod.build_patch(ctx_eq, GAMES["wuwa"], manifest_382, beta_mod._budget(ctx_eq)))
-        assert patch_eq is not None and patch_eq.characters == []
-        assert patch_eq.snapshots["ww:1512"]["norm_rev"] == beta_mod.BETA_NORM_REV
-
-    # Case 5b: 3.8.2 genuinely buffs Lv. 10 (36.09% -> 42.00%) -> emits `[BUFF]`, NEVER `[NERF]` from 65.86%!
-    with tempfile.TemporaryDirectory() as tmp:
-        ctx_bf = _beta_ctx(Path(tmp) / "s2.json", SelfHealFetcher(ww_v2_buff), BETA_ENABLED="1", games=["wuwa"])
-        rec_bf = ctx_bf.state.beta_record("wuwa")
-        rec_bf["format_epoch"] = 4
-        rec_bf["source_version"] = "3.8.1"
-        rec_bf["snapshots"] = {"ww:1512": copy.deepcopy(legacy_snap)}
-        patch_bf = asyncio.run(beta_mod.build_patch(ctx_bf, GAMES["wuwa"], manifest_382, beta_mod._budget(ctx_bf)))
-        assert patch_bf is not None and len(patch_bf.characters) == 1
-        diff_txt = "\n".join(ln for s in patch_bf.characters[0].sections for ln in s.lines)
-        assert "[BUFF]" in diff_txt and "36.09" in diff_txt and "42.00" in diff_txt
-        assert "[NERF]" not in diff_txt and "65.86" not in diff_txt
-
-    # Case 5c: 3.8.1 historical JSON unavailable -> falls back to full `snapshot` mode (zero `[NERF]`)
-    with tempfile.TemporaryDirectory() as tmp:
-        ctx_fb = _beta_ctx(
-            Path(tmp) / "s3.json", SelfHealFetcher(ww_v2_buff, allow_v1=False), BETA_ENABLED="1", games=["wuwa"]
-        )
-        rec_fb = ctx_fb.state.beta_record("wuwa")
-        rec_fb["format_epoch"] = 4
-        rec_fb["source_version"] = "3.8.1"
-        rec_fb["snapshots"] = {"ww:1512": copy.deepcopy(legacy_snap)}
-        patch_fb = asyncio.run(beta_mod.build_patch(ctx_fb, GAMES["wuwa"], manifest_382, beta_mod._budget(ctx_fb)))
-        assert patch_fb is not None and len(patch_fb.characters) == 1
-        fb_txt = "\n".join(ln for s in patch_fb.characters[0].sections for ln in s.lines)
-        assert "[NERF]" not in fb_txt and "65.86" not in fb_txt
-
-
 def test_feature5_all_game_weapon_refinement_scaling_and_cards():
     """Verify inline S1–S5 / R1–R5 weapon, W-Engine & Light Cone scaling across all 4 games."""
     import copy
@@ -24981,167 +23851,6 @@ def test_feature5_weapon_refinement_s1_r1_fallbacks_when_incomplete_or_unclear()
     assert f_enc_z["lines"] == ["Increases ATK by 12% for 10s."]
 
 
-def test_feature5_weapon_multi_tier_diffs_zh_sync_and_legacy_state_self_heal():
-    """Verify atomic multi-tier [BUFF]/[NERF] diffs, CN `/zh/` sync, and `equip_norm_rev` self-healing."""
-    import copy
-
-    from gamexpress import beta as beta_mod
-
-    # 1. Atomic slash-progression diffing: uniform buff, uniform nerf, mixed curve, and duration nerf.
-    ln_buff, tag_buff = beta_mod._change_line(
-        "Increases CRIT DMG by 6%/7%/8%/9%/10%.",
-        "Increases CRIT DMG by 8%/9%/10%/11%/12%.",
-    )
-    assert tag_buff == "[BUFF]" and "~~**6%/7%/8%/9%/10%**~~ → **8%/9%/10%/11%/12%**" in ln_buff
-
-    ln_nerf, tag_nerf = beta_mod._change_line(
-        "Increases Elemental Mastery by 48/60/72/84/96 for 20s.",
-        "Increases Elemental Mastery by 40/50/60/70/80 for 20s.",
-    )
-    assert tag_nerf == "[NERF]" and "~~**48/60/72/84/96**~~ → **40/50/60/70/80**" in ln_nerf
-
-    ln_mixed, tag_mixed = beta_mod._change_line(
-        "Increases ATK by 12%/15%/18%/21%/24%.",
-        "Increases ATK by 10%/14%/18%/22%/26%.",
-    )
-    assert tag_mixed == "[CHANGED]" and tag_mixed != "[TEXT FIX]"
-    assert "~~**12%/15%/18%/21%/24%**~~ → **10%/14%/18%/22%/26%**" in ln_mixed
-
-    ln_dur, tag_dur = beta_mod._change_line(
-        "Shield lasts for 10/12/14/16/18s.",
-        "Shield lasts for 8/10/12/14/16s.",
-    )
-    assert tag_dur == "[NERF]" and "~~**10/12/14/16/18s**~~ → **8/10/12/14/16s**" in ln_dur
-
-    ln_red, tag_red = beta_mod._change_line(
-        "DMG taken is reduced by 20%/22%/24%/26%/28%.",
-        "DMG taken is reduced by 24%/26%/28%/30%/32%.",
-    )
-    assert tag_red == "[BUFF]" and "~~**20%/22%/24%/26%/28%**~~ → **24%/26%/28%/30%/32%**" in ln_red
-
-    # 2. CN `/zh/` sync: (a) fills `[value unavailable]` with full 5-tier progression;
-    # (b) upgrades EN R1-only prose (preserving `"3rd"` ordinal!) when CN has matching R1–R5;
-    # (c) emits zero false lag warning when EN is R1–R5 and CN only has matching R1.
-    eq_unavail = beta_mod.BetaEquipment(
-        id="ww:21030076", name="Lullaby", category_label="Weapon", rarity=5,
-        lines=[
-            "Increases ATK by 16%/20%/24%/28%/32% for [value unavailable]s.",
-            "-# ⚠️ Some values are unavailable in this revision's source data.",
-        ],
-    )
-    did_patch = beta_mod._reconcile_en_with_zh_equipment(
-        eq_unavail, {"lines": ["攻击提升16%/20%/24%/28%/32%，持续10/12/14/16/18秒。"]}
-    )
-    assert did_patch
-    assert "10/12/14/16/18s." in eq_unavail.lines[0]
-    assert not any("unavailable" in x for x in eq_unavail.lines)
-
-    eq_en_r1 = beta_mod.BetaEquipment(
-        id="zzz:14166", name="Robin's Exclusive W-Engine", category_label="W-Engine", rarity=5,
-        lines=["On every 3rd hit, squad DEF increases by 10% for 10s."],
-    )
-    did_upgrade = beta_mod._reconcile_en_with_zh_equipment(
-        eq_en_r1, {"lines": ["每第3次命中，全队防御力提升10%/11.5%/13%/14.5%/16%，持续10秒。"]}
-    )
-    assert did_upgrade
-    assert eq_en_r1.lines[0] == "On every 3rd hit, squad DEF increases by 10%/11.5%/13%/14.5%/16% for 10s."
-
-    eq_en_5t = beta_mod.BetaEquipment(
-        id="gi:14525", name="Starsealed Edict", category_label="Weapon", rarity=5,
-        lines=["Increases CRIT DMG by 24%/30%/36%/42%/48%."],
-    )
-    assert not beta_mod._reconcile_en_with_zh_equipment(
-        eq_en_5t, {"lines": ["暴击伤害提升24%。"]}
-    )
-
-    # 3. Live `state.json` legacy R1 weapon snapshot (`equip_norm_rev` absent) self-heals cleanly!
-    ww_381 = copy.deepcopy(_beta_json("ww_weapon_21030076_live.json"))
-    ww_382_buff = copy.deepcopy(ww_381)
-    ww_382_buff["data"]["param"][0] = ["16%", "20%", "24%", "28%", "32%"]
-
-    legacy_r1_eq = beta_mod.BetaEquipment(
-        id="ww:21030076", name="Lullaby", category_label="Weapon", rarity=5,
-        sub_type=ww_381["listing"]["sub"], weapon_class="Pistols", tag="[NEW]",
-        stats_line="ATK 412.5 · Energy Regen 77.04%", effect_title="Dreamland Solace",
-        lines=[
-            "Increases Max HP by 12%. Casting Resonance Liberation restores 8 points of Concerto Energy, "
-            "triggered once every 20s."
-        ],
-        page_url="https://ww.nanoka.cc/weapon/21030076",
-    )
-    legacy_weap_snap = beta_mod._equipment_snapshot(legacy_r1_eq, "3.8.1", 1700000000, "weapon")
-    legacy_weap_snap.pop("equip_norm_rev", None)
-
-    class WeaponHealFetcher:
-        def __init__(self, v2_data: dict, *, allow_hist: bool = True):
-            self.v2_data = v2_data
-            self.allow_hist = allow_hist
-            self.calls: list[str] = []
-
-        async def get_text(self, _url, **_kw):
-            return ""
-
-        async def get_json(self, url, **_kw):
-            self.calls.append(url)
-            if url.endswith("/weapon.json"):
-                return {"21030076": copy.deepcopy(ww_381["listing"])}
-            if url.endswith("/ww/3.8.1/en/weapon/21030076.json"):
-                return copy.deepcopy(ww_381["data"]) if self.allow_hist else None
-            if url.endswith("/ww/3.8.2/en/weapon/21030076.json"):
-                return copy.deepcopy(self.v2_data)
-            return None
-
-        async def verify_media(self, _url):
-            return False
-
-    manifest_ww = {
-        "ww": {
-            "latest": "3.8.2", "available": ["3.8.1", "3.8.2"], "live": "3.7.0",
-            "new": {"character": [], "weapon": [21030076], "echo": []},
-        }
-    }
-
-    # 3a: Unchanged 3.8.2 -> self-heals to `equal` (0 false posts) & stamps `equip_norm_rev`.
-    with tempfile.TemporaryDirectory() as tmp:
-        fetcher_eq = WeaponHealFetcher(ww_381["data"])
-        ctx_eq = _beta_ctx(Path(tmp) / "wh1.json", fetcher_eq, BETA_ENABLED="1", games=["wuwa"])
-        rec_eq = ctx_eq.state.beta_record("wuwa")
-        rec_eq["format_epoch"] = 4
-        rec_eq["source_version"] = "3.8.1"
-        rec_eq["snapshots"] = {"ww:21030076": copy.deepcopy(legacy_weap_snap)}
-        p_eq = asyncio.run(beta_mod.build_patch(ctx_eq, GAMES["wuwa"], manifest_ww, beta_mod._budget(ctx_eq)))
-        assert p_eq is not None and p_eq.equipment == []
-        assert p_eq.snapshots["ww:21030076"]["equip_norm_rev"] == beta_mod.BETA_EQUIP_NORM_REV
-
-    # 3b: Genuine R1–R5 buff in 3.8.2 (`12%/15%/18%/21%/24%` -> `16%/20%/24%/28%/32%`) -> clean `[BUFF]`.
-    with tempfile.TemporaryDirectory() as tmp:
-        fetcher_bf = WeaponHealFetcher(ww_382_buff["data"])
-        ctx_bf = _beta_ctx(Path(tmp) / "wh2.json", fetcher_bf, BETA_ENABLED="1", games=["wuwa"])
-        rec_bf = ctx_bf.state.beta_record("wuwa")
-        rec_bf["format_epoch"] = 4
-        rec_bf["source_version"] = "3.8.1"
-        rec_bf["snapshots"] = {"ww:21030076": copy.deepcopy(legacy_weap_snap)}
-        p_bf = asyncio.run(beta_mod.build_patch(ctx_bf, GAMES["wuwa"], manifest_ww, beta_mod._budget(ctx_bf)))
-        assert p_bf is not None and len(p_bf.equipment) == 1
-        w_diff = "\n".join(p_bf.equipment[0].lines)
-        assert "[BUFF]" in w_diff
-        assert "~~**12%/15%/18%/21%/24%**~~ → **16%/20%/24%/28%/32%**" in w_diff
-
-    # 3c: Historical 3.8.1 JSON unavailable -> safe `snapshot` mode (zero bogus R1 -> R1–R5 `[BUFF]`).
-    with tempfile.TemporaryDirectory() as tmp:
-        fetcher_fb = WeaponHealFetcher(ww_381["data"], allow_hist=False)
-        ctx_fb = _beta_ctx(Path(tmp) / "wh3.json", fetcher_fb, BETA_ENABLED="1", games=["wuwa"])
-        rec_fb = ctx_fb.state.beta_record("wuwa")
-        rec_fb["format_epoch"] = 4
-        rec_fb["source_version"] = "3.8.1"
-        rec_fb["snapshots"] = {"ww:21030076": copy.deepcopy(legacy_weap_snap)}
-        p_fb = asyncio.run(beta_mod.build_patch(ctx_fb, GAMES["wuwa"], manifest_ww, beta_mod._budget(ctx_fb)))
-        assert p_fb is not None and len(p_fb.equipment) == 1
-        fb_lines = "\n".join(p_fb.equipment[0].lines)
-        assert "no direction is inferred" in fb_lines
-        assert "[BUFF]" not in fb_lines and "[NERF]" not in fb_lines
-
-
 def test_live_persistence_summary_reports_observed_outcomes():
     """Exercise the real workflow scripts without performing any git writes or network calls."""
     import os
@@ -25195,7 +23904,6 @@ def test_live_persistence_summary_reports_observed_outcomes():
         assert result.returncode == 0
         assert b'Could not append repository persistence summary' in result.stderr
         assert b'::error::' not in result.stdout and b'::warning::' not in result.stdout
-
 
 
 def test_wuwa_labelled_maintenance_time_range_cross_day_dual_tz_and_subsystem_maint_filter():
@@ -25921,7 +24629,6 @@ def test_reveal_ping_same_time_single_ping_wave_different_times_recheck_edit_and
         assert sb_ww["reveal_times"] == ww_rec["reveal_times"]
 
 
-
 def test_reveal_distinct_timestamps_in_same_run_and_ambiguous_hold():
     from unittest.mock import AsyncMock, patch
 
@@ -26013,8 +24720,6 @@ def test_reveal_ping_near_limit_reflows_without_losing_article():
         assert ctx.state.news_record("wuwa")["records"]["x"]["status"] == "posted"
         assert not any("reveal mention did not fit" in warning for warning in ctx.warnings)
         assert ctx.state.news_record("wuwa").get("reveal_times")
-
-
 
 
 def test_reveal_ping_near_limit_uses_safe_word_split_in_first_card():
