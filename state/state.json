@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793601315,
+      "last_poll": 1793607399,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793601315,
+      "last_poll": 1793607399,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,7 +24,7 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793601315,
+      "last_poll": 1793607399,
       "latest_rev": "e7a86cc9783b885f",
       "locked_images": {},
       "revisions": {
@@ -594,7 +594,7 @@
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793601315,
+      "last_poll": 1793607399,
       "latest_rev": "e4abf671f8fef17e",
       "locked_images": {
         "zzz:1331": {
@@ -7593,7 +7593,7 @@
       "7.2": {
         "calendar": {
           "banners": [],
-          "ts": 1793595323
+          "ts": 1793607399
         },
         "data": {
           "announcement_locked": true,
@@ -7620,12 +7620,12 @@
             ]
           },
           "banners_checked_ts": 1793599822,
-          "banners_search_ts": 1793595323,
+          "banners_search_ts": 1793607399,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1793595323,
+          "calendar_ts": 1793607399,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8149,8 +8149,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793595323,
-          "banners_search_ts": 1793595323,
+          "banners_checked_ts": 1793607399,
+          "banners_search_ts": 1793607399,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -8243,7 +8243,7 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners_checked_ts": 1793581518,
-          "banners_search_ts": 1793592329,
+          "banners_search_ts": 1793607399,
           "estimate_sources": [
             "version cadence"
           ],
