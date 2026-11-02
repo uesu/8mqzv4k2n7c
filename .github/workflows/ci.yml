@@ -75,6 +75,8 @@ jobs:
       - name: Schedule regressions (2026-10-08) + gacha-wiki placeholder guard
         run: |
           python tests/test_schedule_epithet_and_settled.py
+          python tests/test_gachabase_kit.py
+          python tests/test_gachabase_kit.py
           python tests/test_gachawiki_placeholder.py
 
       - name: Card preview renders (previews/index.html)

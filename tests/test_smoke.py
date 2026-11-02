@@ -17964,7 +17964,8 @@ def test_feature5_encore_beta_fallback_reads_matching_build_and_keeps_budget():
                         return [{**metadata[0], "ResVer": "3.9.1"}]
                     if self.mode == "changing" and self.meta_reads % 2 == 0:
                         return [{**metadata[0], "Changelist": "9162984"}]
-                    if self.mode == "between_items" and self.meta_reads > 2:
+                    # Read 1 is the every-poll beta-build read; the kit's identity reads follow.
+                    if self.mode == "between_items" and self.meta_reads > 3:
                         return [{**metadata[0], "Changelist": "9162984"}]
                     if self.mode == "malformed":
                         return {"message": "unavailable"}
@@ -18000,9 +18001,12 @@ def test_feature5_encore_beta_fallback_reads_matching_build_and_keeps_budget():
         budget["_shared_requests_left"] = 20
         patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
         assert len(patch.characters) == len(patch.equipment) == 1
-        # two details, one listing, two bracketed Encore reads, and one Encore beta-build read
+        # two details, one listing, two bracketed Encore reads, and one Encore beta-build read,
+        # The every-poll Encore beta-build read (WuWa's open cycle) is the same read the card's
+        # beta-build lookup uses, so the total is unchanged: it is cached once per poll.
         assert len(fetcher.calls) == 10
-        assert budget["_shared_requests_left"] == 10
+        # The every-poll Encore beta-build read is not charged to the card budget.
+        assert budget["_shared_requests_left"] == 11
         character = patch.characters[0]
         assert character.name == "Lily" and character.rarity == 5
         assert "encore.moe/character/1512" in character.page_url and "v=Beta" in character.page_url
@@ -18059,14 +18063,15 @@ def test_feature5_encore_beta_fallback_reads_matching_build_and_keeps_budget():
             budget = {**beta_mod._budget(ctx), "max_requests": cap, "_shared_requests_left": shared}
             held = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
             assert held.more and not held.characters and not held.equipment
-            assert not any("encore" in url for url in ctx.fetcher.calls)
+            assert all(url.endswith("/new?v=Beta") for url in ctx.fetcher.calls if "encore" in url)
         # Encore's current view must not reconstruct a retained older manifest build.
         ctx.state.beta_record("wuwa")["source_version"] = "3.6"
         old_manifest = {"ww": {**manifest["ww"], "latest": "3.8.1", "available": ["3.6", "3.7", "3.8.1"]}}
         ctx.fetcher = EncoreFetcher()
         held = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], old_manifest, beta_mod._budget(ctx)))
         assert held.source_version == "3.7" and held.more and not held.characters
-        assert not any("encore" in url for url in ctx.fetcher.calls)
+        # Only the every-poll beta-build read may touch Encore; no kit data from it.
+        assert all(url.endswith("/new?v=Beta") for url in ctx.fetcher.calls if "encore" in url)
 
 
 def test_feature5_encore_future_beta_waits_for_matching_build_and_settles():
@@ -18122,7 +18127,8 @@ def test_feature5_encore_future_beta_waits_for_matching_build_and_settles():
         fetcher.calls.clear()
         assert asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest,
                                                beta_mod._budget(ctx))) is None
-        assert fetcher.calls == []
+        # Only the every-poll Encore beta-build read happens; no kit or image request is made.
+        assert all(url.endswith("/new?v=Beta") for url in fetcher.calls)
 
 
 def _beta_encore_endpoint_fetcher(primary="unavailable", secondary="matching"):
@@ -18152,7 +18158,7 @@ def _beta_encore_endpoint_fetcher(primary="unavailable", secondary="matching"):
                              "ResVer": "3.9.1" if mode == "mismatch" else "3.8.1",
                              "Changelist": "9162984" if (
                                  mode == "changing" and count % 2 == 0
-                                 or mode == "between_items" and count > 2
+                                 or mode == "between_items" and count > 3
                              ) else "9162983"}]
                 if mode == "detail_unavailable":
                     return None
@@ -18196,8 +18202,9 @@ def test_feature5_encore_secondary_api_recovers_with_identical_cards_and_durable
             patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
             assert patch and not patch.more and len(patch.characters) == len(patch.equipment) == 1
             assert len(ctx.fetcher.calls) == expected_calls
-            # details/listing + two three-call reservations per item, plus the beta-build read(s)
-            assert budget["_shared_requests_left"] in (3, 4)
+            # details/listing + two three-call reservations per item. The every-poll Encore
+            # beta-build read is not charged to the card budget, so one more unit may remain.
+            assert budget["_shared_requests_left"] in (4, 5)
             fallback_calls = [url for url in ctx.fetcher.calls if url.startswith(secondary)]
             # six bracketed Encore reads, plus the beta-build read when the primary cannot
             # answer it and it lands on the backup
@@ -18225,7 +18232,56 @@ def test_feature5_encore_secondary_api_recovers_with_identical_cards_and_durable
         ctx.state = State.load(path)
         ctx.fetcher.calls.clear()
         assert asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx))) is None
-        assert ctx.fetcher.calls == []
+        # Settled: no kit, image, or listing request. The only call is the every-poll Encore read.
+        assert all(url.endswith("/new?v=Beta") for url in ctx.fetcher.calls)
+
+
+def test_feature5_encore_only_build_posts_then_settles_quietly():
+    """Encore's own beta build (3.8.4) posts from Encore data even before nanoka lists it.
+
+    The walk follows version order past the manifest's latest, the card reads Encore for that
+    build, and once settled the same build is never re-read or re-posted.
+    """
+    from gamexpress import beta as beta_mod
+
+    manifest = {"ww": {"latest": "3.8.3", "live": "3.7", "available": ["3.7", "3.8.1", "3.8.3"],
+                       "new": {"character": [1512], "weapon": [21030076], "echo": []}}}
+
+    class EncoreOnly:
+        def __init__(self):
+            self.calls = []
+
+        async def get_json(self, url, **_kw):
+            self.calls.append(url)
+            if url.endswith("/manifest.json"):
+                return manifest
+            if url.startswith("https://api-v2.encore.moe/api/en/new?"):
+                return [{"GameVer": "3.8.0", "ResVer": "3.8.4", "Changelist": "1"}]
+            if url.startswith("https://api-v2.encore.moe/api/en/character/"):
+                return _beta_json("encore_lily_live.json")
+            if url.startswith("https://api-v2.encore.moe/api/en/weapon/"):
+                return _beta_json("encore_weapon_live.json")
+            return None
+
+        async def verify_media(self, _url):
+            return False
+
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = _beta_ctx(Path(tmp) / "state.json", EncoreOnly(), BETA_ENABLED="1", games=["wuwa"])
+        ctx.state.beta_record("wuwa")["source_version"] = "3.8.3"
+        patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+        assert patch is not None and patch.source_version == "3.8.4"
+        assert [c.name for c in patch.characters] == ["Lily"]
+        # The kit comes from Encore's own build; nanoka has no 3.8.4 data to supply it.
+        assert any("api-v2.encore.moe/api/en/character/1512" in u for u in ctx.fetcher.calls)
+        beta_mod._settle_beta_patch(ctx, ctx.state.beta_record("wuwa"), patch, status="posted")
+        ctx.state.save()
+        ctx.state = State.load(Path(tmp) / "state.json")
+        ctx.fetcher.calls.clear()
+        again = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, beta_mod._budget(ctx)))
+        assert again is None
+        # Settled: only the every-poll Encore beta-build read happens, never kit or image data.
+        assert all(url.endswith("/new?v=Beta") for url in ctx.fetcher.calls)
 
 
 def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits():
@@ -18253,7 +18309,8 @@ def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits
             budget = {**beta_mod._budget(ctx), "max_requests": cap, "_shared_requests_left": shared}
             patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
             assert patch.more and not patch.characters and not patch.equipment
-            assert not any(url.startswith(secondary) for url in ctx.fetcher.calls)
+            assert all(url.endswith("/new?v=Beta") for url in ctx.fetcher.calls
+                       if url.startswith(secondary))
         ctx.fetcher = _beta_encore_endpoint_fetcher()
         budget = {**beta_mod._budget(ctx), "max_requests": 8, "_shared_requests_left": 7}
         patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], manifest, budget))
@@ -18264,7 +18321,8 @@ def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits
         ctx.fetcher = _beta_encore_endpoint_fetcher()
         patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["wuwa"], older, beta_mod._budget(ctx)))
         assert patch.source_version == "3.7" and patch.more and not patch.characters and not patch.equipment
-        assert not any("encore.moe/" in url for url in ctx.fetcher.calls)
+        # Older-than-live builds never read Encore kit data; the every-poll beta-build read is allowed.
+        assert all(url.endswith("/new?v=Beta") for url in ctx.fetcher.calls if "encore.moe/" in url)
 
 
 def test_feature5_encore_shaped_data_never_uses_the_live_build_as_its_baseline():

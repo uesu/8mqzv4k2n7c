@@ -1,0 +1,87 @@
+"""Read an agent's kit from a Gachabase agent page (the beta view, as saved HTML).
+
+Gachabase is an independent database. It is one of the update sources for beta cards, so its
+kit text and stat tables are read the same way for every game it lists. Each stat table is one
+skill's values at the level the page is showing; the table title is the nearest `... Stats`
+heading above it. Pure stdlib: no network, no third-party HTML parser.
+"""
+from __future__ import annotations
+
+import html as _html
+import re
+from html.parser import HTMLParser
+
+_TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S | re.I)
+_HEADING_RE = re.compile(r">\s*([^<>]+?)\s+Stats\s*<", re.S)
+_TABLE_RE = re.compile(r"<table\b.*?</table>", re.S | re.I)
+
+
+class _Cells(HTMLParser):
+    """Collect each table row as a list of cell texts (nested markup flattened)."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.rows: list[list[str]] = []
+        self._row: list[str] | None = None
+        self._cell: list[str] | None = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "tr":
+            self._row = []
+        elif tag in ("td", "th") and self._row is not None:
+            self._cell = []
+
+    def handle_endtag(self, tag):
+        if tag in ("td", "th") and self._cell is not None and self._row is not None:
+            self._row.append(re.sub(r"\s+", " ", "".join(self._cell)).strip())
+            self._cell = None
+        elif tag == "tr" and self._row is not None:
+            self.rows.append(self._row)
+            self._row = None
+
+    def handle_data(self, data):
+        if self._cell is not None:
+            self._cell.append(data)
+
+
+def _agent_name(page: str) -> str:
+    match = _TITLE_RE.search(page)
+    if not match:
+        return ""
+    title = _html.unescape(match.group(1))
+    return re.split(r"\s*\(Agents\)|\s*\|", title, maxsplit=1)[0].strip()
+
+
+def _label_and_id(cell: str) -> tuple[str, str]:
+    """`1st-Hit DMG Multiplier 1391001` -> ('1st-Hit DMG Multiplier', '1391001')."""
+    match = re.match(r"^(.*?)\s+(\d{5,})$", cell)
+    return (match.group(1), match.group(2)) if match else (cell, "")
+
+
+def parse_agent_page(page: str) -> dict:
+    """Return the agent's name and its stat tables, in page order.
+
+    `tables` is a list of {"title", "rows": [{"label", "id", "value"}]}. Tables with no rows, or
+    with no skill title above them, are skipped rather than guessed.
+    """
+    headings = [(m.start(), m.group(1)) for m in _HEADING_RE.finditer(page)]
+    tables: list[dict] = []
+    for match in _TABLE_RE.finditer(page):
+        parser = _Cells()
+        parser.feed(match.group(0))
+        rows = []
+        for cells in parser.rows:
+            if len(cells) < 2 or not cells[0] or not cells[1]:
+                continue
+            label, item_id = _label_and_id(cells[0])
+            if label.isdigit():
+                # The page's hidden raw-value copy of a table: its "label" is the item id.
+                continue
+            rows.append({"label": label, "id": item_id, "value": cells[1]})
+        title = ""
+        for position, text in headings:
+            if position < match.start():
+                title = text
+        if rows and title:
+            tables.append({"title": title, "rows": rows})
+    return {"name": _agent_name(page), "tables": tables}
