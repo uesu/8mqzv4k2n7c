@@ -5,6 +5,7 @@
       "last_poll": 1793607399,
       "latest_rev": "",
       "locked_images": {},
+      "paused": true,
       "revisions": {},
       "route": "a0f2147590c35140",
       "snapshots": {},
@@ -16,6 +17,7 @@
       "last_poll": 1793607399,
       "latest_rev": "",
       "locked_images": {},
+      "paused": true,
       "revisions": {},
       "route": "d6cfe8654063c7ee",
       "snapshots": {},
@@ -27,6 +29,7 @@
       "last_poll": 1793607399,
       "latest_rev": "e7a86cc9783b885f",
       "locked_images": {},
+      "paused": true,
       "revisions": {
         "1ce49e698ba2de12": {
           "batches": {
@@ -628,6 +631,7 @@
           "url": "https://static.nanoka.cc/assets/zzz/IconRole1661.webp"
         }
       },
+      "paused": true,
       "revisions": {
         "7588d5554f61edb3": {
           "batches": {
