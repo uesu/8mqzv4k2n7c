@@ -6405,16 +6405,27 @@
           "preload": {
             "edit_attempts": 0,
             "edit_count": 0,
+            "edited_at": 1793589021,
             "end_ts": null,
             "media_tier": 3,
             "media_url": "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig",
             "message_id": "1566648756223615108",
             "posted_at": 1793588563,
-            "provenance": "observed",
+            "provenance": "official",
             "status": "posted",
-            "ts": 1793588563
+            "timing_edit_attempts": 0,
+            "timing_edit_count": 1,
+            "ts": 1793589005
+          },
+          "timing_notice": {
+            "end_ts": 1793761200,
+            "postponed": false,
+            "rank": 50,
+            "start_ts": 1793743200,
+            "ts": 1793589005
           }
-        }
+        },
+        "7.3": {}
       }
     },
     "starrail": {
@@ -6502,8 +6513,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1793527208,
-        "47275053"
+        1793589005,
+        "47283828"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -6527,6 +6538,11 @@
           1793527242,
           2,
           "d0111a21d914d546"
+        ],
+        "47283828": [
+          1793589021,
+          0,
+          "80115ea2e1295022"
         ]
       },
       "records": {
@@ -6759,6 +6775,13 @@
           ],
           "status": "posted",
           "ts": 1793527208
+        },
+        "47283828": {
+          "messages": [
+            "1566650691605364757"
+          ],
+          "status": "posted",
+          "ts": 1793589005
         }
       },
       "route": "a0f2147590c35140"
@@ -7477,23 +7500,16 @@
               "Linnea"
             ]
           },
-          "banners_checked_ts": 1793002222,
+          "banners_checked_ts": 1793589021,
           "banners_search_ts": 1793584517,
           "calendar_ts": 1793584517,
-          "estimate_sources": [
-            "version cadence"
-          ],
-          "estimated": [
-            "preinstall_ts",
-            "maint_start_ts",
-            "maint_end_ts"
-          ],
+          "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
           ],
           "maint_end_ts": 1793761200,
           "maint_start_ts": 1793743200,
-          "preinstall_ts": 1793588400,
+          "preinstall_ts": 1793589005,
           "program_name": "Special Program",
           "program_seen": true,
           "program_ts": 1792756800,
@@ -7519,11 +7535,12 @@
         ],
         "first_seen": 1792555239,
         "message_id": "1562314671103418552",
-        "mirror_hash": "8db59dca4dc981ca",
+        "mirror_hash": "2fedefbab7ebc871",
         "mirror_message_id": "1562314676023332895",
         "mirror_webhook_fp": "ee502f83bdf4",
-        "payload_hash": "7fb6821b428d3730",
+        "payload_hash": "112bf8bfedd8ca2d",
         "posted_at": 1792555239,
+        "preinstall_offset_h": 42.832,
         "prov": {
           "b_phase1": [
             6,
@@ -7546,17 +7563,21 @@
           "b_reruns_by": [
             "wiki"
           ],
+          "compensation": [
+            50,
+            1793589005
+          ],
           "maint_end_ts": [
-            9,
-            1792555239
+            50,
+            1793589005
           ],
           "maint_start_ts": [
-            9,
-            1792555239
+            50,
+            1793589005
           ],
           "preinstall_ts": [
-            9,
-            1792555239
+            50,
+            1793589005
           ],
           "program_name": [
             40,
@@ -7568,7 +7589,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1792836034,
+        "updated_at": 1793589021,
         "webhook_fp": "19991534cf6d"
       }
     },
