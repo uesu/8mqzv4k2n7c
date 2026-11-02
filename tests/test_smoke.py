@@ -18338,8 +18338,8 @@ def test_feature5_encore_build_never_reposts_an_unchanged_kit_across_providers()
 
 
 def test_feature5_gachabase_is_read_per_character_and_waits_when_it_is_the_only_source():
-    """nanoka silent + Gachabase has the agent: Gachabase is the source, and with no kit text to
-    build from the card waits (no partial kit is posted), with the reason in the warnings."""
+    """nanoka silent + Gachabase has the agent's kit text: Gachabase is the fallback and the card is
+    built from its page (the level the page shows). With no page text, the item waits."""
     from gamexpress import beta as beta_mod
 
     page = (ROOT / "tests" / "fixtures" / "gachabase" / "jufufu_en.html").read_text(encoding="utf-8")
@@ -18366,9 +18366,14 @@ def test_feature5_gachabase_is_read_per_character_and_waits_when_it_is_the_only_
         ctx = _beta_ctx(Path(tmp) / "state.json", fetcher, games=["zzz"])
         patch = asyncio.run(beta_mod.build_patch(ctx, GAMES["zzz"], manifest, beta_mod._budget(ctx)))
         assert patch is not None
-        assert patch.characters == []
         assert any("/agents/1391/" in url for url in fetcher.urls)
-        assert any("id 1391 is on Gachabase only" in w for w in ctx.warnings), ctx.warnings
+        assert [c.name for c in patch.characters] == ["Ju Fufu"]
+        assert any("built from Gachabase (nanoka silent)" in w for w in ctx.warnings), ctx.warnings
+        # The Gachabase-built card renders and validates like any other card.
+        from gamexpress import cards as cards_mod
+
+        payloads = cards_mod.beta_payloads(GAMES["zzz"], patch, None, None)
+        assert payloads and all(not cards_mod.validate_payload(p) for p in payloads)
 
 
 def test_feature5_encore_secondary_api_keeps_version_identity_and_request_limits():

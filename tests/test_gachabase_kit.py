@@ -51,6 +51,29 @@ def test_empty_or_unrelated_html_parses_to_nothing():
         "name": "X", "tables": []}
 
 
+def test_genshin_and_star_rail_pages_read_their_name_and_kit_text():
+    from gamexpress.gachabase_kit import kit_built
+
+    for name, fixture, expected in (
+        ("Mitya", "mitya_en.html", "Normal Attack"),
+        ("Aeon ★ Aha", "aha_en.html", "Basic ATK"),
+    ):
+        page = (FIXTURES / fixture).read_text(encoding="utf-8")
+        assert parse_agent_page(page)["name"] == name
+        built = kit_built(page)
+        assert built and built["sections"], fixture
+        titles = [s.title for s in built["sections"]]
+        assert expected in titles, (fixture, titles[:6])
+        assert all(s.tag == "[NEW]" for s in built["sections"])
+        assert built["stats_lines"]
+
+
+def test_a_page_without_kit_text_builds_nothing():
+    from gamexpress.gachabase_kit import kit_built
+
+    assert kit_built("<html><title>X (Agents) | Y</title></html>") is None
+
+
 if __name__ == "__main__":
     TESTS = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
     failed = 0

@@ -68,7 +68,7 @@ from .beta_sources import (
 from .cards import beta_payloads_with_map
 from .config import Game
 from .discord import webhook_fingerprint
-from .gachabase_kit import parse_agent_page, portrait_url
+from .gachabase_kit import kit_built, parse_agent_page, portrait_url
 from .models import BetaCharacter, BetaEquipment, BetaPatch, BetaSectionEntry
 from .state import BETA_FORMAT_EPOCH, stable_hash
 from .textutil import html_to_text
@@ -1994,6 +1994,7 @@ async def _gachabase_kit(ctx, ns: str, item_id: str) -> dict:
         return {}
     kit = parse_agent_page(page)
     kit["portrait"] = portrait_url(page, kit.get("name") or "")
+    kit["built"] = kit_built(page)            # the kit text a card can use, when the page has it
     return kit
 
 
@@ -6798,7 +6799,7 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
                 and _take_shared_request(budget, 1):
             requests += 1
             gb_kit = await _gachabase_kit(ctx, ns, item_id)
-        gb_tables = gb_kit if gb_kit.get("tables") else None
+        gb_tables = gb_kit if (gb_kit.get("tables") or gb_kit.get("built")) else None
         # WuWa: Encore is read for every carded character so it can be compared with nanoka.
         enc_data = await encore_fallback("character", item_id) if ns == "ww" else None
         enc_built = builder(enc_data) if enc_data and builder else None
@@ -6808,20 +6809,22 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             same_encore=kit_numbers_equal)
         if choice.note:
             ctx.warnings.append(f"{game.short} beta: {choice.note} (id {item_id})")
-        if choice.source == SOURCE_ENCORE:
+        if choice.source == SOURCE_GACHABASE and gb_kit.get("built"):
+            # Fallback: nanoka has nothing and Gachabase has the kit text. Its page shows one level,
+            # so the card carries the numbers at the level the page shows.
+            built = gb_kit["built"]
+            data = {"_gachabase": True, "id": item_id, "name": gb_kit.get("name") or "",
+                    "rarity": built.get("rarity") or 5}
+            ctx.warnings.append(f"{game.short} beta: id {item_id} built from Gachabase (nanoka silent)")
+        elif choice.source == SOURCE_ENCORE:
             data = enc_data
             built = enc_built
-        elif choice.source == SOURCE_GACHABASE:
-            # Gachabase's agent page has the numbers but not the kit text a card is built from,
-            # so the item waits instead of posting a partial kit.
-            ctx.warnings.append(
-                f"{game.short} beta: id {item_id} is on Gachabase only; kit text not readable; deferred")
-            patch.more = True
-            continue
+
         zh_data: dict | None = None
         if (
             data
             and "_encore" not in data
+            and "_gachabase" not in data
             and builder
             and (zh_advised or _kit_needs_zh_check(built))
             and requests + 1 <= budget["max_requests"]

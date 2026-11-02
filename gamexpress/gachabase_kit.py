@@ -49,7 +49,8 @@ def _agent_name(page: str) -> str:
     if not match:
         return ""
     title = _html.unescape(match.group(1))
-    return re.split(r"\s*\(Agents\)|\s*\|", title, maxsplit=1)[0].strip()
+    name = re.split(r"\s*\|", title, maxsplit=1)[0].strip()
+    return re.sub(r"\s*\([^()]*\)\s*$", "", name).strip()     # `Mitya (Characters)` -> `Mitya`
 
 
 def _label_and_id(cell: str) -> tuple[str, str]:
@@ -106,3 +107,79 @@ def portrait_url(page: str, name: str) -> str:
                 and "/assets/" in src:
             return src
     return ""
+
+
+_HEADINGS = {"Talents": "Talents", "Passives": "Passives", "Constellations": "Constellations",
+             "Eidolons": "Constellations", "Traces": "Passives", "Skills": "Talents"}
+
+
+def kit_built(page: str) -> dict | None:
+    """The card shape (as a nanoka character builder returns it), or None without kit text."""
+    from .models import BetaSectionEntry
+
+    kit = kit_from_page(page)
+    sections = []
+    for category, paragraphs in kit["blocks"]:
+        if not paragraphs:
+            continue
+        sections.append(BetaSectionEntry(
+            title=paragraphs[0], category=category, tag="[NEW]", meta="",
+            lines=paragraphs[1:],
+        ))
+    if not sections:
+        return None
+    return {"rarity": 5, "element": "", "role": "", "camp": "", "subtext": "",
+            "stats_lines": kit["stats"], "sections": sections}
+
+
+def kit_from_page(page: str) -> dict:
+    """Read a Gachabase agent page into the card's kit shape: sections of skill text.
+
+    Uses the page's rendered text (the same text the site shows). Each section is a skill, passive
+    or constellation: a short title line, then its paragraphs. The stat block is kept as lines.
+    Returns {} when the page has no kit text. Only the values the page shows (one level) are read.
+    """
+    from .textutil import html_to_text
+
+    text = html_to_text(page or "")[0] if page else ""
+    parsed = parse_agent_page(page or "")
+    name = parsed.get("name") or ""
+    lines = [ln.strip() for ln in text.splitlines()]
+    blocks: list[tuple[str, list[str]]] = []      # (category, paragraphs)
+    stats: list[str] = []
+    category = ""
+    stat_mode = False
+    paragraph: list[str] = []
+
+    def flush() -> None:
+        if paragraph and category:
+            blocks.append((category, list(paragraph)))
+        paragraph.clear()
+
+    for raw in lines:
+        if raw in ("Stats",):
+            stat_mode = True
+            continue
+        if raw in _HEADINGS and raw != "Stats":
+            flush()
+            stat_mode = False
+            category = _HEADINGS[raw]
+            continue
+        if stat_mode:
+            if raw and not raw.startswith("Lv"):
+                stats.append(raw)
+            continue
+        if raw in ("Skill Attributes", "Attributes", "Tooltips", "Raw Params", "Related Items",
+                   "Dressing Room", "Effects", "Ingredients"):
+            flush()
+            category = ""                         # not card text: stop until the next heading
+            continue
+        if not raw:
+            flush()
+            continue
+        if raw.startswith("Lv.") or raw.isdigit() or raw.startswith("Lv "):
+            continue
+        if category:
+            paragraph.append(raw)
+    flush()
+    return {"name": name, "stats": stats, "blocks": blocks}
