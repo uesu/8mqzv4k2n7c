@@ -566,6 +566,9 @@ _TOKEN_RE = re.compile(
     r"(?:[/+*×x-]\d+(?:\.\d+)*(?:(?:%|s\b|[x×]\b))?)*"
     # `v3.8.1`, `S1.5`: a leading word only when a dotted version follows it.
     r"|[A-Za-z]+\d+(?:\.\d+)+"
+    # A bracketed name is one token: `[Embers]` must strike and bold whole, not split inside the
+    # brackets (`[~~Embers~~ -> **Blazing Flame**]`). The card's house form is `~~[Embers]~~`.
+    r"|\[[^\[\]\n]+\]"
     r"|\w+|[^\s\w]"
 )
 

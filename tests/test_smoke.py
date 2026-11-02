@@ -19768,6 +19768,17 @@ def test_feature5_struck_old_values_are_bold_when_numeric_and_plain_for_names():
         "DMG Multiplier ~~**63.1%**~~ → **39.3%**"
 
 
+def test_feature5_bracketed_names_strike_and_bold_whole():
+    """`[Embers]` -> `[Blazing Flame]` is one token each side: `~~[Embers]~~ → **[Blazing Flame]**`."""
+    from gamexpress import beta as beta_mod
+
+    rendered, _ = beta_mod._diff_parts("Resource: [Embers] stock", "Resource: [Blazing Flame] stock")
+    assert rendered == "Resource: ~~[Embers]~~ → **[Blazing Flame]** stock"
+    # Numeric lines are unchanged by the bracket alternative.
+    assert beta_mod._diff_parts("DMG Multiplier 63.1%", "DMG Multiplier 39.3%")[0] == \
+        "DMG Multiplier ~~**63.1%**~~ → **39.3%**"
+
+
 def test_feature5_cn_sourced_values_are_bold_like_en_and_placeholders_stay_off_the_card():
     """CN-sourced kit text follows the same card format as EN: numbers bold (also when a CJK word
     sits in front of them), arrows kept, bullets nested, and no `(Test1)` marker on the card."""
