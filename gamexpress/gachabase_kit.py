@@ -112,6 +112,23 @@ def portrait_url(page: str, name: str) -> str:
 _HEADINGS = {"Talents": "Talents", "Passives": "Passives", "Constellations": "Constellations",
              "Eidolons": "Constellations", "Traces": "Passives", "Skills": "Talents"}
 
+# The page's navigation under the kit: the first of these after a kit heading ends the kit text.
+_KIT_END = {"Materials Calculator", "In-Game Build Guide", "Voicelines", "Voice Lines"}
+
+# The kit a card can post must have these groups with text, per game. A kit missing one is
+# incomplete and is not posted (Gachabase is only used when nanoka is silent).
+REQUIRED_GROUPS = {"gi": ("Talents", "Passives", "Constellations"),
+                   "hsr": ("Talents", "Passives", "Constellations"),
+                   "zzz": ("Talents",)}
+
+
+def kit_complete(built: dict | None, ns: str) -> bool:
+    """True when a Gachabase-built kit has its stat block and every required group with text."""
+    if not built or ns not in REQUIRED_GROUPS or not built.get("stats_lines"):
+        return False
+    with_text = {s.category for s in built.get("sections") or [] if s.lines}
+    return all(group in with_text for group in REQUIRED_GROUPS[ns])
+
 
 def kit_built(page: str) -> dict | None:
     """The card shape (as a nanoka character builder returns it), or None without kit text."""
@@ -157,6 +174,9 @@ def kit_from_page(page: str) -> dict:
         paragraph.clear()
 
     for raw in lines:
+        if category and raw in _KIT_END:
+            flush()
+            break                                 # navigation below the kit: nothing more is kit text
         if raw in ("Stats",):
             stat_mode = True
             continue

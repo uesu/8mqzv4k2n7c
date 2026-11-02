@@ -23,6 +23,11 @@ name: Game-Express Monitor
 #                   · game    one game
 #                   · repost  post a version card again as a NEW message, e.g. starrail:4.6
 #
+#   mode = dryrun  THE REAL MONITOR, NOTHING POSTED. It reads the live sources exactly like a live
+#                 run, builds every card it would post, and logs them as "DRY RUN" in the job log.
+#                 It posts nothing to Discord, saves no state and commits nothing. Use it to see the
+#                 beta cards (Feature 5) before a real run: `only` = beta limits it to beta.
+#
 #   mode = test   CHECK IT WITH **REAL** DATA. No sample cards: every test below fetches the
 #                 live sources and shows what they really returned, so a wrong link, a wrong
 #                 picture or a wrong timestamp is visible BEFORE a real announcement goes out.
@@ -65,14 +70,14 @@ on:
   workflow_dispatch:          # manual runs + cron-job.org (POST .../workflows/monitor.yml/dispatches)
     inputs:
       mode:
-        description: '① WHAT THIS RUN DOES — live = the real monitor · test = check it against REAL live data'
+        description: '① WHAT THIS RUN DOES — live = the real monitor · dryrun = real data, builds the cards, posts NOTHING · test = check it against REAL live data'
         type: choice
-        options: [live, test]
+        options: [live, dryrun, test]
         default: live
       only:
-        description: '② LIVE · which feature — everything, only schedule announcements, or only codes'
+        description: '② LIVE / DRY RUN · which feature — everything, schedule announcements, codes, or beta (Feature 5)'
         type: choice
-        options: [all, schedule, codes]
+        options: [all, schedule, codes, beta]
         default: all
       game:
         description: '③ BOTH · optional: one game (genshin, starrail, zzz, wuwa, hna, ananta)'
@@ -101,7 +106,7 @@ jobs:
     # ENABLED_FEATURES=none and every live run is skipped, even if something triggers it by
     # mistake. A TEST run (mode = test) is still allowed there — it never writes the state.
     # Never set ENABLED_FEATURES=none on the repo that posts.
-    if: vars.ENABLED_FEATURES != 'none' || inputs.mode == 'test'
+    if: vars.ENABLED_FEATURES != 'none' || inputs.mode == 'test' || inputs.mode == 'dryrun'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -232,6 +237,15 @@ jobs:
           esac
           printf '\n### Repository persistence\n- %s\n' "$result" >> "$GITHUB_STEP_SUMMARY" ||
             printf 'Could not append repository persistence summary\n' >&2
+
+      # ══ DRY RUN — real data, builds every card, posts and saves NOTHING ═══════════════
+      - name: DRY RUN · build what the live run would post (nothing is posted or saved)
+        if: inputs.mode == 'dryrun'
+        env:
+          ONLY: ${{ inputs.only != 'all' && inputs.only || '' }}
+          GAME: ${{ inputs.game }}
+          REPOST: ${{ inputs.repost }}
+        run: python -m gamexpress run --dry-run
 
       # ══ TEST — REAL DATA, posted to the real channels as 🧪 TEST, state never saved ═══
       - name: TEST · webhooks — is every secret there and pointing at the right channel?

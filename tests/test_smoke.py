@@ -1246,11 +1246,13 @@ def test_workflows_cron_job_org_and_test_bench():
     for key in ("GENSHIN", "STARRAIL", "HNA", "ZZZ", "WUWA", "ANANTA"):
         assert env[f"DISCORD_WEBHOOK_CODES_{key}"] == f"${{{{ secrets.DISCORD_WEBHOOK_CODES_{key} }}}}"
     assert mon["concurrency"]["cancel-in-progress"] is False
-    # v1.6.0: two modes and nothing else — a live run, or a test that uses REAL live data.
+    # Modes: a live run, a dry run (real data, builds the cards, posts and saves NOTHING, approved
+    # 2026-11-02), or a test that uses REAL live data. No other input.
     assert not (wf / "test.yml").exists()
     inputs = on["workflow_dispatch"]["inputs"]
     assert set(inputs) == {"mode", "only", "game", "repost", "test", "ping"}   # no dry_run/probe/kind
-    assert inputs["mode"]["options"] == ["live", "test"] and inputs["mode"]["default"] == "live"
+    assert inputs["mode"]["options"] == ["live", "dryrun", "test"] and inputs["mode"]["default"] == "live"
+    assert "beta" in inputs["only"]["options"]
     # cron-job.org sends NO inputs at all, so the defaults must be a plain live run
     assert inputs["only"]["default"] == "all" and inputs["game"]["default"] == "" \
         and inputs["repost"]["default"] == ""

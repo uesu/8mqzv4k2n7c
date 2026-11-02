@@ -68,7 +68,7 @@ from .beta_sources import (
 from .cards import beta_payloads_with_map
 from .config import Game
 from .discord import webhook_fingerprint
-from .gachabase_kit import kit_built, parse_agent_page, portrait_url
+from .gachabase_kit import kit_built, kit_complete, parse_agent_page, portrait_url
 from .models import BetaCharacter, BetaEquipment, BetaPatch, BetaSectionEntry
 from .state import BETA_FORMAT_EPOCH, stable_hash
 from .textutil import html_to_text
@@ -4901,6 +4901,30 @@ def _diff_equipment(previous: BetaEquipment, current: BetaEquipment) -> BetaEqui
     )
 
 
+_IMAGE_URL_RE = re.compile(r"\.(?:png|webp|jpe?g)(?:[?#]|$)", re.I)
+
+
+def _encore_image_candidates(payload: Any) -> list[str]:
+    """Absolute http(s) image URLs found anywhere in an Encore payload, in document order."""
+    found: list[str] = []
+
+    def walk(value: Any) -> None:
+        if isinstance(value, dict):
+            for child in value.values():
+                walk(child)
+        elif isinstance(value, list):
+            for child in value:
+                walk(child)
+        elif isinstance(value, str):
+            url = value.strip()
+            if url.lower().startswith(("http://", "https://")) and _IMAGE_URL_RE.search(url) \
+                    and url not in found:
+                found.append(url)
+
+    walk(payload)
+    return found
+
+
 def _data_image_candidates(
     ns: str,
     role: str,
@@ -4909,8 +4933,11 @@ def _data_image_candidates(
     listing: dict | None = None,
 ) -> list[str]:
     """Known static.nanoka.cc asset conventions, preflighted before use and locked after."""
-    if not item_id or "_encore" in data:
+    if not item_id:
         return []
+    if "_encore" in data:
+        # WuWa: only image URLs Encore itself publishes (no guessed paths); each is preflighted.
+        return _encore_image_candidates(data.get("_encore"))
     candidates: list[str] = []
 
     def add(url: str) -> None:
@@ -6809,13 +6836,18 @@ async def build_patch(ctx, game: Game, manifest: dict, budget: dict) -> BetaPatc
             same_encore=kit_numbers_equal)
         if choice.note:
             ctx.warnings.append(f"{game.short} beta: {choice.note} (id {item_id})")
-        if choice.source == SOURCE_GACHABASE and gb_kit.get("built"):
-            # Fallback: nanoka has nothing and Gachabase has the kit text. Its page shows one level,
-            # so the card carries the numbers at the level the page shows.
+        if choice.source == SOURCE_GACHABASE and kit_complete(gb_kit.get("built"), ns):
+            # Fallback: nanoka has nothing and Gachabase has a complete kit text. Its page shows one
+            # level, so the card carries the numbers at the level the page shows.
             built = gb_kit["built"]
             data = {"_gachabase": True, "id": item_id, "name": gb_kit.get("name") or "",
                     "rarity": built.get("rarity") or 5}
             ctx.warnings.append(f"{game.short} beta: id {item_id} built from Gachabase (nanoka silent)")
+        elif choice.source == SOURCE_GACHABASE:
+            # An incomplete Gachabase kit is never posted: no partial card, the item waits.
+            data, built = None, None
+            ctx.warnings.append(f"{game.short} beta: Gachabase kit for id {item_id} is incomplete "
+                                "and nanoka is silent; not posted")
         elif choice.source == SOURCE_ENCORE:
             data = enc_data
             built = enc_built
