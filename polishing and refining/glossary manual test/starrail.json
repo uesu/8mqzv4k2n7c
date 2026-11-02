@@ -2,26 +2,16 @@
   "game": "starrail",
   "namespace": "hsr",
   "version": "4.6.54",
-  "generated_at": "2026-11-01T20:53:03Z",
+  "generated_at": "2026-11-01T23:57:09Z",
   "source": "https://static.nanoka.cc/hsr/4.6.54/{en,zh}/<kind>/<id>.json",
   "items_listed": 335,
-  "items_with_pairs": 335,
+  "items_with_pairs": 329,
   "encore_items_with_pairs": 0,
   "rules": {
     "min_support": 2,
     "min_share": 0.9
   },
   "terms": [
-    {
-      "zh": "被召唤时，立即获得充能。",
-      "en": "When summoned, immediately gains Charge.",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
     {
       "zh": "卡厄斯兰那的额外回合",
       "en": "Khaslana's Extra Turn",
@@ -30,36 +20,6 @@
       "example_items": [
         "character/1408",
         "character/1415"
-      ]
-    },
-    {
-      "zh": "放心飞，开拓永相随！",
-      "en": "May the Trailblaze Fly You Starward",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
-      ]
-    },
-    {
-      "zh": "拯救世界，无需理由",
-      "en": "Save the World. Just Because.",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
-      ]
-    },
-    {
-      "zh": "明天，栖息聚光之下",
-      "en": "Tomorrow, Rest in Spotlight",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8005",
-        "character/8006"
       ]
     },
     {
@@ -73,26 +33,6 @@
       ]
     },
     {
-      "zh": "英雄一笑，生死难料",
-      "en": "That Smile Hits Different",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
-      ]
-    },
-    {
-      "zh": "一起上吧，迷迷！",
-      "en": "Together, Mem!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
-    {
       "zh": "全屏段的高空踏歌",
       "en": "Full-on Aerial Dance",
       "support": 2,
@@ -100,36 +40,6 @@
       "example_items": [
         "character/8005",
         "character/8006"
-      ]
-    },
-    {
-      "zh": "名场面酝酿中……",
-      "en": "History in the Making...",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
-      ]
-    },
-    {
-      "zh": "明天，一同写下！",
-      "en": "Together, We Script Tomorrow!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
-    {
-      "zh": "来吧，镜头的焦点",
-      "en": "Into the Spotlight",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
       ]
     },
     {
@@ -166,16 +76,6 @@
         "character/1201",
         "character/1214",
         "character/1314"
-      ]
-    },
-    {
-      "zh": "银河传奇，登场！",
-      "en": "The Cosmic Legend Cometh!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
       ]
     },
     {
@@ -269,16 +169,6 @@
       "example_items": [
         "character/8003",
         "character/8004"
-      ]
-    },
-    {
-      "zh": "就决定是你了！",
-      "en": "I Choose You!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
       ]
     },
     {
@@ -484,46 +374,6 @@
       ]
     },
     {
-      "zh": "伙伴！一起！",
-      "en": "Friends! Together!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
-    {
-      "zh": "包在我身上！",
-      "en": "Leave It to Me!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
-    {
-      "zh": "即刻！独奏团",
-      "en": "Now! I'm the Band!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8005",
-        "character/8006"
-      ]
-    },
-    {
-      "zh": "坏人！麻烦！",
-      "en": "Baddies! Trouble!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
-    {
       "zh": "弱点击破状态",
       "en": "Weakness Break State",
       "support": 13,
@@ -534,16 +384,6 @@
         "character/1220",
         "character/1225",
         "character/1303"
-      ]
-    },
-    {
-      "zh": "我会！帮你！",
-      "en": "Lemme! Help You!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
       ]
     },
     {
@@ -679,16 +519,6 @@
       ]
     },
     {
-      "zh": "迷迷，加油！",
-      "en": "Go, Mem, Go!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
-    {
       "zh": "风暴甚是喧嚣",
       "en": "Let the Storm Rage On",
       "support": 2,
@@ -765,16 +595,6 @@
       ]
     },
     {
-      "zh": "燃起来了！",
-      "en": "We Are So Back!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
-      ]
-    },
-    {
       "zh": "磁石与长链",
       "en": "Magnets and Long Chains",
       "support": 2,
@@ -825,26 +645,6 @@
       "example_items": [
         "character/8007",
         "character/8008"
-      ]
-    },
-    {
-      "zh": "遗憾…不留",
-      "en": "No... Regrets",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8007",
-        "character/8008"
-      ]
-    },
-    {
-      "zh": "阿哈咬它！",
-      "en": "Aha, Sic 'Em!",
-      "support": 2,
-      "items_with_term": 2,
-      "example_items": [
-        "character/8009",
-        "character/8010"
       ]
     },
     {
