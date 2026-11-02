@@ -20,11 +20,11 @@ from test_smoke import GAMES, _beta_ctx  # noqa: E402
 from gamexpress import beta as beta_mod  # noqa: E402
 from gamexpress.gachabase_kit import kit_built, kit_complete  # noqa: E402
 
-FIXTURES = Path(__file__).parent / "fixtures" / "gachabase"
-
 
 def _kit(name: str) -> dict:
     return kit_built((FIXTURES / name).read_text(encoding="utf-8"))
+
+FIXTURES = Path(__file__).parent / "fixtures" / "gachabase"
 
 
 def test_complete_kits_pass_and_incomplete_kits_fail():
@@ -72,22 +72,35 @@ def test_incomplete_gachabase_kit_is_not_posted_and_the_item_waits():
         assert not any("built from Gachabase" in w for w in ctx.warnings)
 
 
-def test_encore_publishes_image_urls_which_become_candidates_after_nanoka():
+def test_encore_character_images_come_from_its_named_image_fields_in_order():
+    """Encore's character detail names its absolute image URLs (checked against the live API)."""
     payload = {
-        "Id": 1512, "Name": "Lily", "Skills": [{"SkillName": "x"}],
-        "Art": {"Splash": "https://cdn.example.org/lily/splash.webp",
-                "Thumb": "https://cdn.example.org/lily/thumb.PNG?v=2"},
-        "Notes": ["see https://encore.moe/character/1512", "relative/path.webp"],
-        "Dup": "https://cdn.example.org/lily/splash.webp",
+        "Id": 1512, "Name": {"Title": "x", "Content": "Lily"},
+        "RolePortrait": "https://api.encore.moe/resource/Data/Game/Aki/UI/P.webp",
+        "RoleStand": "https://api.encore.moe/resource/Data/Game/Aki/UI/S.webp",
+        "RoleHeadIcon": "https://api.encore.moe/resource/Data/Game/Aki/UI/H.webp",
+        "Model3D": [{"Model": "https://s3-storage-api.encore.moe/x.uemodel"}],
+        "Icon": "/Game/Aki/UI/UIResources/Common/Image/IconRup/T_IconRup_1402_UI.T_IconRup_1402_UI",
     }
-    urls = beta_mod._encore_image_candidates(payload)
-    assert urls == ["https://cdn.example.org/lily/splash.webp",
-                    "https://cdn.example.org/lily/thumb.PNG?v=2"]
-    # The card's candidate list for a WuWa Encore build is exactly Encore's own image URLs.
+    urls = beta_mod._encore_image_candidates(payload, "character")
+    assert urls == ["https://api.encore.moe/resource/Data/Game/Aki/UI/P.webp",
+                    "https://api.encore.moe/resource/Data/Game/Aki/UI/S.webp",
+                    "https://api.encore.moe/resource/Data/Game/Aki/UI/H.webp"]
     assert beta_mod._data_image_candidates("ww", "character", "1512", {"_encore": payload}) == urls
-    # No Encore images: no candidates (the card posts without an image).
-    assert beta_mod._data_image_candidates("ww", "character", "1512",
-                                           {"_encore": {"Id": 1512}}) == []
+    # No Encore image fields: no candidates (the card posts without an image).
+    assert beta_mod._data_image_candidates("ww", "character", "1512", {"_encore": {"Id": 1512}}) == []
+
+
+def test_encore_weapon_icon_paths_become_the_host_webp_only_for_game_paths():
+    payload = {"ItemId": 21030076, "Icon": "/Game/Aki/UI/UIResources/Common/Image/IconWeapon/"
+                                            "T_IconWeapon21030056_UI.T_IconWeapon21030056_UI",
+               "IconBig": ""}
+    assert beta_mod._encore_image_candidates(payload, "weapon") == [
+        "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconWeapon/"
+        "T_IconWeapon21030056_UI.webp"]
+    assert beta_mod._encore_asset_url("https://example.org/x.webp") == ""
+    assert beta_mod._encore_asset_url("") == ""
+
 
 
 

@@ -4901,27 +4901,41 @@ def _diff_equipment(previous: BetaEquipment, current: BetaEquipment) -> BetaEqui
     )
 
 
-_IMAGE_URL_RE = re.compile(r"\.(?:png|webp|jpe?g)(?:[?#]|$)", re.I)
+# Encore's character detail publishes these absolute image URLs by name, best first.
+_ENCORE_CHARACTER_IMAGE_KEYS = ("RolePortrait", "RoleStand", "FormationRoleCard", "Card",
+                                "RoleHeadIconLarge", "RoleHeadIconBig", "RoleHeadIcon",
+                                "RoleHeadIconCircle")
+# Encore's weapon detail gives UE asset paths; the same `/Game/...` path under this host is the
+# `.webp` that Encore's own weapon list publishes as `Icon`. Best (largest) first.
+_ENCORE_WEAPON_IMAGE_KEYS = ("IconBig", "IconMiddle", "Icon")
+_ENCORE_RESOURCE_HOST = "https://api.encore.moe/resource/Data"
 
 
-def _encore_image_candidates(payload: Any) -> list[str]:
-    """Absolute http(s) image URLs found anywhere in an Encore payload, in document order."""
+def _encore_asset_url(path: Any) -> str:
+    """`/Game/Aki/.../T_X_UI.T_X_UI` -> the host's `.webp` URL, or '' for anything else."""
+    text = str(path or "").strip()
+    if not text.startswith("/Game/"):
+        return ""
+    return f"{_ENCORE_RESOURCE_HOST}{text.split('.', 1)[0]}.webp"
+
+
+def _encore_image_candidates(payload: Any, role: str = "character") -> list[str]:
+    """Image URLs Encore itself publishes for this item, in preference order (no guessed paths)."""
+    if not isinstance(payload, dict):
+        return []
     found: list[str] = []
-
-    def walk(value: Any) -> None:
-        if isinstance(value, dict):
-            for child in value.values():
-                walk(child)
-        elif isinstance(value, list):
-            for child in value:
-                walk(child)
-        elif isinstance(value, str):
-            url = value.strip()
-            if url.lower().startswith(("http://", "https://")) and _IMAGE_URL_RE.search(url) \
-                    and url not in found:
+    if role == "weapon":
+        for key in _ENCORE_WEAPON_IMAGE_KEYS:
+            url = _encore_asset_url(payload.get(key))
+            if url and url not in found:
                 found.append(url)
-
-    walk(payload)
+        return found
+    for key in _ENCORE_CHARACTER_IMAGE_KEYS:
+        value = payload.get(key)
+        if isinstance(value, str):
+            url = value.strip()
+            if url.lower().startswith(("https://", "http://")) and url not in found:
+                found.append(url)
     return found
 
 
@@ -4937,7 +4951,7 @@ def _data_image_candidates(
         return []
     if "_encore" in data:
         # WuWa: only image URLs Encore itself publishes (no guessed paths); each is preflighted.
-        return _encore_image_candidates(data.get("_encore"))
+        return _encore_image_candidates(data.get("_encore"), role)
     candidates: list[str] = []
 
     def add(url: str) -> None:
