@@ -2,7 +2,7 @@
   "beta": {
     "genshin": {
       "format_epoch": 4,
-      "last_poll": 1793585723,
+      "last_poll": 1793587523,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -13,7 +13,7 @@
     },
     "starrail": {
       "format_epoch": 4,
-      "last_poll": 1793585723,
+      "last_poll": 1793587523,
       "latest_rev": "",
       "locked_images": {},
       "revisions": {},
@@ -24,8 +24,8 @@
     },
     "wuwa": {
       "format_epoch": 4,
-      "last_poll": 1793585723,
-      "latest_rev": "1ce49e698ba2de12",
+      "last_poll": 1793587523,
+      "latest_rev": "e7a86cc9783b885f",
       "locked_images": {},
       "revisions": {
         "1ce49e698ba2de12": {
@@ -100,19 +100,57 @@
           "source_version": "3.8.1",
           "status": "posted",
           "ts": 1792991720
+        },
+        "e7a86cc9783b885f": {
+          "batches": {
+            "a10dec5359db46b6": {
+              "messages": [
+                "1566644415177687141",
+                "1566644438388965387",
+                "1566644460153213113",
+                "1566644482990936085",
+                "1566644505573335222",
+                "1566644528025436272"
+              ],
+              "signature": "6de4c34e1703ef46",
+              "status": "posted",
+              "ts": 1793587523
+            }
+          },
+          "characters": {
+            "ww:1512": 0
+          },
+          "label": "v3.8.4",
+          "messages": [
+            "1566644415177687141",
+            "1566644438388965387",
+            "1566644460153213113",
+            "1566644482990936085",
+            "1566644505573335222",
+            "1566644528025436272"
+          ],
+          "more": false,
+          "processed": [
+            "character:ww:1512",
+            "weapon:ww:21030076"
+          ],
+          "source_revision": "3.8.4",
+          "source_version": "3.8.4",
+          "status": "posted",
+          "ts": 1793587523
         }
       },
       "route": "f7e18488aac788d3",
       "snapshots": {
         "ww:1512": {
-          "content_signature": "43c10e89e18ff5cc",
+          "content_signature": "c9acac1bd9cfa25e",
           "data": {
             "element": "Spectro",
             "id": "ww:1512",
             "image_url": "",
             "mechanic_defs": [],
             "name": "Lily",
-            "page_url": "https://ww.nanoka.cc/character/1512/",
+            "page_url": "https://encore.moe/character/1512?lang=en&v=Beta",
             "rarity": 5,
             "role": "Pistols",
             "sections": [
@@ -326,7 +364,7 @@
                   "Casting Intro Skill - Eternal Bloom restores 130 points of Dream Perfume.",
                   "Heavy Attack - Woven Fairytale",
                   "When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Fairytale, consuming all Dream Perfume to grant 1 stack of Dream Shelter. During the skill, she pulls in nearby targets and continuously deals Spectro DMG to them. She also heals all Resonators in the team every second for 2s.",
-                  "Casting Heavy Attack - Woven Fairytale grants Lily Wish of Praying Dream, which can be gained once every 25s. When Lily has Wish of Praying Dream, this Heavy Attack - Woven Fairytale consumes Wish of Praying Dream to increase the healing by 400%.",
+                  "Casting Heavy Attack - Woven Fairytale grants Lily Wish of Praying Dream.",
                   "Switching to another Resonator during Heavy Attack - Woven Fairytale stops the skills immediately.",
                   "Lily continuously gains Dreambell Chime during the skill.",
                   "When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Fairytale's Finale. Heavy Attack - Fairytale's Finale is automatically cast at the end of Heavy Attack - Woven Fairytale. Casting Heavy Attack - Fairytale's Finale consumes all Dreambell Chime.",
@@ -336,7 +374,7 @@
                   "Casting the skill grants Lily Sillage for 6s. Casting Outro Skill consumes Sillage and grants Silvered Dream to Resonators in the team. This effect can be triggered once every 20s.",
                   "Heavy Attack - Woven Phantasm",
                   "When Dream Perfume is full, hold Normal Attack to cast Heavy Attack - Woven Phantasm, consuming all Dream Perfume to grant 1 stack of Dream Shelter. During the skill, she pulls in nearby targets and continuously deals Spectro DMG to them. She also heals all Resonators in the team every second for 2s.",
-                  "Casting Heavy Attack - Woven Phantasm grants Lily Wish of Praying Dream, which can be gained once every 25s. When Lily has Wish of Praying Dream, this Heavy Attack - Woven Phantasm consumes Wish of Praying Dream to increase the healing by 400%.",
+                  "Casting Heavy Attack - Woven Phantasm grants Lily Wish of Praying Dream.",
                   "Switching to another Resonator during Heavy Attack - Woven Phantasm stops the skill immediately.",
                   "Lily continuously gains Dreambell Chime during the skill.",
                   "When Dreambell Chime reaches 300 points, press or hold Normal Attack to stop the skill immediately and cast Heavy Attack - Phantasm's End. Heavy Attack - Phantasm's End is automatically cast at the end of Heavy Attack - Woven Phantasm. Casting Heavy Attack - Phantasm's End consumes all Dreambell Chime.",
@@ -350,7 +388,21 @@
                   "The active Resonator's Echo Skill Crit. Rate and Echo Skill Crit. DMG are increased. Every 0.7% of Lily's Energy Regen above 190% increases Echo Skill Crit. Rate by 0.1%, up to 10%. Every 0.7% of Lily's Energy Regen above 190% increases Echo Skill Crit. DMG by 0.2%, up to 20%.",
                   "All Resonators in the team gain resistance to interruption.",
                   "Dream Shelter",
-                  "Casting Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm grants 1 stack of Dream Shelter, stacking up to 1 time. Receiving damage from an enemy target consumes 1 stack of Dream Shelter to grant Lily immunity to interruption and reduce the DMG taken by 60% for 1s. This effect can be triggered once every 1s."
+                  "Casting Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm grants 1 stack of Dream Shelter, stacking up to 1 time. Receiving damage from an enemy target consumes 1 stack of Dream Shelter to grant Lily immunity to interruption and reduce the DMG taken by 60% for 1s. This effect can be triggered once every 1s.",
+                  "Wish of Praying Dream",
+                  "Can be gained once every 25s.",
+                  "When Lily has Wish of Praying Dream, this Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm consumes Wish of Praying Dream to increase the skill's healing by 400%.",
+                  "**Skill Attributes (Lv. 10)**",
+                  "Heavy Attack - Woven Fairytale Healing: 351+0.70% HP",
+                  "Heavy Attack - Woven Phantasm Healing: 351+0.70% HP",
+                  "Heavy Attack - Woven Fairytale DMG: 24.86%+24.86%*19",
+                  "Heavy Attack - Woven Phantasm DMG: 21.61%*23",
+                  "Heavy Attack - Fairytale's Finale DMG: 35.79% HP",
+                  "Heavy Attack - Phantasm's End DMG: 35.79% HP",
+                  "Heavy Attack - Woven Fairytale Healing with Wish of Praying Dream: 1758+3.53% HP",
+                  "Heavy Attack - Woven Phantasm Healing with Wish of Praying Dream: 1758+3.53% HP",
+                  "Heavy Attack - Woven Fairytale/Woven Phantasm Concerto Regen per Second: 10",
+                  "Heavy Attack - Fairytale's Finale/Phantasm's End Concerto Regen: 10"
                 ],
                 "meta": "",
                 "params": [
@@ -377,6 +429,17 @@
                 ],
                 "title": "Forte Circuit: Dreamland of Flowers",
                 "values_label": "Lv. 10"
+              },
+              {
+                "category": "Inherent Skill",
+                "defs": [],
+                "lines": [
+                  "Has a chance to produce special dishes when cooking."
+                ],
+                "meta": "",
+                "params": [],
+                "title": "Inherent Skill: Skillful Cooking",
+                "values_label": ""
               },
               {
                 "category": "Outro Skill",
@@ -427,7 +490,7 @@
                 "category": "Resonance Chain",
                 "defs": [],
                 "lines": [
-                  "Casting Intro Skill - Eternal Bloom additionally grants Lily 25 points of Concerto Energy and 170 points of Dream Perfume.",
+                  "Casting Intro Skill - Eternal Bloom additionally grants Lily 25 points of Concerto Energy and 170 point of Dream Perfume.",
                   "While channeling Heavy Attack - Woven Fairytale or Heavy Attack - Woven Phantasm, Lily gains Dreambell Chime faster, and the healing provided is increased by 50%."
                 ],
                 "meta": "",
@@ -471,20 +534,26 @@
             ],
             "stats_header": "Base Stats",
             "stats_lines": [
-              "Lv. 90 — HP 16712.5 · ATK 287.5 · DEF 1100",
+              "Lv. 90 — HP 16712.5 · ATK 287.5 · DEF 1100 · Crit. Rate 5% · Crit. DMG 150% · Tune Break Boost 0",
               "Stat Bonuses: Healing Bonus +12% | HP +12%"
             ],
             "subtext": ""
           },
           "kind": "character",
           "norm_rev": 2,
-          "revision": "3.8.3",
-          "signature": "684c52ff2ed21dc7",
-          "truncated": true,
-          "ts": 1793357423
+          "provider": "encore",
+          "provider_revision": [
+            "3.8.0",
+            "3.8.4",
+            "9288264"
+          ],
+          "revision": "3.8.4",
+          "signature": "7fa76cdab38039b8",
+          "truncated": false,
+          "ts": 1793587523
         },
         "ww:21030076": {
-          "content_signature": "5484c434868dce64",
+          "content_signature": "104c74aa9e223490",
           "data": {
             "category_label": "Weapons",
             "effect_title": "Dreamland Solace",
@@ -492,32 +561,39 @@
             "image_url": "",
             "image_urls": [],
             "lines": [
-              "Increases Max HP by 12%/15%/18%/21%/24%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy, triggered once every 20s. All Resonators in the team gain Soothed Soul for 30s when the wielder peforms healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16%/20%/24%/28%/32% ATK increase for [value unavailable]s. This effect is removed when Soothed Soul ends. When the wielder heals Resonators, the active Resonator also gains 24%/30%/36%/42%/48% Echo Skill DMG Bonus for 6s. Effects of the same name do not stack.",
+              "-# Effect values shown for refinements 1–5.",
+              "Increases Max HP by 12%/15%/18%/21%/24%. Casting Resonance Liberation restores 8/10/12/14/16 points of Concerto Energy, triggered once every 20s. All Resonators in the team gain Soothed Soul for 30s when the wielder performs healing. When Soothed Soul is active, if a Resonator in the team gains Unison or triggers Unison Response, that Resonator gains 16%/20%/24%/28%/32% ATK increase for [value unavailable]s. This effect is removed when Soothed Soul ends. When the wielder heals Resonators, the active Resonator also gains 24%/30%/36%/42%/48% Echo Skill DMG Bonus for 6s. Effects of the same name do not stack.",
               "-# ⚠️ Some values are unavailable in this revision's source data."
             ],
             "name": "Lullaby",
-            "page_url": "https://ww.nanoka.cc/weapon/21030076/",
+            "page_url": "https://encore.moe/weapon/21030076?lang=en&v=Beta",
             "rarity": 5,
             "set_kind": "",
             "set_parts": "",
-            "stats_line": "ATK 412.5 · Energy Regen 77.04%",
-            "sub_type": "Energy Regen",
+            "stats_line": "Lv. 90 — ATK 412.50 · Energy Regen 77.04%",
+            "sub_type": "Pistols",
             "weapon_class": "Pistols"
           },
           "equip_norm_rev": 1,
           "kind": "weapon",
-          "revision": "3.8.3",
-          "signature": "ad125580a0403842",
+          "provider": "encore",
+          "provider_revision": [
+            "3.8.0",
+            "3.8.4",
+            "9288264"
+          ],
+          "revision": "3.8.4",
+          "signature": "fc597f6967d2d6a9",
           "truncated": false,
-          "ts": 1793357423
+          "ts": 1793587523
         }
       },
-      "source_revision": "3.8.3",
-      "source_version": "3.8.3"
+      "source_revision": "3.8.4",
+      "source_version": "3.8.4"
     },
     "zzz": {
       "format_epoch": 4,
-      "last_poll": 1793585723,
+      "last_poll": 1793587523,
       "latest_rev": "e4abf671f8fef17e",
       "locked_images": {
         "zzz:1331": {
