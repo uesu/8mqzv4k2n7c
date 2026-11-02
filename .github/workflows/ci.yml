@@ -49,7 +49,7 @@ jobs:
 
       # astral-sh doesn't publish a floating major tag like v10; keep `# vX.Y.Z` bare so zizmor verifies it.
       - name: Install uv (same packages pip would install, just a much faster resolver)
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e  # v10.3.2
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
         with:
           version: latest-known            # see monitor.yml for why this is not "latest"
 
@@ -105,7 +105,7 @@ jobs:
 
       - name: Static check of the workflow YAML itself (rhysd/actionlint via reviewdog)
         continue-on-error: true   # informational only, see above
-        uses: reviewdog/action-actionlint@48e36f54d8da326b83ab061aee2cc5e01b5ca46f  # v1.80.6
+        uses: reviewdog/action-actionlint@619a81ec64ff8c0211cd6146eb2b21e8f1d7f440  # v1.81.1
         with:
           reporter: local
           fail_level: none
