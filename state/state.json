@@ -4106,7 +4106,7 @@
     "genshin": {
       "2BJ64QRZ7RT8": {
         "first_seen": 1790323430,
-        "last_seen": 1792631722,
+        "last_seen": 1793679926,
         "rewards": "Primogem*60;Adventurer's Experience*5",
         "sources": [
           "codehub",
@@ -4191,7 +4191,7 @@
       },
       "DUGODWKRHAKDNJ": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Hero's Wit ×3",
           "Mora ×10,000",
@@ -4310,7 +4310,7 @@
       },
       "GS71XAVWDS": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": "Mora*30000;Hero's Wit*3;Mystic Enhancement Ore*5",
         "sources": [
           "codehub",
@@ -4348,7 +4348,7 @@
       },
       "GS71XYNSYJ": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Mora ×30000",
           "Hero's Wit ×3",
@@ -4405,7 +4405,7 @@
       },
       "LEGEDILJKSGM": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Adventurer's Experience ×5",
           "Primogem ×60"
@@ -4418,7 +4418,7 @@
       },
       "MYSNEZHNAYACAREER": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Hero's Wit ×3",
           "Mora ×20,000",
@@ -4595,7 +4595,7 @@
       },
       "P7G0XA30H0Q3": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": null,
         "sources": [
           "codehub"
@@ -4686,7 +4686,7 @@
       },
       "PLDXI8VFKI7C": {
         "first_seen": 1790323430,
-        "last_seen": 1791884117,
+        "last_seen": 1793679926,
         "rewards": [
           "Mora ×10000",
           "Adventurer's Experience ×10",
@@ -4764,7 +4764,7 @@
       },
       "PRIMADONNA": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Mora ×50,000",
           "Mora ×50000",
@@ -4831,7 +4831,7 @@
       },
       "VESNA0923": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Hero's Wit ×5",
           "Primogem ×100"
@@ -4865,7 +4865,7 @@
       },
       "XVIZDH2B9WGX": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Adventurer's Experience ×10",
           "Fine Enhancement Ore ×5",
@@ -4881,7 +4881,7 @@
       },
       "Y1INABQB6DEX": {
         "first_seen": 1790323430,
-        "last_seen": 1792631722,
+        "last_seen": 1793679926,
         "rewards": "60 primogems and five adventurer's experience",
         "sources": [
           "codehub",
@@ -4906,7 +4906,7 @@
       },
       "YOAL3V36XHS7": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Adventurer's Experience ×10",
           "Fine Enhancement Ore ×5",
@@ -6121,7 +6121,7 @@
         "expired_at": 1791734437,
         "first_seen": 1791546293,
         "gate": "redeem-validated",
-        "last_seen": 1792631722,
+        "last_seen": 1793679926,
         "message_id": "1558082849268179067",
         "msg_codes": [
           "JRNY2SKY"
@@ -6190,7 +6190,7 @@
         "expired_at": 1793289638,
         "first_seen": 1792725020,
         "gate": "redeem-validated",
-        "last_seen": 1793289020,
+        "last_seen": 1793679926,
         "message_id": "1563028052320059424",
         "msg_codes": [
           "SUNBRINGER"
@@ -6241,7 +6241,7 @@
       },
       "ZZZ2YEAR": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Polychrome ×50"
         ],
@@ -6265,7 +6265,7 @@
       },
       "ZZZ31REMIELLE": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": [
           "Denny ×6,666",
           "Polychrome ×60"
@@ -6290,7 +6290,7 @@
       },
       "ZZZGRIND32": {
         "first_seen": 1790323430,
-        "last_seen": 1792761916,
+        "last_seen": 1793679926,
         "rewards": "Polychrome*20;Denny*2,222",
         "sources": [
           "codehub",
@@ -6304,7 +6304,7 @@
       },
       "ZZZINK32": {
         "first_seen": 1790323430,
-        "last_seen": 1792761916,
+        "last_seen": 1793679926,
         "rewards": "Polychrome*20;Denny*2,222",
         "sources": [
           "codehub",
@@ -6318,7 +6318,7 @@
       },
       "ZZZMEIJI": {
         "first_seen": 1790323430,
-        "last_seen": 1791636322,
+        "last_seen": 1793679926,
         "rewards": "3 Senior Investigator Log + 3 W-Engine Energy Module + 30,000 Denny",
         "sources": [
           "codehub"
@@ -6338,7 +6338,7 @@
       },
       "ZZZVOID32": {
         "first_seen": 1790323430,
-        "last_seen": 1792761916,
+        "last_seen": 1793679926,
         "rewards": "Polychrome*20;Denny*2,222",
         "sources": [
           "codehub",
