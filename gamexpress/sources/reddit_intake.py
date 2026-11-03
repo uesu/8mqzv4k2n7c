@@ -28,6 +28,7 @@ Contract (identical to the News-Express reader, round 101):
 
 from __future__ import annotations
 
+import asyncio
 import html
 import json
 import logging
@@ -230,6 +231,12 @@ class IntakeReader:
         self.fetcher = fetcher
         self.settings = settings
         self._result: dict | None = None
+        # One channel read per run, also when six games ask at the same instant: the codes
+        # pass gathers every `reddit:<sub>` source concurrently, and without the lock each
+        # caller started its own paging loop — Discord answered the extras with HTTP 429, those
+        # callers saw `http_429` and fell back to the old chain while the summary said "relay ok"
+        # (prod runs #3925 / #3926, 2026-11-03).
+        self._lock = asyncio.Lock()
         self.served: list[str] = []
         self.now: float | None = None  # tests pin the clock; production uses time.time()
 
@@ -244,17 +251,20 @@ class IntakeReader:
         """{"status", "records", "seen", "newest_age", "pages", "detail"} — never raises."""
         if self._result is not None:
             return self._result
-        now = (self.now if self.now is not None else time.time()) if now is None else now
-        out: dict = {"status": "unconfigured", "records": [], "seen": 0, "newest_age": None, "pages": 0,
-                     "detail": ""}
-        if self.mode == "off":
-            out["status"] = "off"
-        elif not self.configured():
-            out["detail"] = "DISCORD_BOT_TOKEN secret and/or INTAKE_CHANNEL_ID variable missing"
-        else:
-            out = await self._read(now)
-        self._result = out
-        return out
+        async with self._lock:
+            if self._result is not None:  # a concurrent caller finished the read while we waited
+                return self._result
+            now = (self.now if self.now is not None else time.time()) if now is None else now
+            out: dict = {"status": "unconfigured", "records": [], "seen": 0, "newest_age": None, "pages": 0,
+                         "detail": ""}
+            if self.mode == "off":
+                out["status"] = "off"
+            elif not self.configured():
+                out["detail"] = "DISCORD_BOT_TOKEN secret and/or INTAKE_CHANNEL_ID variable missing"
+            else:
+                out = await self._read(now)
+            self._result = out
+            return out
 
     async def _read(self, now: float) -> dict:
         out: dict = {"status": "error", "records": [], "seen": 0, "newest_age": None, "pages": 0, "detail": "",
@@ -270,8 +280,10 @@ class IntakeReader:
             if before is not None:
                 params["before"] = str(before)
             out["pages"] += 1
+            # retries=1: a lone 429 / 5xx on one page waits 1.5 s and asks once more instead of
+            # failing the whole read; 401 / 403 / 404 still stop at once (Fetcher never retries them).
             page = await self.fetcher.get_json(url, source="intake", headers=headers, params=params,
-                                               retries=0, timeout=INTAKE_TIMEOUT)
+                                               retries=1, timeout=INTAKE_TIMEOUT)
             if page is None:
                 last = (self.fetcher.health.get("intake").last_error or "") if self.fetcher.health.get("intake") else ""
                 out["detail"] = {

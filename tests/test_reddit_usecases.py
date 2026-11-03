@@ -14,6 +14,7 @@ No network, no secrets. Helpers are shared with tests/test_reddit_intake.py.
 
 from __future__ import annotations
 
+import asyncio
 import sys
 from pathlib import Path
 
@@ -238,6 +239,41 @@ def test_uc8_records_older_than_the_lookback_window_are_ignored():
     # one fresh non-relay message keeps the channel "alive"; the only relay record is 7 h old
     rc = _client(_Fetcher(_msgs(old, [7 * 3600], noise=1)))
     assert _run(rc.subreddit("Genshin_Impact")) is None
+
+
+# ---------------------------------------------------------------- 6. one channel read per run
+
+class _YieldingFetcher(_Fetcher):
+    """Like `_Fetcher`, but each request yields to the event loop first — the way a real socket
+    does — so concurrent callers really interleave (the plain fake never suspends, which hid the
+    race from every earlier test)."""
+
+    async def get_json(self, url, *, source, headers=None, params=None, retries=2, timeout=None):
+        await asyncio.sleep(0)
+        return await super().get_json(url, source=source, headers=headers, params=params,
+                                      retries=retries, timeout=timeout)
+
+
+def test_uc9_six_games_asking_at_once_read_the_channel_exactly_once():
+    """Prod #3925 / #3926 (2026-11-03): the codes pass gathers `reddit:<sub>` for every game at the
+    same instant; each caller started its own paging loop, Discord answered the extras with
+    HTTP 429, and those callers silently fell back to the old chain. One read, shared by all."""
+    subs = ["Genshin_Impact", "HonkaiStarRail", "ZZZ_Official", "WutheringWaves", "HonkaiNexusAnima",
+            "AnantaOfficial"]
+    recs = [_rec(id=f"1xuc9{i:02d}", sub=s, permalink=f"/r/{s}/comments/1xuc9{i:02d}/x/",
+                 created=int(NOW) - 100 - i) for i, s in enumerate(subs)]
+    f = _YieldingFetcher(_msgs(recs, [100 + i for i in range(len(subs))]))
+    rc = _client(f)
+
+    async def ask_all():
+        return await asyncio.gather(*(rc.subreddit(s) for s in subs))
+
+    got = _run(ask_all())
+    assert all(got), "every game must be served from the relay"
+    channel_reads = [c for c in f.calls if "discord.com" in c[0]]
+    assert len(channel_reads) == 1, f"the channel must be read once per run, not {len(channel_reads)}x"
+    assert _fleet_calls(f) == [], f"no caller may fall back to the old chain: {_fleet_calls(f)}"
+    assert rc.intake.summary_line().startswith("📡 reddit intake: relay ok — 6 record(s)")
 
 
 def main() -> int:
