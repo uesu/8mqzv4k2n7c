@@ -72,7 +72,7 @@ jobs:
       # that only pytest ever ran -- and CI does not run pytest, so they guarded nothing until
       # 2026-10-15. test_ci_and_the_python_bump_gate_run_every_offline_test_file keeps this list
       # complete.
-      - name: Schedule regressions (2026-10-08) + gacha-wiki placeholder guard
+      - name: Schedule regressions (2026-10-08) + gacha-wiki placeholder guard + Reddit intake reader
         run: |
           python tests/test_schedule_epithet_and_settled.py
           python tests/test_gachabase_kit.py
@@ -80,6 +80,8 @@ jobs:
           python tests/test_feature5_gate_media.py
           python tests/test_gachabase_kit.py
           python tests/test_gachawiki_placeholder.py
+          python tests/test_reddit_intake.py
+          python tests/test_reddit_usecases.py
 
       - name: Card preview renders (previews/index.html)
         run: python -m gamexpress preview --out /tmp/previews > /dev/null

@@ -512,6 +512,13 @@ class Settings:
     reddit_instances: list[str] = field(default_factory=lambda: list(DEFAULT_REDDIT))
     reddit_proxies: list[str] = field(default_factory=lambda: list(DEFAULT_REDDIT_PROXIES))
     reddit_token: str = ""
+    # Devvit relay intake reader (2026-11-02): the primary Reddit listing; the redlib /
+    # reddit.com chain above stays as the automatic fallback. Same names as News-Express.
+    intake_reader: str = "primary"      # primary | shadow | off
+    discord_bot_token: str = ""          # secret DISCORD_BOT_TOKEN (read-only bot in the server)
+    intake_channel_id: str = ""          # Variable INTAKE_CHANNEL_ID (the intake channel)
+    intake_stale_seconds: int = 1800
+    intake_lookback_seconds: int = 21600
 
     news_enabled: bool = False
     news_games: set[str] = field(default_factory=set)
@@ -754,6 +761,12 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         reddit_instances=reddit or list(DEFAULT_REDDIT),
         reddit_proxies=reddit_proxies or list(DEFAULT_REDDIT_PROXIES),
         reddit_token=_env(env, "REDDIT_FEED_TOKEN"),
+        intake_reader=(_env(env, "INTAKE_READER").lower() if _env(env, "INTAKE_READER").lower()
+                       in ("primary", "shadow", "off") else "primary"),
+        discord_bot_token=_env(env, "DISCORD_BOT_TOKEN"),
+        intake_channel_id=re.sub(r"\D", "", _env(env, "INTAKE_CHANNEL_ID")),
+        intake_stale_seconds=max(60, _int(env, "INTAKE_STALE_SECONDS", 1800)),
+        intake_lookback_seconds=max(600, _int(env, "INTAKE_LOOKBACK_SECONDS", 21600)),
         show_legend=_bool(env, "SHOW_LEGEND", True),
         repost=_env(env, "REPOST").replace(" ", "").lower(),
         http_timeout=_int(env, "HTTP_TIMEOUT", 20),

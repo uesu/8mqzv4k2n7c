@@ -1008,6 +1008,10 @@ class RedditClient:
         self._post_cache: dict[str, dict | None] = {}
         self._json_feed_blocked: bool = False
         self.reachable: set[str] = set()
+        from .reddit_intake import IntakeReader  # local import: the reader imports this module's regexes
+
+        # Devvit relay intake (2026-11-02): consulted first by `_gather_listing`; `None` = old chain.
+        self.intake = IntakeReader(fetcher, settings)
 
     async def _get_text(self, url: str, **kwargs) -> str | None:
         fn = getattr(self.fetcher, "get_text", None)
@@ -1117,6 +1121,11 @@ class RedditClient:
         return good
 
     async def _gather_listing(self, kind: str, target: str) -> list[dict] | None:
+        # Devvit relay first: a healthy relay with records for this target IS the listing
+        # (0 redlib / reddit.com requests); anything else falls through unchanged.
+        relay = await self.intake.listing(kind, target)
+        if relay is not None:
+            return relay
         merged: dict[str, dict] = {}
         working = 0
         fleet = self._eligible_instances(for_post_detail=False, kind=kind)
@@ -1492,7 +1501,11 @@ class RedditClient:
                 links = list(e.get("links") or [])
                 combined = f"{e.get('title') or ''}\n{text_body}".strip()
                 matched = want(combined)
-                if not matched and not text_body.strip() and resolved_budget > 0 and e.get("subreddit") and e.get("id"):
+                # A complete relay record is the whole post (empty text = a title-only post);
+                # the post-page resolve (redlib / reddit.com) is for the old chain and cut records.
+                resolvable = not e.get("relay_complete")
+                if (not matched and not text_body.strip() and resolvable and resolved_budget > 0
+                        and e.get("subreddit") and e.get("id")):
                     resolved_budget -= 1
                     detail = await self.resolve_post(e["subreddit"], e["id"])
                     if detail:
@@ -1503,7 +1516,7 @@ class RedditClient:
                         matched = want(combined)
                 if not matched:
                     continue
-                if not text_body.strip() and resolved_budget > 0 and e.get("subreddit") and e.get("id"):
+                if not text_body.strip() and resolvable and resolved_budget > 0 and e.get("subreddit") and e.get("id"):
                     resolved_budget -= 1
                     detail = await self.resolve_post(e["subreddit"], e["id"])
                     if detail:
@@ -1568,7 +1581,8 @@ class RedditClient:
 
         if found is None:
             for e in unresolved[:2]:
-                detail = await self.resolve_post(e["subreddit"], e["id"])
+                # A complete relay record already carries the body (relay 0.0.8 / round 104).
+                detail = dict(e) if e.get("relay_complete") else await self.resolve_post(e["subreddit"], e["id"])
                 if not detail:
                     continue
                 merged_detail = {

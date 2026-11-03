@@ -389,6 +389,10 @@ def cmd_validate(_args) -> int:
     print(f"Reddit={'on' if settings.reddit_enabled else 'off'} "
           f"| reddit instances={len(settings.reddit_instances)} | proxies={len(settings.reddit_proxies)} "
           f"| feed_token={'set' if feed_q else ('invalid' if settings.reddit_token else '—')}")
+    print(f"Reddit intake={settings.intake_reader} "
+          f"| bot_token={'set' if settings.discord_bot_token else '—'} "
+          f"| channel_id={'set' if settings.intake_channel_id else '—'} "
+          f"| stale={settings.intake_stale_seconds}s | lookback={settings.intake_lookback_seconds}s")
     print(f"news={'on' if 'news' in settings.features else 'off'} | news games={','.join(sorted(settings.news_games))} "
           f"| article count cap=none "
           f"| timestamps={'on' if settings.news_timestamps else 'off'} "

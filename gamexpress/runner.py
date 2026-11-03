@@ -367,6 +367,9 @@ async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
                         record["paused"] = True
             if not features:
                 ctx.report.append("⏸️ no active features this run (ENABLED_FEATURES=none or passive standby)")
+            intake_line = reddit.intake.summary_line()
+            if intake_line:
+                ctx.report.append(intake_line)
         except Exception as exc:  # noqa: BLE001 — guarantee persistence & step summary on unexpected abort
             log.exception("unexpected failure during run_once orchestration")
             ctx.errors.append(f"orchestration failed: {_summary_text(exc)}")

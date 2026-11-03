@@ -14945,7 +14945,7 @@ def test_final_pre_merge_edge_cases_and_repo_doc_consistency():
         assert f"{len(config.DEFAULT_REDDIT)} Reddit/Redlib entries" in security_t
         assert "arknights" not in sources_t.lower()
         assert "Status: not integrated." not in sources_t
-        assert "October 24, 2026" in privacy_t and "October 24, 2026" in terms_t
+        assert "November 2, 2026" in privacy_t and "November 2, 2026" in terms_t   # intake-reader revision
         assert "aki-game.net" in privacy_t and "easebar.com" in privacy_t
 
         import re
