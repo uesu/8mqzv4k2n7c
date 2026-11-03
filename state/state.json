@@ -6406,6 +6406,18 @@
         },
         "7.2": {
           "launch_media": {},
+          "maintenance": {
+            "edit_attempts": 0,
+            "edit_count": 0,
+            "end_ts": 1793761200,
+            "media_tier": 3,
+            "media_url": "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig",
+            "message_id": "1567297544327925792",
+            "posted_at": 1793743246,
+            "provenance": "official",
+            "status": "posted",
+            "ts": 1793743200
+          },
           "observed_preinstall_ts": 1793588563,
           "preload": {
             "edit_attempts": 0,
