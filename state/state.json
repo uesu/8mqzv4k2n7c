@@ -6405,13 +6405,30 @@
           }
         },
         "7.2": {
-          "launch_media": {},
+          "launch_media": {
+            "artwork": "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/30/f4188a48e3a68a52d00a3b28bb042e58_5159184125052880341.webp",
+            "artwork_meta": {
+              "asset_id": "dA1A3EC739",
+              "upload_ts": 1793361600,
+              "version": "7.2"
+            },
+            "locked": true,
+            "locked_at": 1793746844,
+            "version": "7.2",
+            "video": "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/30/23bb82e77d271193e9e9da25aa9e026f_7756217358019526142.webm",
+            "video_meta": {
+              "asset_id": "dA1A3EC739",
+              "upload_ts": 1793361600,
+              "version": "7.2"
+            }
+          },
           "maintenance": {
             "edit_attempts": 0,
-            "edit_count": 0,
+            "edit_count": 1,
+            "edited_at": 1793746844,
             "end_ts": 1793761200,
-            "media_tier": 3,
-            "media_url": "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig",
+            "media_tier": 1,
+            "media_url": "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/30/23bb82e77d271193e9e9da25aa9e026f_7756217358019526142.webm",
             "message_id": "1567297544327925792",
             "posted_at": 1793743246,
             "provenance": "official",
@@ -6437,14 +6454,19 @@
           "seen_media": [
             "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/13/bc7e25f8cfa2b38b7074d2bf96adfe48_172249607608782874.webp",
             "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/09/20/9fb0bc3e1d4341425ca83d1312b0f0dd_5415522120709809723.webp",
-            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/09/20/709e89a894b7e5f829d607d93490f697_2583058934210084247.webp"
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/09/20/709e89a894b7e5f829d607d93490f697_2583058934210084247.webp",
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/30/23bb82e77d271193e9e9da25aa9e026f_7756217358019526142.webm",
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/30/f4188a48e3a68a52d00a3b28bb042e58_5159184125052880341.webp",
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/29/139e495b8869b33e0aa9a7a5ad0ae850_2710396922579135344.webp",
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/29/e3f623ddbd6226de369eba6de87f0f83_6151087147364704095.webp",
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/29/08bc34c062dfdba0712ab0536d4f4069_5155132054213709867.webp"
           ],
           "timing_notice": {
             "end_ts": 1793761200,
             "postponed": false,
             "rank": 50,
             "start_ts": 1793743200,
-            "ts": 1793589005
+            "ts": 1793746805
           }
         },
         "7.3": {}
@@ -6535,8 +6557,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1793696405,
-        "47298708"
+        1793746805,
+        "47306125"
       ],
       "floor": 1792395075,
       "paused": false,
@@ -6620,6 +6642,11 @@
           1793696444,
           2,
           "45df55f732b0cdab"
+        ],
+        "47306125": [
+          1793746844,
+          0,
+          "fecfe2780c21801d"
         ]
       },
       "records": {
@@ -6966,6 +6993,13 @@
           ],
           "status": "posted",
           "ts": 1793696405
+        },
+        "47306125": {
+          "messages": [
+            "1567312644992532611"
+          ],
+          "status": "posted",
+          "ts": 1793746805
         }
       },
       "route": "a0f2147590c35140"
@@ -7790,15 +7824,15 @@
           ],
           "compensation": [
             50,
-            1793589005
+            1793746805
           ],
           "maint_end_ts": [
             50,
-            1793589005
+            1793746805
           ],
           "maint_start_ts": [
             50,
-            1793589005
+            1793746805
           ],
           "preinstall_ts": [
             50,
