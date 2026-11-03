@@ -6434,6 +6434,11 @@
             "timing_edit_count": 1,
             "ts": 1793589005
           },
+          "seen_media": [
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/10/13/bc7e25f8cfa2b38b7074d2bf96adfe48_172249607608782874.webp",
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/09/20/9fb0bc3e1d4341425ca83d1312b0f0dd_5415522120709809723.webp",
+            "https://launcher-webstatic.hoyoverse.com/launcher-public/2026/09/20/709e89a894b7e5f829d607d93490f697_2583058934210084247.webp"
+          ],
           "timing_notice": {
             "end_ts": 1793761200,
             "postponed": false,
