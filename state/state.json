@@ -6606,7 +6606,7 @@
         ],
         "47298708": [
           1793696444,
-          1,
+          2,
           "45df55f732b0cdab"
         ]
       },
@@ -7700,7 +7700,7 @@
               "Linnea"
             ]
           },
-          "banners_checked_ts": 1793687437,
+          "banners_checked_ts": 1793698239,
           "banners_search_ts": 1793694639,
           "banners_settled": [
             "phase1",
