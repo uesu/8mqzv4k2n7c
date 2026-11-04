@@ -6700,12 +6700,12 @@
         ],
         "47314815": [
           1793786448,
-          0,
+          1,
           "3fc299dd3a18847a"
         ],
         "47314817": [
           1793786448,
-          0,
+          1,
           "ce1e8ab5a705c630"
         ]
       },
@@ -7938,7 +7938,7 @@
               "Chronicled Wish"
             ]
           },
-          "banners_checked_ts": 1793775649,
+          "banners_checked_ts": 1793787026,
           "banners_search_ts": 1793784028,
           "banners_settled": [
             "phase1",
