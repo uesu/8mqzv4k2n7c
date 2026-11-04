@@ -179,6 +179,14 @@ def sample_payloads(kind: str = "all", game: str = "", *, mark: bool = False,
                     ping=_ping("maintenance", key), media_url=media,
                 ),
             ))
+            out.append((
+                "maintenance",
+                f"maintenance_{key}_live",
+                maintenance_payload(
+                    games[key], ver, "live", start_ts=(end_ts or start_ts + 5 * 3600) - 18 * 60,
+                    ping=_ping("maintenance", key), media_url=media,
+                ),
+            ))
     if mark:
         out = [(f, n, mark_test(p)) for f, n, p in out]
     return out

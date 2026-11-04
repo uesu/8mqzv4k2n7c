@@ -51,6 +51,35 @@ MAINT_RE = re.compile(
     r"adjust(?:ed|ment)|exten(?:ded|sion))|"
     r"update\s+details|version\s+update\s+(?:notice|details)|pre-?install(?:ation)?|pre-?download|pre-?load",
     re.I)
+# The publisher saying the servers are back: "Version 7.2 update maintenance has been completed",
+# "Update Completion Notice", "servers are now online", "Travelers can now log in". The clause check
+# below drops the future-tense quotes every maintenance PREVIEW carries ("compensation ... within
+# 5 hours after the update maintenance is finished", "once the maintenance is complete").
+# Feature 4 additionally accepts a match only between the version's maintenance start and +24 h.
+MAINT_COMPLETE_RE = re.compile(
+    r"\b(?:update\s+)?maintenance\s+(?:has\s+(?:now\s+)?(?:been\s+)?|is\s+(?:now\s+)?|was\s+)?"
+    r"(?:completed?|concluded|finished|ended|over)\b"
+    r"|\b(?:update|maintenance)\s+complet(?:ion|ed)\s+notice\b"
+    r"|\bservers?\s+(?:are|is|have|has)\s+(?:now\s+)?(?:back\s+)?(?:online|open|live|reopened)\b"
+    r"|\b(?:version\s+\d+\.\d+\s+)?update\s+(?:has\s+(?:now\s+)?been\s+|is\s+(?:now\s+)?|was\s+)"
+    r"(?:completed?|concluded|finished)\b"
+    r"|\bcan\s+now\s+(?:log\s*in|log\s+into|enter\s+the\s+game)\b",
+    re.I,
+)
+# "... after the update maintenance is finished" / "once the maintenance is complete": a clause
+# that merely conditions on the end of maintenance, checked on the words right before the match.
+_COMPLETE_CONDITIONAL_RE = re.compile(
+    r"\b(?:after|once|when|until|before|if|should|as soon as)\s+(?:the\s+)?"
+    r"(?:(?:version|update|server|client|game|\d+\.\d+)\s+)*$", re.I)
+
+
+def _completion_match(text: str):
+    for m in MAINT_COMPLETE_RE.finditer(text or ""):
+        if not _COMPLETE_CONDITIONAL_RE.search(text[max(0, m.start() - 48):m.start()]):
+            return m
+    return None
+
+
 # Sub-system / store / web / returnee-event maintenance notices that mention "Version X.Y" in
 # passing (e.g. Kuro #3691 `[Reprise of Tides] Returnee Event`, PlayStation Store payment notices)
 # must never overwrite the version's client-update maintenance window.
@@ -369,6 +398,8 @@ def classify(game: Game, item: Item) -> str | None:
     )
     if not is_subsys_maint and (MAINT_RE.search(title_str) or (item.source == "x" and MAINT_RE.search(lead))):
         return "maintenance"
+    if not is_subsys_maint and maintenance_completed(item):
+        return "maintenance"
     if _any(program_patterns(game), lead) and not PROGRAM_EXCLUDE.search(lead) \
             and not NOT_PROGRAM_TITLE.search(title_str) \
             and not extract_codes_from_text(lead):      # a codes post is not an announcement
@@ -494,9 +525,37 @@ def _clock_ts_after(text: str, start: int, anchor: int | None) -> int | None:
     return ts + 86400 if ts <= int(anchor) - 6 * 3600 else ts
 
 
+def maintenance_completed(item: Item):
+    """The completion phrase in the title, or in the opening of a post (tweets have no title)."""
+    return _completion_match(item.title or "") or _completion_match((item.text or item.full or "")[:240])
+
+
+def extract_completion(item: Item, match) -> dict:
+    """`maint_completed_ts`: the stated completion clock when the sentence names one, else the
+    post's own timestamp (the publisher posts "maintenance has been completed" as the doors open)."""
+    text = item.full or item.text or ""
+    ref = item.published_ts or None
+    completed_ts = None
+    for s in sentences(text):
+        inner = _completion_match(s)
+        if not inner:
+            continue
+        after = [dt for dt in find_datetimes(s, ref) if dt.start >= inner.end()]
+        completed_ts = after[0].ts if after else _clock_ts_after(s, inner.end(), ref)
+        if completed_ts:
+            break
+    if not completed_ts:
+        completed_ts = item.published_ts or None
+    return {"maint_completed_ts": int(completed_ts)} if completed_ts else {}
+
+
 def extract_maintenance(item: Item) -> dict:
     text = item.full
     ref = item.published_ts or None
+    completed = maintenance_completed(item)
+    if completed:
+        # A completion post may quote the window it just closed; those are not a new schedule.
+        return extract_completion(item, completed)
     f: dict = extract_labelled(text, ref)   # labelled values win; the loop only setdefaults
     for s in sentences(text):
         extension = MAINT_EXTEND_RE.search(s)
@@ -715,6 +774,7 @@ def extract(game: Game, item: Item) -> Extract | None:
             and not fields.get("preinstall_ts")
             and not (fields.get("maint_extended") and fields.get("maint_end_ts"))
             and not fields.get("maint_postponed")
+            and not fields.get("maint_completed_ts")
         ):
             return None
     else:

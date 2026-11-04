@@ -17,9 +17,26 @@ BASIC_INFO_URL = (
     "?launcher_id=VYTpXlbWo8&language=en-us"
 )
 
+# Server maintenance status — the cloud-gaming gateway every HoYoverse client asks before it logs
+# in. `data.application_maintenance` is an object while the servers are closed and `null` once
+# they reopen; that `object -> null` flip is the moment the version goes live (the launcher's
+# `main.tag` flips at maintenance START, so it can never tell when servers reopen). Same endpoint,
+# headers and game_biz values as seria's hoyo-update-notifier (`hun/utils.py`) and yeci226/ZZZ
+# (`news/sources.ts`), both of which run it in production. Star Rail's global cloud gateway is the
+# shared `hkrpg_cn` host in both projects; HoYoverse maintains every region in one window, so the
+# flag is still the global answer.
+MAINT_STATUS = {
+    "gopR6Cufr3": ("https://sg-cg-api.hoyoverse.com/hk4e_global/cg/gamer/api/getGlobalApplicationMaintenance",
+                   "hk4e_global"),
+    "4ziysqXOQ8": ("https://cg-hkrpg-api.mihoyo.com/hkrpg_cn/cg/gamer/api/getGlobalApplicationMaintenance",
+                   "hkrpg_cn"),
+    "U5hbdsT9W7": ("https://sg-cg-nap-api.hoyoverse.com/nap_global/cg/gamer/api/getGlobalApplicationMaintenance",
+                   "nap_global"),
+}
+
 
 def parse_branches(data: dict) -> dict[str, dict]:
-    """{game_id: {'live': '7.1', 'pre': '7.2' | None}}"""
+    """{game_id: {'live': '7.1', 'pre': '7.2' | None, 'live_tag': '7.1.0'}}"""
     if not isinstance(data, dict):
         return {}
     inner = data.get("data")
@@ -35,8 +52,32 @@ def parse_branches(data: dict) -> dict[str, dict]:
         main = b.get("main") if isinstance(b.get("main"), dict) else {}
         pre = b.get("pre_download") if isinstance(b.get("pre_download"), dict) else None
         out[gid] = {"live": short_version(main.get("tag")),
-                    "pre": short_version(pre.get("tag")) if isinstance(pre, dict) else None}
+                    "pre": short_version(pre.get("tag")) if isinstance(pre, dict) else None,
+                    "live_tag": str(main.get("tag") or "").strip()}
     return out
+
+
+def parse_maintenance_status(data) -> bool | None:
+    """True while `application_maintenance` is an object, False once it is `null`, None otherwise.
+
+    Anything that is not the documented shape (non-zero `retcode`, missing key, a list or a string
+    where the object should be) is *unknown*, never "servers open": a transient gateway error must
+    not be read as the end of maintenance.
+    """
+    if not isinstance(data, dict):
+        return None
+    try:
+        if int(data.get("retcode", 0) or 0) != 0:
+            return None
+    except (TypeError, ValueError):
+        return None
+    inner = data.get("data")
+    if not isinstance(inner, dict) or "application_maintenance" not in inner:
+        return None
+    flag = inner.get("application_maintenance")
+    if flag is None:
+        return False
+    return True if isinstance(flag, dict) else None
 
 
 def parse_basic_info(data: dict) -> dict[str, list[dict]]:
@@ -98,3 +139,15 @@ async def hoyoplay_versions(fetcher: Fetcher) -> dict[str, dict]:
 async def hoyoplay_basic_info(fetcher: Fetcher) -> dict[str, list[dict]]:
     data = await fetcher.get_json(BASIC_INFO_URL, source="hoyoplay-media", retries=1)
     return parse_basic_info(data) if data else {}
+
+
+async def hoyoplay_maintenance_status(fetcher: Fetcher, game_id: str, version_tag: str) -> bool | None:
+    """One `getGlobalApplicationMaintenance` read for `game_id`; None when unsupported or unknown."""
+    entry = MAINT_STATUS.get(str(game_id or ""))
+    if not entry:
+        return None
+    url, biz = entry
+    headers = {"x-rpc-app_version": str(version_tag or "").strip() or "1.0.0",
+               "x-rpc-client_type": "1", "x-rpc-cg_game_biz": biz}
+    data = await fetcher.get_json(url, source="hoyo-maint", headers=headers, retries=1)
+    return parse_maintenance_status(data)

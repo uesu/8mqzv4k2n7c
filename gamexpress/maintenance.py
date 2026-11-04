@@ -1,4 +1,4 @@
-"""Independent fourth feature: Pre-Load Started and Maintenance Started announcements.
+"""Independent fourth feature: Pre-Load Started, Maintenance Started and Servers Live announcements.
 
 Design guarantees:
   * Disabled by default (`MAINTENANCE_ENABLED=0`, `MAINTENANCE_GAMES=""`), with per-game opt-in,
@@ -9,8 +9,15 @@ Design guarantees:
   * Precedence: official notices/tweets > explicit `config/overrides.json` entries > persisted
     first-observed launcher pre-download signal (explicitly labelled observed, never moving `now`)
     > documented cadence predictions (never invented for HNA or unknown maintenance end times).
-  * Separate `preload` and `maintenance` state records per `(game, version)` with silent seeding
-    on first enable / upgrade so settled historical versions never repost.
+  * Separate `preload`, `maintenance` and `live` state records per `(game, version)` with silent
+    seeding on first enable / upgrade so settled historical versions never repost.
+  * `live` (the third card, "Servers Live") is never clock-derived: it posts only on the publisher's
+    completion notice / tweet (`maint_completed_ts`, provenance `official`) or, for HoYoPlay games,
+    on the `getGlobalApplicationMaintenance` flag flipping `object -> null` after it was seen set
+    for that version (provenance `observed`; the card says so until an official notice upgrades
+    it). Both are accepted only inside `[maint_start_ts + LIVE_MIN_DOWNTIME_S, maint_start_ts +
+    LIVE_WINDOW_S]`, and the posted Maintenance Started card has its End Time corrected to the
+    actual reopening moment through the existing timing-correction budget (`end_actual`).
   * Structured version-verified media selection with priority:
       1. Matching-version launch video
       2. Matching-version launch artwork / WebP
@@ -55,6 +62,9 @@ MAX_LATE_MEDIA_ATTEMPTS = 3           # max consecutive failed PATCH attempts (`
 MAX_LATE_EDITS = 6                    # hard cap on total succeeded silent PATCH updates (`edit_count`)
 LAUNCH_MEDIA_MAX_AFTER_S = 7 * 86400  # >7d after maintenance start belongs to mid-patch / Phase II
 LAUNCH_MEDIA_MAX_BEFORE_S = 11 * 86400  # allows -10d Special Program Friday uploads, rejects -14d Phase II
+LIVE_WINDOW_S = 24 * 3600             # a "Servers Live" signal is believed only within 24h of maintenance start
+LIVE_MIN_DOWNTIME_S = 20 * 60         # ... and never in the first 20 minutes (gateway flag still settling)
+MILESTONE_KINDS = ("preload", "maintenance", "live")
 
 _CDN_DATE_RE = re.compile(r"/(20\d{2})[/-]?(0[1-9]|1[0-2])[/-]?(0[1-9]|[12]\d|3[01])/")
 _VIDEO_EXT_RE = re.compile(r"\.(?:mp4|webm)(?:[?#]|$)", re.I)
@@ -522,8 +532,24 @@ def resolve_version_plans(
             pre_prov = "estimated"
             pre_src = "version cadence"
 
+        live_ts: int | None = None
+        live_src = ""
+        if start_ts:
+            for e in ver_extracts:
+                done_ts = (e.fields or {}).get("maint_completed_ts")
+                if not done_ts or schedule.PRIORITY.get(e.item.source, 0) < schedule.PRIORITY["x"]:
+                    continue
+                done_ts = int(done_ts)
+                if not (int(start_ts) + LIVE_MIN_DOWNTIME_S <= done_ts <= int(start_ts) + LIVE_WINDOW_S):
+                    continue
+                if live_ts is None or done_ts < live_ts:
+                    live_ts, live_src = done_ts, e.item.source
+
         plans[ver] = {
             "version": ver,
+            "live_ts": live_ts,
+            "live_provenance": "official" if live_ts else "",
+            "live_source": live_src,
             "preinstall_ts": pre_ts,
             "preinstall_estimated": pre_est,
             "preinstall_observed": pre_obs,
@@ -911,6 +937,99 @@ async def _ensure_inputs_for_games(ctx, target_games: list[Game]) -> None:
         await asyncio.gather(*(_collect_one(g) for g in missing_item_games))
 
 
+async def _resolve_live_signal(ctx, game: Game, ver: str, plan: dict, vstate: dict, record: dict,
+                               *, ephemeral: bool) -> tuple[int | None, bool, str, str]:
+    """`(live_ts, observed, provenance, source)` for the Servers Live milestone of `ver`.
+
+    Official completion notices/tweets (already window-checked in `resolve_version_plans`) win.
+    Otherwise, for HoYoPlay games whose Maintenance Started card this install posted, the cloud
+    gateway's `application_maintenance` flag is read once per run while the version is inside
+    `[start + LIVE_MIN_DOWNTIME_S, start + LIVE_WINDOW_S]`; the flip from "seen set for this
+    version" to `null` is the reopening (`observed`). Unknown answers change nothing, and the
+    endpoint is never asked outside that window, so idle days cost zero requests.
+    """
+    if plan.get("live_ts"):
+        return int(plan["live_ts"]), False, plan.get("live_provenance") or "official", plan.get("live_source") or ""
+    entry = vstate.get("live") or {}
+    if entry.get("status") in ("posted", "seeded", "ambiguous"):
+        return None, False, "", ""
+    maint_entry = vstate.get("maintenance") or {}
+    start_ts = plan.get("maint_start_ts")
+    if maint_entry.get("status") != "posted" or not start_ts:
+        return None, False, "", ""
+    if not (int(start_ts) + LIVE_MIN_DOWNTIME_S <= ctx.now <= int(start_ts) + LIVE_WINDOW_S):
+        return None, False, "", ""
+    if game.launcher.get("type") != "hoyoplay" or game.launcher.get("game_id") not in launcher.MAINT_STATUS:
+        return None, False, "", ""
+    if not callable(getattr(ctx.fetcher, "get_json", None)):
+        return None, False, "", ""
+    vinfo = ctx.versions.get(game.key) or {}
+    tag = str(vinfo.get("live_tag") or "").strip() or (f"{ver}.0" if ver.count(".") == 1 else ver)
+    flag = await launcher.hoyoplay_maintenance_status(ctx.fetcher, game.launcher["game_id"], tag)
+    api = record.setdefault("maint_api", {})
+    if flag is None:
+        return None, False, "", ""
+    if flag:
+        if api.get("version") != ver or not api.get("seen_set_at"):
+            api.update(version=ver, seen_set_at=ctx.now)
+            if not ephemeral:
+                ctx.state.save()
+        api["last_set_at"] = ctx.now
+        return None, False, "", ""
+    # flag is False: the servers answer again. Only the transition counts.
+    if api.get("version") == ver and api.get("seen_set_at"):
+        return ctx.now, True, "observed", "maintenance status"
+    return None, False, "", ""
+
+
+async def _correct_maintenance_end(ctx, game: Game, ver: str, plan: dict, vstate: dict, hook: str, ping,
+                                   live_ts: int, *, ephemeral: bool) -> None:
+    """Rewrite the posted Maintenance Started card's End Time to the actual reopening moment.
+
+    Silent `PATCH` through the timing-correction budget (`timing_edit_*`), marked `end_actual` so a
+    later run's official-end comparison never flips it back to the scheduled time.
+    """
+    entry = vstate.get("maintenance") or {}
+    msg_id = entry.get("message_id")
+    if entry.get("status") != "posted" or not msg_id:
+        return
+    prior_end = entry.get("end_ts")
+    if prior_end is not None and abs(int(prior_end) - int(live_ts)) < 60:
+        entry["end_actual"] = True
+        if not ephemeral:
+            ctx.state.save()
+        return
+    timing_attempts = int(entry.get("timing_edit_attempts") or 0)
+    timing_edits = int(entry.get("timing_edit_count") or 0)
+    if timing_attempts >= MAX_LATE_MEDIA_ATTEMPTS or timing_edits >= MAX_LATE_EDITS:
+        ctx.warnings.append(f"{game.short} {ver} maintenance: end-time correction skipped (edit budget exhausted)")
+        return
+    start_ts = int(entry.get("ts") or plan.get("maint_start_ts") or live_ts)
+    if int(live_ts) <= start_ts:
+        return
+    card = maintenance_payload(
+        game, ver, "maintenance", start_ts=start_ts, end_ts=int(live_ts), ping=ping,
+        media_url=entry.get("media_url") or None,
+        estimated=bool(plan.get("maint_estimated")) and entry.get("provenance") == "estimated",
+        estimate_source=plan.get("maint_source") or "",
+    )
+    res = await ctx.webhook.edit(hook, msg_id, card)
+    if res.ok:
+        entry["end_ts"] = int(live_ts)
+        entry["end_actual"] = True
+        entry["edited_at"] = ctx.now
+        entry["timing_edit_attempts"] = 0
+        entry["timing_edit_count"] = timing_edits + 1
+        ctx.report.append(
+            f"🕒 {game.short} {ver} maintenance: End Time corrected to the actual reopening ({prior_end}->{int(live_ts)})"
+        )
+    else:
+        entry["timing_edit_attempts"] = timing_attempts + 1
+        ctx.warnings.append(f"{game.short} {ver} maintenance: end-time correction failed ({res.status}); card unchanged")
+    if not ephemeral:
+        ctx.state.save()
+
+
 async def run(ctx) -> None:
     """Execute one maintenance-announcement pass across opted-in games."""
     if "maintenance" not in ctx.settings.features or not ctx.active:
@@ -1045,6 +1164,11 @@ async def _run_game_maintenance(
                         or (kind == "preload" and (ctx.versions.get(game.key) or {}).get("pre") == ver)
                     ):
                         vstate[kind] = {"status": "seeded", "ts": ctx.now}
+                # A version whose maintenance already started before this install was enabled is
+                # settled for `live` too: the third card is only ever posted for a maintenance this
+                # install watched from the start, never back-filled for one it joined midway.
+                if "live" not in vstate and (vstate.get("maintenance") or {}).get("status") == "seeded":
+                    vstate["live"] = {"status": "seeded", "ts": int(vstate["maintenance"].get("ts") or ctx.now)}
             if not ephemeral:
                 ctx.state.save()
             ctx.report.append(f"🌱 {game.short} maintenance: silent baseline; settled milestones not reposted")
@@ -1060,6 +1184,9 @@ async def _run_game_maintenance(
 
         for ver, plan in sorted(plans.items(), key=lambda pair: version_key(pair[0])):
             vstate = versions_state.setdefault(ver, {})
+            live_ts, live_obs, live_prov, live_src = await _resolve_live_signal(
+                ctx, game, ver, plan, vstate, record, ephemeral=ephemeral,
+            )
             milestones = (
                 (
                     "preload",
@@ -1079,6 +1206,7 @@ async def _run_game_maintenance(
                     False,
                     plan.get("maint_provenance") or "",
                 ),
+                ("live", live_ts, None, False, live_src, live_obs, live_prov),
             )
             for kind, start_ts, end_ts, is_est, est_src, is_obs, prov_tag in milestones:
                 force = _repost_matches(ctx.settings.repost, game.key, ver, kind)
@@ -1105,6 +1233,7 @@ async def _run_game_maintenance(
                             end_ts_shifted = (
                                 kind == "maintenance"
                                 and prov_tag in ("official", "override")
+                                and not entry.get("end_actual")
                                 and (
                                     ("end_ts" in entry and entry.get("end_ts") != expected_end)
                                     or ("end_ts" not in entry and expected_end is not None)
@@ -1174,7 +1303,10 @@ async def _run_game_maintenance(
                                         ver,
                                         kind,
                                         start_ts=effective_ts,
-                                        end_ts=end_ts if kind == "maintenance" else None,
+                                        end_ts=(
+                                            (entry.get("end_ts") if entry.get("end_actual") else end_ts)
+                                            if kind == "maintenance" else None
+                                        ),
                                         ping=ping,
                                         media_url=new_url,
                                         estimated=is_est,
@@ -1189,7 +1321,7 @@ async def _run_game_maintenance(
                                         entry["ts"] = effective_ts
                                         if auth_ts_upgrade:
                                             entry["provenance"] = prov_tag
-                                            if kind == "maintenance":
+                                            if kind == "maintenance" and not entry.get("end_actual"):
                                                 entry["end_ts"] = expected_end
                                         entry["edited_at"] = ctx.now
                                         if auth_ts_upgrade:
@@ -1218,6 +1350,10 @@ async def _run_game_maintenance(
                 if start_ts is None:
                     continue
                 due = force or (seeded_at < start_ts <= ctx.now and ctx.now - start_ts <= ACTIVE_WINDOW_S)
+                if kind == "live" and not force:
+                    # Posted only for a maintenance this install announced itself (or saw start).
+                    maint_entry = vstate.get("maintenance") or {}
+                    due = due and maint_entry.get("status") == "posted"
                 if not due:
                     continue
 
@@ -1298,3 +1434,7 @@ async def _run_game_maintenance(
                 ctx.report.append(
                     f"🚀 {game.short} {ver} {kind}: posted ({result.message_id}, media tier {media_tier})"
                 )
+                if kind == "live":
+                    await _correct_maintenance_end(
+                        ctx, game, ver, plan, vstate, hook, ping, int(start_ts), ephemeral=ephemeral,
+                    )

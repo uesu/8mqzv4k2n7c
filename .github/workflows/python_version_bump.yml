@@ -120,6 +120,7 @@ jobs:
           python tests/test_gachawiki_placeholder.py
           python tests/test_reddit_intake.py
           python tests/test_reddit_usecases.py
+          python tests/test_maintenance_live.py
           python -m gamexpress preview --out "$RUNNER_TEMP/previews" > /dev/null
 
       # Values reach the shell through env, never through ${{ }} inlined into `run:` —

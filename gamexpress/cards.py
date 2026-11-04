@@ -573,27 +573,27 @@ def maintenance_payload(
     estimate_source: str = "",
     observed: bool = False,
 ) -> dict:
-    """Build a Pre-Load Started or Maintenance Started Components V2 payload.
+    """Build a Pre-Load Started, Maintenance Started or Servers Live Components V2 payload.
 
     Follows the approved Components V2 template without any third-party social button:
       * Flags 32768 (`IS_COMPONENTS_V2`), type 17 container (`accent_color: None`)
       * Type 10 header with `[SHORT - VERSION]` + approved emojis + configured ping
       * Type 14 divider (`spacing: 1`)
-      * Type 10 timestamp line (`:f` + `:R` for preload; `:f` + known `:t` for maintenance)
+      * Type 10 timestamp line (`:f` + `:R` for preload and live; `:f` + known `:t` for maintenance)
       * Optional type 12 media gallery (omitted cleanly when no valid version-matched media exists)
       * Type 9 Citlali News section footer with `starwardyayy` link button accessory
     """
-    if kind not in ("preload", "maintenance"):
+    if kind not in ("preload", "maintenance", "live"):
         raise ValueError(f"unsupported maintenance announcement kind: {kind!r}")
     ver = strip_invisible(version).strip()
     if not ver:
         raise ValueError("maintenance announcement requires a non-empty version")
     ping_obj = ping or Ping()
-    label = "Pre-Load Started" if kind == "preload" else "Maintenance Started"
+    label = {"preload": "Pre-Load Started", "maintenance": "Maintenance Started", "live": "Servers Live"}[kind]
     headline = f"## [{game.short} - {ver}] {label} {MAINT_HEADING_EMOJIS}"
     if ping_obj:
         headline += f"\n{ping_obj.text}"
-    if kind == "preload":
+    if kind in ("preload", "live"):
         timing = (
             f"※ **Date Time:** <t:{int(start_ts)}:f> "
             f"※ **Hour Time:** <t:{int(start_ts)}:R> {MAINT_GEAR_EMOJI}"
@@ -605,7 +605,9 @@ def maintenance_payload(
         )
     else:
         timing = f"※ **Date Time:** <t:{int(start_ts)}:f> {MAINT_GEAR_EMOJI}"
-    if observed:
+    if observed and kind == "live":
+        timing += "\n-# Detected from the game's maintenance status — official completion notice not yet published"
+    elif observed:
         timing += "\n-# Observed available in launcher — official start time not published"
     elif estimated:
         source_note = estimate_source.strip() or "version cadence"

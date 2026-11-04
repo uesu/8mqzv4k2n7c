@@ -400,8 +400,8 @@ def test_code_extraction_from_official_posts():
 
 def test_launcher_parsers():
     b = parse_branches(fx("hoyoplay_branches_trimmed.json"))
-    assert b["U5hbdsT9W7"] == {"live": "3.2", "pre": None}
-    assert b["4ziysqXOQ8"] == {"live": "4.5", "pre": "4.6"}
+    assert b["U5hbdsT9W7"] == {"live": "3.2", "pre": None, "live_tag": "3.2.0"}
+    assert b["4ziysqXOQ8"] == {"live": "4.5", "pre": "4.6", "live_tag": "4.5.0"}
     assert parse_launcher_index(fx("kuro_launcher_index_trimmed.json")) == {"live": "3.6", "pre": "3.7"}
     assert nitter_pic_to_twimg("https://nitter.cf/pic/media%2FHR70hTAaoAA8Dzz.jpg") == \
         "https://pbs.twimg.com/media/HR70hTAaoAA8Dzz.jpg"
