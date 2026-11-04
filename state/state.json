@@ -4118,6 +4118,7 @@
         "status": "seeded"
       },
       "6LS3F3LS5K87": {
+        "expired_at": 1793754043,
         "first_seen": 1790944228,
         "gate": "redeem-validated",
         "last_seen": 1793722232,
@@ -4569,6 +4570,7 @@
         "webhook_fp": "ee502f83bdf4"
       },
       "OPERACOLLAB": {
+        "expired_at": 1793754043,
         "first_seen": 1790840103,
         "gate": "redeem-validated",
         "last_seen": 1793718631,
