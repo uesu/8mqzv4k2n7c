@@ -6565,11 +6565,6 @@
       "floor": 1792395075,
       "paused": false,
       "rechecks": {
-        "47283828": [
-          1793589021,
-          2,
-          "80115ea2e1295022"
-        ],
         "47284161": [
           1793592034,
           2,
@@ -7052,8 +7047,8 @@
     },
     "starrail": {
       "cursor": [
-        1793678405,
-        "47296174"
+        1793761210,
+        "47307963"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -7062,6 +7057,11 @@
           1793678445,
           2,
           "61b4f61ba6430361"
+        ],
+        "47307963": [
+          1793761828,
+          0,
+          "a4806b6372788331"
         ]
       },
       "records": {
@@ -7251,6 +7251,13 @@
           ],
           "status": "posted",
           "ts": 1793678405
+        },
+        "47307963": {
+          "messages": [
+            "1567375527105527830"
+          ],
+          "status": "posted",
+          "ts": 1793761210
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -7759,8 +7766,37 @@
       },
       "7.2": {
         "calendar": {
-          "banners": [],
-          "ts": 1793750441
+          "banners": [
+            {
+              "endsAt": 1795514340,
+              "featured": [
+                "Mitya"
+              ],
+              "featured4": [
+                "Valeriy",
+                "Charlotte",
+                "Rosaria"
+              ],
+              "startsAt": 1793746800,
+              "title": "",
+              "version": "7.2"
+            },
+            {
+              "endsAt": 1795514340,
+              "featured": [
+                "Furina"
+              ],
+              "featured4": [
+                "Valeriy",
+                "Charlotte",
+                "Rosaria"
+              ],
+              "startsAt": 1793746800,
+              "title": "",
+              "version": "7.2"
+            }
+          ],
+          "ts": 1793761828
         },
         "data": {
           "announcement_locked": true,
@@ -7787,12 +7823,12 @@
             ]
           },
           "banners_checked_ts": 1793753429,
-          "banners_search_ts": 1793750441,
+          "banners_search_ts": 1793761828,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1793750441,
+          "calendar_ts": 1793761828,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8316,8 +8352,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793750441,
-          "banners_search_ts": 1793750441,
+          "banners_checked_ts": 1793761828,
+          "banners_search_ts": 1793761828,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -8410,7 +8446,7 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners_checked_ts": 1793581518,
-          "banners_search_ts": 1793750441,
+          "banners_search_ts": 1793761828,
           "estimate_sources": [
             "version cadence"
           ],
