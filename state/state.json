@@ -4162,7 +4162,7 @@
       },
       "CDOF4X83H7X2": {
         "first_seen": 1793775019,
-        "gate": "only ennead",
+        "gate": "only ennead, ogc",
         "last_seen": 1793775019,
         "rewards": [
           "Mora ×10000",
@@ -4172,7 +4172,8 @@
           "Jueyun Chili Chicken ×5"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "ogc"
         ],
         "status": "pending"
       },
@@ -4460,7 +4461,7 @@
       },
       "MIJIQ23V2437": {
         "first_seen": 1793771428,
-        "gate": "only ennead",
+        "gate": "only ennead, ogc",
         "last_seen": 1793771428,
         "rewards": [
           "Mora ×10000",
@@ -4470,7 +4471,8 @@
           "Stir-Fried Fish Noodles ×5"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "ogc"
         ],
         "status": "pending"
       },
@@ -7865,15 +7867,17 @@
             ],
             "phase2": [
               "Zibai",
-              "Linnea"
+              "Linnea",
+              "Chronicled Wish"
             ],
             "reruns": [
               "Furina",
               "Zibai",
-              "Linnea"
+              "Linnea",
+              "Chronicled Wish"
             ]
           },
-          "banners_checked_ts": 1793764232,
+          "banners_checked_ts": 1793775649,
           "banners_search_ts": 1793773220,
           "banners_settled": [
             "phase1",
@@ -7912,10 +7916,10 @@
         ],
         "first_seen": 1792555239,
         "message_id": "1562314671103418552",
-        "mirror_hash": "e21311be31816871",
+        "mirror_hash": "5b0295a79413d5b4",
         "mirror_message_id": "1562314676023332895",
         "mirror_webhook_fp": "ee502f83bdf4",
-        "payload_hash": "77e60a534539c785",
+        "payload_hash": "1d9402fdc3b48f1d",
         "posted_at": 1792555239,
         "preinstall_offset_h": 42.832,
         "prov": {
@@ -7937,14 +7941,14 @@
           "b_phase1_id": "47284168",
           "b_phase2": [
             6,
-            1792770619
+            1793775649
           ],
           "b_phase2_by": [
             "wiki"
           ],
           "b_reruns": [
             6,
-            1792836034
+            1793775649
           ],
           "b_reruns_by": [
             "wiki"
@@ -7975,7 +7979,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1793592034,
+        "updated_at": 1793775649,
         "webhook_fp": "19991534cf6d"
       }
     },
