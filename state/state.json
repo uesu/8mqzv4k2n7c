@@ -4162,20 +4162,26 @@
       },
       "CDOF4X83H7X2": {
         "first_seen": 1793775019,
-        "gate": "only ennead, ogc",
-        "last_seen": 1793775019,
-        "rewards": [
-          "Mora ×10000",
-          "Adventurer's Experience ×10",
-          "Fine Enhancement Ore ×5",
-          "Stir-Fried Fish Noodles ×5",
-          "Jueyun Chili Chicken ×5"
+        "gate": "redeem-validated",
+        "last_seen": 1793777427,
+        "message_id": "1567440902862012537",
+        "msg_codes": [
+          "CDOF4X83H7X2",
+          "MIJIQ23V2437"
         ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793777427,
+        "rewards": "Mora*10000;Adventurer's Experience*10;Fine Enhancement Ore*5;Stir-Fried Fish Noodles*5;Jueyun Chili Chicken*5",
         "sources": [
           "ennead",
-          "ogc"
+          "ogc",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
       },
       "CODENAMEK": {
         "first_seen": 1790323430,
@@ -4461,20 +4467,26 @@
       },
       "MIJIQ23V2437": {
         "first_seen": 1793771428,
-        "gate": "only ennead, ogc",
-        "last_seen": 1793771428,
-        "rewards": [
-          "Mora ×10000",
-          "Adventurer's Experience ×10",
-          "Fine Enhancement Ore ×5",
-          "Jueyun Chili Chicken ×5",
-          "Stir-Fried Fish Noodles ×5"
+        "gate": "redeem-validated",
+        "last_seen": 1793777427,
+        "message_id": "1567440902862012537",
+        "msg_codes": [
+          "CDOF4X83H7X2",
+          "MIJIQ23V2437"
         ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793777427,
+        "rewards": "Mora*10000;Adventurer's Experience*10;Fine Enhancement Ore*5;Stir-Fried Fish Noodles*5;Jueyun Chili Chicken*5",
         "sources": [
           "ennead",
-          "ogc"
+          "ogc",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
       },
       "MYSNEZHNAYACAREER": {
         "first_seen": 1790323430,
@@ -6677,7 +6689,7 @@
         ],
         "47312224": [
           1793776829,
-          0,
+          1,
           "5f8dda591b621230"
         ]
       },
