@@ -4417,8 +4417,13 @@
           1
         ],
         "posted_at": 1793768443,
-        "rewards": null,
+        "rewards": [
+          "Guide to Charity ×3",
+          "\"Energy-Replenishing Meal\" ×3",
+          "Kristallfold ×3"
+        ],
         "sources": [
+          "ennead",
           "seria"
         ],
         "status": "posted",
@@ -4436,6 +4441,22 @@
           "ogc"
         ],
         "status": "seeded"
+      },
+      "MIJIQ23V2437": {
+        "first_seen": 1793771428,
+        "gate": "only ennead",
+        "last_seen": 1793771428,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
       },
       "MYSNEZHNAYACAREER": {
         "first_seen": 1790323430,
