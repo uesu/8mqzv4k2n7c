@@ -1,0 +1,317 @@
+{
+  "attachments": [],
+  "webhook_id": "1546810772506673172",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Gachabase Update!](https://www.reddit.com/r/Zenlesszonezeroleaks_/comments/1xnbsam/gachabase_update/)\n*by Gachabases in r/Zenlesszonezeroleaks_*\n\nHey Guys! Big Update today for Gachabase which adds many new features for ZZZ that are especially important for the Leaks community.\n\nWe'll be going through some of the main updates here but if you'd like to see a full breakdown, you can go to http://discord.gg/gachabase and visit the \"Announcements\" channel to see it.\n\n# 1 - Revision Timeline\nhttps://zzz.gachabase.net/timeline\n\nYou can now view any version and any revision that we have available of ZZZ on Gachabase!"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/uy4q028a2izh1.png?width=1498&format=png&auto=webp&s=0d90cef184b0ff5d3169ee441d629b75203608fb",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/UFw5xVbhhIHf-f131VSgABBQCGU1d8Wa-Fe8NVtoMuc/%3Fwidth%3D1498%26format%3Dpng%26auto%3Dwebp%26s%3D0d90cef184b0ff5d3169ee441d629b75203608fb/https/preview.redd.it/uy4q028a2izh1.png",
+                "width": 1498,
+                "height": 521,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "# 2 - Gallery\n\nCheck out image comparisons on basically any diff page where an image has changed!"
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/sn8hetth2izh1.png?width=2201&format=png&auto=webp&s=9c2a3e6d27830695c47b7801f2980ad4efc687ae",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/02BeRJ4KDa1YHYJUGpGnA0aB3Qxti3tY6uhjVGImbMg/%3Fwidth%3D2201%26format%3Dpng%26auto%3Dwebp%26s%3D9c2a3e6d27830695c47b7801f2980ad4efc687ae/https/preview.redd.it/sn8hetth2izh1.png",
+                "width": 2201,
+                "height": 1192,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://preview.redd.it/zevtfvgj2izh1.png?width=2196&format=png&auto=webp&s=1fea81f54364fd7275bd6b3ca996852e6a89534a",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/LkMUWOmwvXjsxyN0nYHcwcW9_i2th1kKNTI9b-9hQn4/%3Fwidth%3D2196%26format%3Dpng%26auto%3Dwebp%26s%3D1fea81f54364fd7275bd6b3ca996852e6a89534a/https/preview.redd.it/zevtfvgj2izh1.png",
+                "width": 2196,
+                "height": 1410,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "# 3 - Item Diffing"
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/nll9yns03izh1.png?width=1819&format=png&auto=webp&s=f1eb83435432daad73ed00ecd76fa74673f2beb4",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/25F9hnFR3sYeeDic61DkSmXKFTCowiuCqn51SVUjcnQ/%3Fwidth%3D1819%26format%3Dpng%26auto%3Dwebp%26s%3Df1eb83435432daad73ed00ecd76fa74673f2beb4/https/preview.redd.it/nll9yns03izh1.png",
+                "width": 1819,
+                "height": 918,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 9,
+          "type": 10,
+          "content": "# 4 - Advanced Stats\n\nAs you can see in the image, the advanced skill data is still a work in progress as we continue to research and refine the information. Many parts of the data are still missing or incomplete.\n\nPlease notify the team if you notice any issues with this addition, we hope you enjoy the extra data!"
+        },
+        {
+          "id": 10,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/6jhpvt943izh1.png?width=2067&format=png&auto=webp&s=aa712c61c16903adb0fb181c164e283a61ad44f7",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/VSrQJNOnfuJpsvTi1JIIh-fePvpVb48wW4yIOAbMa5s/%3Fwidth%3D2067%26format%3Dpng%26auto%3Dwebp%26s%3Daa712c61c16903adb0fb181c164e283a61ad44f7/https/preview.redd.it/6jhpvt943izh1.png",
+                "width": 2067,
+                "height": 1132,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": 10,
+          "content": "# 5 - Mindscape Cinema"
+        },
+        {
+          "id": 12,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/sw2dlwz93izh1.png?width=1403&format=png&auto=webp&s=f2d82647ebe899ffaf99fec3600603dc85f9955a",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/iUvldAoS09x996L9gonudLxgv6ThTEUs0oxoVuBc0sE/%3Fwidth%3D1403%26format%3Dpng%26auto%3Dwebp%26s%3Df2d82647ebe899ffaf99fec3600603dc85f9955a/https/preview.redd.it/sw2dlwz93izh1.png",
+                "width": 1403,
+                "height": 577,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "type": 10,
+          "content": "# 6 - Enemies"
+        },
+        {
+          "id": 14,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/pxx2fr5c3izh1.png?width=1952&format=png&auto=webp&s=364d09253adc5fb09edbb5eff687d200c84a40e1",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/NYQW_J-f-Q6o2g_407_aPj3AEWRCyrvqMmpO5kl7EZA/%3Fwidth%3D1952%26format%3Dpng%26auto%3Dwebp%26s%3D364d09253adc5fb09edbb5eff687d200c84a40e1/https/preview.redd.it/pxx2fr5c3izh1.png",
+                "width": 1952,
+                "height": 1154,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://preview.redd.it/w5np9ehd3izh1.png?width=2167&format=png&auto=webp&s=c948c7ef8eb1c47507e5a6428bcc6bffdf1714d0",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/H1EGVst2onNA7k3ouqIeBy6VkHOfVFFAuZL6s_JowK8/%3Fwidth%3D2167%26format%3Dpng%26auto%3Dwebp%26s%3Dc948c7ef8eb1c47507e5a6428bcc6bffdf1714d0/https/preview.redd.it/w5np9ehd3izh1.png",
+                "width": 2167,
+                "height": 1219,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://preview.redd.it/5lsxxuye3izh1.png?width=2196&format=png&auto=webp&s=6577a2e8b00f42d37164dba52ce66a3a3bd01d39"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 16,
+          "type": 10,
+          "content": "# 7 - Tutorials"
+        },
+        {
+          "id": 17,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/f9u98fui3izh1.png?width=2163&format=png&auto=webp&s=4006d231278c3b733f26679e7f516e487be42c73",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/fzkDdmkGuHdiw7qr06Siq6MG7cr4G8m4kvetmbde97Q/%3Fwidth%3D2163%26format%3Dpng%26auto%3Dwebp%26s%3D4006d231278c3b733f26679e7f516e487be42c73/https/preview.redd.it/f9u98fui3izh1.png",
+                "width": 2163,
+                "height": 797,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "type": 10,
+          "content": "# 8 - Achievements"
+        },
+        {
+          "id": 19,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/8egev58k3izh1.png?width=2196&format=png&auto=webp&s=dfafd2d21d2f3d820d1c4d05662059ea0d84f195",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/JHL-yzbofTwotMqMYdtgHxbukCzd0U9RpfRzyTEQ3i8/%3Fwidth%3D2196%26format%3Dpng%26auto%3Dwebp%26s%3Ddfafd2d21d2f3d820d1c4d05662059ea0d84f195/https/preview.redd.it/8egev58k3izh1.png",
+                "width": 2196,
+                "height": 948,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "type": 10,
+          "content": "# 9 - Raw Stats Hover"
+        },
+        {
+          "id": 21,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/zvmom92n3izh1.png?width=2005&format=png&auto=webp&s=4fc7f192d72c396cc7da85a5eb284c281fee171c",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/jTTdfAT-TOl0KYu_UosPJk_lELLCsnldByLP9VVhvQ8/%3Fwidth%3D2005%26format%3Dpng%26auto%3Dwebp%26s%3D4fc7f192d72c396cc7da85a5eb284c281fee171c/https/preview.redd.it/zvmom92n3izh1.png",
+                "width": 2005,
+                "height": 777,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://preview.redd.it/lad091pl3izh1.png?width=2200&format=png&auto=webp&s=dea7358ec3f3c487476f81090d9af4a9cc006fcb",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/g9kJWExlFac_Oe6lTbMPOgh6iiBLVeSrI3Nc7VeMrxs/%3Fwidth%3D2200%26format%3Dpng%26auto%3Dwebp%26s%3Ddea7358ec3f3c487476f81090d9af4a9cc006fcb/https/preview.redd.it/lad091pl3izh1.png",
+                "width": 2200,
+                "height": 526,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "type": 10,
+          "content": "-# 💬 7 👍 65   •   🕐 <t:1793757091:f>"
+        },
+        {
+          "id": 23,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 24,
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.reddit.com/r/Zenlesszonezeroleaks_/comments/1xnbsam/gachabase_update/"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
