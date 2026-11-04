@@ -4178,6 +4178,7 @@
         "sources": [
           "codehub",
           "ennead",
+          "humbao",
           "ogc",
           "seria"
         ],
@@ -4486,6 +4487,7 @@
         "sources": [
           "codehub",
           "ennead",
+          "humbao",
           "ogc",
           "seria"
         ],
@@ -4738,6 +4740,7 @@
         "sources": [
           "codehub",
           "ennead",
+          "humbao",
           "ogc",
           "reddit",
           "seria"
