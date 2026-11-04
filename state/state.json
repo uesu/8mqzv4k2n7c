@@ -4160,6 +4160,22 @@
         ],
         "status": "seeded"
       },
+      "CDOF4X83H7X2": {
+        "first_seen": 1793775019,
+        "gate": "only ennead",
+        "last_seen": 1793775019,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Stir-Fried Fish Noodles ×5",
+          "Jueyun Chili Chicken ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
       "CODENAMEK": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
