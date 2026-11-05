@@ -7106,8 +7106,8 @@
     },
     "hna": {
       "cursor": [
-        1793858405,
-        "47328313"
+        1793872804,
+        "47330492"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -7151,6 +7151,11 @@
           1793858443,
           2,
           "693b6000f738537d"
+        ],
+        "47330492": [
+          1793872846,
+          0,
+          "2a3ac94498a87a48"
         ]
       },
       "records": {
@@ -7210,14 +7215,21 @@
           ],
           "status": "posted",
           "ts": 1793858405
+        },
+        "47330492": {
+          "messages": [
+            "1567841182376267779"
+          ],
+          "status": "posted",
+          "ts": 1793872804
         }
       },
       "route": "7a204299ff16d73e"
     },
     "starrail": {
       "cursor": [
-        1793768404,
-        "47310096"
+        1793872805,
+        "47330493"
       ],
       "floor": 1792395921,
       "paused": false,
@@ -7236,6 +7248,11 @@
           1793768443,
           2,
           "7fd01fcab7fceac1"
+        ],
+        "47330493": [
+          1793872846,
+          0,
+          "9e661dfae153bf08"
         ]
       },
       "records": {
@@ -7446,6 +7463,13 @@
           ],
           "status": "posted",
           "ts": 1793768404
+        },
+        "47330493": {
+          "messages": [
+            "1567841165544394794"
+          ],
+          "status": "posted",
+          "ts": 1793872805
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -8017,7 +8041,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1793862041
+          "ts": 1793872846
         },
         "data": {
           "announcement_locked": true,
@@ -8046,12 +8070,12 @@
             ]
           },
           "banners_checked_ts": 1793864429,
-          "banners_search_ts": 1793862041,
+          "banners_search_ts": 1793872846,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1793862041,
+          "calendar_ts": 1793872846,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8575,8 +8599,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793862041,
-          "banners_search_ts": 1793862041,
+          "banners_checked_ts": 1793872846,
+          "banners_search_ts": 1793872846,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -8669,7 +8693,7 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners_checked_ts": 1793581518,
-          "banners_search_ts": 1793862041,
+          "banners_search_ts": 1793872846,
           "estimate_sources": [
             "version cadence"
           ],
