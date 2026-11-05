@@ -6657,11 +6657,6 @@
       "floor": 1792395075,
       "paused": false,
       "rechecks": {
-        "47296173": [
-          1793678445,
-          2,
-          "ab11863a5138cc3f"
-        ],
         "47296221": [
           1793678725,
           2,
@@ -7135,9 +7130,40 @@
       "route": "a0f2147590c35140"
     },
     "hna": {
+      "cursor": [
+        1793851205,
+        "47327351"
+      ],
       "floor": 1792395921,
       "paused": false,
-      "records": {},
+      "rechecks": {
+        "47327350": [
+          1793851236,
+          0,
+          "ec2e470815a4eb85"
+        ],
+        "47327351": [
+          1793851236,
+          0,
+          "24456f65778372e9"
+        ]
+      },
+      "records": {
+        "47327350": {
+          "messages": [
+            "1567750536579522764"
+          ],
+          "status": "posted",
+          "ts": 1793851205
+        },
+        "47327351": {
+          "messages": [
+            "1567750543223558266"
+          ],
+          "status": "posted",
+          "ts": 1793851205
+        }
+      },
       "route": "7a204299ff16d73e"
     },
     "starrail": {
@@ -7148,11 +7174,6 @@
       "floor": 1792395921,
       "paused": false,
       "rechecks": {
-        "47296174": [
-          1793678445,
-          2,
-          "61b4f61ba6430361"
-        ],
         "47307963": [
           1793761828,
           2,
@@ -7423,17 +7444,12 @@
     },
     "zzz": {
       "cursor": [
-        1793766609,
-        "47309557"
+        1793851208,
+        "47327352"
       ],
       "floor": 1792395921,
       "paused": false,
       "rechecks": {
-        "47296176": [
-          1793678445,
-          2,
-          "b19a29de85d65f4f"
-        ],
         "47309009": [
           1793764842,
           2,
@@ -7443,6 +7459,11 @@
           1793767228,
           2,
           "5a237b90ae4c4ecd"
+        ],
+        "47327352": [
+          1793851236,
+          0,
+          "577e9d6d2fec3903"
         ]
       },
       "records": {
@@ -7718,6 +7739,13 @@
           ],
           "status": "posted",
           "ts": 1793766609
+        },
+        "47327352": {
+          "messages": [
+            "1567750526114734101"
+          ],
+          "status": "posted",
+          "ts": 1793851208
         }
       },
       "route": "5f931f917050e29a"
@@ -7929,7 +7957,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1793839822
+          "ts": 1793851236
         },
         "data": {
           "announcement_locked": true,
@@ -7958,12 +7986,12 @@
             ]
           },
           "banners_checked_ts": 1793842238,
-          "banners_search_ts": 1793839822,
+          "banners_search_ts": 1793851236,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1793839822,
+          "calendar_ts": 1793851236,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8487,8 +8515,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793839822,
-          "banners_search_ts": 1793839822,
+          "banners_checked_ts": 1793851236,
+          "banners_search_ts": 1793851236,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -8581,7 +8609,7 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners_checked_ts": 1793581518,
-          "banners_search_ts": 1793839822,
+          "banners_search_ts": 1793851236,
           "estimate_sources": [
             "version cadence"
           ],
