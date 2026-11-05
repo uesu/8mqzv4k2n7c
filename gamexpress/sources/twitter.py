@@ -100,6 +100,12 @@ TCO_WRAPPED = re.compile(r"/t\.co/", re.I)   # nitter leaves t.co links unexpand
 X_UA = "Game-Express"
 
 
+def _is_card_art(url: str) -> bool:
+    """X link / app card artwork (`pbs.twimg.com/card_img/...`), never a tweet's own photo."""
+    return isinstance(url, str) and url.lower().startswith(("https://pbs.twimg.com/card_img/",
+                                                            "http://pbs.twimg.com/card_img/"))
+
+
 def _fx_media(t: dict) -> list[str]:
     media = t.get("media") if isinstance(t.get("media"), dict) else {}
     out: list[str] = []
@@ -112,7 +118,11 @@ def _fx_media(t: dict) -> list[str]:
         url = v.get("url") or v.get("thumbnail_url")
         if url and url not in out:
             out.append(url)
-    return out
+    # FxTwitter folds a link / app card's artwork into `photos` (HonkaiNA 2118221775108771936:
+    # the App Store icon, 512x512, next to the real 1920x1080 photo). Card art is never key art
+    # when the tweet has media of its own; a card-only tweet keeps it as before.
+    native = [u for u in out if not _is_card_art(u)]
+    return native if native else out
 
 
 def _from_fx(t: dict, tweet_id: str) -> dict:

@@ -107,7 +107,11 @@ def container(children: list[dict], color: int | None = None) -> dict:
 
 
 def _md_link_text(s: str) -> str:
-    return s.replace("[", "(").replace("]", ")")
+    """Text that is safe as a markdown link label: brackets neutralised and all
+    whitespace runs (newlines included) collapsed to one space — a label that
+    spans lines does not render as a link (HoYoLAB 47327567 carried a `\n`
+    inside its subject and the news header showed the raw `[…](…)`)."""
+    return re.sub(r"\s+", " ", s.replace("[", "(").replace("]", ")")).strip()
 
 
 SAFE_URL_MAX = 1024
@@ -834,7 +838,7 @@ def news_payloads(
     operational safety bounds, preserving inline text/media order and falling back honestly
     if any bound is exceeded.
     """
-    title = strip_invisible(item.title).replace("[", "(").replace("]", ")")
+    title = _md_link_text(strip_invisible(item.title))
     if len(title) > 500 or not safe_url(item.url):
         raise ValueError("article title/URL cannot be rendered safely")
     author = strip_invisible(item.author)
