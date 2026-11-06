@@ -8811,7 +8811,28 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1793329202,
-          "banners_checked_ts": 1793980841,
+          "banners": {
+            "phase1": [
+              "Lily",
+              "Sigrika",
+              "Qiuyuan"
+            ],
+            "phase2": [
+              "Camellya",
+              "Roccia",
+              "Phoebe",
+              "Brant"
+            ],
+            "reruns": [
+              "Sigrika",
+              "Qiuyuan",
+              "Camellya",
+              "Roccia",
+              "Phoebe",
+              "Brant"
+            ]
+          },
+          "banners_checked_ts": 1793992221,
           "banners_search_ts": 1793983827,
           "estimate_sources": [
             "version cadence"
@@ -8849,12 +8870,33 @@
         ],
         "first_seen": 1793329238,
         "message_id": "1565561054497480738",
-        "mirror_hash": "d09a05cf3e92a7d1",
+        "mirror_hash": "79c02e170726140a",
         "mirror_message_id": "1565561076589006939",
         "mirror_webhook_fp": "a85deaa1f0fb",
-        "payload_hash": "5be72841ded586ec",
+        "payload_hash": "90dac5c2165bd964",
         "posted_at": 1793329238,
         "prov": {
+          "b_phase1": [
+            6,
+            1793992221
+          ],
+          "b_phase1_by": [
+            "wiki"
+          ],
+          "b_phase2": [
+            6,
+            1793992221
+          ],
+          "b_phase2_by": [
+            "wiki"
+          ],
+          "b_reruns": [
+            6,
+            1793992221
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
           "maint_end_ts": [
             9,
             1793329238
@@ -8881,7 +8923,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1793345115,
+        "updated_at": 1793992221,
         "webhook_fp": "19991534cf6d"
       }
     },
