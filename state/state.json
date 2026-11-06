@@ -6033,8 +6033,13 @@
           1
         ],
         "posted_at": 1793966438,
-        "rewards": null,
+        "rewards": [
+          "Advanced Sealed Tube ×5",
+          "Astrite ×100",
+          "Premium Tuner ×20"
+        ],
         "sources": [
+          "ogc",
           "reddit",
           "x"
         ],
@@ -8806,7 +8811,7 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1793329202,
-          "banners_checked_ts": 1793959235,
+          "banners_checked_ts": 1793970037,
           "banners_search_ts": 1793962221,
           "estimate_sources": [
             "version cadence"
