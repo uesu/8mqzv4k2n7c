@@ -8062,7 +8062,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1793950822
+          "ts": 1793962221
         },
         "data": {
           "announcement_locked": true,
@@ -8091,12 +8091,12 @@
             ]
           },
           "banners_checked_ts": 1793953831,
-          "banners_search_ts": 1793950822,
+          "banners_search_ts": 1793962221,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1793950822,
+          "calendar_ts": 1793962221,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8620,8 +8620,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793950822,
-          "banners_search_ts": 1793950822,
+          "banners_checked_ts": 1793962221,
+          "banners_search_ts": 1793962221,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -8714,7 +8714,7 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners_checked_ts": 1793959235,
-          "banners_search_ts": 1793950822,
+          "banners_search_ts": 1793962221,
           "estimate_sources": [
             "version cadence"
           ],
@@ -8820,7 +8820,7 @@
               "version": "3.3"
             }
           ],
-          "ts": 1793940618
+          "ts": 1793962221
         },
         "data": {
           "announcement_locked": true,
@@ -8846,21 +8846,21 @@
               "Norma Hollowell"
             ]
           },
-          "banners_checked_ts": 1793940618,
+          "banners_checked_ts": 1793962221,
           "banners_display": {
             "Norma": "Norma Hollowell",
             "Phoenix": "Phoenix Reffaella",
             "Severian": "Severian Lowell",
             "Velina": "Velina Airgid"
           },
-          "banners_search_ts": 1793940618,
+          "banners_search_ts": 1793962221,
           "banners_settled": [
             "phase1",
             "phase1_4",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1793940618,
+          "calendar_ts": 1793962221,
           "compensation": "Polychrome ×300",
           "images": [
             "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
