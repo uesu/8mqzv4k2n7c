@@ -5696,6 +5696,20 @@
         ],
         "status": "seeded"
       },
+      "BLOOMINGFLOWERS": {
+        "first_seen": 1793964630,
+        "gate": "only ogc",
+        "last_seen": 1793964630,
+        "rewards": [
+          "Astrite ×100",
+          "Premium Enclosure Tank III ×2",
+          "Shell Credit ×40000"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "pending"
+      },
       "BURNINGSUN": {
         "first_seen": 1790323430,
         "last_seen": 1790992827,
@@ -6073,6 +6087,20 @@
           "codehub"
         ],
         "status": "seeded"
+      },
+      "TRAINOFSOULS": {
+        "first_seen": 1793964630,
+        "gate": "only ogc",
+        "last_seen": 1793964630,
+        "rewards": [
+          "Advanced Revival Inhaler ×2",
+          "Astrite ×100",
+          "Premium Resonance Potion ×3"
+        ],
+        "sources": [
+          "ogc"
+        ],
+        "status": "pending"
       },
       "WAKINGMOON": {
         "first_seen": 1790323430,
