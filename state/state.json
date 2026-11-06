@@ -5698,17 +5698,30 @@
       },
       "BLOOMINGFLOWERS": {
         "first_seen": 1793964630,
-        "gate": "only ogc",
-        "last_seen": 1793964630,
+        "gate": "official",
+        "last_seen": 1793966438,
+        "message_id": "1568233679233355847",
+        "msg_codes": [
+          "BLOOMINGFLOWERS",
+          "SCHOOLLIFE",
+          "TRAINOFSOULS"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793966438,
         "rewards": [
           "Astrite ×100",
           "Premium Enclosure Tank III ×2",
           "Shell Credit ×40000"
         ],
         "sources": [
-          "ogc"
+          "ogc",
+          "x"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "a85deaa1f0fb"
       },
       "BURNINGSUN": {
         "first_seen": 1790323430,
@@ -6004,6 +6017,28 @@
         ],
         "status": "seeded"
       },
+      "SCHOOLLIFE": {
+        "first_seen": 1793966438,
+        "gate": "official",
+        "last_seen": 1793966438,
+        "message_id": "1568233679233355847",
+        "msg_codes": [
+          "BLOOMINGFLOWERS",
+          "SCHOOLLIFE",
+          "TRAINOFSOULS"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793966438,
+        "rewards": null,
+        "sources": [
+          "x"
+        ],
+        "status": "posted",
+        "webhook_fp": "a85deaa1f0fb"
+      },
       "SHADOWOFGLORY": {
         "first_seen": 1790323430,
         "last_seen": 1790992827,
@@ -6090,17 +6125,30 @@
       },
       "TRAINOFSOULS": {
         "first_seen": 1793964630,
-        "gate": "only ogc",
-        "last_seen": 1793964630,
+        "gate": "official",
+        "last_seen": 1793966438,
+        "message_id": "1568233679233355847",
+        "msg_codes": [
+          "BLOOMINGFLOWERS",
+          "SCHOOLLIFE",
+          "TRAINOFSOULS"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1793966438,
         "rewards": [
           "Advanced Revival Inhaler ×2",
           "Astrite ×100",
           "Premium Resonance Potion ×3"
         ],
         "sources": [
-          "ogc"
+          "ogc",
+          "x"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "a85deaa1f0fb"
       },
       "WAKINGMOON": {
         "first_seen": 1790323430,
@@ -7511,11 +7559,18 @@
     },
     "wuwa": {
       "cursor": [
-        1792576800,
-        "5616"
+        1793966100,
+        "5689"
       ],
       "floor": 1792395921,
       "paused": false,
+      "rechecks": {
+        "5689": [
+          1793966438,
+          0,
+          "011c72cf770c3c42"
+        ]
+      },
       "records": {
         "5616": {
           "messages": [
@@ -7545,6 +7600,13 @@
           ],
           "status": "posted",
           "ts": 1792552500
+        },
+        "5689": {
+          "messages": [
+            "1568233707511222353"
+          ],
+          "status": "posted",
+          "ts": 1793966100
         }
       },
       "route": "f7e18488aac788d3"
