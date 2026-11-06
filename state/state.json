@@ -6268,7 +6268,7 @@
       "INKSHIFT33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1793940618,
+        "last_seen": 1793983827,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -6327,7 +6327,7 @@
       "LEVELUP33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1793940618,
+        "last_seen": 1793983827,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -8160,7 +8160,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1793973023
+          "ts": 1793983827
         },
         "data": {
           "announcement_locked": true,
@@ -8189,12 +8189,12 @@
             ]
           },
           "banners_checked_ts": 1793976026,
-          "banners_search_ts": 1793973023,
+          "banners_search_ts": 1793983827,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1793973023,
+          "calendar_ts": 1793983827,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8718,8 +8718,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1793973023,
-          "banners_search_ts": 1793973023,
+          "banners_checked_ts": 1793983827,
+          "banners_search_ts": 1793983827,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -8812,7 +8812,7 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners_checked_ts": 1793980841,
-          "banners_search_ts": 1793973023,
+          "banners_search_ts": 1793983827,
           "estimate_sources": [
             "version cadence"
           ],
@@ -8918,7 +8918,7 @@
               "version": "3.3"
             }
           ],
-          "ts": 1793962221
+          "ts": 1793983827
         },
         "data": {
           "announcement_locked": true,
@@ -8944,21 +8944,21 @@
               "Norma Hollowell"
             ]
           },
-          "banners_checked_ts": 1793962221,
+          "banners_checked_ts": 1793983827,
           "banners_display": {
             "Norma": "Norma Hollowell",
             "Phoenix": "Phoenix Reffaella",
             "Severian": "Severian Lowell",
             "Velina": "Velina Airgid"
           },
-          "banners_search_ts": 1793962221,
+          "banners_search_ts": 1793983827,
           "banners_settled": [
             "phase1",
             "phase1_4",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1793962221,
+          "calendar_ts": 1793983827,
           "compensation": "Polychrome ×300",
           "images": [
             "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
