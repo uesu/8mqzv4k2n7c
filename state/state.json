@@ -5718,6 +5718,7 @@
         ],
         "sources": [
           "ogc",
+          "reddit",
           "x"
         ],
         "status": "posted",
@@ -6034,6 +6035,7 @@
         "posted_at": 1793966438,
         "rewards": null,
         "sources": [
+          "reddit",
           "x"
         ],
         "status": "posted",
@@ -6145,6 +6147,7 @@
         ],
         "sources": [
           "ogc",
+          "reddit",
           "x"
         ],
         "status": "posted",
@@ -7567,7 +7570,7 @@
       "rechecks": {
         "5689": [
           1793966438,
-          0,
+          1,
           "011c72cf770c3c42"
         ]
       },
