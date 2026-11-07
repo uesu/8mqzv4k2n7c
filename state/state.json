@@ -8226,23 +8226,30 @@
             ],
             "phase2": [
               "Zibai",
-              "Linnea",
-              "Chronicled Wish"
+              "Linnea"
             ],
             "reruns": [
               "Furina",
               "Zibai",
-              "Linnea",
-              "Chronicled Wish"
-            ]
+              "Linnea"
+            ],
+            "special": {
+              "Chronicled Wish": [
+                "Varesa",
+                "Chasca",
+                "Xilonen",
+                "Mualani",
+                "Kinich"
+              ]
+            }
           },
-          "banners_checked_ts": 1794017423,
-          "banners_search_ts": 1794017423,
+          "banners_checked_ts": 1794028821,
+          "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794017423,
+          "calendar_ts": 1794028821,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8275,10 +8282,10 @@
         ],
         "first_seen": 1792555239,
         "message_id": "1562314671103418552",
-        "mirror_hash": "5b0295a79413d5b4",
+        "mirror_hash": "a6add8b2ecc3ff9f",
         "mirror_message_id": "1562314676023332895",
         "mirror_webhook_fp": "ee502f83bdf4",
-        "payload_hash": "1d9402fdc3b48f1d",
+        "payload_hash": "c857fe53dc2a8ceb",
         "posted_at": 1792555239,
         "preinstall_offset_h": 42.832,
         "prov": {
@@ -8300,16 +8307,23 @@
           "b_phase1_id": "47284168",
           "b_phase2": [
             6,
-            1793775649
+            1794028821
           ],
           "b_phase2_by": [
             "wiki"
           ],
           "b_reruns": [
             6,
-            1793775649
+            1794028821
           ],
           "b_reruns_by": [
+            "wiki"
+          ],
+          "b_special": [
+            6,
+            1794028821
+          ],
+          "b_special_by": [
             "wiki"
           ],
           "compensation": [
@@ -8338,7 +8352,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1793775649,
+        "updated_at": 1794028821,
         "webhook_fp": "19991534cf6d"
       }
     },
@@ -8749,6 +8763,11 @@
               "Chisa",
               "Iuno"
             ],
+            "phase1_4": [
+              "Buling",
+              "Taoqi",
+              "Youhu"
+            ],
             "phase2": [
               "Suoming",
               "Lucilla",
@@ -8766,10 +8785,11 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794017423,
-          "banners_search_ts": 1794017423,
+          "banners_checked_ts": 1794028821,
+          "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
+            "phase1_4",
             "phase2",
             "phase2_4",
             "reruns"
@@ -8807,6 +8827,13 @@
           "b_phase1": [
             100,
             1792647317
+          ],
+          "b_phase1_4": [
+            50,
+            1790599919
+          ],
+          "b_phase1_4_by": [
+            "official"
           ],
           "b_phase1_4_tba": "2 name(s) found, 3 expected",
           "b_phase2": [
@@ -8887,7 +8914,7 @@
             }
           },
           "banners_checked_ts": 1794025829,
-          "banners_search_ts": 1794017423,
+          "banners_search_ts": 1794028821,
           "estimate_sources": [
             "version cadence"
           ],
