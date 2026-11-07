@@ -6559,7 +6559,7 @@
   "maintenance": {
     "genshin": {
       "maint_api": {},
-      "paused": false,
+      "paused": true,
       "route": "a0f2147590c35140",
       "seeded_at": 1792665058,
       "versions": {
@@ -6651,7 +6651,7 @@
       }
     },
     "starrail": {
-      "paused": false,
+      "paused": true,
       "route": "d6cfe8654063c7ee",
       "seeded_at": 1792665058,
       "versions": {
@@ -6678,7 +6678,7 @@
       }
     },
     "wuwa": {
-      "paused": false,
+      "paused": true,
       "route": "f7e18488aac788d3",
       "seeded_at": 1792665058,
       "versions": {
@@ -6705,7 +6705,7 @@
       }
     },
     "zzz": {
-      "paused": false,
+      "paused": true,
       "route": "5f931f917050e29a",
       "seeded_at": 1792665058,
       "versions": {
@@ -6739,7 +6739,7 @@
         "47342930"
       ],
       "floor": 1792395075,
-      "paused": false,
+      "paused": true,
       "rechecks": {
         "47339559": [
           1793937638,
@@ -7180,7 +7180,7 @@
         "47339557"
       ],
       "floor": 1792395921,
-      "paused": false,
+      "paused": true,
       "rechecks": {
         "47327350": [
           1793851236,
@@ -7314,7 +7314,7 @@
         "47342931"
       ],
       "floor": 1792395921,
-      "paused": false,
+      "paused": true,
       "rechecks": {
         "47330493": [
           1793872846,
@@ -7571,7 +7571,7 @@
         "5689"
       ],
       "floor": 1792395921,
-      "paused": false,
+      "paused": true,
       "rechecks": {
         "5689": [
           1793966438,
@@ -7625,7 +7625,7 @@
         "47350776"
       ],
       "floor": 1792395921,
-      "paused": false,
+      "paused": true,
       "rechecks": {
         "47327352": [
           1793851236,
