@@ -4163,7 +4163,7 @@
       "CDOF4X83H7X2": {
         "first_seen": 1793775019,
         "gate": "redeem-validated",
-        "last_seen": 1793995821,
+        "last_seen": 1794039022,
         "message_id": "1567440902862012537",
         "msg_codes": [
           "CDOF4X83H7X2",
@@ -4472,7 +4472,7 @@
       "MIJIQ23V2437": {
         "first_seen": 1793771428,
         "gate": "redeem-validated",
-        "last_seen": 1793995821,
+        "last_seen": 1794039022,
         "message_id": "1567440902862012537",
         "msg_codes": [
           "CDOF4X83H7X2",
@@ -6717,9 +6717,9 @@
           "timing_notice": {
             "end_ts": 1794452400,
             "postponed": false,
-            "rank": 40,
+            "rank": 50,
             "start_ts": 1794427200,
-            "ts": 1794038401
+            "ts": 1793947671
           }
         },
         "3.9": {}
@@ -7588,8 +7588,8 @@
     },
     "wuwa": {
       "cursor": [
-        1794024000,
-        "5698"
+        1794038400,
+        "5705"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7603,6 +7603,11 @@
           1794024033,
           2,
           "9cb74e66729854a8"
+        ],
+        "5705": [
+          1794039022,
+          0,
+          "535e61df5a6aec2a"
         ]
       },
       "records": {
@@ -7648,6 +7653,15 @@
           ],
           "status": "posted",
           "ts": 1794024000
+        },
+        "5705": {
+          "messages": [
+            "1568538139549630537",
+            "1568538144456843365",
+            "1568538149397995522"
+          ],
+          "status": "posted",
+          "ts": 1794038400
         }
       },
       "route": "f7e18488aac788d3"
@@ -8915,12 +8929,6 @@
           "banners_checked_ts": 1794037234,
           "banners_search_ts": 1794028821,
           "compensation": "Astrite x300, Crystal Solvent x2",
-          "estimate_sources": [
-            "version cadence"
-          ],
-          "estimated": [
-            "preinstall_ts"
-          ],
           "images": [
             "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
           ],
@@ -8947,11 +8955,12 @@
         ],
         "first_seen": 1793329238,
         "message_id": "1565561054497480738",
-        "mirror_hash": "8c77130bc987af08",
+        "mirror_hash": "f404d19cd021c869",
         "mirror_message_id": "1565561076589006939",
         "mirror_webhook_fp": "a85deaa1f0fb",
-        "payload_hash": "0e0511b43727044a",
+        "payload_hash": "29cee342192061b9",
         "posted_at": 1793329238,
+        "preinstall_offset_h": 42.0,
         "prov": {
           "b_phase1": [
             6,
@@ -8982,20 +8991,20 @@
             "wiki"
           ],
           "compensation": [
-            40,
-            1794038401
+            50,
+            1793947671
           ],
           "maint_end_ts": [
-            40,
-            1794038401
+            50,
+            1793947671
           ],
           "maint_start_ts": [
-            40,
-            1794038401
+            50,
+            1793947671
           ],
           "preinstall_ts": [
-            9,
-            1793329238
+            50,
+            1793947671
           ],
           "program_name": [
             40,
@@ -9011,7 +9020,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794038433,
+        "updated_at": 1794039022,
         "webhook_fp": "19991534cf6d"
       }
     },
