@@ -28,6 +28,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
+import unicodedata
 from html import unescape
 
 from ..config import Game
@@ -49,8 +50,12 @@ _TAGS = re.compile(r"<[^>]+>")
 
 
 def canon(text: str) -> str:
-    """Lower-case title with every space, dash, colon, bracket and slash removed."""
-    return _CANON_DROP.sub("", _TAGS.sub("", unescape(text or "")).lower())
+    """Lower-case title with every space, dash, colon, bracket and slash removed, and every
+    compatibility character folded to ASCII (NFKC): Kuro titles the phase with the single
+    Roman-numeral characters Ⅰ/Ⅱ (U+2160/U+2161) as often as with the letters I/II — 3.3's and
+    3.6's Phase Ⅱ and both 3.7 notices (5546, 5668) never matched the template until this fold
+    (runner probe 2026-11-07: "no notice found" for 3.7 while the Kuro menu listed both)."""
+    return _CANON_DROP.sub("", unicodedata.normalize("NFKC", _TAGS.sub("", unescape(text or ""))).lower())
 
 
 def title_rx(template: str, version: str) -> re.Pattern:

@@ -5,6 +5,7 @@
     "Times: unix seconds OR ISO text, e.g. \"2026-11-04T06:00:00+08:00\". Fields: program_ts, preinstall_ts, maint_start_ts, maint_end_ts, program_name, version_name, title_url, image, compensation.",
     "title_url also pins the source button to the same post (the announcement). image is the key art. Once a card has its announcement, later posts can no longer move its link or key art, so use these to correct one by hand.",
     "banners: reruns, phase1, phase1_4, phase2, phase2_4, four_star (Wuthering Waves summary line) — lists of names; an empty list shows TBA.",
+    "banners.special: the banners outside the phases (Reverb Convene, Chronicled Wish, Collaboration) as {\"<label>\": [names]} — one `※ <label>: names` line each above the phases; {} removes them.",
     "Example (remove the leading underscore from the game key to activate it):"
   ],
   "_starrail": {

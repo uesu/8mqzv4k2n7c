@@ -58,6 +58,13 @@ class WikiDialect:
     debut_template: str           # '{{<template>|Name}}' the roster uses ('' = wiki links)
     banner_section: str           # marker line that opens the character-banner list
     section_stop: str             # regex: a line that ends the banner list
+    # The banner page's own infobox: its `type` names the banner kind ('Character Event',
+    # 'Chronicled', 'Character Collaboration', 'Collab Resonator' …), see SPECIAL_KIND.
+    info_template: str = ""
+    # WuWa only: a banner that is not live yet has no dated page, and the Version page links the
+    # banner SERIES page instead ('Voices on Azure Feathers'), whose infobox names the resonator.
+    series_template: str = ""
+    series_field: str = ""
 
 
 WIKIS: dict[str, WikiDialect] = {
@@ -70,6 +77,7 @@ WIKIS: dict[str, WikiDialect] = {
         debut_template="",
         banner_section=";Event Wishes",
         section_stop=r"^[;=]",
+        info_template="Wish",
     ),
     "starrail": WikiDialect(
         host="honkai-star-rail.fandom.com",
@@ -80,6 +88,7 @@ WIKIS: dict[str, WikiDialect] = {
         debut_template="Character Intro",
         banner_section="* Character Event Warps:",
         section_stop=r"^(?:=|\*(?!\*))",
+        info_template="Warp",
     ),
     "zzz": WikiDialect(
         host="zenless-zone-zero.fandom.com",
@@ -90,6 +99,7 @@ WIKIS: dict[str, WikiDialect] = {
         debut_template="Intro/Agent/Full",
         banner_section="====Exclusive Channels====",
         section_stop=r"^=",
+        info_template="Signal Search Infobox",
     ),
     "wuwa": WikiDialect(
         host="wutheringwaves.fandom.com",
@@ -100,8 +110,29 @@ WIKIS: dict[str, WikiDialect] = {
         debut_template="Intro/Resonator/Full",
         banner_section="===Character Event Convenes===",
         section_stop=r"^=",
+        info_template="Convene",
+        series_template="Convene Series Infobox",
+        series_field="resonator",
     ),
 }
+
+# A banner that belongs to NO phase: it runs beside the phases (or across both) under its own
+# rules, and the card lists it on its own `※ <label>: names` line instead of a phase line.
+#   * WuWa "Reverb Resonator Convene": 'Starpath Reverbs' (3.5), 'Starpath Reverbs II' (3.8) —
+#     one banner with four to six selectable 5★ reruns, listed undated among the convenes. Read
+#     as a phase it filed Camellya, Roccia, Phoebe and Brant under 3.8's phase 2 while the real
+#     phase 2 (Xuanling, Suisui, Hiyuki) sat on nameless series-page lines (2026-11-07).
+#   * Genshin "Chronicled Wish": the Version page brackets the KIND, not a name —
+#     '(Chronicled Wish)' — and lists the characters on '*** Characters:' sub-lines; read as a
+#     phase it put the literal name "Chronicled Wish" in 7.2's phase 2.
+#   * HSR "Collaboration": 4.4's Fate banners end in '- Collaboration' instead of '- Phase N'.
+#   * WuWa "Collab Resonator" (3.4's Lucy and Rebecca): only the banner page's infobox says so.
+# The wiki states the kind in three places — the bracket, the line's trailing tag and the banner
+# page's infobox `type` — and all three are read, so a new style needs at most a word here.
+SPECIAL_KIND = re.compile(r"\b(?:reverbs?|chronicled|collab(?:oration)?s?)\b", re.I)
+# The sub-line under a special banner that lists its characters ('*** Characters: [[A]], [[B]]').
+# A 'Weapons:' sibling exists too and is skipped: the card lists characters only.
+_SUB_CHARACTERS = re.compile(r"^\*{3,}\s*(?:characters?|resonators?|agents?)\s*:", re.I)
 
 _LINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 _PAREN = re.compile(r"\(([^()]*)\)")
@@ -120,12 +151,23 @@ _STRUCTURAL = {
 
 
 def publishable_name(name: str) -> bool:
-    """False for a placeholder or a slot word -- anything that is not a character's name."""
+    """False for a placeholder, a slot word or a banner kind ('Chronicled Wish') -- anything that
+    is not a character's name."""
     n = (name or "").strip()
-    return bool(n) and not _PLACEHOLDER.match(n) and n.casefold() not in _STRUCTURAL
+    return (bool(n) and not _PLACEHOLDER.match(n) and n.casefold() not in _STRUCTURAL
+            and not _is_kind(n))
+
+
+def _is_kind(text: str) -> bool:
+    """'Chronicled Wish', 'Collaboration', 'Reverb Convene' — a banner kind, never a character.
+    A kind is at most four words and carries one of the SPECIAL_KIND words."""
+    return bool(SPECIAL_KIND.search(text)) and len(text.split()) <= 4
 _DATED = re.compile(r"/\d{4}-\d{2}-\d{2}$")
 _PHASE_MARK = re.compile(r"^\*\s*Phase\s+(I{1,3}|\d)\s*:?\s*$", re.I)
 _WHOLE_VERSION = re.compile(r"^\*\s*Lasting the whole version\s*:?\s*$", re.I)
+# ZZZ 2.5 paired it with '* Starting in the second half:' — phase 2 (probe 2026-11-07: the
+# rescreening banner under it was read as phase 1, the marker being unknown).
+_SECOND_HALF = re.compile(r"^\*\s*(?:Starting in the )?second half\s*:?\s*$", re.I)
 _TRAIL_PHASE = re.compile(r"-\s*Phase\s*(\d)\s*$", re.I)
 _ROMAN = {"I": 1, "II": 2, "III": 3}
 
@@ -173,12 +215,26 @@ class BannerRef:
     page: str | None = None               # wiki page title, e.g. 'Bloodmoon Rising/2026-09-09'
     names: list[str] = field(default_factory=list)   # the names the Version page brackets
     phase: int = 0
+    kind: str = ""                        # the kind the Version page states ('Chronicled Wish', 'Collaboration')
+
+    @property
+    def title(self) -> str:
+        """The banner's name: the page title without its date / version suffix."""
+        return re.sub(r"/[^/]*$", "", self.page or "").strip()
+
+    def special_label(self) -> str:
+        """The card's label for a banner that belongs to no phase: the kind the wiki wrote when
+        it wrote one ('Chronicled Wish', 'Collaboration'), else the banner's own name
+        ('Starpath Reverbs II')."""
+        return self.kind or self.title
 
 
 @dataclass
 class VersionPage:
     debuts: list[str] = field(default_factory=list)
     banners: list[BannerRef] = field(default_factory=list)
+    specials: list[BannerRef] = field(default_factory=list)   # banners outside the phases (SPECIAL_KIND)
+    outside: list[BannerRef] = field(default_factory=list)    # WuWa: dated past phase 2 (a third date)
 
 
 def _section_lines(wikitext: str, marker: str, stop: str) -> list[str]:
@@ -223,6 +279,9 @@ def parse_debuts(game_key: str, wikitext: str) -> list[str]:
     return [n for n in dict.fromkeys(names) if publishable_name(n)]
 
 
+_TRAIL_TAG = re.compile(r"-\s*([A-Za-z][A-Za-z ]{2,30})\s*$")
+
+
 def _ref_from_line(line: str) -> BannerRef | None:
     links = _LINK.findall(line)
     if not links:
@@ -234,13 +293,23 @@ def _ref_from_line(line: str) -> BannerRef | None:
     # One annotation can hold SEVERAL characters: ZZZ 3.1's 'Exclusive Rescreening' is
     # ([[Dialyn]], [[Ukinami Yuzuha]], [[Asaba Harumasa]]) — one banner, three agents.
     names: list[str] = []
+    kind = ""
     if m:
-        for part in m.group(1).split(","):
-            name = clean_name(part)
-            if publishable_name(name):
-                names.append(name)
+        annotation = clean_name(m.group(1))
+        if _is_kind(annotation):
+            # Genshin brackets the KIND of a special banner: '(Chronicled Wish)'. Not a name.
+            kind = annotation
+        else:
+            for part in m.group(1).split(","):
+                name = clean_name(part)
+                if publishable_name(name):
+                    names.append(name)
+    # HSR tags the line: '- Phase 1' is the phase (read by the caller), '- Collaboration' a kind.
+    tag = _TRAIL_TAG.search(rest)
+    if tag and not _TRAIL_PHASE.search(rest) and _is_kind(tag.group(1)):
+        kind = tag.group(1).strip()
     # No bracket at all (some WuWa lines) -> the banner page resolves the names instead.
-    return BannerRef(page=page, names=names)
+    return BannerRef(page=page, names=names, kind=kind)
 
 
 def parse_version_page(game_key: str, wikitext: str) -> VersionPage:
@@ -248,6 +317,8 @@ def parse_version_page(game_key: str, wikitext: str) -> VersionPage:
     d = WIKIS[game_key]
     page = VersionPage(debuts=parse_debuts(game_key, wikitext))
     phase = 0
+    undated: list[BannerRef] = []           # WuWa only: phase decided after the whole list is read
+    last: BannerRef | None = None
     for raw in _section_lines(wikitext, d.banner_section, d.section_stop):
         line = raw.strip()
         if not line:
@@ -261,32 +332,97 @@ def parse_version_page(game_key: str, wikitext: str) -> VersionPage:
             # ZZZ 3.1: Remielle ran the whole version, which makes it the phase-1 banner.
             phase = 1
             continue
+        if _SECOND_HALF.match(line):
+            phase = 2
+            continue
         if not line.startswith("*"):
+            continue
+        if line.startswith("***"):
+            # A sub-line belongs to the banner above it. Genshin lists a Chronicled Wish's
+            # selectable characters there ('*** Characters: [[Varesa]], [[Chasca]] …'); read as
+            # banners of their own, those lines were "pages" named after characters.
+            if last is not None and last.kind and _SUB_CHARACTERS.match(line):
+                for t, lbl in _LINK.findall(line):
+                    name = clean_name(f"[[{t}{'|' + lbl if lbl else ''}]]")
+                    if publishable_name(name) and name not in last.names:
+                        last.names.append(name)
             continue
         ref = _ref_from_line(line)
         if ref is None:
+            continue
+        last = ref
+        # WuWa names ONE 5★ per featured convene, so a convene the Version page credits to
+        # several resonators is a Reverb Convene (3.5 'Starpath Reverbs': six, 3.8 'Starpath
+        # Reverbs II': four) even before its own page exists to say so.
+        if game_key == "wuwa" and len(ref.names) >= 2 and not ref.kind:
+            ref.kind = ""                   # the label is the banner's own name
+            page.specials.append(ref)
+            continue
+        if ref.kind:
+            page.specials.append(ref)
             continue
         trailing = _TRAIL_PHASE.search(line)
         if trailing:                                   # HSR marks the phase per line
             ref.phase = int(trailing.group(1))
         elif game_key == "wuwa":
-            # WuWa marks no phases at all: a dated page is phase 1, an undated one phase 2.
-            ref.phase = 1 if ref.page and _DATED.search(ref.page) else 2
+            # WuWa marks no phases at all. The wiki dates a banner page the day its phase goes
+            # live, so the phase is the DATE: the earliest date on the list is phase 1, the next
+            # date phase 2, and a page that has no date yet belongs to the phase after the last
+            # dated one. The old rule "dated = phase 1, undated = phase 2" held only until phase
+            # 2 started: on 2026-10-22 the 3.7 page dated its three phase-2 banners and the
+            # reader filed all six under phase 1 (runner probe 2026-11-07), which also made the
+            # 4★ union six names — so phase1_4 could never be filled from the wiki.
+            undated.append(ref)
+            continue
         else:
             ref.phase = phase
         if ref.phase in (1, 2):
             page.banners.append(ref)
+    if undated:
+        _wuwa_date_phases(undated)
+        page.banners.extend(r for r in undated if r.phase in (1, 2))
+        page.outside.extend(r for r in undated if r.phase not in (1, 2))
     return page
 
 
-def parse_banner_page(game_key: str, wikitext: str) -> dict[str, list[str]]:
-    """A banner page -> {'five': [...], 'four': [...]} from its pool template."""
+def _wuwa_date_phases(refs: list[BannerRef]) -> None:
+    """WuWa: the phase of each banner is the rank of its page date (see parse_version_page).
+    Also run again by build_lineup once the banner pages have been read, with the special
+    banners taken out: 3.4's two Collab convenes carried the earliest date and would otherwise
+    have been phase 1 with Lucilla and Cartethyia pushed one phase down."""
+    dates = sorted({_DATED.search(r.page).group(0) for r in refs if r.page and _DATED.search(r.page)})
+    for ref in refs:
+        m = _DATED.search(ref.page) if ref.page else None
+        # An undated page is never phase 1: with no date on the list at all it is still
+        # the "not live yet" phase 2 of the old rule (a rerun block listed before the
+        # debut banners are dated), with one date it follows that date, with two it is
+        # outside both phases.
+        ref.phase = dates.index(m.group(0)) + 1 if m else max(2, len(dates) + 1)
+
+
+def parse_banner_page(game_key: str, wikitext: str) -> dict:
+    """A banner page -> {'five': [...], 'four': [...], 'kind': str} from its pool template and
+    infobox. `kind` is the infobox `type` when it names a special banner (SPECIAL_KIND:
+    'Chronicled', 'Character Collaboration', 'Collab Resonator'), else ''.
+
+    A WuWa banner SERIES page (no pool, a `Convene Series Infobox` with the resonator) resolves
+    to that one 5★ and no 4★: it is the page the Version page links while the banner's phase is
+    not live yet (3.8's 'Voices on Azure Feathers' → Yangyang: Xuanling, 2026-11-07)."""
     d = WIKIS[game_key]
     fields = template_fields(wikitext, d.pool_template)
+    kind = ""
+    if d.info_template:
+        itype = template_fields(wikitext, d.info_template).get("type", "")
+        kind = itype if _is_kind(itype) else ""
     if not fields:
+        if d.series_template:
+            who = clean_name(template_fields(wikitext, d.series_template).get(d.series_field, ""))
+            if publishable_name(who):
+                return {"five": [who], "four": [], "kind": ""}
         return {}
     return {"five": split_names(fields.get(d.five_field, "")),
-            "four": split_names(fields.get(d.four_field, ""))}
+            "four": split_names(fields.get(d.four_field, "")),
+            "kind": kind}
 
 
 def _is_debut(name: str, debuts: list[str]) -> bool:
@@ -298,24 +434,52 @@ def _is_debut(name: str, debuts: list[str]) -> bool:
 
 def build_lineup(game_key: str, version_wikitext: str, pages: dict[str, str],
                  four_star_count: int | None = None,
-                 four_star_summary: bool = False) -> dict[str, list[str]]:
+                 four_star_summary: bool = False) -> dict:
     """Everything the banner block can learn from this wiki, as schedule-ready lists.
 
     `pages` maps a banner page title to its wikitext (may be empty: the Version page alone is
     enough for the 5★ names and the early tier).
     """
     vp = parse_version_page(game_key, version_wikitext)
+    pools = {ref.page: parse_banner_page(game_key, pages[ref.page])
+             for ref in vp.banners + vp.specials + vp.outside if ref.page and pages.get(ref.page)}
+    # The banner page can say what the Version page did not: an infobox typed 'Collab
+    # Resonator' / 'Chronicled' / 'Character Collaboration' is a special banner too.
+    moved = [b for b in vp.banners if pools.get(b.page, {}).get("kind")]
+    if moved:
+        for b in moved:
+            b.kind = b.kind or pools[b.page]["kind"]
+            vp.banners.remove(b)
+            vp.specials.append(b)
+        if game_key == "wuwa":
+            # the dates are ranked again without them: 3.4's third date (Cartethyia) is phase 2
+            refs = vp.banners + vp.outside
+            _wuwa_date_phases(refs)
+            vp.banners = [b for b in refs if b.phase in (1, 2)]
+    special: dict[str, list[str]] = {}
+    for ref in vp.specials:
+        # The wiki's kind words are for reading, not for the card: a WuWa page typed 'Collab
+        # Resonator' is listed under the banner's own name, like a Reverb Convene.
+        label = ref.kind if ref.kind and _is_kind(ref.kind) and game_key != "wuwa" else ref.title
+        names = ref.names or pools.get(ref.page, {}).get("five") or []
+        for n in names:
+            if n and n not in special.setdefault(label, []):
+                special[label].append(n)
+    special = {k: v for k, v in special.items() if v}
     if not vp.banners:
         # The early tier: a debut roster exists, no phase data yet.
-        return {"confirmed": vp.debuts} if vp.debuts else {}
+        out = {"confirmed": vp.debuts} if vp.debuts else {}
+        if special:
+            out["special"] = special
+        return out
 
-    out: dict[str, list[str]] = {}
+    out: dict = {}
     featured: list[str] = []
     four_by_phase: dict[int, list[str]] = {1: [], 2: []}
     for phase in (1, 2):
         five: list[str] = []
         for ref in [b for b in vp.banners if b.phase == phase]:
-            pool = parse_banner_page(game_key, pages.get(ref.page or "", "")) if ref.page else {}
+            pool = pools.get(ref.page) or {}
             names = pool.get("five") or ref.names
             for n in names:
                 if n and n not in five:
@@ -336,17 +500,25 @@ def build_lineup(game_key: str, version_wikitext: str, pages: dict[str, str],
     if not featured:
         # The banner section exists but named no CHARACTER -- a version stub whose channels are
         # still slot words. That is the early tier with extra markup, not phase data.
-        return {"confirmed": vp.debuts} if vp.debuts else {}
+        out = {"confirmed": vp.debuts} if vp.debuts else {}
+        if special:
+            out["special"] = special
+        return out
 
     reruns = [n for n in dict.fromkeys(featured) if not _is_debut(n, vp.debuts)]
     if reruns:
         out["reruns"] = reruns
+    if special:
+        # {label: names} — the banners outside the phases, one card line each (cards.banners_block
+        # `※ <label>: names`). Their names are NOT phase names: not in phase1/phase2, not reruns.
+        out["special"] = special
     # Every name this wiki read states the version's characters in, both forms it uses them:
     # the debut roster plus the featured names. schedule._display_map matches the card's names
     # against these to render the full form ('Phoenix' -> 'Phoenix Reffaella') without ever
     # touching the stored banner data. Not a banner key: apply_gacha_wiki's fill loop never
     # reads it, and it reaches the card only as data["banners_display"].
-    out["candidates"] = list(dict.fromkeys(list(vp.debuts) + featured))
+    out["candidates"] = list(dict.fromkeys(list(vp.debuts) + featured
+                                           + [n for v in special.values() for n in v]))
     if four_star_summary:
         lists = [v for v in (out.get("phase1_4"), out.get("phase2_4")) if v]
         if lists and all(v == lists[0] for v in lists):
@@ -393,7 +565,7 @@ def _revisions_of(payload: Any) -> dict[str, str]:
 
 async def fetch_lineup(fetcher, game_key: str, version: str,
                        four_star_count: int | None = None,
-                       four_star_summary: bool = False) -> dict[str, list[str]] | None:
+                       four_star_summary: bool = False) -> dict | None:
     """Two requests, and only ever for a version that still has a blank to fill.
 
     None means "could not read the wiki" (disabled, request failed, page missing). A dict --
@@ -414,7 +586,13 @@ async def fetch_lineup(fetcher, game_key: str, version: str,
     if not wikitext:
         return None
     vp = parse_version_page(game_key, wikitext)
-    titles = [b.page for b in vp.banners if b.page and _DATED.search(b.page)]
+    # The pages worth a request: every dated banner page (its pool holds the 5★ and the 4★ and
+    # its infobox the kind), plus the page of any banner the Version page gave no name for —
+    # WuWa links the undated SERIES page of a banner whose phase is not live yet, and only that
+    # page names the resonator (3.8: Xuanling, Suisui, Hiyuki were three nameless lines).
+    titles = list(dict.fromkeys(
+        b.page for b in vp.banners + vp.specials + vp.outside
+        if b.page and (_DATED.search(b.page) or not b.names)))
     pages: dict[str, str] = {}
     if titles:
         try:

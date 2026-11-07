@@ -324,9 +324,23 @@ def banners_block(game: Game, d: dict) -> str:
     # The 4★ summary is the pre-notice signal (the wiki knows the full roster before any phase
     # notice exists, and often names phase 2's 4★s early); once BOTH per-phase lists are in,
     # the summary is just their union — noise — and hides on the same silent edit that filled
-    # the second phase. Symmetric with the `※ Confirmed:` rule above.
+    # the second phase. Symmetric with the `※ Confirmed:` rule above. It also stays hidden
+    # while it has nothing to say: an empty roster would render `※ 4 Star Characters: TBA`
+    # one line above two per-phase `TBA`s (WW 3.8, 2026-11-06), and a roster the per-phase
+    # lines already spell out in full repeats them — the summary only appears while it names
+    # at least one 4★ no phase line shows yet.
     if game.card.four_star_summary and not (b.get("phase1_4") and b.get("phase2_4")):
-        notes.append(f"※ 4 Star Characters: {names(b.get('four_star'), disp)}")
+        shown = {names([n], disp) for k in ("phase1_4", "phase2_4") for n in (b.get(k) or [])}
+        roster = [names([n], disp) for n in (b.get("four_star") or [])]
+        if any(n != TBA and n not in shown for n in roster):
+            notes.append(f"※ 4 Star Characters: {names(b.get('four_star'), disp)}")
+    # The banners outside the phases — WuWa's Reverb Convene ('Starpath Reverbs II': Camellya,
+    # Roccia, Phoebe, Brant), Genshin's Chronicled Wish, HSR's Collaboration warps — one line
+    # each under the label the sources agreed on (gachawiki.SPECIAL_KIND / schedule.SPECIAL_NOTICE).
+    # Read as a phase, 3.8's Reverb Convene was the card's whole "Second Half" (2026-11-07).
+    for label, who in (b.get("special") or {}).items():
+        if who:
+            notes.append(f"※ {label}: {names(who, disp)}")
     if notes:
         lines += ["", *notes]
     four = game.card.four_star_label
