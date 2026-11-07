@@ -6769,7 +6769,7 @@
         ],
         "47351623": [
           1794024033,
-          1,
+          2,
           "fa9988ae8dd0a448"
         ]
       },
@@ -7210,16 +7210,6 @@
       "floor": 1794022819,
       "paused": false,
       "rechecks": {
-        "47327567": [
-          1793853038,
-          2,
-          "0d026a8ef8d53538"
-        ],
-        "47327575": [
-          1793853038,
-          2,
-          "6e1da7c231f0e5e2"
-        ],
         "47328313": [
           1793858443,
           2,
@@ -7336,7 +7326,7 @@
         ],
         "47351625": [
           1794024033,
-          1,
+          2,
           "64a96459a30beb99"
         ],
         "47351677": [
@@ -7607,7 +7597,7 @@
         ],
         "5698": [
           1794024033,
-          1,
+          2,
           "9cb74e66729854a8"
         ]
       },
@@ -8864,21 +8854,27 @@
               "Qiuyuan"
             ],
             "phase2": [
-              "Camellya",
-              "Roccia",
-              "Phoebe",
-              "Brant"
+              "Yangyang: Xuanling",
+              "Suisui",
+              "Hiyuki"
             ],
             "reruns": [
               "Sigrika",
               "Qiuyuan",
-              "Camellya",
-              "Roccia",
-              "Phoebe",
-              "Brant"
-            ]
+              "Yangyang: Xuanling",
+              "Suisui",
+              "Hiyuki"
+            ],
+            "special": {
+              "Starpath Reverbs II": [
+                "Camellya",
+                "Roccia",
+                "Phoebe",
+                "Brant"
+              ]
+            }
           },
-          "banners_checked_ts": 1794014424,
+          "banners_checked_ts": 1794025829,
           "banners_search_ts": 1794017423,
           "estimate_sources": [
             "version cadence"
@@ -8916,10 +8912,10 @@
         ],
         "first_seen": 1793329238,
         "message_id": "1565561054497480738",
-        "mirror_hash": "9e7ac3b167f1e580",
+        "mirror_hash": "b9646e2e7ebb7eb0",
         "mirror_message_id": "1565561076589006939",
         "mirror_webhook_fp": "a85deaa1f0fb",
-        "payload_hash": "e6c55c8108c5c984",
+        "payload_hash": "d64c41448f03b202",
         "posted_at": 1793329238,
         "prov": {
           "b_phase1": [
@@ -8931,16 +8927,23 @@
           ],
           "b_phase2": [
             6,
-            1793992221
+            1794025829
           ],
           "b_phase2_by": [
             "wiki"
           ],
           "b_reruns": [
             6,
-            1793992221
+            1794025829
           ],
           "b_reruns_by": [
+            "wiki"
+          ],
+          "b_special": [
+            6,
+            1794025829
+          ],
+          "b_special_by": [
             "wiki"
           ],
           "maint_end_ts": [
@@ -8969,7 +8972,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794022228,
+        "updated_at": 1794025829,
         "webhook_fp": "19991534cf6d"
       }
     },
