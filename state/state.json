@@ -6713,7 +6713,16 @@
             "ts": 1790072775
           }
         },
-        "3.8": {}
+        "3.8": {
+          "timing_notice": {
+            "end_ts": 1794452400,
+            "postponed": false,
+            "rank": 40,
+            "start_ts": 1794427200,
+            "ts": 1794038401
+          }
+        },
+        "3.9": {}
       }
     },
     "zzz": {
@@ -8905,13 +8914,12 @@
           },
           "banners_checked_ts": 1794037234,
           "banners_search_ts": 1794028821,
+          "compensation": "Astrite x300, Crystal Solvent x2",
           "estimate_sources": [
             "version cadence"
           ],
           "estimated": [
-            "preinstall_ts",
-            "maint_start_ts",
-            "maint_end_ts"
+            "preinstall_ts"
           ],
           "images": [
             "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
@@ -8935,16 +8943,14 @@
           "youtube_video": "https://www.youtube.com/watch?v=Ic8dDOPKdlE"
         },
         "estimated_reported": [
-          "preinstall_ts",
-          "maint_start_ts",
-          "maint_end_ts"
+          "preinstall_ts"
         ],
         "first_seen": 1793329238,
         "message_id": "1565561054497480738",
-        "mirror_hash": "b9646e2e7ebb7eb0",
+        "mirror_hash": "8c77130bc987af08",
         "mirror_message_id": "1565561076589006939",
         "mirror_webhook_fp": "a85deaa1f0fb",
-        "payload_hash": "d64c41448f03b202",
+        "payload_hash": "0e0511b43727044a",
         "posted_at": 1793329238,
         "prov": {
           "b_phase1": [
@@ -8975,13 +8981,17 @@
           "b_special_by": [
             "wiki"
           ],
+          "compensation": [
+            40,
+            1794038401
+          ],
           "maint_end_ts": [
-            9,
-            1793329238
+            40,
+            1794038401
           ],
           "maint_start_ts": [
-            9,
-            1793329238
+            40,
+            1794038401
           ],
           "preinstall_ts": [
             9,
@@ -9001,7 +9011,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794025829,
+        "updated_at": 1794038433,
         "webhook_fp": "19991534cf6d"
       }
     },
