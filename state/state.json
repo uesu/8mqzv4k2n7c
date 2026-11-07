@@ -7649,7 +7649,7 @@
         ],
         "47350776": [
           1794016836,
-          0,
+          1,
           "74e187cdd0b49db4"
         ]
       },
@@ -8172,7 +8172,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794006038
+          "ts": 1794017423
         },
         "data": {
           "announcement_locked": true,
@@ -8200,13 +8200,13 @@
               "Chronicled Wish"
             ]
           },
-          "banners_checked_ts": 1793998219,
-          "banners_search_ts": 1794006038,
+          "banners_checked_ts": 1794017423,
+          "banners_search_ts": 1794017423,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794006038,
+          "calendar_ts": 1794017423,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8730,8 +8730,8 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794006038,
-          "banners_search_ts": 1794006038,
+          "banners_checked_ts": 1794017423,
+          "banners_search_ts": 1794017423,
           "banners_settled": [
             "phase1",
             "phase2",
@@ -8845,7 +8845,7 @@
             ]
           },
           "banners_checked_ts": 1794014424,
-          "banners_search_ts": 1794006038,
+          "banners_search_ts": 1794017423,
           "estimate_sources": [
             "version cadence"
           ],
