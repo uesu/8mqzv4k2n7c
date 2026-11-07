@@ -8925,8 +8925,44 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1793329202,
-          "banners": {},
-          "banners_checked_ts": 1794048620,
+          "banners": {
+            "four_star": [
+              "Aalto",
+              "Youhu",
+              "Yangyang"
+            ],
+            "phase1": [
+              "Lily",
+              "Sigrika",
+              "Qiuyuan"
+            ],
+            "phase1_4": [
+              "Aalto",
+              "Youhu",
+              "Yangyang"
+            ],
+            "phase2": [
+              "Yangyang: Xuanling",
+              "Suisui",
+              "Hiyuki"
+            ],
+            "reruns": [
+              "Sigrika",
+              "Qiuyuan",
+              "Yangyang: Xuanling",
+              "Suisui",
+              "Hiyuki"
+            ],
+            "special": {
+              "Starpath Reverbs II": [
+                "Camellya",
+                "Roccia",
+                "Phoebe",
+                "Brant"
+              ]
+            }
+          },
+          "banners_checked_ts": 1794060033,
           "banners_search_ts": 1794051029,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
@@ -8955,13 +8991,55 @@
         ],
         "first_seen": 1793329238,
         "message_id": "1565561054497480738",
-        "mirror_hash": "9f33eef963736049",
+        "mirror_hash": "0c85aefde2496466",
         "mirror_message_id": "1565561076589006939",
         "mirror_webhook_fp": "a85deaa1f0fb",
-        "payload_hash": "c02caa04421dbc98",
+        "payload_hash": "57730e5a063d927c",
         "posted_at": 1793329238,
         "preinstall_offset_h": 42.0,
         "prov": {
+          "b_four_star": [
+            6,
+            1794060033
+          ],
+          "b_four_star_by": [
+            "wiki"
+          ],
+          "b_phase1": [
+            6,
+            1794060033
+          ],
+          "b_phase1_4": [
+            6,
+            1794060033
+          ],
+          "b_phase1_4_by": [
+            "wiki"
+          ],
+          "b_phase1_by": [
+            "wiki"
+          ],
+          "b_phase2": [
+            6,
+            1794060033
+          ],
+          "b_phase2_by": [
+            "wiki"
+          ],
+          "b_reruns": [
+            6,
+            1794060033
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
+          "b_special": [
+            6,
+            1794060033
+          ],
+          "b_special_by": [
+            "wiki"
+          ],
           "compensation": [
             50,
             1793947671
@@ -8992,7 +9070,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794048620,
+        "updated_at": 1794060033,
         "webhook_fp": "19991534cf6d"
       }
     },
