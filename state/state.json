@@ -4869,6 +4869,19 @@
         ],
         "status": "pending"
       },
+      "QYJW92K1DS3X": {
+        "first_seen": 1794070836,
+        "gate": "only ennead",
+        "last_seen": 1794070836,
+        "rewards": [
+          "Primogem ×60",
+          "Adventurer's Experience ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
       "QYJWQVRI39BE": {
         "first_seen": 1792813821,
         "gate": "only ennead",
@@ -8962,7 +8975,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794060033,
+          "banners_checked_ts": 1794070836,
           "banners_search_ts": 1794062418,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
