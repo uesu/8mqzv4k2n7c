@@ -43,6 +43,25 @@ class SourceHealth:
     last_error: str = ""
 
 
+def http_date_ts(value: str) -> int | None:
+    """RFC 7231 `Last-Modified` -> unix ts; None for an absent or malformed header."""
+    if not value or not value.strip():
+        return None
+    try:
+        from email.utils import parsedate_to_datetime
+
+        parsed = parsedate_to_datetime(value.strip())
+    except (TypeError, ValueError, IndexError):
+        return None
+    if parsed is None:
+        return None
+    if parsed.tzinfo is None:
+        from datetime import timezone
+
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return int(parsed.timestamp())
+
+
 @dataclass
 class Fetcher:
     session: aiohttp.ClientSession
@@ -50,6 +69,9 @@ class Fetcher:
     health: dict[str, SourceHealth] = field(default_factory=dict)
     parallel: int = MAX_PARALLEL
     _sem: asyncio.Semaphore | None = field(default=None, repr=False)
+    # `Last-Modified` (unix ts) of media URLs seen by `verify_media`, keyed by the URL asked for.
+    # Undated CDN paths (Kuro `clientUpload/<slug>.mp4`) get their upload date from here.
+    media_dates: dict[str, int] = field(default_factory=dict, repr=False)
 
     def _gate(self) -> asyncio.Semaphore:
         if self._sem is None:
@@ -144,6 +166,7 @@ class Fetcher:
                  "vxreddit.com", "embedez.com", "deltandy.me",
                  # feature 5 (beta): the community databases that publish beta revisions
                  "nanoka.cc", "gachabase.net")
+        asked = url
         try:
             for _ in range(4):
                 parts = urlsplit(url)
@@ -173,6 +196,9 @@ class Fetcher:
                     elif response.status != 200:
                         log.warning("news media rejected: host=%s status=%s", host, response.status)
                         return None
+                    modified = http_date_ts(response.headers.get("Last-Modified", ""))
+                    if modified:
+                        self.media_dates[asked] = modified
                     cap = 256 * 1024 if dimensions else 64
                     prefix = bytearray()
                     async for chunk in response.content.iter_chunked(2048 if dimensions else 64):

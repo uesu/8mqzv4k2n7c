@@ -248,9 +248,15 @@ def _is_launch_window_compatible(
     preinstall_ts: int | None,
     maint_start_ts: int | None,
     explicit_version_link: bool = False,
+    upload_ts: int | None = None,
 ) -> bool:
-    """Reject stale prior-patch backgrounds and Phase II mid-patch background swaps."""
-    upload_ts = _asset_upload_ts(url)
+    """Reject stale prior-patch backgrounds and Phase II mid-patch background swaps.
+
+    The upload date comes from the CDN path (`/YYYY/MM/DD/`) or, for undated paths, from the
+    `upload_ts` the caller learned elsewhere (Kuro: the CDN `Last-Modified` header).
+    """
+    if upload_ts is None:
+        upload_ts = _asset_upload_ts(url)
     anchor_early = preinstall_ts or maint_start_ts
     anchor_maint = maint_start_ts or preinstall_ts
     if upload_ts is not None:
@@ -261,6 +267,84 @@ def _is_launch_window_compatible(
     elif not explicit_version_link and maint_start_ts and now > maint_start_ts + LAUNCH_MEDIA_MAX_AFTER_S:
         return False
     return True
+
+
+def _upcoming_launch_version(plans: dict, live: str, now: int) -> str:
+    """Lowest version above `live` whose launch window (-11d pre-load .. +7d maintenance) contains `now`."""
+    live_key = version_key(live) if live else (0, 0)
+    found = ""
+    for ver, plan in plans.items():
+        if not isinstance(plan, dict) or version_key(ver) <= live_key:
+            continue
+        start_ts = plan.get("maint_start_ts")
+        early = plan.get("preinstall_ts") or start_ts
+        if not start_ts or not early:
+            continue
+        if early - LAUNCH_MEDIA_MAX_BEFORE_S <= now <= start_ts + LAUNCH_MEDIA_MAX_AFTER_S and (
+            not found or version_key(ver) < version_key(found)
+        ):
+            found = ver
+    return found
+
+
+def _kuro_background_window_open(plans: dict, vinfo: dict, now: int) -> bool:
+    """Poll the global Kuro launcher background only while a launch is near (0 requests mid-patch)."""
+    if vinfo.get("pre"):
+        return True
+    return bool(_upcoming_launch_version(plans, str(vinfo.get("live") or ""), now))
+
+
+def _attribute_kuro_background(record: dict, kuro_media: dict, vinfo: dict, plans: dict, now: int) -> tuple[dict, bool]:
+    """Bind the global Kuro launcher background to the version it belongs to.
+
+    `G153/background/<hash>/en.json` is one shared slot: it carries no version and no upload date,
+    and its hash changes without the media changing. The owner is therefore decided from WHEN the
+    media changed, memoised in `record["kuro_background"]` so later runs never re-decide:
+
+      * first sighting with no pre-download open -> the live version's background (`live`);
+      * first sighting while a pre-download is open -> unknown (`""`), never offered to any card;
+        it becomes the new live version's once the launcher flips live without changing it;
+      * a changed background -> the launcher `pre` version, else the version whose launch window
+        contains `now`, else `live` (mid-patch / Phase II swap).
+
+    Returns `(kuro_media tagged with "version", memo_changed)`; the tag is `""` when unknown.
+    """
+    video = str(kuro_media.get("video") or "").strip() if isinstance(kuro_media, dict) else ""
+    artwork = str(kuro_media.get("artwork") or "").strip() if isinstance(kuro_media, dict) else ""
+    locator = _canonical_url_locator(video or artwork)
+    if not locator:
+        return {}, False
+    live = str(vinfo.get("live") or "").strip()
+    pre = str(vinfo.get("pre") or "").strip()
+    memo = record.get("kuro_background") if isinstance(record.get("kuro_background"), dict) else {}
+    changed = False
+    if memo.get("locator") == locator:
+        owner = str(memo.get("owner") or "").strip()
+        if not owner and live and not pre and live != str(memo.get("live") or ""):
+            owner = live
+            memo["owner"] = owner
+            changed = True
+    else:
+        if not memo:
+            owner = live if (live and not pre) else ""
+        else:
+            owner = pre or _upcoming_launch_version(plans, live, now) or live
+        record["kuro_background"] = {"locator": locator, "owner": owner, "first_seen": int(now), "live": live, "pre": pre}
+        changed = True
+    return {**kuro_media, "version": owner}, changed
+
+
+async def _undated_asset_upload_ts(fetcher, url: str, now: int, *, cache: dict[str, bool] | None) -> int | None:
+    """Upload date of an undated CDN path: the `Last-Modified` the (memoised) preflight observed.
+
+    Runs the same verification `resolve_launch_media` performs later (shared `cache`, so no second
+    request); an unreachable candidate yields None and is dropped by that verification anyway.
+    """
+    if _asset_upload_ts(url) is not None or not await _verify_url(fetcher, url, now, cache=cache):
+        return None
+    dates = getattr(fetcher, "media_dates", None)
+    ts = dates.get(url) if isinstance(dates, dict) else None
+    return int(ts) if isinstance(ts, int) and ts > 0 else None
 
 
 async def _verify_url(
@@ -741,8 +825,12 @@ async def resolve_launch_media(
             if isinstance(slot, dict):
                 slots.append(slot)
         live_ver_str = str(vinfo.get("live") or "").strip()
-        if isinstance(kuro_media, dict) and (kuro_media.get("video") or kuro_media.get("artwork")) and live_ver_str:
-            slots.append({"version": live_ver_str, **kuro_media})
+        if isinstance(kuro_media, dict) and (kuro_media.get("video") or kuro_media.get("artwork")):
+            # Tagged by `_attribute_kuro_background` (`""` = owner unknown: offered to nobody);
+            # an untagged dict keeps the legacy reading (the live version's background).
+            bg_owner = str(kuro_media["version"] or "").strip() if "version" in kuro_media else live_ver_str
+            if bg_owner:
+                slots.append({**kuro_media, "version": bg_owner})
         for slot in slots:
             slot_ver = str(slot.get("version") or "").strip()
             if slot_ver and slot_ver != version:
@@ -754,6 +842,8 @@ async def resolve_launch_media(
                 continue
             if slot_ver != version:
                 continue
+            # Kuro paths carry no date: the CDN `Last-Modified` (3.7's `.mp4`: 2026-09-30, ~1.5h after
+            # 3.7 went live) stands in, so a prior patch's background is rejected by date as well.
             vid = slot.get("video") or ""
             vmeta_raw = dict(slot.get("video_meta")) if isinstance(slot.get("video_meta"), dict) else {}
             if slot.get("video_md5") and not vmeta_raw.get("hash"):
@@ -761,7 +851,10 @@ async def resolve_launch_media(
             if (
                 vid
                 and not _url_used_by_prior_version(vid, version, versions_state)
-                and _is_launch_window_compatible(vid, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts)
+                and _is_launch_window_compatible(
+                    vid, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts,
+                    upload_ts=await _undated_asset_upload_ts(ctx.fetcher, vid, now, cache=verified_cache),
+                )
             ):
                 fresh_videos.append((vid, _build_asset_meta(vid, version, extra=vmeta_raw)))
             art = slot.get("artwork") or ""
@@ -771,7 +864,10 @@ async def resolve_launch_media(
             if (
                 art
                 and not _url_used_by_prior_version(art, version, versions_state)
-                and _is_launch_window_compatible(art, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts)
+                and _is_launch_window_compatible(
+                    art, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts,
+                    upload_ts=await _undated_asset_upload_ts(ctx.fetcher, art, now, cache=verified_cache),
+                )
             ):
                 fresh_artworks.append((art, _build_asset_meta(art, version, extra=ameta_raw)))
 
@@ -1142,6 +1238,25 @@ async def _run_game_maintenance(
                     vstate["observed_preinstall_ts"] = int(plan["preinstall_ts"])
                     obs_changed = True
 
+        # Kuro: the shared launcher background is version-less, so it is attributed when it is seen.
+        # Polled only inside a launch window (pre-download open, or -11d/+7d around a planned
+        # maintenance) so the mid-patch idle poll still makes zero background requests.
+        is_kuro = game.launcher.get("type") == "kuro"
+        vinfo_now = ctx.versions.get(game.key) or {}
+        kuro_tagged: dict | None = None
+
+        async def kuro_media_tagged(_record=record, _vinfo=vinfo_now, _plans=plans) -> dict:
+            nonlocal kuro_tagged
+            if kuro_tagged is None:
+                raw = await get_kuro_media()
+                kuro_tagged, memo_changed = _attribute_kuro_background(_record, raw or {}, _vinfo, _plans, ctx.now)
+                if memo_changed and not ephemeral:
+                    ctx.state.save()
+            return kuro_tagged
+
+        if is_kuro and _kuro_background_window_open(plans, vinfo_now, ctx.now):
+            await kuro_media_tagged()
+
         # Silent baseline / upgrade migration: mark every historical version & already-elapsed
         # milestone as `seeded` without posting or pinging, leaving future milestones active.
         if "seeded_at" not in record or record.get("paused"):
@@ -1262,7 +1377,7 @@ async def _run_game_maintenance(
                             if want_media_check or auth_ts_upgrade:
                                 if in_media_window and media_allowed:
                                     binfo = await get_basic_info() if game.launcher.get("type") == "hoyoplay" else {}
-                                    kmedia = await get_kuro_media() if game.launcher.get("type") == "kuro" else {}
+                                    kmedia = await kuro_media_tagged() if is_kuro else {}
                                     staged_vstate = copy.deepcopy(vstate)
                                     staged_all = copy.deepcopy(versions_state)
                                     new_tier, new_url = await resolve_launch_media(
@@ -1358,7 +1473,7 @@ async def _run_game_maintenance(
                     continue
 
                 binfo = await get_basic_info() if game.launcher.get("type") == "hoyoplay" else {}
-                kmedia = await get_kuro_media() if game.launcher.get("type") == "kuro" else {}
+                kmedia = await kuro_media_tagged() if is_kuro else {}
                 staged_vstate = copy.deepcopy(vstate)
                 staged_all = copy.deepcopy(versions_state)
                 media_tier, media_url = await resolve_launch_media(

@@ -58,6 +58,8 @@ _TITLE_EXCLUDE_RE = re.compile(
     r"hollow\s+zero|illusive\s+realm|spiral\s+abyss|imaginarium\s+theater|deadly\s+assault|"
     r"shiyu\s+defense|apocalyptic\s+shadow|pure\s+fiction|tower\s+of\s+adversity|"
     r"closed\s+beta|beta\s+(?:test|recruitment)|recruitment|"
+    # HNA `Anidex | <Anima>` cards (creatures with an `Aspect:` line, not characters)
+    r"anidex|"
     # Non-character entities & serial episodes (`echo showcase`/`new echoes`, not poetic "Echoes of...")
     r"weapons?|light\s+cones?|w-engines?|bangboos?|artifacts?|relics?|"
     r"echo\s+(?:showcase|gallery|preview|system|intro|tuning|set|hunting)|new\s+echo(?:es)?|tacet\s+discords?|"
@@ -133,6 +135,9 @@ _WUWA_PROFILE_RE = re.compile(
     r"^(?:profile\s+reveal\s*[|丨:：]|(?:resonator\s+)?profile\s*[:：|丨])\s*(.+?)\s*$",
     re.I,
 )
+# HNA pre-release character introductions: `Nexus Meet | Juelle` (47339557) — a bio paragraph with
+# no quote and no dossier key, so Layer 2 cannot see it. Anima cards are `Anidex | <name>` (excluded).
+_HNA_NEXUS_MEET_RE = re.compile(r"^nexus\s+meet\s*[|丨:：—–\-]\s*(.+?)\s*$", re.I)
 
 # --- Layer 2: Unseen future `<Series> | <Character>` or `<Role> Reveal/Dossier | <Character>` ---
 _GENERIC_PIPE_RE = re.compile(r"^\s*([^|丨\n]{4,60}?)\s*[|丨]\s*([^|丨\n]{2,44}?)\s*$")
@@ -146,7 +151,7 @@ _OPENING_QUOTE_RE = re.compile(r"[\"“「『][^\"”」』]{12,420}[\"”」』
 _DOSSIER_SIGNAL_RE = re.compile(
     r"(?:[◆▌]|^\s*✦\s*[A-Z]|"
     r"\b(?:voice(?:\s+actor)?|cv|va|affiliation|faction|allegiance|constellation|"
-    r"vision|gnosis|moon\s+wheel|attribute|element|path|forte|archive\s*>>|loading\s+data)\s*[:：>])",
+    r"vision|gnosis|moon\s+wheel|stellar\s+linchpin|attribute|element|path|forte|archive\s*>>|loading\s+data)\s*[:：>])",
     re.I | re.M,
 )
 
@@ -306,7 +311,7 @@ def _match_genshin_diamond_dossier(title: str, body: str) -> RevealMatch | None:
     # `◆ Constellation: Y`) where the character's name sits in the article title.
     bullets = _DIAMOND_BULLET_RE.findall(body)
     if len(bullets) >= 3 and re.search(
-        r"\b(?:vision|gnosis|moon\s+wheel|constellation|astrolabe|delusion|authority|ancient\s+name)\b",
+        r"\b(?:vision|gnosis|moon\s+wheel|stellar\s+linchpin|constellation|astrolabe|delusion|authority|ancient\s+name)\b",
         "\n".join(bullets),
         re.I,
     ):
@@ -400,6 +405,12 @@ def classify_character_reveal(game_key: str, item) -> RevealMatch | None:
         cname = clean_character_name(m_ww_prof.group(1))
         if cname:
             return RevealMatch(cname, canonical_character_key(cname), "wuwa_profile_reveal")
+
+    m_hna = _HNA_NEXUS_MEET_RE.match(title)
+    if m_hna and gk == "hna":
+        cname = clean_character_name(m_hna.group(1))
+        if cname:
+            return RevealMatch(cname, canonical_character_key(cname), "hna_nexus_meet")
 
     m_role = _GENERIC_ROLE_REVEAL_RE.match(title)
     if m_role:

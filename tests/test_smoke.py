@@ -24833,6 +24833,19 @@ def test_reveal_ping_default_off_isolation_and_multi_era_plus_unseen_future_clas
         ("genshin", "Echoes Beyond the Firmament", (
             '◆ Name: Dainsleif\n◆ Title: Bough Keeper\n◆ Abyssal Core: Khaenri\'ah\n◆ Constellation: Viator'
         ), "Dainsleif"),
+        # Live 7.3 reveals as HoYoLAB published them (47339559 / 47351623, runner probe 2026-11-07): no space
+        # after `◆`, a bare epithet line, and Danica's new `Stellar Linchpin` power key instead of Vision/Gnosis.
+        ("genshin", "Dawn Breaks the Long Winter", (
+            '"The long winter ends, and the dawn is ours."\n◆Name: Anastasya\n◆Title: Frostcrown Revival\n'
+            '◆Tsaritsa of All Snezhnaya\n◆ Gnosis: Cryo\n◆Constellation: Autocratrix Anastasis'
+        ), "Anastasya"),
+        ("genshin", "Steel Sheathed in Courtly Poise", (
+            '"A blade is only as steady as the hand that bears it."\n◆Name: Danica\n◆Title: Marshal of the Tsaritsa\n'
+            '◆Stellar Linchpin: Electro\n◆Constellation: Orcinus Orca'
+        ), "Danica"),
+        ("genshin", '"Courtly Poise" · Danica', (
+            '◆ Marshal of the Tsaritsa\n◆ Fatui\n◆ Stellar Linchpin: Electro\n◆ Constellation: Orcinus Orca'
+        ), "Danica"),
         # Early Genshin V2/V3 `◆` bullet dossier without `Name:` key
         ("genshin", '"Astute Luminary" · Nahida', (
             '◆ Physic of Purity\n◆ Lesser Lord Kusanali\n◆ Gnosis: Dendro\n◆ Constellation: Sapientia Oromasdis'
@@ -24871,6 +24884,12 @@ def test_reveal_ping_default_off_isolation_and_multi_era_plus_unseen_future_clas
             '"Beneath the sunken spires, every tide remembers its oath."\n'
             'Nereia gazes across the abyssal trench.\nEnglish Voice: Jane Doe'
         ), "Nereia"),
+        # HNA pre-release `Nexus Meet | <name>` (47339557, 2026-11-06): bio paragraph, no quote, no dossier key.
+        ("hna", "Nexus Meet | Juelle", (
+            "Chair of the Committee for a Joyful Iia, whose origins and background remain a mystery.\n"
+            "Juelle is calm and perceptive, with an extraordinary talent for public speaking.\n"
+            "The Final Closed Beta launches on November 25!\nPre-register for Honkai: Nexus Anima now ▶ https://hoyo.link/zfqXqb2Iu"
+        ), "Juelle"),
         ("hna", "Sovereign Nexus Dossier | Seraphina", (
             '"Bind your Anima to mine, and no rift shall part us."\nAffiliation: Astral Sanctum\nSeraphina awaits.'
         ), "Seraphina"),
@@ -24937,6 +24956,21 @@ def test_reveal_ping_default_off_isolation_and_multi_era_plus_unseen_future_clas
         ], []),
         ("wuwa", "Echo Showcase | Lorelei", '"A phantom echoing over Rinascita."', [
             {"kind": "text", "text": '"A phantom echoing over Rinascita."'}, img_blk,
+        ], []),
+        # HNA `Anidex | <Anima>` creature cards (real HoYoLAB posts 2025-06-28 / 09-05 / 09-08): anima, not characters —
+        # excluded by title even when a future card gains a quote.
+        ("hna", "Anidex | Camcorgi", "Aspect: Memory This dog captures life through its lens, though its boundless energy sometimes leaves its shots blurred.", [
+            {"kind": "text", "text": "Aspect: Memory This dog captures life through its lens."}, img_blk,
+        ], []),
+        ("hna", "Anidex | Bobabirb", '"More food!" Aspect: Insatiability Bobabirb is always seeking more food, and constantly stumbling along the way.', [
+            {"kind": "text", "text": '"More food!" Aspect: Insatiability Bobabirb is always seeking more food. Affiliation: Iia'}, img_blk,
+        ], []),
+        ("hna", "Anidex | Cublade", "Aspect: Regret This young dog bears a bone blade upon its head.", [
+            {"kind": "text", "text": "Aspect: Regret This young dog bears a bone blade upon its head."}, img_blk,
+        ], []),
+        # The Nexus Meet rule is HNA's: the same title on another game's feed is not a reveal by itself.
+        ("zzz", "Nexus Meet | Juelle", "Chair of the Committee for a Joyful Iia.", [
+            {"kind": "text", "text": "Chair of the Committee for a Joyful Iia."}, img_blk,
         ], []),
     ]
     for gkey, title, body, blocks, links in negatives:
@@ -26478,6 +26512,189 @@ def test_feature5_a_metadata_mover_is_labelled_and_a_localization_is_not_a_renam
     assert beta_mod._metadata_changes(
         "wuwa", weapon(), weapon(name="Lucilla's Weapon"), fields, require_both=True) == []
 
+
+def test_kuro_launcher_background_is_attributed_to_the_version_it_belongs_to():
+    """The global Kuro launcher background (`G153/background/<hash>/en.json`) is one shared,
+    version-less, undated slot. It is attributed from WHEN it changes (memo `kuro_background`):
+    first seen with no pre-download -> the live version's; changed -> the launcher `pre` /
+    the version whose launch window contains `now`; unchanged across a live flip -> stays."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.sources import kuro as kuro_mod
+
+    fx = json.loads((Path(__file__).resolve().parent / "fixtures" / "kuro_launcher_background_trimmed.json").read_text(encoding="utf-8"))
+    bg_37 = kuro_mod.parse_launcher_background(fx["background_en_3_7"], bg_hash="dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf")
+    # Live 2026-11-07 (runner probe): the hash rotated to `lv1emIbKHn38mW6zgxiFqU3Uw8nwstj6`, the URLs did not.
+    bg_37_rehashed = kuro_mod.parse_launcher_background(fx["background_en_3_7"], bg_hash="lv1emIbKHn38mW6zgxiFqU3Uw8nwstj6")
+    ww38_mp4 = "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/w38_launch_slug.mp4"
+    ww38_webp = "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/w38_firstframe.webp"
+    bg_38 = {"video": ww38_mp4, "video_meta": {"slot": "background"}, "artwork": ww38_webp, "artwork_meta": {"slot": "background"}}
+    plans = {"3.8": {"preinstall_ts": 1794276000, "maint_start_ts": 1794427200},  # WW 3.8 official (Kuro 5705)
+             "3.9": {"preinstall_ts": 1797904800, "maint_start_ts": 1798056000}}
+
+    # HNA stays launcher-less until it has a HoYoPlay branch: the id (`yneO4yGc4x`, getGames 2026-11-07) is in
+    # the config note; wiring it earlier would only add a `getGameBranches` re-fetch to every maintenance run.
+    assert GAMES["hna"].launcher == {}
+    assert "yneO4yGc4x" in json.loads((Path(__file__).resolve().parent.parent / "config" / "games.json").read_text(encoding="utf-8"))["games"]["hna"]["note"]
+
+    # Window: zero background requests mid-patch, polled from -11d of the pre-load (or while `pre` is set).
+    assert maintenance._kuro_background_window_open(plans, {"live": "3.7", "pre": None}, 1792720000) is False  # Oct 23
+    assert maintenance._kuro_background_window_open(plans, {"live": "3.7", "pre": None}, 1794100000) is True   # Nov 7
+    assert maintenance._kuro_background_window_open({}, {"live": "3.7", "pre": "3.8"}, 1792720000) is True
+    assert maintenance._upcoming_launch_version(plans, "3.7", 1794100000) == "3.8"
+    assert maintenance._upcoming_launch_version(plans, "3.8", 1795100000) == ""  # Nov 19: 3.8 done, 3.9 window not yet
+
+    # 1) First sighting with no pre-download open -> the live version's background; identity is the URL,
+    #    not the hash (the hash rotates without the media changing).
+    rec: dict = {}
+    tagged, changed = maintenance._attribute_kuro_background(rec, bg_37, {"live": "3.7", "pre": None}, plans, 1794100000)
+    assert changed and tagged["version"] == "3.7" and rec["kuro_background"]["owner"] == "3.7"
+    assert maintenance._attribute_kuro_background(rec, bg_37_rehashed, {"live": "3.7", "pre": "3.8"}, plans, 1794276000) == (
+        {**bg_37_rehashed, "version": "3.7"}, False)
+    # ... and it stays 3.7's across the live flip when the media did not change (never offered to 3.8).
+    assert maintenance._attribute_kuro_background(rec, bg_37, {"live": "3.8", "pre": None}, plans, 1794427260)[0]["version"] == "3.7"
+    # 2) Changed while the pre-download is open -> the pre-download version's.
+    tagged, changed = maintenance._attribute_kuro_background(rec, bg_38, {"live": "3.7", "pre": "3.8"}, plans, 1794300000)
+    assert changed and tagged["version"] == "3.8" and rec["kuro_background"]["first_seen"] == 1794300000
+    # 3) Changed during maintenance with `pre` already gone and `live` not flipped yet -> the launch-window version.
+    rec = {"kuro_background": {"locator": maintenance._canonical_url_locator(bg_37["video"]), "owner": "3.7", "first_seen": 1794100000, "live": "3.7", "pre": ""}}
+    assert maintenance._attribute_kuro_background(rec, bg_38, {"live": "3.7", "pre": None}, plans, 1794427260)[0]["version"] == "3.8"
+    # 4) Changed three weeks into the patch (Phase II swap, no launch window open) -> the live version's.
+    rec = {"kuro_background": {"locator": maintenance._canonical_url_locator(ww38_mp4), "owner": "3.8", "first_seen": 1794427260, "live": "3.8", "pre": ""}}
+    phase2 = {**bg_38, "video": "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/w38_phase2.mp4"}
+    assert maintenance._attribute_kuro_background(rec, phase2, {"live": "3.8", "pre": None}, plans, 1796241600)[0]["version"] == "3.8"
+    # 5) First sighting while a pre-download is already open -> unknown: offered to nobody, recorded for nobody,
+    #    adopted by the new live version once the launcher flips without changing it.
+    rec = {}
+    tagged, _ = maintenance._attribute_kuro_background(rec, bg_37, {"live": "3.7", "pre": "3.8"}, plans, 1794300000)
+    assert tagged["version"] == "" and rec["kuro_background"]["owner"] == ""
+    assert maintenance._attribute_kuro_background(rec, bg_37, {"live": "3.8", "pre": None}, plans, 1794450000)[0]["version"] == "3.8"
+    assert maintenance._attribute_kuro_background({}, {}, {"live": "3.7", "pre": None}, plans, 1794100000) == ({}, False)
+
+    # `resolve_launch_media`: the tag decides the slot; `""` offers it to nobody; an untagged dict keeps the legacy
+    # reading (live version's background) so older callers behave as before.
+    plan_38 = {"preinstall_ts": 1794276000, "maint_start_ts": 1794427200, "schedule_images": [], "override": {}}
+    ctx = types.SimpleNamespace(now=1794276000, versions={"wuwa": {"live": "3.7", "pre": "3.8"}},
+                                fetcher=types.SimpleNamespace(verify_media=AsyncMock(return_value=True)))
+    vs: dict = {}
+    assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+                                                        kuro_media={**bg_37, "version": "3.7"}, versions_state=vs)) == (4, None)
+    assert vs["3.7"]["seen_media"] == [maintenance._canonical_url_locator(bg_37["video"]), maintenance._canonical_url_locator(bg_37["artwork"])]
+    vs = {}
+    assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+                                                        kuro_media={**bg_37, "version": ""}, versions_state=vs)) == (4, None)
+    assert vs == {}
+    assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+                                                        kuro_media={**bg_38, "version": "3.8"}, versions_state={})) == (1, ww38_mp4)
+    ctx_37 = types.SimpleNamespace(now=1790712060, versions={"wuwa": {"live": "3.7", "pre": None}}, fetcher=ctx.fetcher)
+    assert asyncio.run(maintenance.resolve_launch_media(ctx_37, GAMES["wuwa"], "3.7", {**plan_38, "preinstall_ts": 1790560800, "maint_start_ts": 1790712000},
+                                                        {}, basic_info={}, program_pins={}, kuro_media=bg_37, versions_state={})) == (1, bg_37["video"])
+
+    # Second, independent guard: Kuro paths are undated, so the CDN `Last-Modified` the preflight saw stands in
+    # for the upload date (probe 2026-11-07: `fbp4pj51dfnw2uyyzt.mp4` -> `Wed, 30 Sep 2026 04:37:56 GMT`, i.e.
+    # 3.7's launch day). Even untagged, 3.7's video is rejected for 3.8 by date alone; 3.8's own upload passes.
+    from gamexpress import http as http_mod
+
+    assert http_mod.http_date_ts("Wed, 30 Sep 2026 04:37:56 GMT") == 1790743076
+    assert http_mod.http_date_ts("") is None and http_mod.http_date_ts("yesterday") is None
+
+    class DatedResp:
+        def __init__(self, url: str):
+            self.status = 200
+            self.headers = {"Content-Type": "video/mp4", "Last-Modified": "Wed, 30 Sep 2026 04:37:56 GMT" if url in (bg_37["video"], bg_37["artwork"]) else "Thu, 12 Nov 2026 04:35:00 GMT"}
+            self._body = b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom" + b"\x00" * 64
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_a):
+            return False
+
+        @property
+        def content(self):
+            body = self._body
+
+            class Reader:
+                async def iter_chunked(self, _n):
+                    yield body
+
+            return Reader()
+
+    class DatedSession:
+        def get(self, url: str, **_kw):
+            return DatedResp(url)
+
+    dated_fetcher = http_mod.Fetcher(DatedSession())
+    assert asyncio.run(dated_fetcher.verify_media(bg_37["video"])) is True
+    assert dated_fetcher.media_dates == {bg_37["video"]: 1790743076}
+    assert asyncio.run(dated_fetcher.verify_media(ww38_mp4)) is True and dated_fetcher.media_dates[ww38_mp4] == 1794458100
+    ctx_dated = types.SimpleNamespace(now=1794276000, versions={"wuwa": {"live": "3.7", "pre": "3.8"}},
+                                      fetcher=types.SimpleNamespace(verify_media=dated_fetcher.verify_media, media_dates=dated_fetcher.media_dates))
+    cache: dict = {}
+    assert asyncio.run(maintenance.resolve_launch_media(ctx_dated, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+                                                        kuro_media={**bg_37, "version": "3.8"}, versions_state={}, verified_cache=cache)) == (4, None)
+    assert cache == {bg_37["video"]: True, bg_37["artwork"]: True}  # verified once, reused; no second request later
+    assert asyncio.run(maintenance.resolve_launch_media(ctx_dated, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+                                                        kuro_media={**bg_38, "video_meta": {}, "artwork": "", "version": "3.8"}, versions_state={})) == (1, ww38_mp4)
+    assert maintenance._is_launch_window_compatible(ww38_mp4, now=1794427260, preinstall_ts=1794276000, maint_start_ts=1794427200, upload_ts=1790743076) is False
+    assert maintenance._is_launch_window_compatible(ww38_mp4, now=1794427260, preinstall_ts=1794276000, maint_start_ts=1794427200, upload_ts=None) is True
+
+    # End to end, the sequence the 2026-11-07 probe makes likely: the launcher keeps 3.7's `.mp4` until the 3.8
+    # pre-download opens, then swaps. Before the fix the swapped 3.8 video was filed under 3.7 (the live version)
+    # at pre-load time and `_url_used_by_prior_version` then barred it from 3.8 for good.
+    prog38 = "https://pbs.twimg.com/media/WW38BroadcastKeyArt.jpg?name=orig"
+    cur_en = dict(fx["background_en_3_7"])
+    calls: list[str] = []
+
+    class KuroStub:
+        async def verify_media(self, _u: str) -> bool:
+            return True
+
+        async def get_json(self, url: str, **_kw):
+            calls.append(url)
+            return fx["launcher_config_g153"] if url == kuro_mod.LAUNCHER_CONFIG else cur_en
+
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = make_ctx(Path(directory) / "state.json", now=1792720000, MAINTENANCE_ENABLED="1", ONLY="maintenance",
+                       MAINTENANCE_GAMES="wuwa", DISCORD_WEBHOOK_MAINTENANCE_WUWA=HOOK)
+        ctx.state.schedule_records("wuwa")["3.8"] = {
+            "status": "posted",
+            "data": {"version": "3.8", "preinstall_ts": 1794276000, "maint_start_ts": 1794427200, "maint_end_ts": 1794452400, "images": [prog38]},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1], "maint_end_ts": [50, 1]},
+        }
+        ctx.versions["wuwa"] = {"live": "3.7", "pre": None}
+        ctx.items["wuwa"] = []
+        ctx.fetcher = KuroStub()
+        # 0) Oct 23 baseline: mid-patch, 0 background requests, no memo.
+        asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sent == [] and calls == [] and "kuro_background" not in ctx.state.maintenance_record("wuwa")
+        # 1) Nov 7 (inside -11d): one config + one en.json request; the current background is 3.7's.
+        ctx.now = 1794100000
+        asyncio.run(maintenance.run(ctx))
+        assert calls == [kuro_mod.LAUNCHER_CONFIG, kuro_mod.LAUNCHER_BACKGROUND.format("dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf")]
+        assert ctx.state.maintenance_record("wuwa")["kuro_background"]["owner"] == "3.7"
+        with patch.object(kuro_mod, "launcher_media", new=AsyncMock(return_value=bg_37)) as spy:
+            ctx.now = 1794100300
+            asyncio.run(maintenance.run(ctx))
+        assert spy.await_count == 1 and ctx.webhook.sent == []
+        # 2) Nov 10 pre-load, launcher already swapped to the 3.8 video -> Tier 1 at once, nothing filed under 3.7.
+        cur_en = {"functionSwitch": 1, "backgroundFile": ww38_mp4, "backgroundFileType": 2, "firstFrameImage": ww38_webp}
+        ctx.versions["wuwa"] = {"live": "3.7", "pre": "3.8"}
+        ctx.now = 1794276060
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww38-pre")])
+        asyncio.run(maintenance.run(ctx))
+        rec = ctx.state.maintenance_record("wuwa")
+        assert rec["versions"]["3.8"]["preload"]["media_tier"] == 1 and rec["versions"]["3.8"]["preload"]["media_url"] == ww38_mp4
+        assert rec["kuro_background"]["owner"] == "3.8" and rec["kuro_background"]["first_seen"] == 1794276060
+        assert ww38_mp4.rsplit("/", 1)[1] not in json.dumps(rec["versions"].get("3.7") or {})
+        # 3) Nov 12 maintenance (`live` flipped, `pre` gone, same background): the locked 3.8 video, no 3.7 leak.
+        ctx.versions["wuwa"] = {"live": "3.8", "pre": None}
+        ctx.now = 1794427260
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww38-maint")])
+        asyncio.run(maintenance.run(ctx))
+        assert rec["versions"]["3.8"]["maintenance"]["media_tier"] == 1 and rec["versions"]["3.8"]["maintenance"]["media_url"] == ww38_mp4
+        assert rec["kuro_background"]["owner"] == "3.8" and "seen_media" not in (rec["versions"].get("3.7") or {})
 
 if __name__ == "__main__":
     sys.exit(main())

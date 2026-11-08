@@ -167,7 +167,7 @@
       "enabled": true,
       "released": false,
       "aliases": ["NEXUSANIMA"],
-      "note": "Switched ON 2026-10-02, before launch, so pre-release Special Programs and codes are caught the moment they appear (a newly enabled game seeds its state silently on the first run, so nothing old is posted). No release date announced as of 2026-10. HoYoLAB gid 9 and X @HonkaiNA are wired; official YouTube @HonkaiNA (hoyolab.com/article/41196864). HoYoverse has announced no Twitch channel for it, so the card simply has no Twitch button. At launch: add the HoYoPlay launcher game_id, Twitch, and code sources (seria/ogc once they list it).",
+      "note": "Switched ON 2026-10-02, before launch, so pre-release Special Programs and codes are caught the moment they appear (a newly enabled game seeds its state silently on the first run, so nothing old is posted). No release date announced as of 2026-10. HoYoLAB gid 9 and X @HonkaiNA are wired; official YouTube @HonkaiNA (hoyolab.com/article/41196864). HoYoverse has announced no Twitch channel for it, so the card simply has no Twitch button. At launch: set launcher to {\"type\": \"hoyoplay\", \"game_id\": \"yneO4yGc4x\"} (HoYoPlay getGames already lists it under that id, biz abc_global, 2026-11-07 — one background, no branch yet; wiring it before a branch exists would only add a getGameBranches re-fetch to every maintenance run), add Twitch, the hoyo-maint gateway (MAINT_STATUS) once known, and code sources (seria/ogc once they list it).",
       "hoyolab": {"gid": 9},
       "launcher": {},
       "x_accounts": ["HonkaiNA"],
