@@ -6281,7 +6281,7 @@
       "INKSHIFT33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794071419,
+        "last_seen": 1794114621,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -6340,7 +6340,7 @@
       "LEVELUP33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794071419,
+        "last_seen": 1794114621,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -9022,7 +9022,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794103820,
+          "banners_checked_ts": 1794114621,
           "banners_search_ts": 1794106225,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
