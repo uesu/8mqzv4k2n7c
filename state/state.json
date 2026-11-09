@@ -6281,7 +6281,7 @@
       "INKSHIFT33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794158423,
+        "last_seen": 1794202229,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -6340,7 +6340,7 @@
       "LEVELUP33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794158423,
+        "last_seen": 1794202229,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -7338,8 +7338,8 @@
     },
     "starrail": {
       "cursor": [
-        1794201307,
-        "47375599"
+        1794202208,
+        "47375703"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7361,13 +7361,18 @@
         ],
         "47375521": [
           1794200435,
-          1,
+          2,
           "c8d0d4e6f956e100"
         ],
         "47375599": [
           1794201621,
-          0,
+          1,
           "543a396f248cf499"
+        ],
+        "47375703": [
+          1794202229,
+          0,
+          "628d3d1016da5fca"
         ]
       },
       "records": {
@@ -7648,6 +7653,13 @@
           ],
           "status": "posted",
           "ts": 1794201307
+        },
+        "47375703": {
+          "messages": [
+            "1569222696150245433"
+          ],
+          "status": "posted",
+          "ts": 1794202208
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -9189,7 +9201,7 @@
               "version": "3.3"
             }
           ],
-          "ts": 1794180024
+          "ts": 1794202229
         },
         "data": {
           "announcement_locked": true,
@@ -9215,21 +9227,21 @@
               "Norma Hollowell"
             ]
           },
-          "banners_checked_ts": 1794180024,
+          "banners_checked_ts": 1794202229,
           "banners_display": {
             "Norma": "Norma Hollowell",
             "Phoenix": "Phoenix Reffaella",
             "Severian": "Severian Lowell",
             "Velina": "Velina Airgid"
           },
-          "banners_search_ts": 1794180024,
+          "banners_search_ts": 1794202229,
           "banners_settled": [
             "phase1",
             "phase1_4",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1794180024,
+          "calendar_ts": 1794202229,
           "compensation": "Polychrome ×300",
           "images": [
             "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
