@@ -137,19 +137,64 @@ def _record_seen_media(versions_state: dict | None, owner_version: str, urls: li
     return changed
 
 
-def _url_used_by_prior_version(url: str, version: str, versions_state: dict | None) -> bool:
-    """Return True when `url`'s canonical locator was already locked or observed on an earlier version."""
+def _dated_inside_launch_window(
+    url: str,
+    *,
+    preinstall_ts: int | None,
+    maint_start_ts: int | None,
+    upload_ts: int | None = None,
+) -> bool:
+    """True only when the asset carries a date and that date lies inside this launch's window.
+
+    `_is_launch_window_compatible` answers "not provably foreign"; this answers "provably ours":
+    an undated path is never provably ours.
+    """
+    if upload_ts is None:
+        upload_ts = _asset_upload_ts(url)
+    if upload_ts is None:
+        return False
+    anchor_early = preinstall_ts or maint_start_ts
+    anchor_maint = maint_start_ts or preinstall_ts
+    if not anchor_early or not anchor_maint:
+        return False
+    return anchor_early - LAUNCH_MEDIA_MAX_BEFORE_S <= upload_ts <= anchor_maint + LAUNCH_MEDIA_MAX_AFTER_S
+
+
+def _url_used_by_prior_version(
+    url: str,
+    version: str,
+    versions_state: dict | None,
+    *,
+    preinstall_ts: int | None = None,
+    maint_start_ts: int | None = None,
+    upload_ts: int | None = None,
+) -> bool:
+    """Return True when `url`'s canonical locator was already locked or observed on an earlier version.
+
+    A `launch_media` lock (media an earlier card actually carried) always counts. A bare `seen_media`
+    observation does NOT when the asset is dated inside THIS launch's window: the date is evidence,
+    the observation was a guess made before this launch had a `pre` (HSR 4.7: the `2026/11/06`
+    launcher assets were filed under 4.6 at the 14:00 pre-load run, three days before 4.7 opened).
+    """
     if not isinstance(versions_state, dict):
         return False
     loc = _canonical_url_locator(url)
     if not loc:
         return False
+    provably_ours = _dated_inside_launch_window(
+        url, preinstall_ts=preinstall_ts, maint_start_ts=maint_start_ts, upload_ts=upload_ts
+    )
     cur_key = version_key(version)
     for other_ver, other_state in versions_state.items():
         if not isinstance(other_state, dict) or version_key(other_ver) >= cur_key:
             continue
         lock = other_state.get("launch_media") if isinstance(other_state.get("launch_media"), dict) else {}
-        for prev in (lock.get("video"), lock.get("artwork"), *(other_state.get("seen_media") or [])):
+        for prev in (lock.get("video"), lock.get("artwork")):
+            if prev and _canonical_url_locator(str(prev)) == loc:
+                return True
+        if provably_ours:
+            continue
+        for prev in other_state.get("seen_media") or []:
             if prev and _canonical_url_locator(str(prev)) == loc:
                 return True
     return False
@@ -765,10 +810,19 @@ async def resolve_launch_media(
             links = entry.get("links") or []
             link_versions = [find_version(u) for u in links if find_version(u)]
             if live_only_ver and (not link_versions or live_only_ver in link_versions):
+                # Without a `pre` the launcher's un-linked backgrounds are read as the live version's —
+                # except an asset dated inside THIS (later) launch's window, which is this launch's
+                # even before `pre_download` flips (uploads land days ahead of the pre-load).
                 _record_seen_media(
                     versions_state,
                     live_only_ver,
-                    [u for u in (entry.get("video"), entry.get("background")) if u],
+                    [
+                        u for u in (entry.get("video"), entry.get("background"))
+                        if u and not (
+                            version_key(live_only_ver) < version_key(version)
+                            and _dated_inside_launch_window(u, preinstall_ts=pre_ts, maint_start_ts=start_ts)
+                        )
+                    ],
                 )
             if link_versions and version not in link_versions:
                 continue
@@ -779,7 +833,12 @@ async def resolve_launch_media(
             vid = entry.get("video") or ""
             if (
                 vid
-                and (explicit_match or not _url_used_by_prior_version(vid, version, versions_state))
+                and (
+                    explicit_match
+                    or not _url_used_by_prior_version(
+                        vid, version, versions_state, preinstall_ts=pre_ts, maint_start_ts=start_ts
+                    )
+                )
                 and _is_launch_window_compatible(
                     vid,
                     now=now,
@@ -800,7 +859,12 @@ async def resolve_launch_media(
             art = entry.get("background") or ""
             if (
                 art
-                and (explicit_match or not _url_used_by_prior_version(art, version, versions_state))
+                and (
+                    explicit_match
+                    or not _url_used_by_prior_version(
+                        art, version, versions_state, preinstall_ts=pre_ts, maint_start_ts=start_ts
+                    )
+                )
                 and _is_launch_window_compatible(
                     art,
                     now=now,
@@ -848,12 +912,14 @@ async def resolve_launch_media(
             vmeta_raw = dict(slot.get("video_meta")) if isinstance(slot.get("video_meta"), dict) else {}
             if slot.get("video_md5") and not vmeta_raw.get("hash"):
                 vmeta_raw["hash"] = str(slot["video_md5"]).strip()
+            vid_ts = await _undated_asset_upload_ts(ctx.fetcher, vid, now, cache=verified_cache) if vid else None
             if (
                 vid
-                and not _url_used_by_prior_version(vid, version, versions_state)
+                and not _url_used_by_prior_version(
+                    vid, version, versions_state, preinstall_ts=pre_ts, maint_start_ts=start_ts, upload_ts=vid_ts
+                )
                 and _is_launch_window_compatible(
-                    vid, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts,
-                    upload_ts=await _undated_asset_upload_ts(ctx.fetcher, vid, now, cache=verified_cache),
+                    vid, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts, upload_ts=vid_ts
                 )
             ):
                 fresh_videos.append((vid, _build_asset_meta(vid, version, extra=vmeta_raw)))
@@ -861,12 +927,14 @@ async def resolve_launch_media(
             ameta_raw = dict(slot.get("artwork_meta")) if isinstance(slot.get("artwork_meta"), dict) else {}
             if slot.get("artwork_md5") and not ameta_raw.get("hash"):
                 ameta_raw["hash"] = str(slot["artwork_md5"]).strip()
+            art_ts = await _undated_asset_upload_ts(ctx.fetcher, art, now, cache=verified_cache) if art else None
             if (
                 art
-                and not _url_used_by_prior_version(art, version, versions_state)
+                and not _url_used_by_prior_version(
+                    art, version, versions_state, preinstall_ts=pre_ts, maint_start_ts=start_ts, upload_ts=art_ts
+                )
                 and _is_launch_window_compatible(
-                    art, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts,
-                    upload_ts=await _undated_asset_upload_ts(ctx.fetcher, art, now, cache=verified_cache),
+                    art, now=now, preinstall_ts=pre_ts, maint_start_ts=start_ts, upload_ts=art_ts
                 )
             ):
                 fresh_artworks.append((art, _build_asset_meta(art, version, extra=ameta_raw)))

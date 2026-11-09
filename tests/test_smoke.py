@@ -26696,6 +26696,103 @@ def test_kuro_launcher_background_is_attributed_to_the_version_it_belongs_to():
         assert rec["versions"]["3.8"]["maintenance"]["media_tier"] == 1 and rec["versions"]["3.8"]["maintenance"]["media_url"] == ww38_mp4
         assert rec["kuro_background"]["owner"] == "3.8" and "seen_media" not in (rec["versions"].get("3.7") or {})
 
+def test_hoyoplay_dated_launch_assets_belong_to_the_launch_they_are_dated_for_hsr_47():
+    """Live HSR 4.7 (prod state 2026-11-09 06:00 UTC): HoYoPlay published the 4.7 launcher video and
+    wallpapers dated `2026/11/06`; at the 14:00 UTC+8 pre-load run the branch had no `pre` yet, so
+    `resolve_launch_media` filed them under live 4.6 `seen_media` and the Pre-Load card went out at
+    tier 3 — and `_url_used_by_prior_version` would have barred the 4.7 video from every 4.7 card.
+    Dated evidence now beats an observation: an asset dated inside this launch's window is never
+    filed under an earlier version, and an earlier version's bare `seen_media` hit no longer blocks
+    it (a `launch_media` lock still does)."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import maintenance
+    from gamexpress.sources import launcher as launcher_mod
+
+    webm_47 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm"
+    webp_47 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/710a2f8876cd135cb631c8ea52b1341a_6140674871532348054.webp"
+    webp_47b = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/f383fc632a50870add2ac3a95b7a6dc9_481814734637372119.webp"
+    webm_46 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/09/23/c305e408c4adabc857e4cc98f91bbbea_6081680392926634459.webm"
+    webp_46 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/09/23/b067c095be4ca6c516284042152e4551_816935452132736602.webp"
+    phase2_46 = "https://fastcdn.hoyoverse.com/static-resource-v2/2026/10/15/46phase2.webp"
+    prog_47 = "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/912136c7e29f14fa90de342c20b66402_1404716023942940674.jpg"
+    pre_ts, start_ts, end_ts = 1794204000, 1794348000, 1794366000  # 11-09 14:00 / 11-11 06:00-11:00 UTC+8
+
+    # 1) The rule itself.
+    poisoned = {"4.6": {"seen_media": [webm_47, webp_47, webp_47b, webm_46, phase2_46]}, "4.7": {}}
+    kw = {"preinstall_ts": pre_ts, "maint_start_ts": start_ts}
+    assert maintenance._dated_inside_launch_window(webm_47, **kw) is True
+    assert maintenance._dated_inside_launch_window(webm_46, **kw) is False
+    assert maintenance._dated_inside_launch_window(phase2_46, **kw) is False  # 10-15 < 10-29 (-11d)
+    assert maintenance._dated_inside_launch_window("https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/x.mp4", **kw) is False
+    assert maintenance._url_used_by_prior_version(webm_47, "4.7", poisoned, **kw) is False   # dated 4.7's: observation overruled
+    assert maintenance._url_used_by_prior_version(webm_47, "4.7", poisoned) is True           # without the window: legacy answer
+    assert maintenance._url_used_by_prior_version(webm_46, "4.7", poisoned, **kw) is True    # 4.6's launch asset stays blocked
+    assert maintenance._url_used_by_prior_version(phase2_46, "4.7", poisoned, **kw) is True  # 4.6 Phase II stays blocked
+    locked = {"4.6": {"launch_media": {"version": "4.6", "video": webm_47}}, "4.7": {}}
+    assert maintenance._url_used_by_prior_version(webm_47, "4.7", locked, **kw) is True      # a lock is never overruled
+
+    # 2) Pre-load run at 14:00 sharp, `pre` not flipped yet: the dated 4.7 assets are NOT filed under 4.6;
+    #    4.6's own assets still are. Nothing is offered to 4.7 yet (launcher matches neither), so tier 3.
+    binfo = {"4ziysqXOQ8": [
+        {"id": "new47", "video": webm_47, "background": webp_47, "links": []},
+        {"id": "old46", "video": webm_46, "background": webp_46, "links": []},
+    ]}
+    plan_47 = {"preinstall_ts": pre_ts, "maint_start_ts": start_ts, "schedule_images": [prog_47], "override": {}}
+    ctx = types.SimpleNamespace(now=pre_ts + 37, versions={"starrail": {"live": "4.6", "pre": None}},
+                                fetcher=types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=True)))
+    vs: dict = {"4.6": {}, "4.7": {}}
+    assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["starrail"], "4.7", plan_47, vs["4.7"], basic_info=binfo,
+                                                        program_pins={}, versions_state=vs)) == (3, prog_47)
+    assert vs["4.6"]["seen_media"] == [webm_46, webp_46]
+    #    `pre` flips a few minutes later: the 4.7 video is tier 1, the 4.6 webm is not a candidate.
+    ctx.versions["starrail"] = {"live": "4.6", "pre": "4.7"}
+    ctx.now = pre_ts + 1800
+    assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["starrail"], "4.7", plan_47, vs["4.7"], basic_info=binfo,
+                                                        program_pins={}, versions_state=vs)) == (1, webm_47)
+
+    # 3) End to end on the real poisoned prod record: the posted tier-3 Pre-Load card is silently PATCHed to the
+    #    4.7 webm inside its 6 h edit window; the maintenance card then posts at tier 1.
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = make_ctx(Path(directory) / "state.json", now=pre_ts + 1800, MAINTENANCE_ENABLED="1", ONLY="maintenance",
+                       MAINTENANCE_GAMES="starrail", DISCORD_WEBHOOK_MAINTENANCE_STARRAIL=HOOK)
+        ctx.state.schedule_records("starrail")["4.7"] = {
+            "status": "posted",
+            "data": {"version": "4.7", "preinstall_ts": pre_ts, "maint_start_ts": start_ts, "maint_end_ts": end_ts, "images": [prog_47]},
+            "prov": {"preinstall_ts": [50, 1], "maint_start_ts": [50, 1], "maint_end_ts": [50, 1]},
+        }
+        rec = ctx.state.maintenance_record("starrail")
+        rec.update(paused=False, route=maintenance.stable_hash([webhook_fingerprint(HOOK), HOOK.partition("?")[2]]), seeded_at=1794022819)
+        rec["versions"] = {
+            "4.6": {"live": {"status": "seeded", "ts": 1790546400}, "maintenance": {"status": "seeded", "ts": 1790546400, "provenance": "official"},
+                    "preload": {"status": "seeded", "ts": 1790229600, "provenance": "official"},
+                    "seen_media": [webm_47, webp_47, webp_47b]},
+            "4.7": {"launch_media": {},
+                    "preload": {"edit_attempts": 0, "edit_count": 0, "end_ts": None, "media_tier": 3, "media_url": prog_47,
+                                "message_id": "1569230250691264625", "posted_at": pre_ts + 37, "provenance": "official",
+                                "status": "posted", "ts": pre_ts},
+                    "timing_notice": {"end_ts": end_ts, "postponed": False, "rank": 50, "start_ts": start_ts, "ts": pre_ts + 4}},
+        }
+        ctx.state.save()
+        ctx.versions["starrail"] = {"live": "4.6", "pre": "4.7"}
+        ctx.items["starrail"] = []
+        ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=True), get_json=AsyncMock(return_value={}))
+        ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=binfo)):
+            asyncio.run(maintenance.run(ctx))
+        assert ctx.webhook.sends == [] and [m for m, _ in ctx.webhook.edits] == ["1569230250691264625"]
+        pre_state = ctx.state.maintenance_record("starrail")["versions"]["4.7"]["preload"]
+        assert pre_state["media_tier"] == 1 and pre_state["media_url"] == webm_47
+        assert ctx.state.maintenance_record("starrail")["versions"]["4.7"]["launch_media"]["video"] == webm_47
+        # Maintenance T+1m (branch live now 4.7): tier 1 from the lock, no new upload needed.
+        ctx.versions["starrail"] = {"live": "4.7", "pre": None}
+        ctx.now = start_ts + 60
+        ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "hsr47-maint")])
+        with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value=binfo)):
+            asyncio.run(maintenance.run(ctx))
+        maint_state = ctx.state.maintenance_record("starrail")["versions"]["4.7"]["maintenance"]
+        assert maint_state["media_tier"] == 1 and maint_state["media_url"] == webm_47
+
 if __name__ == "__main__":
     sys.exit(main())
 
