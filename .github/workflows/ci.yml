@@ -108,14 +108,14 @@ jobs:
 
       - name: Static check of the workflow YAML itself (rhysd/actionlint via reviewdog)
         continue-on-error: true   # informational only, see above
-        uses: reviewdog/action-actionlint@619a81ec64ff8c0211cd6146eb2b21e8f1d7f440  # v1.81.1
+        uses: reviewdog/action-actionlint@7abf25e1607ec65838b73d0484ff31f8e9499d80  # v1.81.2
         with:
           reporter: local
           fail_level: none
 
       - name: Security review of the workflow YAML (zizmorcore/zizmor)
         continue-on-error: true   # informational only, see above
-        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b  # v0.8.0
+        uses: zizmorcore/zizmor-action@45d7276c9ca790aabd705e31ca99c6185c3e76dd  # v0.8.1
         with:
           inputs: .github/workflows
           advanced-security: false   # print the findings in the log; no code-scanning upload
