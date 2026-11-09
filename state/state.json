@@ -6714,13 +6714,30 @@
           }
         },
         "4.7": {
-          "launch_media": {},
+          "launch_media": {
+            "artwork": "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/710a2f8876cd135cb631c8ea52b1341a_6140674871532348054.webp",
+            "artwork_meta": {
+              "asset_id": "L3IC2dStg2",
+              "upload_ts": 1793966400,
+              "version": "4.7"
+            },
+            "locked": true,
+            "locked_at": 1794208472,
+            "version": "4.7",
+            "video": "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm",
+            "video_meta": {
+              "asset_id": "L3IC2dStg2",
+              "upload_ts": 1793966400,
+              "version": "4.7"
+            }
+          },
           "preload": {
             "edit_attempts": 0,
-            "edit_count": 0,
+            "edit_count": 1,
+            "edited_at": 1794208472,
             "end_ts": null,
-            "media_tier": 3,
-            "media_url": "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/912136c7e29f14fa90de342c20b66402_1404716023942940674.jpg",
+            "media_tier": 1,
+            "media_url": "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm",
             "message_id": "1569230250691264625",
             "posted_at": 1794204037,
             "provenance": "official",
