@@ -7416,7 +7416,7 @@
         ],
         "47375930": [
           1794204037,
-          1,
+          2,
           "2d60fa8ccdd9f6b9"
         ]
       },
@@ -7813,8 +7813,8 @@
     },
     "zzz": {
       "cursor": [
-        1794204905,
-        "47376055"
+        1794205805,
+        "47376180"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7841,13 +7841,18 @@
         ],
         "47375931": [
           1794204037,
-          1,
+          2,
           "7c09abd77c17e7c3"
         ],
         "47376055": [
           1794205222,
-          0,
+          1,
           "d25453a0e2c6800d"
+        ],
+        "47376180": [
+          1794205828,
+          0,
+          "e271941e749026c6"
         ]
       },
       "records": {
@@ -8207,6 +8212,13 @@
           ],
           "status": "posted",
           "ts": 1794204905
+        },
+        "47376180": {
+          "messages": [
+            "1569237809565536348"
+          ],
+          "status": "posted",
+          "ts": 1794205805
         }
       },
       "route": "5f931f917050e29a"
@@ -8418,7 +8430,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794195028
+          "ts": 1794205828
         },
         "data": {
           "announcement_locked": true,
@@ -8453,13 +8465,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794195028,
-          "banners_search_ts": 1794195028,
+          "banners_checked_ts": 1794205828,
+          "banners_search_ts": 1794205828,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794195028,
+          "calendar_ts": 1794205828,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -8993,7 +9005,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794195028,
+          "banners_checked_ts": 1794205828,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9132,7 +9144,7 @@
             }
           },
           "banners_checked_ts": 1794204037,
-          "banners_search_ts": 1794195028,
+          "banners_search_ts": 1794205828,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
             "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
