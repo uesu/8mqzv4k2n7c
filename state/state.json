@@ -4198,7 +4198,7 @@
       },
       "DATG5HG1PL89": {
         "first_seen": 1790323430,
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "rewards": [
           "Mora ×10000",
           "Adventurer's Experience ×10",
@@ -4247,7 +4247,7 @@
       },
       "EPIC2026": {
         "first_seen": 1790323430,
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "rewards": "40 primogems, five hero's wit, and 20k mora",
         "sources": [
           "codehub",
@@ -4261,7 +4261,7 @@
       "EXPERTMITYA": {
         "first_seen": 1792758316,
         "gate": "2 independent sources",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "message_id": "1563167785264095293",
         "msg_codes": [
           "EXPERTMITYA"
@@ -4302,7 +4302,7 @@
       },
       "GENSHINGIFT": {
         "first_seen": 1790323430,
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "rewards": [
           "Hero's Wit ×3",
           "Primogem ×50"
@@ -4405,7 +4405,7 @@
       "HOUROFRUIN": {
         "first_seen": 1792757115,
         "gate": "redeem-validated",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "message_id": "1563161402670325781",
         "msg_codes": [
           "HOUROFRUIN"
@@ -4432,7 +4432,7 @@
       "KEEPUPWITHMITYA": {
         "first_seen": 1793768443,
         "gate": "redeem-validated",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "message_id": "1567403218907041836",
         "msg_codes": [
           "KEEPUPWITHMITYA"
@@ -4538,7 +4538,7 @@
       "NEEI986K5X6R": {
         "first_seen": 1791403234,
         "gate": "only ennead",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -4603,7 +4603,7 @@
       "OKTCHX26J57Q": {
         "first_seen": 1792482628,
         "gate": "only ennead, ogc",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "rewards": [
           "Mora ×10,000",
           "Adventurer's Experience ×10",
@@ -4620,7 +4620,7 @@
       "OKTCV81F9H8D": {
         "first_seen": 1791952819,
         "gate": "redeem-validated",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "message_id": "1559905206463102999",
         "msg_codes": [
           "OKTCV81F9H8D"
@@ -4696,7 +4696,7 @@
       "PHOTOTIME": {
         "first_seen": 1792759219,
         "gate": "redeem-validated",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "message_id": "1563171493708431512",
         "msg_codes": [
           "PHOTOTIME"
@@ -4859,7 +4859,7 @@
       "QYJW21ZVV5Z8": {
         "first_seen": 1793804444,
         "gate": "only ennead",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -4882,10 +4882,23 @@
         ],
         "status": "pending"
       },
+      "QYJWFB784MFL": {
+        "first_seen": 1794204037,
+        "gate": "only ennead",
+        "last_seen": 1794204037,
+        "rewards": [
+          "Primogem ×60",
+          "Adventurer's Experience ×5"
+        ],
+        "sources": [
+          "ennead"
+        ],
+        "status": "pending"
+      },
       "QYJWQVRI39BE": {
         "first_seen": 1792813821,
         "gate": "only ennead",
-        "last_seen": 1794160222,
+        "last_seen": 1794204037,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -6687,6 +6700,11 @@
             "status": "seeded",
             "ts": 1790229600
           },
+          "seen_media": [
+            "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm",
+            "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/710a2f8876cd135cb631c8ea52b1341a_6140674871532348054.webp",
+            "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/f383fc632a50870add2ac3a95b7a6dc9_481814734637372119.webp"
+          ],
           "timing_notice": {
             "end_ts": 1790564400,
             "postponed": false,
@@ -6695,7 +6713,29 @@
             "ts": 1790229608
           }
         },
-        "4.7": {}
+        "4.7": {
+          "launch_media": {},
+          "preload": {
+            "edit_attempts": 0,
+            "edit_count": 0,
+            "end_ts": null,
+            "media_tier": 3,
+            "media_url": "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/912136c7e29f14fa90de342c20b66402_1404716023942940674.jpg",
+            "message_id": "1569230250691264625",
+            "posted_at": 1794204037,
+            "provenance": "official",
+            "status": "posted",
+            "ts": 1794204000
+          },
+          "timing_notice": {
+            "end_ts": 1794366000,
+            "postponed": false,
+            "rank": 50,
+            "start_ts": 1794348000,
+            "ts": 1794204004
+          }
+        },
+        "4.8": {}
       }
     },
     "wuwa": {
@@ -7338,8 +7378,8 @@
     },
     "starrail": {
       "cursor": [
-        1794202208,
-        "47375703"
+        1794204004,
+        "47375930"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7371,8 +7411,13 @@
         ],
         "47375703": [
           1794202229,
-          1,
+          2,
           "628d3d1016da5fca"
+        ],
+        "47375930": [
+          1794204037,
+          0,
+          "2d60fa8ccdd9f6b9"
         ]
       },
       "records": {
@@ -7660,6 +7705,14 @@
           ],
           "status": "posted",
           "ts": 1794202208
+        },
+        "47375930": {
+          "messages": [
+            "1569230285017448562",
+            "1569230289379532921"
+          ],
+          "status": "posted",
+          "ts": 1794204004
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -7760,8 +7813,8 @@
     },
     "zzz": {
       "cursor": [
-        1794198607,
-        "47375346"
+        1794204005,
+        "47375931"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7785,6 +7838,11 @@
           1794198628,
           2,
           "7492baa7981418be"
+        ],
+        "47375931": [
+          1794204037,
+          0,
+          "7c09abd77c17e7c3"
         ]
       },
       "records": {
@@ -8130,6 +8188,13 @@
           ],
           "status": "posted",
           "ts": 1794198607
+        },
+        "47375931": {
+          "messages": [
+            "1569230307062714451"
+          ],
+          "status": "posted",
+          "ts": 1794204005
         }
       },
       "route": "5f931f917050e29a"
@@ -8770,14 +8835,7 @@
             "reruns"
           ],
           "calendar_ts": 1793370022,
-          "estimate_sources": [
-            "version cadence"
-          ],
-          "estimated": [
-            "preinstall_ts",
-            "maint_start_ts",
-            "maint_end_ts"
-          ],
+          "compensation": "Stellar Jade ×300",
           "images": [
             "https://upload-os-bbs.hoyolab.com/upload/community/2026/10/26/912136c7e29f14fa90de342c20b66402_1404716023942940674.jpg"
           ],
@@ -8807,11 +8865,12 @@
         ],
         "first_seen": 1793008837,
         "message_id": "1564217196715057163",
-        "mirror_hash": "75c4e697b50be3ba",
+        "mirror_hash": "e70d5111f663b7c1",
         "mirror_message_id": "1564217201806942302",
         "mirror_webhook_fp": "6f8f20d42db3",
-        "payload_hash": "99f7cae2839e733a",
+        "payload_hash": "4a3ebad7687c548f",
         "posted_at": 1793008837,
+        "preinstall_offset_h": 40.0,
         "prov": {
           "b_phase1": [
             6,
@@ -8852,17 +8911,21 @@
           "b_reruns_by": [
             "wiki"
           ],
+          "compensation": [
+            50,
+            1794204004
+          ],
           "maint_end_ts": [
-            9,
-            1793008837
+            50,
+            1794204004
           ],
           "maint_start_ts": [
-            9,
-            1793008837
+            50,
+            1794204004
           ],
           "preinstall_ts": [
-            9,
-            1793008837
+            50,
+            1794204004
           ],
           "program_name": [
             50,
@@ -8882,7 +8945,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1793370022,
+        "updated_at": 1794204037,
         "webhook_fp": "19991534cf6d"
       }
     },
@@ -9056,7 +9119,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794193236,
+          "banners_checked_ts": 1794204037,
           "banners_search_ts": 1794195028,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
