@@ -15,7 +15,7 @@ import json
 import logging
 import re
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from urllib.parse import parse_qsl, urlencode, urlsplit
 
 import aiohttp
@@ -35,12 +35,99 @@ class SendResult:
     message_id: str | None = None
     error: str = ""
     ambiguous: bool = False
+    # The message Discord returned (`?wait=true` POST / PATCH body), when it was JSON. Read by
+    # the media heal only; never persisted.
+    message: dict | None = field(default=None, repr=False, compare=False)
 
 
 def webhook_fingerprint(url: str) -> str:
     """Short, non-reversible id of a webhook (stored in state instead of the secret URL)."""
     m = WEBHOOK_RE.match(url or "")
     return hashlib.sha256((m.group(1) if m else url or "").encode()).hexdigest()[:12]
+
+
+def _positive(value: object) -> bool:
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and value > 0
+
+
+def _non_positive(value: object) -> bool:
+    """Only a returned number <= 0 is evidence; None/missing is unknown."""
+    return isinstance(value, (int, float)) and not isinstance(value, bool) and value <= 0
+
+
+def unresolved_media_urls(message: object) -> list[str]:
+    """Media tiles that Discord returned with an attempted-but-cold proxy.
+
+    Walk every Components V2 container (gallery items and section thumbnails). A tile is
+    *unresolved* when Discord already minted a ``proxy_url`` for it but returned neither both
+    positive dimensions nor an ``image/`` / ``video/`` content type (the WW 3.8 "Update Content"
+    card, Monitor #4909: three of four Kuro strips came back ``1080 x N image/png``, the fourth with
+    only ``url`` + ``proxy_url`` and rendered as "Image not found"), or when it reports an explicit
+    ``0 x 0``. Missing metadata WITHOUT a proxy attempt is unknown, not evidence, and an
+    ``attachment://`` tile is never inspected. Duplicates collapse; order is first appearance.
+    """
+    if not isinstance(message, dict):
+        return []
+    found: list[str] = []
+
+    def inspect(media: object) -> None:
+        if not isinstance(media, dict):
+            return
+        url = media.get("url")
+        if not isinstance(url, str) or not url or url.startswith("attachment://"):
+            return
+        content_type = str(media.get("content_type") or "").strip().lower()
+        width, height = media.get("width"), media.get("height")
+        explicit_zero = _non_positive(width) or _non_positive(height)
+        cold_proxy = bool(media.get("proxy_url")) and not (
+            _positive(width) and _positive(height)
+            and content_type.startswith(("image/", "video/"))
+        )
+        if (explicit_zero or cold_proxy) and url not in found:
+            found.append(url)
+
+    def walk(node: object) -> None:
+        if isinstance(node, list):
+            for child in node:
+                walk(child)
+            return
+        if not isinstance(node, dict):
+            return
+        for item in node.get("items") or []:
+            if isinstance(item, dict):
+                inspect(item.get("media"))
+        inspect(node.get("media"))
+        walk(node.get("components") or [])
+        walk(node.get("accessory"))
+
+    walk(message.get("components") or [])
+    return found
+
+
+def payload_media_urls(payload: object) -> set[str]:
+    """Every media URL an outgoing card carries (galleries + section thumbnails)."""
+    urls: set[str] = set()
+
+    def walk(node: object) -> None:
+        if isinstance(node, list):
+            for child in node:
+                walk(child)
+            return
+        if not isinstance(node, dict):
+            return
+        for item in node.get("items") or []:
+            if isinstance(item, dict) and isinstance(item.get("media"), dict):
+                url = item["media"].get("url")
+                if isinstance(url, str) and url:
+                    urls.add(url)
+        media = node.get("media")
+        if isinstance(media, dict) and isinstance(media.get("url"), str) and media["url"]:
+            urls.add(media["url"])
+        walk(node.get("components") or [])
+        walk(node.get("accessory"))
+
+    walk((payload or {}).get("components") if isinstance(payload, dict) else None)
+    return urls
 
 
 def _split(url: str) -> tuple[str, dict]:
@@ -177,16 +264,21 @@ class WebhookClient:
                             raise
                     if status in (200, 204):
                         mid = None
+                        message = None
                         if body:
                             try:
-                                mid = str(json.loads(body).get("id") or "") or None
+                                parsed = json.loads(body)
                             except json.JSONDecodeError:
-                                mid = None
+                                parsed = None
+                            if isinstance(parsed, dict):
+                                message = parsed
+                                mid = str(parsed.get("id") or "") or None
                         return SendResult(
                             True,
                             status,
                             message_id=mid,
                             ambiguous=(stop_on_ambiguous and method == "POST" and mid is None),
+                            message=message,
                         )
                     if status == 429:
                         try:
@@ -251,3 +343,47 @@ class WebhookClient:
         # mention still renders -- see `_edit_allowed_mentions`.
         body["allowed_mentions"] = _edit_allowed_mentions(payload.get("allowed_mentions"))
         return await self._request("PATCH", f"{base}/messages/{message_id}?{q}", body)
+
+    async def fetch(self, webhook_url: str, message_id: str) -> dict | None:
+        """Re-read one webhook message (components included); None on any failure."""
+        if self.dry_run or not message_id:
+            return None
+        base, keep = _split(webhook_url)
+        q = urlencode({"with_components": "true", **keep})
+        try:
+            async with self.session.get(f"{base}/messages/{message_id}?{q}",
+                                        timeout=aiohttp.ClientTimeout(total=15)) as r:
+                if int(getattr(r, "status", 0) or 0) != 200:
+                    return None
+                body = await r.text()
+        except (aiohttp.ClientError, asyncio.TimeoutError, UnicodeDecodeError) as e:
+            log.info("Discord message re-read failed: %s", _redact_webhook(e))
+            return None
+        try:
+            parsed = json.loads(body)
+        except json.JSONDecodeError:
+            return None
+        return parsed if isinstance(parsed, dict) else None
+
+    async def heal_media(self, webhook_url: str, message_id: str, payload: dict,
+                         queued_urls: list[str] | tuple[str, ...] | set[str]) -> str:
+        """Revalidate, then re-send one delivered card IDENTICALLY if a tile is still cold.
+
+        Discord's create response is an early signal, not proof that a client still sees a broken
+        tile: it may omit the optional width/height/content_type while the proxy is merely slow.
+        So the message is re-read first; a tile that resolved on its own costs no edit. Only a
+        queued URL that is STILL unresolved triggers one same-payload PATCH -- the manual
+        "edit without changing anything" cure, automated. Outcomes: ``"edited"``, ``"resolved"``
+        (nothing to do), ``"unverified"`` (re-read failed; no blind edit), ``"failed"`` (edit
+        rejected). A heal never turns a delivered card into a failure.
+        """
+        expected = {str(u).strip() for u in queued_urls if u}
+        if not expected or not message_id or message_id == "dry-run":
+            return "resolved"
+        current = await self.fetch(webhook_url, message_id)
+        if current is None:
+            return "unverified"
+        if not any(u.strip() in expected for u in unresolved_media_urls(current)):
+            return "resolved"
+        res = await self.edit(webhook_url, message_id, payload)
+        return "edited" if res.ok else "failed"

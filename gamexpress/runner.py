@@ -15,7 +15,7 @@ import aiohttp
 
 from . import beta, build_id, codeposter, maintenance, schedule
 from .config import Game, Ping, Settings, active_games, load_games, load_overrides
-from .discord import WebhookClient, webhook_fingerprint
+from .discord import WebhookClient, payload_media_urls, unresolved_media_urls, webhook_fingerprint
 from .http import BOT_UA, Fetcher, Probe
 from .models import Item
 from .sources import bannerfeed, countdown, hoyolab, kuro, launcher, newspage
@@ -650,6 +650,19 @@ async def run_news(ctx: Ctx) -> None:
         eligible = [row for row in rows if record["floor"] < row["ts"] <= ctx.now
                     and row["ts"] >= ctx.now - 48 * 3600]
         failures = attempted = delivered = edited = 0
+        # Media heal (Monitor #4909): pages whose create/edit response carried a cold tile.
+        heal_queue: list[tuple[str, str, dict, list[str]]] = []
+
+        def _queue_media_heal(article_id: str, message_id: str | None, payload: dict, message: object,
+                              *, _queue=heal_queue, _short=game.short) -> None:
+            if ephemeral or not ctx.settings.news_media_heal or not message_id:
+                return
+            own = payload_media_urls(payload)
+            cold = [u for u in unresolved_media_urls(message) if u in own]
+            if cold:
+                _queue.append((article_id, message_id, payload, cold))
+                log.info("[%s news %s] media heal queued: %d cold tile(s) in message %s",
+                         _short, article_id, len(cold), message_id)
         # Finish known partial deliveries even if the discovery page/window has moved on.
         for key, rec in records.items():
             if not isinstance(rec, dict) or rec.get("status") != "partial":
@@ -783,6 +796,7 @@ async def run_news(ctx: Ctx) -> None:
                             break
                         if not res.ok:
                             raise ValueError(f"Discord edit failed ({res.status}); retry required")
+                        _queue_media_heal(row["id"], mid, payload, res.message)
                     if eff_mod > rec_ts:
                         rec["modified_ts"] = eff_mod
                     if not deleted_404:
@@ -876,6 +890,7 @@ async def run_news(ctx: Ctx) -> None:
                     if not result.ok:
                         raise ValueError(f"Discord delivery failed ({result.status}); retry required")
                     rec["messages"].append(result.message_id)
+                    _queue_media_heal(row["id"], result.message_id, payload, result.message)
                     if start_page_idx == 0 and rel_idx == 0 and reveal_match is not None:
                         from .reveal_ping import commit_reveal_delivery
 
@@ -911,6 +926,24 @@ async def run_news(ctx: Ctx) -> None:
             except Exception as exc:  # noqa: BLE001 — hold single article without aborting remaining news
                 failures += 1
                 ctx.warnings.append(f"{game.short} news {row['id']}: {type(exc).__name__}: {exc}")
+        if heal_queue:
+            heal = getattr(ctx.webhook, "heal_media", None)
+            if heal is not None:
+                # One grace period for the whole batch, then revalidate each page; the webhook
+                # pacer already spaces the re-read/edit requests.
+                await asyncio.sleep(ctx.settings.news_media_heal_delay)
+                for article_id, mid, payload, cold in heal_queue:
+                    try:
+                        outcome = await heal(hook, mid, payload, cold)
+                    except Exception as exc:  # noqa: BLE001 — a heal never fails a delivered card
+                        outcome = f"failed ({type(exc).__name__})"
+                    note = {
+                        "edited": "re-sent identically (Discord had not loaded it)",
+                        "resolved": "loaded on its own; no edit",
+                        "unverified": "could not re-read the message; no blind edit",
+                    }.get(outcome, outcome)
+                    ctx.report.append(f"🩹 {game.short} news: media heal {article_id} — "
+                                      f"{len(cold)} cold tile(s), {note}")
         extra_edit = f", edited={edited}" if edited else ""
         ctx.report.append(f"📰 {game.short} news: discovered={len(rows)}, eligible={len(eligible)}, "
                           f"attempted={attempted}, delivered={delivered}, deferred/error={failures}{extra_edit}")

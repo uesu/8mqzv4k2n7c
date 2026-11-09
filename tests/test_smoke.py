@@ -26793,6 +26793,238 @@ def test_hoyoplay_dated_launch_assets_belong_to_the_launch_they_are_dated_for_hs
         maint_state = ctx.state.maintenance_record("starrail")["versions"]["4.7"]["maintenance"]
         assert maint_state["media_tier"] == 1 and maint_state["media_url"] == webm_47
 
+def test_news_media_heal_re_sends_a_card_whose_tile_discord_left_cold_ww_38_monitor_4909():
+    """Monitor #4909 (2026-11-09 10:30 UTC): the WW 3.8 "Update Content" card delivered four Kuro
+    strips; Discord's create response typed three of them (1080 x N, image/png) and returned the
+    third with only `url` + `proxy_url` -- the client showed "Image not found" until the operator
+    re-sent the identical message from Discohook. Feature 3 now does that itself: the response is
+    inspected, the message is re-read after a grace period, and only a STILL-cold tile earns one
+    identical same-message edit. Nothing is persisted, dry-run and `NEWS_MEDIA_HEAL=0` never edit,
+    and a webhook without the heal (every older test double) keeps today's behaviour."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress import discord as discord_mod
+    from gamexpress.discord import payload_media_urls, unresolved_media_urls
+    from gamexpress.runner import run_news
+    from gamexpress.sources import kuro
+
+    cdn = "https://hw-media-cdn-mingchao.kurogame.com/object/1794153600000/"
+    strips = [cdn + "dsy7c7ud461r2i5mm4-1794197446515.png", cdn + "0vnxx7mqlvay7kzgep-1794200918205.png",
+              cdn + "usg8y7aygpptsbywo1-1794200941746.png", cdn + "4xwc9fhtegss37ybcx-1794211868476.png"]
+    cold = strips[2]
+
+    def tile(url, *, loaded=True, height=4001):
+        media = {"url": url, "proxy_url": "https://images-ext-1.discordapp.net/external/x/" + url.split("//", 1)[1]}
+        if loaded:
+            media.update(width=1080, height=height, content_type="image/png")
+        return {"media": media, "description": None, "spoiler": False}
+
+    def discord_message(mid="1569290000000000000", *, cold_urls=(cold,)):
+        # Shape of the #4909 create response: text, divider, one gallery, divider, buttons.
+        return {"id": mid, "flags": 32768, "components": [{"id": 1, "type": 17, "accent_color": 14922399, "components": [
+            {"id": 2, "type": 10, "content": "## [Wuthering Waves Update Content | Version 3.8](https://wutheringwaves.kurogames.com/en/main/news/detail/5736)"},
+            {"id": 3, "type": 14, "divider": True, "spacing": 1},
+            {"id": 4, "type": 12, "items": [tile(u, loaded=u not in cold_urls, height=h)
+                                           for u, h in zip(strips, (4001, 13871, 5000, 7721))]},
+            {"id": 5, "type": 14, "divider": True, "spacing": 1},
+            {"type": 1, "components": [{"type": 2, "style": 5, "label": "Read Post",
+                                        "url": "https://wutheringwaves.kurogames.com/en/main/news/detail/5736"}]}]}]}
+
+    # --- 1. the inspector: only the attempted-but-cold tile is evidence --------------------------
+    assert unresolved_media_urls(discord_message()) == [cold]
+    assert unresolved_media_urls(discord_message(cold_urls=())) == []
+    assert unresolved_media_urls(discord_message(cold_urls=(strips[0], cold))) == [strips[0], cold]
+    assert unresolved_media_urls(None) == [] and unresolved_media_urls({"components": "bad"}) == []
+    # No proxy attempt + no metadata = unknown, not failure; an explicit 0 x 0 IS failure.
+    sparse = discord_message(cold_urls=())
+    sparse["components"][0]["components"][2]["items"][1]["media"] = {"url": strips[1]}
+    assert unresolved_media_urls(sparse) == []
+    zero = discord_message(cold_urls=())
+    zero["components"][0]["components"][2]["items"][3]["media"].update(width=0, height=0)
+    assert unresolved_media_urls(zero) == [strips[3]]
+    # Section thumbnails are inspected too; attachment tiles never are.
+    section = {"components": [{"type": 17, "components": [
+        {"type": 9, "components": [{"type": 10, "content": "x"}],
+         "accessory": {"type": 11, "media": {"url": strips[0], "proxy_url": "https://images-ext-1.discordapp.net/x"}}},
+        {"type": 12, "items": [{"media": {"url": "attachment://a.png", "proxy_url": "https://media.discordapp.net/x"}}]}]}]}
+    assert unresolved_media_urls(section) == [strips[0]]
+    assert payload_media_urls(section) == {strips[0], "attachment://a.png"}
+
+    # --- 2. the real client keeps the returned message and heals through GET -> PATCH -----------
+    class _Resp:
+        def __init__(self, status, body):
+            self.status, self._body = status, body
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *exc):
+            return False
+
+        async def text(self):
+            return self._body
+
+    class _Session:
+        def __init__(self, get_bodies):
+            self.get_bodies, self.calls = list(get_bodies), []
+
+        def request(self, method, url, **kw):
+            self.calls.append((method, url.split("?")[0].rsplit("/", 1)[-1] if "/messages/" in url else "post",
+                               kw.get("json")))
+            return _Resp(200, json.dumps(discord_message("777")))
+
+        def get(self, url, **kw):
+            self.calls.append(("GET", url.split("?")[0].rsplit("/", 1)[-1], None))
+            status, body = self.get_bodies.pop(0)
+            return _Resp(status, body)
+
+    payload = cards.news_payloads(GAMES["wuwa"], news_item())[0]
+
+    async def _client_paths():
+        with patch.object(asyncio, "sleep", new=AsyncMock()):
+            still_cold = json.dumps(discord_message("777"))
+            healthy = json.dumps(discord_message("777", cold_urls=()))
+            session = _Session([(200, still_cold), (200, healthy), (500, "nope"), (200, "not json")])
+            client = discord_mod.WebhookClient(session, dry_run=False)
+            res = await client.send(HOOK, payload)
+            assert res.ok and res.message_id == "777" and res.message["id"] == "777"
+            assert unresolved_media_urls(res.message) == [cold]
+            # still cold after the re-read -> exactly one identical PATCH
+            client._next_slot = 0.0
+            assert await client.heal_media(HOOK, "777", payload, [cold]) == "edited"
+            assert session.calls[-2][0] == "GET" and session.calls[-1][0] == "PATCH"
+            assert session.calls[-1][2]["components"] == payload["components"]
+            assert HOOK.rsplit("/", 1)[-1] not in json.dumps(session.calls[-1][2])
+            # loaded on its own -> no edit
+            n = len(session.calls)
+            assert await client.heal_media(HOOK, "777", payload, [cold]) == "resolved"
+            assert session.calls[n:] == [("GET", "777", None)]
+            # re-read failed / not JSON -> never a blind edit
+            assert await client.heal_media(HOOK, "777", payload, [cold]) == "unverified"
+            assert await client.heal_media(HOOK, "777", payload, [cold]) == "unverified"
+            assert not any(c[0] == "PATCH" for c in session.calls[n:])
+            # nothing queued, or a dry-run id -> nothing to do, no request
+            n = len(session.calls)
+            assert await client.heal_media(HOOK, "777", payload, []) == "resolved"
+            assert await client.heal_media(HOOK, "dry-run", payload, [cold]) == "resolved"
+            assert len(session.calls) == n
+            dry = discord_mod.WebhookClient(None, dry_run=True)
+            assert (await dry.send(HOOK, payload)).message is None
+            assert await dry.fetch(HOOK, "777") is None
+
+    asyncio.run(_client_paths())
+
+    # --- 3. run_news end to end: deliver, wait once, revalidate, report -------------------------
+    class HealingWebhook(ScriptedWebhook):
+        def __init__(self, sends, outcomes):
+            super().__init__([], sends)
+            self.outcomes, self.heals = list(outcomes), []
+
+        async def heal_media(self, webhook, message_id, payload, queued):
+            self.heals.append((message_id, list(queued), payload))
+            return self.outcomes.pop(0)
+
+    def ww_item():
+        item = news_item(ident="5736", title="Wuthering Waves Update Content | Version 3.8",
+                         body="Lilies in a Dying Dream, planned for release on November 12th (UTC+8).")
+        item.game, item.source = "wuwa", "kuro"
+        item.url = "https://wutheringwaves.kurogames.com/en/main/news/detail/5736"
+        item.article_blocks += [{"kind": "image", "url": u} for u in strips]
+        return item
+
+    def ww_ctx(directory, **env):
+        ctx = make_ctx(Path(directory) / "state.json")
+        ctx.settings = settings(NEWS_ENABLED=1, NEWS_GAMES="wuwa", DISCORD_WEBHOOK_NEWS_WUWA=HOOK, **env)
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now += 20
+        ctx.fetcher = types.SimpleNamespace(verify_media=AsyncMock(return_value=True),
+                                            media_dimensions=AsyncMock(return_value=(1080, 4001)))
+        return ctx, {"id": "5736", "ts": ctx.now - 10}
+
+    def deliver(ctx, row, webhook, item=None):
+        ctx.webhook = webhook
+        sleeps = []
+
+        async def _sleep(seconds):
+            sleeps.append(seconds)
+
+        with patch.object(kuro, "discover_news", return_value=[row]), \
+                patch.object(kuro, "news_article", return_value=item or ww_item()), \
+                patch.object(asyncio, "sleep", new=_sleep):
+            asyncio.run(run_news(ctx))
+        return sleeps
+
+    with tempfile.TemporaryDirectory() as directory:
+        ctx, row = ww_ctx(directory)
+        wh = HealingWebhook([SendResult(True, 200, "msg-1", message=discord_message("msg-1"))], ["edited"])
+        sleeps = deliver(ctx, row, wh)
+        assert len(wh.sends) == 1 and set(strips) <= payload_media_urls(wh.sends[0])
+        rec = ctx.state.news_record("wuwa")["records"]["5736"]
+        assert rec["status"] == "posted" and rec["messages"] == ["msg-1"], ctx.warnings
+        assert wh.heals == [("msg-1", [cold], wh.sends[0])]          # the card's own cold tile only
+        assert sleeps == [6]                                           # one grace period, default 6 s
+        assert any("🩹 WW news: media heal 5736 — 1 cold tile(s), re-sent identically" in line
+                   for line in ctx.report), ctx.report
+        assert any("delivered 5736" in line for line in ctx.report) and not ctx.warnings
+        assert "heal" not in json.dumps(ctx.state.data)                # nothing persisted
+
+    with tempfile.TemporaryDirectory() as directory:                   # loaded by itself -> no edit
+        ctx, row = ww_ctx(directory)
+        wh = HealingWebhook([SendResult(True, 200, "msg-2", message=discord_message("msg-2"))], ["resolved"])
+        deliver(ctx, row, wh)
+        assert wh.heals and wh.edits == []
+        assert any("loaded on its own; no edit" in line for line in ctx.report), ctx.report
+
+    with tempfile.TemporaryDirectory() as directory:                   # all four typed -> nothing queued
+        ctx, row = ww_ctx(directory)
+        wh = HealingWebhook([SendResult(True, 200, "msg-3", message=discord_message("msg-3", cold_urls=()))], [])
+        assert deliver(ctx, row, wh) == [] and wh.heals == []
+        assert not any("🩹" in line for line in ctx.report)
+
+    with tempfile.TemporaryDirectory() as directory:                   # a cold tile the card never carried
+        ctx, row = ww_ctx(directory)
+        foreign = discord_message("msg-4", cold_urls=())
+        foreign["components"][0]["components"][2]["items"].append(tile("https://example.com/other.png", loaded=False))
+        wh = HealingWebhook([SendResult(True, 200, "msg-4", message=foreign)], [])
+        deliver(ctx, row, wh)
+        assert wh.heals == []
+
+    with tempfile.TemporaryDirectory() as directory:                   # operator switch + custom delay
+        ctx, row = ww_ctx(directory, NEWS_MEDIA_HEAL="0")
+        assert ctx.settings.news_media_heal is False
+        wh = HealingWebhook([SendResult(True, 200, "msg-5", message=discord_message("msg-5"))], [])
+        assert deliver(ctx, row, wh) == [] and wh.heals == []
+        assert settings(NEWS_MEDIA_HEAL_DELAY="15").news_media_heal_delay == 15
+        assert settings(NEWS_MEDIA_HEAL_DELAY="-3").news_media_heal_delay == 0
+        assert settings(NEWS_MEDIA_HEAL_DELAY="900").news_media_heal_delay == 60
+        assert settings().news_media_heal is True and settings().news_media_heal_delay == 6
+
+    with tempfile.TemporaryDirectory() as directory:                   # heal crash never fails the card
+        ctx, row = ww_ctx(directory)
+
+        class Exploding(HealingWebhook):
+            async def heal_media(self, *a):
+                raise RuntimeError("boom")
+
+        wh = Exploding([SendResult(True, 200, "msg-6", message=discord_message("msg-6"))], [])
+        deliver(ctx, row, wh)
+        assert ctx.state.news_record("wuwa")["records"]["5736"]["status"] == "posted"
+        assert any("failed (RuntimeError)" in line for line in ctx.report) and not ctx.warnings
+
+    with tempfile.TemporaryDirectory() as directory:                   # legacy double: no heal, no crash
+        ctx, row = ww_ctx(directory)
+        wh = ScriptedWebhook([], [SendResult(True, 200, "msg-7", message=discord_message("msg-7"))])
+        assert deliver(ctx, row, wh) == []
+        assert ctx.state.news_record("wuwa")["records"]["5736"]["status"] == "posted"
+
+    with tempfile.TemporaryDirectory() as directory:                   # dry run: no heal at all
+        ctx, row = ww_ctx(directory, DRY_RUN="1")
+        wh = HealingWebhook([SendResult(True, 200, "dry-run", message=discord_message("dry-run"))], [])
+        deliver(ctx, row, wh)
+        assert wh.heals == []
+
+
 if __name__ == "__main__":
     sys.exit(main())
 

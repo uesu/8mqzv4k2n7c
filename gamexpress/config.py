@@ -578,6 +578,8 @@ class Settings:
     news_expand_max_chars: int = 120000
     news_expand_max_media: int = 120
     news_reveal_ping: bool = False
+    news_media_heal: bool = True
+    news_media_heal_delay: int = 6
     maintenance_enabled: bool = False
     maintenance_games: set[str] = field(default_factory=set)
     beta_enabled: bool = False
@@ -834,6 +836,8 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         news_expand_max_chars=max(1, _int(env, "NEWS_EXPAND_MAX_CHARS", 120000)),
         news_expand_max_media=max(1, _int(env, "NEWS_EXPAND_MAX_MEDIA", 120)),
         news_reveal_ping=_bool(env, "NEWS_REVEAL_PING", False),
+        news_media_heal=_bool(env, "NEWS_MEDIA_HEAL", True),
+        news_media_heal_delay=min(60, max(0, _int(env, "NEWS_MEDIA_HEAL_DELAY", 6))),
         maintenance_enabled=maintenance_enabled,
         maintenance_games=_game_set_env(
             env, "MAINTENANCE_GAMES", aliases, default=(), all_games=ALL_MAINTENANCE_GAMES

@@ -405,7 +405,9 @@ def cmd_validate(_args) -> int:
           f"| article count cap=none "
           f"| timestamps={'on' if settings.news_timestamps else 'off'} "
           f"| expand full={'on' if settings.news_expand_full else 'off'} "
-          f"| group long strips={'on' if settings.news_group_long_strips else 'off'} | dedicated destinations only")
+          f"| group long strips={'on' if settings.news_group_long_strips else 'off'} "
+          f"| media heal={f'on ({settings.news_media_heal_delay}s)' if settings.news_media_heal else 'off'} "
+          f"| dedicated destinations only")
     print(f"maintenance={'on' if 'maintenance' in settings.features else 'off'} "
           f"| maintenance games={','.join(sorted(settings.maintenance_games)) or 'none'} | dedicated destinations only")
     print(f"beta={'on' if 'beta' in settings.features else 'off'} "
