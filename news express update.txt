@@ -1,0 +1,60 @@
+Correct on all points. Final, consolidated brief below — Reddit/Devvit engine only, spoiler flag only, no GE hand-off, video exemption by *kind* (any host), §7 kept. Paste this one into the new chat.
+
+---
+
+# BRIEF — News-Express new Reddit engine (Devvit intake): add the Components V2 spoiler flag for `spoiler` / `nsfw` posts
+
+## 0. Scope in one sentence
+Add **one thing**: when an intake record is flagged `spoiler: true` or `nsfw: true`, the card's **image** tiles get Discord's `spoiler: true`. Nothing else about the new Reddit engine — structure, ordering, text, delivery, continuation, dedup/record JSON, Devvit relay, Twitter engine, Game-Express — changes.
+
+## 1. Context
+- Repo `uesu/News-Express` (dev) → prod `uesu/7jkxmy9nvbc` (reddit) / `uesu/wvkhabh2s22` (twitter) via `sync_prod.yml` + `.github/scripts/sync_prod.py` (`SYNC_DIRS` includes `testing area/` and `tests/`; `devvit/` not synced).
+- Pipeline: Devvit relay `gaming-express` (0.0.8 / API 0.15.3, 5-min poll) posts JSON records into Discord intake channel `#new-structure`; NE's new Reddit engine in `testing area/reddit_main_v3.py` (intake reader + `build_v3_payload`) renders Components V2 cards (`flags: 32768`, one Container).
+- Records already carry the flags (no Devvit change):
+  - v1 post: `{"v":1,"id","sub","title","permalink","url","created","author","flair","distinguished","spoiler":bool,"nsfw":bool,"score","comments","removed","xpost","media":[…],"body","bodyTruncated","full","edited","xpostPermalink","video","parent":{…same shape…}}` (`parent` only on crossposts, e.g. `1xt23rm` → parent `1xt23ff`).
+  - v2 update: `{"v":2,"kind":"update","at",…,"posts":[{"id","sub","age","stage","removed","deleted","edited","spoiler","nsfw","locked","score","comments"}]}`.
+- Owner rulings (2026-11-11):
+  1. Flagged (`spoiler` **or** `nsfw`; crosspost also inherits the parent's flags) → `spoiler: true` on image media items. Unflagged → **byte-identical** payload to today.
+  2. **No video component is ever spoilered, whatever its host or form** — Reddit-uploaded video (`v.redd.it`, `packaged-media.redd.it`, DASH/HLS/fallback mp4) and the mirror/embed links the engine uses for Reddit video (`embedez`, `redditez`, `vxreddit`, `rxddit` or similar). Reason: Discord removes the fullscreen control on a spoilered video (owner verified in Discohook). Exempt by **media kind = video**, never by host string.
+  3. YouTube / external links in `url` or body: nothing to do.
+  4. `nsfw` is treated exactly like `spoiler` (blur images). No age-restricted channel, no NSFW special-casing or skipping.
+  5. No markers, no `||text||` wrapping, no Container-level spoiler, no reordering, no changes to sources/HTML/dedup/record files.
+  6. **Twitter engine out of scope** (`testing area/twitter_v3.py`, Thumbnail/accessory handling): do not touch; its suites must merely still pass.
+  7. **No Game-Express twin**: GE's `IntakeReader` reads only official posts (`officialUsers` `genshinimpact` / `HonkaiStarRail` / `HonkaiNexusAnima`, `distinguished`, `\bofficial\b` flair; r/WutheringWaves itself) — official accounts don't flag spoiler/NSFW. Skip the GE hand-off entirely.
+  8. PR-only; merge waits for an explicit "merge".
+- NE conventions (`AGENTS.md`): behavioural change ⇒ `docs/history/ROUND_NN.md` (next number after the latest in `docs/history/`) + `docs/CHANGELOG.md` Unreleased entry + `rNN:` guards in `tests/test_smoke.py`; run `python3 tests/test_smoke.py` (~4 min; `pip install --break-system-packages pyyaml aiohttp feedparser ruff`), `tests/test_reddit_signals.py`, `tests/test_twitter_media.py` → ALL PASS; repeat the suites in a `sync_tree()` prod-style checkout (`/tmp/prodsim`) because `tests/` + `testing area/` sync to prod; `ruff` clean. Pitfalls: `r95d` forbids unguarded `open()` of README/AGENTS/.env.example/docs in `test_smoke.py`; substring guards trip on comments; never put `'''` inside an `r'''…'''` test literal (write test source via `cat <<'EOF'` and splice with Python); `grep tests/test_smoke.py` prints multi-KB lines → `| cut -c1-200`. Never persist webhook URLs / channel IDs / tokens. Edit first, commit/push/PR as a separate step. Never grow workflow `run:` blocks.
+
+## 2. Discord facts
+| Component (type) | spoiler |
+|---|---|
+| Media Gallery (12) item | `{"media":{"url":…},"spoiler":true}` → blurred tile with "SPOILER" pill |
+| File (13) | `"spoiler": true` |
+| Thumbnail (11) | `"spoiler": true` (not used by the Reddit engine; leave alone) |
+| Container (17) | `"spoiler": true` blurs the whole card — **do not use** |
+Spoilered video loses the fullscreen button → ruling 2.
+
+## 3. Implementation (read `testing area/reddit_main_v3.py` fully around the intake-record parsing and `build_v3_payload` before editing; VERIFY every anchor)
+1. **Record → flag.** Where the v1 record becomes the engine's item, derive  
+   `blur = bool(rec.get("spoiler")) or bool(rec.get("nsfw")) or bool((rec.get("parent") or {}).get("spoiler")) or bool((rec.get("parent") or {}).get("nsfw"))`.  
+   Non-intake / legacy paths without these fields → `blur = False` (unchanged output).
+2. **Builder.** Where gallery/media items are assembled, if `blur` set `"spoiler": True` on each **image** item (`i.redd.it`, `preview.redd.it`, `external-preview.redd.it`, any `.jpg/.jpeg/.png/.webp/.gif`). Every **video** item/component — however the builder emits it today (gallery item with `attachment://…mp4`, File component, direct URL, or a mirror link such as embedez/redditez/vxreddit) — gets **no** `spoiler` key. When `blur` is false, do not add the key at all (payload identical).
+3. **Multi-part posts** (`bodyTruncated: true`, e.g. the 26 KB HSR 4.7 patch notes): the rule applies to whichever message carries the image items; text parts untouched.
+4. **Late flag flips** (v2 update rows): implement **only if** the existing update handler already PATCHes posted cards (for `edited`/`removed`) — then rebuild with the new `blur` and PATCH once within the existing window/counters. If it does not edit cards today, leave it out and note it as a possible follow-up in the ROUND file. Do not build new edit plumbing.
+
+## 4. Tests (`tests/test_smoke.py`, next `rNN`)
+- a) `spoiler: true`, two images + body → every image item `"spoiler": True`; text unchanged; no Container spoiler.
+- b) `nsfw: true` only → same as (a).
+- c) `spoiler: true` with a Reddit video (and a mirror-link variant if the builder has one) → video component(s) have **no** `spoiler` key; images (if any) do.
+- d) both flags false → `json.dumps(payload, sort_keys=True)` identical to the pre-change builder on an existing fixture.
+- e) crosspost: child flags false, `parent.spoiler` true → blurred.
+- f) only if §3.4 implemented: update flip inside window → exactly one PATCH; outside → none.
+- `tests/test_reddit_signals.py` and `tests/test_twitter_media.py` unchanged and ALL PASS.
+
+## 5. Docs
+- `docs/history/ROUND_NN.md`: the rule table, the Discohook fullscreen finding, nsfw = spoiler, what is deliberately not changed (text, markers, video, Twitter, GE, Devvit).
+- `docs/CHANGELOG.md` Unreleased: one paragraph.
+- README/AGENTS: only if they list card-rendering rules (one line max).
+
+## 6. Delivery
+1. New session branch → edit → all suites (+ `/tmp/prodsim`) → ruff → commit → push → `gh pr create` (PR-only), title e.g. `reddit v3 (devvit intake): Components V2 spoiler flag for spoiler/nsfw posts — images only, video untouched`.
+2. Report: PR link; visible change = blurred image tiles on flagged posts only; unchanged = videos, text, unflagged posts, Twitter, GE.
