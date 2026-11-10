@@ -7414,17 +7414,12 @@
     },
     "starrail": {
       "cursor": [
-        1794294004,
-        "47386628"
+        1794304805,
+        "47387949"
       ],
       "floor": 1794022819,
       "paused": false,
       "rechecks": {
-        "47366686": [
-          1794132035,
-          2,
-          "030c2f41f2371f87"
-        ],
         "47375521": [
           1794200435,
           2,
@@ -7469,6 +7464,11 @@
           1794294038,
           2,
           "ef3bde039283323e"
+        ],
+        "47387949": [
+          1794304838,
+          0,
+          "a09a3707db044aa4"
         ]
       },
       "records": {
@@ -7800,14 +7800,21 @@
           ],
           "status": "posted",
           "ts": 1794294004
+        },
+        "47387949": {
+          "messages": [
+            "1569653063474614295"
+          ],
+          "status": "posted",
+          "ts": 1794304805
         }
       },
       "route": "d6cfe8654063c7ee"
     },
     "wuwa": {
       "cursor": [
-        1794220200,
-        "5736"
+        1794304800,
+        "5737"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7816,6 +7823,11 @@
           1794220229,
           2,
           "d5e0265c97cd53c8"
+        ],
+        "5737": [
+          1794304838,
+          0,
+          "b23bb84a3dc69b3f"
         ]
       },
       "records": {
@@ -7891,6 +7903,13 @@
           ],
           "status": "posted",
           "ts": 1794220200
+        },
+        "5737": {
+          "messages": [
+            "1569653091572125697"
+          ],
+          "status": "posted",
+          "ts": 1794304800
         }
       },
       "route": "f7e18488aac788d3"
@@ -8516,7 +8535,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794294038
+          "ts": 1794304838
         },
         "data": {
           "announcement_locked": true,
@@ -8551,13 +8570,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794294038,
-          "banners_search_ts": 1794294038,
+          "banners_checked_ts": 1794304838,
+          "banners_search_ts": 1794304838,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794294038,
+          "calendar_ts": 1794304838,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9092,7 +9111,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794294038,
+          "banners_checked_ts": 1794304838,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9231,7 +9250,7 @@
             }
           },
           "banners_checked_ts": 1794293421,
-          "banners_search_ts": 1794294038,
+          "banners_search_ts": 1794304838,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
             "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
