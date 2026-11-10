@@ -7414,8 +7414,8 @@
     },
     "starrail": {
       "cursor": [
-        1794290407,
-        "47386304"
+        1794294004,
+        "47386628"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7464,6 +7464,11 @@
           1794290435,
           2,
           "2d4abea20aa38a5a"
+        ],
+        "47386628": [
+          1794294038,
+          0,
+          "ef3bde039283323e"
         ]
       },
       "records": {
@@ -7788,6 +7793,13 @@
           ],
           "status": "posted",
           "ts": 1794290407
+        },
+        "47386628": {
+          "messages": [
+            "1569607771941511273"
+          ],
+          "status": "posted",
+          "ts": 1794294004
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -8504,7 +8516,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794283237
+          "ts": 1794294038
         },
         "data": {
           "announcement_locked": true,
@@ -8539,13 +8551,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794283237,
-          "banners_search_ts": 1794283237,
+          "banners_checked_ts": 1794294038,
+          "banners_search_ts": 1794294038,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794283237,
+          "calendar_ts": 1794294038,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9080,7 +9092,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794283237,
+          "banners_checked_ts": 1794294038,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9219,7 +9231,7 @@
             }
           },
           "banners_checked_ts": 1794293421,
-          "banners_search_ts": 1794283237,
+          "banners_search_ts": 1794294038,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
             "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
