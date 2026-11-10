@@ -5776,6 +5776,71 @@ def test_re_reading_the_same_post_heals_a_wrong_four_star_list():
         assert "b_phase1_4_tba" not in record["prov"]
 
 
+HSR_47_WARP_PHASE1 = """\
+Hello, Trailblazers!
+The drop rates for the limited 5-star character Aeon ★ Aha (Elation: Quantum) and the limited 5-star Light Cone "Laughter Without End (Elation)" will be boosted for a limited time. The drop rates for the 4-star characters Asta (Harmony: Fire), Lynx (Abundance: Quantum), and Yukong (Harmony: Imaginary), as well as the 4-star Light Cones "Post-Op Conversation (Abundance)," "Planetary Rendezvous (Harmony)," and "Boundless Choreo (Nihility)" will be boosted for a limited time.
+The limited 5-star characters Silver Wolf LV.999 (Nihility: Quantum), Sparxie (Elation: Physical), and Yao Guang (Remembrance: Lightning) will return. The Warp period is from after the Version 4.7 update on 2026-11-11 – 2026-12-02 11:59 (server time).
+
+▌"Indelible Coterie" Event Warp
+● During the "Indelible Coterie" Character Event Warp, the drop rates of the limited 5-star characters Silver Wolf LV.999 (Nihility: Quantum), Sparxie (Elation: Physical), and Yao Guang (Remembrance: Lightning) and 4-star characters Asta (Harmony: Fire), Lynx (Abundance: Quantum), and Yukong (Harmony: Imaginary) will be boosted for a limited time.
+"""
+
+
+def test_hsr_4_7_a_star_or_a_level_tag_inside_a_name_is_still_a_name_monitor_5008():
+    """HSR 4.7 (HoYoLAB 47385253 / X 2119988418708955289, Monitor #5008): the notice names
+    "Aeon ★ Aha" and "Silver Wolf LV.999" exactly as the calendar and the wiki do. plausible_name()
+    refused both -- the star was outside _NAME_CHARS and "999" tripped the 3+ digit rule -- so the
+    official reading of phase 1 shrank to [Sparxie, Yao Guang], outranked the calendar's full list
+    and locked. The card showed two of four 5★. A star between words and a level tag are part of
+    a name; a year, a post id or a bare level tag still are not."""
+    for ok in ("Aeon ★ Aha", "Silver Wolf LV.999", "Dan Heng • Imbibitor Lunae", "March 7th", "Soldier 11"):
+        assert schedule.plausible_name(ok), ok
+    for bad in ("2026", "Aha 2026", "Post 47385253", "LV.999", "★", "5★"):
+        assert not schedule.plausible_name(bad), bad
+    assert schedule.bare_names(" Aeon ★ Aha (Elation: Quantum), Silver Wolf LV.999 (Nihility: Quantum), "
+                               "Sparxie (Elation: Physical), and Yao Guang (Remembrance: Lightning) will receive") == [
+        "Aeon ★ Aha", "Silver Wolf LV.999", "Sparxie", "Yao Guang"]
+    # The HoYoverse long form (bare names, quoted light cones) ...
+    item = Item("hoyolab", "starrail", "47385253", "https://www.hoyolab.com/article/47385253",
+                "Version 4.7 Event Warp: Phase I", HSR_47_WARP_PHASE1, 1794279606)
+    b = schedule.extract_banner(item)
+    assert b["banner_five"] == ["Aeon ★ Aha", "Silver Wolf LV.999", "Sparxie", "Yao Guang"]
+    assert b["banner_four"] == ["Asta", "Lynx", "Yukong"] and not b["banner_four_unsure"]
+    assert "Indelible Coterie" not in b["banner_five"]        # the warp's title, not a character
+    # ... and the X short form with the ★ tier mark right next to a ★ name.
+    x = Item("x", "starrail", "2119988418708955289", "https://x.com/honkaistarrail/status/2119988418708955289",
+             "", "Version 4.7 Event Warp - Phase I\n5★ characters: Aeon ★ Aha, Silver Wolf LV.999, Sparxie, "
+             "and Yao Guang will receive a boosted drop rate!\n4★ characters: Asta, Lynx, Yukong", 1794279601)
+    assert schedule.extract_banner(x)["banner_five"] == ["Aeon ★ Aha", "Silver Wolf LV.999", "Sparxie", "Yao Guang"]
+    # The quoted-epithet form keeps the whole name too ("Epithet" Aeon ★ Aha).
+    e = Item("hoyolab", "starrail", "3", "u", "Event Warp",
+             'the limited 5-star character "Laughing Till the End" Aeon ★ Aha (Elation: Quantum) will be boosted', 1)
+    assert schedule.extract_banner(e)["banner_five"] == ["Aeon ★ Aha"]
+    # The live record heals itself: the SAME X post that wrote the short list (prov b_phase1 =
+    # [40, ts], b_phase1_id = its id) is re-read by the corrected reader -- no override needed.
+    record = {"data": {"version": "4.7", "banners": {
+                  "phase1": ["Sparxie", "Yao Guang"], "phase1_4": ["Asta", "Lynx", "Yukong"],
+                  "phase2": ["Acheron", "Dan Heng • Imbibitor Lunae", "Jing Yuan"],
+                  "reruns": ["Silver Wolf LV.999", "Sparxie", "Yao Guang", "Acheron",
+                             "Dan Heng • Imbibitor Lunae", "Jing Yuan"]},
+                       "banners_settled": ["phase1", "phase1_4", "phase2", "reruns"],
+                       "maint_start_ts": 1794348000},
+              "prov": {"b_phase1": [40, 1794279601], "b_phase1_by": ["official"],
+                       "b_phase1_id": "2119988418708955289", "b_phase1_4": [50, 1794279606]}}
+    ex = schedule.extract(GAMES["starrail"], x)
+    notes: list[str] = []
+    for i in (1, 2):
+        data = schedule.merge(GAMES["starrail"], "4.7", [ex], record, {}, {}, 1794290000 + i * 600, notes)
+        record["data"] = data
+        assert data["banners"]["phase1"] == ["Aeon ★ Aha", "Silver Wolf LV.999", "Sparxie", "Yao Guang"]
+        assert data["banners"]["phase2"] == ["Acheron", "Dan Heng • Imbibitor Lunae", "Jing Yuan"]
+        assert "phase1" in data["banners_settled"] and notes == []
+    # The card prints the names untouched, inside the phase: "Indelible Coterie" is HSR's recurring
+    # warp title (14 casts so far), not a banner outside the phases, so no `※` line appears.
+    block = cards.banners_block(GAMES["starrail"], record["data"])
+    assert "Aeon ★ Aha, Silver Wolf LV.999, Sparxie, Yao Guang" in block and "※" not in block
+
+
 def test_two_different_posts_that_disagree_still_fall_back_to_tba():
     """The re-read exemption is narrow: a DIFFERENT post contradicting the stored 4-star list is
     still a real disagreement and must still show TBA."""

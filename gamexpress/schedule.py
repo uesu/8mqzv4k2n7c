@@ -231,7 +231,7 @@ OPEN_QUOTE = re.compile(r"[\"“「『]")
 # A closing quote followed immediately by a capitalised bare word is always this shape -- when the
 # quotes really do hold the character, what follows is punctuation, a conjunction, or prose.
 EPITHET_NAME = re.compile(
-    r"[\"“「『][^\"”」』\n]{2,40}[\"”」』]\s+([A-Z][\w'’.\-]*(?:[ •·&]+[A-Z0-9][\w'’.\-]*){0,3})")
+    r"[\"“「『][^\"”」』\n]{2,40}[\"”」』]\s+([A-Z][\w'’.\-]*(?:[ •·&★]+[A-Z0-9][\w'’.\-]*){0,3})")
 # A name list follows the star-tier phrase IMMEDIATELY. When prose comes first, the quoted span
 # that follows belongs to a DIFFERENT clause -- and in a HoYoverse notice that clause names a
 # BANNER, not a character:
@@ -309,7 +309,7 @@ def bare_names(tail: str) -> list[str]:
         n = _clean_name(piece)
         if not n or n.lower() in NAME_FILLER or n in out:
             continue
-        if not all(NAME_CAPPED.match(w) for w in re.split(r"[\s•·&:]+", n) if w):
+        if not all(NAME_CAPPED.match(w) for w in NAME_WORDS.split(n) if w):
             continue                                # prose tail, not a name
         out.append(n)
     return out
@@ -651,9 +651,26 @@ def extract_maintenance(item: Item) -> dict:
     return f
 
 
+# What separates the words of a name: space, the SP-variant dot (Dan Heng • Imbibitor Lunae), '&'
+# (Topaz & Numby), ':' and the star HoYoverse put INSIDE a name in HSR 4.7 — "Aeon ★ Aha" is the
+# character's name as the notice, the calendar and the wiki all write it (HoYoLAB 47385253 /
+# X 2119988418708955289, 2026-11-10). Read with the old class the star was a foreign character,
+# plausible_name() refused the whole name and the card's phase 1 lost its debut 5★.
+NAME_WORDS = re.compile(r"[\s•·&:★☆]+")
+# A 3+ digit run is a year, a post id or a timestamp glued to a name, never part of one — except
+# the level tag HSR 4.7 made part of one: "Silver Wolf LV.999" (same notice). The tag is cut
+# before the test, so any OTHER long number still disqualifies the name ("2026", "47385253").
+_LEVEL_TAG = re.compile(r"\bLV\.?\s?\d{1,4}\b", re.I)
+
+
+def _long_number(name: str) -> bool:
+    """True when `name` carries a 3+ digit run that is not a level tag."""
+    return bool(re.search(r"\d{3,}", _LEVEL_TAG.sub("", name)))
+
+
 def _clean_name(raw: str) -> str:
     name = re.sub(r"\s+", " ", re.sub(r"\s*[\(（][^)）]*[\)）]\s*", " ", raw)).strip(" .,;:!")
-    return name if 1 < len(name) <= 40 and not re.search(r"https?://|\d{3,}", name) else ""
+    return name if 1 < len(name) <= 40 and not (re.search(r"https?://", name) or _long_number(name)) else ""
 
 
 # words that never appear in a character name — a "name" containing one is an extraction slip
@@ -665,19 +682,20 @@ NOT_A_NAME = {
     "star", "stars", "rank", "s-rank", "a-rank", "exclusive", "featured", "promotional", "reward", "rewards",
     "update", "maintenance", "livestream", "program", "broadcast", "http", "https", "www",
 }
-_NAME_CHARS = re.compile(r"[^\W\d_][\w'’.\-&•·: ]*")
+_NAME_CHARS = re.compile(r"[^\W\d_][\w'’.\-&•·:★☆ ]*")
 
 
 def plausible_name(name: str) -> bool:
     """True for something that can be a character name: starts with a letter, ≤ 32 chars,
     1-6 words, letters/digits/space/'-.&•·: only, no 3+ digit runs, no generic words
     ('Event', 'Wish', 'Character' …). 'March 7th', 'Soldier 11', 'Topaz & Numby',
-    'Dan Heng • Imbibitor Lunae' pass; 'Event Wish', '2026', 'Character Event' don't."""
-    if not name or len(name) > 32 or re.search(r"\d{3,}", name) or not _NAME_CHARS.fullmatch(name):
+    'Dan Heng • Imbibitor Lunae', 'Aeon ★ Aha', 'Silver Wolf LV.999' pass; 'Event Wish', '2026',
+    'Character Event' don't."""
+    if not name or len(name) > 32 or _long_number(name) or not _NAME_CHARS.fullmatch(name):
         return False
-    words = [w for w in re.split(r"[\s•·&:]+", name) if w]
-    if not 1 <= len(words) <= 6:
-        return False
+    words = [w for w in NAME_WORDS.split(name) if w]
+    if not 1 <= len(words) <= 6 or all(_LEVEL_TAG.fullmatch(w) for w in words):
+        return False                                    # a level tag is part of a name, not one
     return not any(w.lower().strip(".'’-") in NOT_A_NAME for w in words)
 
 
