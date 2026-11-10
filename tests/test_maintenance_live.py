@@ -239,18 +239,18 @@ def test_gateway_flip_posts_servers_live_once_and_corrects_the_end_time():
         ctx = at(GI_START + 4 * 3600, {"retcode": -100, "message": "err"})
         assert ctx.webhook.sends == [] and "live" not in _vstate(ctx)
 
-        # +4 h 42 min: null -> ONE Servers Live card (ping, tier-1 video reused, observed note),
+        # +4 h 42 min: null -> ONE silent Servers Live card (tier-1 video reused, observed note),
         # and the Maintenance Started card's End Time is rewritten to the actual moment.
         live_at = GI_START + 4 * 3600 + 42 * 60
         ctx = at(live_at, OPEN, sends=[SendResult(True, 200, "live-msg")], edits=[SendResult(True, 200)])
         assert len(ctx.webhook.sends) == 1 and len(ctx.webhook.edits) == 1
         card = ctx.webhook.sends[0]
         flat = _flat(card)
-        assert "[GI - 7.2] Servers Live" in flat and f"<@&{PING}>" in flat
+        assert "[GI - 7.2] Servers Live" in flat and f"<@&{PING}>" not in flat
+        assert card["allowed_mentions"] == {"parse": []}
         assert f"<t:{live_at}:f>" in flat and f"<t:{live_at}:R>" in flat
         assert "Detected from the game's maintenance status" in flat
         assert _gallery_urls(card) == [GI_VIDEO]
-        assert card["allowed_mentions"] == {"parse": [], "roles": [PING]}
         assert not validate_payload(card)
         msg_id, edit = ctx.webhook.edits[0]
         assert msg_id == "maint-msg"

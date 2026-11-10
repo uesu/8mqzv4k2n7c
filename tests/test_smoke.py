@@ -26483,6 +26483,39 @@ def test_edit_allowed_mentions_only_ever_narrows_and_never_invents_a_mention():
     assert len(capped["roles"]) == 100
 
 
+def test_servers_live_is_silent_for_every_game_while_earlier_milestones_keep_the_ping():
+    from gamexpress.config import Ping
+
+    configured_ping = Ping(roles=["1296268365593186426"], everyone=True, here=True)
+    for game in GAMES.values():
+        live = cards.maintenance_payload(
+            game, "3.3", "live", start_ts=1792533600, ping=configured_ping,
+        )
+        headline = live["components"][0]["components"][0]["content"]
+        assert "Servers Live" in headline
+        assert "\n<@&1296268365593186426>" not in headline
+        assert "@everyone" not in headline and "@here" not in headline
+        assert live["allowed_mentions"] == {"parse": []}
+
+        # A media-upgrade/edit payload is built through the same builder and must remain silent.
+        live_edit = cards.maintenance_payload(
+            game, "3.3", "live", start_ts=1792533600, ping=configured_ping,
+            media_url="https://example.com/live.webm",
+        )
+        edit_headline = live_edit["components"][0]["components"][0]["content"]
+        assert "<@&1296268365593186426>" not in edit_headline
+        assert live_edit["allowed_mentions"] == {"parse": []}
+
+    for kind in ("preload", "maintenance"):
+        retained = cards.maintenance_payload(
+            GAMES["zzz"], "3.3", kind, start_ts=1792533600, ping=configured_ping,
+        )
+        headline = retained["components"][0]["components"][0]["content"]
+        assert "<@&1296268365593186426>" in headline
+        assert "@everyone" in headline and "@here" in headline
+        assert retained["allowed_mentions"] == configured_ping.allowed_mentions
+
+
 def test_a_maintenance_edit_keeps_the_ping_the_card_was_posted_with():
     """Pre-load/maintenance upgrade their media with a PATCH; that PATCH must not unmention them.
 

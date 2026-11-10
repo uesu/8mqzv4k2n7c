@@ -593,6 +593,7 @@ def maintenance_payload(
 ) -> dict:
     """Build a Pre-Load Started, Maintenance Started or Servers Live Components V2 payload.
 
+    Configured pings apply only to preload and maintenance; Servers Live is always silent.
     Follows the approved Components V2 template without any third-party social button:
       * Flags 32768 (`IS_COMPONENTS_V2`), type 17 container (`accent_color: None`)
       * Type 10 header with `[SHORT - VERSION]` + approved emojis + configured ping
@@ -606,7 +607,10 @@ def maintenance_payload(
     ver = strip_invisible(version).strip()
     if not ver:
         raise ValueError("maintenance announcement requires a non-empty version")
-    ping_obj = ping or Ping()
+    # Servers Live is intentionally silent across every game. Keep this invariant at the
+    # payload boundary so both initial posts and subsequent media/timing PATCHes cannot ping,
+    # even though the runner passes the same configured maintenance Ping for each milestone.
+    ping_obj = Ping() if kind == "live" else (ping or Ping())
     label = {"preload": "Pre-Load Started", "maintenance": "Maintenance Started", "live": "Servers Live"}[kind]
     headline = f"## [{game.short} - {ver}] {label} {MAINT_HEADING_EMOJIS}"
     if ping_obj:
