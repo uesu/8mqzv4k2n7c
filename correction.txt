@@ -1,0 +1,56 @@
+Yes — I can read GitHub fine (it is only the sandbox file system that is wedged). I read the whole `update changes.txt` (it is the `format-patch` of GE PR **#154**, head `ccaafac`, plus a second copy of the same diff), and checked GE: main is still `37cde78`, #154 is open and unmerged.
+
+## Independent review — GE #154 `ccaafac` "Add Kuro new-protocol launcher media"
+
+*Read-only review of the patch text; I could not execute the suites myself this turn (sandbox down), so the 622/707/ruff numbers are the author session's, not mine.*
+
+**What is right (matches the brief and the probe):** v2 index first with legacy fallback (`parse_launcher_index_v2`, `_pack_versions`, `bg_code` reuse so no extra request); dated `asset_date` in the background meta; `_attribute_kuro_background` assigns dated assets by window and never falls back to the memo for them; legacy memo path untouched for undated assets; carousel fetched only inside `_kuro_background_window_open`, never as video; CN unused; docs + changelog + README link; 0 extra requests on idle polls preserved; the request-order tests updated correctly.
+
+### Verdict: **CHANGES REQUIRED** (one real issue, three nits)
+
+**1. Blocking — the date-only carousel acceptance will pick character-trailer thumbnails as "version key art".**
+Priority 3 accepts a slide with no version note when its path date is inside the launch window and the jump host is YouTube / `wutheringwaves.kurogames.com`. But *every* carousel slide links to YouTube, and Kuro posts the launch Resonator's PV/showcase slides in the days right before launch — the probe shows exactly this pattern (Suoming PV + showcase slides dated `20261021`, the day before her banner). For 3.8 that means: on Nov 11, before the background swaps, tier 3 would select the Phase-I character trailer thumbnail (eyes close-up with "WUTHERING WAVES" text) **and displace the correct Special Program key visual** that tier 4 would otherwise give. That is a regression in art quality, not just a miss. The brief's date+jump filter was my suggestion and it is not strong enough.
+
+Fix (3 lines + 1 test + 2 doc phrases) — accept only version-note matches until the new feed is proven to carry `carouselNotes` (the probe tweak answers that; if it does not, tier 3 is simply inert, which is safe):
+
+```diff
+--- a/gamexpress/maintenance.py
++++ b/gamexpress/maintenance.py
+@@ Priority 3 loop
+             slide_url = str(slide.get("url") or "").strip()
+             slide_version = str(slide.get("version") or "").strip()
+-            jump = str(slide.get("jump") or "").strip()
+-            if slide_version:
+-                if slide_version != version:
+-                    continue
+-                explicit = True
+-            else:
+-                jump_host = (urlsplit(jump).hostname or "").lower()
+-                trusted_jump = (
+-                    jump_host == "youtu.be"
+-                    or jump_host == "youtube.com"
+-                    or jump_host.endswith(".youtube.com")
+-                    or jump_host == "wutheringwaves.kurogames.com"
+-                )
+-                if not _dated_inside_launch_window(
+-                    slide_url, preinstall_ts=pre_ts, maint_start_ts=start_ts
+-                ) or not trusted_jump:
+-                    continue
+-                explicit = False
++            # Only a slide that names the version ("3.8版本pv" / "3.8 PV") is version art.
++            # Character PV / showcase slides also sit inside the launch window with
++            # YouTube jumps, so a date alone must never promote a slide.
++            if not slide_version or slide_version != version:
++                continue
++            explicit = True
+```
+
+Test: in `test_kuro_new_protocol_index_background_and_carousel_tiers`, give `slide` `"version": "3.8"` (keep `untrusted_slide`/`wrong_version_slide` as negatives) and add an assertion that the unlabeled in-window slide alone yields `(5, None)` (or `(4, prog)` when a pin is present). If `urlsplit` becomes unused, drop the import (ruff F401). Docs: in `CONFIGURATION.md` / `SOURCES.md` / `CHANGELOG.md` replace "or an in-window date plus an official YouTube/Wuthering Waves jump" with "version note only".
+
+**2. Nit — stale tier numbers in `docs/SOURCES.md`** (second table, ≈ line 670): the `GI / HSR / ZZZ / HNA` and `Wuthering Waves` rows still say "(3) overrides/Special Program art, (4) omit"; only the ANANTA row was renumbered to 4/5.
+
+**3. Nit — persisted `media_tier` values are renumbered without migration.** Live WW 3.8 Pre-Load record has `media_tier: 3` (= Special Program art under the old scheme); after merge it reads as "carousel". Behaviour is unaffected (tiers 1/2 still upgrade it, the `(1, 2, 3, 4)` verify set still covers it, `cur_url` guards the empty-URL case), and no live card sits at old tier 4 — so acceptable, but add one changelog sentence: "records written before this change keep their old tier numbers; upgrades still apply."
+
+**4. Nit — mixed asset dates reject the whole slot.** `_attribute_kuro_background` sets `owner = ""` unless video and artwork share one date; if Kuro ever replaces only the video (new `/2026111x/` mp4, old webp), both are dropped instead of attributing per asset. Fine for now; note it.
+
+After fix #1, re-run `python tests/test_smoke.py`, `python -m pytest -q tests`, `ruff check .`, push to the same branch, and post the new head — I will re-review it (and run it myself as soon as the sandbox is back). Timing still holds: merged before Nov 11 20:00 UTC ⇒ 3.8 picks the dated background at the swap; the carousel tier simply stays quiet unless the feed labels the 3.8 PV slide.
