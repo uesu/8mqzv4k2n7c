@@ -216,3 +216,40 @@ PR-only; no new GE files; EN only (no CN in GE); never touch `state/` or cache J
 ---
 
 That is everything the next session needs. Once it has working tools it should start with `gh api` on #131 for the raw evidence, `git clone --depth 1 https://github.com/uesu/Game-Express /tmp/ge`, and the **VERIFY** anchors in `kuro.py` / `maintenance.py` before writing the diff.
+
+I have to be straight with you first: the sandbox is wedged. Every tool call — bash, file read, file write, background process — comes back with "The workspace exceeds its snapshot limit", so right now I cannot create the new PR, re-run the probe, or read the GE code. It will likely clear with the next message/turn (it's a sandbox-side cap, not something in the repo); if it doesn't, I'll say so immediately. Everything below is from the probe results already on PR #131 and the GE code I read earlier this session, and it is exactly what the hand-off will implement once tools are back.
+
+## What the new PR + GE hand-off will contain
+
+**NE PR (branch `arena/13a13a78-news-express`):** a two-line probe tweak (print `carouselNotes` for the new-protocol slides, so the version label — legacy shows `3.7版本pv` — is confirmed for the new feed), CHANGELOG entry. The PR self-runs the probe, and the GE hand-off comment goes on that PR as usual (full diff, smoke guards, READY-TO-MERGE evidence).
+
+**GE changes (`gamexpress/sources/kuro.py`, `gamexpress/maintenance.py`, tests, `docs/`):**
+
+| # | Change | Why |
+|---|---|---|
+| 1 | `launcher_versions` reads the **new-protocol index** (`launcher/game/50004_P7xc…/G153/official/index.json`: live = `resourcePacks.*.version`, pre = `predownload.resourcePacks.*.version`), legacy index as fallback | Legacy index was last touched Oct 16 and never received the 3.8 pre-download → GE logged `pre-install —`; `vinfo.pre` empty for the whole pre-load phase |
+| 2 | `launcher_media` reads the **new-protocol background** (`config.functionCode.background → official/background/<code>/en.json`), passes the `/20YYMMDD/` path date into `_dated_inside_launch_window`; legacy as fallback | Same JSON shape, same bytes — but the URL now carries the publish date, so attribution stops depending on the first-seen memo |
+| 3 | New source: **carousel version-PV slide** from `information/en.json` (dated `assets/news/20YYMMDD/`, inside the launch window, version label if `carouselNotes` carries it) | Gives a version-bound EN key art earlier than the background swap, with text — hence a lower tier |
+
+## Ranking (WuWa feature 4 media, best first)
+
+1. **Override** (`config/overrides.json` `launch_video` / `launch_image`) — unchanged, your manual word wins.
+2. **NEW — Launcher background, new protocol, dated inside the launch window** → textless first-frame `.webp` as key visual + `.mp4` video. Strongest automatic evidence: the date is in the URL.
+3. **Launcher background, legacy path (undated)** under today's first-seen-memo rule — what GE uses now; becomes the fallback for the same picture.
+4. **NEW — Carousel version-PV slide (EN, with title text)**, dated inside the window — used only while the background hasn't swapped yet; replaced automatically when tier 2 appears (self-heal, same as #151).
+5. Existing lower fallbacks (official article / website media) — positions unchanged.
+
+Version/pre-load state itself (not a media tier) moves from legacy → new-protocol index, which is what makes "pre-load open" visible to feature 4 at all.
+
+## Before → after
+
+| | Today | After |
+|---|---|---|
+| Pre-load detection | Blind (legacy index stale) | New index flips at the exact pre-load minute (`Nov 10 02:00:00 UTC`) |
+| Background attribution | Undated URL, first-seen memo, 7-day guard | Dated URL → direct window check; memo kept as fallback |
+| Key visual before background swap | None (tier 3 generic) | EN version-PV slide, version-bound |
+| Hosts | 1 endpoint, no fallback | New + legacy, backup host `prod-volcdn-gamestarter.kurogame.net` available if wanted |
+| CN | not used | not used (identical art, ≤20 min earlier) — probe-only evidence |
+| Extra requests/run | 2 | 3–4, only inside the launch window (the existing `_kuro_background_window_open` gate stays) |
+
+**Timing reminder:** WW 3.8 maintenance starts Nov 11 20:00 UTC. If the hand-off reaches GE main before the swap, 3.8 benefits; otherwise 3.9 does and the Nov 12 swap becomes probe evidence. Send any reply (even "ok") and I'll retry the tools and proceed with the PR + hand-off straight away.
