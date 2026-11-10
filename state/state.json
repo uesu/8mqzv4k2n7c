@@ -6731,6 +6731,18 @@
               "version": "4.7"
             }
           },
+          "maintenance": {
+            "edit_attempts": 0,
+            "edit_count": 0,
+            "end_ts": 1794366000,
+            "media_tier": 1,
+            "media_url": "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm",
+            "message_id": "1569834204689076235",
+            "posted_at": 1794348034,
+            "provenance": "official",
+            "status": "posted",
+            "ts": 1794348000
+          },
           "preload": {
             "edit_attempts": 0,
             "edit_count": 1,
