@@ -7414,8 +7414,8 @@
     },
     "starrail": {
       "cursor": [
-        1794283207,
-        "47385591"
+        1794290407,
+        "47386304"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7459,6 +7459,11 @@
           1794283237,
           2,
           "56d0ac4670cffeb0"
+        ],
+        "47386304": [
+          1794290435,
+          0,
+          "2d4abea20aa38a5a"
         ]
       },
       "records": {
@@ -7776,6 +7781,13 @@
           ],
           "status": "posted",
           "ts": 1794283207
+        },
+        "47386304": {
+          "messages": [
+            "1569592655002996807"
+          ],
+          "status": "posted",
+          "ts": 1794290407
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -9349,7 +9361,7 @@
               "version": "3.3"
             }
           ],
-          "ts": 1794268221
+          "ts": 1794290435
         },
         "data": {
           "announcement_locked": true,
@@ -9375,21 +9387,21 @@
               "Norma Hollowell"
             ]
           },
-          "banners_checked_ts": 1794268221,
+          "banners_checked_ts": 1794290435,
           "banners_display": {
             "Norma": "Norma Hollowell",
             "Phoenix": "Phoenix Reffaella",
             "Severian": "Severian Lowell",
             "Velina": "Velina Airgid"
           },
-          "banners_search_ts": 1794268221,
+          "banners_search_ts": 1794290435,
           "banners_settled": [
             "phase1",
             "phase1_4",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1794268221,
+          "calendar_ts": 1794290435,
           "compensation": "Polychrome ×300",
           "images": [
             "https://pbs.twimg.com/media/HTxU4O3W4AAGolV.jpg?name=orig"
