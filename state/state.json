@@ -5125,7 +5125,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1794232223,
+        "last_seen": 1794276036,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5382,7 +5382,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1794232223,
+        "last_seen": 1794276036,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5416,7 +5416,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1794232223,
+        "last_seen": 1794276036,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -6782,6 +6782,10 @@
             "status": "seeded",
             "ts": 1790560800
           },
+          "seen_media": [
+            "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/fbp4pj51dfnw2uyyzt.mp4",
+            "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/cxol3urv2yjpftavjv.webp"
+          ],
           "timing_notice": {
             "end_ts": 1790737200,
             "postponed": false,
@@ -6791,6 +6795,19 @@
           }
         },
         "3.8": {
+          "launch_media": {},
+          "preload": {
+            "edit_attempts": 0,
+            "edit_count": 0,
+            "end_ts": null,
+            "media_tier": 3,
+            "media_url": "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig",
+            "message_id": "1569532221662957600",
+            "posted_at": 1794276036,
+            "provenance": "official",
+            "status": "posted",
+            "ts": 1794276000
+          },
           "timing_notice": {
             "end_ts": 1794452400,
             "postponed": false,
