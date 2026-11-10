@@ -6860,11 +6860,6 @@
       "floor": 1794022819,
       "paused": false,
       "rechecks": {
-        "47363693": [
-          1794110435,
-          2,
-          "be5e3f26347f96f8"
-        ],
         "47375132": [
           1794196834,
           2,
@@ -7316,8 +7311,8 @@
     },
     "hna": {
       "cursor": [
-        1794110707,
-        "47363734"
+        1794283207,
+        "47385590"
       ],
       "floor": 1794022819,
       "paused": false,
@@ -7326,6 +7321,11 @@
           1794111017,
           2,
           "e73c8c25c5e3b4c7"
+        ],
+        "47385590": [
+          1794283237,
+          0,
+          "9b75d2f266047c51"
         ]
       },
       "records": {
@@ -7406,23 +7406,25 @@
           ],
           "status": "posted",
           "ts": 1794110707
+        },
+        "47385590": {
+          "messages": [
+            "1569562517347500074"
+          ],
+          "status": "posted",
+          "ts": 1794283207
         }
       },
       "route": "7a204299ff16d73e"
     },
     "starrail": {
       "cursor": [
-        1794279606,
-        "47385253"
+        1794283207,
+        "47385591"
       ],
       "floor": 1794022819,
       "paused": false,
       "rechecks": {
-        "47363694": [
-          1794110435,
-          2,
-          "b7535db25a85cd4c"
-        ],
         "47366686": [
           1794132035,
           2,
@@ -7457,6 +7459,11 @@
           1794279638,
           2,
           "013e2b264d5e0e5a"
+        ],
+        "47385591": [
+          1794283237,
+          0,
+          "56d0ac4670cffeb0"
         ]
       },
       "records": {
@@ -7767,6 +7774,13 @@
           ],
           "status": "posted",
           "ts": 1794279606
+        },
+        "47385591": {
+          "messages": [
+            "1569562465044406282"
+          ],
+          "status": "posted",
+          "ts": 1794283207
         }
       },
       "route": "d6cfe8654063c7ee"
@@ -7864,17 +7878,12 @@
     },
     "zzz": {
       "cursor": [
-        1794205805,
-        "47376180"
+        1794283206,
+        "47385589"
       ],
       "floor": 1794022819,
       "paused": false,
       "rechecks": {
-        "47363692": [
-          1794110435,
-          2,
-          "403aa9282c9fa4e9"
-        ],
         "47375133": [
           1794196834,
           2,
@@ -7899,6 +7908,11 @@
           1794205828,
           2,
           "e271941e749026c6"
+        ],
+        "47385589": [
+          1794283237,
+          0,
+          "26c5bce845583122"
         ]
       },
       "records": {
@@ -8265,6 +8279,13 @@
           ],
           "status": "posted",
           "ts": 1794205805
+        },
+        "47385589": {
+          "messages": [
+            "1569562476297588739"
+          ],
+          "status": "posted",
+          "ts": 1794283206
         }
       },
       "route": "5f931f917050e29a"
@@ -8476,7 +8497,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794272436
+          "ts": 1794283237
         },
         "data": {
           "announcement_locked": true,
@@ -8511,13 +8532,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794272436,
-          "banners_search_ts": 1794272436,
+          "banners_checked_ts": 1794283237,
+          "banners_search_ts": 1794283237,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794272436,
+          "calendar_ts": 1794283237,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9050,7 +9071,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794272436,
+          "banners_checked_ts": 1794283237,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9189,7 +9210,7 @@
             }
           },
           "banners_checked_ts": 1794282021,
-          "banners_search_ts": 1794272436,
+          "banners_search_ts": 1794283237,
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
             "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
