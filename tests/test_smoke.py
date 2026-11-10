@@ -9108,7 +9108,7 @@ def test_maintenance_media_priority_version_matching_phase2_lock_and_wuwa_signed
         allowed = {zzz_video, zzz_webp, zzz_prog}
         ctx.fetcher = types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=(u in allowed)))
         tier, url = asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins))
-        assert (tier, url) == (3, zzz_prog)
+        assert (tier, url) == (4, zzz_prog)
 
         # Matching launcher `pre == 3.3`: Priority 1 video -> Priority 2 WebP -> Priority 3 X art -> Priority 4 None.
         ctx.versions["zzz"] = {"live": "3.2", "pre": "3.3"}
@@ -9119,9 +9119,9 @@ def test_maintenance_media_priority_version_matching_phase2_lock_and_wuwa_signed
         allowed = {zzz_webp, zzz_prog}
         assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (2, zzz_webp)
         allowed = {zzz_prog}
-        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (3, zzz_prog)
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (4, zzz_prog)
         allowed = set()
-        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (4, None)
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.3", plan_33, {}, basic_info=binfo, program_pins=pins)) == (5, None)
 
         # ZZZ 3.2 launch lock rejects Phase II background BOTH when locked AND on cold state!
         allowed = {zzz_32_launch, zzz_32_phase2}
@@ -9133,7 +9133,7 @@ def test_maintenance_media_priority_version_matching_phase2_lock_and_wuwa_signed
         plan_32 = {"preinstall_ts": 1788753600, "maint_start_ts": 1788904800, "schedule_images": [], "override": {}}
         locked_32 = {"launch_media": {"video": zzz_32_launch, "locked": True}}
         assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.2", plan_32, locked_32, basic_info=phase2_info, program_pins={})) == (1, zzz_32_launch)
-        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.2", plan_32, {}, basic_info=phase2_info, program_pins={})) == (4, None)
+        assert asyncio.run(resolve_launch_media(ctx, GAMES["zzz"], "3.2", plan_32, {}, basic_info=phase2_info, program_pins={})) == (5, None)
 
         # WuWa signed URL preserves exact `auth_key` query, rejects uncorroborated same-path swap,
         # renews when corroborated metadata matches, and falls back when expired.
@@ -9151,12 +9151,12 @@ def test_maintenance_media_priority_version_matching_phase2_lock_and_wuwa_signed
         # After `1792498595` expires with no renewal -> falls back cleanly to official 3.7 broadcast key art!
         ctx.now = 1792500000
         assert asyncio.run(resolve_launch_media(ctx, GAMES["wuwa"], "3.7", plan_ww, wuwa_state, basic_info={}, program_pins=pins)) == (
-            3, pins["wuwa"]["3.7"]["image"]
+            4, pins["wuwa"]["3.7"]["image"]
         )
         # Same host/path WITHOUT matching corroboration -> STILL rejected, falls back to official 3.7 art:
         ctx.versions["wuwa"]["pre_media"] = {"version": "3.7", "video": wuwa_renewed, "artwork": ""}
         assert asyncio.run(resolve_launch_media(ctx, GAMES["wuwa"], "3.7", plan_ww, wuwa_state, basic_info={}, program_pins=pins)) == (
-            3, pins["wuwa"]["3.7"]["image"]
+            4, pins["wuwa"]["3.7"]["image"]
         )
         # Corroborated same asset (`video_md5 == "wuwa37md5"`) -> renews `auth_key` cleanly to Tier 1!
         ctx.versions["wuwa"]["pre_media"] = {"version": "3.7", "video": wuwa_renewed, "video_md5": "wuwa37md5", "artwork": ""}
@@ -9753,7 +9753,7 @@ def test_correction_1_launch_media_lock_vs_tier_upgrade_window_and_edit_failure(
         with patch.object(launcher_mod, "hoyoplay_basic_info", new=AsyncMock(return_value={})):
             asyncio.run(maintenance.run(ctx))
         assert len(ctx.webhook.sends) == 1
-        assert ctx.state.maintenance_record("zzz")["versions"]["3.4"]["preload"]["media_tier"] == 4
+        assert ctx.state.maintenance_record("zzz")["versions"]["3.4"]["preload"]["media_tier"] == 5
 
         ctx.now = 1795900060 + maintenance.LATE_MEDIA_EDIT_WINDOW_S + 120
         ctx.webhook = ScriptedWebhook([], [])
@@ -10150,7 +10150,7 @@ def test_followup_1_deterministic_media_refresh_request_and_edit_bounds():
             assert len(ctx.webhook.edits) == 0 and len(ctx.webhook.sends) == 0
             assert entry["edit_count"] == 1 and entry["edit_attempts"] == 0
 
-            # Case 6: Tier 1 unreachable -> falls back cleanly to Tier 2 (`art_33`), then Tier 3 (`prog_33`), then Tier 4 (`None`)!
+            # Case 6: Tier 1 unreachable -> falls back cleanly to Tier 2 (`art_33`), then Tier 4 (`prog_33`), then Tier 5 (`None`)!
             valid_urls.discard(vid_33)
             ctx.now = 1792382460 + 9 * 300
             ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
@@ -10161,14 +10161,14 @@ def test_followup_1_deterministic_media_refresh_request_and_edit_bounds():
             ctx.now = 1792382460 + 10 * 300
             ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
             asyncio.run(maintenance.run(ctx))
-            assert len(ctx.webhook.edits) == 1 and entry["media_tier"] == 3 and entry["media_url"] == prog_33
+            assert len(ctx.webhook.edits) == 1 and entry["media_tier"] == 4 and entry["media_url"] == prog_33
 
             # Case 5: Unusable media with NO verified replacement -> 1 PATCH omits gallery (`tier 4`), then 0 further edits across 3 polls!
             valid_urls.discard(prog_33)
             ctx.now = 1792382460 + 11 * 300
             ctx.webhook = ScriptedWebhook([SendResult(True, 200)], [])
             asyncio.run(maintenance.run(ctx))
-            assert len(ctx.webhook.edits) == 1 and entry["media_tier"] == 4 and entry["media_url"] == ""
+            assert len(ctx.webhook.edits) == 1 and entry["media_tier"] == 5 and entry["media_url"] == ""
             edits_after_omit = entry["edit_count"]
 
             ctx.webhook = ScriptedWebhook([], [])
@@ -15920,7 +15920,7 @@ def test_audit_fix_1_override_iso8601_and_image_tier3_precedence():
                 program_pins={"starrail": {"4.7": {"image": pin_img}}},
             )
         )
-        assert (tier, chosen) == (3, expected_override_img)
+        assert (tier, chosen) == (4, expected_override_img)
 
 
 def test_audit_fix_2_epithet_inference_prerelease_1_0_and_non_cadence_countdown_estimates():
@@ -16034,11 +16034,11 @@ def test_audit_fix_3_kuro_g153_launcher_background_allowlist_and_ww_lifecycle():
     assert asyncio.run(
         kuro_mod.launcher_media(StubKuroFetcher({"functionCode": {"background": "../../etc/passwd"}}, fx["background_en_3_7"]))
     ) == {}
-    assert seen_urls == [kuro_mod.LAUNCHER_CONFIG]
+    assert seen_urls == [kuro_mod.LAUNCHER_V2_INDEX, kuro_mod.LAUNCHER_CONFIG]
 
     seen_urls.clear()
     live_bg = asyncio.run(kuro_mod.launcher_media(StubKuroFetcher(fx["launcher_config_g153"], fx["background_en_3_7"])))
-    assert live_bg["video"] == parsed_37["video"] and len(seen_urls) == 2
+    assert live_bg["video"] == parsed_37["video"] and len(seen_urls) == 3
 
     # Allowlist: `aki-game.net` and `aki-game.com` pass `verify_media` with real MP4/WebP magic bytes!
     mp4_header = b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom" + b"\x00" * 64
@@ -16126,7 +16126,7 @@ def test_audit_fix_3_kuro_g153_launcher_background_allowlist_and_ww_lifecycle():
         ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww38-pre-msg")])
         asyncio.run(maintenance.run(ctx))
         pre_state = ctx.state.maintenance_record("wuwa")["versions"]["3.8"]["preload"]
-        assert pre_state["media_tier"] == 3 and pre_state["media_url"] == ww38_prog
+        assert pre_state["media_tier"] == 4 and pre_state["media_url"] == ww38_prog
         assert parsed_37["video"] in ctx.state.maintenance_record("wuwa")["versions"]["3.7"]["seen_media"]
 
         # 2) WW 3.8 Maintenance T+1m (`live=3.8`, `en.json` temporarily still serving 3.7 slug): STILL blocks stale 3.7 slug!
@@ -16135,7 +16135,7 @@ def test_audit_fix_3_kuro_g153_launcher_background_allowlist_and_ww_lifecycle():
         ctx.webhook = ScriptedWebhook([], [SendResult(True, 200, "ww38-maint-msg")])
         asyncio.run(maintenance.run(ctx))
         maint_state = ctx.state.maintenance_record("wuwa")["versions"]["3.8"]["maintenance"]
-        assert maint_state["media_tier"] == 3 and maint_state["media_url"] == ww38_prog
+        assert maint_state["media_tier"] == 4 and maint_state["media_url"] == ww38_prog
 
         # 3) WW 3.8 Maintenance T+15m (`en.json` rotates to 3.8 `.mp4` slug): silent `PATCH` upgrades card to Tier 1 `.mp4`!
         cur_en = {
@@ -16180,11 +16180,11 @@ def test_audit_fix_4_5_twimg_dedup_shortlink_upgrade_and_6_game_live_state_zero_
         plan_gi72 = {"preinstall_ts": 1794196800, "maint_start_ts": 1794348000, "schedule_images": [], "override": {}}
         vstate_gi72: dict = {}
 
-        # Shortened-patch `-14d` wallpaper rejected cleanly (`(4, None)`):
+        # Shortened-patch `-14d` wallpaper rejected cleanly (`(5, None)`):
         stale_binfo = {"gopR6Cufr3": [{"id": "id-prior", "video": "", "background": prior_phase2_webp, "links": ["https://hoyo.link/oldA"]}]}
         assert asyncio.run(
             maintenance.resolve_launch_media(ctx, GAMES["genshin"], "7.2", plan_gi72, vstate_gi72, basic_info=stale_binfo, program_pins={})
-        ) == (4, None)
+        ) == (5, None)
 
         # `-10d` Special Program Friday `.webp` locks at Tier 2:
         sp_binfo = {"gopR6Cufr3": [{"id": "id-oct30", "video": "", "background": gi72_sp_webp, "links": ["https://hoyo.link/sp72A"]}]}
@@ -26644,11 +26644,11 @@ def test_kuro_launcher_background_is_attributed_to_the_version_it_belongs_to():
                                 fetcher=types.SimpleNamespace(verify_media=AsyncMock(return_value=True)))
     vs: dict = {}
     assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
-                                                        kuro_media={**bg_37, "version": "3.7"}, versions_state=vs)) == (4, None)
+                                                        kuro_media={**bg_37, "version": "3.7"}, versions_state=vs)) == (5, None)
     assert vs["3.7"]["seen_media"] == [maintenance._canonical_url_locator(bg_37["video"]), maintenance._canonical_url_locator(bg_37["artwork"])]
     vs = {}
     assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
-                                                        kuro_media={**bg_37, "version": ""}, versions_state=vs)) == (4, None)
+                                                        kuro_media={**bg_37, "version": ""}, versions_state=vs)) == (5, None)
     assert vs == {}
     assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
                                                         kuro_media={**bg_38, "version": "3.8"}, versions_state={})) == (1, ww38_mp4)
@@ -26698,7 +26698,7 @@ def test_kuro_launcher_background_is_attributed_to_the_version_it_belongs_to():
                                       fetcher=types.SimpleNamespace(verify_media=dated_fetcher.verify_media, media_dates=dated_fetcher.media_dates))
     cache: dict = {}
     assert asyncio.run(maintenance.resolve_launch_media(ctx_dated, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
-                                                        kuro_media={**bg_37, "version": "3.8"}, versions_state={}, verified_cache=cache)) == (4, None)
+                                                        kuro_media={**bg_37, "version": "3.8"}, versions_state={}, verified_cache=cache)) == (5, None)
     assert cache == {bg_37["video"]: True, bg_37["artwork"]: True}  # verified once, reused; no second request later
     assert asyncio.run(maintenance.resolve_launch_media(ctx_dated, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
                                                         kuro_media={**bg_38, "video_meta": {}, "artwork": "", "version": "3.8"}, versions_state={})) == (1, ww38_mp4)
@@ -26734,10 +26734,11 @@ def test_kuro_launcher_background_is_attributed_to_the_version_it_belongs_to():
         # 0) Oct 23 baseline: mid-patch, 0 background requests, no memo.
         asyncio.run(maintenance.run(ctx))
         assert ctx.webhook.sent == [] and calls == [] and "kuro_background" not in ctx.state.maintenance_record("wuwa")
-        # 1) Nov 7 (inside -11d): one config + one en.json request; the current background is 3.7's.
+        # 1) Nov 7 (inside -11d): one v2 index probe, then legacy config + en.json fallback; background is 3.7's.
         ctx.now = 1794100000
         asyncio.run(maintenance.run(ctx))
-        assert calls == [kuro_mod.LAUNCHER_CONFIG, kuro_mod.LAUNCHER_BACKGROUND.format("dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf")]
+        assert calls == [kuro_mod.LAUNCHER_V2_INDEX, kuro_mod.LAUNCHER_CONFIG,
+                         kuro_mod.LAUNCHER_BACKGROUND.format("dOlPEc8xvpP8r4k2lyIOK6p0R7hNNqRf")]
         assert ctx.state.maintenance_record("wuwa")["kuro_background"]["owner"] == "3.7"
         with patch.object(kuro_mod, "launcher_media", new=AsyncMock(return_value=bg_37)) as spy:
             ctx.now = 1794100300
@@ -26760,6 +26761,132 @@ def test_kuro_launcher_background_is_attributed_to_the_version_it_belongs_to():
         asyncio.run(maintenance.run(ctx))
         assert rec["versions"]["3.8"]["maintenance"]["media_tier"] == 1 and rec["versions"]["3.8"]["maintenance"]["media_url"] == ww38_mp4
         assert rec["kuro_background"]["owner"] == "3.8" and "seen_media" not in (rec["versions"].get("3.7") or {})
+
+def test_kuro_new_protocol_index_background_and_carousel_tiers():
+    from unittest.mock import AsyncMock
+
+    from gamexpress import maintenance
+    from gamexpress.sources import kuro
+
+    code = "51684874bd1f48e3ab98fb8b06b96ceb"
+    v2_index = {
+        "resourcePacks": {key: {"version": "3.7.2"} for key in ("uhd", "hd", "sd", "common")},
+        "predownload": {"resourcePacks": {key: {"version": "3.8.0"} for key in ("uhd", "hd", "sd", "common")}},
+        "config": {"functionCode": {"background": code}},
+    }
+    assert kuro.parse_launcher_index_v2(v2_index) == {"live": "3.7", "pre": "3.8", "bg_code": code}
+    assert kuro.parse_launcher_index_v2({**v2_index, "predownload": None}) == {
+        "live": "3.7", "pre": None, "bg_code": code
+    }
+    assert kuro.parse_launcher_index_v2({"default": {"version": "3.7.1"}}) == {}
+
+    class JsonFetcher:
+        def __init__(self, responses):
+            self.responses = responses
+            self.calls = []
+
+        async def get_json(self, url, **_kwargs):
+            self.calls.append(url)
+            return self.responses.get(url)
+
+    v2_fetcher = JsonFetcher({kuro.LAUNCHER_V2_INDEX: v2_index, kuro.LAUNCHER_INDEX: {"default": {"version": "3.6.0"}}})
+    assert asyncio.run(kuro.launcher_versions(v2_fetcher)) == {"live": "3.7", "pre": "3.8", "bg_code": code}
+    assert v2_fetcher.calls == [kuro.LAUNCHER_V2_INDEX]
+    legacy = {"default": {"version": "3.6.0"}}
+    fallback_fetcher = JsonFetcher({kuro.LAUNCHER_V2_INDEX: None, kuro.LAUNCHER_INDEX: legacy})
+    assert asyncio.run(kuro.launcher_versions(fallback_fetcher)) == {"live": "3.6", "pre": None}
+    assert fallback_fetcher.calls == [kuro.LAUNCHER_V2_INDEX, kuro.LAUNCHER_INDEX]
+
+    bg = {
+        "functionSwitch": 1,
+        "backgroundFile": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/background/20260930/68a8969b17524b7da001bc567a73c524.mp4",
+        "backgroundFileType": 2,
+        "firstFrameImage": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/background/20260930/544e04e45df24686af193a4a256fae8e.webp",
+    }
+    parsed = kuro.parse_launcher_background(bg, bg_hash=code, protocol="v2")
+    assert parsed["video_meta"]["asset_date"] == parsed["artwork_meta"]["asset_date"] == "2026-09-30"
+    assert parsed["video_meta"]["protocol"] == "v2"
+    legacy_meta = kuro.parse_launcher_background({**bg, "backgroundFile": "https://cdn.example/legacy.mp4",
+                                                   "firstFrameImage": "https://cdn.example/legacy.webp"})
+    assert "asset_date" not in legacy_meta["artwork_meta"]
+
+    legacy_cfg = {"functionCode": {"background": "lv1emIbKHn38mW6zgxiFqU3Uw8nwstj6"}}
+    off_bg = {**bg, "functionSwitch": 0}
+    bg_fetcher = JsonFetcher({
+        kuro.LAUNCHER_V2_BACKGROUND.format(code): off_bg,
+        kuro.LAUNCHER_CONFIG: legacy_cfg,
+        kuro.LAUNCHER_BACKGROUND.format(legacy_cfg["functionCode"]["background"]): bg,
+    })
+    media = asyncio.run(kuro.launcher_media(bg_fetcher, {"bg_code": code}))
+    assert media["video_meta"]["protocol"] == "legacy"
+    assert bg_fetcher.calls == [kuro.LAUNCHER_V2_BACKGROUND.format(code), kuro.LAUNCHER_CONFIG,
+                                kuro.LAUNCHER_BACKGROUND.format(legacy_cfg["functionCode"]["background"])]
+
+    slides = kuro.parse_launcher_slides({"slideshow": [
+        {"url": "https://cdn.example/G153/official/assets/news/20260929/faca4ffed4a44767a0f9da73a6a24ee7.png",
+         "jumpUrl": "https://youtu.be/xLWZ-bApa2c", "carouselNotes": "3.7版本pv"},
+        {"url": "https://cdn.example/news/20261110/key.jpg", "jumpUrl": "https://youtube.com/watch?v=x"},
+        {"url": "https://cdn.example/video.mp4", "jumpUrl": "https://youtube.com/watch?v=x"},
+        {"url": "", "jumpUrl": "https://youtube.com/watch?v=x"},
+    ]})
+    assert len(slides) == 2
+    assert slides[0]["asset_date"] == "2026-09-29" and slides[0]["version"] == "3.7"
+    assert slides[1]["version"] == "" and slides[1]["asset_date"] == "2026-11-10"
+
+    # Dated backgrounds are assigned by their publication window, never by the mutable legacy memo.
+    plan_38 = {"preinstall_ts": 1794276000, "maint_start_ts": 1794427200, "schedule_images": [], "override": {}}
+    plans = {"3.7": {"preinstall_ts": 1790560800, "maint_start_ts": 1790712000}, "3.8": plan_38}
+    dated_38 = {**parsed, "video": bg["backgroundFile"].replace("20260930", "20261110"),
+                "artwork": bg["firstFrameImage"].replace("20260930", "20261110")}
+    dated_38["video_meta"] = {**dated_38["video_meta"], "asset_date": "2026-11-10"}
+    dated_38["artwork_meta"] = {**dated_38["artwork_meta"], "asset_date": "2026-11-10"}
+    record = {"kuro_background": {"locator": "old-media", "owner": "3.7"}}
+    attributed, changed = maintenance._attribute_kuro_background(
+        record, dated_38, {"live": "3.7", "pre": "3.8"}, plans, 1794276000
+    )
+    assert attributed["version"] == "3.8" and not changed and record["kuro_background"]["owner"] == "3.7"
+    outside = {**dated_38, "video": dated_38["video"].replace("20261110", "20260801"),
+               "artwork": dated_38["artwork"].replace("20261110", "20260801")}
+    outside["video_meta"] = {**outside["video_meta"], "asset_date": "2026-08-01"}
+    outside["artwork_meta"] = {**outside["artwork_meta"], "asset_date": "2026-08-01"}
+    rejected, changed = maintenance._attribute_kuro_background(
+        {}, outside, {"live": "3.7", "pre": "3.8"}, plans, 1794276000
+    )
+    assert rejected["version"] == "" and not changed
+
+    ctx = types.SimpleNamespace(now=1794276000, versions={"wuwa": {"live": "3.7", "pre": "3.8"}},
+                                fetcher=types.SimpleNamespace(verify_media=AsyncMock(return_value=True)))
+    slide = {"url": "https://cdn.example/news/20261110/version-pv.png", "jump": "https://youtu.be/trailer",
+             "asset_date": "2026-11-10", "version": "3.8"}
+    untrusted_slide = {**slide, "url": "https://cdn.example/news/20261110/untrusted.png",
+                       "jump": "https://youtube.com.evil.example/trailer", "version": ""}
+    wrong_version_slide = {**slide, "url": "https://cdn.example/news/20261110/old-version.png",
+                           "version": "3.7"}
+
+    async def get_slides():
+        return [untrusted_slide, wrong_version_slide, slide]
+
+    assert asyncio.run(maintenance.resolve_launch_media(
+        ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+        kuro_media={}, get_kuro_slides=get_slides,
+    )) == (3, slide["url"])
+
+    async def get_unlabeled_slides():
+        return [untrusted_slide]
+
+    # A date and YouTube link alone cannot promote a character PV/showcase thumbnail over key art.
+    assert asyncio.run(maintenance.resolve_launch_media(
+        ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+        kuro_media={}, get_kuro_slides=get_unlabeled_slides,
+    )) == (5, None)
+    # Background artwork/video remains stronger than the carousel (and carousel is never video).
+    bg_candidate = {"video": dated_38["video"], "artwork": dated_38["artwork"], "version": "3.8",
+                    "video_meta": dated_38["video_meta"], "artwork_meta": dated_38["artwork_meta"]}
+    assert asyncio.run(maintenance.resolve_launch_media(
+        ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+        kuro_media=bg_candidate, get_kuro_slides=get_slides,
+    )) == (1, bg_candidate["video"])
+
 
 def test_hoyoplay_dated_launch_assets_belong_to_the_launch_they_are_dated_for_hsr_47():
     """Live HSR 4.7 (prod state 2026-11-09 06:00 UTC): HoYoPlay published the 4.7 launcher video and
@@ -26808,7 +26935,7 @@ def test_hoyoplay_dated_launch_assets_belong_to_the_launch_they_are_dated_for_hs
                                 fetcher=types.SimpleNamespace(verify_media=lambda u: asyncio.sleep(0, result=True)))
     vs: dict = {"4.6": {}, "4.7": {}}
     assert asyncio.run(maintenance.resolve_launch_media(ctx, GAMES["starrail"], "4.7", plan_47, vs["4.7"], basic_info=binfo,
-                                                        program_pins={}, versions_state=vs)) == (3, prog_47)
+                                                        program_pins={}, versions_state=vs)) == (4, prog_47)
     assert vs["4.6"]["seen_media"] == [webm_46, webp_46]
     #    `pre` flips a few minutes later: the 4.7 video is tier 1, the 4.6 webm is not a candidate.
     ctx.versions["starrail"] = {"live": "4.6", "pre": "4.7"}

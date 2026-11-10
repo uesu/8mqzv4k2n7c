@@ -342,8 +342,10 @@ def _kuro_background_window_open(plans: dict, vinfo: dict, now: int) -> bool:
 def _attribute_kuro_background(record: dict, kuro_media: dict, vinfo: dict, plans: dict, now: int) -> tuple[dict, bool]:
     """Bind the global Kuro launcher background to the version it belongs to.
 
-    `G153/background/<hash>/en.json` is one shared slot: it carries no version and no upload date,
-    and its hash changes without the media changing. The owner is therefore decided from WHEN the
+    The legacy `G153/background/<hash>/en.json` slot carries no version or path date, and its
+    hash changes without the media changing. Dated new-protocol assets are assigned directly to
+    the launch window containing their path date; a date outside every window is rejected. For an
+    undated legacy asset, the owner is decided from WHEN the
     media changed, memoised in `record["kuro_background"]` so later runs never re-decide:
 
       * first sighting with no pre-download open -> the live version's background (`live`);
@@ -356,6 +358,44 @@ def _attribute_kuro_background(record: dict, kuro_media: dict, vinfo: dict, plan
     """
     video = str(kuro_media.get("video") or "").strip() if isinstance(kuro_media, dict) else ""
     artwork = str(kuro_media.get("artwork") or "").strip() if isinstance(kuro_media, dict) else ""
+    if not video and not artwork:
+        return {}, False
+
+    # New-protocol Kuro assets identify their publish day in /assets/.../YYYYMMDD/.
+    # A date is stronger evidence than the mutable shared-slot memo: assign only to the
+    # launch window containing that day, and never fall through to the old first-seen guess.
+    dated_ts: list[int] = []
+    for url_key, meta_key in (("video", "video_meta"), ("artwork", "artwork_meta")):
+        url = str(kuro_media.get(url_key) or "").strip()
+        meta = kuro_media.get(meta_key) if isinstance(kuro_media.get(meta_key), dict) else {}
+        asset_day = str(meta.get("asset_date") or "").strip()
+        if asset_day:
+            try:
+                day = datetime.strptime(asset_day, "%Y-%m-%d").replace(hour=12, tzinfo=timezone.utc)
+                dated_ts.append(int(day.timestamp()))
+            except ValueError:
+                pass
+        else:
+            upload_ts = _asset_upload_ts(url)
+            if upload_ts is not None:
+                dated_ts.append(upload_ts)
+    if dated_ts:
+        owner = ""
+        if len(set(dated_ts)) == 1:
+            upload_ts = dated_ts[0]
+            matches = [
+                str(ver) for ver, plan in plans.items()
+                if isinstance(plan, dict) and _dated_inside_launch_window(
+                    video or artwork,
+                    preinstall_ts=plan.get("preinstall_ts"),
+                    maint_start_ts=plan.get("maint_start_ts"),
+                    upload_ts=upload_ts,
+                )
+            ]
+            if matches:
+                owner = min(matches, key=version_key)
+        return {**kuro_media, "version": owner}, False
+
     locator = _canonical_url_locator(video or artwork)
     if not locator:
         return {}, False
@@ -758,13 +798,15 @@ async def resolve_launch_media(
     kuro_media: dict | None = None,
     versions_state: dict | None = None,
     verified_cache: dict[str, bool] | None = None,
+    get_kuro_slides=None,
 ) -> tuple[int, str | None]:
     """Select and verify media strictly following priority, identity-lock, and renewal rules:
 
       Priority 1: Matching-version launch video
       Priority 2: Matching-version launch artwork / WebP
-      Priority 3: Matching-version official X / HoYoLAB Special Program artwork
-      Priority 4: Omit gallery (`(4, None)`)
+      Priority 3: Dated/version-matched Kuro launcher carousel artwork
+      Priority 4: Matching-version official X / HoYoLAB Special Program artwork
+      Priority 5: Omit gallery (`(5, None)`)
 
     Launch/version identity (`lock["version"]`) is separated from selected media tier:
       * Locking launch artwork (`tier 2`) binds the card to `version` and rejects Phase II or
@@ -773,7 +815,7 @@ async def resolve_launch_media(
       * When a locked Tier 1 video URL expires (e.g. signed WuWa `auth_key`), same-tier renewal
         is approved ONLY when `_corroborated_same_asset` proves identical launch asset identity;
         otherwise selection falls back cleanly to matching-version artwork (`tier 2`/`3`) or
-        safe omission (`(4, None)`).
+        safe omission (`(5, None)`).
     """
     now = ctx.now
     pre_ts = plan.get("preinstall_ts")
@@ -784,7 +826,7 @@ async def resolve_launch_media(
 
     locked_ver = str(lock.get("version") or "").strip()
     if locked_ver and locked_ver != version:
-        return 4, None
+        return 5, None
 
     launcher_matches = (vinfo.get("pre") == version) or (vinfo.get("live") == version)
 
@@ -1012,7 +1054,34 @@ async def resolve_launch_media(
                 lock.setdefault("locked_at", now)
                 return 2, cand_url
 
-    # --- Priority 3: Matching-version official X / HoYoLAB Special Program artwork ---
+    # --- Priority 3: Dated, version-matched Kuro launcher carousel artwork ---
+    # Request only after the stronger background video/artwork could not be used. The callback
+    # applies the same launch-window gate as background polling and memoizes once per run.
+    if game.launcher.get("type") == "kuro" and callable(get_kuro_slides):
+        for slide in await get_kuro_slides():
+            if not isinstance(slide, dict):
+                continue
+            slide_url = str(slide.get("url") or "").strip()
+            slide_version = str(slide.get("version") or "").strip()
+            # Only a slide that names this version (for example, "3.8版本pv" / "3.8 PV")
+            # is version art. Character PV/showcase slides also carry launch-window dates and
+            # YouTube jumps, so date + destination alone must never promote one over key art.
+            if not slide_version or slide_version != version:
+                continue
+            explicit = True
+            meta = _build_asset_meta(
+                slide_url, version, explicit_version_link=explicit,
+                extra={"asset_id": f"kuro-slide:{version}", "slot": "carousel"},
+            )
+            if await _verify_url(ctx.fetcher, slide_url, now, cache=verified_cache):
+                lock["version"] = version
+                lock["artwork"] = slide_url
+                lock["artwork_meta"] = meta
+                lock["locked"] = True
+                lock.setdefault("locked_at", now)
+                return 3, slide_url
+
+    # --- Priority 4: Matching-version official X / HoYoLAB Special Program artwork ---
     program_candidates: list[str] = []
     if ov.get("image") and not _is_video_url(str(ov["image"])):
         program_candidates.append(upgrade(str(ov["image"]).strip()))
@@ -1037,10 +1106,10 @@ async def resolve_launch_media(
             continue
         seen_prog.add(prog_url)
         if await _verify_url(ctx.fetcher, prog_url, now, cache=verified_cache):
-            return 3, prog_url
+            return 4, prog_url
 
-    # --- Priority 4: Omit gallery ---
-    return 4, None
+    # --- Priority 5: Omit gallery ---
+    return 5, None
 
 
 async def _ensure_inputs_for_games(ctx, target_games: list[Game]) -> None:
@@ -1243,11 +1312,11 @@ async def run(ctx) -> None:
             basic_info = await launcher.hoyoplay_basic_info(ctx.fetcher)
         return basic_info
 
-    async def get_kuro_media() -> dict:
+    async def get_kuro_media(game_key: str = "wuwa") -> dict:
         nonlocal kuro_media_cache
         if kuro_media_cache is None:
             if callable(getattr(ctx.fetcher, "get_json", None)):
-                kuro_media_cache = await kuro.launcher_media(ctx.fetcher)
+                kuro_media_cache = await kuro.launcher_media(ctx.fetcher, ctx.versions.get(game_key) or {})
             else:
                 kuro_media_cache = {}
         return kuro_media_cache
@@ -1312,11 +1381,25 @@ async def _run_game_maintenance(
         is_kuro = game.launcher.get("type") == "kuro"
         vinfo_now = ctx.versions.get(game.key) or {}
         kuro_tagged: dict | None = None
+        kuro_slides_cache: list[dict] | None = None
+
+        async def get_kuro_slides(_vinfo=vinfo_now, _plans=plans, _is_kuro=is_kuro) -> list[dict]:
+            nonlocal kuro_slides_cache
+            if kuro_slides_cache is None:
+                if (
+                    _is_kuro
+                    and _kuro_background_window_open(_plans, _vinfo, ctx.now)
+                    and callable(getattr(ctx.fetcher, "get_json", None))
+                ):
+                    kuro_slides_cache = await kuro.launcher_slides(ctx.fetcher)
+                else:
+                    kuro_slides_cache = []
+            return kuro_slides_cache
 
         async def kuro_media_tagged(_record=record, _vinfo=vinfo_now, _plans=plans) -> dict:
             nonlocal kuro_tagged
             if kuro_tagged is None:
-                raw = await get_kuro_media()
+                raw = await get_kuro_media(game.key)
                 kuro_tagged, memo_changed = _attribute_kuro_background(_record, raw or {}, _vinfo, _plans, ctx.now)
                 if memo_changed and not ephemeral:
                     ctx.state.save()
@@ -1404,7 +1487,7 @@ async def _run_game_maintenance(
                         continue
                     if status in ("posted", "seeded"):
                         posted_at = int(entry.get("posted_at") or 0)
-                        cur_tier = int(entry.get("media_tier") or 4)
+                        cur_tier = int(entry.get("media_tier") or 5)
                         cur_url = str(entry.get("media_url") or "")
                         msg_id = entry.get("message_id")
                         attempts = int(entry.get("edit_attempts") or 0)
@@ -1437,7 +1520,7 @@ async def _run_game_maintenance(
                             timing_allowed = timing_attempts < MAX_LATE_MEDIA_ATTEMPTS and timing_edits < MAX_LATE_EDITS
                             auth_ts_upgrade = auth_ts_upgrade and timing_allowed
                             cur_url_unusable = False
-                            if media_allowed and in_media_window and cur_tier in (1, 2, 3) and cur_url:
+                            if media_allowed and in_media_window and cur_tier in (1, 2, 3, 4) and cur_url:
                                 cur_url_unusable = not await _verify_url(
                                     ctx.fetcher, cur_url, ctx.now, cache=verified_cache
                                 )
@@ -1459,6 +1542,7 @@ async def _run_game_maintenance(
                                         kuro_media=kmedia,
                                         versions_state=staged_all,
                                         verified_cache=verified_cache,
+                                        get_kuro_slides=get_kuro_slides if is_kuro else None,
                                     )
                                     for s_ver, s_state in staged_all.items():
                                         if isinstance(s_state, dict) and s_state.get("seen_media"):
@@ -1555,6 +1639,7 @@ async def _run_game_maintenance(
                     kuro_media=kmedia,
                     versions_state=staged_all,
                     verified_cache=verified_cache,
+                    get_kuro_slides=get_kuro_slides if is_kuro else None,
                 )
                 seen_changed = False
                 for s_ver, s_state in staged_all.items():

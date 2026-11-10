@@ -32,6 +32,20 @@ LAUNCHER_CONFIG = ("https://prod-alicdn-gamestarter.kurogame.com/launcher/launch
 LAUNCHER_BACKGROUND = ("https://prod-alicdn-gamestarter.kurogame.com/launcher/"
                        "50004_obOHXFrFanqsaIEOmuKroCcbZkQRBC7c/G153/background/{}/en.json")
 _BG_HASH_RE = re.compile(r"^[A-Za-z0-9_-]{8,128}$")
+# Kuro "new protocol" launcher (Oct 2025+). The global EN feed is authoritative;
+# CN is intentionally not used. Its background assets have dated paths.
+_V2_KEY = "50004_P7xcUZnEr1AXIGON25E6KjpOgTlVrg6e"
+LAUNCHER_V2_INDEX = (
+    f"https://prod-alicdn-gamestarter.kurogame.com/launcher/game/{_V2_KEY}/G153/official/index.json"
+)
+LAUNCHER_V2_BACKGROUND = (
+    f"https://prod-alicdn-gamestarter.kurogame.com/launcher/game/{_V2_KEY}/G153/official/background/{{}}/en.json"
+)
+LAUNCHER_V2_INFORMATION = (
+    f"https://prod-alicdn-gamestarter.kurogame.com/launcher/app/{_V2_KEY}/G153/official/information/en.json"
+)
+_DATED_PATH_RE = re.compile(r"/(20\d{2})(\d{2})(\d{2})/")
+_SLIDE_VERSION_RE = re.compile(r"(\d+\.\d+)\s*(?:版本|ver(?:sion)?)?\s*pv", re.I)
 
 
 async def menu_articles(fetcher: Fetcher) -> dict[int, dict]:
@@ -156,13 +170,51 @@ def parse_launcher_index(data: dict) -> dict:
     return out
 
 
+def _pack_versions(obj: dict | None) -> str | None:
+    """Most common short version across `resourcePacks.{uhd,hd,sd,common}.version`."""
+    if not isinstance(obj, dict):
+        return None
+    packs = obj.get("resourcePacks") if isinstance(obj.get("resourcePacks"), dict) else {}
+    seen: dict[str, int] = {}
+    for pack in packs.values():
+        version = short_version(pack.get("version")) if isinstance(pack, dict) else None
+        if version:
+            seen[version] = seen.get(version, 0) + 1
+    return max(seen, key=seen.get) if seen else None
+
+
+def parse_launcher_index_v2(data: dict) -> dict:
+    """Extract live/pre versions and the background function code from the new protocol index."""
+    if not isinstance(data, dict) or "resourcePacks" not in data:
+        return {}
+    live = _pack_versions(data)
+    pre = _pack_versions(data.get("predownload"))
+    cfg = data.get("config") if isinstance(data.get("config"), dict) else {}
+    function_code = cfg.get("functionCode") if isinstance(cfg.get("functionCode"), dict) else {}
+    code = str(function_code.get("background") or "").strip()
+    out: dict = {"live": live, "pre": pre if pre and pre != live else None}
+    if _BG_HASH_RE.fullmatch(code):
+        out["bg_code"] = code
+    return out if live else {}
+
+
 async def launcher_versions(fetcher: Fetcher) -> dict:
+    """Prefer the new-protocol index, which receives pre-download state; legacy is fallback."""
+    data = await fetcher.get_json(LAUNCHER_V2_INDEX, source="kuro-launcher", retries=1)
+    v2 = parse_launcher_index_v2(data) if data else {}
+    if v2.get("live"):
+        return v2
     data = await fetcher.get_json(LAUNCHER_INDEX, source="kuro-launcher", retries=1)
     return parse_launcher_index(data) if data else {}
 
 
-def parse_launcher_background(data: dict, bg_hash: str = "") -> dict:
-    """Extract global launcher video/wallpaper URLs from `background/<hash>/en.json`."""
+def _asset_date(url: str) -> str:
+    match = _DATED_PATH_RE.search(url.split("?", 1)[0])
+    return f"{match.group(1)}-{match.group(2)}-{match.group(3)}" if match else ""
+
+
+def parse_launcher_background(data: dict, bg_hash: str = "", protocol: str = "legacy") -> dict:
+    """Extract global launcher video/wallpaper URLs and their source metadata."""
     if not isinstance(data, dict) or data.get("functionSwitch") == 0:
         return {}
     bg_file = str(data.get("backgroundFile") or "").strip()
@@ -174,17 +226,35 @@ def parse_launcher_background(data: dict, bg_hash: str = "") -> dict:
     artwork = first_frame if is_video else (bg_file or first_frame)
     if not video and not artwork:
         return {}
-    base_meta = {k: v for k, v in (("slot", "background"), ("bg_hash", bg_hash.strip()), ("slogan", slogan)) if v}
+    base_meta = {k: v for k, v in (("slot", "background"), ("bg_hash", bg_hash.strip()),
+                                   ("slogan", slogan), ("protocol", protocol)) if v}
+    video_meta = dict(base_meta)
+    art_meta = dict(base_meta)
+    if video and _asset_date(video):
+        video_meta["asset_date"] = _asset_date(video)
+    if artwork and _asset_date(artwork):
+        art_meta["asset_date"] = _asset_date(artwork)
     return {
         "video": video,
-        "video_meta": dict(base_meta) if video else {},
+        "video_meta": video_meta if video else {},
         "artwork": artwork,
-        "artwork_meta": dict(base_meta) if artwork else {},
+        "artwork_meta": art_meta if artwork else {},
     }
 
 
-async def launcher_media(fetcher: Fetcher) -> dict:
-    """Lazily resolve global Kuro launcher background video + first-frame WebP."""
+async def launcher_media(fetcher: Fetcher, versions: dict | None = None) -> dict:
+    """Resolve the dated new-protocol background first, then use the legacy slot as fallback."""
+    code = str((versions or {}).get("bg_code") or "").strip()
+    if not code:
+        index = await fetcher.get_json(LAUNCHER_V2_INDEX, source="kuro-launcher-bg", retries=1)
+        code = str(parse_launcher_index_v2(index).get("bg_code") or "") if index else ""
+    if code and _BG_HASH_RE.fullmatch(code):
+        bg = await fetcher.get_json(LAUNCHER_V2_BACKGROUND.format(code), source="kuro-launcher-bg", retries=1)
+        parsed = parse_launcher_background(bg, bg_hash=code, protocol="v2") if bg else {}
+        if parsed:
+            return parsed
+
+    # Legacy fallback, retained for older launcher manifests and transient v2 failures.
     cfg = await fetcher.get_json(LAUNCHER_CONFIG, source="kuro-launcher-bg", retries=1)
     if not isinstance(cfg, dict):
         return {}
@@ -194,6 +264,35 @@ async def launcher_media(fetcher: Fetcher) -> dict:
         return {}
     bg = await fetcher.get_json(LAUNCHER_BACKGROUND.format(bg_hash), source="kuro-launcher-bg", retries=1)
     return parse_launcher_background(bg, bg_hash=bg_hash) if bg else {}
+
+
+def parse_launcher_slides(data: dict) -> list[dict]:
+    """Read image slides from the English launcher carousel, retaining dates and version notes."""
+    if not isinstance(data, dict):
+        return []
+    out = []
+    for slide in data.get("slideshow") or []:
+        if not isinstance(slide, dict):
+            continue
+        url = str(slide.get("url") or "").strip()
+        if not url.lower().split("?", 1)[0].endswith((".png", ".jpg", ".jpeg", ".webp")):
+            continue
+        notes = str(slide.get("carouselNotes") or "").strip()
+        match = _SLIDE_VERSION_RE.search(notes)
+        out.append({
+            "url": url,
+            "jump": str(slide.get("jumpUrl") or "").strip(),
+            "notes": notes,
+            "asset_date": _asset_date(url),
+            "version": match.group(1) if match else "",
+        })
+    return out
+
+
+async def launcher_slides(fetcher: Fetcher) -> list[dict]:
+    """Lazily read the global English launcher information carousel."""
+    data = await fetcher.get_json(LAUNCHER_V2_INFORMATION, source="kuro-launcher-info", retries=1)
+    return parse_launcher_slides(data) if data else []
 
 
 async def discover_news(fetcher: Fetcher, game: Game, since: int) -> list[dict] | None:
