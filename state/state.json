@@ -6736,16 +6736,32 @@
               "version": "4.7"
             }
           },
+          "live": {
+            "edit_attempts": 0,
+            "edit_count": 0,
+            "end_ts": null,
+            "media_tier": 1,
+            "media_url": "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm",
+            "message_id": "1569897069089521685",
+            "posted_at": 1794363021,
+            "provenance": "observed",
+            "status": "posted",
+            "ts": 1794363021
+          },
           "maintenance": {
             "edit_attempts": 0,
             "edit_count": 0,
-            "end_ts": 1794366000,
+            "edited_at": 1794363021,
+            "end_actual": true,
+            "end_ts": 1794363021,
             "media_tier": 1,
             "media_url": "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm",
             "message_id": "1569834204689076235",
             "posted_at": 1794348034,
             "provenance": "official",
             "status": "posted",
+            "timing_edit_attempts": 0,
+            "timing_edit_count": 1,
             "ts": 1794348000
           },
           "preload": {
@@ -6761,6 +6777,11 @@
             "status": "posted",
             "ts": 1794204000
           },
+          "seen_media": [
+            "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/9a062ecd9e08884c85e56b578b53a658_1329093915683017185.webm",
+            "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/710a2f8876cd135cb631c8ea52b1341a_6140674871532348054.webp",
+            "https://fastcdn.hoyoverse.com/static-resource-v2/2026/11/06/f383fc632a50870add2ac3a95b7a6dc9_481814734637372119.webp"
+          ],
           "timing_notice": {
             "end_ts": 1794366000,
             "postponed": false,
