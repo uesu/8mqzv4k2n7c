@@ -8694,7 +8694,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794382822
+          "ts": 1794394219
         },
         "data": {
           "announcement_locked": true,
@@ -8729,13 +8729,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794382822,
-          "banners_search_ts": 1794382822,
+          "banners_checked_ts": 1794394219,
+          "banners_search_ts": 1794394219,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794382822,
+          "calendar_ts": 1794394219,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9270,7 +9270,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794382822,
+          "banners_checked_ts": 1794394219,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9409,7 +9409,7 @@
             }
           },
           "banners_checked_ts": 1794387638,
-          "banners_search_ts": 1794382822,
+          "banners_search_ts": 1794394219,
           "banners_settled": [
             "phase1",
             "phase1_4",
