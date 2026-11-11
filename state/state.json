@@ -5149,7 +5149,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1794362701,
+        "last_seen": 1794406219,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5406,7 +5406,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1794362701,
+        "last_seen": 1794406219,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5440,7 +5440,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1794362701,
+        "last_seen": 1794406219,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -6598,7 +6598,7 @@
   "heartbeat": {
     "every_min": 1440,
     "instance": "alpha",
-    "last_success": 1794319241
+    "last_success": 1794406219
   },
   "icons": {
     "genshin": "https://pbs.twimg.com/profile_images/2117809147018371072/kvJNhHo2_200x200.jpg",
