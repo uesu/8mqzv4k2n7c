@@ -7953,7 +7953,7 @@
     },
     "wuwa": {
       "cursor": [
-        1794380400,
+        1794398400,
         "5769"
       ],
       "floor": 1794362701,
@@ -9420,7 +9420,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794399021,
+          "banners_checked_ts": 1794410420,
           "banners_search_ts": 1794405023,
           "banners_settled": [
             "phase1",
