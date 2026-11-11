@@ -5125,7 +5125,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1794319241,
+        "last_seen": 1794362701,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5382,7 +5382,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1794319241,
+        "last_seen": 1794362701,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5416,7 +5416,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1794319241,
+        "last_seen": 1794362701,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -6585,9 +6585,9 @@
   "maintenance": {
     "genshin": {
       "maint_api": {},
-      "paused": true,
+      "paused": false,
       "route": "a0f2147590c35140",
-      "seeded_at": 1794022819,
+      "seeded_at": 1794362701,
       "versions": {
         "7.1": {
           "live": {
@@ -6686,9 +6686,9 @@
         "seen_set_at": 1794349219,
         "version": "4.7"
       },
-      "paused": true,
+      "paused": false,
       "route": "d6cfe8654063c7ee",
-      "seeded_at": 1794022819,
+      "seeded_at": 1794362701,
       "versions": {
         "4.6": {
           "live": {
@@ -6780,9 +6780,9 @@
         "owner": "3.7",
         "pre": ""
       },
-      "paused": true,
+      "paused": false,
       "route": "f7e18488aac788d3",
-      "seeded_at": 1794022819,
+      "seeded_at": 1794362701,
       "versions": {
         "3.7": {
           "live": {
@@ -6837,9 +6837,9 @@
       }
     },
     "zzz": {
-      "paused": true,
+      "paused": false,
       "route": "5f931f917050e29a",
-      "seeded_at": 1794022819,
+      "seeded_at": 1794362701,
       "versions": {
         "3.3": {
           "live": {
@@ -6874,8 +6874,8 @@
         1794196804,
         "47375132"
       ],
-      "floor": 1794022819,
-      "paused": true,
+      "floor": 1794362701,
+      "paused": false,
       "rechecks": {
         "47375132": [
           1794196834,
@@ -7331,8 +7331,8 @@
         1794283207,
         "47385590"
       ],
-      "floor": 1794022819,
-      "paused": true,
+      "floor": 1794362701,
+      "paused": false,
       "rechecks": {
         "47385590": [
           1794283237,
@@ -7434,8 +7434,8 @@
         1794362407,
         "47395082"
       ],
-      "floor": 1794022819,
-      "paused": true,
+      "floor": 1794362701,
+      "paused": false,
       "rechecks": {
         "47375521": [
           1794200435,
@@ -7857,8 +7857,8 @@
         1794304800,
         "5737"
       ],
-      "floor": 1794022819,
-      "paused": true,
+      "floor": 1794362701,
+      "paused": false,
       "rechecks": {
         "5736": [
           1794220229,
@@ -7960,8 +7960,8 @@
         1794283206,
         "47385589"
       ],
-      "floor": 1794022819,
-      "paused": true,
+      "floor": 1794362701,
+      "paused": false,
       "rechecks": {
         "47375133": [
           1794196834,
