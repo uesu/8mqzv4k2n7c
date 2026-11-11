@@ -6849,7 +6849,9 @@
           },
           "seen_media": [
             "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/fbp4pj51dfnw2uyyzt.mp4",
-            "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/cxol3urv2yjpftavjv.webp"
+            "https://hw-pcdownload-qcloud.aki-game.net/launcher/clientUpload/cxol3urv2yjpftavjv.webp",
+            "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/background/20260930/68a8969b17524b7da001bc567a73c524.mp4",
+            "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/background/20260930/544e04e45df24686af193a4a256fae8e.webp"
           ],
           "timing_notice": {
             "end_ts": 1790737200,
@@ -6860,7 +6862,31 @@
           }
         },
         "3.8": {
-          "launch_media": {},
+          "launch_media": {
+            "artwork": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/news/20261111/193a51a500414696b6b919670f9b266b.png",
+            "artwork_meta": {
+              "asset_id": "kuro-slide:3.8",
+              "explicit_link": true,
+              "slot": "carousel",
+              "upload_ts": 1794398400,
+              "version": "3.8"
+            },
+            "locked": true,
+            "locked_at": 1794427233,
+            "version": "3.8"
+          },
+          "maintenance": {
+            "edit_attempts": 0,
+            "edit_count": 0,
+            "end_ts": 1794452400,
+            "media_tier": 3,
+            "media_url": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/news/20261111/193a51a500414696b6b919670f9b266b.png",
+            "message_id": "1570166469583708202",
+            "posted_at": 1794427233,
+            "provenance": "official",
+            "status": "posted",
+            "ts": 1794427200
+          },
           "preload": {
             "edit_attempts": 0,
             "edit_count": 0,
