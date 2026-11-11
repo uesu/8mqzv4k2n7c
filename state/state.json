@@ -7349,8 +7349,8 @@
     },
     "hna": {
       "cursor": [
-        1794283207,
-        "47385590"
+        1794366676,
+        "47395763"
       ],
       "floor": 1794362701,
       "paused": false,
@@ -7359,6 +7359,11 @@
           1794283237,
           2,
           "9b75d2f266047c51"
+        ],
+        "47395763": [
+          1794367220,
+          0,
+          "1e786430ed8039e1"
         ]
       },
       "records": {
@@ -7446,6 +7451,13 @@
           ],
           "status": "posted",
           "ts": 1794283207
+        },
+        "47395763": {
+          "messages": [
+            "1569914787528441867"
+          ],
+          "status": "posted",
+          "ts": 1794366676
         }
       },
       "route": "7a204299ff16d73e"
@@ -7875,8 +7887,8 @@
     },
     "wuwa": {
       "cursor": [
-        1794304800,
-        "5737"
+        1794366600,
+        "5754"
       ],
       "floor": 1794362701,
       "paused": false,
@@ -7890,6 +7902,11 @@
           1794304838,
           2,
           "b23bb84a3dc69b3f"
+        ],
+        "5754": [
+          1794367220,
+          0,
+          "75843db3ec1263f4"
         ]
       },
       "records": {
@@ -7972,6 +7989,14 @@
           ],
           "status": "posted",
           "ts": 1794304800
+        },
+        "5754": {
+          "messages": [
+            "1569914770272821302",
+            "1569914775520022680"
+          ],
+          "status": "posted",
+          "ts": 1794366600
         }
       },
       "route": "f7e18488aac788d3"
@@ -9276,7 +9301,9 @@
           "announcement_ts": 1793329202,
           "banners": {
             "phase1": [
-              "Lily"
+              "Lily",
+              "Sigrika",
+              "Qiuyuan"
             ],
             "phase1_4": [
               "Youhu",
@@ -9343,19 +9370,19 @@
         ],
         "first_seen": 1793329238,
         "message_id": "1565561054497480738",
-        "mirror_hash": "841adc7f6793c2a4",
+        "mirror_hash": "0c92e8a64e85459b",
         "mirror_message_id": "1565561076589006939",
         "mirror_webhook_fp": "a85deaa1f0fb",
-        "payload_hash": "0a3d25e96b364181",
+        "payload_hash": "6d9af2a29ff03f0e",
         "posted_at": 1793329238,
         "preinstall_offset_h": 42.0,
         "prov": {
           "b_phase1": [
-            40,
+            50,
             1794366000
           ],
           "b_phase1_4": [
-            40,
+            50,
             1794366000
           ],
           "b_phase1_4_by": [
@@ -9364,7 +9391,7 @@
           "b_phase1_by": [
             "official"
           ],
-          "b_phase1_id": "2120350803970138329",
+          "b_phase1_multi": true,
           "b_phase2": [
             6,
             1794060033
@@ -9388,8 +9415,8 @@
             "wiki"
           ],
           "b_special": [
-            6,
-            1794060033
+            40,
+            1794366900
           ],
           "b_special_by": [
             "wiki"
@@ -9424,7 +9451,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794366033,
+        "updated_at": 1794367220,
         "webhook_fp": "19991534cf6d"
       }
     },
