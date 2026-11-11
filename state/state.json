@@ -4163,7 +4163,7 @@
       "CDOF4X83H7X2": {
         "first_seen": 1793775019,
         "gate": "redeem-validated",
-        "last_seen": 1794343823,
+        "last_seen": 1794387638,
         "message_id": "1567440902862012537",
         "msg_codes": [
           "CDOF4X83H7X2",
@@ -4472,7 +4472,7 @@
       "MIJIQ23V2437": {
         "first_seen": 1793771428,
         "gate": "redeem-validated",
-        "last_seen": 1794343823,
+        "last_seen": 1794387638,
         "message_id": "1567440902862012537",
         "msg_codes": [
           "CDOF4X83H7X2",
@@ -9390,7 +9390,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794376837,
+          "banners_checked_ts": 1794387638,
           "banners_search_ts": 1794382822,
           "banners_settled": [
             "phase1",
