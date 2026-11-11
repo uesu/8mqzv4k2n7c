@@ -327,6 +327,24 @@ async def discover_news(fetcher: Fetcher, game: Game, since: int) -> list[dict] 
     return sorted(picked.values(), key=lambda row: (row["ts"], row["id"]))
 
 
+def _discord_image_url(url: str) -> str:
+    """Ask Kuro's OSS for a JPEG rendition when its object suffix is not embeddable.
+
+    Renaming the object to .jpg/.png returns NoSuchKey. Alibaba OSS image processing
+    works on the original object and gives Discord an image response without a proxy.
+    """
+    from urllib.parse import urlsplit, urlunsplit
+
+    parts = urlsplit(url)
+    host = (parts.hostname or "").lower()
+    if (parts.scheme != "https" or host != "hw-media-cdn-mingchao.kurogame.com"
+            or not parts.path.lower().endswith((".octet-stream", ".jfif"))
+            or "x-oss-process=" in parts.query.lower()):
+        return url
+    query = parts.query + ("&" if parts.query else "") + "x-oss-process=image/format,jpg"
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, query, parts.fragment))
+
+
 async def news_article(fetcher: Fetcher, game: Game, row: dict) -> Item | None:
     from ..textutil import news_blocks
 
@@ -336,6 +354,9 @@ async def news_article(fetcher: Fetcher, game: Game, row: dict) -> Item | None:
     if detail.get("articleId") is not None and str(detail["articleId"]) != row["id"]:
         return None
     blocks = news_blocks(detail["articleContent"])
+    for block in blocks:
+        if block["kind"] == "image":
+            block["url"] = _discord_image_url(block["url"])
     title = detail.get("articleTitle") or row.get("title")
     if not blocks or not title:
         return None

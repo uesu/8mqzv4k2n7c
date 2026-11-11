@@ -6974,6 +6974,37 @@ def test_news_kuro_menu_detail_and_no_truncated_preview_fallback():
     assert "TRUNCATED PREVIEW" not in json.dumps(item.article_blocks)
 
 
+def test_news_kuro_oss_converts_only_nonembeddable_image_suffixes():
+    from gamexpress.sources import kuro
+
+    original = ("https://hw-media-cdn-mingchao.kurogame.com/object/1794326400000/"
+                "9i20cvosyva7dwyy9h-1794409618955.octet-stream")
+    converted = original + "?x-oss-process=image/format,jpg"
+    article = {
+        "articleId": 5769,
+        "articleTitle": "Wuthering Waves Fan Creation Event Winners Reveal",
+        "articleContent": (
+            f'<p>Before</p><img src="{original}">'
+            '<img src="https://hw-media-cdn-mingchao.kurogame.com/object/cover.jfif?download=1">'
+            '<img src="https://hw-media-cdn-mingchao.kurogame.com/object/already.png">'
+            '<img src="https://example.com/object/other.octet-stream">'
+            f'<video src="{original}"></video><p>After</p>'
+        ),
+    }
+    row = {"id": "5769", "ts": 1794398400, "title": article["articleTitle"]}
+    item = asyncio.run(kuro.news_article(NewsFetcher([article]), GAMES["wuwa"], row))
+    assert [b["url"] for b in item.article_blocks if b["kind"] == "image"] == [
+        converted,
+        ("https://hw-media-cdn-mingchao.kurogame.com/object/cover.jfif"
+         "?download=1&x-oss-process=image/format,jpg"),
+        "https://hw-media-cdn-mingchao.kurogame.com/object/already.png",
+        "https://example.com/object/other.octet-stream",
+    ]
+    assert next(b["url"] for b in item.article_blocks if b["kind"] == "video") == original
+    assert kuro._discord_image_url(converted) == converted
+    assert kuro._discord_image_url("http://hw-media-cdn-mingchao.kurogame.com/a.jfif").startswith("http:")
+
+
 def test_news_ordered_html_quill_gifs_videos_links_and_unknown_embeds():
     from gamexpress.textutil import news_blocks
     body = ('<p>Before <a href="https://example.com/source">link</a></p>'
