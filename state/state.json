@@ -5134,8 +5134,12 @@
           1
         ],
         "posted_at": 1794373819,
-        "rewards": null,
+        "rewards": [
+          "Traveler's Guide ×3",
+          "Aeon Balloon ×2"
+        ],
         "sources": [
+          "ennead",
           "seria"
         ],
         "status": "posted",
