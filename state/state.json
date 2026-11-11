@@ -9275,25 +9275,23 @@
           "announcement_source": "x",
           "announcement_ts": 1793329202,
           "banners": {
-            "four_star": [
-              "Aalto",
-              "Youhu",
-              "Yangyang"
-            ],
             "phase1": [
-              "Lily",
-              "Sigrika",
-              "Qiuyuan"
+              "Lily"
             ],
             "phase1_4": [
-              "Aalto",
               "Youhu",
+              "Aalto",
               "Yangyang"
             ],
             "phase2": [
               "Yangyang: Xuanling",
               "Suisui",
               "Hiyuki"
+            ],
+            "phase2_4": [
+              "Baizhi",
+              "Danjin",
+              "Yuanwu"
             ],
             "reruns": [
               "Sigrika",
@@ -9311,8 +9309,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794293421,
+          "banners_checked_ts": 1794366033,
           "banners_search_ts": 1794361220,
+          "banners_settled": [
+            "phase1",
+            "phase1_4",
+            "phase2"
+          ],
           "compensation": "Astrite x300, Crystal Solvent x2",
           "images": [
             "https://pbs.twimg.com/media/HVyzmyFasAEAQsu.jpg?name=orig"
@@ -9340,39 +9343,41 @@
         ],
         "first_seen": 1793329238,
         "message_id": "1565561054497480738",
-        "mirror_hash": "0c85aefde2496466",
+        "mirror_hash": "841adc7f6793c2a4",
         "mirror_message_id": "1565561076589006939",
         "mirror_webhook_fp": "a85deaa1f0fb",
-        "payload_hash": "57730e5a063d927c",
+        "payload_hash": "0a3d25e96b364181",
         "posted_at": 1793329238,
         "preinstall_offset_h": 42.0,
         "prov": {
-          "b_four_star": [
-            6,
-            1794060033
-          ],
-          "b_four_star_by": [
-            "wiki"
-          ],
           "b_phase1": [
-            6,
-            1794060033
+            40,
+            1794366000
           ],
           "b_phase1_4": [
-            6,
-            1794060033
+            40,
+            1794366000
           ],
           "b_phase1_4_by": [
-            "wiki"
+            "official"
           ],
           "b_phase1_by": [
-            "wiki"
+            "official"
           ],
+          "b_phase1_id": "2120350803970138329",
           "b_phase2": [
             6,
             1794060033
           ],
+          "b_phase2_4": [
+            6,
+            1794366033
+          ],
+          "b_phase2_4_by": [
+            "wiki"
+          ],
           "b_phase2_by": [
+            "feed",
             "wiki"
           ],
           "b_reruns": [
@@ -9419,7 +9424,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794060033,
+        "updated_at": 1794366033,
         "webhook_fp": "19991534cf6d"
       }
     },
