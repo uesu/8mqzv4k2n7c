@@ -7548,6 +7548,32 @@ def test_news_media_failure_refreshes_official_source_once_then_holds_without_po
         assert any("held for retry" in w for w in ctx.warnings)
 
 
+def test_news_default_layout_preflights_more_than_40_renderable_media():
+    """WW 5769: media count is independent of the expanded text/layout switch."""
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress.runner import run_news
+    with tempfile.TemporaryDirectory() as directory:
+        ctx = news_ctx(Path(directory) / "state.json", NEWS_EXPAND_FULL=0)
+        with patch.object(hoyolab, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now += 20
+        row = {"id": "5769", "ts": ctx.now - 10}
+        item = news_item("5769", body="Winners reveal")
+        item.article_blocks += [
+            {"kind": "image", "url": f"https://upload-os-bbs.hoyolab.com/winner-{n}.png"}
+            for n in range(41)
+        ]
+        ctx.fetcher = types.SimpleNamespace(verify_media=AsyncMock(return_value=True))
+        with (patch.object(hoyolab, "discover_news", return_value=[row]),
+              patch.object(hoyolab, "news_article", return_value=item) as source):
+            asyncio.run(run_news(ctx))
+        assert source.await_count == 1  # no spurious official refresh from the old count ceiling
+        assert ctx.fetcher.verify_media.await_count == 41
+        assert len(ctx.webhook.sent) > 1
+        assert ctx.state.news_record("genshin")["records"]["5769"]["status"] == "posted"
+
+
 def test_news_text_only_short_and_overflow_component_budget_are_explicit():
     item = news_item(body="Notice for all players.\n" * 80)
     ps = cards.news_payloads(GAMES["wuwa"], item)

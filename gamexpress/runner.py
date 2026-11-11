@@ -479,7 +479,11 @@ async def run_news(ctx: Ctx) -> None:
         )
         from .media import group_news_media, news_media_available
 
-        media_cap = ctx.settings.news_expand_max_media if ctx.settings.news_expand_full else 40
+        # The 40-URL legacy ceiling made an otherwise valid media-heavy article
+        # fail before any GET whenever expanded TEXT paging was off. Use the same
+        # absolute media safety bound for both layouts; expansion still controls
+        # text/page layout only.
+        media_cap = ctx.settings.news_expand_max_media
         if not await news_media_available(ctx.fetcher, pls, max_urls=media_cap):
             # One fresh official full response can supply a corrected/renewed URL.
             fresh = await src.news_article(ctx.fetcher, gm, cand)
