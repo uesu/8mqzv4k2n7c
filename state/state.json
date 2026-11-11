@@ -5140,6 +5140,7 @@
         ],
         "sources": [
           "ennead",
+          "ogc",
           "seria"
         ],
         "status": "posted",
@@ -5255,6 +5256,7 @@
         "status": "seeded"
       },
       "DSLSPNBREASP": {
+        "expired_at": 1794416438,
         "first_seen": 1792556421,
         "gate": "redeem-validated",
         "last_seen": 1794415820,
@@ -5498,6 +5500,7 @@
         "status": "seeded"
       },
       "PEARLAPPRAISE": {
+        "expired_at": 1794416438,
         "first_seen": 1790840103,
         "gate": "redeem-validated",
         "last_seen": 1794415820,
@@ -8706,7 +8709,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794405023
+          "ts": 1794416438
         },
         "data": {
           "announcement_locked": true,
@@ -8741,13 +8744,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794405023,
-          "banners_search_ts": 1794405023,
+          "banners_checked_ts": 1794416438,
+          "banners_search_ts": 1794416438,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794405023,
+          "calendar_ts": 1794416438,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9282,7 +9285,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794405023,
+          "banners_checked_ts": 1794416438,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9421,7 +9424,7 @@
             }
           },
           "banners_checked_ts": 1794410420,
-          "banners_search_ts": 1794405023,
+          "banners_search_ts": 1794416438,
           "banners_settled": [
             "phase1",
             "phase1_4",
