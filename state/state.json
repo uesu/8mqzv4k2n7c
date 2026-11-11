@@ -6873,15 +6873,22 @@
             },
             "locked": true,
             "locked_at": 1794427233,
-            "version": "3.8"
+            "version": "3.8",
+            "video": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50019/G153/steam/assets/background/20261106/ff0934ed0155490ebee95201b758e07a.mp4",
+            "video_meta": {
+              "bg_hash": "d5f20901184c427d97817dfa289b4cbd",
+              "slot": "background",
+              "upload_ts": 1793966400,
+              "version": "3.8"
+            }
           },
           "maintenance": {
             "edit_attempts": 0,
-            "edit_count": 1,
-            "edited_at": 1794427819,
+            "edit_count": 2,
+            "edited_at": 1794430654,
             "end_ts": 1794452400,
-            "media_tier": 2,
-            "media_url": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/news/20261111/193a51a500414696b6b919670f9b266b.png",
+            "media_tier": 1,
+            "media_url": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50019/G153/steam/assets/background/20261106/ff0934ed0155490ebee95201b758e07a.mp4",
             "message_id": "1570166469583708202",
             "posted_at": 1794427233,
             "provenance": "official",
