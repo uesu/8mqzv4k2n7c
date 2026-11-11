@@ -6877,9 +6877,10 @@
           },
           "maintenance": {
             "edit_attempts": 0,
-            "edit_count": 0,
+            "edit_count": 1,
+            "edited_at": 1794427819,
             "end_ts": 1794452400,
-            "media_tier": 3,
+            "media_tier": 2,
             "media_url": "https://hw-pcdownload-qcloud.aki-game.net/launcher/game/50004/G153/official/assets/news/20261111/193a51a500414696b6b919670f9b266b.png",
             "message_id": "1570166469583708202",
             "posted_at": 1794427233,
@@ -8735,7 +8736,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794416438
+          "ts": 1794427819
         },
         "data": {
           "announcement_locked": true,
@@ -8770,13 +8771,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794416438,
-          "banners_search_ts": 1794416438,
+          "banners_checked_ts": 1794427819,
+          "banners_search_ts": 1794427819,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794416438,
+          "calendar_ts": 1794427819,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9311,7 +9312,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794416438,
+          "banners_checked_ts": 1794427819,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9450,7 +9451,7 @@
             }
           },
           "banners_checked_ts": 1794421230,
-          "banners_search_ts": 1794416438,
+          "banners_search_ts": 1794427819,
           "banners_settled": [
             "phase1",
             "phase1_4",
