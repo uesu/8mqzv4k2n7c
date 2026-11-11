@@ -26904,6 +26904,26 @@ def test_kuro_new_protocol_index_background_and_carousel_tiers():
         kuro_media={}, get_kuro_slides=get_slides,
     )) == (3, slide["url"])
 
+    # Pin the complete new-protocol path: read the English Information endpoint, preserve
+    # carouselNotes during parsing, and pass its explicit matching version to tier-3 selection.
+    v2_slides_fetcher = JsonFetcher({kuro.LAUNCHER_V2_INFORMATION: {"slideshow": [
+        {"url": "https://cdn.example/news/20261110/v38-pv.png", "carouselNotes": "3.8版本pv"},
+        {"url": "https://cdn.example/news/20261110/unlabeled.jpg", "jumpUrl": "https://youtu.be/trailer"},
+    ]}})
+    v2_slides = asyncio.run(kuro.launcher_slides(v2_slides_fetcher))
+    assert v2_slides_fetcher.calls == [kuro.LAUNCHER_V2_INFORMATION]
+    assert [(item["notes"], item["version"]) for item in v2_slides] == [
+        ("3.8版本pv", "3.8"), ("", "")
+    ]
+
+    async def get_v2_slides():
+        return v2_slides
+
+    assert asyncio.run(maintenance.resolve_launch_media(
+        ctx, GAMES["wuwa"], "3.8", plan_38, {}, basic_info={}, program_pins={},
+        kuro_media={}, get_kuro_slides=get_v2_slides,
+    )) == (3, v2_slides[0]["url"])
+
     async def get_unlabeled_slides():
         return [untrusted_slide]
 
