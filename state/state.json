@@ -5121,6 +5121,26 @@
         ],
         "status": "seeded"
       },
+      "AEONAHA": {
+        "first_seen": 1794373819,
+        "gate": "redeem-validated",
+        "last_seen": 1794373819,
+        "message_id": "1569942408031113268",
+        "msg_codes": [
+          "AEONAHA"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1794373819,
+        "rewards": null,
+        "sources": [
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
+      },
       "AHABLESSYOU": {
         "expired_at": 1793491246,
         "first_seen": 1793361637,
