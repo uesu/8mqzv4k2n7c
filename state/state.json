@@ -5472,6 +5472,26 @@
         "status": "posted",
         "webhook_fp": "6f8f20d42db3"
       },
+      "NS4DU8AAGXBP": {
+        "first_seen": 1794469224,
+        "gate": "redeem-validated",
+        "last_seen": 1794469224,
+        "message_id": "1570342512294363137",
+        "msg_codes": [
+          "NS4DU8AAGXBP"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1794469224,
+        "rewards": null,
+        "sources": [
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "6f8f20d42db3"
+      },
       "NSJR3B97ZZ5X": {
         "first_seen": 1790323430,
         "last_seen": 1794459640,
@@ -8093,7 +8113,7 @@
         ],
         "5788": [
           1794468627,
-          0,
+          1,
           "e4975f45afa903ed"
         ]
       },
