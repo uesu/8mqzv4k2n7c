@@ -8269,8 +8269,8 @@
     },
     "zzz": {
       "cursor": [
-        1794456006,
-        "47413472"
+        1794506405,
+        "47421386"
       ],
       "floor": 1794362701,
       "paused": false,
@@ -8289,6 +8289,11 @@
           1794456031,
           2,
           "40e051ac75bde52c"
+        ],
+        "47421386": [
+          1794506440,
+          0,
+          "ffe9a2bb91618e41"
         ]
       },
       "records": {
@@ -8683,6 +8688,13 @@
           ],
           "status": "posted",
           "ts": 1794456006
+        },
+        "47421386": {
+          "messages": [
+            "1570498648687509556"
+          ],
+          "status": "posted",
+          "ts": 1794506405
         }
       },
       "route": "5f931f917050e29a"
@@ -8894,7 +8906,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794495638
+          "ts": 1794506440
         },
         "data": {
           "announcement_locked": true,
@@ -8929,13 +8941,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794495638,
-          "banners_search_ts": 1794495638,
+          "banners_checked_ts": 1794506440,
+          "banners_search_ts": 1794506440,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794495638,
+          "calendar_ts": 1794506440,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9470,7 +9482,7 @@
               "Lynae"
             ]
           },
-          "banners_checked_ts": 1794495638,
+          "banners_checked_ts": 1794506440,
           "banners_search_ts": 1794028821,
           "banners_settled": [
             "phase1",
@@ -9609,7 +9621,7 @@
             }
           },
           "banners_checked_ts": 1794499819,
-          "banners_search_ts": 1794495638,
+          "banners_search_ts": 1794506440,
           "banners_settled": [
             "phase1",
             "phase1_4",
