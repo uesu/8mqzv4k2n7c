@@ -1180,6 +1180,8 @@ async def _resolve_live_signal(ctx, game: Game, ver: str, plan: dict, vstate: di
     `[start + LIVE_MIN_DOWNTIME_S, start + LIVE_WINDOW_S]`; the flip from "seen set for this
     version" to `null` is the reopening (`observed`). Unknown answers change nothing, and the
     endpoint is never asked outside that window, so idle days cost zero requests.
+    Kuro's official in-game patch-notes start is an earlier, version-matched official
+    reopening signal for WW; launcher resource versions alone never count.
     """
     if plan.get("live_ts"):
         return int(plan["live_ts"]), False, plan.get("live_provenance") or "official", plan.get("live_source") or ""
@@ -1192,9 +1194,14 @@ async def _resolve_live_signal(ctx, game: Game, ver: str, plan: dict, vstate: di
         return None, False, "", ""
     if not (int(start_ts) + LIVE_MIN_DOWNTIME_S <= ctx.now <= int(start_ts) + LIVE_WINDOW_S):
         return None, False, "", ""
-    if game.launcher.get("type") != "hoyoplay" or game.launcher.get("game_id") not in launcher.MAINT_STATUS:
-        return None, False, "", ""
     if not callable(getattr(ctx.fetcher, "get_json", None)):
+        return None, False, "", ""
+    if game.launcher.get("type") == "kuro":
+        notice_ts = await kuro.live_notice_ts(ctx.fetcher, ver)
+        if notice_ts is not None and int(start_ts) <= notice_ts <= ctx.now:
+            return notice_ts, False, "official", "in-game patch notes"
+        return None, False, "", ""
+    if game.launcher.get("type") != "hoyoplay" or game.launcher.get("game_id") not in launcher.MAINT_STATUS:
         return None, False, "", ""
     vinfo = ctx.versions.get(game.key) or {}
     tag = str(vinfo.get("live_tag") or "").strip() or (f"{ver}.0" if ver.count(".") == 1 else ver)

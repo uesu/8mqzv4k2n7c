@@ -44,8 +44,37 @@ LAUNCHER_V2_BACKGROUND = (
 LAUNCHER_V2_INFORMATION = (
     f"https://prod-alicdn-gamestarter.kurogame.com/launcher/app/{_V2_KEY}/G153/official/information/en.json"
 )
+GAME_NOTICE = ("https://aki-gm-resources-back.aki-game.net/gamenotice/G153/"
+               "6eb2a235b30d05efd77bedb5cf60999e/notice.json")
 _DATED_PATH_RE = re.compile(r"/(20\d{2})(\d{2})(\d{2})/")
 _SLIDE_VERSION_RE = re.compile(r"(\d+\.\d+)\s*(?:版本|ver(?:sion)?)?\s*pv", re.I)
+
+
+async def live_notice_ts(fetcher: Fetcher, version: str) -> int | None:
+    """Official in-game patch-notes start for one exact version, if published.
+
+    Unlike launcher resource metadata, this notice is intended for players in the
+    reopened game. WW 3.8 started it at 09:00 UTC+8, two hours before the scheduled
+    maintenance end, matching independently confirmed player access.
+    """
+    data = await fetcher.get_json(GAME_NOTICE, source="kuro-live-notice", retries=1)
+    if not isinstance(data, dict) or not isinstance(data.get("game"), list):
+        return None
+    pattern = re.compile(rf"^Patch Notes for Version\s+{re.escape(version)}(?:\s|:|$)", re.I)
+    for notice in data["game"]:
+        if not isinstance(notice, dict):
+            continue
+        titles = notice.get("tabTitle")
+        title = titles.get("en") if isinstance(titles, dict) else None
+        if not isinstance(title, str) or not pattern.match(title.strip()):
+            continue
+        try:
+            milliseconds = int(notice.get("startTimeMs") or 0)
+        except (TypeError, ValueError):
+            continue
+        if milliseconds > 0:
+            return milliseconds // 1000
+    return None
 
 
 async def menu_articles(fetcher: Fetcher) -> dict[int, dict]:

@@ -26421,6 +26421,51 @@ def test_reveal_author_video_and_historical_quoted_title_guards():
     assert classify_character_reveal("genshin", replace(dossier, author=" MILIASTRA Wonderland ")) is None
 
 
+def test_kuro_ingame_patch_notes_are_version_matched_early_live_signal():
+    """WW 3.8 live probe: official in-game notes started at 09:00 UTC+8, not 11:00."""
+    from unittest.mock import AsyncMock
+
+    from gamexpress import maintenance
+    from gamexpress.sources import kuro
+
+    notice = {
+        "game": [
+            {"tabTitle": {"en": "Patch Notes for Version 3.80: wrong version"},
+             "startTimeMs": 1794445200000},
+            {"tabTitle": {"en": "Known Issues & Updates"}, "startTimeMs": 1794445200000},
+            {"tabTitle": {"en": "Patch Notes for Version 3.8: Lilies in a Dying Dream"},
+             "startTimeMs": 1794445200000},
+        ]
+    }
+    fetcher = types.SimpleNamespace(get_json=AsyncMock(return_value=notice))
+    assert asyncio.run(kuro.live_notice_ts(fetcher, "3.8")) == 1794445200
+    assert fetcher.get_json.await_args.kwargs["source"] == "kuro-live-notice"
+    fetcher.get_json.reset_mock()
+    assert asyncio.run(kuro.live_notice_ts(fetcher, "3.9")) is None
+    for invalid in ({}, {"game": {}}, {"game": [{"tabTitle": {"en": "Patch Notes for Version 3.8"},
+                                               "startTimeMs": "bad"}]}):
+        fetcher.get_json = AsyncMock(return_value=invalid)
+        assert asyncio.run(kuro.live_notice_ts(fetcher, "3.8")) is None
+
+    ctx = types.SimpleNamespace(now=1794447600, fetcher=fetcher, versions={})
+    fetcher.get_json = AsyncMock(return_value=notice)
+    vstate = {"maintenance": {"status": "posted"}}
+    plan = {"maint_start_ts": 1794427200}
+    result = asyncio.run(maintenance._resolve_live_signal(
+        ctx, GAMES["wuwa"], "3.8", plan, vstate, {}, ephemeral=False))
+    assert result == (1794445200, False, "official", "in-game patch notes")
+
+    # A future notice start cannot post early, and outside the live window costs no request.
+    ctx.now = 1794445199
+    assert asyncio.run(maintenance._resolve_live_signal(
+        ctx, GAMES["wuwa"], "3.8", plan, vstate, {}, ephemeral=False)) == (None, False, "", "")
+    ctx.now = 1794427200
+    fetcher.get_json.reset_mock()
+    assert asyncio.run(maintenance._resolve_live_signal(
+        ctx, GAMES["wuwa"], "3.8", plan, vstate, {}, ephemeral=False)) == (None, False, "", "")
+    fetcher.get_json.assert_not_awaited()
+
+
 def test_maintenance_all_games_exact_boundaries_and_restart_dedup():
     """Exercise real resolver/delivery with explicit operator timing, not live date claims."""
     from dataclasses import replace
