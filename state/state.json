@@ -5485,8 +5485,12 @@
           1
         ],
         "posted_at": 1794469224,
-        "rewards": null,
+        "rewards": [
+          "Stellar Jade ×50",
+          "Credit ×10000"
+        ],
         "sources": [
+          "ennead",
           "seria"
         ],
         "status": "posted",
@@ -7568,11 +7572,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47387949": [
-          1794304838,
-          2,
-          "a09a3707db044aa4"
-        ],
         "47394097": [
           1794351639,
           2,
@@ -8093,11 +8092,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "5737": [
-          1794304838,
-          2,
-          "b23bb84a3dc69b3f"
-        ],
         "5741": [
           1794394838,
           2,
