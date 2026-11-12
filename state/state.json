@@ -6347,7 +6347,7 @@
       "INKSHIFT33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794463819,
+        "last_seen": 1794507020,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -6406,7 +6406,7 @@
       "LEVELUP33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794463819,
+        "last_seen": 1794507020,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -8292,7 +8292,7 @@
         ],
         "47421386": [
           1794506440,
-          0,
+          1,
           "ffe9a2bb91618e41"
         ]
       },
