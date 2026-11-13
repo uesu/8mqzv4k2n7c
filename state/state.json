@@ -4872,7 +4872,7 @@
       "QYJW92K1DS3X": {
         "first_seen": 1794070836,
         "gate": "only ennead",
-        "last_seen": 1794505825,
+        "last_seen": 1794549634,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -7594,11 +7594,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47398071": [
-          1794376837,
-          2,
-          "60996b992befcf7a"
-        ],
         "47399652": [
           1794384032,
           2,
