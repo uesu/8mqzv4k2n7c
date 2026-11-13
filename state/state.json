@@ -8306,11 +8306,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47396584": [
-          1794370820,
-          2,
-          "7910d7202b8fdb8e"
-        ],
         "47413472": [
           1794456031,
           2,
@@ -9670,7 +9665,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794532819,
+          "banners_checked_ts": 1794543621,
           "banners_search_ts": 1794540022,
           "banners_settled": [
             "phase1",
