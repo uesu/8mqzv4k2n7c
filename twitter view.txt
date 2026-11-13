@@ -1,0 +1,48 @@
+{
+  "attachments": [],
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": null,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.discordapp.com/attachments/1296308518470549606/1569568002079334451/2026-11-10_08-53-20.mp4?ex=6af7e21c&is=6af6909c&hm=7f2ec7e545ef74d7cb52d22967ef2957aa4912ede9d847e0a19da25de9110c49&",
+                "proxy_url": "https://media.discordapp.net/attachments/1296308518470549606/1569568002079334451/2026-11-10_08-53-20.mp4?ex=6af7e21c&is=6af6909c&hm=7f2ec7e545ef74d7cb52d22967ef2957aa4912ede9d847e0a19da25de9110c49&",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "video/mp4"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.discordapp.com/attachments/1296308518470549606/1569568171416092762/2026-11-10_09-05-54.mp4?ex=6af7e245&is=6af690c5&hm=67793443bb69a55f2f0a25eef063ab7032076370d20d27bbde6bdda3b01bf763&",
+                "proxy_url": "https://media.discordapp.net/attachments/1296308518470549606/1569568171416092762/2026-11-10_09-05-54.mp4?ex=6af7e245&is=6af690c5&hm=67793443bb69a55f2f0a25eef063ab7032076370d20d27bbde6bdda3b01bf763&",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "video/mp4"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
