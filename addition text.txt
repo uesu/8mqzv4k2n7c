@@ -103,7 +103,7 @@
         },
         {
           "type": 10,
-          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting it so it can keep improving <a:starwardlove:1570666942233055312>"
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
         }
       ]
     }
