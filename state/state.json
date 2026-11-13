@@ -5779,7 +5779,7 @@
       "BLOOMINGFLOWERS": {
         "first_seen": 1793964630,
         "gate": "official",
-        "last_seen": 1794533429,
+        "last_seen": 1794576631,
         "message_id": "1568233679233355847",
         "msg_codes": [
           "BLOOMINGFLOWERS",
@@ -6101,7 +6101,7 @@
       "SCHOOLLIFE": {
         "first_seen": 1793966438,
         "gate": "official",
-        "last_seen": 1794533429,
+        "last_seen": 1794576631,
         "message_id": "1568233679233355847",
         "msg_codes": [
           "BLOOMINGFLOWERS",
@@ -6213,7 +6213,7 @@
       "TRAINOFSOULS": {
         "first_seen": 1793964630,
         "gate": "official",
-        "last_seen": 1794533429,
+        "last_seen": 1794576631,
         "message_id": "1568233679233355847",
         "msg_codes": [
           "BLOOMINGFLOWERS",
@@ -9654,7 +9654,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794565830,
+          "banners_checked_ts": 1794576631,
           "banners_search_ts": 1794573028,
           "banners_settled": [
             "phase1",
