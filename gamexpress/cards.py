@@ -565,12 +565,28 @@ def mark_test(payload: dict, note: str = TEST_NOTE) -> dict:
 # Full-content news: each part independently satisfies existing Components V2 limits.
 NEWS_DONATE = "https://ko-fi.com/jieunlatte"
 NEWS_COMMUNITY = "https://discord.gg/HyrVP9wRXu"
+# One-line supporter note under the news buttons. Discord's `-#` renders it as small text, so
+# it reads as a footnote to the card instead of competing with the article.
+NEWS_SUPPORT_NOTE = ("-# It takes time, tools, hosting and ongoing maintenance to keep the news "
+                     "working. If it helps you stay updated, consider supporting so it can keep "
+                     "improving <a:starwardlove:1570666942233055312>")
 NEWS_EXPAND_MAX_PAGES = 12
 # Default policy: whole-article smart fitting across at most this many messages
 # (~4,000 text chars each) instead of truncating a long article to one excerpt.
 NEWS_DEFAULT_MAX_PAGES = 4
 NEWS_EXPAND_MAX_CHARS = 120000
 NEWS_EXPAND_MAX_MEDIA = 120
+
+
+def news_controls(buttons: dict) -> list[dict]:
+    """Divider + link buttons + the supporter note, or [] when no button survived.
+
+    Every news payload ends with exactly these three components, so the note is part of the same
+    container as the buttons (never a separate message) and is budgeted with them.
+    """
+    if not buttons.get("components"):
+        return []
+    return [sep(), buttons, text(NEWS_SUPPORT_NOTE)]
 
 MAINT_HEADING_EMOJIS = "<a:starwardlove:1483082509439733893><a:starwardspark3:1483083423290490891>"
 MAINT_GEAR_EMOJI = "<a:gearfinal:1483076702551805983>"
@@ -723,6 +739,7 @@ def _smart_fit_news(
     page_prefix,
     page_payload,
     max_pages: int,
+    reserve: int = 0,
 ) -> tuple[list[dict] | None, str]:
     """Fit the WHOLE article into at most `max_pages` messages, or explain why it cannot be.
 
@@ -731,7 +748,8 @@ def _smart_fit_news(
     markdown-safe boundary, never inside a link, bold run, or bracket. Nothing is dropped, and
     the page shape is the one the card already uses (title/byline + cover on page one,
     `-# Page n` + divider on continuations, buttons on the last page), so the JSON structure is
-    identical under every policy and only the ceilings differ.
+    identical under every policy and only the ceilings differ. `reserve` is the character cost of
+    those closing controls, so the room left on a page is measured against what really fits.
     """
     limit_notice = ("**Excerpt — this article exceeds the delivery safety limit.** "
                     "Read Post opens the complete article and remaining media.")
@@ -767,7 +785,7 @@ def _smart_fit_news(
             continue
         # The next unit does not fit: continue it in the exact room still open on this page.
         if unit["type"] == 10:
-            room = MAX_TEXT_TOTAL - text_length(current) - 40
+            room = MAX_TEXT_TOTAL - text_length(current) - 40 - reserve
             pieces = _split_expanded_text(unit["content"], room) if room > 160 else None
             if pieces and len(pieces) > 1:
                 trial = list(current)
@@ -956,8 +974,8 @@ def news_payloads(
         if len(chunks) > 1:
             kids += [text(f"-# Part {index + 1}/{len(chunks)}"), sep()]
         kids += chunk
-        if index == len(chunks) - 1 and buttons["components"]:
-            kids += [sep(), buttons]
+        if index == len(chunks) - 1:
+            kids += news_controls(buttons)
         containers.append(container(kids, game.color))
     payload = {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []}, "components": containers}
     if not validate_payload(payload):
@@ -969,7 +987,7 @@ def news_payloads(
 
     def page_payload(kids, final=False):
         return {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []},
-                "components": [container(kids + ([sep(), buttons] if final and buttons["components"] else []), game.color)]}
+                "components": [container(kids + (news_controls(buttons) if final else []), game.color)]}
 
     excerpt_notice = ("**Excerpt — this article exceeds Discord's single-message limits.** "
                       "Read Post opens the complete article and remaining media.")
@@ -985,8 +1003,9 @@ def news_payloads(
                 "Read Post opens the complete article and remaining media."
             )
         else:
-            first_page_budget = MAX_TEXT_TOTAL - text_length(page_prefix(1)) - 16
-            cont_page_budget = MAX_TEXT_TOTAL - 32
+            note_len = len(NEWS_SUPPORT_NOTE) if buttons["components"] else 0
+            first_page_budget = MAX_TEXT_TOTAL - text_length(page_prefix(1)) - 16 - note_len
+            cont_page_budget = MAX_TEXT_TOTAL - 32 - note_len
             page_units = []
             splittable = True
             for unit in units:
@@ -1088,6 +1107,7 @@ def news_payloads(
         pages, notice = _smart_fit_news(
             units, page_prefix=page_prefix, page_payload=page_payload,
             max_pages=max(1, NEWS_DEFAULT_MAX_PAGES),
+            reserve=text_length(news_controls(buttons)),
         )
         if pages:
             return pages
@@ -1100,6 +1120,7 @@ def news_payloads(
         pages, notice = _smart_fit_news(
             units, page_prefix=page_prefix, page_payload=page_payload,
             max_pages=max(1, NEWS_DEFAULT_MAX_PAGES),
+            reserve=text_length(news_controls(buttons)),
         )
         if pages:
             return pages
@@ -1110,8 +1131,9 @@ def news_payloads(
     lead = cover or next((safe_url(b.get("url")) for b in item.article_blocks if b["kind"] == "image"), None)
     notice = text(excerpt_notice)
     kids = [header] + ([gallery([lead])] if lead else []) + [notice, sep()]
+    footer = news_controls(buttons)
     body = "\n\n".join(article_text) or "Open the original article for its remaining media."
-    remaining = MAX_TEXT_TOTAL - text_length(kids) - 4
+    remaining = MAX_TEXT_TOTAL - text_length(kids) - text_length(footer) - 4
     if remaining <= 0:
         raise ValueError("article metadata leaves no excerpt budget")
     if len(body) > remaining:
@@ -1127,7 +1149,7 @@ def news_payloads(
     if body.count("**") % 2:
         body += "**"
     body += "…"
-    kids += [text(body)] + ([sep(), buttons] if buttons["components"] else [])
+    kids += [text(body)] + footer
     payload["components"] = [container(kids, game.color)]
     if validate_payload(payload):
         raise ValueError("article excerpt exceeds Discord limits")

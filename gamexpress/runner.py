@@ -519,7 +519,7 @@ async def run_news(ctx: Ctx) -> None:
             return base_pls
         import copy as _copy
 
-        from .cards import validate_payload
+        from .cards import NEWS_SUPPORT_NOTE, validate_payload
 
         patched = _copy.deepcopy(base_pls)
         comps0 = patched[0].get("components") or []
@@ -561,12 +561,21 @@ async def run_news(ctx: Ctx) -> None:
                     continuation_container["components"] = [child]
                     continuation_container["_same_container"] = True
                     moved.insert(0, continuation_container)
+                # Never strand the supporter note: when the boundary leaves the note alone on the
+                # continuation, its divider and link buttons travel with it, and the note itself
+                # is never split (its trailing emoji would land on a message of its own).
+                if (len(moved) == 1 and moved[0].get("_same_container")
+                        and len(moved[0].get("components") or []) == 1
+                        and moved[0]["components"][0].get("content") == NEWS_SUPPORT_NOTE):
+                    page_children = containers[-1].get("components") or []
+                    while len(page_children) > 1 and page_children[-1].get("type") in (1, 14):
+                        moved[0]["components"].insert(0, page_children.pop())
             # When the boundary lands in a text block, retain as much of it as
             # possible on page one using the news renderer's markdown-safe splitter.
             # Unsplittable text stays intact on the continuation instead.
             if moved and moved[0].get("_same_container") and moved[0].get("components"):
                 child = moved[0]["components"][0]
-                if child.get("type") == 10:
+                if child.get("type") == 10 and child.get("content") != NEWS_SUPPORT_NOTE:
                     from .cards import MAX_TEXT_TOTAL, _split_expanded_text, text_length
 
                     room = MAX_TEXT_TOTAL - text_length(first.get("components") or [])

@@ -751,13 +751,15 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         features: set[str] = set()
     else:
         features = {f.strip() for f in feats_raw.split(",") if f.strip() in FEATURES}
-    # Explicit opt-in even if a pre-existing installation asks for all features.
+    # Mature features are ON unless switched off: NEWS_ENABLED=0 / MAINTENANCE_ENABLED=0 are
+    # the opt-OUTs, and ENABLED_FEATURES=none still pauses everything (standby above).
+    # Feature 5 keeps its explicit opt-in because it is still experimental.
     features.discard("news")
     features.discard("maintenance")
     features.discard("beta")
-    if not standby and _bool(env, "NEWS_ENABLED"):
+    if not standby and _bool(env, "NEWS_ENABLED", True):
         features.add("news")
-    if not standby and _bool(env, "MAINTENANCE_ENABLED"):
+    if not standby and _bool(env, "MAINTENANCE_ENABLED", True):
         features.add("maintenance")
     if not standby and _bool(env, "BETA_ENABLED"):
         features.add("beta")

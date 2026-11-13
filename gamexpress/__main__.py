@@ -24,6 +24,7 @@ from . import build_id
 from .cards import (
     IS_COMPONENTS_V2,
     NEWS_DEFAULT_MAX_PAGES,
+    NEWS_SUPPORT_NOTE,
     codes_payloads,
     container,
     mark_test,
@@ -899,14 +900,28 @@ def cmd_benchmark(args) -> int:
     # and an article that needs a second page. The long fixture is deliberately NOT pinned because
     # the default policy now smart fits the whole article across pages instead of truncating it to a
     # single excerpt; its completeness is asserted below instead of byte equality with main.
+    # The one intended delta is the supporter note under the news buttons, so the pin is compared
+    # against the same cards with that single component removed: any OTHER byte of drift still fails.
     main_base_rev = "1e071d82eba82baa0a2977f33d6f8180d3677aaf"
     main_1e071d8_digests = {
         "short": "a9de6cf9e4376f8c4b66dfa870433a31950dbc7b359bf107524b53f18be659f4",
         "medium": "e6743273e21ad0eb21371ab8912fe1870a709abf5d324e370eb8939891a3ca38",
     }
+
+    def _without_support_note(pages):
+        import copy
+
+        stripped = copy.deepcopy(pages)
+        for page in stripped:
+            for node in page.get("components", []):
+                kids = node.get("components") or []
+                if kids and kids[-1].get("content") == NEWS_SUPPORT_NOTE:
+                    kids.pop()
+        return stripped
+
     main_baseline_sha256_equal = (
-        _canon_sha256(default_short) == main_1e071d8_digests["short"]
-        and _canon_sha256(default_medium) == main_1e071d8_digests["medium"]
+        _canon_sha256(_without_support_note(default_short)) == main_1e071d8_digests["short"]
+        and _canon_sha256(_without_support_note(default_medium)) == main_1e071d8_digests["medium"]
     )
     assert main_baseline_sha256_equal
     # The long article is delivered whole by the default policy: every page valid, no excerpt,

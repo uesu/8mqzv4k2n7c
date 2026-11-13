@@ -1,7 +1,8 @@
 """Independent fourth feature: Pre-Load Started, Maintenance Started and Servers Live announcements.
 
 Design guarantees:
-  * Disabled by default (`MAINTENANCE_ENABLED=0`, `MAINTENANCE_GAMES=""`), with per-game opt-in,
+  * On by default (`MAINTENANCE_ENABLED=0` opts out) and per-game opt-in through
+    `MAINTENANCE_GAMES` (empty = no game active, so an unconfigured install does nothing),
     dedicated per-game webhooks (`DISCORD_WEBHOOK_MAINTENANCE_<GAME>`), and optional per-game
     pings (`PING_MAINTENANCE_<GAME>`).
   * Works with or without schedule, codes, or news enabled, keeping the existing 5-minute
