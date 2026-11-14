@@ -6534,6 +6534,16 @@
         ],
         "status": "seeded"
       },
+      "ZZZ34SUNBRINGER": {
+        "first_seen": 1794618037,
+        "gate": "only reddit",
+        "last_seen": 1794618037,
+        "rewards": null,
+        "sources": [
+          "reddit"
+        ],
+        "status": "pending"
+      },
       "ZZZDREAMLAND": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
@@ -6559,6 +6569,16 @@
           "seria"
         ],
         "status": "seeded"
+      },
+      "ZZZHSRCOLLAB": {
+        "first_seen": 1794618037,
+        "gate": "only reddit",
+        "last_seen": 1794618037,
+        "rewards": null,
+        "sources": [
+          "reddit"
+        ],
+        "status": "pending"
       },
       "ZZZINK32": {
         "first_seen": 1790323430,
