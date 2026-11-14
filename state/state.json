@@ -5132,7 +5132,7 @@
       "AEONAHA": {
         "first_seen": 1794373819,
         "gate": "redeem-validated",
-        "last_seen": 1794592221,
+        "last_seen": 1794636038,
         "message_id": "1569942408031113268",
         "msg_codes": [
           "AEONAHA"
@@ -7630,11 +7630,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47414506": [
-          1794463236,
-          2,
-          "aaef1b601f60add3"
-        ],
         "47415456": [
           1794470436,
           2,
