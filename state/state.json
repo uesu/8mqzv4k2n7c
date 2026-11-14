@@ -4884,16 +4884,24 @@
       },
       "QYJWFB784MFL": {
         "first_seen": 1794204037,
-        "gate": "only ennead",
-        "last_seen": 1794595226,
-        "rewards": [
-          "Primogem ×60",
-          "Adventurer's Experience ×5"
+        "gate": "redeem-validated",
+        "last_seen": 1794623430,
+        "message_id": "1570989299388911740",
+        "msg_codes": [
+          "QYJWFB784MFL"
         ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1794623430,
+        "rewards": "Primogem*60;Adventurer's Experience*5",
         "sources": [
-          "ennead"
+          "ennead",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
       },
       "QYJWQVRI39BE": {
         "first_seen": 1792813821,
