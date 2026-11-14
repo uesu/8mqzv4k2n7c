@@ -5483,7 +5483,7 @@
       "NS4DU8AAGXBP": {
         "first_seen": 1794469224,
         "gate": "redeem-validated",
-        "last_seen": 1794599425,
+        "last_seen": 1794643241,
         "message_id": "1570342512294363137",
         "msg_codes": [
           "NS4DU8AAGXBP"
@@ -7630,11 +7630,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47415456": [
-          1794470436,
-          2,
-          "d91ff21ecb61c367"
-        ],
         "47424274": [
           1794535235,
           2,
@@ -9662,7 +9657,7 @@
               ]
             }
           },
-          "banners_checked_ts": 1794631821,
+          "banners_checked_ts": 1794643241,
           "banners_search_ts": 1794639632,
           "banners_settled": [
             "phase1",
