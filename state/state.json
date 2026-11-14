@@ -4872,7 +4872,7 @@
       "QYJW92K1DS3X": {
         "first_seen": 1794070836,
         "gate": "only ennead",
-        "last_seen": 1794636624,
+        "last_seen": 1794680420,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -6358,7 +6358,7 @@
       "INKSHIFT33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794637219,
+        "last_seen": 1794680420,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -6417,7 +6417,7 @@
       "LEVELUP33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1794637219,
+        "last_seen": 1794680420,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -8285,11 +8285,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47421484": [
-          1794507621,
-          2,
-          "185bf36095c9639f"
-        ],
         "47424979": [
           1794542432,
           2,
