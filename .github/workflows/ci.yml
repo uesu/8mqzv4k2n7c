@@ -108,7 +108,7 @@ jobs:
 
       - name: Static check of the workflow YAML itself (rhysd/actionlint via reviewdog)
         continue-on-error: true   # informational only, see above
-        uses: reviewdog/action-actionlint@7abf25e1607ec65838b73d0484ff31f8e9499d80  # v1.81.2
+        uses: reviewdog/action-actionlint@ae857e78c1b42b3d0a49637181b09d3d56d402b4  # v1.84.1
         with:
           reporter: local
           fail_level: none
