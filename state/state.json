@@ -4145,6 +4145,26 @@
         "status": "posted",
         "webhook_fp": "ee502f83bdf4"
       },
+      "ARCHONSANSWERS": {
+        "first_seen": 1794803429,
+        "gate": "redeem-validated",
+        "last_seen": 1794803429,
+        "message_id": "1571744269977391216",
+        "msg_codes": [
+          "ARCHONSANSWERS"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1794803429,
+        "rewards": null,
+        "sources": [
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
       "BALLETCOLLAB": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
@@ -7043,7 +7063,7 @@
         ],
         "47459956": [
           1794801633,
-          1,
+          2,
           "54b53f60172a9935"
         ]
       },
@@ -7552,7 +7572,7 @@
         ],
         "47459951": [
           1794801633,
-          1,
+          2,
           "de7be0054499a9c6"
         ]
       },
@@ -8317,7 +8337,7 @@
       "rechecks": {
         "47459953": [
           1794801633,
-          1,
+          2,
           "fce6692522d2c539"
         ]
       },
