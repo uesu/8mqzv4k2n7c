@@ -10008,7 +10008,14 @@
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1794801600,
-          "banners_checked_ts": 1794823240,
+          "banners": {
+            "confirmed": [
+              "Sunbringer",
+              "Robin",
+              "Kafka"
+            ]
+          },
+          "banners_checked_ts": 1794834043,
           "banners_search_ts": 1794824419,
           "calendar_ts": 1794824419,
           "estimate_sources": [
@@ -10051,12 +10058,19 @@
         ],
         "first_seen": 1794801633,
         "message_id": "1571736727951773787",
-        "mirror_hash": "d1724aa564168b7a",
+        "mirror_hash": "27f26ea11b87ece1",
         "mirror_message_id": "1571736737644810295",
         "mirror_webhook_fp": "db5f4f8a75a5",
-        "payload_hash": "444cb82fa2c600f7",
+        "payload_hash": "9fd3a2d98b4f85f0",
         "posted_at": 1794801633,
         "prov": {
+          "b_confirmed": [
+            6,
+            1794834043
+          ],
+          "b_confirmed_by": [
+            "wiki"
+          ],
           "maint_end_ts": [
             9,
             1794801633
@@ -10083,6 +10097,7 @@
           ]
         },
         "status": "posted",
+        "updated_at": 1794834043,
         "webhook_fp": "19991534cf6d"
       }
     }
