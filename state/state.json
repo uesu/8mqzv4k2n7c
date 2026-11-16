@@ -9988,15 +9988,15 @@
       "3.4": {
         "calendar": {
           "banners": [],
-          "ts": 1794802223
+          "ts": 1794813617
         },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1794801600,
           "banners_checked_ts": 1794812438,
-          "banners_search_ts": 1794802223,
-          "calendar_ts": 1794802223,
+          "banners_search_ts": 1794813617,
+          "calendar_ts": 1794813617,
           "estimate_sources": [
             "version cadence"
           ],
