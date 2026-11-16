@@ -141,7 +141,7 @@ jobs:
       - name: Open the PR (only when a newer stable series was found AND proved green)
         id: cpr
         if: steps.bump.outputs.changed == 'true' && steps.switch.outcome == 'success' && steps.wheels.outcome == 'success' && steps.gates.outcome == 'success'
-        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8  # v8.1.2
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1  # v8.1.3
         with:
           token: ${{ secrets.BUMP_PAT }}
           commit-message: "chore(python): bump to Python ${{ steps.bump.outputs.new_version }}"
