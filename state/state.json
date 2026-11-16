@@ -7043,7 +7043,7 @@
         ],
         "47459956": [
           1794801633,
-          0,
+          1,
           "54b53f60172a9935"
         ]
       },
@@ -7552,7 +7552,7 @@
         ],
         "47459951": [
           1794801633,
-          0,
+          1,
           "de7be0054499a9c6"
         ]
       },
@@ -8317,7 +8317,7 @@
       "rechecks": {
         "47459953": [
           1794801633,
-          0,
+          1,
           "fce6692522d2c539"
         ]
       },
@@ -9961,11 +9961,17 @@
         "webhook_fp": "19991534cf6d"
       },
       "3.4": {
+        "calendar": {
+          "banners": [],
+          "ts": 1794802223
+        },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1794801600,
           "banners_checked_ts": 1794801633,
+          "banners_search_ts": 1794802223,
+          "calendar_ts": 1794802223,
           "estimate_sources": [
             "version cadence"
           ],
