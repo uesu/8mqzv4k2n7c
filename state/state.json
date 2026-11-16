@@ -4158,8 +4158,13 @@
           1
         ],
         "posted_at": 1794803429,
-        "rewards": null,
+        "rewards": [
+          "Primogem ×40",
+          "Hero's Wit ×3",
+          "Mora ×30,000"
+        ],
         "sources": [
+          "ennead",
           "seria"
         ],
         "status": "posted",
