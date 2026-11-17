@@ -5080,7 +5080,7 @@
     "starrail": {
       "2TKRKAR6YG2X": {
         "first_seen": 1790323430,
-        "last_seen": 1791276018,
+        "last_seen": 1794913818,
         "rewards": [
           "Credit ×50000",
           "Stellar Jade ×100",
@@ -5089,7 +5089,8 @@
         ],
         "sources": [
           "fandom",
-          "ogc"
+          "ogc",
+          "reddit"
         ],
         "status": "seeded"
       },
@@ -5399,7 +5400,7 @@
       },
       "LSJ9JARPZH33": {
         "first_seen": 1790323430,
-        "last_seen": 1791276018,
+        "last_seen": 1794913818,
         "rewards": [
           "Stellar Jade ×100",
           "Traveler's Guide ×5",
@@ -5408,7 +5409,8 @@
         ],
         "sources": [
           "fandom",
-          "ogc"
+          "ogc",
+          "reddit"
         ],
         "status": "seeded"
       },
@@ -5749,7 +5751,7 @@
       },
       "YAJQ2TR6ZY2P": {
         "first_seen": 1790323430,
-        "last_seen": 1791276018,
+        "last_seen": 1794913818,
         "rewards": [
           "Refined Aether ×4",
           "Stellar Jade ×100",
@@ -5758,7 +5760,8 @@
         ],
         "sources": [
           "fandom",
-          "ogc"
+          "ogc",
+          "reddit"
         ],
         "status": "seeded"
       }
