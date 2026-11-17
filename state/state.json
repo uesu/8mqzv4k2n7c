@@ -4536,6 +4536,7 @@
         "status": "seeded"
       },
       "NEEI8A8341OW": {
+        "expired_at": 1794937221,
         "first_seen": 1790840103,
         "gate": "redeem-validated",
         "last_seen": 1794896419,
