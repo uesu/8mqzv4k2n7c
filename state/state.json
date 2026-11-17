@@ -4148,7 +4148,7 @@
       "ARCHONSANSWERS": {
         "first_seen": 1794803429,
         "gate": "redeem-validated",
-        "last_seen": 1794846630,
+        "last_seen": 1794890421,
         "message_id": "1571744269977391216",
         "msg_codes": [
           "ARCHONSANSWERS"
@@ -10002,7 +10002,7 @@
               "Kafka"
             ]
           },
-          "banners_checked_ts": 1794879036,
+          "banners_checked_ts": 1794890421,
           "banners_search_ts": 1794880218,
           "calendar_ts": 1794880218,
           "estimate_sources": [
