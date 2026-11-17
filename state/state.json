@@ -4911,7 +4911,7 @@
       "QYJWFB784MFL": {
         "first_seen": 1794204037,
         "gate": "redeem-validated",
-        "last_seen": 1794885619,
+        "last_seen": 1794928822,
         "message_id": "1570989299388911740",
         "msg_codes": [
           "QYJWFB784MFL"
@@ -5187,7 +5187,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1794885619,
+        "last_seen": 1794928822,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5446,7 +5446,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1794885619,
+        "last_seen": 1794928822,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5480,7 +5480,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1794885619,
+        "last_seen": 1794928822,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -8983,7 +8983,7 @@
               "version": "7.2"
             }
           ],
-          "ts": 1794918018
+          "ts": 1794928822
         },
         "data": {
           "announcement_locked": true,
@@ -9018,13 +9018,13 @@
               ]
             }
           },
-          "banners_checked_ts": 1794918018,
-          "banners_search_ts": 1794918018,
+          "banners_checked_ts": 1794928822,
+          "banners_search_ts": 1794928822,
           "banners_settled": [
             "phase1",
             "phase1_4"
           ],
-          "calendar_ts": 1794918018,
+          "calendar_ts": 1794928822,
           "compensation": "Primogems ×300",
           "images": [
             "https://pbs.twimg.com/media/HVHuNNXXQAAlYwT.jpg?name=orig"
@@ -9697,8 +9697,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1794918018,
-          "banners_search_ts": 1794918018,
+          "banners_checked_ts": 1794928822,
+          "banners_search_ts": 1794928822,
           "banners_settled": [
             "phase1",
             "phase1_4",
