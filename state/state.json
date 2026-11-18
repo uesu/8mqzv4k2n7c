@@ -10022,7 +10022,7 @@
       "3.4": {
         "calendar": {
           "banners": [],
-          "ts": 1794991222
+          "ts": 1795014044
         },
         "data": {
           "announcement_locked": true,
@@ -10035,9 +10035,9 @@
               "Kafka"
             ]
           },
-          "banners_checked_ts": 1795002622,
-          "banners_search_ts": 1795002622,
-          "calendar_ts": 1795002622,
+          "banners_checked_ts": 1795014044,
+          "banners_search_ts": 1795014044,
+          "calendar_ts": 1795014044,
           "estimate_sources": [
             "version cadence"
           ],
