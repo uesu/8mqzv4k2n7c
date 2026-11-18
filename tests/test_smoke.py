@@ -429,8 +429,9 @@ def reveal_ping_games(ctx, *keys):
     """Opt the named games back into the opt-in reveal ping inside a mechanics test.
 
     Wuthering Waves is excluded from the reveal ping in production (`"reveal_ping": false` in
-    `config/games.json`) because its official site publishes the same reveal the twitter card
-    already pings for. The reveal-ping mechanics, however, are tuned on Wuthering Waves: its
+    `config/games.json`) because its official site repeats the reveal the twitter/X pipeline already
+    delivers as a card, and that pipeline has no reveal ping yet. The reveal-ping mechanics,
+    however, are tuned on Wuthering Waves: its
     `Stars Intertwined` / `Profile Reveal` / `Resonator Reveal` titles and its Kuro paging
     fixtures are the tightest budgets in the suite. Those tests therefore switch the game back on
     here, while the production rule is proven by
@@ -25413,10 +25414,11 @@ def test_reveal_ping_excludes_wuthering_waves_only():
     """Feature 3 keeps the hoyoverse reveal pings and drops the Wuthering Waves one (2026-11-18).
 
     Wuthering Waves publishes the same `Stars Intertwined` / `Profile Reveal` announcements on its
-    own site, so Feature 3 delivered its news with a role mention the twitter card already sends —
-    the ping arrived twice, or (worse) it arrived nowhere near the post that announced the
-    character. The game is excluded in `config/games.json`; the hoyoverse games keep their ping and
-    the switch/role-list contract is unchanged.
+    own site, while the twitter/X pipeline delivers them as cards **without any reveal ping** (that
+    pipeline has no such feature, probe or data yet). Feature 3 was therefore the only thing pinging
+    a WW reveal, for a game whose announcement arrives somewhere else. The game is excluded in
+    `config/games.json`; the hoyoverse games keep their ping and the switch/role-list contract is
+    unchanged.
     """
     from unittest.mock import patch
 

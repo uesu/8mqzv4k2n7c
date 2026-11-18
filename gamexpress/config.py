@@ -676,9 +676,10 @@ class Settings:
         mute, move or widen an existing ping.
 
         `allowed` is the per-game switch (`Game.reveal_ping` from games.json). Wuthering Waves is
-        off: its own site already publishes the reveal, so the ping belongs to the twitter card and
-        Feature 3 posts the same news silently. The caller passes the game's own flag, keep it that
-        way rather than hardcoding a game key here.
+        off: its official site repeats the reveal the twitter/X pipeline already delivers as a card,
+        and that pipeline has no reveal ping of its own yet, so Feature 3 was the only thing pinging
+        a WW reveal for a game whose announcement arrives somewhere else. The caller passes the
+        game's own flag; keep it that way rather than hardcoding a game key here.
         """
         del game_key  # one configuration covers every game that takes it; uniform call site
         if self.no_ping or not self.news_reveal_ping or not allowed:
@@ -1021,8 +1022,9 @@ class Game:
     beta: dict = field(default_factory=dict)   # feature 5: nanoka namespace + beta changelog URL
     # Feature 3 opt-in character-reveal ping: one switch (`NEWS_REVEAL_PING`) and one role list
     # (`PING_NEWS_REVEAL`) cover every game, but a game can be excluded from it in games.json.
-    # Wuthering Waves is off (2026-11-18): its official site publishes the same `Stars Intertwined`
-    # / `Profile Reveal` posts, so Feature 3 would ping a reveal the twitter card already covers.
+    # Wuthering Waves is off (2026-11-18): its official site repeats the `Stars Intertwined` /
+    # `Profile Reveal` posts the twitter/X pipeline already delivers as a card, and that pipeline
+    # has no reveal ping yet, so the mention does not belong on Feature 3.
     reveal_ping: bool = True
 
     @property

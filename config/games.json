@@ -1,5 +1,5 @@
 {
-  "_help": "Per-game config. Add a game = add an entry. 'enabled': false keeps a game prepared but silent (switch it on with the ENABLE_GAMES variable, or it switches itself on at 'auto_enable_on'). 'four_star_count' = rate-up 4-stars per banner phase: any other count found -> TBA. Card text templates: {game} {version} {program} {version_name}. Every endpoint/id below was verified live on 2026-09-25 (see docs/SOURCES.md). 'reveal_ping': false keeps a game out of the opt-in NEWS_REVEAL_PING reveal mention; Wuthering Waves is false because its official site publishes the same reveal the twitter card already covers.",
+  "_help": "Per-game config. Add a game = add an entry. 'enabled': false keeps a game prepared but silent (switch it on with the ENABLE_GAMES variable, or it switches itself on at 'auto_enable_on'). 'four_star_count' = rate-up 4-stars per banner phase: any other count found -> TBA. Card text templates: {game} {version} {program} {version_name}. Every endpoint/id below was verified live on 2026-09-25 (see docs/SOURCES.md). 'reveal_ping': false keeps a game out of the opt-in NEWS_REVEAL_PING reveal mention; Wuthering Waves is false because its official site repeats the reveal the twitter/X pipeline already delivers as a card, and that pipeline has no reveal ping yet.",
   "defaults": {
     "color": 14922399,
     "card": {
