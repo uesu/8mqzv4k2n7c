@@ -4285,6 +4285,7 @@
         "status": "seeded"
       },
       "EXPERTMITYA": {
+        "expired_at": 1795040418,
         "first_seen": 1792758316,
         "gate": "2 independent sources",
         "last_seen": 1795030230,
@@ -4429,6 +4430,7 @@
         "status": "seeded"
       },
       "HOUROFRUIN": {
+        "expired_at": 1795040418,
         "first_seen": 1792757115,
         "gate": "redeem-validated",
         "last_seen": 1795030230,
@@ -4456,6 +4458,7 @@
         "webhook_fp": "ee502f83bdf4"
       },
       "KEEPUPWITHMITYA": {
+        "expired_at": 1795040418,
         "first_seen": 1793768443,
         "gate": "redeem-validated",
         "last_seen": 1795030230,
@@ -4576,6 +4579,7 @@
         "status": "rejected"
       },
       "NEEIJB764CA3": {
+        "expired_at": 1795040418,
         "first_seen": 1791148221,
         "gate": "redeem-validated",
         "last_seen": 1795026633,
@@ -4645,6 +4649,7 @@
         "status": "rejected"
       },
       "OKTCV81F9H8D": {
+        "expired_at": 1795040418,
         "first_seen": 1791952819,
         "gate": "redeem-validated",
         "last_seen": 1795030230,
@@ -4721,6 +4726,7 @@
         "status": "seeded"
       },
       "PHOTOTIME": {
+        "expired_at": 1795040418,
         "first_seen": 1792759219,
         "gate": "redeem-validated",
         "last_seen": 1795030230,
@@ -4842,6 +4848,7 @@
         "status": "rejected"
       },
       "PNKZ3WLNN8G6": {
+        "expired_at": 1795040418,
         "first_seen": 1790332129,
         "gate": "redeem-validated",
         "last_seen": 1795026633,
