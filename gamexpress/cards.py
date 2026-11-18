@@ -957,27 +957,21 @@ def news_payloads(
         r"\.(?:mp4|webm)(?:[?#]|$)", block.get("url", ""), re.I)
                        for block in item.article_blocks)
     full_cover = None if native_video or cover in body_media else cover
-    chunks, current = [], []
-    for unit in units:
-        # Do not split one uninterrupted media run merely at the eight-unit
-        # readability threshold. Galleries remain separate; no long-strip policy.
-        media_run = current and current[-1]["type"] == 12 and unit["type"] == 12
-        if len(current) >= 8 and not media_run:
-            chunks.append(current)
-            current = []
-        current.append(unit)
-    if current:
-        chunks.append(current)
-    containers = []
-    for index, chunk in enumerate(chunks):
-        kids = ([header] + ([gallery([full_cover])] if full_cover else [])) if index == 0 else []
-        if len(chunks) > 1:
-            kids += [text(f"-# Part {index + 1}/{len(chunks)}"), sep()]
-        kids += chunk
-        if index == len(chunks) - 1:
-            kids += news_controls(buttons)
-        containers.append(container(kids, game.color))
-    payload = {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []}, "components": containers}
+    # ONE container whenever the whole card fits. Discord's 4,000-character / 40-component
+    # budget is per MESSAGE and shared by every container inside it, so an extra container never
+    # buys room: the card below is the complete article in a single container and only costs
+    # ~1,095 characters / 17 components.
+    #
+    # That is why the old fixed "split after eight units" shape was removed rather than tuned. It
+    # cut exactly this kind of card into `-# Part 1/2` (516 chars) + `-# Part 2/2` (601 chars) and
+    # still had to validate as ONE payload, so it could only ever fire on cards that already fit;
+    # because the split itself adds a label + divider per container, a chunked payload always
+    # carried MORE components and MORE text than the single container it replaced, so it could
+    # never rescue a card the single container rejected. Every over-budget card therefore has to
+    # go to the paging / smart-fit path below, which is the only path that adds real capacity.
+    payload = {"flags": IS_COMPONENTS_V2, "allowed_mentions": {"parse": []},
+               "components": [container(([header] + ([gallery([full_cover])] if full_cover else [])
+                                         + units + news_controls(buttons)), game.color)]}
     if not validate_payload(payload):
         return [payload]
 

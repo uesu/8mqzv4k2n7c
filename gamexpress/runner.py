@@ -634,7 +634,11 @@ async def run_news(ctx: Ctx) -> None:
             ctx.warnings.append(f"{game.short} news: discovery unavailable; no baseline advanced")
             continue
         record = ctx.state.news_record(game.key)
-        rev_ping_cfg = ctx.settings.reveal_ping(game.key)
+        # The opt-in reveal ping is one global switch for every game that takes it; a game can
+        # opt out in games.json (`Game.reveal_ping`). Wuthering Waves does: its official site
+        # publishes the same reveal the twitter card already pings for, so Feature 3 posts it
+        # silently while every hoyoverse game keeps its ping.
+        rev_ping_cfg = ctx.settings.reveal_ping(game.key, allowed=game.reveal_ping)
         if "floor" not in record or record.get("paused"):
             record.update(floor=ctx.now, route=fp, paused=False)
             record.setdefault("records", {})

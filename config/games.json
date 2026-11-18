@@ -1,5 +1,5 @@
 {
-  "_help": "Per-game config. Add a game = add an entry. 'enabled': false keeps a game prepared but silent (switch it on with the ENABLE_GAMES variable, or it switches itself on at 'auto_enable_on'). 'four_star_count' = rate-up 4-stars per banner phase: any other count found -> TBA. Card text templates: {game} {version} {program} {version_name}. Every endpoint/id below was verified live on 2026-09-25 (see docs/SOURCES.md).",
+  "_help": "Per-game config. Add a game = add an entry. 'enabled': false keeps a game prepared but silent (switch it on with the ENABLE_GAMES variable, or it switches itself on at 'auto_enable_on'). 'four_star_count' = rate-up 4-stars per banner phase: any other count found -> TBA. Card text templates: {game} {version} {program} {version_name}. Every endpoint/id below was verified live on 2026-09-25 (see docs/SOURCES.md). 'reveal_ping': false keeps a game out of the opt-in NEWS_REVEAL_PING reveal mention; Wuthering Waves is false because its official site publishes the same reveal the twitter card already covers.",
   "defaults": {
     "color": 14922399,
     "card": {
@@ -128,6 +128,7 @@
       "icon": "https://pbs.twimg.com/profile_images/2085696982958665728/qlgc729S_200x200.jpg",
       "launcher": {"type": "kuro"},
       "kuro_news": true,
+      "reveal_ping": false,
       "x_accounts": ["Wuthering_Waves"],
       "reddit": {"subreddits": ["WutheringWaves"], "official": []},
       "program_label": "Special Broadcast",

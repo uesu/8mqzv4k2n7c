@@ -668,15 +668,20 @@ class Settings:
                 return p
         return Ping()
 
-    def reveal_ping(self, game_key: str) -> Ping:
-        """Opt-in new-character reveal ping: one switch and one role list for every game.
+    def reveal_ping(self, game_key: str, *, allowed: bool = True) -> Ping:
+        """Opt-in new-character reveal ping: one switch and one role list for the games that take it.
 
         Exactly two settings exist - `NEWS_REVEAL_PING=1` turns it on and `PING_NEWS_REVEAL`
-        carries the role(s) used by all six games. It never inherits `PING_ROLE_ID` or
-        `PING_NEWS`, so enabling it cannot mute, move or widen an existing ping.
+        carries the role(s). It never inherits `PING_ROLE_ID` or `PING_NEWS`, so enabling it cannot
+        mute, move or widen an existing ping.
+
+        `allowed` is the per-game switch (`Game.reveal_ping` from games.json). Wuthering Waves is
+        off: its own site already publishes the reveal, so the ping belongs to the twitter card and
+        Feature 3 posts the same news silently. The caller passes the game's own flag, keep it that
+        way rather than hardcoding a game key here.
         """
-        del game_key  # one configuration covers every game; kept for a uniform call site
-        if self.no_ping or not self.news_reveal_ping:
+        del game_key  # one configuration covers every game that takes it; uniform call site
+        if self.no_ping or not self.news_reveal_ping or not allowed:
             return Ping()
         return parse_ping(_env(self.env, "PING_NEWS_REVEAL")) or Ping()
 
@@ -1014,6 +1019,11 @@ class Game:
     auto_enable_on: str = ""             # YYYY-MM-DD: a prepared game switches itself on at launch
     cadence: Cadence | None = None       # release rhythm; None = never speculate for this game
     beta: dict = field(default_factory=dict)   # feature 5: nanoka namespace + beta changelog URL
+    # Feature 3 opt-in character-reveal ping: one switch (`NEWS_REVEAL_PING`) and one role list
+    # (`PING_NEWS_REVEAL`) cover every game, but a game can be excluded from it in games.json.
+    # Wuthering Waves is off (2026-11-18): its official site publishes the same `Stars Intertwined`
+    # / `Profile Reveal` posts, so Feature 3 would ping a reveal the twitter card already covers.
+    reveal_ping: bool = True
 
     @property
     def redeem_url(self) -> str:
@@ -1063,6 +1073,7 @@ def load_games(path: Path | None = None) -> dict[str, Game]:
             auto_enable_on=str(g.get("auto_enable_on") or ""),
             cadence=_cadence(g.get("cadence")),
             beta=(g.get("beta") if isinstance(g.get("beta"), dict) else {}),
+            reveal_ping=bool(g.get("reveal_ping", True)),
         )
     return games
 

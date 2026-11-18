@@ -425,6 +425,23 @@ def make_ctx(state_path, items=None, now=1789300000, codes_table=None, versions=
                versions=versions or {}, items=items or {})
 
 
+def reveal_ping_games(ctx, *keys):
+    """Opt the named games back into the opt-in reveal ping inside a mechanics test.
+
+    Wuthering Waves is excluded from the reveal ping in production (`"reveal_ping": false` in
+    `config/games.json`) because its official site publishes the same reveal the twitter card
+    already pings for. The reveal-ping mechanics, however, are tuned on Wuthering Waves: its
+    `Stars Intertwined` / `Profile Reveal` / `Resonator Reveal` titles and its Kuro paging
+    fixtures are the tightest budgets in the suite. Those tests therefore switch the game back on
+    here, while the production rule is proven by
+    `test_reveal_ping_excludes_wuthering_waves_only`.
+    """
+    import dataclasses
+
+    ctx.games = [dataclasses.replace(g, reveal_ping=True) if g.key in keys else g for g in ctx.games]
+    return ctx
+
+
 def test_schedule_post_once_then_edit_silently():
     with tempfile.TemporaryDirectory() as tmp:
         sp = Path(tmp) / "state.json"
@@ -7557,7 +7574,9 @@ def test_news_short_articles_across_all_games_keep_order_and_one_button_row():
         item.article_blocks += [{"kind": "image", "url": f"https://example.com/{i}.gif"} for i in range(10)]
         item.article_blocks += [{"kind": "text", "text": "Final source paragraph."}]
         ps = cards.news_payloads(game, item)
-        assert len(ps) == 1 and len(ps[0]["components"]) > 1
+        # 13 units used to be cut into two `-# Part n/m` containers by the fixed eight-unit
+        # readability split; a card this small is ONE message and ONE container (2026-11-18).
+        assert len(ps) == 1 and len(ps[0]["components"]) == 1
         cs = ps[0]["components"]
         assert not cards.validate_payload(ps[0])
         assert sum(c["type"] == 1 for co in cs for c in co["components"]) == 1
@@ -7878,19 +7897,168 @@ def test_news_nested_list_paragraph_keeps_marker_attached_and_square_entries_com
     assert '<li>' in source  # original input string was never edited
 
 
-def test_news_single_message_multicontainer_buttons_only_final_container_all_games():
-    for key in ('genshin', 'starrail', 'hna', 'zzz', 'wuwa'):
-        item = news_item(body='intro')
-        item.article_blocks += [{'kind': 'image', 'url': f'https://example.com/{i}.jpg'} for i in range(7)]
-        item.article_blocks.append({'kind': 'text', 'text': 'last section'})
+REPORTED_POLISHING_IMAGES = (
+    "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/17/7857b4bd3eccc94a3239b1b3e16b6bf4_3894770948018201180.jpg",
+    "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/17/96b584d471ff57bc4afd3441f0c62aa9_753056931611158103.jpg",
+    "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/17/7184f271fae576f5783994edded3385e_1284330640144455777.jpg",
+    "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/17/3b9698b280299e456d58bdcc6cda1aab_4748825506119663162.jpg",
+    "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/17/4b9fb9bed9abf2dbcbde10e3655d4948_6438625193376380705.jpg",
+    "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/17/85f679062fcc6dc770cfe3f7bdd5061f_41986648211046228.jpg",
+    "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/17/c9e59d80e55f876e02fec354d65d58d9_6009562730876340221.jpg",
+)
+REPORTED_POLISHING_BODY = (
+    "—🌳🏠 Cozy & Cheerful 🏠🌳—\n"
+    "🏢 Thoughtfully Designed | Joyful Iia's All-in-One RV 🏢\n"
+    "✦ Fold-Away Design | A refined & comfy home\n"
+    "✦ Apartment-Style | A simple & cozy lifestyle\n"
+    "✦ Anima-Friendly | Live with your Anima\n"
+    "— Proudly Presented by the Committee for a Joyful Iia | Quality Assured —\n"
+    "If you are interested in moving in, please contact the Committee for a Joyful Iia!"
+)
+REPORTED_POLISHING_TAIL = (
+    "\\*The game is under development and subject to change.\n"
+    "The Final Closed Beta launches on November 25!\n"
+    "Pre-register for #HonkaiNexusAnima ▶ https://hoyo.link/pkb3TT2xM\n"
+    "Follow us for the latest updates and announcements ▶ https://hoyo.link/Ieimh9xRf\n"
+    "Nexus threads have bound us together. Honkai: Nexus Anima is scheduled to launch in Spring "
+    "2027. Pre-registration is now available on the App Store!"
+)
+
+
+def reported_polishing_item():
+    """The real 2026-11-17 `A Traveler's Guide to Iia` card that arrived as `Part 1/2` + `Part 2/2`.
+
+    Shape: one lead paragraph, then one uninterrupted seven-image run, then the closing block —
+    nine units, which the retired fixed eight-unit split cut in half.
+    """
+    return Item(
+        "hoyolab", "hna", "47482558", "https://www.hoyolab.com/article/47482558",
+        "A Traveler's Guide to Iia | Your Dream RV", "", 1794974406,
+        article_blocks=(
+            [{"kind": "text", "text": REPORTED_POLISHING_BODY}]
+            + [{"kind": "image", "url": url} for url in REPORTED_POLISHING_IMAGES]
+            + [{"kind": "text", "text": REPORTED_POLISHING_TAIL}]
+        ),
+        author=GAMES["hna"].name,
+    )
+
+
+def _flatten_containers(payloads):
+    return [child for page in payloads for node in page["components"]
+            for child in node["components"]]
+
+
+def _part_labels(payloads):
+    return [c["content"] for c in _flatten_containers(payloads)
+            if c.get("type") == 10 and str(c.get("content", "")).startswith("-# Part")]
+
+
+def test_news_reported_polishing_card_is_one_container_matching_the_manual_build():
+    """The reported card fits one message, so it must be ONE container (no `Part 1/2`).
+
+    Reference: the hand-built payload in the user's `polishing.txt` (1 container / 13 children /
+    17 components / 1,095 text chars) versus what Game-Express posted (2 containers 11 + 6
+    children / 22 components / `-# Part 1/2` + `-# Part 2/2`).
+    """
+    pages = cards.news_payloads(GAMES["hna"], reported_polishing_item())
+    assert len(pages) == 1 and len(pages[0]["components"]) == 1
+    kids = pages[0]["components"][0]["components"]
+    assert len(kids) == 13
+    assert cards.count_components(pages[0]["components"]) == 17
+    assert cards.text_length(pages[0]["components"]) == 1095
+    assert not cards.validate_payload(pages[0])
+    assert not _part_labels(pages)
+    # Source order survives: headline, lead, the whole seven-image run, the closing block, chrome.
+    assert kids[0]["content"].startswith("## [A Traveler's Guide to Iia | Your Dream RV]")
+    assert kids[1]["type"] == 10 and kids[1]["content"] == REPORTED_POLISHING_BODY
+    assert [c["items"][0]["media"]["url"] for c in kids if c["type"] == 12] == list(REPORTED_POLISHING_IMAGES)
+    assert kids[9]["type"] == 10 and kids[9]["content"] == REPORTED_POLISHING_TAIL
+    assert kids[10]["type"] == 14  # divider, then the single button row and the supporter note
+    assert kids[-2]["type"] == 1 and len(kids[-2]["components"]) == 3
+    assert kids[-1]["content"] == cards.NEWS_SUPPORT_NOTE
+
+
+def test_news_polishing_never_splits_a_card_that_fits_all_games():
+    """One message means one container, and extra containers are gone for good.
+
+    The retired split fired on 9+ units even when the card was far inside Discord's
+    per-MESSAGE budget. It added a `-# Part n/m` label plus a divider per container, so the
+    chunked payload was always LARGER than the single container it replaced — it could only cut
+    cards that already fit and could never rescue one that did not. Overflow therefore pages.
+    """
+    for key in ("genshin", "starrail", "hna", "zzz", "wuwa"):
+        item = news_item(body="intro")
+        item.article_blocks += [{"kind": "image", "url": f"https://example.com/{i}.jpg"} for i in range(7)]
+        item.article_blocks.append({"kind": "text", "text": "last section"})
         pages = cards.news_payloads(GAMES[key], item)
-        assert len(pages) == 1 and len(pages[0]['components']) == 2
-        first, last = pages[0]['components']
-        assert not any(c['type'] == 1 for c in first['components'])
-        assert last['components'][-2]['type'] == 1
-        assert len(last['components'][-2]['components']) == 3
-        assert last['components'][-1]['content'] == cards.NEWS_SUPPORT_NOTE
+        assert len(pages) == 1 and len(pages[0]["components"]) == 1
+        kids = pages[0]["components"][0]["components"]
+        assert not any(c.get("type") == 1 for c in kids[:-2])
+        assert kids[-2]["type"] == 1 and len(kids[-2]["components"]) == 3
+        assert kids[-1]["content"] == cards.NEWS_SUPPORT_NOTE
         assert not cards.validate_payload(pages[0])
+        assert not _part_labels(pages)
+
+        # Overflow pages instead of emitting `Part` containers; every page is independently valid.
+        heavy = news_item(body=("Complete source sentence with a detail. " * 100).strip())
+        hp = cards.news_payloads(GAMES[key], heavy)
+        assert len(hp) > 1
+        for page in hp:
+            assert len(page["components"]) == 1
+            assert not cards.validate_payload(page)
+            assert not _part_labels([page])
+        assert sum(1 for c in _flatten_containers(hp) if c.get("type") == 1) == 1
+        assert [c["content"] for c in _flatten_containers(hp) if c.get("content") == cards.NEWS_SUPPORT_NOTE] == [cards.NEWS_SUPPORT_NOTE]
+
+
+def test_news_polishing_packs_to_the_cap_before_any_second_message():
+    """Smart dynamic fitting: fill the message, split only when the budget is actually spent."""
+    for key in ("genshin", "starrail", "hna", "zzz", "wuwa"):
+        game = GAMES[key]
+        # 3,650 normalized chars + headline + buttons + note still land in ONE message.
+        dense = news_item(body=("Official notice paragraph with a link https://example.com/a and detail text.\n\n" * 60)[:3650])
+        pages = cards.news_payloads(game, dense)
+        assert len(pages) == 1 and len(pages[0]["components"]) == 1
+        assert cards.text_length(pages[0]["components"]) <= cards.MAX_TEXT_TOTAL
+        assert cards.text_length(pages[0]["components"]) >= 3900  # 98% of the 4,000 budget
+        assert not cards.validate_payload(pages[0])
+        assert not _part_labels(pages)
+
+        # 30 inline galleries + chrome = exactly the 40-component cap in one message.
+        crowded = news_item(body="Short intro.")
+        crowded.article_blocks += [{"kind": "image", "url": f"https://example.com/{i}.jpg"} for i in range(30)]
+        crowded.article_blocks.append({"kind": "text", "text": "Closing text."})
+        one = cards.news_payloads(game, crowded)
+        assert len(one) == 1 and len(one[0]["components"]) == 1
+        assert cards.count_components(one[0]["components"]) == cards.MAX_COMPONENTS
+        assert not cards.validate_payload(one[0])
+
+        # One gallery more cannot fit: page it, never drop media, never exceed a cap.
+        crowded.article_blocks.insert(-1, {"kind": "image", "url": "https://example.com/extra.jpg"})
+        paged = cards.news_payloads(game, crowded)
+        assert len(paged) == 2
+        assert all(len(page["components"]) == 1 and not cards.validate_payload(page) for page in paged)
+        kept = [c["items"][0]["media"]["url"] for c in _flatten_containers(paged) if c["type"] == 12]
+        assert [url for url in kept if "example.com" in url] == [f"https://example.com/{i}.jpg" for i in range(30)] + \
+            ["https://example.com/extra.jpg"]
+        assert sum(1 for c in _flatten_containers(paged) if c.get("type") == 1) == 1
+
+
+def test_news_polishing_split_only_when_one_message_genuinely_overflows():
+    """A second message is only ever justified by real demand above Discord's caps."""
+    cases = []
+    for chars in (50, 1500, 3400, 3650, 3700, 4100, 6900, 7100, 20000):
+        cases.append(news_item(body=("Section line with a link https://example.com/b and words.\n\n" * 400)[:chars]))
+    for games_key in ("genshin", "zzz"):
+        for item in cases:
+            pages = cards.news_payloads(GAMES[games_key], item)
+            assert all(len(page["components"]) == 1 for page in pages)
+            assert all(not cards.validate_payload(page) for page in pages)
+            assert sum(1 for c in _flatten_containers(pages) if c.get("type") == 1) == 1
+            if len(pages) > 1:
+                need_chars = sum(cards.text_length(page["components"]) for page in pages)
+                need_comps = sum(cards.count_components(page["components"]) for page in pages)
+                assert need_chars > cards.MAX_TEXT_TOTAL or need_comps > cards.MAX_COMPONENTS
 
 
 def test_news_group_setting_default_and_explicit_values():
@@ -11990,9 +12158,13 @@ def test_final_acceptance_baseline_parity_shared_callers_and_template():
         return hashlib.sha256(raw).hexdigest()
 
     # Exact canonical JSON SHA-256 digests generated directly by `main` (`1e071d82eba82baa0a2977f33d6f8180d3677aaf`).
-    # `fit1`/`fit2`/`fixture`/`prod` digests are pre-PR main (1e071d8) byte-identical: ordinary
-    # articles, articles that already used a second page, and the captured production cards did
-    # not change. `over7k` is the one deliberate delta: main truncated a >7,000-character article
+    # `fit1`/`fit2`/`prod` digests are pre-PR main (1e071d8) byte-identical: ordinary articles and
+    # the captured production cards did not change. The two real `zzz` Signal Search fixtures DID
+    # change on 2026-11-18 and are re-pinned below: both were delivered as two containers
+    # (`-# Part 1/2` + `-# Part 2/2`) although they were always inside one message (3,541 and
+    # 3,726 chars), so the polishing fix folds them into the single container the article needs.
+    # Their text and media order is unchanged; only the label/divider chrome is gone.
+    # `over7k` is the one other deliberate delta: main truncated a >7,000-character article
     # to a single excerpt, and the default policy now smart fits the whole article into pages
     # (new digests below, generated from this head on every game, all pages valid, no excerpt).
     # Both groups are compared with the feature-3 supporter note stripped, so this pin still
@@ -12000,8 +12172,8 @@ def test_final_acceptance_baseline_parity_shared_callers_and_template():
     MAIN_1E071D8_SHA256 = {
         "fixture:hoyolab_genshin_46604275_full.json": (1, "a87d0dc74d042fb12d9f89490b67ade96546133168e0c5394eaf321480816598"),
         "fixture:hoyolab_starrail_46814308_full.json": (1, "d0833d351eacad7c690c566948618a52f6f21e867b21cc9c0e0f44a78a4876b0"),
-        "fixture:hoyolab_zzz_46604530_full.json": (1, "c863e2ef50ba360b3400278278b3c3e44498fd31b4c951197a8a141837e27b76"),
-        "fixture:hoyolab_zzz_46863847_full.json": (1, "8245162cd633f95510ee9d2b6b7b0c1c07801d1247445432ec968ff1aebfb14d"),
+        "fixture:hoyolab_zzz_46604530_full.json": (1, "b2ee51af4d51d0d297e27befab69485ae14b4f196843139ccedcda1b4ce36bac"),
+        "fixture:hoyolab_zzz_46863847_full.json": (1, "9f82524af00c706b45ce40ca4cf5586c490f76f931140b3e614e495c5f3698a6"),
         "fit1:genshin": (1, "a101b39d74127d0aa21048c8bdc3d1f319473ebec9a0c344c3470482e614fffd"),
         "fit2:genshin": (2, "e51aa14e026237d44a6539222f82bae18f3ff836c9813462904abee33b37c083"),
         "over7k:genshin": (3, "20c44ba696db594ff1abcf010fc12c328eb721220185e63c088d879d0f409ada"),
@@ -25032,8 +25204,10 @@ def test_reveal_ping_default_off_isolation_and_multi_era_plus_unseen_future_clas
 
     # Exactly two settings: one switch, one role list that covers every game.
     s_all = config.load_settings({"NEWS_REVEAL_PING": "1", "PING_NEWS_REVEAL": "222222222222222222"})
-    assert {s_all.reveal_ping(g).text for g in ("genshin", "starrail", "zzz", "wuwa", "hna", "ananta")} == {
-        "<@&222222222222222222>"}
+    # Every game takes the same role list, except the one excluded in games.json (Wuthering Waves).
+    assert {s_all.reveal_ping(g, allowed=GAMES[g].reveal_ping).text
+            for g in ("genshin", "starrail", "zzz", "hna", "ananta")} == {"<@&222222222222222222>"}
+    assert not s_all.reveal_ping("wuwa", allowed=GAMES["wuwa"].reveal_ping)
     assert config.load_settings({"NEWS_REVEAL_PING": "1",
                                  "PING_NEWS_REVEAL": "222222222222222222, 444444444444444444"}
                                 ).reveal_ping("genshin").roles == ["222222222222222222", "444444444444444444"]
@@ -25042,7 +25216,7 @@ def test_reveal_ping_default_off_isolation_and_multi_era_plus_unseen_future_clas
         "NEWS_REVEAL_PING": "1",
         "PING_NEWS_REVEAL": "222222222222222222",
         "NO_PING": "1",
-    }).reveal_ping("wuwa")
+    }).reveal_ping("genshin")
     # A stale per-game variable from an older draft must not resurrect the removed override.
     assert config.load_settings({
         "NEWS_REVEAL_PING": "1",
@@ -25235,6 +25409,102 @@ def test_reveal_ping_default_off_isolation_and_multi_era_plus_unseen_future_clas
     # Previously persisted exact-second keys still group into the same minute.
     assert reveal_ping.evaluate_reveal_ping_decision({"reveal_times": {"1001": 1100}}, two, published_ts=1019) == (False, "same_publication_time")
 
+def test_reveal_ping_excludes_wuthering_waves_only():
+    """Feature 3 keeps the hoyoverse reveal pings and drops the Wuthering Waves one (2026-11-18).
+
+    Wuthering Waves publishes the same `Stars Intertwined` / `Profile Reveal` announcements on its
+    own site, so Feature 3 delivered its news with a role mention the twitter card already sends —
+    the ping arrived twice, or (worse) it arrived nowhere near the post that announced the
+    character. The game is excluded in `config/games.json`; the hoyoverse games keep their ping and
+    the switch/role-list contract is unchanged.
+    """
+    from unittest.mock import patch
+
+    from gamexpress import config
+    from gamexpress.models import Item
+    from gamexpress.runner import run_news
+    from gamexpress.sources import hoyolab, kuro
+
+    role = "987654321098765432"
+    hook = "https://discord.com/api/webhooks/100000000000000099/tok"
+    img = "https://upload-os-bbs.hoyolab.com/upload/community/2026/11/18/reveal.jpg"
+
+    # 1. Data + settings: exactly one excluded game, and it is a per-game flag, not a hardcoded key.
+    games = load_games()
+    assert [key for key, g in games.items() if not g.reveal_ping] == ["wuwa"]
+    assert all(games[k].reveal_ping for k in ("genshin", "starrail", "zzz", "hna"))
+    assert config.Game("sample", "Sample", "SM", True, 0).reveal_ping is True
+    s_on = config.load_settings({"NEWS_REVEAL_PING": "1", "PING_NEWS_REVEAL": role})
+    assert s_on.reveal_ping("genshin", allowed=games["genshin"].reveal_ping).text == f"<@&{role}>"
+    assert not s_on.reveal_ping("wuwa", allowed=games["wuwa"].reveal_ping)
+
+    # 2. `run_news` delivers the Wuthering Waves reveal with no mention and no reveal state, even
+    #    with `NEWS_REVEAL_PING=1` and the role configured.
+    ww_body = '"She builds tomorrow out of what yesterday broke."'
+    ww_article = Item(
+        "kuro", "wuwa", "6161", "https://wutheringwaves.kurogames.com/en/main/news/detail/6161",
+        "Post-Lament Anthropocene: Stars Intertwined | Lucilla", ww_body, 1793242806,
+        article_blocks=[{"kind": "text", "text": ww_body}, {"kind": "image", "url": img}],
+        author="Wuthering Waves",
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="wuwa",
+                       NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
+                       DISCORD_WEBHOOK_NEWS_WUWA=hook)
+        ctx.now = 1793242200
+        with patch.object(kuro, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now = 1793242860
+        row = {"id": "6161", "ts": 1793242806}
+        with (patch.object(kuro, "discover_news", return_value=[row]),
+              patch.object(kuro, "news_article", return_value=ww_article),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        posts = [x["payload"] for x in ctx.webhook.sent if x["method"] == "POST"]
+        assert len(posts) == 1, ctx.warnings  # the news still posts, it just does not ping
+        assert posts[0]["allowed_mentions"] == {"parse": []}
+        assert role not in json.dumps(posts[0], ensure_ascii=False)
+        assert "Lucilla" in posts[0]["components"][0]["components"][0]["content"]
+        record = ctx.state.news_record("wuwa")
+        assert record["records"]["6161"]["status"] == "posted"
+        assert "reveal_ping" not in record["records"]["6161"]
+        assert not record.get("reveal_chars") and not record.get("reveal_times")
+
+    # 3. Control: the same shape on a hoyoverse game still pings exactly the same way.
+    sr_body = '"My past, my future."'
+    sr_article = Item(
+        "hoyolab", "starrail", "7771", "https://www.hoyolab.com/article/7771",
+        "Extraterrestrial Satellite Communication | Dan Heng • Imbibitor Lunae", sr_body, 1793242806,
+        article_blocks=[{"kind": "text", "text": sr_body}, {"kind": "image", "url": img}],
+        author=games["starrail"].name,
+    )
+    with tempfile.TemporaryDirectory() as tmp:
+        ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="starrail",
+                       NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
+                       DISCORD_WEBHOOK_NEWS_STARRAIL=hook)
+        ctx.now = 1793242200
+        with patch.object(hoyolab, "discover_news", return_value=[]):
+            asyncio.run(run_news(ctx))
+        ctx.now = 1793242860
+        row = {"id": "7771", "ts": 1793242806}
+        with (patch.object(hoyolab, "discover_news", return_value=[row]),
+              patch.object(hoyolab, "news_article", return_value=sr_article),
+              patch("gamexpress.media.news_media_available", return_value=True)):
+            asyncio.run(run_news(ctx))
+        posts = [x["payload"] for x in ctx.webhook.sent if x["method"] == "POST"]
+        assert len(posts) == 1, ctx.warnings
+        assert posts[0]["allowed_mentions"] == {"parse": [], "roles": [role]}
+        assert f"<@&{role}>" in posts[0]["components"][0]["components"][0]["content"]
+        assert "dan heng imbibitor lunae" in ctx.state.news_record("starrail")["reveal_chars"]
+
+    # 4. The switch + the role list are still the only two settings: a stale per-game variable
+    #    neither turns the ping on by itself nor gives Wuthering Waves one back.
+    assert not config.load_settings({"PING_NEWS_REVEAL_WUWA": role}).reveal_ping("wuwa")
+    assert config.load_settings({
+        "NEWS_REVEAL_PING": "1", "PING_NEWS_REVEAL": role, "PING_NEWS_REVEAL_WUWA": "111111111111111111",
+    }).reveal_ping("genshin").text == f"<@&{role}>"
+
+
 def test_reveal_ping_same_time_single_ping_wave_different_times_recheck_edit_and_peer_merge():
     """End-to-end `run_news` proof of:
     1) Zero pings when `NEWS_REVEAL_PING=0` (default).
@@ -25269,6 +25539,7 @@ def test_reveal_ping_same_time_single_ping_wave_different_times_recheck_edit_and
             PING_NEWS_REVEAL=role_id,
             DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok",
         )
+        reveal_ping_games(ctx_off, "wuwa")
         with patch.object(kuro, "discover_news", return_value=[]):
             asyncio.run(run_news(ctx_off))
         ctx_off.now += 60
@@ -25296,6 +25567,7 @@ def test_reveal_ping_same_time_single_ping_wave_different_times_recheck_edit_and
             PING_NEWS_REVEAL=role_id,
             DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok",
         )
+        reveal_ping_games(ctx_on, "wuwa")
         base_11am = 1793242800  # 11:00:00 UTC+8
         ctx_on.now = base_11am - 600
         with patch.object(kuro, "discover_news", return_value=[]):
@@ -25407,6 +25679,7 @@ def test_reveal_distinct_timestamps_in_same_run_and_ambiguous_hold():
         ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="wuwa",
                        NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
                        DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        reveal_ping_games(ctx, "wuwa")
         ctx.now = 1793240000
         with patch.object(kuro, "discover_news", return_value=[]):
             asyncio.run(run_news(ctx))
@@ -25458,6 +25731,7 @@ def test_reveal_ping_near_limit_reflows_without_losing_article():
         ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="wuwa",
                        NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
                        DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        reveal_ping_games(ctx, "wuwa")
         ctx.now = 1793242200
         with patch.object(kuro, "discover_news", return_value=[]):
             asyncio.run(run_news(ctx))
@@ -25511,6 +25785,7 @@ def test_reveal_ping_near_limit_moves_the_closing_controls_and_keeps_the_body_wh
         ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES="wuwa",
                        NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=role,
                        DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
+        reveal_ping_games(ctx, "wuwa")
         ctx.now = 1793242200
         with patch.object(kuro, "discover_news", return_value=[]):
             asyncio.run(run_news(ctx))
@@ -25552,6 +25827,7 @@ def test_reveal_ping_near_limit_continuation_resumes_after_failure():
                     PING_NEWS_REVEAL=role,
                     DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
         ctx = make_ctx(path, **opts)
+        reveal_ping_games(ctx, "wuwa")
         ctx.now = 1793242200
         with patch.object(kuro, "discover_news", return_value=[]):
             asyncio.run(run_news(ctx))
@@ -25570,6 +25846,7 @@ def test_reveal_ping_near_limit_continuation_resumes_after_failure():
         assert rec["reveal_ping"] == f"<@&{role}>"
         continuation = send.await_args_list[1].args[1]
         retry = make_ctx(path, **opts)
+        reveal_ping_games(retry, "wuwa")
         retry.state = State.load(path)
         retry.now = ctx.now + 1
         send_retry = AsyncMock(return_value=SendResult(True, 200, message_id="page2"))
@@ -25726,6 +26003,7 @@ def test_reveal_ping_edit_guard_skips_reflow_and_lost_mention_instead_of_truncat
                     PING_NEWS_REVEAL=role,
                     DISCORD_WEBHOOK_NEWS_WUWA="https://discord.com/api/webhooks/100000000000000099/ww_tok")
         ctx = make_ctx(path, **opts)
+        reveal_ping_games(ctx, "wuwa")
         ctx.now = ts - 1200
         with patch.object(kuro, "discover_news", return_value=[]):
             asyncio.run(run_news(ctx))
@@ -26259,6 +26537,7 @@ def test_reveal_ping_renumbers_pages_and_keeps_every_article_whole():
                            **{f"DISCORD_WEBHOOK_NEWS_{g}": hook for g in
                               ("GENSHIN", "STARRAIL", "ZZZ", "WUWA", "HNA", "ANANTA", "GI", "HSR")})
                 ctx = make_ctx(Path(tmp) / "state.json", **env)
+                reveal_ping_games(ctx, "wuwa")
                 ctx.now = 1793160000
                 with patch.object(source, "discover_news", return_value=[]):
                     asyncio.run(run_news(ctx))
@@ -26376,6 +26655,7 @@ def test_reveal_ping_reflow_is_identical_under_both_page_policies():
             if ping:
                 env.update(NEWS_REVEAL_PING="1", PING_NEWS_REVEAL=" ".join(roles))
             ctx = make_ctx(Path(tmp) / "state.json", **env)
+            reveal_ping_games(ctx, "wuwa")
             ctx.now = 1793160000
             with patch.object(source, "discover_news", return_value=[]):
                 await run_news(ctx)
@@ -26479,6 +26759,7 @@ def test_reveal_ping_prefix_on_every_game_survives_both_page_policies():
                     if expand:
                         env["NEWS_EXPAND_FULL"] = "1"
                     ctx = make_ctx(Path(tmp) / "state.json", **env)
+                    reveal_ping_games(ctx, "wuwa")
                     ctx.now = 1793160000
                     with patch.object(source, "discover_news", return_value=[]):
                         asyncio.run(run_news(ctx))
