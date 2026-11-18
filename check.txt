@@ -1797,3 +1797,113 @@ last month
 PING_SCHEDULE
 <@&1296268365593186426>
 last month
+
+Game-Express Monitor #6211
+
+https://github.com/uesu/8mqzv4k2n7c/actions/runs/44287563610/job/134744070069
+
+10:40:20 INFO    gamexpress.http: [nitter] https://nitter.cf/honkaistarrail/rss -> HTTP 429
+10:40:20 INFO    gamexpress.http: [nitter] https://nitter.cf/GenshinImpact/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.cf/ZZZ_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.gq/honkaistarrail/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.cf/Wuthering_Waves/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.cf/HonkaiNA/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.gq/GenshinImpact/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.cf/HonkaiNA/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.cf/honkaistarrail/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.cf/GenshinImpact/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.cf/Wuthering_Waves/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.cf/ZZZ_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.cf/Ananta_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.cf/Ananta_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.gq/ZZZ_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.gq/ZZZ_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.gq/Wuthering_Waves/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.gq/Wuthering_Waves/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.net/ZZZ_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.org/ZZZ_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.gq/HonkaiNA/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.org/Wuthering_Waves/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.gq/HonkaiNA/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.net/Wuthering_Waves/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapaw.org/ZZZ_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapaw.org/Wuthering_Waves/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapaw.org/HonkaiNA/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://xitter.gq/Ananta_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.org/HonkaiNA/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.net/HonkaiNA/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://nitter.gq/Ananta_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.org/Ananta_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapawt.net/Ananta_EN/rss -> HTTP 429
+10:40:21 INFO    gamexpress.http: [nitter] https://teapaw.org/Ananta_EN/rss -> HTTP 429
+10:40:22 INFO    gamexpress.http: [nitter] https://nitter.freedit.eu/Wuthering_Waves/rss -> HTTP 403
+10:40:22 INFO    gamexpress.http: [nitter] https://nitter.freedit.eu/ZZZ_EN/rss -> HTTP 403
+10:40:22 INFO    gamexpress.http: [nitter] https://nitter.freedit.eu/Ananta_EN/rss -> HTTP 403
+10:40:22 INFO    gamexpress.http: [nitter] https://nitter.freedit.eu/HonkaiNA/rss -> HTTP 403
+10:40:22 INFO    gamexpress.http: [nitter] https://nitter.meowing.monster/ZZZ_EN/rss -> HTTP 429
+10:40:23 INFO    gamexpress.http: [nitter] https://nitter.meowing.monster/HonkaiNA/rss -> HTTP 429
+10:40:23 INFO    gamexpress: [hna] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+10:40:23 INFO    gamexpress: [ananta] 0 official item(s) matched in the last 72h (live ?, pre-install —)
+10:40:23 INFO    gamexpress: [wuwa] 0 official item(s) matched in the last 72h (live 3.8, pre-install —)
+10:40:23 INFO    gamexpress.http: [nitter] https://nitter.mie.foundation/ZZZ_EN/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://nitter.cf/ZZZ_EN/status/2122902618594746673/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://nitter.cf/ZZZ_EN/status/2122177844079988868/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://xitter.cf/ZZZ_EN/status/2122902618594746673/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://xitter.cf/ZZZ_EN/status/2122177844079988868/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapawt.org/ZZZ_EN/status/2122902618594746673/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://xitter.gq/GenshinImpact/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://nitter.gq/honkaistarrail/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapawt.org/ZZZ_EN/status/2122177844079988868/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapaw.org/ZZZ_EN/status/2122902618594746673/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapawt.org/GenshinImpact/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapawt.net/GenshinImpact/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapaw.org/GenshinImpact/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapawt.org/honkaistarrail/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapawt.net/honkaistarrail/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapaw.org/honkaistarrail/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://teapawt.net/ZZZ_EN/status/2122902618594746673/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://xitter.gq/ZZZ_EN/status/2122902618594746673/rss -> HTTP 429
+10:40:24 INFO    gamexpress.http: [nitter] https://nitter.freedit.eu/GenshinImpact/rss -> HTTP 403
+10:40:25 INFO    gamexpress.http: [nitter] https://nitter.gq/ZZZ_EN/status/2122902618594746673/rss -> HTTP 429
+10:40:25 INFO    gamexpress.http: [nitter] https://nitter.freedit.eu/honkaistarrail/rss -> HTTP 403
+10:40:25 INFO    gamexpress: [genshin] 0 official item(s) matched in the last 72h (live 7.2, pre-install —)
+10:40:25 INFO    gamexpress: [starrail] 0 official item(s) matched in the last 72h (live 4.7, pre-install —)
+10:40:26 INFO    gamexpress.http: [nitter] https://teapaw.org/ZZZ_EN/status/2122177844079988868/rss -> HTTP 429
+10:40:26 INFO    gamexpress.http: [nitter] https://teapawt.net/ZZZ_EN/status/2122177844079988868/rss -> HTTP 429
+10:40:26 INFO    gamexpress.http: [nitter] https://xitter.gq/ZZZ_EN/status/2122177844079988868/rss -> HTTP 429
+10:40:26 INFO    gamexpress.http: [nitter] https://nitter.gq/ZZZ_EN/status/2122177844079988868/rss -> HTTP 429
+10:40:26 INFO    gamexpress: [zzz] 4 official item(s) matched in the last 72h (live 3.3, pre-install —)
+10:40:29 INFO    gamexpress.reddit.intake: [reddit:intake] r/AnantaOfficial served from the relay: 5 record(s)
+10:40:29 INFO    gamexpress.reddit.intake: [reddit:intake] r/Genshin_Impact served from the relay: 33 record(s)
+10:40:29 INFO    gamexpress.reddit.intake: [reddit:intake] r/HonkaiStarRail served from the relay: 24 record(s)
+10:40:29 INFO    gamexpress.reddit.intake: [reddit:intake] r/WutheringWaves served from the relay: 51 record(s)
+10:40:29 INFO    gamexpress.reddit.intake: [reddit:intake] r/ZZZ_Official served from the relay: 18 record(s)
+10:40:29 INFO    gamexpress.http: [reddit] https://www.reddit.com/r/HonkaiNexusAnima/new.rss -> HTTP 404
+10:40:29 INFO    gamexpress.http: [reddit] https://old.reddit.com/r/HonkaiNexusAnima/new.rss -> HTTP 403
+10:40:29 INFO    gamexpress.http: [reddit] https://www.reddit.com/r/HonkaiNexusAnima/new.json -> HTTP 403
+10:40:29 INFO    gamexpress.http: [reddit] https://reddit.idevicehacked.com/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:31 INFO    gamexpress.http: [reddit] https://r.naa.gg/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:31 INFO    gamexpress.http: [reddit] https://redlib.thepixora.com/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:31 INFO    gamexpress.http: [reddit] https://redlib.r4fo.com/r/HonkaiNexusAnima/new -> ServerDisconnectedError: Server disconnected
+10:40:31 INFO    gamexpress.http: [reddit] https://snoo.habedieeh.re/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:32 INFO    gamexpress.http: [reddit] https://redlib.miningtcup.me/r/HonkaiNexusAnima.rss -> HTTP 400
+10:40:32 INFO    gamexpress.http: [reddit] https://redlib.miningtcup.me/r/HonkaiNexusAnima/new -> HTTP 400
+10:40:35 INFO    gamexpress.http: [reddit] https://redlib.catsarch.com/r/HonkaiNexusAnima/new -> HTTP 429
+10:40:36 INFO    gamexpress.http: [reddit] https://reddit.jeremyh.xyz/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:36 INFO    gamexpress.http: [reddit] https://redlib.freedit.eu/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:37 INFO    gamexpress.http: [reddit] https://rl.awy.one/r/HonkaiNexusAnima/new -> ServerDisconnectedError: Server disconnected
+10:40:37 INFO    gamexpress.http: [reddit] https://redlib.vanillax.me/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:37 INFO    gamexpress.http: [reddit] https://redlib.privacyredirect.com/r/HonkaiNexusAnima/new -> HTTP 403
+10:40:38 INFO    gamexpress.http: [reddit] https://redlib.nadeko.net/r/HonkaiNexusAnima/new -> HTTP 418
+10:40:43 INFO    gamexpress: sources: bannerfeed: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; fxtwitter: 2 ok / 0 fail; hoyolab: 14 ok / 0 fail; hoyoplay: 1 ok / 0 fail; intake: 3 ok / 0 fail; intake-cdn: 3 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; nitter: 15 ok / 65 fail; reddit: 12 ok / 17 fail
+10:40:43 INFO    gamexpress: 
+### Game-Express 5379156 — alpha (primary)
+- 📰 GI news: discovered=1, eligible=1, attempted=0, delivered=0, deferred/error=0
+- 📰 HSR news: discovered=1, eligible=1, attempted=0, delivered=0, deferred/error=0
+- 📰 ZZZ news: discovered=3, eligible=3, attempted=0, delivered=0, deferred/error=0
+- 📰 WW news: discovered=0, eligible=0, attempted=0, delivered=0, deferred/error=0
+- 📰 HNA news: discovered=1, eligible=1, attempted=0, delivered=0, deferred/error=0
+- 📡 reddit intake: relay ok — 135 record(s) in window, newest 262 s, 144 re-checked, 3 completed from record.json; served r/AnantaOfficial, r/Genshin_Impact, r/HonkaiStarRail, r/WutheringWaves, r/ZZZ_Official
+- repository commit/push: not observed here; see the subsequent workflow persistence step.
+- sources: bannerfeed: 1 ok / 0 fail; codes:codehub: 1 ok / 0 fail; codes:ennead: 3 ok / 0 fail; codes:fandom: 6 ok / 0 fail; codes:hoyolab: 4 ok / 0 fail; codes:humbao: 3 ok / 0 fail; codes:ogc: 4 ok / 0 fail; codes:seria: 3 ok / 0 fail; codes:wuthering.gg: 1 ok / 0 fail; fxtwitter: 2 ok / 0 fail; hoyolab: 14 ok / 0 fail; hoyoplay: 1 ok / 0 fail; intake: 3 ok / 0 fail; intake-cdn: 3 ok / 0 fail; kuro: 2 ok / 0 fail; kuro-launcher: 1 ok / 0 fail; news-hoyolab: 12 ok / 0 fail; news-kuro: 1 ok / 0 fail; nitter: 15 ok / 65 fail; reddit: 12 ok / 17 fail
+- ⏱️ run took 24.2s
