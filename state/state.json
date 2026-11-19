@@ -9042,13 +9042,14 @@
               ]
             }
           },
-          "banners_checked_ts": 1795072230,
+          "banners_checked_ts": 1795094421,
           "banners_search_ts": 1795072230,
           "banners_settled": [
             "phase1",
             "phase1_4",
             "phase2",
-            "phase2_4"
+            "phase2_4",
+            "reruns"
           ],
           "calendar_ts": 1795072230,
           "compensation": "Primogems ×300",
@@ -9731,8 +9732,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1795083618,
-          "banners_search_ts": 1795083618,
+          "banners_checked_ts": 1795094421,
+          "banners_search_ts": 1795094421,
           "banners_settled": [
             "phase1",
             "phase1_4",
