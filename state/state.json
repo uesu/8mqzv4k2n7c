@@ -7074,8 +7074,8 @@
   "news": {
     "genshin": {
       "cursor": [
-        1795060804,
-        "47493298"
+        1795075207,
+        "47494924"
       ],
       "floor": 1794362701,
       "paused": false,
@@ -7094,6 +7094,11 @@
           1795060833,
           2,
           "5abac35b727b5a32"
+        ],
+        "47494924": [
+          1795075236,
+          0,
+          "1d5271347ef313f4"
         ]
       },
       "records": {
@@ -7591,6 +7596,14 @@
           ],
           "status": "posted",
           "ts": 1795060804
+        },
+        "47494924": {
+          "messages": [
+            "1572884326813794347",
+            "1572884334006763531"
+          ],
+          "status": "posted",
+          "ts": 1795075207
         }
       },
       "route": "a0f2147590c35140"
@@ -9011,7 +9024,17 @@
             ],
             "phase2": [
               "Zibai",
-              "Linnea"
+              "Linnea",
+              "Varesa",
+              "Chasca",
+              "Xilonen",
+              "Mualani",
+              "Kinich"
+            ],
+            "phase2_4": [
+              "Illuga",
+              "Aino",
+              "Ningguang"
             ],
             "reruns": [
               "Furina",
@@ -9032,7 +9055,9 @@
           "banners_search_ts": 1795072230,
           "banners_settled": [
             "phase1",
-            "phase1_4"
+            "phase1_4",
+            "phase2",
+            "phase2_4"
           ],
           "calendar_ts": 1795072230,
           "compensation": "Primogems ×300",
@@ -9067,10 +9092,10 @@
         ],
         "first_seen": 1792555239,
         "message_id": "1562314671103418552",
-        "mirror_hash": "a6add8b2ecc3ff9f",
+        "mirror_hash": "3008be8cbd1a4572",
         "mirror_message_id": "1562314676023332895",
         "mirror_webhook_fp": "ee502f83bdf4",
-        "payload_hash": "c857fe53dc2a8ceb",
+        "payload_hash": "d1061b6ef8f619d3",
         "posted_at": 1792555239,
         "preinstall_offset_h": 42.832,
         "prov": {
@@ -9091,12 +9116,20 @@
           ],
           "b_phase1_id": "47284168",
           "b_phase2": [
-            6,
-            1794028821
+            50,
+            1795075207
+          ],
+          "b_phase2_4": [
+            50,
+            1795075207
+          ],
+          "b_phase2_4_by": [
+            "official"
           ],
           "b_phase2_by": [
-            "wiki"
+            "official"
           ],
+          "b_phase2_id": "47494924",
           "b_reruns": [
             6,
             1794028821
@@ -9137,7 +9170,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794028821,
+        "updated_at": 1795075236,
         "webhook_fp": "19991534cf6d"
       }
     },
