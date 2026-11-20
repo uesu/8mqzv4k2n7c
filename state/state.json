@@ -6645,13 +6645,24 @@
       },
       "ZZZ34SUNBRINGER": {
         "first_seen": 1794618037,
-        "gate": "only reddit",
-        "last_seen": 1795178427,
+        "gate": "redeem-validated",
+        "last_seen": 1795180224,
+        "message_id": "1573324681019138079",
+        "msg_codes": [
+          "ZZZ34SUNBRINGER"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1795180224,
         "rewards": null,
         "sources": [
-          "reddit"
+          "reddit",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "db5f4f8a75a5"
       },
       "ZZZDREAMLAND": {
         "first_seen": 1790323430,
@@ -10120,35 +10131,56 @@
       },
       "3.4": {
         "calendar": {
-          "banners": [],
-          "ts": 1795168847
+          "banners": [
+            {
+              "endsAt": 1799737199,
+              "featured": [
+                "Sunbringer",
+                "Robin"
+              ],
+              "featured4": [
+                "Ben",
+                "Lucy"
+              ],
+              "startsAt": 1796173200,
+              "title": "",
+              "version": "3.4"
+            }
+          ],
+          "ts": 1795180224
         },
         "data": {
           "announcement_locked": true,
           "announcement_source": "x",
           "announcement_ts": 1794801600,
           "banners": {
-            "confirmed": [
-              "Sunbringer",
-              "Robin",
-              "Kafka"
-            ],
             "phase1": [
               "Sunbringer",
               "Robin"
             ],
+            "phase1_4": [
+              "Ben",
+              "Lucy"
+            ],
             "phase2": [
               "Kafka",
               "Alice"
+            ],
+            "reruns": [
+              "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795168847,
-          "banners_search_ts": 1795168847,
+          "banners_checked_ts": 1795180224,
+          "banners_display": {
+            "Alice": "Alice Thymefield"
+          },
+          "banners_search_ts": 1795180224,
           "banners_settled": [
             "phase1",
-            "phase2"
+            "phase2",
+            "reruns"
           ],
-          "calendar_ts": 1795168847,
+          "calendar_ts": 1795180224,
           "estimate_sources": [
             "version cadence"
           ],
@@ -10189,22 +10221,22 @@
         ],
         "first_seen": 1794801633,
         "message_id": "1571736727951773787",
-        "mirror_hash": "6f81490d84cceac6",
+        "mirror_hash": "5290e215c8f8a14b",
         "mirror_message_id": "1571736737644810295",
         "mirror_webhook_fp": "db5f4f8a75a5",
-        "payload_hash": "797cb971c8843751",
+        "payload_hash": "964cb669c39fec12",
         "posted_at": 1794801633,
         "prov": {
-          "b_confirmed": [
-            6,
-            1794834043
-          ],
-          "b_confirmed_by": [
-            "wiki"
-          ],
           "b_phase1": [
             40,
             1795171990
+          ],
+          "b_phase1_4": [
+            5,
+            1795180224
+          ],
+          "b_phase1_4_by": [
+            "calendar"
           ],
           "b_phase1_by": [
             "official"
@@ -10218,6 +10250,13 @@
             "official"
           ],
           "b_phase2_id": "2123731906000994630",
+          "b_reruns": [
+            6,
+            1795180224
+          ],
+          "b_reruns_by": [
+            "wiki"
+          ],
           "maint_end_ts": [
             9,
             1794801633
@@ -10244,7 +10283,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1795172438,
+        "updated_at": 1795180224,
         "webhook_fp": "19991534cf6d"
       }
     }
