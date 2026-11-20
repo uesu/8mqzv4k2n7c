@@ -4879,17 +4879,25 @@
       },
       "POYMANSXF877": {
         "first_seen": 1795156821,
-        "gate": "only ennead, ogc",
-        "last_seen": 1795156821,
-        "rewards": [
-          "Primogem ×20",
-          "Geode of Replication ×160"
+        "gate": "redeem-validated",
+        "last_seen": 1795159830,
+        "message_id": "1573239121873207388",
+        "msg_codes": [
+          "POYMANSXF877"
         ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1795159830,
+        "rewards": "Primogem*20;Geode of Replication*160",
         "sources": [
           "ennead",
-          "ogc"
+          "ogc",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
       },
       "PRIMADONNA": {
         "first_seen": 1790323430,
