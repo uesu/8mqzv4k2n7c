@@ -4894,6 +4894,7 @@
         "sources": [
           "ennead",
           "ogc",
+          "reddit",
           "seria"
         ],
         "status": "posted",
@@ -8398,11 +8399,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47485642": [
-          1794997227,
-          2,
-          "a37aaa2899323f72"
-        ],
         "47503180": [
           1795147819,
           2,
