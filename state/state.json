@@ -6574,6 +6574,7 @@
         ],
         "sources": [
           "ennead",
+          "fandom",
           "ogc",
           "seria"
         ],
@@ -9733,8 +9734,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1795162221,
-          "banners_search_ts": 1795162221,
+          "banners_checked_ts": 1795173030,
+          "banners_search_ts": 1795173030,
           "banners_settled": [
             "phase1",
             "phase1_4",
