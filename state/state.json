@@ -4879,14 +4879,15 @@
       },
       "POYMANSXF877": {
         "first_seen": 1795156821,
-        "gate": "only ennead",
+        "gate": "only ennead, ogc",
         "last_seen": 1795156821,
         "rewards": [
           "Primogem ×20",
           "Geode of Replication ×160"
         ],
         "sources": [
-          "ennead"
+          "ennead",
+          "ogc"
         ],
         "status": "pending"
       },
@@ -5183,7 +5184,7 @@
       "AEONAHA": {
         "first_seen": 1794373819,
         "gate": "redeem-validated",
-        "last_seen": 1795114220,
+        "last_seen": 1795158041,
         "message_id": "1569942408031113268",
         "msg_codes": [
           "AEONAHA"
@@ -9998,7 +9999,7 @@
       "3.4": {
         "calendar": {
           "banners": [],
-          "ts": 1795147235
+          "ts": 1795158041
         },
         "data": {
           "announcement_locked": true,
@@ -10011,9 +10012,9 @@
               "Kafka"
             ]
           },
-          "banners_checked_ts": 1795147235,
-          "banners_search_ts": 1795147235,
-          "calendar_ts": 1795147235,
+          "banners_checked_ts": 1795158041,
+          "banners_search_ts": 1795158041,
+          "calendar_ts": 1795158041,
           "estimate_sources": [
             "version cadence"
           ],
