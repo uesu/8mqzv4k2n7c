@@ -8283,13 +8283,6 @@
       "floor": 1794362701,
       "paused": false,
       "records": {
-        "5616": {
-          "messages": [
-            "1562406496019677245"
-          ],
-          "status": "posted",
-          "ts": 1792576800
-        },
         "5689": {
           "messages": [
             "1568233707511222353"
@@ -8405,11 +8398,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47485496": [
-          1794996034,
-          2,
-          "756c21654f3deeb9"
-        ],
         "47485642": [
           1794997227,
           2,
@@ -8422,18 +8410,11 @@
         ],
         "47505988": [
           1795167030,
-          1,
+          2,
           "7f837819a8edf992"
         ]
       },
       "records": {
-        "47154012": {
-          "messages": [
-            "1562405279096770583"
-          ],
-          "status": "posted",
-          "ts": 1792576806
-        },
         "47171818": {
           "messages": [
             "1563028079922778164"
@@ -10019,7 +10000,7 @@
       "3.4": {
         "calendar": {
           "banners": [],
-          "ts": 1795158041
+          "ts": 1795168847
         },
         "data": {
           "announcement_locked": true,
@@ -10032,9 +10013,9 @@
               "Kafka"
             ]
           },
-          "banners_checked_ts": 1795158041,
-          "banners_search_ts": 1795158041,
-          "calendar_ts": 1795158041,
+          "banners_checked_ts": 1795168847,
+          "banners_search_ts": 1795168847,
+          "calendar_ts": 1795168847,
           "estimate_sources": [
             "version cadence"
           ],
