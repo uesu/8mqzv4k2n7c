@@ -6553,6 +6553,33 @@
         "status": "posted",
         "webhook_fp": "db5f4f8a75a5"
       },
+      "SUNCHASER": {
+        "first_seen": 1795172438,
+        "gate": "redeem-validated",
+        "last_seen": 1795172438,
+        "message_id": "1573292006535340075",
+        "msg_codes": [
+          "SUNCHASER"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1795172438,
+        "rewards": [
+          "Dennies ×30000",
+          "Polychrome ×300",
+          "W-Engine Energy Module ×3",
+          "Senior Investigator Logs ×2"
+        ],
+        "sources": [
+          "ennead",
+          "ogc",
+          "seria"
+        ],
+        "status": "posted",
+        "webhook_fp": "db5f4f8a75a5"
+      },
       "VRELEASE31": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
@@ -10007,10 +10034,22 @@
               "Sunbringer",
               "Robin",
               "Kafka"
+            ],
+            "phase1": [
+              "Sunbringer",
+              "Robin"
+            ],
+            "phase2": [
+              "Kafka",
+              "Alice"
             ]
           },
           "banners_checked_ts": 1795168847,
           "banners_search_ts": 1795168847,
+          "banners_settled": [
+            "phase1",
+            "phase2"
+          ],
           "calendar_ts": 1795168847,
           "estimate_sources": [
             "version cadence"
@@ -10052,10 +10091,10 @@
         ],
         "first_seen": 1794801633,
         "message_id": "1571736727951773787",
-        "mirror_hash": "27f26ea11b87ece1",
+        "mirror_hash": "6f81490d84cceac6",
         "mirror_message_id": "1571736737644810295",
         "mirror_webhook_fp": "db5f4f8a75a5",
-        "payload_hash": "9fd3a2d98b4f85f0",
+        "payload_hash": "797cb971c8843751",
         "posted_at": 1794801633,
         "prov": {
           "b_confirmed": [
@@ -10065,6 +10104,22 @@
           "b_confirmed_by": [
             "wiki"
           ],
+          "b_phase1": [
+            40,
+            1795171990
+          ],
+          "b_phase1_by": [
+            "official"
+          ],
+          "b_phase1_id": "2123731372984672333",
+          "b_phase2": [
+            40,
+            1795172118
+          ],
+          "b_phase2_by": [
+            "official"
+          ],
+          "b_phase2_id": "2123731906000994630",
           "maint_end_ts": [
             9,
             1794801633
@@ -10091,7 +10146,7 @@
           ]
         },
         "status": "posted",
-        "updated_at": 1794834043,
+        "updated_at": 1795172438,
         "webhook_fp": "19991534cf6d"
       }
     }
