@@ -6658,9 +6658,13 @@
           1
         ],
         "posted_at": 1795180224,
-        "rewards": null,
+        "rewards": [
+          "Polychrome ×60",
+          "Denny ×6666"
+        ],
         "sources": [
           "codehub",
+          "ennead",
           "reddit",
           "seria"
         ],
@@ -6706,9 +6710,12 @@
           1
         ],
         "posted_at": 1795179641,
-        "rewards": null,
+        "rewards": [
+          "Polychrome ×50"
+        ],
         "sources": [
           "codehub",
+          "ennead",
           "reddit",
           "seria"
         ],
