@@ -6681,13 +6681,24 @@
       },
       "ZZZHSRCOLLAB": {
         "first_seen": 1794618037,
-        "gate": "only reddit",
-        "last_seen": 1795178427,
+        "gate": "redeem-validated",
+        "last_seen": 1795179641,
+        "message_id": "1573322227099766785",
+        "msg_codes": [
+          "ZZZHSRCOLLAB"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1795179641,
         "rewards": null,
         "sources": [
-          "reddit"
+          "reddit",
+          "seria"
         ],
-        "status": "pending"
+        "status": "posted",
+        "webhook_fp": "db5f4f8a75a5"
       },
       "ZZZINK32": {
         "first_seen": 1790323430,
