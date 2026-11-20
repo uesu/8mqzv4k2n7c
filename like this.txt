@@ -1,0 +1,81 @@
+{
+  "content": "",
+  "tts": false,
+  "flags": 32768,
+  "attachments": [],
+  "embeds": [],
+  "components": [
+    {
+      "id": 174831423,
+      "type": 17,
+      "accent_color": 14922399,
+      "components": [
+        {
+          "id": 342281939,
+          "type": 10,
+          "content": "### <:furinalook:1432330364394668112> Citlali News Disclaimer\nWelcome to Citlali News! In addition to the server's rules, we also follow Discord Community Guidelines, which can be found here: https://discord.com/guidelines\n\n**Community Reminder**\n\nParticipation in Citlali News implies awareness of possible leak-related discussions. If you prefer a spoiler-free experience, you may mute channels labeled with “news” in their titles. \n\n※ Auto moderation ensures that all shared information aligns with ethical and fair use guidelines."
+        },
+        {
+          "id": 334050943,
+          "type": 12,
+          "items": [
+            {
+              "id": 871152354,
+              "media": {
+                "url": "https://cdn.discordapp.com/attachments/1237644609144754197/1446772433099952128/135900519_p0.jpg"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 971202594,
+      "type": 17,
+      "accent_color": 14922399,
+      "components": [
+        {
+          "id": 9645771,
+          "type": 10,
+          "content": "- **I am not part of any leaker groups** and **not connected to anyone who creates or distributes leaks**.\n- I only work **individually** and my purpose is to **repost, archive, and share information** such as news, updates, maintenance alerts, and community insights **for discussion and educational reasons**.\n- Everything I repost comes from **publicly available sources** — either gathered manually or automatically — and **reposting something [does not mean](https://share.google/aimode/PnxyLKiGrPOQXAm0B) I support, endorse, or are associated with the original source**.\n- My posts are *neutral* — meant to **inform**, not to take sides, start arguments, or create conflicts with leakers or other communities.\n- I **do not make leaks** *(creating a private server)*.\n- Everything I share is only for **public conversation, knowledge, and archival convenience**.\n\nThank you for trusting this server as a resource — and please use everything here responsibly."
+        },
+        {
+          "id": 361511721,
+          "type": 12,
+          "items": [
+            {
+              "id": 846095144,
+              "media": {
+                "url": "https://cdn.discordapp.com/attachments/1237644609144754197/1446774556453900470/G5iFn6UbcAER8DT.jpg"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 156253559,
+      "type": 17,
+      "accent_color": 14922399,
+      "components": [
+        {
+          "id": 583407495,
+          "type": 10,
+          "content": "### Purpose of the Server\nCitlali News is a community-curated hub that gathers and shares publicly available information about the following games: \n\n- <:anantaicon:1433240802821406800> Ananta\n- <:genshinimpacticon:1433240965342298143> Genshin Impact\n- <:hsricon:1433241130782163137> Honkai: Star Rail\n- <:hnaicon:1433241273627574322> Honkai: Nexus Anima\n- <:zzzicon:1433241717687189636> Zenless Zone Zero\n- <:wuwaicon:1433242702983467038> Wuthering Waves\n\n※ The goal is to inform, archive, and discuss news, updates, maintenance alerts, and community insights in one place."
+        },
+        {
+          "id": 735800149,
+          "type": 12,
+          "items": [
+            {
+              "id": 377449797,
+              "media": {
+                "url": "https://cdn.discordapp.com/attachments/1237644609144754197/1446772474980204585/136402190_p0.jpg"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
