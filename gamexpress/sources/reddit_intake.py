@@ -17,6 +17,15 @@ Contract (identical to the News-Express reader, round 101):
 * `ok` is the ONLY status that serves a listing, and only for a target that has at least one
   record in the window. Every other state — unset, HTTP error, stale, empty, a target without
   records — returns `None` and the pre-existing redlib / reddit.com chain runs exactly as before.
+* `INTAKE_QUIET_TARGETS=1` (default `0`) changes that last case only, and only in `primary` mode:
+  when the healthy relay has already listed **another target of the same kind** this run, a
+  target with no record is *quiet* — `[]` (no new post) instead of `None` — so the fleet is not
+  contacted for it (the News-Express round 105 semantics: the relay polls every target every
+  5 minutes, so absence there is evidence, not a failed fetch). A relay that lists no target of
+  that kind for this engine — wrong channel, a relay that only polls other subreddits, a target
+  this deployment does not share — keeps the per-target fallback, never a silent empty result.
+  `shadow` and `off` ignore the flag, `[]` still marks the target reachable, and the summary line
+  names the quiet targets.
 * Freshness is measured on RELAY RECORDS, never on arbitrary messages: the operator shares the
   channel with other bots, and webhook messages returned with an empty `content` (Message
   Content Intent missing) must never pass as a healthy relay with zero posts.
@@ -227,9 +236,13 @@ def _unescape_markdown_in_urls(text: str) -> str:
 class IntakeReader:
     """One channel read per run (cached), then in-memory lookups per listing target."""
 
-    def __init__(self, fetcher: Fetcher, settings: Settings) -> None:
+    def __init__(self, fetcher: Fetcher, settings: Settings,
+                 targets: dict[str, list[str] | tuple[str, ...] | set[str]] | None = None) -> None:
         self.fetcher = fetcher
         self.settings = settings
+        # Every target this deployment will ask the relay for, by kind — the quiet mode trusts
+        # absence only for a kind the relay has demonstrably listed (see `_quiet_allowed`).
+        self.targets = targets or {}
         self._result: dict | None = None
         # One channel read per run, also when six games ask at the same instant: the codes
         # pass gathers every `reddit:<sub>` source concurrently, and without the lock each
@@ -238,6 +251,7 @@ class IntakeReader:
         # (prod runs #3925 / #3926, 2026-11-03).
         self._lock = asyncio.Lock()
         self.served: list[str] = []
+        self.quiet: list[str] = []      # targets served as "no new post" by a covered relay
         self.now: float | None = None  # tests pin the clock; production uses time.time()
 
     @property
@@ -256,7 +270,7 @@ class IntakeReader:
                 return self._result
             now = (self.now if self.now is not None else time.time()) if now is None else now
             out: dict = {"status": "unconfigured", "records": [], "seen": 0, "newest_age": None, "pages": 0,
-                         "detail": ""}
+                         "detail": "", "covered": {"sub": False, "user": False}}
             if self.mode == "off":
                 out["status"] = "off"
             elif not self.configured():
@@ -268,7 +282,8 @@ class IntakeReader:
 
     async def _read(self, now: float) -> dict:
         out: dict = {"status": "error", "records": [], "seen": 0, "newest_age": None, "pages": 0, "detail": "",
-                     "update_msgs": 0, "updates": 0, "completed": 0}
+                     "update_msgs": 0, "updates": 0, "completed": 0,
+                     "covered": {"sub": False, "user": False}}
         url = f"{INTAKE_API}/channels/{self.settings.intake_channel_id}/messages"
         headers = {"Authorization": f"Bot {self.settings.discord_bot_token}",
                    "User-Agent": "Game-Express intake reader (+https://github.com)"}
@@ -329,6 +344,7 @@ class IntakeReader:
             by_id.add(pid)
             raw.append((rec, m))
         out["updates"] = len(updates)
+        out["covered"] = self._coverage(raw)
         # 0.0.7: complete cut records / crossposts from `record.json` (CDN, no token, bounded).
         fetched = 0
         for rec, m in raw:
@@ -371,23 +387,64 @@ class IntakeReader:
             out["status"] = "ok"
         return out
 
+    def _targets(self) -> dict[str, set[str]]:
+        """This deployment's own targets by kind, lower-cased — `sub` and `user` only."""
+        return {kind: {str(t).strip().lower() for t in (self.targets.get(kind) or ()) if str(t).strip()}
+                for kind in ("sub", "user")}
+
+    def _coverage(self, raw: list[tuple[dict, dict]]) -> dict[str, bool]:
+        """Which kinds of target the relay has demonstrably listed in this window.
+
+        `raw` holds every seen record, removed ones included: a moderator removing a post is
+        still proof that the relay watches that subreddit. A kind the relay has not listed for
+        this engine stays `False`, so the quiet mode can never hide a target the relay does not
+        actually poll.
+        """
+        want = self._targets()
+        subs = {str(rec.get("sub") or "").strip().lower() for rec, _m in raw}
+        users = {str(rec.get("author") or "").strip().lower() for rec, _m in raw}
+        return {"sub": bool(want["sub"] & subs), "user": bool(want["user"] & users)}
+
+    def _quiet_allowed(self, kind: str, res: dict) -> bool:
+        """May a healthy relay answer `[]` for a target it has no record of? (`INTAKE_QUIET_TARGETS`)
+
+        Only when the operator opted in, only in `primary` mode, only on an `ok` relay, and only
+        for a kind this engine's targets are already listed in: then absence is *quiet* (the relay
+        polls every target every 5 minutes) and the fleet is not contacted for it. Anything else
+        keeps the per-target fallback, because a relay that lists none of these targets may simply
+        not poll them — silence there would be a missed post, not a quiet subreddit.
+        """
+        if self.mode != "primary" or not self.settings.intake_quiet_targets:
+            return False
+        if res.get("status") != "ok":
+            return False
+        return bool((res.get("covered") or {}).get(kind))
+
     async def listing(self, kind: str, target: str) -> list[dict] | None:
         """Relay listing for `r/<target>` (kind `sub`) or `u/<target>` (kind `user`), newest first;
-        `None` whenever the old chain must run (off / shadow / not ok / no record for the target)."""
+        `None` whenever the old chain must run (off / shadow / not ok / no record for the target).
+
+        With `INTAKE_QUIET_TARGETS=1` a covered relay answers `[]` instead of `None` for a target
+        it has no record of — "no new post", not "cannot list"."""
         if self.mode == "off":
             return None
         res = await self.fetch()
         if res["status"] != "ok":
             return None
         key = target.strip().lower()
+        label = f"{'u' if kind == 'user' else 'r'}/{target}"
         if kind == "user":
             hits = [e for e in res["records"] if e["author"].lower() == key]
         else:
             hits = [e for e in res["records"] if e["subreddit"].lower() == key]
         if not hits:
+            if self._quiet_allowed(kind, res):
+                self.quiet.append(label)
+                log.info("[reddit:intake] %s quiet — no new post in the relay window, "
+                         "no fleet request (INTAKE_QUIET_TARGETS=1)", label)
+                return []
             return None
         hits = sorted(hits, key=lambda e: e.get("ts") or 0, reverse=True)
-        label = f"{'u' if kind == 'user' else 'r'}/{target}"
         if self.mode == "shadow":
             log.info("[reddit:intake] SHADOW %s: relay has %d record(s); old chain decides", label, len(hits))
             return None
@@ -401,7 +458,10 @@ class IntakeReader:
         if res is None or res["status"] == "off":
             return ""
         if res["status"] == "ok":
-            served = ", ".join(dedupe(self.served)) or "no target needed Reddit"
+            served = ", ".join(dedupe(self.served))
+            if not served:
+                served = "nothing (all targets quiet)" if self.quiet else "no target needed Reddit"
+            quiet = f"; quiet (no new post) {', '.join(dedupe(self.quiet))}" if self.quiet else ""
             shadow = " (shadow — old chain decided)" if self.mode == "shadow" else ""
             extra = ""
             if res.get("updates"):
@@ -409,6 +469,6 @@ class IntakeReader:
             if res.get("completed"):
                 extra += f", {res['completed']} completed from record.json"
             return (f"📡 reddit intake: relay ok — {len(res['records'])} record(s) in window, newest "
-                    f"{res['newest_age']} s{extra}; served {served}{shadow}")
+                    f"{res['newest_age']} s{extra}; served {served}{quiet}{shadow}")
         detail = f" ({res['detail']})" if res.get("detail") else ""
         return f"📡 reddit intake: relay {res['status']}{detail} — redlib/reddit.com chain used"

@@ -568,6 +568,11 @@ class Settings:
     intake_channel_id: str = ""          # Variable INTAKE_CHANNEL_ID (the intake channel)
     intake_stale_seconds: int = 1800
     intake_lookback_seconds: int = 21600
+    # A healthy relay that already lists another target of the same kind is the listing even for a
+    # target with no record in the window: absence in a 5-minute relay is "quiet", not "missing",
+    # so the fleet is not contacted for it (News-Express round 105 semantics). Off by default: a
+    # relay that does not poll one of this engine's targets would turn a real miss into silence.
+    intake_quiet_targets: bool = False
 
     news_enabled: bool = False
     news_games: set[str] = field(default_factory=set)
@@ -826,6 +831,7 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         intake_channel_id=re.sub(r"\D", "", _env(env, "INTAKE_CHANNEL_ID")),
         intake_stale_seconds=max(60, _int(env, "INTAKE_STALE_SECONDS", 1800)),
         intake_lookback_seconds=max(600, _int(env, "INTAKE_LOOKBACK_SECONDS", 21600)),
+        intake_quiet_targets=_bool(env, "INTAKE_QUIET_TARGETS"),
         show_legend=_bool(env, "SHOW_LEGEND", True),
         repost=_env(env, "REPOST").replace(" ", "").lower(),
         http_timeout=_int(env, "HTTP_TIMEOUT", 20),

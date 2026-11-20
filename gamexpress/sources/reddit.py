@@ -1000,7 +1000,8 @@ class RedditClient:
     tail fallbacks while primary hosts answer, and strict separation between official publisher
     posts and unverified community code corroboration."""
 
-    def __init__(self, fetcher: Fetcher, settings: Settings) -> None:
+    def __init__(self, fetcher: Fetcher, settings: Settings,
+                 targets: dict[str, list[str] | tuple[str, ...] | set[str]] | None = None) -> None:
         self.fetcher = fetcher
         self.settings = settings
         self._subreddit_cache: dict[str, list[dict] | None] = {}
@@ -1011,7 +1012,8 @@ class RedditClient:
         from .reddit_intake import IntakeReader  # local import: the reader imports this module's regexes
 
         # Devvit relay intake (2026-11-02): consulted first by `_gather_listing`; `None` = old chain.
-        self.intake = IntakeReader(fetcher, settings)
+        # `targets` (this run's `sub`/`user` names) only feeds `INTAKE_QUIET_TARGETS`.
+        self.intake = IntakeReader(fetcher, settings, targets)
 
     async def _get_text(self, url: str, **kwargs) -> str | None:
         fn = getattr(self.fetcher, "get_text", None)

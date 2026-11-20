@@ -102,6 +102,12 @@ def test_settings_defaults_and_env_wiring():
     assert (s.intake_reader, s.intake_channel_id, s.intake_stale_seconds, s.intake_lookback_seconds) == \
         ("shadow", "1296308518470549606", 600, 7200)
     assert load_settings({"INTAKE_READER": "bogus"}).intake_reader == "primary"
+    # INTAKE_QUIET_TARGETS: off unless explicitly switched on (`_bool`: 1/true/yes/on/y)
+    assert load_settings({}).intake_quiet_targets is False
+    assert load_settings({"INTAKE_QUIET_TARGETS": "1"}).intake_quiet_targets is True
+    assert load_settings({"INTAKE_QUIET_TARGETS": "On"}).intake_quiet_targets is True
+    assert load_settings({"INTAKE_QUIET_TARGETS": "off"}).intake_quiet_targets is False
+    assert load_settings({"INTAKE_QUIET_TARGETS": "0"}).intake_quiet_targets is False
     # GE_SECRETS_JSON / GE_VARS_JSON carry the two settings without any workflow edit
     s = load_settings({"GE_SECRETS_JSON": json.dumps({"DISCORD_BOT_TOKEN": "t"}),
                        "GE_VARS_JSON": json.dumps({"INTAKE_CHANNEL_ID": "1296308518470549606"})})
@@ -276,6 +282,125 @@ def test_client_serves_relay_first_and_falls_back_per_target():
     assert _run(rc4.subreddit("HonkaiStarRail")) is None
     assert not any("discord.com" in c[0] for c in f4.calls)
     assert "unconfigured" in rc4.intake.summary_line()
+
+
+def test_quiet_targets_skip_the_fleet_only_for_a_kind_the_relay_lists():
+    """`INTAKE_QUIET_TARGETS=1`: a covered relay answers `[]` ("no new post") instead of `None`."""
+    recs = [
+        _rec(id="1xlhsr1", sub="HonkaiStarRail", author="HonkaiStarRail", flair="Official Media",
+             permalink="/r/HonkaiStarRail/comments/1xlhsr1/v/", created=int(NOW) - 120,
+             title="Version 3.9 Special Program Preview"),
+    ]
+    want = {"sub": ["HonkaiStarRail", "AnantaOfficial"], "user": ["HonkaiStarRail", "AnantaOfficial"]}
+
+    # 1. the covered subreddit is served; the same kind without a record is quiet, no fleet request
+    f = _Fetcher(_msgs(recs, [120]))
+    rc = RedditClient(f, _settings(INTAKE_QUIET_TARGETS="1"), targets=want)  # type: ignore[arg-type]
+    rc.intake.now = NOW
+    assert [e["id"] for e in _run(rc.subreddit("HonkaiStarRail")) or []] == ["1xlhsr1"]
+    assert _run(rc.subreddit("AnantaOfficial")) == []
+    assert "r/anantaofficial" in rc.reachable          # quiet is reachable, not unavailable
+    assert all("discord.com" in c[0] for c in f.calls)  # zero redlib / reddit.com requests
+    assert _run(rc.community_codes("AnantaOfficial")) == []   # "no codes", never "unavailable"
+    line = rc.intake.summary_line()
+    assert "served r/HonkaiStarRail" in line and "quiet (no new post) r/AnantaOfficial" in line
+
+    # 2. a user target is trusted only once the relay lists an ACCOUNT -> per-kind coverage
+    f2 = _Fetcher(_msgs(recs, [120]))
+    rc2 = RedditClient(f2, _settings(INTAKE_QUIET_TARGETS="1"),  # type: ignore[arg-type]
+                       targets={"sub": ["HonkaiStarRail"], "user": ["AnantaOfficial"]})
+    rc2.intake.now = NOW
+    assert _run(rc2.subreddit("HonkaiStarRail")) is not None
+    assert _run(rc2.user("AnantaOfficial")) is None            # no account listed -> old chain
+    assert any("discord.com" not in c[0] for c in f2.calls)
+    assert "quiet" not in rc2.intake.summary_line()
+
+    # 3. default off, shadow, off, stale and a reader without targets all keep the per-target
+    #    fallback exactly as before (the stub fleet fails, so the answer is None either way)
+    for kw, targets in [({"INTAKE_QUIET_TARGETS": ""}, want),                        # default: off
+                        ({"INTAKE_QUIET_TARGETS": "1", "INTAKE_READER": "shadow"}, want),
+                        ({"INTAKE_QUIET_TARGETS": "1", "INTAKE_READER": "off"}, want),
+                        ({"INTAKE_QUIET_TARGETS": "1"}, None)]:                      # no targets known
+        settings = _settings(**kw)
+        fx = _Fetcher(_msgs(recs, [120]))
+        rcx = RedditClient(fx, settings, targets=targets)  # type: ignore[arg-type]
+        rcx.intake.now = NOW
+        assert _run(rcx.subreddit("AnantaOfficial")) is None, (kw, targets)
+        assert any("discord.com" not in c[0] for c in fx.calls), (kw, targets)
+    fs = _Fetcher(_msgs(recs, [5000]))            # stale relay: not a listing, quiet or not
+    rcs = RedditClient(fs, _settings(INTAKE_QUIET_TARGETS="1"), targets=want)  # type: ignore[arg-type]
+    rcs.intake.now = NOW
+    assert _run(rcs.subreddit("AnantaOfficial")) is None
+    assert rcs.intake.summary_line().startswith("📡 reddit intake: relay stale")
+
+
+def test_quiet_trusts_a_relay_that_only_removed_a_post():
+    """A removed post is still proof the relay polls that subreddit: quiet, not "fetch it again"."""
+    recs = [_rec(id="1xgone3", sub="AnantaOfficial", removed="moderator")]
+    f = _Fetcher(_msgs(recs, [30]))
+    rc = RedditClient(f, _settings(INTAKE_QUIET_TARGETS="1"),  # type: ignore[arg-type]
+                      targets={"sub": ["AnantaOfficial"], "user": []})
+    rc.intake.now = NOW
+    assert _run(rc.subreddit("AnantaOfficial")) == []
+    assert all("discord.com" in c[0] for c in f.calls)
+    # targets are normalised (case / padding) and absent targets cover nothing
+    reader = ri.IntakeReader(_Fetcher(), _settings(INTAKE_QUIET_TARGETS="1"),  # type: ignore[arg-type]
+                             {"sub": [" AnantaOfficial "], "user": ["", "  "]})
+    assert reader._targets() == {"sub": {"anantaofficial"}, "user": set()}
+    assert reader._coverage([(_rec(sub="anantaofficial", removed="moderator"), {})]) == \
+        {"sub": True, "user": False}
+    assert reader._coverage([]) == {"sub": False, "user": False}
+
+
+def test_quiet_scope_is_game_express_only_and_leak_traffic_proves_nothing():
+    """The shared relay also carries News-Express leak subs (PRs #100/#107); a `*_Leaks` record
+    must never make a Game-Express target look quiet."""
+    leak = [_rec(id="1xleak01", sub="Genshin_Impact_Leaks", author="leaker",
+                 permalink="/r/Genshin_Impact_Leaks/comments/1xleak01/x/", created=int(NOW) - 60)]
+    want = {"sub": ["Genshin_Impact", "AnantaOfficial"], "user": ["genshinimpact"]}
+
+    f = _Fetcher(_msgs(leak, [60]))
+    rc = RedditClient(f, _settings(INTAKE_QUIET_TARGETS="1"), targets=want)  # type: ignore[arg-type]
+    rc.intake.now = NOW
+    assert _run(rc.subreddit("AnantaOfficial")) is None      # leak record grants no coverage
+    assert any("discord.com" not in c[0] for c in f.calls)
+    assert "quiet" not in rc.intake.summary_line()
+
+    # inside the engine's own scope it is trusted
+    f2 = _Fetcher(_msgs(leak + [_rec(id="1xoff01", sub="Genshin_Impact", author="genshinimpact",
+                                     permalink="/r/Genshin_Impact/comments/1xoff01/x/",
+                                     created=int(NOW) - 120)], [60, 120]))
+    rc2 = RedditClient(f2, _settings(INTAKE_QUIET_TARGETS="1"), targets=want)  # type: ignore[arg-type]
+    rc2.intake.now = NOW
+    assert [e["id"] for e in _run(rc2.subreddit("Genshin_Impact")) or []] == ["1xoff01"]
+    assert _run(rc2.subreddit("AnantaOfficial")) == []
+    assert "quiet (no new post) r/AnantaOfficial" in rc2.intake.summary_line()
+
+
+def test_game_express_reddit_scope_is_the_six_official_subs_and_its_accounts():
+    """Scope invariant: Game-Express reads the official subreddits + its accounts, never a leak sub."""
+    from gamexpress.config import load_games
+    from gamexpress.runner import reddit_targets
+
+    targets = reddit_targets(list(load_games().values()))
+    assert targets["sub"] == {"Genshin_Impact", "HonkaiStarRail", "ZZZ_Official", "WutheringWaves",
+                              "HonkaiNexusAnima", "AnantaOfficial"}
+    assert targets["user"] == {"genshinimpact", "HonkaiStarRail", "ZZZ_Official",
+                               "HonkaiNexusAnima", "AnantaOfficial"}
+    assert not [t for t in targets["sub"] | targets["user"] if "leak" in t.lower()]
+
+
+def test_reddit_targets_collects_code_sources_too():
+    """A `reddit:<sub>` code source is a listing target like any other; junk specs are ignored."""
+    from gamexpress.config import Game
+    from gamexpress.runner import reddit_targets
+
+    game = Game(key="x", name="X", short="X", enabled=True, color=0,
+                subreddits=["OfficialSub"], reddit_official=["acct"],
+                codes={"sources": ["reddit:CodesSub", "reddit: OfficialSub ", "reddit:", "x",
+                                   "hoyolab:2", ""]})
+    assert reddit_targets([game]) == {"sub": {"OfficialSub", "CodesSub"}, "user": {"acct"}}
+    assert reddit_targets([]) == {"sub": set(), "user": set()}
 
 
 def _update_msg(age: int, posts: list[dict]) -> dict:
@@ -465,6 +590,9 @@ def test_wiring_is_in_place():
     src = inspect.getsource(rmod.RedditClient._gather_listing)
     assert src.index("await self.intake.listing(kind, target)") < src.index("feed_q = format_reddit_feed_query")
     assert "reddit.intake.summary_line()" in inspect.getsource(runner.run_once)
+    src_once = inspect.getsource(runner.run_once)
+    assert "targets=reddit_targets(games)" in src_once
+    assert callable(runner.reddit_targets)   # the scope builder, covered by its own tests above
     assert isinstance(Fetcher.get_json, object) and time.time() > 0
 
 

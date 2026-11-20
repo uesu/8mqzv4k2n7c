@@ -306,6 +306,25 @@ async def _safe_step(ctx: Ctx, label: str, coro) -> None:
         ctx.errors.append(f"{label} failed: {_summary_text(exc)}")
 
 
+def reddit_targets(games: list[Game]) -> dict[str, set[str]]:
+    """Every Reddit target this run will ask for, by kind — the `INTAKE_QUIET_TARGETS` scope.
+
+    Subreddits come from `Game.subreddits` and from any `reddit:<sub>` code source (both reach the
+    same client and the same relay listing), accounts from `Game.reddit_official`. The scope is
+    Game-Express's own — the six official subreddits plus its publisher accounts — and NEVER a
+    `*_Leaks` subreddit: the shared relay also carries those for News-Express (its PRs #100/#107),
+    and a record from another engine's scope must not make one of these targets look quiet.
+    """
+    subs = {sub.strip() for g in games for sub in g.subreddits if sub and sub.strip()}
+    users = {acct.strip() for g in games for acct in g.reddit_official if acct and acct.strip()}
+    for g in games:
+        for spec in (g.codes or {}).get("sources") or []:
+            kind, _, arg = str(spec).partition(":")
+            if kind.strip().lower() == "reddit" and arg.strip():
+                subs.add(arg.strip())
+    return {"sub": subs, "user": users}
+
+
 async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
                    overrides: dict | None = None, session: aiohttp.ClientSession | None = None) -> Ctx:
     games_all = games_all if games_all is not None else load_games()
@@ -316,8 +335,11 @@ async def run_once(settings: Settings, games_all: dict[str, Game] | None = None,
     try:
         started = time.monotonic()
         fetcher = Fetcher(session, timeout=settings.http_timeout)
-        reddit = RedditClient(fetcher, settings)
-        ctx = Ctx(settings=settings, games=active_games(games_all, settings), state=state, fetcher=fetcher,
+        games = active_games(games_all, settings)
+        # The relay's quiet mode may only trust a target it has demonstrably listed inside this
+        # engine's own scope (`INTAKE_QUIET_TARGETS`; unused when off).
+        reddit = RedditClient(fetcher, settings, targets=reddit_targets(games))
+        ctx = Ctx(settings=settings, games=games, state=state, fetcher=fetcher,
                   webhook=WebhookClient(session, dry_run=settings.dry_run), x=XClient(fetcher, settings),
                   code_sources=CodeSources(fetcher, reddit=reddit), overrides=overrides,
                   now=int(time.time()), reddit=reddit)
