@@ -4148,7 +4148,7 @@
       "ARCHONSANSWERS": {
         "first_seen": 1794803429,
         "gate": "redeem-validated",
-        "last_seen": 1795195834,
+        "last_seen": 1795239621,
         "message_id": "1571744269977391216",
         "msg_codes": [
           "ARCHONSANSWERS"
@@ -9875,8 +9875,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1795228235,
-          "banners_search_ts": 1795228235,
+          "banners_checked_ts": 1795239621,
+          "banners_search_ts": 1795239621,
           "banners_settled": [
             "phase1",
             "phase1_4",
