@@ -6399,6 +6399,16 @@
         ],
         "status": "seeded"
       },
+      "GJ8H3J542K": {
+        "first_seen": 1795232424,
+        "gate": "only reddit",
+        "last_seen": 1795232424,
+        "rewards": null,
+        "sources": [
+          "reddit"
+        ],
+        "status": "pending"
+      },
       "HOLLOWRUN33": {
         "first_seen": 1792729837,
         "gate": "redeem-validated",
