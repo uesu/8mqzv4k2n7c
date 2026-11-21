@@ -6651,7 +6651,7 @@
       "SUNCHASER": {
         "first_seen": 1795172438,
         "gate": "redeem-validated",
-        "last_seen": 1795215643,
+        "last_seen": 1795259425,
         "message_id": "1573292006535340075",
         "msg_codes": [
           "SUNCHASER"
@@ -8595,7 +8595,7 @@
         ],
         "47519586": [
           1795258838,
-          0,
+          1,
           "13146f23a3220989"
         ]
       },
