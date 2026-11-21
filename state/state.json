@@ -4225,7 +4225,7 @@
       },
       "DATG5HG1PL89": {
         "first_seen": 1790323430,
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "rewards": [
           "Mora ×10000",
           "Adventurer's Experience ×10",
@@ -4289,7 +4289,7 @@
         "expired_at": 1795040418,
         "first_seen": 1792758316,
         "gate": "2 independent sources",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "message_id": "1563167785264095293",
         "msg_codes": [
           "EXPERTMITYA"
@@ -4330,7 +4330,7 @@
       },
       "GENSHINGIFT": {
         "first_seen": 1790323430,
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "rewards": [
           "Hero's Wit ×3",
           "Primogem ×50"
@@ -4434,7 +4434,7 @@
         "expired_at": 1795040418,
         "first_seen": 1792757115,
         "gate": "redeem-validated",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "message_id": "1563161402670325781",
         "msg_codes": [
           "HOUROFRUIN"
@@ -4653,7 +4653,7 @@
         "expired_at": 1795040418,
         "first_seen": 1791952819,
         "gate": "redeem-validated",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "message_id": "1559905206463102999",
         "msg_codes": [
           "OKTCV81F9H8D"
@@ -4730,7 +4730,7 @@
         "expired_at": 1795040418,
         "first_seen": 1792759219,
         "gate": "redeem-validated",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "message_id": "1563171493708431512",
         "msg_codes": [
           "PHOTOTIME"
@@ -4918,7 +4918,7 @@
       "QYJW21ZVV5Z8": {
         "first_seen": 1793804444,
         "gate": "only ennead",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -4931,7 +4931,7 @@
       "QYJW92K1DS3X": {
         "first_seen": 1794070836,
         "gate": "only ennead",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -4967,7 +4967,7 @@
       "QYJWQVRI39BE": {
         "first_seen": 1792813821,
         "gate": "only ennead",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "rewards": [
           "Primogem ×60",
           "Adventurer's Experience ×5"
@@ -6471,7 +6471,7 @@
       "INKSHIFT33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -6560,7 +6560,7 @@
       "LEVELUP33": {
         "first_seen": 1792889718,
         "gate": "redeem-validated",
-        "last_seen": 1795248037,
+        "last_seen": 1795291825,
         "message_id": "1563747785272991805",
         "msg_codes": [
           "INKSHIFT33",
@@ -10269,7 +10269,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795280437
+          "ts": 1795291825
         },
         "data": {
           "announcement_locked": true,
@@ -10292,17 +10292,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795280437,
+          "banners_checked_ts": 1795291825,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795280437,
+          "banners_search_ts": 1795291825,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795280437,
+          "calendar_ts": 1795291825,
           "estimate_sources": [
             "version cadence"
           ],
