@@ -4880,7 +4880,7 @@
       "POYMANSXF877": {
         "first_seen": 1795156821,
         "gate": "redeem-validated",
-        "last_seen": 1795203044,
+        "last_seen": 1795246832,
         "message_id": "1573239121873207388",
         "msg_codes": [
           "POYMANSXF877"
@@ -10261,7 +10261,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795235433
+          "ts": 1795246832
         },
         "data": {
           "announcement_locked": true,
@@ -10284,17 +10284,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795235433,
+          "banners_checked_ts": 1795246832,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795235433,
+          "banners_search_ts": 1795246832,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795235433,
+          "calendar_ts": 1795246832,
           "estimate_sources": [
             "version cadence"
           ],
