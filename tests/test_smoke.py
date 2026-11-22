@@ -1708,9 +1708,10 @@ def test_code_card_has_a_redeem_button_per_code_then_the_community_footer():
 
 
 def test_codes_card_artwork_and_headline_emoji_are_configurable():
-    """The card artwork is the design's own GIF: CODES_THUMBNAIL for every game, or a
-    `codes.thumbnail` in games.json for one. Only http(s) is accepted; otherwise the game's icon
-    is used, exactly like before the redesign."""
+    """The card carries two pictures, both the design's own GIFs and both variables — the small one
+    beside the headline (CODES_THUMBNAIL, `codes.thumbnail` for one game; the game icon is the
+    fallback, exactly like before the redesign) and the full-width one under the codes
+    (CODES_MEDIA, `codes.media`; no fallback). Only http(s) is accepted for either."""
     s = settings()
     codes = [{"code": "HOLLOWRUN34", "sources": ["ennead"]}]
     icon = cards.codes_thumbnail(GAMES["zzz"], s)
@@ -1727,6 +1728,31 @@ def test_codes_card_artwork_and_headline_emoji_are_configurable():
     game = replace(GAMES["zzz"], codes={**GAMES["zzz"].codes,
                                                     "thumbnail": "https://cdn.example.gg/zzz.gif"})
     assert cards.codes_thumbnail(game, s) == "https://cdn.example.gg/zzz.gif"
+    # the full-width picture: a media gallery between the codes and the hint, no divider there
+    pic = "https://cdn.example.gg/big.gif"
+    p = cards.codes_payloads(GAMES["zzz"], codes, settings(CODES_MEDIA=pic),
+                             settings().ping("codes", "zzz"), LIVE_NOW)[0]
+    box = p["components"][0]["components"]
+    assert [c["type"] for c in box] == [9, 14, 9, 12, 10, 14, 9]
+    assert box[3] == {"type": 12, "items": [{"media": {"url": pic}}]}
+    assert not cards.validate_payload(p)
+    # per-game artwork beats the variable here too, and a bad URL leaves no gallery at all
+    game = replace(GAMES["zzz"], codes={**GAMES["zzz"].codes, "media": "https://cdn.example.gg/zzz.gif"})
+    assert cards.codes_media(game, settings(CODES_MEDIA=pic)) == "https://cdn.example.gg/zzz.gif"
+    for bad in ("", "javascript:alert(1)", "big.gif", "data:image/gif;base64,AAA"):
+        assert settings(CODES_MEDIA=bad).codes_media == ""
+    nocode = cards.codes_payloads(GAMES["zzz"], codes, settings(CODES_MEDIA="big.gif"),
+                                  settings().ping("codes", "zzz"), LIVE_NOW)[0]
+    assert not [c for c in nocode["components"][0]["components"] if c["type"] == 12]
+    assert [c["type"] for c in nocode["components"][0]["components"]] == [9, 14, 9, 14, 10, 14, 9]
+    assert not cards.validate_payload(nocode)
+    # ten codes + both pictures + the footer is exactly Discord's 40 components
+    many = [{"code": f"CODE{i:04d}X", "sources": ["ennead"]} for i in range(10)]
+    s10 = settings(CODES_MEDIA=pic)
+    parts = cards.codes_payloads(GAMES["zzz"], many, s10, s10.ping("codes", "zzz"), LIVE_NOW)
+    assert len(parts) == 1 and cards.codes_chunk_size(GAMES["zzz"], s10) == cards.CODES_PER_CARD
+    assert not cards.validate_payload(parts[0])
+    assert len([c for c in parts[0]["components"][0]["components"] if c["type"] == 12]) == 1
     # a game with neither icon nor artwork gets a plain text block, not a broken accessory
     bare = replace(GAMES["zzz"], icon="", codes={})
     assert cards.codes_thumbnail(bare, settings()) == ""

@@ -448,10 +448,19 @@ CODES_FOOTER_NOTE = "-# Delivering news and official updates"
 
 
 def codes_thumbnail(game: Game, settings: Settings) -> str:
-    """Artwork on a codes card: a per-game `codes.thumbnail` wins, then CODES_THUMBNAIL, then the
-    game's own icon (which is what every card used before the 2026-11-22 design)."""
+    """Artwork beside the codes headline: a per-game `codes.thumbnail` wins, then CODES_THUMBNAIL,
+    then the game's own icon (which is what every card used before the 2026-11-22 design)."""
     for url in (str(game.codes.get("thumbnail") or "").strip(), settings.codes_thumbnail,
                 game.icon or ""):
+        if safe_url(url):
+            return url
+    return ""
+
+
+def codes_media(game: Game, settings: Settings) -> str:
+    """The full-width picture under the codes: a per-game `codes.media` wins over CODES_MEDIA.
+    Unlike the headline artwork there is no fallback — a card without one simply has no gallery."""
+    for url in (str(game.codes.get("media") or "").strip(), settings.codes_media):
         if safe_url(url):
             return url
     return ""
@@ -515,9 +524,13 @@ def codes_card(game: Game, chunk: list[dict], settings: Settings, ping: Ping, de
                 btn = link_button("Redeem", game.redeem_url.format(code=quote(c["code"])),
                                   settings.emoji.get("redeem_button"))
             children.append(section([body], btn) if btn else text(body))
-        children.append(sep())
     else:                                   # never posted in practice, but a card must stay valid
         children.append(text("No codes."))
+    # The design's full-width picture sits between the codes and the hint, where the cards that
+    # have no picture keep their divider. A gallery needs 1-10 items, so it is only ever added
+    # with a URL that survived safe_url().
+    picture = codes_media(game, settings)
+    children.append(gallery([picture]) if picture else sep())
     live = [c for c in chunk if not c.get("expired")]
     # Hint and source share one quiet block under the codes (they were two separate blocks).
     hint = game.codes.get("redeem_hint")

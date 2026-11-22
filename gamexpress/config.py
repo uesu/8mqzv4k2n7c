@@ -544,7 +544,8 @@ class Settings:
     state_path: Path
     extra_buttons: list[dict]
     community_buttons: list[dict]
-    codes_thumbnail: str        # CODES_THUMBNAIL — artwork on every codes card ("" = game icon)
+    codes_thumbnail: str        # CODES_THUMBNAIL — artwork beside the codes headline ("" = game icon)
+    codes_media: str            # CODES_MEDIA — full-width picture under the codes ("" = none)
     emoji: dict[str, dict | None]
     show_legend: bool
     repost: str
@@ -796,12 +797,15 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
     if _env(env, "COMMUNITY_BUTTONS", "").strip().lower() in ("none", "off", "-", "0", "false"):
         community = []
     emoji = {k: parse_emoji(_env(env, f"EMOJI_{k.upper()}", v) or v) for k, v in DEFAULT_EMOJI.items()}
-    # CODES_THUMBNAIL: the artwork on every codes card (the design's own GIF). Only an absolute
-    # http(s) URL is accepted — anything else is dropped, so a typo can never reach Discord's
-    # accessory and get the whole card rejected. A per-game `codes.thumbnail` wins over it.
-    codes_art = _env(env, "CODES_THUMBNAIL").strip()
-    if not codes_art.lower().startswith(("http://", "https://")):
-        codes_art = ""
+    # CODES_THUMBNAIL / CODES_MEDIA: the two pictures on every codes card — the small one beside the
+    # headline and the full-width one under the codes (the design's own GIFs). Only an absolute
+    # http(s) URL is accepted; anything else is dropped, so a typo can never reach Discord and get
+    # the whole card rejected. A per-game `codes.thumbnail` / `codes.media` wins over them.
+    def _picture(name: str) -> str:
+        url = _env(env, name).strip()
+        return url if url.lower().startswith(("http://", "https://")) else ""
+
+    codes_art, codes_pic = _picture("CODES_THUMBNAIL"), _picture("CODES_MEDIA")
     state_path = Path(_env(env, "STATE_PATH")) if _env(env, "STATE_PATH") else DEFAULT_STATE_PATH
     return Settings(
         env=env,
@@ -825,6 +829,7 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         extra_buttons=extra,
         community_buttons=community,
         codes_thumbnail=codes_art,
+        codes_media=codes_pic,
         emoji=emoji,
         countdown_estimates=_bool(env, "COUNTDOWN_ESTIMATES", True),
         program_media=_bool(env, "PROGRAM_MEDIA", True),
