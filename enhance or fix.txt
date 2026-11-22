@@ -1,0 +1,1139 @@
+{"v":1,"id":"1y2dxhl","sub":"WutheringWavesLeaks","title":"Wuthering waves 4.x Official interview","permalink":"/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","url":"https://www.reddit.com/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","created":1795313781,"author":"Cute_River_3852","flair":":MR6:  Official","distinguished":null,"spoiler":false,"nsfw":false,"score":12,"comments":1,"removed":null,"xpost":null,"media":[],"body":"I advise people to read this article cause it has a lot of insight to wuthering waves development and 4.x itself especially surrounding story stuff as well\n\n**Exclusive Interview with Kuro Games: Wuthering Waves Chooses a \"Hell Mode Start\" for 2027** By Qiuqiu\n\n**\"If the mountain will not come to me, then I shall go to the mountain.\"**\n\nAs the end of the year approaches, you can almost smell the tension building for the upcoming battle among Chinese anime-style games. Take a closer look, and you'll find that every publisher is already preparing for the competition. High-quality games of various genres are lining up for release, while established live-service titles aren't slowing down either, with major version updates, collaborations, and crossover content arriving one after another.\n\nAnd now, on November 21, Wuthering Waves has released a gameplay preview for its annual story chapter, Wuthering Waves: Embers of the Everbright.\n\nUnlike previous versions, which explored Chinese-inspired and classical themes, the opening of the New Federation storyline takes a Western-inspired direction. The new region features a more distinctive landscape, and, for the first time, introduces an entirely new mecha-based 3C experience that is closely integrated with the map and gameplay.\n\nhttps://i.redd.it/hvsluodja23i1.gif\n\nhttps://i.redd.it/h1wznzzna23i1.gif\n\nFor Wuthering Waves players, mechs aren't exactly unfamiliar. After all, I previously brought you the first hands-on look at the \"one-handed mech\" back in Version 3.3. Whether it was the massive mech used by the Exostrider or the mech belonging to the protagonist's villainous counterpart, Singulorum, both left plenty of players eager to see these concepts become actual gameplay features.\n\nhttps://i.redd.it/u3mixqpsa23i1.gif\n\nhttps://i.redd.it/gqm0lmcva23i1.gif\n\nWell, now Kuro has done more than simply make mechs a reality. It has turned them into an open-world vehicle system available to everyone. They have abilities, can fight, and can assist players in combat. Their appearance also bears a striking resemblance to Singulorum's mech, and they come with dedicated themed gameplay.\n\nhttps://i.redd.it/o23i6jyya23i1.gif\n\nhttps://preview.redd.it/pshfucm0b23i1.jpeg?width=1073&format=pjpg&auto=webp&s=c0aae52c5e00523b9d9d1b589560809cbfe163b3\n\nWhat was once a showcase of technical ambition has now become a core part of the new version's gameplay.\n\nOn November 18, Kuro also released a specially produced 2D frame-by-frame animated teaser, revealing seven new characters in one go. The short animation showcased the New Federation's story, environments, and characters, while incorporating comic-book halftone shading, pop-art color blocks, and a vintage print aesthetic.\n\nhttps://i.redd.it/qupmckzib23i1.gif\n\nhttps://i.redd.it/onwbup5kb23i1.gif\n\nJust looking at the art style might leave you wondering: Is this really Wuthering Waves? Yes, this is Wuthering Waves: Embers of the Everbright\n\nThat's right. For the first time, Kuro has introduced an annual story chapter title that will run throughout the year: Embers of the Everbright. As I write this article, it seems that the familiar 1.X, 2.X, and 3.X numbering system we've used to describe the different eras of Wuthering Waves may be coming to an end. The New Federation's story and content will also have a much more distinctive annual theme.\n\nhttps://i.redd.it/n6agdmavb23i1.gif\n\nLooking back at Version 2.0, then 3.0, and now 4.0, Kuro appears to be charging ahead with increasingly ambitious changes, repeatedly rebuilding the game's underlying systems. Doing this once or twice could be considered bold. But when an entire series of major updates follows the same approach, it raises an interesting question: Has Kuro developed a mature product strategy built around becoming more ambitious the longer the game operates?\n\nWith these questions in mind, I recently visited Kuro Games' headquarters and spoke with Luke, a level designer for Wuthering Waves, and Yunyunyun, the head of the narrative writing team.\n\n**1. Why Introduce a New 3C Experience Every Year?**\n\n**Putaojun: From gliding to motorcycles, and now to mechs, why does every major version introduce something that breaks away from the game’s existing underlying design?**\n\nLuke: When it comes to open-world exploration, we want each year’s new content to provide players with an entire year of fresh experiences.\n\nExploration and traversal are a major part of that enjoyment. Walking, riding a motorcycle, or flying directly to your destination all provide completely different experiences. Even the process of travelling from Point A to Point B should be fun in itself.\n\nOf course, introducing a new 3C system inevitably challenges the underlying design of each major version of Wuthering Waves. How do we make it work within an open world? How do we explore areas that very few developers have attempted before? The entire process is both exciting and painful\n\nhttps://i.redd.it/wsucv87ec23i1.gif\n\n**Putaojun: How much of the experience you’ve accumulated over the years can actually be reused? Does your efficiency when it comes to “tearing everything down and rebuilding it” improve over time?**\n\nLuke: The code still has to be rewritten almost from scratch. What we can reuse is mainly the design experience we’ve accumulated.\n\nFor example, we can look back at the gameplay systems we adapted for gliding, as well as ideas we wanted to implement but couldn’t at the time. Some of those ideas might finally become possible with the mech system.\n\nWe can also draw on previous experience when considering how to help players notice points of interest (POIs) in the open world while travelling at high speeds.\n\nHowever, when it comes to development efficiency, if we continue using the same exploration system, development will certainly become much faster because we only need to iterate on what already exists.\n\nBut developing an entirely new 3C system still means starting from scratch. For example, it’s difficult to reuse the design experience from motorcycles when developing mechs because their intended use cases are completely different.\n\nAs you may have noticed in today’s gameplay preview, the new version also introduces underwater environments. There is even less existing experience we can draw on in this area.\n\nIf we count from the preliminary research stage, mech development has already taken more than a year, almost matching the development timeline of the New Federation itself.\n\n**Putaojun: What challenges did you encounter during development?**\n\nLuke: Even now, we’re still debating how far we should take the mech system.\n\nWe faced a similar situation when developing the motorcycle vehicle system. Initially, we had an idea of how difficult development would be, but as we continued working on it, the challenges exceeded our expectations. We had to constantly evaluate and adjust our plans.\n\nWe want the mech to feel intuitive to players and deliver the excitement of piloting one. At the same time, it needs to integrate naturally with the rest of the game’s content.\n\nWe don’t want players to simply think, “Oh, the mech looks cool,” and leave it at that.\n\nYunyunyun: I think the most difficult part was deciding to pursue the idea in the first place.\n\nWe often asked ourselves: If everyone thinks mechs are cool and fun, why hasn’t anyone else made them? Is this actually something we can achieve?\n\nDuring the early stages, there was a period of self-doubt before we finally made the decision to move forward.\n\n**Putaojun: Why do you think other developers haven’t made something like this?**\n\nLuke: First, there’s the challenge of imagination.\n\nAnime and movies have already explored all kinds of mech designs, so we need to find ways to push beyond what’s already been done.\n\nFor example, we’ve already created Gundam-style mech combat in Version 3.3, during the battle between the Exostrider and Aleph-1.\n\nBut what if we created a more agile mech that could freely navigate different types of terrain? What else could players do with it? How could we introduce more interactions? How could we integrate it with existing gameplay systems and level designs?\n\nhttps://i.redd.it/893u355ee23i1.gif\n\nCompared with that, gliding is more like a straightforward traversal tool. Its main purpose is to help players travel quickly from Point A to Point B.\n\nDeveloping the mech is almost like creating an entirely new mech game within Wuthering Waves.\n\nThe second challenge is the sheer amount of freedom it provides.\n\nGliding was designed around inertia and parabolic movement. The Expedition Motorbike was also based on a real-world vehicle prototype, with fantasy elements such as double jumps and flying added on top.\n\nBut mechs don’t have any real-world prototypes. They’re purely fictional. We’ve even given them the ability to hover, meaning they can theoretically move in almost any direction without restrictions.\n\nThis level of freedom has a significant impact on existing level design and open-world systems.\n\nAs you can see in today’s gameplay preview, there are still some streaming and loading issues in the environment that we’re working to resolve.\n\nThe mech moves too quickly, which means the map has to constantly load a massive number of Actors (objects within the environment). This puts enormous pressure on performance.\n\nAt the same time, we need to ensure that players can still identify resources and points of interest while moving at high speeds.\n\nhttps://i.redd.it/kjm7p5ppe23i1.gif\n\nAnd there’s another complication: the mech can fight.\n\nOnce players climb into a mech, how could we possibly leave out arm cannons and missiles? And if I already have all these weapons, wouldn’t I naturally want to fire them at the enemies in front of me?\n\nhttps://i.redd.it/amk5p22ze23i1.gif\n\nSo we have to consider things from the player’s perspective.\n\nAfter obtaining a mech, what would players expect to do with it? Which expectations must we fulfil, and where do we have to make compromises?\n\nOnce the mech was integrated into actual version development, we discovered quite a few problems and went through many rounds of iteration.\n\n**Putaojun: You mentioned the Asset streaming issues earlier. What solutions are you currently exploring?**\n\nLuke: Let me give you an example.\n\nPreviously, flight had a normal speed of around 20 metres per second, with acceleration bringing it to approximately 30 metres per second.\n\nThat was already close to the streaming limit of the Rinascita version at the time. Going any faster would cause serious problems with loading the environment.\n\nWhen we developed the Expedition Motorbike, we felt that it should be faster, so we asked our programming colleagues to challenge that limit again.\n\nAnd they succeeded! (Laughs.)\n\nOur amazing programmers managed to raise the streaming limit to 35 metres per second. A huge thanks to our amazing programming team!\n\nAs for the mech, we set out from the beginning to break through a new limit. We even wanted to push beyond that new limit once we reached it.\n\nUnfortunately, that attempt failed.\n\nSince we didn’t succeed this time, we’ll just have to try again next time…\n\n**Putaojun: How does the map design accommodate the mech system?**\n\nLuke: In the new version, we’ve designed the map around a particularly tall peak, which serves as the central visual landmark of the Buffalo Rock.\n\nThere are also some strange, hollow mountains that resemble eggshells. When players are flying and spot one of these enormous structures in the distance, they’ll naturally wonder whether something is hidden inside and want to explore it.\n\nThe mech can also interact with vegetation, trees, and animals.\n\nWe’ll also retain some of the features that worked well on the motorcycle. For example, the vehicle radio system will carry over to the mech.\n\nhttps://i.redd.it/1rwgqkanf23i1.gif\n\n**Putaojun: Will the mech influence the mobility design of individual characters? How do you approach the role of character mobility?**\n\nYunyunyun: For us, a character’s animations and movement should serve their characterisation.\n\nTake Lynae, for example. Her character concept has a trendy and athletic feel, so even though the game already had the Expedition Motorbike at the time, we still designed a roller-skating movement style for her.\n\nhttps://i.redd.it/n5hmvrh1g23i1.gif\n\nLuke: There’s also Lucielle. She has a little companion named Moby, a small Canglong, which she rides during combat.\n\nThey fight together, and we incorporate that relationship into other aspects of her design as well.\n\nA character’s 3C features and mobility design should ultimately come from their personality, background, and narrative.\n\nhttps://i.redd.it/6pb72qh9g23i1.gif\n\n**Putaojun: Are these developments related to your previously announced plan to restructure the game’s underlying code architecture? Why did you decide to replace the entire codebase? Almost no other games have dared to do something like this.**\n\nLuke: They are related to some extent, but the main reason for updating the codebase was performance optimisation.\n\nWe actually started this work quite early because it was something we couldn’t afford to delay. The longer we waited, the more difficult the process would become.\n\nIf we waited until the sixth or seventh year of Wuthering Waves to restructure everything, it would be terrifying.\n\nEven so, our programmers faced enormous challenges. Throughout the process, they had to maintain both the JS and C# codebases simultaneously to ensure that development could continue normally.\n\nOur internal editors and development tools also needed to be adapted all over again. It was essentially double the workload.\n\nWhy was this necessary?\n\nOn one hand, we had already recognised the performance and resource pressures that come with long-term operation, so we needed to address them in advance.\n\nFor example, we’re currently working on resource segmentation, loading individual map regions, and HLOD (Hierarchical Level of Detail) optimisations for different devices.\n\nWe’re also exploring ways to let players clear map resources they’ve already explored, preventing the game’s overall file size from growing indefinitely.\n\nOn the other hand, I think our willingness to take on something like this also comes from Kuro’s character. (Laughs.)\n\nThe new C# codebase provides better support for hot updates, allowing us to resolve certain issues more quickly.\n\nIf we come up with a better solution, implement it, and see significant improvements, why shouldn’t we do it?\n\nEventually, everyone reached an agreement.\n\nhttps://preview.redd.it/emrewkqlg23i1.jpeg?width=1080&format=pjpg&auto=webp&s=186bd231460125bcf3a6a86bb44fa6ee6dbb900b\n\n**2. An Annual Story Chapter and More Ambitious Exploration**\n\n**Putaojun: I’m curious. Rebuilding an entire open-world exploration system is already a huge undertaking, but why did you also announce an entirely new annual story chapter, “Embers of the Everbright”? How is it different from previous major versions?**\n\nYunyunyun: First, looking at the name itself, the New Federation adventure will be a story that unfolds over an entire year, with different parts of the narrative connected to one another.\n\nSo calling it an “annual story chapter” is quite appropriate.\n\nWe gave it the name “Embers of the Everbright” based on the overall tone of the story throughout the year.\n\nCompared with conventional version numbers or names based on geographical regions, this title better represents the imagery and themes within the game.\n\nIt also gives the impression that Wuthering Waves is beginning a new annual expansion.\n\n**Putaojun: What else makes this annual chapter different? For example, why did you choose an American comic-book style, frame-by-frame animation for the characters’ initial reveal this time?**\n\nYunyunyun: This is related to how we communicate the content to players.\n\nWe aren’t restricted to either 2D or 3D presentation. For example, in Version 3.1, we experimented with combining both styles to convey the story and its emotions.\n\nThe same applies to the New Federation.\n\nWe wanted to explore more visual styles, and ultimately chose the American comic-book aesthetic because it fits the Western-inspired theme of the New Federation’s opening.\n\nhttps://i.redd.it/bdluzv77h23i1.gif\n\n**Putaojun: What challenges did you encounter during production? Were there any parts of the PV that required repeated revisions and refinement?**\n\nYunyunyun: At the time, the appearances of Lucielle and Anna were particularly difficult to handle.\n\nThey are characters who appear relatively early in the story and are connected to many subsequent plot developments. Showing too much of them could spoil future events, but showing too little wouldn’t work either.\n\nSo we repeatedly went through the script, looking for scenes that could effectively convey their personalities while also leaving a strong visual impression.\n\nhttps://i.redd.it/rcowo90yh23i1.gif\n\nFor example, Lucielle has very distinctive Western elements in her design: a cowboy hat, boots, and leather clothing. These details allow players to immediately get a sense of the new version’s overall style.\n\nWe originally wanted to give her more screen time, but to preserve the experience of the later story, we ultimately chose the opening scene where she flies through the sky alongside a missile.\n\nAnna, on the other hand, is connected to the transition between the old and new Federations.\n\nWe wanted her to be a character with extensive experience, someone who could offer assistance to players and make them feel reassured.\n\nThat’s why the PV ultimately ends with a scene of Anna getting off a vehicle and heading towards a certain area.\n\nWhat are the causes and consequences for this scenes\n\nYou have to wait and see.\n\n**Putaojun: However, the two characters behave quite differently in the gameplay preview. Could you elaborate on their character designs? For example, Anna’s weapon can transform.**\n\nYunyunyun: Regarding Anna… First of all, we have to respect Wuthering Waves’ identity as an action game.\n\nGiving her only one weapon form simply wouldn’t feel exciting enough.\n\nOnce we had settled on that direction, we started thinking about what kind of weapon would suit her.\n\nAnna isn’t exactly a traditional fighter, so we wanted to incorporate something more imaginative.\n\nWe combined the flower motif in her character concept with her overall impression of being dangerous, beautiful, and authoritative.\n\nIn the end, we chose two weapon forms: a lance and a scythe.\n\n**Putaojun: I also noticed many landmarks in the gameplay preview, including a large bridge and a strangely designed town. How do you approach environmental design to match the setting?**\n\nLuke: This strangely designed town is an area that was affected by the Resonator War a hundred years ago. It has since become a ruin.\n\nYou can see many modern buildings from the old Federation era gradually merging with the surrounding mountains and vegetation.\n\nAs for the bridge, it originally connected to the Federation City, but it has since been destroyed.\n\nThere’s also a cannon hidden underneath one of its pillars.\n\nIn other words, it isn’t just a transportation structure. It was also a war machine in its own right.\n\nThrough this kind of environmental storytelling, we want players to understand just how devastating the war was without having to explain everything through text.\n\nIt also leaves more room for players to imagine what happened in the past.\n\n\\*\\*3. Compromises and Convictions\n\nPutaojun: We’ve discussed quite a lot of new content. I’m curious how you balance your resources when you’re simultaneously updating the current version and developing content for the next several years.\\*\\*\n\nYunyunyun: This mainly comes down to project management.\n\nWe have dedicated project management colleagues responsible for scheduling. They let everyone know when certain content needs to be submitted and when work on new features should begin.\n\nOur development process is also quite agile.\n\nSometimes, when we’re out eating, watching a movie, or listening to music, we suddenly get an idea. Everyone quickly reaches out to other colleagues to discuss how that inspiration could be turned into something practical.\n\n**Putaojun: So how does an idea actually become a finished feature? How do the different teams collaborate internally?**\n\nYunyunyun: From the IP team’s perspective, we generally don’t start by asking for a particular gameplay feature.\n\nInstead, we first consider what kind of experience and story we want players to have in that version.\n\nFor example, where will the Rover travel? What enemies will they encounter? What companions will they meet along the way?\n\nWe first condense these ideas into a simple concept, then discuss and refine them together with the gameplay, cinematics, music, and level design teams.\n\nFinally, we combine everyone’s ideas into a complete narrative experience for players.\n\n**Putaojun: But doesn’t this create a potential problem? Every version involves travelling to a new place and meeting new people while experiencing different events. Won’t the content eventually start feeling repetitive?**\n\nYunyunyun: Honestly, this isn’t something we’re particularly worried about.\n\nThe basic structures of stories are inherently limited. Humanity has been telling stories for thousands of years, and many themes and plotlines have already been explored repeatedly.\n\nBut we’re making a game, not simply writing a story synopsis.\n\nThe IP team has its own interpretation of a story, while the cinematic, music, and gameplay teams bring their own ideas to it.\n\nWhen players actually step into the world and experience the story themselves, they may feel something entirely different.\n\nWhether it’s the stories of Lahai-Roi, Xuanfang, or the future New Federation, the IP team determines the content of each version through an overall collaborative process.\n\nWe then work closely with the cinematic, music, gameplay, and other teams to refine everything and present it to players in the best form we can achieve.\n\nEven if we’re telling stories about sadness, there can be many different kinds of sadness. And even if we’re telling stories about happiness, there can be many different kinds of joy.\n\nI think that’s the meaning of having a group of people come together to make a game.\n\n**Putaojun: When everyone has creative ideas, how do you decide which ones should be implemented and which ones shouldn’t?**\n\nYunyunyun: From the IP team’s perspective, there are two things we value most: consistency and freshness.\n\nFreshness is easy to understand. We want every version to offer players something new.\n\nConsistency, on the other hand, is a fundamental requirement of our internal development process.\n\nFor example, if a version has a particularly serious theme, the narrative, level design, and cinematics teams shouldn’t suddenly introduce something that feels completely out of place.\n\nThe same applies to characters.\n\nWe sometimes even give our colleagues a slightly chuunibyou-style method of thinking about this.\n\nIf you want a character to do something, imagine that they’re sitting right in front of you. Now, go and convince them to do it. Would they actually agree?\n\nFor example, what would happen if you tried to convince Phoebe to go fishing out at sea?\n\nLuke: Over time, our colleagues across different departments have developed a certain understanding and rhythm when it comes to development.\n\nOnce we receive the IP setting documents, we proactively examine the details and consider whether something fits the character and the world before deciding how to implement it.\n\n**Putaojun: Have there been any particularly ambitious ideas that required repeated adjustments before they could actually be implemented?**\n\nLuke: There’s one design that left a particularly deep impression on me.\n\nWhen we were developing the major battle in Version 2.7, we wanted to create a boss fight where every character gathered together and fought simultaneously.\n\nAt the time, I thought the scene might become a little chaotic, but it would definitely convey the intensity and excitement of a final battle.\n\nUnfortunately, reality got in the way.\n\nThe technical challenges involved in implementing this idea were enormous.\n\nThe character models in Wuthering Waves have a very high level of detail. Even after optimising the models of all the characters who would appear, we still couldn’t fully resolve the preloading and device performance issues.\n\nThis would directly affect the smoothness of combat.\n\nHowever, we eventually came up with another way to present the idea.\n\nWe retained the concept of having everyone participate in the battle, but used QTEs to bring certain characters into the fight at specific moments.\n\nThis allowed us to preserve the feeling of an all-out team battle while ensuring that combat remained smooth and satisfying.\n\nThe final implementation was also well received by many players.\n\nSo although we didn’t achieve our original vision for this particular “challenge”, we still ended up with a very good result.\n\n**Yunyunyun: One scene that left a deep impression on me was the sequence where the Rover and Hiyuki chase after Denia.**\n\nDeveloping this section was quite painful for us. We made numerous adjustments to the level design and balance.\n\nInitially, we envisioned an intense chase where Denia would almost get caught but ultimately manage to escape. We wanted to create a rather complicated emotional experience.\n\nWe spent a lot of time thinking about how to create tension and made many adjustments.\n\nFor example, since Denia is the one being chased, should she be able to control the player’s camera? And if so, to what extent?\n\nThe same questions applied to Hiyuki.\n\nAs the Rover’s companion, how should she support and assist the Rover during the chase?\n\nAnd what should we do if certain design choices interfere with the player’s controls?\n\nThe version players eventually experienced was the result of many iterations and compromises made while addressing questions like these.\n\n**Putaojun: On the other hand, you also seem to enjoy adding details that players might not even notice. Why continue investing in things that may not bring much obvious benefit?**\n\nLuke: Players have very different interests and goals in Wuthering Waves.\n\nThere are all kinds of players. Some enjoy experiencing the story, while others prefer exploring the world.\n\nWe want to leave little surprises for different types of players, even within the limited time we have.\n\nFor example, during the major battle in Lahai-Roi, we asked ourselves how we could create a final battle that matched the region’s themes and the characteristics of its characters, especially since we had already created a climactic battle that suited Rinascita’s story.\n\nEventually, our quest design colleagues worked with us to come up with a way to mobilise the entire map.\n\nIf players simply want to rush through the main story, there’s a way to progress quickly.\n\nBut if they’re willing to explore their surroundings, they can also find other characters and discover additional content.\n\nAs for why we continue doing these things…\n\nIf we thought that the corners of the game that players are less likely to notice could simply be handled carelessly, then perhaps that wouldn’t really be the Wuthering Waves way of doing things.\n\n**Putaojun: To wrap things up, would you say Kuro is a company driven more by creativity or by project management?**\n\nLuke: I would say we’re still primarily driven by creativity.\n\nAlthough we have structured project management processes, there are times when the development team is willing to break those rules for a good idea.\n\nSome features are genuinely difficult to implement and may exceed our original development expectations.\n\nBut if everyone believes that something is worth making, we’ll still try to find a way to do it.\n\nThis process also puts a lot of pressure on project management, so I’d really like to thank our project management colleagues for their support and hard work.\n\nYunyunyun: I don’t think these two things conflict with each other.\n\nProject management actually helps us evaluate our creative ideas more effectively.\n\nFrom the moment an idea is proposed to the point where it’s finally implemented, it may go through many rounds of discussion and refinement.\n\nThroughout this process, we constantly ask ourselves: Is this really necessary? Is it worth investing so much time and effort?\n\nIf we’re not even fully committed to an idea ourselves, perhaps that means it isn’t quite good enough yet.\n\nBut conversely, if we genuinely believe that an idea has value, we’ll still want to bring it to life as much as possible, even if implementation is extremely difficult.\n\nFor example, when players see things in Wuthering Waves that seem like they shouldn’t belong in the game, but somehow end up working incredibly well, almost all of those features are things we insisted on pursuing.\n\nThe mech system this time is one such example.","bodyTruncated":false,"full":true,"edited":true,"xpostPermalink":null,"video":null,"parent":null}
+
+{"v":1,"id":"1y2dxhl","sub":"WutheringWavesLeaks","title":"Wuthering waves 4.x Official interview","permalink":"/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","url":"https://www.reddit.com/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","created":1795313781,"author":"Cute_River_3852","flair":":MR6:  Official","distinguished":null,"spoiler":false,"nsfw":false,"score":12,"comments":1,"removed":null,"xpost":null,"media":[],"body":"I advise people to read this article cause it has a lot of insight to wuthering waves development and 4.x itself especially surrounding story stuff as well\n\n**Exclusive Interview with Kuro Games: Wuthering Waves Chooses a \"Hell Mode Start\" for 2027** By Qiuqiu\n\n**\"If the mountain will not come to me, then I shall go to the mountain.\"**\n\nAs the end of the year approaches, you can almost smell the tension building for the upcoming battle among Chinese anime-style games. Take a closer look, and you'll find that every publisher is already preparing for the competition. High-quality games of various genres are lining up for release, while established live-service titles aren't slowing down either, with major version updates, collaborations, and crossover content arriving one after another.\n\nAnd now, on November 21, Wuthering Waves has released a gameplay preview for its annual story chapter, Wuthering Waves: Embers of the Everbright.\n\nUnlike previous versions, which explored Chinese-inspired and classical themes, the opening of the New Federation storyline takes a Western-inspired direction. The new region features a more distinctive landscape, and, for the firs…","bodyTruncated":true,"full":true,"edited":true,"xpostPermalink":null,"video":null}
+
+{"v":1,"id":"1y2dxhl","sub":"WutheringWavesLeaks","title":"Wuthering waves 4.x Official interview","permalink":"/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","url":"https://www.reddit.com/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","created":1795313781,"author":"Cute_River_3852","flair":":MR6:  Official","distinguished":null,"spoiler":false,"nsfw":false,"score":22,"comments":2,"removed":null,"xpost":null,"media":[],"body":"I advise people to read this article cause it has a lot of insight to wuthering waves development and 4.x itself especially surrounding story stuff as well\n\n**Exclusive Interview with Kuro Games: Wuthering Waves Chooses a \"Hell Mode Start\" for 2027** By Qiuqiu\n\n**\"If the mountain will not come to me, then I shall go to the mountain.\"**\n\nAs the end of the year approaches, you can almost smell the tension building for the upcoming battle among Chinese anime-style games. Take a closer look, and you'll find that every publisher is already preparing for the competition. High-quality games of various genres are lining up for release, while established live-service titles aren't slowing down either, with major version updates, collaborations, and crossover content arriving one after another.\n\nAnd now, on November 21, Wuthering Waves has released a gameplay preview for its annual story chapter, Wuthering Waves: Embers of the Everbright.\n\nUnlike previous versions, which explored Chinese-inspired and classical themes, the opening of the New Federation storyline takes a Western-inspired direction. The new region features a more distinctive …","bodyTruncated":true,"full":true,"edited":true,"xpostPermalink":null,"video":null,"revision":2,"resent":"edited"}
+
+{"v":1,"id":"1y2dxhl","sub":"WutheringWavesLeaks","title":"Wuthering waves 4.x Official interview","permalink":"/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","url":"https://www.reddit.com/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/","created":1795313781,"author":"Cute_River_3852","flair":":MR6:  Official","distinguished":null,"spoiler":false,"nsfw":false,"score":22,"comments":2,"removed":null,"xpost":null,"media":[],"body":"I advise people to read this article cause it has a lot of insight to wuthering waves development and 4.x itself especially surrounding story stuff as well\n\n**Exclusive Interview with Kuro Games: Wuthering Waves Chooses a \"Hell Mode Start\" for 2027** By Qiuqiu\n\n**\"If the mountain will not come to me, then I shall go to the mountain.\"**\n\nAs the end of the year approaches, you can almost smell the tension building for the upcoming battle among Chinese anime-style games. Take a closer look, and you'll find that every publisher is already preparing for the competition. High-quality games of various genres are lining up for release, while established live-service titles aren't slowing down either, with major version updates, collaborations, and crossover content arriving one after another.\n\nAnd now, on November 21, Wuthering Waves has released a gameplay preview for its annual story chapter, Wuthering Waves: Embers of the Everbright.\n\nUnlike previous versions, which explored Chinese-inspired and classical themes, the opening of the New Federation storyline takes a Western-inspired direction. The new region features a more distinctive landscape, and, for the first time, introduces an entirely new mecha-based 3C experience that is closely integrated with the map and gameplay.\n\n![gif](hvsluodja23i1)\n\n![gif](h1wznzzna23i1)\n\nFor Wuthering Waves players, mechs aren't exactly unfamiliar. After all, I previously brought you the first hands-on look at the \"one-handed mech\" back in Version 3.3. Whether it was the massive mech used by the Exostrider or the mech belonging to the protagonist's villainous counterpart, Singulorum, both left plenty of players eager to see these concepts become actual gameplay features.\n\n![gif](u3mixqpsa23i1)\n\n![gif](gqm0lmcva23i1)\n\nWell, now Kuro has done more than simply make mechs a reality. It has turned them into an open-world vehicle system available to everyone. They have abilities, can fight, and can assist players in combat. Their appearance also bears a striking resemblance to Singulorum's mech, and they come with dedicated themed gameplay.\n\n![gif](o23i6jyya23i1)\n\n![img](pshfucm0b23i1)\n\nWhat was once a showcase of technical ambition has now become a core part of the new version's gameplay.\n\nOn November 18, Kuro also released a specially produced 2D frame-by-frame animated teaser, revealing seven new characters in one go. The short animation showcased the New Federation's story, environments, and characters, while incorporating comic-book halftone shading, pop-art color blocks, and a vintage print aesthetic.\n\n![gif](qupmckzib23i1)\n\n![gif](onwbup5kb23i1)\n\nJust looking at the art style might leave you wondering: Is this really Wuthering Waves? Yes, this is Wuthering Waves: Embers of the Everbright\n\nThat's right. For the first time, Kuro has introduced an annual story chapter title that will run throughout the year: Embers of the Everbright. As I write this article, it seems that the familiar 1.X, 2.X, and 3.X numbering system we've used to describe the different eras of Wuthering Waves may be coming to an end. The New Federation's story and content will also have a much more distinctive annual theme.\n\n![gif](n6agdmavb23i1)\n\nLooking back at Version 2.0, then 3.0, and now 4.0, Kuro appears to be charging ahead with increasingly ambitious changes, repeatedly rebuilding the game's underlying systems. Doing this once or twice could be considered bold. But when an entire series of major updates follows the same approach, it raises an interesting question: Has Kuro developed a mature product strategy built around becoming more ambitious the longer the game operates?\n\nWith these questions in mind, I recently visited Kuro Games' headquarters and spoke with Luke, a level designer for Wuthering Waves, and Yunyunyun, the head of the narrative writing team.\n\n**1. Why Introduce a New 3C Experience Every Year?**\n\n**Putaojun: From gliding to motorcycles, and now to mechs, why does every major version introduce something that breaks away from the game’s existing underlying design?**\n\nLuke: When it comes to open-world exploration, we want each year’s new content to provide players with an entire year of fresh experiences.\n\nExploration and traversal are a major part of that enjoyment. Walking, riding a motorcycle, or flying directly to your destination all provide completely different experiences. Even the process of travelling from Point A to Point B should be fun in itself.\n\nOf course, introducing a new 3C system inevitably challenges the underlying design of each major version of Wuthering Waves. How do we make it work within an open world? How do we explore areas that very few developers have attempted before? The entire process is both exciting and painful\n\n![gif](wsucv87ec23i1)\n\n**Putaojun: How much of the experience you’ve accumulated over the years can actually be reused? Does your efficiency when it comes to “tearing everything down and rebuilding it” improve over time?**\n\nLuke: The code still has to be rewritten almost from scratch. What we can reuse is mainly the design experience we’ve accumulated.\n\nFor example, we can look back at the gameplay systems we adapted for gliding, as well as ideas we wanted to implement but couldn’t at the time. Some of those ideas might finally become possible with the mech system.\n\nWe can also draw on previous experience when considering how to help players notice points of interest (POIs) in the open world while travelling at high speeds.\n\nHowever, when it comes to development efficiency, if we continue using the same exploration system, development will certainly become much faster because we only need to iterate on what already exists.\n\nBut developing an entirely new 3C system still means starting from scratch. For example, it’s difficult to reuse the design experience from motorcycles when developing mechs because their intended use cases are completely different.\n\nAs you may have noticed in today’s gameplay preview, the new version also introduces underwater environments. There is even less existing experience we can draw on in this area.\n\nIf we count from the preliminary research stage, mech development has already taken more than a year, almost matching the development timeline of the New Federation itself.\n\n**Putaojun: What challenges did you encounter during development?**\n\nLuke: Even now, we’re still debating how far we should take the mech system.\n\nWe faced a similar situation when developing the motorcycle vehicle system. Initially, we had an idea of how difficult development would be, but as we continued working on it, the challenges exceeded our expectations. We had to constantly evaluate and adjust our plans.\n\nWe want the mech to feel intuitive to players and deliver the excitement of piloting one. At the same time, it needs to integrate naturally with the rest of the game’s content.\n\nWe don’t want players to simply think, “Oh, the mech looks cool,” and leave it at that.\n\nYunyunyun: I think the most difficult part was deciding to pursue the idea in the first place.\n\nWe often asked ourselves: If everyone thinks mechs are cool and fun, why hasn’t anyone else made them? Is this actually something we can achieve?\n\nDuring the early stages, there was a period of self-doubt before we finally made the decision to move forward.\n\n**Putaojun: Why do you think other developers haven’t made something like this?**\n\nLuke: First, there’s the challenge of imagination.\n\nAnime and movies have already explored all kinds of mech designs, so we need to find ways to push beyond what’s already been done.\n\nFor example, we’ve already created Gundam-style mech combat in Version 3.3, during the battle between the Exostrider and Aleph-1.\n\nBut what if we created a more agile mech that could freely navigate different types of terrain? What else could players do with it? How could we introduce more interactions? How could we integrate it with existing gameplay systems and level designs?\n\n![gif](893u355ee23i1)\n\nCompared with that, gliding is more like a straightforward traversal tool. Its main purpose is to help players travel quickly from Point A to Point B.\n\nDeveloping the mech is almost like creating an entirely new mech game within Wuthering Waves.\n\nThe second challenge is the sheer amount of freedom it provides.\n\nGliding was designed around inertia and parabolic movement. The Expedition Motorbike was also based on a real-world vehicle prototype, with fantasy elements such as double jumps and flying added on top.\n\nBut mechs don’t have any real-world prototypes. They’re purely fictional. We’ve even given them the ability to hover, meaning they can theoretically move in almost any direction without restrictions.\n\nThis level of freedom has a significant impact on existing level design and open-world systems.\n\nAs you can see in today’s gameplay preview, there are still some streaming and loading issues in the environment that we’re working to resolve.\n\nThe mech moves too quickly, which means the map has to constantly load a massive number of Actors (objects within the environment). This puts enormous pressure on performance.\n\nAt the same time, we need to ensure that players can still identify resources and points of interest while moving at high speeds.\n\n![gif](kjm7p5ppe23i1)\n\nAnd there’s another complication: the mech can fight.\n\nOnce players climb into a mech, how could we possibly leave out arm cannons and missiles? And if I already have all these weapons, wouldn’t I naturally want to fire them at the enemies in front of me?\n\n![gif](amk5p22ze23i1)\n\nSo we have to consider things from the player’s perspective.\n\nAfter obtaining a mech, what would players expect to do with it? Which expectations must we fulfil, and where do we have to make compromises?\n\nOnce the mech was integrated into actual version development, we discovered quite a few problems and went through many rounds of iteration.\n\n**Putaojun: You mentioned the Asset streaming issues earlier. What solutions are you currently exploring?**\n\nLuke: Let me give you an example.\n\nPreviously, flight had a normal speed of around 20 metres per second, with acceleration bringing it to approximately 30 metres per second.\n\nThat was already close to the streaming limit of the Rinascita version at the time. Going any faster would cause serious problems with loading the environment.\n\nWhen we developed the Expedition Motorbike, we felt that it should be faster, so we asked our programming colleagues to challenge that limit again.\n\nAnd they succeeded! (Laughs.)\n\nOur amazing programmers managed to raise the streaming limit to 35 metres per second. A huge thanks to our amazing programming team!\n\nAs for the mech, we set out from the beginning to break through a new limit. We even wanted to push beyond that new limit once we reached it.\n\nUnfortunately, that attempt failed.\n\nSince we didn’t succeed this time, we’ll just have to try again next time…\n\n**Putaojun: How does the map design accommodate the mech system?**\n\nLuke: In the new version, we’ve designed the map around a particularly tall peak, which serves as the central visual landmark of the Buffalo Rock.\n\nThere are also some strange, hollow mountains that resemble eggshells. When players are flying and spot one of these enormous structures in the distance, they’ll naturally wonder whether something is hidden inside and want to explore it.\n\nThe mech can also interact with vegetation, trees, and animals.\n\nWe’ll also retain some of the features that worked well on the motorcycle. For example, the vehicle radio system will carry over to the mech.\n\n![gif](1rwgqkanf23i1)\n\n**Putaojun: Will the mech influence the mobility design of individual characters? How do you approach the role of character mobility?**\n\nYunyunyun: For us, a character’s animations and movement should serve their characterisation.\n\nTake Lynae, for example. Her character concept has a trendy and athletic feel, so even though the game already had the Expedition Motorbike at the time, we still designed a roller-skating movement style for her.\n\n![gif](n5hmvrh1g23i1)\n\nLuke: There’s also Lucielle. She has a little companion named Moby, a small Canglong, which she rides during combat.\n\nThey fight together, and we incorporate that relationship into other aspects of her design as well.\n\nA character’s 3C features and mobility design should ultimately come from their personality, background, and narrative.\n\n![gif](6pb72qh9g23i1)\n\n**Putaojun: Are these developments related to your previously announced plan to restructure the game’s underlying code architecture? Why did you decide to replace the entire codebase? Almost no other games have dared to do something like this.**\n\nLuke: They are related to some extent, but the main reason for updating the codebase was performance optimisation.\n\nWe actually started this work quite early because it was something we couldn’t afford to delay. The longer we waited, the more difficult the process would become.\n\nIf we waited until the sixth or seventh year of Wuthering Waves to restructure everything, it would be terrifying.\n\nEven so, our programmers faced enormous challenges. Throughout the process, they had to maintain both the JS and C# codebases simultaneously to ensure that development could continue normally.\n\nOur internal editors and development tools also needed to be adapted all over again. It was essentially double the workload.\n\nWhy was this necessary?\n\nOn one hand, we had already recognised the performance and resource pressures that come with long-term operation, so we needed to address them in advance.\n\nFor example, we’re currently working on resource segmentation, loading individual map regions, and HLOD (Hierarchical Level of Detail) optimisations for different devices.\n\nWe’re also exploring ways to let players clear map resources they’ve already explored, preventing the game’s overall file size from growing indefinitely.\n\nOn the other hand, I think our willingness to take on something like this also comes from Kuro’s character. (Laughs.)\n\nThe new C# codebase provides better support for hot updates, allowing us to resolve certain issues more quickly.\n\nIf we come up with a better solution, implement it, and see significant improvements, why shouldn’t we do it?\n\nEventually, everyone reached an agreement.\n\n![img](emrewkqlg23i1)\n\n**2. An Annual Story Chapter and More Ambitious Exploration**\n\n**Putaojun: I’m curious. Rebuilding an entire open-world exploration system is already a huge undertaking, but why did you also announce an entirely new annual story chapter, “Embers of the Everbright”? How is it different from previous major versions?**\n\nYunyunyun: First, looking at the name itself, the New Federation adventure will be a story that unfolds over an entire year, with different parts of the narrative connected to one another.\n\nSo calling it an “annual story chapter” is quite appropriate.\n\nWe gave it the name “Embers of the Everbright” based on the overall tone of the story throughout the year.\n\nCompared with conventional version numbers or names based on geographical regions, this title better represents the imagery and themes within the game.\n\nIt also gives the impression that Wuthering Waves is beginning a new annual expansion.\n\n**Putaojun: What else makes this annual chapter different? For example, why did you choose an American comic-book style, frame-by-frame animation for the characters’ initial reveal this time?**\n\nYunyunyun: This is related to how we communicate the content to players.\n\nWe aren’t restricted to either 2D or 3D presentation. For example, in Version 3.1, we experimented with combining both styles to convey the story and its emotions.\n\nThe same applies to the New Federation.\n\nWe wanted to explore more visual styles, and ultimately chose the American comic-book aesthetic because it fits the Western-inspired theme of the New Federation’s opening.\n\n![gif](bdluzv77h23i1)\n\n**Putaojun: What challenges did you encounter during production? Were there any parts of the PV that required repeated revisions and refinement?**\n\nYunyunyun: At the time, the appearances of Lucielle and Anna were particularly difficult to handle.\n\nThey are characters who appear relatively early in the story and are connected to many subsequent plot developments. Showing too much of them could spoil future events, but showing too little wouldn’t work either.\n\nSo we repeatedly went through the script, looking for scenes that could effectively convey their personalities while also leaving a strong visual impression.\n\n![gif](rcowo90yh23i1)\n\nFor example, Lucielle has very distinctive Western elements in her design: a cowboy hat, boots, and leather clothing. These details allow players to immediately get a sense of the new version’s overall style.\n\nWe originally wanted to give her more screen time, but to preserve the experience of the later story, we ultimately chose the opening scene where she flies through the sky alongside a missile.\n\nAnna, on the other hand, is connected to the transition between the old and new Federations.\n\nWe wanted her to be a character with extensive experience, someone who could offer assistance to players and make them feel reassured.\n\nThat’s why the PV ultimately ends with a scene of Anna getting off a vehicle and heading towards a certain area.\n\nWhat are the causes and consequences for this scenes\n\nYou have to wait and see.\n\n**Putaojun: However, the two characters behave quite differently in the gameplay preview. Could you elaborate on their character designs? For example, Anna’s weapon can transform.**\n\nYunyunyun: Regarding Anna… First of all, we have to respect Wuthering Waves’ identity as an action game.\n\nGiving her only one weapon form simply wouldn’t feel exciting enough.\n\nOnce we had settled on that direction, we started thinking about what kind of weapon would suit her.\n\nAnna isn’t exactly a traditional fighter, so we wanted to incorporate something more imaginative.\n\nWe combined the flower motif in her character concept with her overall impression of being dangerous, beautiful, and authoritative.\n\nIn the end, we chose two weapon forms: a lance and a scythe.\n\n**Putaojun: I also noticed many landmarks in the gameplay preview, including a large bridge and a strangely designed town. How do you approach environmental design to match the setting?**\n\nLuke: This strangely designed town is an area that was affected by the Resonator War a hundred years ago. It has since become a ruin.\n\nYou can see many modern buildings from the old Federation era gradually merging with the surrounding mountains and vegetation.\n\nAs for the bridge, it originally connected to the Federation City, but it has since been destroyed.\n\nThere’s also a cannon hidden underneath one of its pillars.\n\nIn other words, it isn’t just a transportation structure. It was also a war machine in its own right.\n\nThrough this kind of environmental storytelling, we want players to understand just how devastating the war was without having to explain everything through text.\n\nIt also leaves more room for players to imagine what happened in the past.\n\n\\*\\*3. Compromises and Convictions\n\nPutaojun: We’ve discussed quite a lot of new content. I’m curious how you balance your resources when you’re simultaneously updating the current version and developing content for the next several years.\\*\\*\n\nYunyunyun: This mainly comes down to project management.\n\nWe have dedicated project management colleagues responsible for scheduling. They let everyone know when certain content needs to be submitted and when work on new features should begin.\n\nOur development process is also quite agile.\n\nSometimes, when we’re out eating, watching a movie, or listening to music, we suddenly get an idea. Everyone quickly reaches out to other colleagues to discuss how that inspiration could be turned into something practical.\n\n**Putaojun: So how does an idea actually become a finished feature? How do the different teams collaborate internally?**\n\nYunyunyun: From the IP team’s perspective, we generally don’t start by asking for a particular gameplay feature.\n\nInstead, we first consider what kind of experience and story we want players to have in that version.\n\nFor example, where will the Rover travel? What enemies will they encounter? What companions will they meet along the way?\n\nWe first condense these ideas into a simple concept, then discuss and refine them together with the gameplay, cinematics, music, and level design teams.\n\nFinally, we combine everyone’s ideas into a complete narrative experience for players.\n\n**Putaojun: But doesn’t this create a potential problem? Every version involves travelling to a new place and meeting new people while experiencing different events. Won’t the content eventually start feeling repetitive?**\n\nYunyunyun: Honestly, this isn’t something we’re particularly worried about.\n\nThe basic structures of stories are inherently limited. Humanity has been telling stories for thousands of years, and many themes and plotlines have already been explored repeatedly.\n\nBut we’re making a game, not simply writing a story synopsis.\n\nThe IP team has its own interpretation of a story, while the cinematic, music, and gameplay teams bring their own ideas to it.\n\nWhen players actually step into the world and experience the story themselves, they may feel something entirely different.\n\nWhether it’s the stories of Lahai-Roi, Xuanfang, or the future New Federation, the IP team determines the content of each version through an overall collaborative process.\n\nWe then work closely with the cinematic, music, gameplay, and other teams to refine everything and present it to players in the best form we can achieve.\n\nEven if we’re telling stories about sadness, there can be many different kinds of sadness. And even if we’re telling stories about happiness, there can be many different kinds of joy.\n\nI think that’s the meaning of having a group of people come together to make a game.\n\n**Putaojun: When everyone has creative ideas, how do you decide which ones should be implemented and which ones shouldn’t?**\n\nYunyunyun: From the IP team’s perspective, there are two things we value most: consistency and freshness.\n\nFreshness is easy to understand. We want every version to offer players something new.\n\nConsistency, on the other hand, is a fundamental requirement of our internal development process.\n\nFor example, if a version has a particularly serious theme, the narrative, level design, and cinematics teams shouldn’t suddenly introduce something that feels completely out of place.\n\nThe same applies to characters.\n\nWe sometimes even give our colleagues a slightly chuunibyou-style method of thinking about this.\n\nIf you want a character to do something, imagine that they’re sitting right in front of you. Now, go and convince them to do it. Would they actually agree?\n\nFor example, what would happen if you tried to convince Phoebe to go fishing out at sea?\n\nLuke: Over time, our colleagues across different departments have developed a certain understanding and rhythm when it comes to development.\n\nOnce we receive the IP setting documents, we proactively examine the details and consider whether something fits the character and the world before deciding how to implement it.\n\n**Putaojun: Have there been any particularly ambitious ideas that required repeated adjustments before they could actually be implemented?**\n\nLuke: There’s one design that left a particularly deep impression on me.\n\nWhen we were developing the major battle in Version 2.7, we wanted to create a boss fight where every character gathered together and fought simultaneously.\n\nAt the time, I thought the scene might become a little chaotic, but it would definitely convey the intensity and excitement of a final battle.\n\nUnfortunately, reality got in the way.\n\nThe technical challenges involved in implementing this idea were enormous.\n\nThe character models in Wuthering Waves have a very high level of detail. Even after optimising the models of all the characters who would appear, we still couldn’t fully resolve the preloading and device performance issues.\n\nThis would directly affect the smoothness of combat.\n\nHowever, we eventually came up with another way to present the idea.\n\nWe retained the concept of having everyone participate in the battle, but used QTEs to bring certain characters into the fight at specific moments.\n\nThis allowed us to preserve the feeling of an all-out team battle while ensuring that combat remained smooth and satisfying.\n\nThe final implementation was also well received by many players.\n\nSo although we didn’t achieve our original vision for this particular “challenge”, we still ended up with a very good result.\n\n**Yunyunyun: One scene that left a deep impression on me was the sequence where the Rover and Hiyuki chase after Denia.**\n\nDeveloping this section was quite painful for us. We made numerous adjustments to the level design and balance.\n\nInitially, we envisioned an intense chase where Denia would almost get caught but ultimately manage to escape. We wanted to create a rather complicated emotional experience.\n\nWe spent a lot of time thinking about how to create tension and made many adjustments.\n\nFor example, since Denia is the one being chased, should she be able to control the player’s camera? And if so, to what extent?\n\nThe same questions applied to Hiyuki.\n\nAs the Rover’s companion, how should she support and assist the Rover during the chase?\n\nAnd what should we do if certain design choices interfere with the player’s controls?\n\nThe version players eventually experienced was the result of many iterations and compromises made while addressing questions like these.\n\n**Putaojun: On the other hand, you also seem to enjoy adding details that players might not even notice. Why continue investing in things that may not bring much obvious benefit?**\n\nLuke: Players have very different interests and goals in Wuthering Waves.\n\nThere are all kinds of players. Some enjoy experiencing the story, while others prefer exploring the world.\n\nWe want to leave little surprises for different types of players, even within the limited time we have.\n\nFor example, during the major battle in Lahai-Roi, we asked ourselves how we could create a final battle that matched the region’s themes and the characteristics of its characters, especially since we had already created a climactic battle that suited Rinascita’s story.\n\nEventually, our quest design colleagues worked with us to come up with a way to mobilise the entire map.\n\nIf players simply want to rush through the main story, there’s a way to progress quickly.\n\nBut if they’re willing to explore their surroundings, they can also find other characters and discover additional content.\n\nAs for why we continue doing these things…\n\nIf we thought that the corners of the game that players are less likely to notice could simply be handled carelessly, then perhaps that wouldn’t really be the Wuthering Waves way of doing things.\n\n**Putaojun: To wrap things up, would you say Kuro is a company driven more by creativity or by project management?**\n\nLuke: I would say we’re still primarily driven by creativity.\n\nAlthough we have structured project management processes, there are times when the development team is willing to break those rules for a good idea.\n\nSome features are genuinely difficult to implement and may exceed our original development expectations.\n\nBut if everyone believes that something is worth making, we’ll still try to find a way to do it.\n\nThis process also puts a lot of pressure on project management, so I’d really like to thank our project management colleagues for their support and hard work.\n\nYunyunyun: I don’t think these two things conflict with each other.\n\nProject management actually helps us evaluate our creative ideas more effectively.\n\nFrom the moment an idea is proposed to the point where it’s finally implemented, it may go through many rounds of discussion and refinement.\n\nThroughout this process, we constantly ask ourselves: Is this really necessary? Is it worth investing so much time and effort?\n\nIf we’re not even fully committed to an idea ourselves, perhaps that means it isn’t quite good enough yet.\n\nBut conversely, if we genuinely believe that an idea has value, we’ll still want to bring it to life as much as possible, even if implementation is extremely difficult.\n\nFor example, when players see things in Wuthering Waves that seem like they shouldn’t belong in the game, but somehow end up working incredibly well, almost all of those features are things we insisted on pursuing.\n\nThe mech system this time is one such example.","bodyTruncated":false,"full":true,"edited":true,"xpostPermalink":null,"video":null,"revision":2,"resent":"edited","parent":null}
+
+now for the discord post json on discohook:
+
+https://github.com/uesu/7jkxmy9nvbc/actions/runs/44976400655
+
+Reddit Feed Monitor #15108
+
+check-reddit summary
+Reddit Feed Monitor — run summary
+Result: success
+Monitor runtime: 21s
+Run-result record: read
+Repository persistence: saved
+Local persistence: saved
+Run status: completed
+
+Live execution
+Settings: legacy fresh hold 30 s · legacy recheck 300 s · window 5 h · flood cap 25 · dedup 250/sub (10000 total) · reclaim 5/run, snapshot override after 3 feeds · archive retry budget 3, restore 5/run · liveness probe on (lenient, budget 10) · intake primary (relay ok; 3 record(s), newest 273 s, 71 re-checked, 1 completed)
+Feed
+Relay records for this engine (intake lookback): 3
+Subreddits represented: 3 of 6
+Combined fetch status: relay
+Arctic candidates: 0
+Feed entries by subreddit: Genshin_Impact_Leaks: 1, WutheringWavesLeaks: 1, Zenlesszonezeroleaks_: 1
+Subreddits with no new post in the relay window: AnantaLeaks, HonkaiNexusAnimaLeaks, HonkaiStarRail_leaks (quiet, not missing; no archive attempt)
+Unposted candidates considered: 1
+Candidates entering processing: 1
+Delivered posts: 1
+WutheringWavesLeaks_1y2dxhl — image/proxy: embeddit, 2 item(s), LATENCY 14.3 min
+Dry-run would-deliver: 0
+Failed deliveries: 0
+Skipped and deferred
+Held posts Reddit listed again (relay restore): 0
+Held posts the archive re-read clean (archive restore): 0
+Known-rejected candidates (held earlier; no newer listing): 0
+Retry backoff: 0
+Fresh-age hold: 0
+Newly rejected removed/deleted: 0
+Liveness not verified: 0
+Stale-snapshot overrides: 0
+Held posts re-probed: 0
+Media-wait: 0
+Partial-gallery: 0
+Flood-cap dropped: 0
+Dedup skipped in run: 2
+Other skipped: 0
+Dedup cache: 1115 key(s), 1 dropped at the cap this run (hot: Genshin_Impact_Leaks: 250, HonkaiStarRail_leaks: 250, WutheringWavesLeaks: 250, Zenlesszonezeroleaks_: 250)
+Liveness
+Probe: enabled (lenient — holds only on positive evidence)
+Verified live: 0
+Held as removed/queued: 0
+Unverified (posted): 0
+Probe skipped: 0
+Providers and media
+Proxy warmup: ok (embeddit: ok, redditez: ok, vxreddit: ok)
+Video quality mode: balanced
+Instances (REDLIB-REACH): not probed this run (26 Redlib instance(s) configured)
+Media resolved via provider: embeddit: 1
+Final media endpoint: preview.redd.it: 1
+Final card media: kind=image: 1, tiles=2
+Quality upgrades accepted: 0
+Heal: queued=0, edit_performed=0, skipped_after_revalidation=0 (no unresolved evidence)
+Feed fallback: not attempted (relay is the listing)
+Note: warmup/HTTP validation/'chain complete' do not prove audio inclusion; per-candidate detail stays in monitor.log
+Counts describe this run's local observations, not an independent subreddit-visibility or end-to-end health audit.
+Summary source: reddit_run_result.json (per-run, ignored) + monitor.log; no additional network requests.
+
+2026-11-22T02:30:26.4153103Z Current runner version: '2.338.2'
+2026-11-22T02:30:26.4176035Z ##[group]Runner Image Provisioner
+2026-11-22T02:30:26.4176928Z Hosted Compute Agent
+2026-11-22T02:30:26.4177508Z Version: 20261111.635
+2026-11-22T02:30:26.4178153Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+2026-11-22T02:30:26.4179173Z Build Date: 2026-11-11T01:49:01Z
+2026-11-22T02:30:26.4179875Z Worker ID: {f0995034-046e-4123-870e-8ba0911c9f2e}
+2026-11-22T02:30:26.4180572Z Region: eastus2
+2026-11-22T02:30:26.4181194Z Cloud: Azure
+2026-11-22T02:30:26.4181763Z ##[endgroup]
+2026-11-22T02:30:26.4182907Z ##[group]Operating System
+2026-11-22T02:30:26.4183544Z Ubuntu
+2026-11-22T02:30:26.4184136Z 26.04.1
+2026-11-22T02:30:26.4184678Z LTS
+2026-11-22T02:30:26.4185156Z ##[endgroup]
+2026-11-22T02:30:26.4185763Z ##[group]Runner Image
+2026-11-22T02:30:26.4186403Z Image: ubuntu-26.04
+2026-11-22T02:30:26.4187062Z Version: 20261116.202.1
+2026-11-22T02:30:26.4188346Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261116.202/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-22T02:30:26.4190166Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261116.202
+2026-11-22T02:30:26.4191129Z ##[endgroup]
+2026-11-22T02:30:26.4192302Z ##[group]GITHUB_TOKEN Permissions
+2026-11-22T02:30:26.4194147Z Contents: write
+2026-11-22T02:30:26.4194823Z Metadata: read
+2026-11-22T02:30:26.4195372Z ##[endgroup]
+2026-11-22T02:30:26.4197032Z Secret source: Actions
+2026-11-22T02:30:26.4198028Z Cache mode: write
+2026-11-22T02:30:26.4199497Z Prepare workflow directory
+2026-11-22T02:30:26.4422170Z Prepare all required actions
+2026-11-22T02:30:26.4462839Z Getting action download info
+2026-11-22T02:30:26.6032335Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-22T02:30:26.7067015Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-11-22T02:30:26.8720881Z Complete job name: check-reddit
+2026-11-22T02:30:26.9225248Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-11-22T02:30:26.9225774Z with:
+2026-11-22T02:30:26.9226057Z   repository: uesu/7jkxmy9nvbc
+2026-11-22T02:30:26.9228155Z   token: ***
+2026-11-22T02:30:26.9228591Z   ssh-strict: true
+2026-11-22T02:30:26.9228870Z   ssh-user: git
+2026-11-22T02:30:26.9229153Z   persist-credentials: true
+2026-11-22T02:30:26.9229454Z   clean: true
+2026-11-22T02:30:26.9229743Z   sparse-checkout-cone-mode: true
+2026-11-22T02:30:26.9230058Z   fetch-depth: 1
+2026-11-22T02:30:26.9230333Z   fetch-tags: false
+2026-11-22T02:30:26.9230613Z   show-progress: true
+2026-11-22T02:30:26.9230897Z   lfs: false
+2026-11-22T02:30:26.9231160Z   submodules: false
+2026-11-22T02:30:26.9231447Z   set-safe-directory: true
+2026-11-22T02:30:26.9231762Z   allow-unsafe-pr-checkout: false
+2026-11-22T02:30:26.9232150Z ##[endgroup]
+2026-11-22T02:30:27.1719687Z Syncing repository: uesu/7jkxmy9nvbc
+2026-11-22T02:30:27.1721033Z ##[group]Getting Git version info
+2026-11-22T02:30:27.1721590Z Working directory is '/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc'
+2026-11-22T02:30:27.1737803Z [command]/usr/bin/git version
+2026-11-22T02:30:27.1778380Z git version 2.56.1
+2026-11-22T02:30:27.1790888Z ##[endgroup]
+2026-11-22T02:30:27.1797454Z Temporarily overriding HOME='/home/runner/work/_temp/96e81b39-14fe-4d72-8cce-469add8f9ccf' before making global git config changes
+2026-11-22T02:30:27.1799142Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-22T02:30:27.1800723Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc
+2026-11-22T02:30:27.1938654Z Deleting the contents of '/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc'
+2026-11-22T02:30:27.1940735Z ##[group]Determining repository object format
+2026-11-22T02:30:27.1941832Z ##[endgroup]
+2026-11-22T02:30:27.1942664Z ##[group]Initializing the repository
+2026-11-22T02:30:27.1944813Z [command]/usr/bin/git init /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc
+2026-11-22T02:30:27.2060637Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-22T02:30:27.2061406Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-22T02:30:27.2062126Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-22T02:30:27.2062811Z hint: call:
+2026-11-22T02:30:27.2063098Z hint:
+2026-11-22T02:30:27.2063467Z hint: 	git config --global init.defaultBranch <name>
+2026-11-22T02:30:27.2063879Z hint:
+2026-11-22T02:30:27.2064268Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-22T02:30:27.2064857Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-22T02:30:27.2065508Z hint:
+2026-11-22T02:30:27.2065811Z hint: 	git branch -m <name>
+2026-11-22T02:30:27.2066143Z hint:
+2026-11-22T02:30:27.2066569Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-22T02:30:27.2073730Z Initialized empty Git repository in /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/
+2026-11-22T02:30:27.2082241Z [command]/usr/bin/git remote add origin https://github.com/uesu/7jkxmy9nvbc
+2026-11-22T02:30:27.2162940Z ##[endgroup]
+2026-11-22T02:30:27.2164029Z ##[group]Disabling automatic garbage collection
+2026-11-22T02:30:27.2165167Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-22T02:30:27.2195011Z ##[endgroup]
+2026-11-22T02:30:27.2195946Z ##[group]Setting up auth
+2026-11-22T02:30:27.2196360Z Removing SSH command configuration
+2026-11-22T02:30:27.2199387Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-22T02:30:27.2227120Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-22T02:30:27.2762357Z Removing HTTP extra header
+2026-11-22T02:30:27.2766614Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-22T02:30:27.2792681Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-22T02:30:27.2992165Z Removing includeIf entries pointing to credentials config files
+2026-11-22T02:30:27.2995445Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-22T02:30:27.3022015Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-22T02:30:27.3224439Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-22T02:30:27.3253871Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path /home/runner/work/_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:27.3278395Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:27.3306335Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:27.3341863Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:27.3380355Z ##[endgroup]
+2026-11-22T02:30:27.3381188Z ##[group]Fetching the repository
+2026-11-22T02:30:27.3384969Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +7768065edd7a391f6a31e576f6c91bd8f0381168:refs/remotes/origin/main
+2026-11-22T02:30:27.6776771Z From https://github.com/uesu/7jkxmy9nvbc
+2026-11-22T02:30:27.6778071Z  * [new ref]         7768065edd7a391f6a31e576f6c91bd8f0381168 -> origin/main
+2026-11-22T02:30:27.6784762Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-22T02:30:27.6806269Z   origin/main
+2026-11-22T02:30:27.6812449Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-11-22T02:30:27.6832408Z 7768065edd7a391f6a31e576f6c91bd8f0381168
+2026-11-22T02:30:27.6836916Z ##[endgroup]
+2026-11-22T02:30:27.6838981Z ##[group]Determining the checkout info
+2026-11-22T02:30:27.6840661Z ##[endgroup]
+2026-11-22T02:30:27.6898921Z [command]/usr/bin/git sparse-checkout disable
+2026-11-22T02:30:27.6912013Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-22T02:30:27.6916139Z ##[group]Checking out the ref
+2026-11-22T02:30:27.6917727Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-22T02:30:27.7044879Z Switched to a new branch 'main'
+2026-11-22T02:30:27.7050071Z branch 'main' set up to track 'origin/main'.
+2026-11-22T02:30:27.7055831Z ##[endgroup]
+2026-11-22T02:30:27.7092101Z [command]/usr/bin/git log -1 --format=%H
+2026-11-22T02:30:27.7113108Z 7768065edd7a391f6a31e576f6c91bd8f0381168
+2026-11-22T02:30:27.7328560Z ##[group]Run git fetch origin "${CACHE_BRANCH:-main}"
+2026-11-22T02:30:27.7329671Z [36;1mgit fetch origin "${CACHE_BRANCH:-main}"[0m
+2026-11-22T02:30:27.7330656Z [36;1mgit reset --hard FETCH_HEAD[0m
+2026-11-22T02:30:27.7331750Z [36;1mecho "Now at $(git log -1 --format=%H) (live ${CACHE_BRANCH:-main} tip)."[0m
+2026-11-22T02:30:27.7361056Z shell: /usr/bin/bash -e {0}
+2026-11-22T02:30:27.7361770Z env:
+2026-11-22T02:30:27.7362363Z   CACHE_BRANCH: main
+2026-11-22T02:30:27.7363007Z ##[endgroup]
+2026-11-22T02:30:27.9085108Z From https://github.com/uesu/7jkxmy9nvbc
+2026-11-22T02:30:27.9086115Z  * branch            main       -> FETCH_HEAD
+2026-11-22T02:30:27.9189076Z HEAD is now at 7768065 auto: update reddit monitor caches
+2026-11-22T02:30:27.9206413Z Now at 7768065edd7a391f6a31e576f6c91bd8f0381168 (live main tip).
+2026-11-22T02:30:27.9343968Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-11-22T02:30:27.9344955Z with:
+2026-11-22T02:30:27.9345514Z   python-version: 3.14.10
+2026-11-22T02:30:27.9346143Z   cache: pip
+2026-11-22T02:30:27.9346706Z   check-latest: false
+2026-11-22T02:30:27.9352366Z   token: ***
+2026-11-22T02:30:27.9353195Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-11-22T02:30:27.9354230Z   update-environment: true
+2026-11-22T02:30:27.9354980Z   allow-prereleases: false
+2026-11-22T02:30:27.9355665Z   freethreaded: false
+2026-11-22T02:30:27.9356289Z ##[endgroup]
+2026-11-22T02:30:28.0074652Z ##[group]Installed versions
+2026-11-22T02:30:28.0099282Z Successfully set up CPython (3.14.10)
+2026-11-22T02:30:28.0100530Z ##[endgroup]
+2026-11-22T02:30:28.0708555Z [command]/opt/hostedtoolcache/Python/3.14.10/x64/bin/pip cache dir
+2026-11-22T02:30:30.8135001Z /home/runner/.cache/pip
+2026-11-22T02:30:30.8950244Z Cache hit for: setup-python-Linux-x64-26.04-Ubuntu-python-3.14.10-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-11-22T02:30:31.1470550Z Received 7914686 of 7914686 (100.0%), 45.2 MBs/sec
+2026-11-22T02:30:31.1486303Z Cache Size: ~8 MB (7914686 B)
+2026-11-22T02:30:31.1486850Z [command]/usr/bin/tar -xf /home/runner/work/_temp/e866ca05-f74c-4a75-950c-3e811a6c954f/cache.tzst -P -C /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc --use-compress-program unzstd
+2026-11-22T02:30:31.1686839Z Cache restored successfully
+2026-11-22T02:30:31.1694995Z Cache restored from key: setup-python-Linux-x64-26.04-Ubuntu-python-3.14.10-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d
+2026-11-22T02:30:31.1819559Z ##[group]Run python -m pip install --upgrade pip
+2026-11-22T02:30:31.1819806Z [36;1mpython -m pip install --upgrade pip[0m
+2026-11-22T02:30:31.1820003Z [36;1mpip install -r requirements.txt[0m
+2026-11-22T02:30:31.1849994Z shell: /usr/bin/bash -e {0}
+2026-11-22T02:30:31.1850173Z env:
+2026-11-22T02:30:31.1850503Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:31.1850795Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib/pkgconfig
+2026-11-22T02:30:31.1851069Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:31.1851314Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:31.1851540Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:31.1851772Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib
+2026-11-22T02:30:31.1851972Z ##[endgroup]
+2026-11-22T02:30:32.9591740Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.14.10/x64/lib/python3.14/site-packages (26.3)
+2026-11-22T02:30:34.6541508Z Collecting feedparser<7,>=6.0.14 (from -r requirements.txt (line 1))
+2026-11-22T02:30:34.6554702Z   Using cached feedparser-6.0.14-py3-none-any.whl.metadata (2.7 kB)
+2026-11-22T02:30:35.1036304Z Collecting aiohttp<4,>=3.14.3 (from -r requirements.txt (line 2))
+2026-11-22T02:30:35.1049921Z   Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.3 kB)
+2026-11-22T02:30:35.1844745Z Collecting python-dotenv<2,>=1.2.3 (from -r requirements.txt (line 3))
+2026-11-22T02:30:35.1854245Z   Using cached python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+2026-11-22T02:30:35.2628696Z Collecting feedparser-sgmllib<3,>=2 (from feedparser<7,>=6.0.14->-r requirements.txt (line 1))
+2026-11-22T02:30:35.2637029Z   Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl.metadata (926 bytes)
+2026-11-22T02:30:35.3428995Z Collecting aiohappyeyeballs>=2.5.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:35.3437598Z   Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl.metadata (5.9 kB)
+2026-11-22T02:30:35.4212631Z Collecting aiosignal>=1.4.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:35.4220561Z   Using cached aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+2026-11-22T02:30:35.4993299Z Collecting attrs>=17.3.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:35.4999968Z   Using cached attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+2026-11-22T02:30:35.5971446Z Collecting frozenlist>=1.1.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:35.5978260Z   Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+2026-11-22T02:30:35.7827345Z Collecting multidict<8.0,>=4.5 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:35.7836848Z   Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (6.1 kB)
+2026-11-22T02:30:35.8940433Z Collecting propcache>=0.2.0 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:35.8950743Z   Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (25 kB)
+2026-11-22T02:30:36.0749032Z Collecting yarl<2.0,>=1.25.1 (from aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:36.0758551Z   Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (111 kB)
+2026-11-22T02:30:36.1563577Z Collecting idna>=2.0 (from yarl<2.0,>=1.25.1->aiohttp<4,>=3.14.3->-r requirements.txt (line 2))
+2026-11-22T02:30:36.1570374Z   Using cached idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+2026-11-22T02:30:36.1616467Z Using cached feedparser-6.0.14-py3-none-any.whl (80 kB)
+2026-11-22T02:30:36.1623424Z Using cached aiohttp-3.14.5-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.9 MB)
+2026-11-22T02:30:36.1634788Z Using cached python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+2026-11-22T02:30:36.1640549Z Using cached feedparser_sgmllib-2.1.0-py3-none-any.whl (11 kB)
+2026-11-22T02:30:36.1646492Z Using cached multidict-7.2.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (506 kB)
+2026-11-22T02:30:36.1656255Z Using cached yarl-1.25.1-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (117 kB)
+2026-11-22T02:30:36.1665074Z Using cached aiohappyeyeballs-2.7.1-py3-none-any.whl (15 kB)
+2026-11-22T02:30:36.1671406Z Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+2026-11-22T02:30:36.1677589Z Using cached attrs-26.1.0-py3-none-any.whl (67 kB)
+2026-11-22T02:30:36.1683899Z Using cached frozenlist-1.8.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (231 kB)
+2026-11-22T02:30:36.1690449Z Using cached idna-3.20-py3-none-any.whl (69 kB)
+2026-11-22T02:30:36.1696598Z Using cached propcache-0.5.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (232 kB)
+2026-11-22T02:30:36.2163560Z Installing collected packages: python-dotenv, propcache, multidict, idna, frozenlist, feedparser-sgmllib, attrs, aiohappyeyeballs, yarl, feedparser, aiosignal, aiohttp
+2026-11-22T02:30:36.5526667Z 
+2026-11-22T02:30:36.5549673Z Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.5 aiosignal-1.4.0 attrs-26.1.0 feedparser-6.0.14 feedparser-sgmllib-2.1.0 frozenlist-1.8.0 idna-3.20 multidict-7.2.1 propcache-0.5.4 python-dotenv-1.2.4 yarl-1.25.1
+2026-11-22T02:30:36.6386813Z ##[group]Run echo "MONITOR_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+2026-11-22T02:30:36.6387112Z [36;1mecho "MONITOR_START_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:36.6387324Z [36;1mset -o pipefail[0m
+2026-11-22T02:30:36.6387470Z [36;1mset +e[0m
+2026-11-22T02:30:36.6387657Z [36;1mpython "testing area/reddit_main_v3.py" 2>&1 | tee monitor.log[0m
+2026-11-22T02:30:36.6387881Z [36;1mstatuses=("${PIPESTATUS[@]}")[0m
+2026-11-22T02:30:36.6388081Z [36;1mecho "MONITOR_END_EPOCH=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:36.6388320Z [36;1mif [ "${statuses[0]}" -ne 0 ] || [ "${statuses[1]}" -ne 0 ]; then[0m
+2026-11-22T02:30:36.6388667Z [36;1m  exit 1[0m
+2026-11-22T02:30:36.6388797Z [36;1mfi[0m
+2026-11-22T02:30:36.6414868Z shell: /usr/bin/bash -e {0}
+2026-11-22T02:30:36.6415045Z env:
+2026-11-22T02:30:36.6415217Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:36.6415502Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib/pkgconfig
+2026-11-22T02:30:36.6415756Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:36.6415984Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:36.6416210Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:36.6416443Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib
+2026-11-22T02:30:36.6416980Z   SUBREDDITS: ***
+2026-11-22T02:30:36.6417122Z   DISCORD_WEBHOOK_URL: 
+2026-11-22T02:30:36.6417437Z   REDDIT_FEED_TOKEN: ***
+2026-11-22T02:30:36.6417656Z   NITTER_RSS_TOKEN: ***
+2026-11-22T02:30:36.6417794Z   TEST_POST_ID: 
+2026-11-22T02:30:36.6417925Z   DRY_RUN: false
+2026-11-22T02:30:36.6418053Z   PROXY_MEDIA: 
+2026-11-22T02:30:36.6418184Z   PROXY_VIDEO_HEAL: 
+2026-11-22T02:30:36.6418324Z   PROXY_VIDEO_HEAL_DELAY: 
+2026-11-22T02:30:36.6418590Z   PROXY_WARMUP_POST: 
+2026-11-22T02:30:36.6418731Z   EMBEDDIT_INSTANCE: 
+2026-11-22T02:30:36.6418871Z   REDDIT_VIDEO_QUALITY: 
+2026-11-22T02:30:36.6419020Z   YOUTUBE_LINK_MESSAGE: 
+2026-11-22T02:30:36.6419161Z   DISCOHOOK_PREVIEW: 
+2026-11-22T02:30:36.6419300Z   FEEDTOKEN_JSON_STAGGER: 
+2026-11-22T02:30:36.6419449Z   PENDING_RECHECK_SECONDS: 
+2026-11-22T02:30:36.6419597Z   FRESH_HOLD_SECONDS: 
+2026-11-22T02:30:36.6419741Z   MAX_CACHE_SIZE_PER_SUB: 
+2026-11-22T02:30:36.6419887Z   MAX_CACHE_SIZE_TOTAL: 
+2026-11-22T02:30:36.6420027Z   MAX_POSTS_PER_RUN: 
+2026-11-22T02:30:36.6420167Z   REDDIT_JSON_PROBE: 
+2026-11-22T02:30:36.6420309Z   REDDIT_MONITOR_WINDOW_HOURS: 
+2026-11-22T02:30:36.6420466Z   SPOILER_MEDIA_AND_BODY: 
+2026-11-22T02:30:36.6420619Z   REDDIT_LIVENESS_PROBE: 
+2026-11-22T02:30:36.6420767Z   REDDIT_LIVENESS_STRICT: 
+2026-11-22T02:30:36.6420914Z   LIVENESS_PROBE_BUDGET: 
+2026-11-22T02:30:36.6421061Z   LIVENESS_PROBE_TIMEOUT: 
+2026-11-22T02:30:36.6421459Z   DISCORD_BOT_TOKEN: ***
+2026-11-22T02:30:36.6421610Z   INTAKE_CHANNEL_ID: 1566780258575847445
+2026-11-22T02:30:36.6421774Z   INTAKE_READER: 
+2026-11-22T02:30:36.6421909Z   INTAKE_STALE_SECONDS: 
+2026-11-22T02:30:36.6422055Z   INTAKE_LOOKBACK_HOURS: 
+2026-11-22T02:30:36.6422199Z   ARCTIC_MIN_SPACING: 
+2026-11-22T02:30:36.6422342Z   ARCTIC_RETRY_BUDGET: 
+2026-11-22T02:30:36.6422486Z   ARCTIC_RESTORE_MAX_PER_RUN: 
+2026-11-22T02:30:36.6422643Z   ARCTIC_RESTORE_MIN_SECONDS: 
+2026-11-22T02:30:36.6422793Z   PROXY_WAVE_DELAY: 
+2026-11-22T02:30:36.6422933Z   PROXY_GALLERY_GRACE: 
+2026-11-22T02:30:36.6423080Z   PROXY_MAX_CONCURRENCY: 
+2026-11-22T02:30:36.6423479Z   WEBHOOK_REDDIT_ZENLESSZONEZEROLEAKS_: ***
+2026-11-22T02:30:36.6423903Z   WEBHOOK_REDDIT_GENSHIN_IMPACT_LEAKS: ***
+2026-11-22T02:30:36.6424305Z   WEBHOOK_REDDIT_HONKAISTARRAIL_LEAKS: ***
+2026-11-22T02:30:36.6424707Z   WEBHOOK_REDDIT_WUTHERINGWAVESLEAKS: ***
+2026-11-22T02:30:36.6425095Z   WEBHOOK_REDDIT_HONKAINEXUSANIMALEAKS: ***
+2026-11-22T02:30:36.6425479Z   WEBHOOK_REDDIT_ANANTALEAKS: ***
+2026-11-22T02:30:36.6441071Z   REDDIT_CLIENT_ID: 
+2026-11-22T02:30:36.6441268Z   REDDIT_CLIENT_SECRET: 
+2026-11-22T02:30:36.6441452Z ##[endgroup]
+2026-11-22T02:30:38.1499170Z 2026-11-22 02:30:38,149 [INFO] No Reddit OAuth app secrets — V3 uses native RSS data; the feed token .json FULL-MODE probe is ENABLED (token-powered: .json FIRST with instant RSS fallback — ≤2 s stagger, 1 req, 403 remembered for the run; force keeps the same cap, off disables).
+2026-11-22T02:30:38.1506253Z 2026-11-22 02:30:38,150 [WARNING] dedup cache near cap: 1115 key(s) (per-sub quota 250, backstop 10000); hot: Genshin_Impact_Leaks=250, HonkaiStarRail_leaks=250, WutheringWavesLeaks=250, Zenlesszonezeroleaks_=250
+2026-11-22T02:30:38.1507123Z 2026-11-22 02:30:38,150 [INFO] Probing proxy media services (redditez, vxreddit, embeddit) with HonkaiStarRail_leaks/1whbjbh...
+2026-11-22T02:30:39.9142951Z 2026-11-22 02:30:39,914 [INFO] [proxy warm-up] redditez: OK — 1 media item(s)
+2026-11-22T02:30:39.9143383Z 2026-11-22 02:30:39,914 [INFO] [proxy warm-up] vxreddit: OK — 1 media item(s)
+2026-11-22T02:30:39.9143698Z 2026-11-22 02:30:39,914 [INFO] [proxy warm-up] embeddit: OK — 1 media item(s)
+2026-11-22T02:30:43.3378955Z 2026-11-22 02:30:43,337 [INFO] INTAKE: relay ok — 3 record(s) for this engine (71 in window, 2 page(s), newest 273 s, 71 re-checked, 1 completed from record.json) — relay is the only intake; legacy discovery/probes skipped.
+2026-11-22T02:30:43.3382436Z 2026-11-22 02:30:43,338 [INFO] Reddit candidates: 1 unposted candidate(s) considered from 3 feed entries covering 3 of 6 subreddit(s) represented.
+2026-11-22T02:30:43.3445126Z 2026-11-22 02:30:43,344 [INFO] [WutheringWavesLeaks_1y2dxhl] relay record is complete — no archive, redlib or reddit.com request for this post (proxies only).
+2026-11-22T02:30:43.3452302Z 2026-11-22 02:30:43,345 [INFO] [WutheringWavesLeaks_1y2dxhl] original-source child_id=1y2dxhl source_id=none source_path=none provenance=none video_evidence=none
+2026-11-22T02:30:43.8056243Z 2026-11-22 02:30:43,805 [INFO] [WutheringWavesLeaks_1y2dxhl] vxreddit returned text only (no media) - still waiting for media.
+2026-11-22T02:30:43.9478361Z 2026-11-22 02:30:43,947 [INFO] [WutheringWavesLeaks_1y2dxhl] redditez returned text only (no media) - still waiting for media.
+2026-11-22T02:30:44.0859886Z 2026-11-22 02:30:44,085 [INFO] [WutheringWavesLeaks_1y2dxhl] proxy media via embeddit - 2 item(s) (best so far).
+2026-11-22T02:30:44.0860503Z 2026-11-22 02:30:44,085 [INFO] [WutheringWavesLeaks_1y2dxhl] proxy media winner - 2 item(s).
+2026-11-22T02:30:44.0861342Z 2026-11-22 02:30:44,085 [INFO] [WutheringWavesLeaks_1y2dxhl] card media via embeddit — 2 item(s).
+2026-11-22T02:30:44.0878278Z 2026-11-22 02:30:44,087 [INFO] [WutheringWavesLeaks_1y2dxhl] media-outcome kind=image provider=embeddit fallback=none
+2026-11-22T02:30:44.6390320Z 2026-11-22 02:30:44,638 [INFO] Reddit V3 Posted: WutheringWavesLeaks_1y2dxhl (media=image | proxy: embeddit | 2 item(s)) | LATENCY 14.3min after creation
+2026-11-22T02:30:44.9182738Z 2026-11-22 02:30:44,918 [INFO] Body continuation posted for WutheringWavesLeaks_1y2dxhl (part 2 of 8).
+2026-11-22T02:30:46.2895794Z 2026-11-22 02:30:46,289 [INFO] Body continuation posted for WutheringWavesLeaks_1y2dxhl (part 3 of 8).
+2026-11-22T02:30:47.9303671Z 2026-11-22 02:30:47,930 [INFO] Body continuation posted for WutheringWavesLeaks_1y2dxhl (part 4 of 8).
+2026-11-22T02:30:49.4594078Z 2026-11-22 02:30:49,459 [INFO] Body continuation posted for WutheringWavesLeaks_1y2dxhl (part 5 of 8).
+2026-11-22T02:30:50.8429880Z 2026-11-22 02:30:50,842 [INFO] Body continuation posted for WutheringWavesLeaks_1y2dxhl (part 6 of 8).
+2026-11-22T02:30:52.5158867Z 2026-11-22 02:30:52,515 [INFO] Body continuation posted for WutheringWavesLeaks_1y2dxhl (part 7 of 8).
+2026-11-22T02:30:53.9739457Z 2026-11-22 02:30:53,973 [INFO] Body continuation posted for WutheringWavesLeaks_1y2dxhl (part 8 of 8).
+2026-11-22T02:30:56.1117626Z 2026-11-22 02:30:56,111 [INFO] Discohook preview for WutheringWavesLeaks_1y2dxhl: https://discohook.app/?share=rtmKbygx
+2026-11-22T02:30:57.6143921Z 2026-11-22 02:30:57,614 [INFO] Run summary: 1 considered, 1 entering card processing, 1 delivered (1 real, 0 dry-run), 0 relay edit(s), 0 failed, 0 known-pending, 0 retry-backoff, 0 fresh-hold, 0 newly rejected, 0 liveness-unverified, 0 media-wait, 0 partial-gallery, 0 flood-cap dropped, 2 dedup skipped in run, 0 other skipped.
+2026-11-22T02:30:57.6146332Z 2026-11-22 02:30:57,614 [WARNING] dedup cache: evicted 1 oldest key(s) (per-sub cap 250): ['WutheringWavesLeaks_1wrvwop']
+2026-11-22T02:30:57.6164287Z 2026-11-22 02:30:57,616 [INFO] Reddit V3 Monitor execution finished.
+2026-11-22T02:30:57.6511975Z ##[group]Run # Entered persistence defaults to failed; only confirmed outcomes become unchanged/saved; never-ran stays not-reached (handled in summary)
+2026-11-22T02:30:57.6512608Z [36;1m# Entered persistence defaults to failed; only confirmed outcomes become unchanged/saved; never-ran stays not-reached (handled in summary)[0m
+2026-11-22T02:30:57.6512987Z [36;1mecho "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6513184Z [36;1mset -o pipefail[0m
+2026-11-22T02:30:57.6513616Z [36;1mgit config --local user.email "github-actions[bot]@users.noreply.github.com" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PREPARATION FAILED — git config failed"; exit 1; }[0m
+2026-11-22T02:30:57.6514262Z [36;1mgit config --local user.name "github-actions[bot]" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PREPARATION FAILED — git config failed"; exit 1; }[0m
+2026-11-22T02:30:57.6514889Z [36;1mgit add -f posted_reddit.json proxy_health.json pending_reddit.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE STAGING FAILED — git add failed"; exit 1; }[0m
+2026-11-22T02:30:57.6515301Z [36;1mif [ -f posted_messages.json ]; then[0m
+2026-11-22T02:30:57.6515651Z [36;1m  git add -f posted_messages.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE STAGING FAILED — git add failed"; exit 1; }[0m
+2026-11-22T02:30:57.6515990Z [36;1mfi[0m
+2026-11-22T02:30:57.6516119Z [36;1m[0m
+2026-11-22T02:30:57.6516260Z [36;1mif git diff --cached --quiet; then[0m
+2026-11-22T02:30:57.6516444Z [36;1m  echo "No cache changes to push."[0m
+2026-11-22T02:30:57.6516643Z [36;1m  echo "CACHE_RESULT=unchanged" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6516829Z [36;1melse[0m
+2026-11-22T02:30:57.6517006Z [36;1m  if ! git commit -m "auto: update reddit monitor caches"; then[0m
+2026-11-22T02:30:57.6517249Z [36;1m    echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6517606Z [36;1m    echo "::error::CACHE COMMIT FAILED — dedup cache was not persisted; rerun this monitor after resolving the repository state."[0m
+2026-11-22T02:30:57.6517922Z [36;1m    exit 1[0m
+2026-11-22T02:30:57.6518057Z [36;1m  fi[0m
+2026-11-22T02:30:57.6518187Z [36;1m[0m
+2026-11-22T02:30:57.6518328Z [36;1m  cache_branch="${CACHE_BRANCH:-main}"[0m
+2026-11-22T02:30:57.6518736Z [36;1m  # Round 61 (2026-10-04): save OUR freshly-written caches aside —[0m
+2026-11-22T02:30:57.6519116Z [36;1m  # the recovery below resets to the live tip and re-merges them[0m
+2026-11-22T02:30:57.6519383Z [36;1m  # SEMANTICALLY (git merges lines; these files carry meaning. The[0m
+2026-11-22T02:30:57.6519648Z [36;1m  # 2026-10-03 run #4014 lost its dedup state to a line conflict[0m
+2026-11-22T02:30:57.6519911Z [36;1m  # in pending_reddit.json that a JSON merge resolves trivially).[0m
+2026-11-22T02:30:57.6520294Z [36;1m  ours_dir="$(mktemp -d)" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PREPARATION FAILED — mktemp failed"; exit 1; }[0m
+2026-11-22T02:30:57.6520729Z [36;1m  for f in posted_reddit.json proxy_health.json pending_reddit.json posted_messages.json; do[0m
+2026-11-22T02:30:57.6521171Z [36;1m    if [ -f "$f" ]; then cp "$f" "$ours_dir/$f" || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE COPYING FAILED — cp $f failed"; exit 1; }; fi[0m
+2026-11-22T02:30:57.6521507Z [36;1m  done[0m
+2026-11-22T02:30:57.6521645Z [36;1m  pushed=0[0m
+2026-11-22T02:30:57.6521786Z [36;1m  attempts=0[0m
+2026-11-22T02:30:57.6521938Z [36;1m  for attempt in 1 2 3; do[0m
+2026-11-22T02:30:57.6522106Z [36;1m    attempts="$attempt"[0m
+2026-11-22T02:30:57.6522298Z [36;1m    if git push origin "HEAD:${cache_branch}"; then[0m
+2026-11-22T02:30:57.6522488Z [36;1m      pushed=1[0m
+2026-11-22T02:30:57.6522630Z [36;1m      break[0m
+2026-11-22T02:30:57.6522763Z [36;1m    fi[0m
+2026-11-22T02:30:57.6522889Z [36;1m[0m
+2026-11-22T02:30:57.6523170Z [36;1m    # A remote cache commit landed between our sync and this push.[0m
+2026-11-22T02:30:57.6523437Z [36;1m    # Reset to the live tip, semantically merge our caches onto it[0m
+2026-11-22T02:30:57.6523694Z [36;1m    # (union of dedup keys — a lost key is a double post; an extra[0m
+2026-11-22T02:30:57.6523946Z [36;1m    # key is merely re-evicted by the round-34 caps), then retry.[0m
+2026-11-22T02:30:57.6524164Z [36;1m    if [ "$attempt" -lt 3 ]; then[0m
+2026-11-22T02:30:57.6524483Z [36;1m      echo "::warning::Cache push attempt $attempt/3 failed; merging the live ${cache_branch} tip semantically before retry."[0m
+2026-11-22T02:30:57.6524817Z [36;1m      if ! git fetch origin "$cache_branch"; then[0m
+2026-11-22T02:30:57.6525034Z [36;1m        echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6525348Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — could not fetch the live tip; dedup cache was not persisted."[0m
+2026-11-22T02:30:57.6525640Z [36;1m        break[0m
+2026-11-22T02:30:57.6525780Z [36;1m      fi[0m
+2026-11-22T02:30:57.6526147Z [36;1m      git reset --hard FETCH_HEAD || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PUSH RECOVERY FAILED — reset failed; dedup cache was not persisted."; break; }[0m
+2026-11-22T02:30:57.6526742Z [36;1m      if ! python .github/scripts/merge_monitor_caches.py "$ours_dir" . posted_reddit.json proxy_health.json pending_reddit.json posted_messages.json; then[0m
+2026-11-22T02:30:57.6527128Z [36;1m        echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6527430Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — semantic merge failed; dedup cache was not persisted."[0m
+2026-11-22T02:30:57.6527706Z [36;1m        break[0m
+2026-11-22T02:30:57.6527842Z [36;1m      fi[0m
+2026-11-22T02:30:57.6528299Z [36;1m      git add -f posted_reddit.json proxy_health.json pending_reddit.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PUSH RECOVERY FAILED — staging failed after merge; dedup cache was not persisted."; break; }[0m
+2026-11-22T02:30:57.6528952Z [36;1m      if [ -f posted_messages.json ]; then[0m
+2026-11-22T02:30:57.6529402Z [36;1m        git add -f posted_messages.json || { echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"; echo "::error::CACHE PUSH RECOVERY FAILED — staging posted_messages failed; dedup cache was not persisted."; break; }[0m
+2026-11-22T02:30:57.6529821Z [36;1m      fi[0m
+2026-11-22T02:30:57.6530064Z [36;1m      if git diff --cached --quiet; then[0m
+2026-11-22T02:30:57.6530319Z [36;1m        echo "Live tip already contains our cache state — nothing left to push."[0m
+2026-11-22T02:30:57.6530557Z [36;1m        pushed=1[0m
+2026-11-22T02:30:57.6530707Z [36;1m        break[0m
+2026-11-22T02:30:57.6530844Z [36;1m      fi[0m
+2026-11-22T02:30:57.6531023Z [36;1m      if ! git commit -m "auto: update reddit monitor caches"; then[0m
+2026-11-22T02:30:57.6531259Z [36;1m        echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6531557Z [36;1m        echo "::error::CACHE PUSH RECOVERY FAILED — merge commit failed; dedup cache was not persisted."[0m
+2026-11-22T02:30:57.6531830Z [36;1m        break[0m
+2026-11-22T02:30:57.6531965Z [36;1m      fi[0m
+2026-11-22T02:30:57.6532106Z [36;1m      sleep "$((attempt * 15))"[0m
+2026-11-22T02:30:57.6532270Z [36;1m    fi[0m
+2026-11-22T02:30:57.6532399Z [36;1m  done[0m
+2026-11-22T02:30:57.6532524Z [36;1m[0m
+2026-11-22T02:30:57.6532664Z [36;1m  if [ "$pushed" -ne 1 ]; then[0m
+2026-11-22T02:30:57.6532850Z [36;1m    echo "CACHE_RESULT=failed" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6533250Z [36;1m    echo "::error::CACHE PUSH FAILED after ${attempts}/3 attempt(s) — dedup cache was not persisted; the next run may re-post. Rerun this monitor after GitHub recovers."[0m
+2026-11-22T02:30:57.6533620Z [36;1m    exit 1[0m
+2026-11-22T02:30:57.6533752Z [36;1m  fi[0m
+2026-11-22T02:30:57.6533878Z [36;1m[0m
+2026-11-22T02:30:57.6534024Z [36;1m  echo "CACHE_RESULT=saved" >> "$GITHUB_ENV"[0m
+2026-11-22T02:30:57.6534199Z [36;1mfi[0m
+2026-11-22T02:30:57.6560725Z shell: /usr/bin/bash -e {0}
+2026-11-22T02:30:57.6560881Z env:
+2026-11-22T02:30:57.6561052Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:57.6561312Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib/pkgconfig
+2026-11-22T02:30:57.6561563Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:57.6561798Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:57.6562028Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:57.6562255Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib
+2026-11-22T02:30:57.6562460Z   MONITOR_START_EPOCH: 1795314636
+2026-11-22T02:30:57.6562623Z   MONITOR_END_EPOCH: 1795314657
+2026-11-22T02:30:57.6562775Z   CACHE_BRANCH: main
+2026-11-22T02:30:57.6562914Z ##[endgroup]
+2026-11-22T02:30:57.6754754Z [main b20f905] auto: update reddit monitor caches
+2026-11-22T02:30:57.6755123Z  2 files changed, 114 insertions(+), 1 deletion(-)
+2026-11-22T02:30:58.7573875Z To https://github.com/uesu/7jkxmy9nvbc
+2026-11-22T02:30:58.7574106Z    7768065..b20f905  HEAD -> main
+2026-11-22T02:30:58.7655682Z ##[group]Run RUNTIME=unavailable
+2026-11-22T02:30:58.7656083Z [36;1mRUNTIME=unavailable[0m
+2026-11-22T02:30:58.7656320Z [36;1mif [ -n "${MONITOR_START_EPOCH:-}" ] && [ -n "${MONITOR_END_EPOCH:-}" ]; then[0m
+2026-11-22T02:30:58.7656604Z [36;1m  RUNTIME="$(( MONITOR_END_EPOCH - MONITOR_START_EPOCH ))s"[0m
+2026-11-22T02:30:58.7656823Z [36;1mfi[0m
+2026-11-22T02:30:58.7656963Z [36;1mexport RUNTIME CACHE_RESULT[0m
+2026-11-22T02:30:58.7657134Z [36;1mexport JOB_STATUS="success"[0m
+2026-11-22T02:30:58.7657326Z [36;1mpython3 - << 'PY' >> "$GITHUB_STEP_SUMMARY"[0m
+2026-11-22T02:30:58.7657517Z [36;1mimport json, os, pathlib[0m
+2026-11-22T02:30:58.7657673Z [36;1m[0m
+2026-11-22T02:30:58.7657802Z [36;1mdef env(k, d):[0m
+2026-11-22T02:30:58.7657964Z [36;1m    return os.environ.get(k) or d[0m
+2026-11-22T02:30:58.7658132Z [36;1m[0m
+2026-11-22T02:30:58.7658259Z [36;1mdef load(name):[0m
+2026-11-22T02:30:58.7658412Z [36;1m    p = pathlib.Path(name)[0m
+2026-11-22T02:30:58.7658870Z [36;1m    if not p.exists():[0m
+2026-11-22T02:30:58.7659034Z [36;1m        return {}, "missing"[0m
+2026-11-22T02:30:58.7659190Z [36;1m    try:[0m
+2026-11-22T02:30:58.7659357Z [36;1m        d = json.loads(p.read_text(encoding="utf-8"))[0m
+2026-11-22T02:30:58.7659678Z [36;1m    except Exception as exc:[0m
+2026-11-22T02:30:58.7659928Z [36;1m        return {"error": f"malformed_json: {type(exc).__name__}"}, "unreadable or malformed"[0m
+2026-11-22T02:30:58.7660277Z [36;1m    return (d, "read") if isinstance(d, dict) else ({"error": "wrong_shape"}, "invalid shape")[0m
+2026-11-22T02:30:58.7660529Z [36;1m[0m
+2026-11-22T02:30:58.7660661Z [36;1mdef v(k, d="unavailable"):[0m
+2026-11-22T02:30:58.7660828Z [36;1m    val = data.get(k)[0m
+2026-11-22T02:30:58.7661008Z [36;1m    return str(val) if val is not None else d[0m
+2026-11-22T02:30:58.7661194Z [36;1m[0m
+2026-11-22T02:30:58.7661318Z [36;1mdef dstr(val):[0m
+2026-11-22T02:30:58.7661566Z [36;1m    return ", ".join(f"{k}: {val[k]}" for k in sorted(val)) if isinstance(val, dict) and val else "none"[0m
+2026-11-22T02:30:58.7661818Z [36;1m[0m
+2026-11-22T02:30:58.7661948Z [36;1mdef line(label, key):[0m
+2026-11-22T02:30:58.7662114Z [36;1m    print(f"- {label}: {v(key)}")[0m
+2026-11-22T02:30:58.7662276Z [36;1m[0m
+2026-11-22T02:30:58.7662406Z [36;1mdef num(val, tail):[0m
+2026-11-22T02:30:58.7662619Z [36;1m    return f"{val}{tail}" if isinstance(val, (int, float)) else "unavailable"[0m
+2026-11-22T02:30:58.7662840Z [36;1m[0m
+2026-11-22T02:30:58.7662999Z [36;1mdata, result_status = load("reddit_run_result.json")[0m
+2026-11-22T02:30:58.7663226Z [36;1mprint("## Reddit Feed Monitor — run summary")[0m
+2026-11-22T02:30:58.7663410Z [36;1mprint()[0m
+2026-11-22T02:30:58.7663586Z [36;1mprint(f"**Result:** {env('JOB_STATUS', 'unavailable')}")[0m
+2026-11-22T02:30:58.7663836Z [36;1mprint(f"**Monitor runtime:** {env('RUNTIME', 'unavailable')}")[0m
+2026-11-22T02:30:58.7664084Z [36;1mprint(f"**Run-result record:** {result_status}")[0m
+2026-11-22T02:30:58.7664350Z [36;1mprint(f"**Repository persistence:** {env('CACHE_RESULT', 'not-reached')}")[0m
+2026-11-22T02:30:58.7664626Z [36;1mprint(f"**Local persistence:** {v('persistence_status')}")[0m
+2026-11-22T02:30:58.7664878Z [36;1mif data.get("persistence_status") == "skipped_dry_run":[0m
+2026-11-22T02:30:58.7665131Z [36;1m    print("  - Dry-run: no local cache write (as intended)")[0m
+2026-11-22T02:30:58.7665345Z [36;1mif data.get("completed") is True:[0m
+2026-11-22T02:30:58.7665548Z [36;1m    print("**Run status:** completed")[0m
+2026-11-22T02:30:58.7665772Z [36;1m    print("  - Live execution" if data.get("dry_run") is False[0m
+2026-11-22T02:30:58.7666032Z [36;1m          else "  - Dry-run execution (no live delivery or persistence)")[0m
+2026-11-22T02:30:58.7666266Z [36;1melif data.get("completed") is False:[0m
+2026-11-22T02:30:58.7666457Z [36;1m    print("**Run status:** incomplete")[0m
+2026-11-22T02:30:58.7666643Z [36;1m    if data.get("error"):[0m
+2026-11-22T02:30:58.7666948Z [36;1m        print(f"**Error:** {data['error']}")[0m
+2026-11-22T02:30:58.7667124Z [36;1melse:[0m
+2026-11-22T02:30:58.7667272Z [36;1m    print("**Run status:** unavailable")[0m
+2026-11-22T02:30:58.7667465Z [36;1mif data.get("settings_line"):[0m
+2026-11-22T02:30:58.7667641Z [36;1m    print(data["settings_line"])[0m
+2026-11-22T02:30:58.7667813Z [36;1mprint()[0m
+2026-11-22T02:30:58.7667949Z [36;1mprint("### Feed")[0m
+2026-11-22T02:30:58.7668134Z [36;1mrelay = data.get("combined_fetch_status") == "relay"[0m
+2026-11-22T02:30:58.7668635Z [36;1mline("Relay records for this engine (intake lookback)" if relay else "Combined-feed entries", "combined_entries")[0m
+2026-11-22T02:30:58.7668974Z [36;1mif data.get("subreddits_represented") is not None:[0m
+2026-11-22T02:30:58.7669283Z [36;1m    print(f"- Subreddits represented: {v('subreddits_represented')} of {v('subreddits_configured')}")[0m
+2026-11-22T02:30:58.7669556Z [36;1melse:[0m
+2026-11-22T02:30:58.7669837Z [36;1m    print(f"- Combined subreddits covered: {v('combined_subreddits_covered')} of {v('subreddits_configured')} configured")[0m
+2026-11-22T02:30:58.7670185Z [36;1mline("Combined fetch status", "combined_fetch_status")[0m
+2026-11-22T02:30:58.7670407Z [36;1mprobe = data.get("json_probe_by_status")[0m
+2026-11-22T02:30:58.7670691Z [36;1mif isinstance(probe, dict) and probe:[0m
+2026-11-22T02:30:58.7670908Z [36;1m    print(f"- FULL MODE post-JSON probe: {dstr(probe)}")[0m
+2026-11-22T02:30:58.7671164Z [36;1m    if any(str(k).startswith("http_") or k == "error" for k in probe):[0m
+2026-11-22T02:30:58.7671447Z [36;1m        print("  - native mode this run: cards came from RSS + proxy media "[0m
+2026-11-22T02:30:58.7671695Z [36;1m              "(no Reddit JSON body/comments).")[0m
+2026-11-22T02:30:58.7671907Z [36;1mif data.get("arctic_candidates") is not None:[0m
+2026-11-22T02:30:58.7672123Z [36;1m    line("Arctic candidates", "arctic_candidates")[0m
+2026-11-22T02:30:58.7672320Z [36;1mif data.get("arctic_requests"):[0m
+2026-11-22T02:30:58.7672622Z [36;1m    print(f"- Archive requests: {v('arctic_requests')} (retried {v('arctic_retries')}, failed {v('arctic_failures')})")[0m
+2026-11-22T02:30:58.7672947Z [36;1msubs = data.get("feed_subreddits_with_entries")[0m
+2026-11-22T02:30:58.7673151Z [36;1mif isinstance(subs, dict) and subs:[0m
+2026-11-22T02:30:58.7673361Z [36;1m    print(f"- Feed entries by subreddit: {dstr(subs)}")[0m
+2026-11-22T02:30:58.7673584Z [36;1mmissing = data.get("feed_subreddits_missing")[0m
+2026-11-22T02:30:58.7673788Z [36;1mif isinstance(missing, list) and relay:[0m
+2026-11-22T02:30:58.7674014Z [36;1m    print("- Subreddits with no new post in the relay window: "[0m
+2026-11-22T02:30:58.7674338Z [36;1m          + (", ".join(str(x) for x in missing) if missing else "none") + " (quiet, not missing; no archive attempt)")[0m
+2026-11-22T02:30:58.7674624Z [36;1melif isinstance(missing, list):[0m
+2026-11-22T02:30:58.7674834Z [36;1m    print("- Subreddits missing from the combined feed: "[0m
+2026-11-22T02:30:58.7675126Z [36;1m          + (", ".join(str(x) for x in missing) + " (archive attempt below)" if missing else "none"))[0m
+2026-11-22T02:30:58.7675390Z [36;1marc = data.get("arctic_by_sub")[0m
+2026-11-22T02:30:58.7675567Z [36;1mif isinstance(arc, dict) and arc:[0m
+2026-11-22T02:30:58.7675795Z [36;1m    st = {k: (x if isinstance(x, dict) else {}) for k, x in arc.items()}[0m
+2026-11-22T02:30:58.7676017Z [36;1m    def count(status):[0m
+2026-11-22T02:30:58.7676228Z [36;1m        return sum(1 for x in st.values() if x.get("status") == status)[0m
+2026-11-22T02:30:58.7676517Z [36;1m    print(f"- Archive coverage: {len(st)} subreddit(s) without RSS news tried — "[0m
+2026-11-22T02:30:58.7676827Z [36;1m          f"{count('posts')} with posts, {count('empty')} empty (nothing inside the "[0m
+2026-11-22T02:30:58.7677163Z [36;1m          f"posting window), {count('failed')} failed, {count('circuit_open')} skipped (circuit open)")[0m
+2026-11-22T02:30:58.7677550Z [36;1m    print("  - by subreddit: " + ", ".join([0m
+2026-11-22T02:30:58.7677782Z [36;1m        f"{k}=" + (f"{x.get('posts')} post(s)" if x.get("status") == "posts"[0m
+2026-11-22T02:30:58.7678027Z [36;1m                   else str(x.get("status") or "unknown"))[0m
+2026-11-22T02:30:58.7678239Z [36;1m        for k, x in sorted(st.items())))[0m
+2026-11-22T02:30:58.7678678Z [36;1m    if count("failed") or count("circuit_open"):[0m
+2026-11-22T02:30:58.7678942Z [36;1m        print("  - WARNING: an archive lookup did not answer, so coverage for that "[0m
+2026-11-22T02:30:58.7679205Z [36;1m              "subreddit is unconfirmed this run.")[0m
+2026-11-22T02:30:58.7679458Z [36;1mline("Unposted candidates considered", "unposted_candidates_considered")[0m
+2026-11-22T02:30:58.7679755Z [36;1mline("Candidates entering processing", "candidates_entering_processing")[0m
+2026-11-22T02:30:58.7680001Z [36;1mline("Delivered posts", "delivered")[0m
+2026-11-22T02:30:58.7680207Z [36;1mfor item in data.get("delivered_posts") or []:[0m
+2026-11-22T02:30:58.7680409Z [36;1m    if not isinstance(item, dict):[0m
+2026-11-22T02:30:58.7680583Z [36;1m        continue[0m
+2026-11-22T02:30:58.7680749Z [36;1m    latency = item.get("latency_seconds")[0m
+2026-11-22T02:30:58.7680993Z [36;1m    print(f"  - {item.get('key')} — {item.get('media')}/{item.get('mode')}, "[0m
+2026-11-22T02:30:58.7681352Z [36;1m          f"{item.get('items')} item(s), LATENCY "[0m
+2026-11-22T02:30:58.7681621Z [36;1m          + num(round(latency / 60, 1) if isinstance(latency, (int, float)) else None, " min")[0m
+2026-11-22T02:30:58.7681936Z [36;1m          + (f", held as '{item.get('held_reason')}'" if item.get("held_reason") else ""))[0m
+2026-11-22T02:30:58.7682185Z [36;1mif "dry_run_would_deliver" in data:[0m
+2026-11-22T02:30:58.7682398Z [36;1m    line("Dry-run would-deliver", "dry_run_would_deliver")[0m
+2026-11-22T02:30:58.7682622Z [36;1mline("Failed deliveries", "failed_delivery")[0m
+2026-11-22T02:30:58.7682806Z [36;1mprint()[0m
+2026-11-22T02:30:58.7682961Z [36;1mprint("### Skipped and deferred")[0m
+2026-11-22T02:30:58.7683223Z [36;1mline("Held posts Reddit listed again (relay restore)" if relay else "Held posts restored",[0m
+2026-11-22T02:30:58.7683486Z [36;1m     "relay_restores")[0m
+2026-11-22T02:30:58.7683724Z [36;1mline("Held posts the archive re-read clean (archive restore)", "arctic_restores")[0m
+2026-11-22T02:30:58.7684063Z [36;1mfor r in ((data.get("relay_restore_keys") or []) + (data.get("arctic_restore_keys") or []))[:10]:[0m
+2026-11-22T02:30:58.7684346Z [36;1m    if isinstance(r, dict) and r.get("key"):[0m
+2026-11-22T02:30:58.7684614Z [36;1m        print(f"  - restored: {r.get('key')} — held as '{str(r.get('held_reason') or '?')[:40]}' "[0m
+2026-11-22T02:30:58.7684917Z [36;1m              f"for {num(r.get('held_minutes'), ' min')}")[0m
+2026-11-22T02:30:58.7685177Z [36;1mline("Known-rejected candidates (held earlier; no newer listing)" if relay[0m
+2026-11-22T02:30:58.7685480Z [36;1m     else "Known-rejected archive candidates", "known_pending_suppressed")[0m
+2026-11-22T02:30:58.7685753Z [36;1mif data.get("known_pending_by_reason"):[0m
+2026-11-22T02:30:58.7685990Z [36;1m    print(f"  - by reason: {dstr(data['known_pending_by_reason'])}")[0m
+2026-11-22T02:30:58.7686216Z [36;1mkeys = data.get("known_pending_keys")[0m
+2026-11-22T02:30:58.7686408Z [36;1mif isinstance(keys, list) and keys:[0m
+2026-11-22T02:30:58.7686632Z [36;1m    names = [str(k.get("key")) for k in keys if isinstance(k, dict)][:10][0m
+2026-11-22T02:30:58.7686878Z [36;1m    total = data.get("known_pending_suppressed")[0m
+2026-11-22T02:30:58.7687154Z [36;1m    extra = int(total) - len(names) if isinstance(total, int) and total > len(names) else 0[0m
+2026-11-22T02:30:58.7687468Z [36;1m    print("  - keys: " + ", ".join(names) + (f" … {extra} more" if extra else ""))[0m
+2026-11-22T02:30:58.7687715Z [36;1mline("Retry backoff", "retry_backoff")[0m
+2026-11-22T02:30:58.7687910Z [36;1mif data.get("retry_backoff_by_reason"):[0m
+2026-11-22T02:30:58.7688228Z [36;1m    print(f"  - by reason: {dstr(data['retry_backoff_by_reason'])}")[0m
+2026-11-22T02:30:58.7688685Z [36;1mline("Fresh-age hold", "fresh_hold")[0m
+2026-11-22T02:30:58.7688874Z [36;1mfresh = data.get("fresh_hold_keys")[0m
+2026-11-22T02:30:58.7689062Z [36;1mif isinstance(fresh, list) and fresh:[0m
+2026-11-22T02:30:58.7689242Z [36;1m    shown = 0[0m
+2026-11-22T02:30:58.7689391Z [36;1m    for f in fresh[:10]:[0m
+2026-11-22T02:30:58.7689562Z [36;1m        if not isinstance(f, dict):[0m
+2026-11-22T02:30:58.7689734Z [36;1m            continue[0m
+2026-11-22T02:30:58.7689899Z [36;1m        floor = f.get("floor_seconds")[0m
+2026-11-22T02:30:58.7690145Z [36;1m        print(f"  - waiting: {f.get('key')} — {num(f.get('age_seconds'), ' s old')}"[0m
+2026-11-22T02:30:58.7690451Z [36;1m              + (f" (floor {int(floor)} s)" if isinstance(floor, (int, float)) else ""))[0m
+2026-11-22T02:30:58.7690683Z [36;1m        shown += 1[0m
+2026-11-22T02:30:58.7690852Z [36;1m    total = data.get("fresh_hold")[0m
+2026-11-22T02:30:58.7691060Z [36;1m    if isinstance(total, int) and total > shown:[0m
+2026-11-22T02:30:58.7691297Z [36;1m        print(f"  - … {total - shown} more waiting post(s) not shown")[0m
+2026-11-22T02:30:58.7691567Z [36;1mline("Newly rejected removed/deleted", "newly_rejected_removed")[0m
+2026-11-22T02:30:58.7691900Z [36;1mif data.get("newly_rejected_by_reason"):[0m
+2026-11-22T02:30:58.7692129Z [36;1m    print(f"  - by reason: {dstr(data['newly_rejected_by_reason'])}")[0m
+2026-11-22T02:30:58.7692383Z [36;1mline("Liveness not verified", "liveness_not_verified")[0m
+2026-11-22T02:30:58.7692595Z [36;1mif data.get("liveness_by_reason"):[0m
+2026-11-22T02:30:58.7692804Z [36;1m    print(f"  - by reason: {dstr(data['liveness_by_reason'])}")[0m
+2026-11-22T02:30:58.7693016Z [36;1mheld = data.get("hold_keys")[0m
+2026-11-22T02:30:58.7693194Z [36;1mif isinstance(held, list) and held:[0m
+2026-11-22T02:30:58.7693364Z [36;1m    shown = 0[0m
+2026-11-22T02:30:58.7693512Z [36;1m    for h in held[:10]:[0m
+2026-11-22T02:30:58.7693682Z [36;1m        if not isinstance(h, dict):[0m
+2026-11-22T02:30:58.7693853Z [36;1m            continue[0m
+2026-11-22T02:30:58.7694028Z [36;1m        detail = str(h.get("detail") or "")[:120][0m
+2026-11-22T02:30:58.7694255Z [36;1m        print(f"  - held: {h.get('key')} — '{h.get('reason')}' "[0m
+2026-11-22T02:30:58.7694492Z [36;1m              f"({h.get('gate')}, source={h.get('source')})"[0m
+2026-11-22T02:30:58.7694708Z [36;1m              + (f": {detail}" if detail else ""))[0m
+2026-11-22T02:30:58.7694890Z [36;1m        shown += 1[0m
+2026-11-22T02:30:58.7695060Z [36;1m    total = data.get("liveness_not_verified")[0m
+2026-11-22T02:30:58.7695263Z [36;1m    if isinstance(total, int) and total > shown:[0m
+2026-11-22T02:30:58.7695489Z [36;1m        print(f"  - … {total - shown} more held post(s) not shown")[0m
+2026-11-22T02:30:58.7695837Z [36;1mline("Stale-snapshot overrides", "stale_snapshot_overrides")[0m
+2026-11-22T02:30:58.7696211Z [36;1mfor s in (data.get("stale_snapshot_keys") or [])[:10]:[0m
+2026-11-22T02:30:58.7696602Z [36;1m    if isinstance(s, dict) and s.get("key"):[0m
+2026-11-22T02:30:58.7696894Z [36;1m        print(f"  - overridden: {s.get('key')} — archive said "[0m
+2026-11-22T02:30:58.7697259Z [36;1m              f"'{str(s.get('archive_reason') or '')[:60]}', listed "[0m
+2026-11-22T02:30:58.7697617Z [36;1m              f"{num(s.get('rss_seen'), '')} run(s) in Reddit's own feed")[0m
+2026-11-22T02:30:58.7706340Z [36;1mline("Held posts re-probed", "reclaim_checked")[0m
+2026-11-22T02:30:58.7706554Z [36;1mif data.get("reclaim_checked"):[0m
+2026-11-22T02:30:58.7706785Z [36;1m    print(f"  - re-admitted: {num(data.get('reclaim_clean'), '')} | "[0m
+2026-11-22T02:30:58.7707049Z [36;1m          f"still removed: {num(data.get('reclaim_held'), '')}")[0m
+2026-11-22T02:30:58.7707284Z [36;1mfor r in (data.get("reclaim_keys") or [])[:10]:[0m
+2026-11-22T02:30:58.7707496Z [36;1m    if isinstance(r, dict) and r.get("key"):[0m
+2026-11-22T02:30:58.7707862Z [36;1m        print(f"  - probe: {r.get('key')} — {str(r.get('outcome') or '?')[:60]}")[0m
+2026-11-22T02:30:58.7708178Z [36;1mfor label, key in (("Media-wait", "media_wait"), ("Partial-gallery", "partial_gallery"),[0m
+2026-11-22T02:30:58.7708630Z [36;1m                   ("Flood-cap dropped", "flood_cap_dropped"),[0m
+2026-11-22T02:30:58.7708886Z [36;1m                   ("Dedup skipped in run", "dedup_skipped_in_run"),[0m
+2026-11-22T02:30:58.7709113Z [36;1m                   ("Other skipped", "other_skipped")):[0m
+2026-11-22T02:30:58.7709301Z [36;1m    line(label, key)[0m
+2026-11-22T02:30:58.7709466Z [36;1mif data.get("other_by_reason"):[0m
+2026-11-22T02:30:58.7709675Z [36;1m    print(f"  - by reason: {dstr(data['other_by_reason'])}")[0m
+2026-11-22T02:30:58.7709906Z [36;1mif data.get("dedup_cache_size") is not None:[0m
+2026-11-22T02:30:58.7710131Z [36;1m    text = f"- Dedup cache: {data['dedup_cache_size']} key(s)"[0m
+2026-11-22T02:30:58.7710368Z [36;1m    dropped = data.get("dedup_cache_dropped")[0m
+2026-11-22T02:30:58.7710588Z [36;1m    if isinstance(dropped, int) and dropped > 0:[0m
+2026-11-22T02:30:58.7710809Z [36;1m        text += f", {dropped} dropped at the cap this run"[0m
+2026-11-22T02:30:58.7711019Z [36;1m    hot = data.get("dedup_cache_hot")[0m
+2026-11-22T02:30:58.7711294Z [36;1m    if isinstance(hot, dict) and hot:[0m
+2026-11-22T02:30:58.7711478Z [36;1m        text += f" (hot: {dstr(hot)})"[0m
+2026-11-22T02:30:58.7711652Z [36;1m    print(text)[0m
+2026-11-22T02:30:58.7711794Z [36;1mprint()[0m
+2026-11-22T02:30:58.7711931Z [36;1mprint("### Liveness")[0m
+2026-11-22T02:30:58.7712111Z [36;1menabled = data.get("liveness_probe_enabled")[0m
+2026-11-22T02:30:58.7712297Z [36;1mif enabled is None:[0m
+2026-11-22T02:30:58.7712487Z [36;1m    print("- Probe: unavailable (no run-result record)")[0m
+2026-11-22T02:30:58.7712691Z [36;1melif enabled is False:[0m
+2026-11-22T02:30:58.7712885Z [36;1m    print("- Probe: disabled (REDDIT_LIVENESS_PROBE=0)")[0m
+2026-11-22T02:30:58.7713082Z [36;1melse:[0m
+2026-11-22T02:30:58.7713282Z [36;1m    print("- Probe: enabled (" + ("strict" if data.get("liveness_probe_strict")[0m
+2026-11-22T02:30:58.7713582Z [36;1m                                 else "lenient — holds only on positive evidence") + ")")[0m
+2026-11-22T02:30:58.7713838Z [36;1m    line("Verified live", "liveness_probe_live")[0m
+2026-11-22T02:30:58.7714069Z [36;1m    line("Held as removed/queued", "liveness_probe_removed")[0m
+2026-11-22T02:30:58.7714296Z [36;1m    if data.get("liveness_probe_by_reason"):[0m
+2026-11-22T02:30:58.7714533Z [36;1m        print(f"  - by reason: {dstr(data['liveness_probe_by_reason'])}")[0m
+2026-11-22T02:30:58.7714796Z [36;1m    line("Unverified (posted)", "liveness_probe_unverified")[0m
+2026-11-22T02:30:58.7715044Z [36;1m    # r98b: covers EVERY verdict; nesting it under "Unverified[0m
+2026-11-22T02:30:58.7715272Z [36;1m    # (posted)" printed "0" above "8" (#11658).[0m
+2026-11-22T02:30:58.7715481Z [36;1m    if data.get("liveness_probe_by_source"):[0m
+2026-11-22T02:30:58.7715690Z [36;1m        print("- Evidence source (all verdicts): "[0m
+2026-11-22T02:30:58.7715911Z [36;1m              + dstr(data["liveness_probe_by_source"]))[0m
+2026-11-22T02:30:58.7716133Z [36;1m    line("Probe skipped", "liveness_probe_skipped")[0m
+2026-11-22T02:30:58.7716328Z [36;1mprint()[0m
+2026-11-22T02:30:58.7716476Z [36;1mprint("### Providers and media")[0m
+2026-11-22T02:30:58.7716687Z [36;1mwarm = data.get("proxy_warmup_status", "unavailable")[0m
+2026-11-22T02:30:58.7716912Z [36;1mservices = data.get("proxy_warmup_services")[0m
+2026-11-22T02:30:58.7717122Z [36;1mif warm == "ok" and isinstance(services, dict):[0m
+2026-11-22T02:30:58.7717351Z [36;1m    states = ", ".join(f"{k}: {'ok' if s.get('ok') else 'down'}"[0m
+2026-11-22T02:30:58.7717589Z [36;1m                       for k, s in sorted(services.items()))[0m
+2026-11-22T02:30:58.7717805Z [36;1m    print(f"- Proxy warmup: ok ({states})")[0m
+2026-11-22T02:30:58.7718081Z [36;1melif warm == "ok":[0m
+2026-11-22T02:30:58.7718246Z [36;1m    print("- Proxy warmup: ok")[0m
+2026-11-22T02:30:58.7718525Z [36;1melif warm == "disabled":[0m
+2026-11-22T02:30:58.7718763Z [36;1m    print("- Proxy warmup: disabled (PROXY_MEDIA=0 or module missing)")[0m
+2026-11-22T02:30:58.7718987Z [36;1melse:[0m
+2026-11-22T02:30:58.7719139Z [36;1m    print(f"- Proxy warmup: {warm}")[0m
+2026-11-22T02:30:58.7719383Z [36;1mprint(f"- Video quality mode: {data.get('video_quality', 'unavailable')}")[0m
+2026-11-22T02:30:58.7719628Z [36;1mreach = data.get("redlib_reach")[0m
+2026-11-22T02:30:58.7719797Z [36;1mif not reach:[0m
+2026-11-22T02:30:58.7719956Z [36;1m    log = pathlib.Path("monitor.log")[0m
+2026-11-22T02:30:58.7720133Z [36;1m    if log.exists():[0m
+2026-11-22T02:30:58.7720282Z [36;1m        try:[0m
+2026-11-22T02:30:58.7720517Z [36;1m            for entry in reversed(log.read_text(encoding="utf-8", errors="ignore").splitlines()):[0m
+2026-11-22T02:30:58.7720796Z [36;1m                if "REDLIB-REACH:" in entry:[0m
+2026-11-22T02:30:58.7721051Z [36;1m                    reach = "REDLIB-REACH: " + entry.split("REDLIB-REACH:", 1)[1].strip()[0m
+2026-11-22T02:30:58.7721289Z [36;1m                    break[0m
+2026-11-22T02:30:58.7721454Z [36;1m        except Exception:[0m
+2026-11-22T02:30:58.7721702Z [36;1m            pass[0m
+2026-11-22T02:30:58.7721877Z [36;1mif isinstance(reach, str) and reach.strip():[0m
+2026-11-22T02:30:58.7722069Z [36;1m    text = reach.strip()[0m
+2026-11-22T02:30:58.7722260Z [36;1m    if text.upper().startswith("REDLIB-REACH:"):[0m
+2026-11-22T02:30:58.7722466Z [36;1m        text = text.split(":", 1)[1].strip()[0m
+2026-11-22T02:30:58.7722671Z [36;1m    print(f"- Instances (REDLIB-REACH): {text}")[0m
+2026-11-22T02:30:58.7722900Z [36;1melif data.get("redlib_instances_configured") is not None:[0m
+2026-11-22T02:30:58.7723150Z [36;1m    print(f"- Instances (REDLIB-REACH): not probed this run "[0m
+2026-11-22T02:30:58.7723438Z [36;1m          f"({data['redlib_instances_configured']} Redlib instance(s) configured)")[0m
+2026-11-22T02:30:58.7723696Z [36;1mprobed = data.get("redlib_reach_probed")[0m
+2026-11-22T02:30:58.7723964Z [36;1mif isinstance(probed, int) and probed > 0 and data.get("redlib_reach_answered") == 0:[0m
+2026-11-22T02:30:58.7724296Z [36;1m    print("  - WARNING: no Redlib mirror answered this run — page-based checks "[0m
+2026-11-22T02:30:58.7724614Z [36;1m          "(gallery enrichment, removal comments) were unavailable; the liveness "[0m
+2026-11-22T02:30:58.7724874Z [36;1m          "probe used the archive instead.")[0m
+2026-11-22T02:30:58.7725080Z [36;1mvia = data.get("media_resolved_via_provider")[0m
+2026-11-22T02:30:58.7725279Z [36;1mif isinstance(via, dict) and via:[0m
+2026-11-22T02:30:58.7725485Z [36;1m    print(f"- Media resolved via provider: {dstr(via)}")[0m
+2026-11-22T02:30:58.7725721Z [36;1melif data.get("unposted_candidates_considered") == 0:[0m
+2026-11-22T02:30:58.7725979Z [36;1m    print("- Media resolved via provider: none (no candidates)")[0m
+2026-11-22T02:30:58.7726235Z [36;1mendpoint = data.get("final_media_endpoint_category")[0m
+2026-11-22T02:30:58.7726465Z [36;1mif isinstance(endpoint, dict) and endpoint:[0m
+2026-11-22T02:30:58.7726686Z [36;1m    print(f"- Final media endpoint: {dstr(endpoint)}")[0m
+2026-11-22T02:30:58.7726916Z [36;1mkinds = data.get("final_card_media_kind_counts")[0m
+2026-11-22T02:30:58.7727120Z [36;1mif isinstance(kinds, dict) and kinds:[0m
+2026-11-22T02:30:58.7727323Z [36;1m    print(f"- Final card media: kind={dstr(kinds)}, "[0m
+2026-11-22T02:30:58.7727573Z [36;1m          f"tiles={data.get('final_card_media_tile_total', 'unavailable')}")[0m
+2026-11-22T02:30:58.7727800Z [36;1melse:[0m
+2026-11-22T02:30:58.7728024Z [36;1m    providers = data.get("selected_media_providers") or data.get("media_provider_counts")[0m
+2026-11-22T02:30:58.7728309Z [36;1m    if isinstance(providers, dict) and providers:[0m
+2026-11-22T02:30:58.7728856Z [36;1m        print(f"- Selected media provider: {dstr(providers)}")[0m
+2026-11-22T02:30:58.7729161Z [36;1m    elif data.get("unposted_candidates_considered") == 0:[0m
+2026-11-22T02:30:58.7729391Z [36;1m        print("- Final card media: none (no candidates)")[0m
+2026-11-22T02:30:58.7729632Z [36;1mquality = data.get("optional_quality_candidate_result")[0m
+2026-11-22T02:30:58.7729860Z [36;1mif isinstance(quality, dict) and quality:[0m
+2026-11-22T02:30:58.7730081Z [36;1m    print(f"- Optional quality candidate: {dstr(quality)}")[0m
+2026-11-22T02:30:58.7730383Z [36;1melif data.get("quality_upgrades_accepted") is not None or data.get("quality_fallbacks"):[0m
+2026-11-22T02:30:58.7730676Z [36;1m    if data.get("quality_upgrades_accepted") is not None:[0m
+2026-11-22T02:30:58.7730952Z [36;1m        print(f"- Quality upgrades accepted: {data['quality_upgrades_accepted']}")[0m
+2026-11-22T02:30:58.7731203Z [36;1m    if data.get("quality_fallbacks"):[0m
+2026-11-22T02:30:58.7731456Z [36;1m        print(f"- Quality fallbacks (base retained): {data['quality_fallbacks']}")[0m
+2026-11-22T02:30:58.7731716Z [36;1m        if data.get("quality_fallback_reasons"):[0m
+2026-11-22T02:30:58.7731960Z [36;1m            print(f"  - by reason: {dstr(data['quality_fallback_reasons'])}")[0m
+2026-11-22T02:30:58.7732189Z [36;1melif data.get("delivered"):[0m
+2026-11-22T02:30:58.7732468Z [36;1m    print("- Quality fallbacks (base retained): 0")[0m
+2026-11-22T02:30:58.7732672Z [36;1mif data.get("validated_base_retained"):[0m
+2026-11-22T02:30:58.7732916Z [36;1m    print(f"- Validated base retained: {data['validated_base_retained']}")[0m
+2026-11-22T02:30:58.7733158Z [36;1mif data.get("terminal_media_fallbacks"):[0m
+2026-11-22T02:30:58.7733428Z [36;1m    print(f"- Terminal media fallback (proxy -> native): {data['terminal_media_fallbacks']}")[0m
+2026-11-22T02:30:58.7733741Z [36;1mheal = (data.get("heal_queued", 0), data.get("heal_edit_performed", 0),[0m
+2026-11-22T02:30:58.7733995Z [36;1m        data.get("heal_skipped_after_revalidation", 0))[0m
+2026-11-22T02:30:58.7734188Z [36;1mif any(heal):[0m
+2026-11-22T02:30:58.7734377Z [36;1m    print(f"- Heal: queued={heal[0]}, edit_performed={heal[1]}, "[0m
+2026-11-22T02:30:58.7734612Z [36;1m          f"skipped_after_revalidation={heal[2]}")[0m
+2026-11-22T02:30:58.7734803Z [36;1melif data.get("delivered"):[0m
+2026-11-22T02:30:58.7735032Z [36;1m    print("- Heal: queued=0, edit_performed=0, skipped_after_revalidation=0 "[0m
+2026-11-22T02:30:58.7735269Z [36;1m          "(no unresolved evidence)")[0m
+2026-11-22T02:30:58.7735453Z [36;1mfallback = data.get("fallback_status")[0m
+2026-11-22T02:30:58.7735636Z [36;1mif fallback == "not_attempted":[0m
+2026-11-22T02:30:58.7735918Z [36;1m    print("- Feed fallback: not attempted (" + ("relay is the listing" if relay else "combined succeeded") + ")")[0m
+2026-11-22T02:30:58.7736233Z [36;1melif fallback in ("ok", "partial", "all_failed"):[0m
+2026-11-22T02:30:58.7736477Z [36;1m    print(f"- Feed fallback: {fallback} ({v('fallback_entries')} entries, "[0m
+2026-11-22T02:30:58.7736742Z [36;1m          f"{v('fallback_subreddits_covered')} subreddits)")[0m
+2026-11-22T02:30:58.7736949Z [36;1melif fallback is not None:[0m
+2026-11-22T02:30:58.7737138Z [36;1m    print(f"- Feed fallback: {v('fallback_status')}")[0m
+2026-11-22T02:30:58.7737400Z [36;1mprint("- Note: warmup/HTTP validation/'chain complete' do not prove audio "[0m
+2026-11-22T02:30:58.7737680Z [36;1m      "inclusion; per-candidate detail stays in monitor.log")[0m
+2026-11-22T02:30:58.7737883Z [36;1mprint()[0m
+2026-11-22T02:30:58.7738087Z [36;1mprint("Counts describe this run's local observations, not an independent "[0m
+2026-11-22T02:30:58.7738359Z [36;1m      "subreddit-visibility or end-to-end health audit.")[0m
+2026-11-22T02:30:58.7738801Z [36;1mprint("Summary source: reddit_run_result.json (per-run, ignored) + monitor.log; "[0m
+2026-11-22T02:30:58.7739056Z [36;1m      "no additional network requests.")[0m
+2026-11-22T02:30:58.7739227Z [36;1mPY[0m
+2026-11-22T02:30:58.7764562Z shell: /usr/bin/bash -e {0}
+2026-11-22T02:30:58.7764806Z env:
+2026-11-22T02:30:58.7764973Z   pythonLocation: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:58.7765225Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib/pkgconfig
+2026-11-22T02:30:58.7765470Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:58.7765696Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:58.7765920Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.14.10/x64
+2026-11-22T02:30:58.7766149Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.14.10/x64/lib
+2026-11-22T02:30:58.7766352Z   MONITOR_START_EPOCH: 1795314636
+2026-11-22T02:30:58.7766516Z   MONITOR_END_EPOCH: 1795314657
+2026-11-22T02:30:58.7766665Z   CACHE_RESULT: saved
+2026-11-22T02:30:58.7766800Z   JOB_STATUS: success
+2026-11-22T02:30:58.7766939Z ##[endgroup]
+2026-11-22T02:30:58.8085166Z Post job cleanup.
+2026-11-22T02:30:58.8775124Z Cache hit occurred on the primary key setup-python-Linux-x64-26.04-Ubuntu-python-3.14.10-pip-342721b4ba129d0a5e811b69a51815f6b519744cf83c60782cc4c31b1c3dd25d, not saving cache.
+2026-11-22T02:30:58.8885091Z Post job cleanup.
+2026-11-22T02:30:58.9411846Z [command]/usr/bin/git version
+2026-11-22T02:30:58.9475402Z git version 2.56.1
+2026-11-22T02:30:58.9498867Z Temporarily overriding HOME='/home/runner/work/_temp/6e748cea-3563-446e-8fe8-5507b004ff60' before making global git config changes
+2026-11-22T02:30:58.9499552Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-22T02:30:58.9501878Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc
+2026-11-22T02:30:58.9531359Z Removing SSH command configuration
+2026-11-22T02:30:58.9535508Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-22T02:30:58.9567244Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-22T02:30:58.9843311Z Removing HTTP extra header
+2026-11-22T02:30:58.9851290Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-22T02:30:58.9890720Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-22T02:30:59.0139114Z Removing includeIf entries pointing to credentials config files
+2026-11-22T02:30:59.0144993Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-22T02:30:59.0168382Z includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path
+2026-11-22T02:30:59.0169119Z includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path
+2026-11-22T02:30:59.0169578Z includeif.gitdir:/github/workspace/.git.path
+2026-11-22T02:30:59.0169962Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-22T02:30:59.0176611Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path
+2026-11-22T02:30:59.0197824Z /home/runner/work/_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:59.0214687Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-915bcae9\-199d\-4db3\-aeee\-8ab9f0e5ac5f\.config
+2026-11-22T02:30:59.0237384Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path
+2026-11-22T02:30:59.0265153Z /home/runner/work/_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:59.0273014Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/7jkxmy9nvbc/7jkxmy9nvbc/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-915bcae9\-199d\-4db3\-aeee\-8ab9f0e5ac5f\.config
+2026-11-22T02:30:59.0302239Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-22T02:30:59.0322430Z /github/runner_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:59.0328970Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-915bcae9\-199d\-4db3\-aeee\-8ab9f0e5ac5f\.config
+2026-11-22T02:30:59.0356599Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-22T02:30:59.0375342Z /github/runner_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config
+2026-11-22T02:30:59.0380394Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-915bcae9\-199d\-4db3\-aeee\-8ab9f0e5ac5f\.config
+2026-11-22T02:30:59.0409442Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-22T02:30:59.0624395Z Removing credentials config '/home/runner/work/_temp/git-credentials-915bcae9-199d-4db3-aeee-8ab9f0e5ac5f.config'
+2026-11-22T02:30:59.0754947Z Cleaning up orphan processes
+
+{"v":2,"kind":"update","at":1795314362,"posts":[{"id":"1y2dxhl","sub":"WutheringWavesLeaks","age":581,"stage":1,"removed":null,"deleted":false,"edited":true,"spoiler":false,"nsfw":false,"locked":false,"score":22,"comments":2},{"id":"1y2dz9h","sub":"Genshin_Impact","age":428,"stage":1,"removed":null,"deleted":false,"edited":false,"spoiler":false,"nsfw":false,"locked":false,"score":1,"comments":7}]}
+
+total of 8:
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Wuthering waves 4.x Official interview](https://www.reddit.com/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/)\n*by Cute_River_3852 in r/WutheringWavesLeaks*"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "I advise people to read this article cause it has a lot of insight to wuthering waves development and 4.x itself especially surrounding story stuff as well\n\n**Exclusive Interview with Kuro Games: Wuthering Waves Chooses a \"Hell Mode Start\" for 2027** By Qiuqiu\n\n**\"If the mountain will not come to me, then I shall go to the mountain.\"**\n\nAs the end of the year approaches, you can almost smell the tension building for the upcoming battle among Chinese anime-style games. Take a closer look, and you'll find that every publisher is already preparing for the competition. High-quality games of various genres are lining up for release, while established live-service titles aren't slowing down either, with major version updates, collaborations, and crossover content arriving one after another.\n\nAnd now, on November 21, Wuthering Waves has released a gameplay preview for its annual story chapter, Wuthering Waves: Embers of the Everbright.\n\nUnlike previous versions, which explored Chinese-inspired and classical themes, the opening of the New Federation storyline takes a Western-inspired direction. The new region features a more distinctive landscape, and, for the first time, introduces an entirely new mecha-based 3C experience that is closely integrated with the map and gameplay.\n\n![gif](hvsluodja23i1)\n\n![gif](h1wznzzna23i1)\n\nFor Wuthering Waves players, mechs aren't exactly unfamiliar. After all, I previously brought you the first hands-on look at the \"one-handed mech\" back in Version 3.3. Whether it was the massive mech used by the Exostrider or the mech belonging to the protagonist's villainous counterpart, Singulorum, both left plenty of players eager to see these concepts become actual gameplay features.\n\n![gif](u3mixqpsa23i1)\n\n![gif](gqm0lmcva23i1)\n\nWell, now Kuro has done more than simply make mechs a reality. It has turned them into an open-world vehicle system available to everyone. They have abilities, can fight, and can assist players in combat. Their appearance also bears a striking resemblance to Singulorum's mech, and they come with dedicated themed gameplay.\n\n![gif](o23i6jyya23i1)\n\n![img](pshfucm0b23i1)\n\nWhat was once a showcase of technical ambition has now become a core part of the new version's gameplay.\n\nOn November 18, Kuro also released a specially produced 2D frame-by-frame animated teaser, revealing seven new characters in one go. The short animation showcased the New Federation's story, environments, and characters, while incorporating comic-book halftone shading, pop-art color blocks, and a vintage print aesthetic.\n\n![gif](qupmckzib23i1)\n\n![gif](onwbup5kb23i1)\n\nJust looking at the art style might leave you wondering: Is this really Wuthering Waves? Yes, this is Wuthering Waves: Embers of the Everbright\n\nThat's right. For the first time, Kuro has introduced an annual story chapter title that will run throughout the year: Embers of the Everbright. As I write this article, it seems that the familiar 1.X, 2.X, and 3.X numbering system we've used to describe the different eras of Wuthering Waves may be coming to an end. The New Federation's story and content will also have a much more distinctive annual theme.\n\n![gif](n6agdmavb23i1)"
+        },
+        {
+          "id": 4,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://preview.redd.it/emrewkqlg23i1.jpeg?width=1080&format=pjpg&auto=webp&s=186bd231460125bcf3a6a86bb44fa6ee6dbb900b",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/p66YKbVFl1Duf7NDvuuaGpNVeIG8LHleQfpZMQr0Fc0/%3Fwidth%3D1080%26format%3Dpjpg%26auto%3Dwebp%26s%3D186bd231460125bcf3a6a86bb44fa6ee6dbb900b/https/preview.redd.it/emrewkqlg23i1.jpeg",
+                "width": 1080,
+                "height": 610,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            },
+            {
+              "media": {
+                "url": "https://preview.redd.it/pshfucm0b23i1.jpeg?width=1073&format=pjpg&auto=webp&s=c0aae52c5e00523b9d9d1b589560809cbfe163b3",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/7vEt2may1jXvliPc0eUD1QkLPonMtiPzCb2e3STaEGE/%3Fwidth%3D1073%26format%3Dpjpg%26auto%3Dwebp%26s%3Dc0aae52c5e00523b9d9d1b589560809cbfe163b3/https/preview.redd.it/pshfucm0b23i1.jpeg",
+                "width": 1073,
+                "height": 422,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "-# 💬 6 👍 32   •   🕐 <t:1795313781:f> • 📜 Page 1/8"
+        },
+        {
+          "id": 7,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://www.reddit.com/r/WutheringWavesLeaks/comments/1y2dxhl/wuthering_waves_4x_official_interview/"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "Looking back at Version 2.0, then 3.0, and now 4.0, Kuro appears to be charging ahead with increasingly ambitious changes, repeatedly rebuilding the game's underlying systems. Doing this once or twice could be considered bold. But when an entire series of major updates follows the same approach, it raises an interesting question: Has Kuro developed a mature product strategy built around becoming more ambitious the longer the game operates?\n\nWith these questions in mind, I recently visited Kuro Games' headquarters and spoke with Luke, a level designer for Wuthering Waves, and Yunyunyun, the head of the narrative writing team.\n\n**1. Why Introduce a New 3C Experience Every Year?**\n\n**Putaojun: From gliding to motorcycles, and now to mechs, why does every major version introduce something that breaks away from the game’s existing underlying design?**\n\nLuke: When it comes to open-world exploration, we want each year’s new content to provide players with an entire year of fresh experiences.\n\nExploration and traversal are a major part of that enjoyment. Walking, riding a motorcycle, or flying directly to your destination all provide completely different experiences. Even the process of travelling from Point A to Point B should be fun in itself.\n\nOf course, introducing a new 3C system inevitably challenges the underlying design of each major version of Wuthering Waves. How do we make it work within an open world? How do we explore areas that very few developers have attempted before? The entire process is both exciting and painful\n\n![gif](wsucv87ec23i1)\n\n**Putaojun: How much of the experience you’ve accumulated over the years can actually be reused? Does your efficiency when it comes to “tearing everything down and rebuilding it” improve over time?**\n\nLuke: The code still has to be rewritten almost from scratch. What we can reuse is mainly the design experience we’ve accumulated.\n\nFor example, we can look back at the gameplay systems we adapted for gliding, as well as ideas we wanted to implement but couldn’t at the time. Some of those ideas might finally become possible with the mech system.\n\nWe can also draw on previous experience when considering how to help players notice points of interest (POIs) in the open world while travelling at high speeds.\n\nHowever, when it comes to development efficiency, if we continue using the same exploration system, development will certainly become much faster because we only need to iterate on what already exists.\n\nBut developing an entirely new 3C system still means starting from scratch. For example, it’s difficult to reuse the design experience from motorcycles when developing mechs because their intended use cases are completely different.\n\nAs you may have noticed in today’s gameplay preview, the new version also introduces underwater environments. There is even less existing experience we can draw on in this area.\n\nIf we count from the preliminary research stage, mech development has already taken more than a year, almost matching the development timeline of the New Federation itself.\n\n**Putaojun: What challenges did you encounter during development?**\n\nLuke: Even now, we’re still debating how far we should take the mech system.\n\nWe faced a similar situation when developing the motorcycle vehicle system. Initially, we had an idea of how difficult development would be, but as we continued working on it, the challenges exceeded our expectations. We had to constantly evaluate and adjust our plans.\n\nWe want the mech to feel intuitive to players and deliver the excitement of piloting one. At the same time, it needs to integrate naturally with the rest of the game’s content.\n\nWe don’t want players to simply think, “Oh, the mech looks cool,” and leave it at that."
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# 📜 Page 2/8"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "Yunyunyun: I think the most difficult part was deciding to pursue the idea in the first place.\n\nWe often asked ourselves: If everyone thinks mechs are cool and fun, why hasn’t anyone else made them? Is this actually something we can achieve?\n\nDuring the early stages, there was a period of self-doubt before we finally made the decision to move forward.\n\n**Putaojun: Why do you think other developers haven’t made something like this?**\n\nLuke: First, there’s the challenge of imagination.\n\nAnime and movies have already explored all kinds of mech designs, so we need to find ways to push beyond what’s already been done.\n\nFor example, we’ve already created Gundam-style mech combat in Version 3.3, during the battle between the Exostrider and Aleph-1.\n\nBut what if we created a more agile mech that could freely navigate different types of terrain? What else could players do with it? How could we introduce more interactions? How could we integrate it with existing gameplay systems and level designs?\n\n![gif](893u355ee23i1)\n\nCompared with that, gliding is more like a straightforward traversal tool. Its main purpose is to help players travel quickly from Point A to Point B.\n\nDeveloping the mech is almost like creating an entirely new mech game within Wuthering Waves.\n\nThe second challenge is the sheer amount of freedom it provides.\n\nGliding was designed around inertia and parabolic movement. The Expedition Motorbike was also based on a real-world vehicle prototype, with fantasy elements such as double jumps and flying added on top.\n\nBut mechs don’t have any real-world prototypes. They’re purely fictional. We’ve even given them the ability to hover, meaning they can theoretically move in almost any direction without restrictions.\n\nThis level of freedom has a significant impact on existing level design and open-world systems.\n\nAs you can see in today’s gameplay preview, there are still some streaming and loading issues in the environment that we’re working to resolve.\n\nThe mech moves too quickly, which means the map has to constantly load a massive number of Actors (objects within the environment). This puts enormous pressure on performance.\n\nAt the same time, we need to ensure that players can still identify resources and points of interest while moving at high speeds.\n\n![gif](kjm7p5ppe23i1)\n\nAnd there’s another complication: the mech can fight.\n\nOnce players climb into a mech, how could we possibly leave out arm cannons and missiles? And if I already have all these weapons, wouldn’t I naturally want to fire them at the enemies in front of me?\n\n![gif](amk5p22ze23i1)\n\nSo we have to consider things from the player’s perspective.\n\nAfter obtaining a mech, what would players expect to do with it? Which expectations must we fulfil, and where do we have to make compromises?\n\nOnce the mech was integrated into actual version development, we discovered quite a few problems and went through many rounds of iteration.\n\n**Putaojun: You mentioned the Asset streaming issues earlier. What solutions are you currently exploring?**\n\nLuke: Let me give you an example.\n\nPreviously, flight had a normal speed of around 20 metres per second, with acceleration bringing it to approximately 30 metres per second.\n\nThat was already close to the streaming limit of the Rinascita version at the time. Going any faster would cause serious problems with loading the environment.\n\nWhen we developed the Expedition Motorbike, we felt that it should be faster, so we asked our programming colleagues to challenge that limit again.\n\nAnd they succeeded! (Laughs.)\n\nOur amazing programmers managed to raise the streaming limit to 35 metres per second. A huge thanks to our amazing programming team!"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# 📜 Page 3/8"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "As for the mech, we set out from the beginning to break through a new limit. We even wanted to push beyond that new limit once we reached it.\n\nUnfortunately, that attempt failed.\n\nSince we didn’t succeed this time, we’ll just have to try again next time…\n\n**Putaojun: How does the map design accommodate the mech system?**\n\nLuke: In the new version, we’ve designed the map around a particularly tall peak, which serves as the central visual landmark of the Buffalo Rock.\n\nThere are also some strange, hollow mountains that resemble eggshells. When players are flying and spot one of these enormous structures in the distance, they’ll naturally wonder whether something is hidden inside and want to explore it.\n\nThe mech can also interact with vegetation, trees, and animals.\n\nWe’ll also retain some of the features that worked well on the motorcycle. For example, the vehicle radio system will carry over to the mech.\n\n![gif](1rwgqkanf23i1)\n\n**Putaojun: Will the mech influence the mobility design of individual characters? How do you approach the role of character mobility?**\n\nYunyunyun: For us, a character’s animations and movement should serve their characterisation.\n\nTake Lynae, for example. Her character concept has a trendy and athletic feel, so even though the game already had the Expedition Motorbike at the time, we still designed a roller-skating movement style for her.\n\n![gif](n5hmvrh1g23i1)\n\nLuke: There’s also Lucielle. She has a little companion named Moby, a small Canglong, which she rides during combat.\n\nThey fight together, and we incorporate that relationship into other aspects of her design as well.\n\nA character’s 3C features and mobility design should ultimately come from their personality, background, and narrative.\n\n![gif](6pb72qh9g23i1)\n\n**Putaojun: Are these developments related to your previously announced plan to restructure the game’s underlying code architecture? Why did you decide to replace the entire codebase? Almost no other games have dared to do something like this.**\n\nLuke: They are related to some extent, but the main reason for updating the codebase was performance optimisation.\n\nWe actually started this work quite early because it was something we couldn’t afford to delay. The longer we waited, the more difficult the process would become.\n\nIf we waited until the sixth or seventh year of Wuthering Waves to restructure everything, it would be terrifying.\n\nEven so, our programmers faced enormous challenges. Throughout the process, they had to maintain both the JS and C# codebases simultaneously to ensure that development could continue normally.\n\nOur internal editors and development tools also needed to be adapted all over again. It was essentially double the workload.\n\nWhy was this necessary?\n\nOn one hand, we had already recognised the performance and resource pressures that come with long-term operation, so we needed to address them in advance.\n\nFor example, we’re currently working on resource segmentation, loading individual map regions, and HLOD (Hierarchical Level of Detail) optimisations for different devices.\n\nWe’re also exploring ways to let players clear map resources they’ve already explored, preventing the game’s overall file size from growing indefinitely.\n\nOn the other hand, I think our willingness to take on something like this also comes from Kuro’s character. (Laughs.)\n\nThe new C# codebase provides better support for hot updates, allowing us to resolve certain issues more quickly.\n\nIf we come up with a better solution, implement it, and see significant improvements, why shouldn’t we do it?\n\nEventually, everyone reached an agreement.\n\n![img](emrewkqlg23i1)\n\n**2. An Annual Story Chapter and More Ambitious Exploration**"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# 📜 Page 4/8"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "**Putaojun: I’m curious. Rebuilding an entire open-world exploration system is already a huge undertaking, but why did you also announce an entirely new annual story chapter, “Embers of the Everbright”? How is it different from previous major versions?**\n\nYunyunyun: First, looking at the name itself, the New Federation adventure will be a story that unfolds over an entire year, with different parts of the narrative connected to one another.\n\nSo calling it an “annual story chapter” is quite appropriate.\n\nWe gave it the name “Embers of the Everbright” based on the overall tone of the story throughout the year.\n\nCompared with conventional version numbers or names based on geographical regions, this title better represents the imagery and themes within the game.\n\nIt also gives the impression that Wuthering Waves is beginning a new annual expansion.\n\n**Putaojun: What else makes this annual chapter different? For example, why did you choose an American comic-book style, frame-by-frame animation for the characters’ initial reveal this time?**\n\nYunyunyun: This is related to how we communicate the content to players.\n\nWe aren’t restricted to either 2D or 3D presentation. For example, in Version 3.1, we experimented with combining both styles to convey the story and its emotions.\n\nThe same applies to the New Federation.\n\nWe wanted to explore more visual styles, and ultimately chose the American comic-book aesthetic because it fits the Western-inspired theme of the New Federation’s opening.\n\n![gif](bdluzv77h23i1)\n\n**Putaojun: What challenges did you encounter during production? Were there any parts of the PV that required repeated revisions and refinement?**\n\nYunyunyun: At the time, the appearances of Lucielle and Anna were particularly difficult to handle.\n\nThey are characters who appear relatively early in the story and are connected to many subsequent plot developments. Showing too much of them could spoil future events, but showing too little wouldn’t work either.\n\nSo we repeatedly went through the script, looking for scenes that could effectively convey their personalities while also leaving a strong visual impression.\n\n![gif](rcowo90yh23i1)\n\nFor example, Lucielle has very distinctive Western elements in her design: a cowboy hat, boots, and leather clothing. These details allow players to immediately get a sense of the new version’s overall style.\n\nWe originally wanted to give her more screen time, but to preserve the experience of the later story, we ultimately chose the opening scene where she flies through the sky alongside a missile.\n\nAnna, on the other hand, is connected to the transition between the old and new Federations.\n\nWe wanted her to be a character with extensive experience, someone who could offer assistance to players and make them feel reassured.\n\nThat’s why the PV ultimately ends with a scene of Anna getting off a vehicle and heading towards a certain area.\n\nWhat are the causes and consequences for this scenes\n\nYou have to wait and see.\n\n**Putaojun: However, the two characters behave quite differently in the gameplay preview. Could you elaborate on their character designs? For example, Anna’s weapon can transform.**\n\nYunyunyun: Regarding Anna… First of all, we have to respect Wuthering Waves’ identity as an action game.\n\nGiving her only one weapon form simply wouldn’t feel exciting enough.\n\nOnce we had settled on that direction, we started thinking about what kind of weapon would suit her.\n\nAnna isn’t exactly a traditional fighter, so we wanted to incorporate something more imaginative.\n\nWe combined the flower motif in her character concept with her overall impression of being dangerous, beautiful, and authoritative.\n\nIn the end, we chose two weapon forms: a lance and a scythe."
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# 📜 Page 5/8"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "**Putaojun: I also noticed many landmarks in the gameplay preview, including a large bridge and a strangely designed town. How do you approach environmental design to match the setting?**\n\nLuke: This strangely designed town is an area that was affected by the Resonator War a hundred years ago. It has since become a ruin.\n\nYou can see many modern buildings from the old Federation era gradually merging with the surrounding mountains and vegetation.\n\nAs for the bridge, it originally connected to the Federation City, but it has since been destroyed.\n\nThere’s also a cannon hidden underneath one of its pillars.\n\nIn other words, it isn’t just a transportation structure. It was also a war machine in its own right.\n\nThrough this kind of environmental storytelling, we want players to understand just how devastating the war was without having to explain everything through text.\n\nIt also leaves more room for players to imagine what happened in the past.\n\n\\*\\*3. Compromises and Convictions\n\nPutaojun: We’ve discussed quite a lot of new content. I’m curious how you balance your resources when you’re simultaneously updating the current version and developing content for the next several years.\\*\\*\n\nYunyunyun: This mainly comes down to project management.\n\nWe have dedicated project management colleagues responsible for scheduling. They let everyone know when certain content needs to be submitted and when work on new features should begin.\n\nOur development process is also quite agile.\n\nSometimes, when we’re out eating, watching a movie, or listening to music, we suddenly get an idea. Everyone quickly reaches out to other colleagues to discuss how that inspiration could be turned into something practical.\n\n**Putaojun: So how does an idea actually become a finished feature? How do the different teams collaborate internally?**\n\nYunyunyun: From the IP team’s perspective, we generally don’t start by asking for a particular gameplay feature.\n\nInstead, we first consider what kind of experience and story we want players to have in that version.\n\nFor example, where will the Rover travel? What enemies will they encounter? What companions will they meet along the way?\n\nWe first condense these ideas into a simple concept, then discuss and refine them together with the gameplay, cinematics, music, and level design teams.\n\nFinally, we combine everyone’s ideas into a complete narrative experience for players.\n\n**Putaojun: But doesn’t this create a potential problem? Every version involves travelling to a new place and meeting new people while experiencing different events. Won’t the content eventually start feeling repetitive?**\n\nYunyunyun: Honestly, this isn’t something we’re particularly worried about.\n\nThe basic structures of stories are inherently limited. Humanity has been telling stories for thousands of years, and many themes and plotlines have already been explored repeatedly.\n\nBut we’re making a game, not simply writing a story synopsis.\n\nThe IP team has its own interpretation of a story, while the cinematic, music, and gameplay teams bring their own ideas to it.\n\nWhen players actually step into the world and experience the story themselves, they may feel something entirely different.\n\nWhether it’s the stories of Lahai-Roi, Xuanfang, or the future New Federation, the IP team determines the content of each version through an overall collaborative process.\n\nWe then work closely with the cinematic, music, gameplay, and other teams to refine everything and present it to players in the best form we can achieve.\n\nEven if we’re telling stories about sadness, there can be many different kinds of sadness. And even if we’re telling stories about happiness, there can be many different kinds of joy."
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# 📜 Page 6/8"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "I think that’s the meaning of having a group of people come together to make a game.\n\n**Putaojun: When everyone has creative ideas, how do you decide which ones should be implemented and which ones shouldn’t?**\n\nYunyunyun: From the IP team’s perspective, there are two things we value most: consistency and freshness.\n\nFreshness is easy to understand. We want every version to offer players something new.\n\nConsistency, on the other hand, is a fundamental requirement of our internal development process.\n\nFor example, if a version has a particularly serious theme, the narrative, level design, and cinematics teams shouldn’t suddenly introduce something that feels completely out of place.\n\nThe same applies to characters.\n\nWe sometimes even give our colleagues a slightly chuunibyou-style method of thinking about this.\n\nIf you want a character to do something, imagine that they’re sitting right in front of you. Now, go and convince them to do it. Would they actually agree?\n\nFor example, what would happen if you tried to convince Phoebe to go fishing out at sea?\n\nLuke: Over time, our colleagues across different departments have developed a certain understanding and rhythm when it comes to development.\n\nOnce we receive the IP setting documents, we proactively examine the details and consider whether something fits the character and the world before deciding how to implement it.\n\n**Putaojun: Have there been any particularly ambitious ideas that required repeated adjustments before they could actually be implemented?**\n\nLuke: There’s one design that left a particularly deep impression on me.\n\nWhen we were developing the major battle in Version 2.7, we wanted to create a boss fight where every character gathered together and fought simultaneously.\n\nAt the time, I thought the scene might become a little chaotic, but it would definitely convey the intensity and excitement of a final battle.\n\nUnfortunately, reality got in the way.\n\nThe technical challenges involved in implementing this idea were enormous.\n\nThe character models in Wuthering Waves have a very high level of detail. Even after optimising the models of all the characters who would appear, we still couldn’t fully resolve the preloading and device performance issues.\n\nThis would directly affect the smoothness of combat.\n\nHowever, we eventually came up with another way to present the idea.\n\nWe retained the concept of having everyone participate in the battle, but used QTEs to bring certain characters into the fight at specific moments.\n\nThis allowed us to preserve the feeling of an all-out team battle while ensuring that combat remained smooth and satisfying.\n\nThe final implementation was also well received by many players.\n\nSo although we didn’t achieve our original vision for this particular “challenge”, we still ended up with a very good result.\n\n**Yunyunyun: One scene that left a deep impression on me was the sequence where the Rover and Hiyuki chase after Denia.**\n\nDeveloping this section was quite painful for us. We made numerous adjustments to the level design and balance.\n\nInitially, we envisioned an intense chase where Denia would almost get caught but ultimately manage to escape. We wanted to create a rather complicated emotional experience.\n\nWe spent a lot of time thinking about how to create tension and made many adjustments.\n\nFor example, since Denia is the one being chased, should she be able to control the player’s camera? And if so, to what extent?\n\nThe same questions applied to Hiyuki.\n\nAs the Rover’s companion, how should she support and assist the Rover during the chase?\n\nAnd what should we do if certain design choices interfere with the player’s controls?"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# 📜 Page 7/8"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1546770415186092032",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 16729344,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "The version players eventually experienced was the result of many iterations and compromises made while addressing questions like these.\n\n**Putaojun: On the other hand, you also seem to enjoy adding details that players might not even notice. Why continue investing in things that may not bring much obvious benefit?**\n\nLuke: Players have very different interests and goals in Wuthering Waves.\n\nThere are all kinds of players. Some enjoy experiencing the story, while others prefer exploring the world.\n\nWe want to leave little surprises for different types of players, even within the limited time we have.\n\nFor example, during the major battle in Lahai-Roi, we asked ourselves how we could create a final battle that matched the region’s themes and the characteristics of its characters, especially since we had already created a climactic battle that suited Rinascita’s story.\n\nEventually, our quest design colleagues worked with us to come up with a way to mobilise the entire map.\n\nIf players simply want to rush through the main story, there’s a way to progress quickly.\n\nBut if they’re willing to explore their surroundings, they can also find other characters and discover additional content.\n\nAs for why we continue doing these things…\n\nIf we thought that the corners of the game that players are less likely to notice could simply be handled carelessly, then perhaps that wouldn’t really be the Wuthering Waves way of doing things.\n\n**Putaojun: To wrap things up, would you say Kuro is a company driven more by creativity or by project management?**\n\nLuke: I would say we’re still primarily driven by creativity.\n\nAlthough we have structured project management processes, there are times when the development team is willing to break those rules for a good idea.\n\nSome features are genuinely difficult to implement and may exceed our original development expectations.\n\nBut if everyone believes that something is worth making, we’ll still try to find a way to do it.\n\nThis process also puts a lot of pressure on project management, so I’d really like to thank our project management colleagues for their support and hard work.\n\nYunyunyun: I don’t think these two things conflict with each other.\n\nProject management actually helps us evaluate our creative ideas more effectively.\n\nFrom the moment an idea is proposed to the point where it’s finally implemented, it may go through many rounds of discussion and refinement.\n\nThroughout this process, we constantly ask ourselves: Is this really necessary? Is it worth investing so much time and effort?\n\nIf we’re not even fully committed to an idea ourselves, perhaps that means it isn’t quite good enough yet.\n\nBut conversely, if we genuinely believe that an idea has value, we’ll still want to bring it to life as much as possible, even if implementation is extremely difficult.\n\nFor example, when players see things in Wuthering Waves that seem like they shouldn’t belong in the game, but somehow end up working incredibly well, almost all of those features are things we insisted on pursuing.\n\nThe mech system this time is one such example."
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# 📜 Page 8/8"
+        }
+      ]
+    }
+  ]
+}
