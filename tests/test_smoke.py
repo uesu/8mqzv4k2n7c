@@ -216,8 +216,10 @@ def test_a_card_has_nothing_above_it_and_pings_from_inside():
                   "sources": ["ennead"]} for i in range(n)]
         p = cards.codes_payloads(g, codes, s, ping, 1791149429)[0]
         assert [c["type"] for c in p["components"]] == [17]
-        head, sub = (c["content"] for c in p["components"][0]["components"][0]["components"][:2])
-        assert head == f"## 🎁 Genshin Impact Redemption {word}"
+        top = p["components"][0]["components"][0]              # a Section: heading + artwork
+        assert top["type"] == 9 and top["accessory"]["type"] == 11
+        head, sub = top["components"][0]["content"].split("\n")
+        assert head == f"## <a:starwarddonut:1483083005361913959> Genshin Impact Redemption {word}"
         assert sub == (f"-# {n} new code{'' if n == 1 else 's'} • detected "
                        f"<t:1791149429:R> <@&1296268365593186426>")
         assert json.dumps(p, ensure_ascii=False).count("<@&1296268365593186426>") == 1
@@ -653,8 +655,8 @@ def test_no_ping_and_test_marker():
     assert cards.mark_test(t) == t                       # idempotent: never stacks a 2nd banner
     assert "TEST CARD" not in json.dumps(p, ensure_ascii=False)                 # original untouched
     # the codes mention rides on the "… new code(s) • detected …" line, inside the card
-    assert p["components"][0]["components"][0]["components"][1]["content"].endswith(
-        "<@&1296268365593186426>")
+    head_block = p["components"][0]["components"][0]["components"][0]["content"]
+    assert head_block.split("\n")[1].endswith("<@&1296268365593186426>")
     for key in CODE_SAMPLES:                                                    # one sample per game (6)
         assert key in GAMES
     assert set(CODE_SAMPLES) == {"genshin", "starrail", "zzz", "wuwa", "hna", "ananta"}
@@ -730,6 +732,41 @@ def test_a_source_dumping_hundreds_of_codes_cannot_flood_the_channel():
         ctx.games = [GAMES["zzz"]]
         asyncio.run(codeposter.run(ctx))
         assert len(ctx.webhook.sent) == codeposter.MAX_CARDS_PER_RUN
+
+
+def test_each_posted_card_records_exactly_the_codes_it_shows():
+    """A card's `msg_codes` is what a later "mark expired" edit rebuilds that message from, so the
+    bookkeeping must be cut with the SAME chunk size the payload used — and that size shrinks when
+    the footer is wide enough to hit Discord's 40-component cap."""
+    with tempfile.TemporaryDirectory() as tmp:
+        sp = Path(tmp) / "state.json"
+        ctx = make_ctx(sp, GAME="zzz", codes_table={
+            "seria:nap": [CodeHit("ZZZSEED01", "seria", None, verified=True)]})
+        ctx.games = [GAMES["zzz"]]
+        asyncio.run(codeposter.run(ctx))                       # first run only seeds
+        ctx.state.save()
+
+        table = {"seria:nap": [CodeHit(f"ZZZWIDE{i:02d}", "seria", None, verified=True)
+                               for i in range(12)]}
+        ctx = make_ctx(sp, GAME="zzz", codes_table=table,
+                       COMMUNITY_BUTTONS='[{"label":"A","url":"https://discord.gg/a"},'
+                                         '{"label":"B","url":"https://discord.gg/b"}]',
+                       EXTRA_BUTTONS='[{"label":"C","url":"https://discord.gg/c"},'
+                                     '{"label":"D","url":"https://discord.gg/d"}]')
+        ctx.games = [GAMES["zzz"]]
+        asyncio.run(codeposter.run(ctx))
+        assert len(ctx.webhook.sent) == 2                       # 9 + 3, not 10 + 2
+        shown = [[c["components"][0]["content"].split("\n")[0].removeprefix("✦ ")
+                  for c in sent["payload"]["components"][0]["components"]
+                  if c["type"] == 9 and c["accessory"].get("label") == "Redeem"]
+                 for sent in ctx.webhook.sent]
+        assert [len(x) for x in shown] == [9, 3]
+        recs = ctx.state.code_records("zzz")
+        posted = [r for r in recs.values() if r.get("status") == "posted"]
+        # every record of a card carries that card's code list, and nothing else
+        assert sorted({tuple(r["msg_codes"]) for r in posted}) == sorted(tuple(x) for x in shown)
+        assert sorted({c for r in posted for c in r["msg_codes"]}) == sorted(
+            hit.code for hit in table["seria:nap"])
 
 
 def test_invisible_and_bidi_characters_are_stripped_from_scraped_text():
@@ -1068,7 +1105,7 @@ def test_posted_code_card_is_edited_when_code_expires():
         assert [x["method"] for x in ctx.webhook.sent] == ["PATCH"]
         edit = ctx.webhook.sent[0]["payload"]
         flat = json.dumps(edit, ensure_ascii=False)
-        assert "~~`WAKINGMOON`~~ · expired" in flat and "`FINDSENTINEL`" in flat and "1 expired" in flat
+        assert "✦ ~~WAKINGMOON~~ · expired" in flat and "✦ FINDSENTINEL" in flat and "1 expired" in flat
         # Page 1 still carries the mention, so the edit keeps its permission (no new notification).
         assert edit["allowed_mentions"] == {"parse": [], "roles": ["1296268365593186426"]}
         ctx.state.save()
@@ -1579,7 +1616,7 @@ def test_posted_code_is_struck_when_its_valid_until_date_passes():
         ctx.games = [GAMES["starrail"]]
         asyncio.run(codeposter.run(ctx))
         assert [x["method"] for x in ctx.webhook.sent] == ["PATCH"]
-        assert "~~`LIVE4610`~~ · expired" in json.dumps(ctx.webhook.sent[0]["payload"], ensure_ascii=False)
+        assert "✦ ~~LIVE4610~~ · expired" in json.dumps(ctx.webhook.sent[0]["payload"], ensure_ascii=False)
 
 
 def test_program_tba_line_hidden_once_the_update_is_known():
@@ -1614,40 +1651,140 @@ def test_repost_feedback_and_first_run_notes():
 
 
 # =========================================================================== 1.2.0 (card buttons + countdown estimates)
-def test_code_card_buttons_are_the_code_links_then_the_community_row():
+def test_code_card_has_a_redeem_button_per_code_then_the_community_footer():
+    """2026-11-22 code card: no backticks around a code, one `Redeem` button per code sitting ON
+    that code's row as the Section accessory, hint + source in one block, and the community
+    invite as a Section at the very bottom (its link button is that Section's accessory)."""
     s = settings()
-    codes = [{"code": "VESNAONPATROL", "sources": ["ogc", "fandom"], "rewards": "Primogem ×40"}]
+    codes = [{"code": "VESNAONPATROL", "sources": ["ogc", "fandom"], "rewards": "Primogem ×40"},
+             {"code": "EPIC2026", "sources": ["ennead"], "rewards": "Mora ×20000"}]
     p = cards.codes_payloads(GAMES["genshin"], codes, s, s.ping("codes", "genshin"), LIVE_NOW)[0]
     flat = json.dumps(p, ensure_ascii=False)
     box = p["components"][-1]["components"]
-    rows = [c for c in box if c["type"] == 1]
-    assert [b["label"] for b in rows[0]["components"]] == ["VESNAONPATROL"]       # one Redeem link per code
-    assert [b["label"] for b in rows[-1]["components"]] == ["Citlali News"]       # community row, at the end
-    assert rows[-1]["components"][0]["url"] == "https://discord.gg/HyrVP9wRXu"
-    assert rows[-1]["components"][0]["emoji"] == {"id": "1439878792653832253", "name": "starward11",
-                                                  "animated": True}
-    assert box[box.index(rows[-1]) - 1]["type"] == 14            # a separator in front of the row
+    sections = [c for c in box if c["type"] == 9]
+    assert len(sections) == 4                                  # header, 2 codes, community footer
+    for sec, code in zip(sections[1:3], codes):
+        assert sec["components"][0]["content"].startswith(f"✦ {code['code']}\n-# ")
+        btn = sec["accessory"]
+        assert (btn["style"], btn["label"]) == (5, "Redeem")
+        assert btn["url"] == f"https://genshin.hoyoverse.com/en/gift?code={code['code']}"
+        assert btn["emoji"] == {"id": "1573969377038958644", "name": "starwardthink", "animated": True}
+    assert "`" not in flat and '"label": "VESNAONPATROL"' not in flat   # the code is not a button
+    foot = sections[-1]
+    assert foot["components"][0]["content"] == ("**Citlali News**\n"
+                                               "-# Delivering news and official updates")
+    assert foot["accessory"]["url"] == "https://discord.gg/HyrVP9wRXu"
+    assert foot["accessory"]["emoji"] == {"id": "1439878792653832253", "name": "starward11",
+                                          "animated": True}
+    assert box[box.index(foot) - 1]["type"] == 14               # separator in front of the footer
+    # hint + source share one block, directly above that separator
+    assert box[box.index(foot) - 2]["content"].startswith("※ Tap a code")
+    assert "-# Source: " in box[box.index(foot) - 2]["content"]
     for gone in ("Redeem Page", "Youtube", "Twitch"):            # livestream buttons, not code buttons
         assert gone not in flat, gone
     assert not cards.validate_payload(p)
+    # a game with no web redemption keeps the plain code rows — and still gets the footer
     ww = cards.codes_payloads(GAMES["wuwa"], [{"code": "WUTHERINGGIFT", "sources": ["ogc"]}],
                               s, s.ping("codes", "wuwa"), LIVE_NOW)[0]
-    rows = [c for c in ww["components"][-1]["components"] if c["type"] == 1]
-    assert [b["label"] for b in rows[-1]["components"]] == ["Citlali News"]       # in-game-only game too
+    ww_box = ww["components"][-1]["components"]
+    assert [c["type"] for c in ww_box] == [9, 14, 10, 14, 10, 14, 9]   # hints, source, footer
+    assert ww_box[-1]["accessory"]["label"] == "Citlali News"
     # the livestream card keeps Youtube / Twitch
     labels = [b["label"] for c in _render("starrail")["components"][0]["components"] if c["type"] == 1
               for b in c["components"]]
     assert labels[:2] == ["Youtube", "Twitch"]
-    # configurable: COMMUNITY_BUTTONS=none -> no row at all
+    # configurable: COMMUNITY_BUTTONS=none -> no footer Section, no button row anywhere
     off = settings(COMMUNITY_BUTTONS="none")
     assert off.community_buttons == []
     p2 = cards.codes_payloads(GAMES["genshin"], codes, off, off.ping("codes", "genshin"), LIVE_NOW)[0]
-    assert [c for c in p2["components"][-1]["components"] if c["type"] == 1] == [
-        {"type": 1, "components": [cards.link_button("VESNAONPATROL",
-                                                    "https://genshin.hoyoverse.com/en/gift?code=VESNAONPATROL",
-                                                    {"name": "🎁"})]}]
+    box2 = p2["components"][-1]["components"]
+    assert [c for c in box2 if c["type"] == 1] == []
+    buttons = [c["accessory"] for c in box2 if c["type"] == 9 and c["accessory"]["type"] == 2]
+    assert [b["label"] for b in buttons] == ["Redeem"] * 2
+    assert box2[-1]["type"] == 10 and box2[-1]["content"].startswith("※ ")
+    assert not cards.validate_payload(p2)
     custom = settings(COMMUNITY_BUTTONS='[{"label":"My Server","url":"https://discord.gg/abc"}]')
     assert [b["label"] for b in custom.community_buttons] == ["My Server"]
+
+
+def test_codes_card_artwork_and_headline_emoji_are_configurable():
+    """The card artwork is the design's own GIF: CODES_THUMBNAIL for every game, or a
+    `codes.thumbnail` in games.json for one. Only http(s) is accepted; otherwise the game's icon
+    is used, exactly like before the redesign."""
+    s = settings()
+    codes = [{"code": "HOLLOWRUN34", "sources": ["ennead"]}]
+    icon = cards.codes_thumbnail(GAMES["zzz"], s)
+    assert icon == GAMES["zzz"].icon                              # fallback: the game icon
+    gif = "https://cdn.example.gg/codes.gif"
+    s = settings(CODES_THUMBNAIL=gif)
+    p = cards.codes_payloads(GAMES["zzz"], codes, s, s.ping("codes", "zzz"), LIVE_NOW)[0]
+    assert p["components"][0]["components"][0]["accessory"] == {"type": 11, "media": {"url": gif}}
+    assert not cards.validate_payload(p)
+    # a typo can never reach Discord: non-http values are dropped, the icon stays
+    for bad in ("javascript:alert(1)", "codes.gif", "data:image/gif;base64,AAA"):
+        assert settings(CODES_THUMBNAIL=bad).codes_thumbnail == ""
+    # per-game artwork beats the global variable
+    game = replace(GAMES["zzz"], codes={**GAMES["zzz"].codes,
+                                                    "thumbnail": "https://cdn.example.gg/zzz.gif"})
+    assert cards.codes_thumbnail(game, s) == "https://cdn.example.gg/zzz.gif"
+    # a game with neither icon nor artwork gets a plain text block, not a broken accessory
+    bare = replace(GAMES["zzz"], icon="", codes={})
+    assert cards.codes_thumbnail(bare, settings()) == ""
+    p = cards.codes_payloads(bare, codes, settings(), settings().ping("codes", "zzz"), LIVE_NOW)[0]
+    assert p["components"][0]["components"][0]["type"] == 10
+    assert not cards.validate_payload(p)
+    # EMOJI_REDEEM=none -> a bare heading with no stray space
+    s = settings(EMOJI_REDEEM="none")
+    p = cards.codes_payloads(GAMES["zzz"], codes, s, s.ping("codes", "zzz"), LIVE_NOW)[0]
+    assert p["components"][0]["components"][0]["components"][0]["content"].startswith(
+        "## Zenless Zone Zero Redemption Code\n")
+    # an expired code is struck through, keeps no button, and the footer says it stays readable
+    p = cards.codes_payloads(GAMES["zzz"], [{"code": "DEADCODE1", "sources": ["ennead"],
+                                             "expired": True}],
+                             settings(), settings().ping("codes", "zzz"), LIVE_NOW)[0]
+    box = p["components"][0]["components"]
+    assert any(c["type"] == 10 for c in box) and not any(c["type"] == 1 for c in box)
+    urls = [str(c.get("accessory", {}).get("url", "")) for c in box if c["type"] == 9]
+    assert not [u for u in urls if "code=" in u]                            # no Redeem button left
+    assert "✦ ~~DEADCODE1~~ · expired" in json.dumps(p, ensure_ascii=False)
+    assert "Expired codes are kept for reference" in json.dumps(p, ensure_ascii=False)
+    assert not cards.validate_payload(p)
+
+
+def test_a_wide_footer_never_pushes_a_codes_card_over_40_components():
+    """One Section per code spends three components (Section + text + Redeem accessory) against
+    Discord's 40 per message. A footer wide enough to reach that line shortens the card instead of
+    producing a payload Discord would reject — and the default card still holds all ten."""
+    wide = settings(COMMUNITY_BUTTONS='[{"label":"A","url":"https://discord.gg/a"},'
+                                      '{"label":"B","url":"https://discord.gg/b"}]',
+                    EXTRA_BUTTONS='[{"label":"C","url":"https://discord.gg/c"},'
+                                  '{"label":"D","url":"https://discord.gg/d"}]')
+    assert cards.codes_chunk_size(GAMES["zzz"], wide) == cards.CODES_PER_CARD - 1
+    many = [{"code": f"CODE{i:04d}X", "sources": ["ennead"]} for i in range(12)]
+    parts = cards.codes_payloads(GAMES["zzz"], many, wide, wide.ping("codes", "zzz"), 1)
+    assert len(parts) == 2                                        # 9 + 3
+    assert all(not cards.validate_payload(p) for p in parts)
+    # every card keeps its artwork header, one Redeem Section per code, and the community footer
+    for p in parts:
+        box = p["components"][0]["components"]
+        heads = [c for c in box if c["type"] == 9 and c["accessory"]["type"] == 11]
+        redeems = [c for c in box if c["type"] == 9 and c["accessory"].get("label") == "Redeem"]
+        assert len(heads) == 1 and len(redeems) >= 1
+        assert heads[0]["components"][0]["content"].startswith("## ")
+        assert all("code=" in c["accessory"]["url"] for c in redeems)
+        footer = [c for c in box if c["type"] == 9 and
+                  "Delivering news and official updates" in c["components"][0]["content"]]
+        assert len(footer) == 1 and footer[0]["components"][0]["content"].startswith("**A**")
+        assert footer[0]["accessory"]["label"] == "A"            # first button = the footer itself
+        rows = [c for c in box if c["type"] == 1]
+        assert [b["label"] for b in rows[0]["components"]] == ["B", "C", "D"]   # the rest, one row
+    posted = sum(1 for p in parts for c in p["components"][0]["components"]
+                 if c["type"] == 9 and c["components"][0]["content"].startswith("✦ CODE"))
+    assert posted == len(many)
+    # the default deployment is untouched: ten codes a card, exactly as before the redesign
+    assert cards.codes_chunk_size(GAMES["zzz"], settings()) == cards.CODES_PER_CARD
+    p = cards.codes_payloads(GAMES["zzz"], many, settings(), settings().ping("codes", "zzz"), 1)[0]
+    assert sum(1 for c in p["components"][0]["components"] if c["type"] == 9) == 1 + 10 + 1
 
 
 def test_countdown_pages_are_parsed():

@@ -443,6 +443,18 @@ def schedule_payload(game: Game, d: dict, settings: Settings, ping: Ping,
 
 # --------------------------------------------------------------------------- codes card
 CODES_PER_CARD = 10
+# The quiet line under the community headline in the card's footer Section.
+CODES_FOOTER_NOTE = "-# Delivering news and official updates"
+
+
+def codes_thumbnail(game: Game, settings: Settings) -> str:
+    """Artwork on a codes card: a per-game `codes.thumbnail` wins, then CODES_THUMBNAIL, then the
+    game's own icon (which is what every card used before the 2026-11-22 design)."""
+    for url in (str(game.codes.get("thumbnail") or "").strip(), settings.codes_thumbnail,
+                game.icon or ""):
+        if safe_url(url):
+            return url
+    return ""
 
 
 def pretty_rewards(raw: str | list | None) -> str:
@@ -469,7 +481,8 @@ def codes_card(game: Game, chunk: list[dict], settings: Settings, ping: Ping, de
     n = len(chunk)
     dead = sum(1 for c in chunk if c.get("expired"))
     plural = "s" if n != 1 else ""
-    head = f"## 🎁 {game.name} Redemption Code{plural}"
+    gift = emoji_str(settings.emoji.get("redeem"))
+    head = f"## {gift} {game.name} Redemption Code{plural}" if gift else f"## {game.name} Redemption Code{plural}"
     if dead and dead == n:
         sub = f"-# {'all ' if n > 1 else ''}{n} code{plural} in this post expired • posted {discord_ts(detected_ts, 'R')}"
     elif dead:
@@ -482,40 +495,68 @@ def codes_card(game: Game, chunk: list[dict], settings: Settings, ping: Ping, de
     if part[0] == 1:
         sub = _with_ping(sub, ping)
     children: list[dict] = []
-    if game.icon:
-        children.append(section([head, sub], thumbnail(game.icon)))
+    art = codes_thumbnail(game, settings)
+    if art:
+        children.append(section([f"{head}\n{sub}"], thumbnail(art)))
     else:
         children.append(text(f"{head}\n{sub}"))
     children.append(sep())
-    lines = []
-    for c in chunk:
-        rw = pretty_rewards(c.get("rewards"))
-        code_md = f"~~`{c['code']}`~~ · expired" if c.get("expired") else f"`{c['code']}`"
-        lines.append(f"✦ {code_md}" + (f"\n-# {truncate(rw, 180)}" if rw else ""))
-    children.append(text("\n".join(lines) if lines else "No codes."))
-    children.append(sep())
+    # One Section per code: the code on its own line, its rewards as a quiet sub-line, and — when
+    # the game has web redemption — that code's Redeem link as the Section accessory, so the
+    # button sits on the code's row instead of in a row of buttons underneath (2026-11-22 design).
+    if chunk:
+        for c in chunk:
+            rw = pretty_rewards(c.get("rewards"))
+            body = f"✦ ~~{c['code']}~~ · expired" if c.get("expired") else f"✦ {c['code']}"
+            if rw:
+                body += f"\n-# {truncate(rw, 180)}"
+            btn = None
+            if not c.get("expired") and game.redeem_url:
+                btn = link_button("Redeem", game.redeem_url.format(code=quote(c["code"])),
+                                  settings.emoji.get("redeem_button"))
+            children.append(section([body], btn) if btn else text(body))
+        children.append(sep())
+    else:                                   # never posted in practice, but a card must stay valid
+        children.append(text("No codes."))
     live = [c for c in chunk if not c.get("expired")]
-    if game.redeem_url and live:
-        btns = buttons_of(*(link_button(c["code"], game.redeem_url.format(code=quote(c["code"])),
-                                        settings.emoji.get("redeem")) for c in live))
-        for i in range(0, len(btns), 5):
-            children.append(action_row(btns[i:i + 5]))
+    # Hint and source share one quiet block under the codes (they were two separate blocks).
     hint = game.codes.get("redeem_hint")
-    if hint and live:
-        children.append(text(f"※ {hint}"))
-    children.append(sep())
-    # Own row, under the codes and separated from the per-code Redeem links: the community
-    # invite (+ EXTRA_BUTTONS). No Redeem Page / Youtube / Twitch here — those belong to the
-    # livestream (special program / special broadcast) card, not to a codes card.
-    buttons = buttons_of(*(link_button(b["label"], b["url"], _emoji_of(b.get("emoji")))
-                           for b in (settings.community_buttons + settings.extra_buttons)))[:5]
-    if buttons:
-        children.append(action_row(buttons))
     srcs = sorted({s for c in chunk for s in c.get("sources", [])})
     foot = "-# Source: " + (", ".join(SOURCE_LABELS.get(s, s) for s in srcs) if srcs else "—")
-    foot += " • Codes expire — redeem soon." if live else " • Expired codes are kept for reference."
-    children.append(text(foot))
+    foot += " • Codes expire — redeem soon" if live else " • Expired codes are kept for reference"
+    children.append(text(f"※ {hint}\n{foot}" if (hint and live) else foot))
+    # Footer: the community invite (+ EXTRA_BUTTONS) as one Section with its link button as the
+    # accessory, instead of a row of buttons. No Redeem Page / Youtube / Twitch here — those
+    # belong to the livestream (special program / special broadcast) card, not to a codes card.
+    community = buttons_of(*(link_button(b["label"], b["url"], _emoji_of(b.get("emoji")))
+                             for b in (settings.community_buttons + settings.extra_buttons)))[:5]
+    if community:
+        children.append(sep())
+        first, rest = community[0], community[1:]
+        children.append(section([f"**{truncate(first['label'], 60)}**\n{CODES_FOOTER_NOTE}"], first))
+        if rest:
+            children.append(action_row(rest))
+    # Discord allows 40 components per message (accessories and nestlings included). A full
+    # 10-code card with a footer is right at that line, so the purely decorative dividers go
+    # first — losing a hairline is better than Discord rejecting the whole post.
+    while count_components([container(children, game.color)]) > MAX_COMPONENTS:
+        dividers = [i for i, c in enumerate(children) if c.get("type") == 14]
+        if not dividers:
+            break
+        children.pop(dividers[-1])
     return _payload(container(children, game.color), ping if part[0] == 1 else Ping())
+
+
+def codes_chunk_size(game: Game, settings: Settings) -> int:
+    """How many codes one card can hold: CODES_PER_CARD, or fewer when a very wide footer (the
+    community buttons plus EXTRA_BUTTONS) would push the card over Discord's 40-component cap.
+    A card is built as a probe, so the answer always matches what codes_card really renders."""
+    for n in range(CODES_PER_CARD, 0, -1):
+        probe = [{"code": "PROBECODE000", "sources": ["ennead"]} for _ in range(n)]
+        card = codes_card(game, probe, settings, Ping(), 0)
+        if count_components(card["components"]) <= MAX_COMPONENTS:
+            return n
+    return 1
 
 
 def codes_payloads(game: Game, codes: list[dict], settings: Settings, ping: Ping,
@@ -523,7 +564,8 @@ def codes_payloads(game: Game, codes: list[dict], settings: Settings, ping: Ping
     """One card per ≤10 codes. Each code gets a prefilled 'Redeem' button when the game
     has web redemption (GI / HSR / ZZZ); otherwise the in-game hint is shown. Only the
     first card of a batch pings."""
-    chunks = [codes[i:i + CODES_PER_CARD] for i in range(0, len(codes), CODES_PER_CARD)] or [[]]
+    size = codes_chunk_size(game, settings)
+    chunks = [codes[i:i + size] for i in range(0, len(codes), size)] or [[]]
     return [codes_card(game, chunk, settings, ping, now_ts, (idx + 1, len(chunks)))
             for idx, chunk in enumerate(chunks)]
 

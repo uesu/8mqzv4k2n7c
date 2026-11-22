@@ -27,7 +27,7 @@ import asyncio
 import logging
 import time
 
-from .cards import CODES_PER_CARD, codes_card, codes_payloads, mark_test
+from .cards import codes_card, codes_chunk_size, codes_payloads, mark_test
 from .config import Game
 from .discord import webhook_fingerprint
 from .models import CodeHit
@@ -240,6 +240,9 @@ async def _post(ctx, game: Game, codes: list[dict], records: dict) -> None:
                           f"{s.expected_webhook_names('codes', game.key)}")
         return
     ping = s.ping("codes", game.key)
+    # The same chunk size the payloads were cut with: records remember which codes are on which
+    # message, and a later "mark expired" edit rebuilds that message from exactly those codes.
+    size = codes_chunk_size(game, s)
     payloads = codes_payloads(game, codes, s, ping, ctx.now)
     if len(payloads) > MAX_CARDS_PER_RUN:
         # Safety valve. A real drop is 1-6 codes; dozens at once means a source is broken or
@@ -247,10 +250,10 @@ async def _post(ctx, game: Game, codes: list[dict], records: dict) -> None:
         # outcome than a slow one. Codes left over keep status "new", so the next run (minutes
         # later) posts them - nothing is lost, the flood is just spread out and visible.
         ctx.errors.append(f"{game.short}: {len(codes)} codes at once - posting the first "
-                          f"{MAX_CARDS_PER_RUN * CODES_PER_CARD}, the rest follow next run")
+                          f"{MAX_CARDS_PER_RUN * size}, the rest follow next run")
         payloads = payloads[:MAX_CARDS_PER_RUN]
     for i, payload in enumerate(payloads):
-        chunk = codes[i * CODES_PER_CARD:(i + 1) * CODES_PER_CARD]
+        chunk = codes[i * size:(i + 1) * size]
         if s.test_mode:
             payload = mark_test(payload)
         res = await ctx.webhook.send(webhook, payload)

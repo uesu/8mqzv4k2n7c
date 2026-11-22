@@ -39,7 +39,10 @@ DEFAULT_EMOJI = {
     "youtube": "a:kurobbseventcalendar:1508619925940473966",
     "twitch": "a:hsrbbsevanescia:1508647148902813776",
     "source": "a:starwardcat:1564242587987087420",
-    "redeem": "🎁",
+    # 2026-11-22 codes-card layout: the animated donut opens the headline, the thinking star sits
+    # on each per-code `Redeem` button (they were the 🎁 and the bare code label before).
+    "redeem": "a:starwarddonut:1483083005361913959",
+    "redeem_button": "a:starwardthink:1573969377038958644",
 }
 
 # Shown on every CODES card, in its own row under the codes (separated from the per-code
@@ -541,6 +544,7 @@ class Settings:
     state_path: Path
     extra_buttons: list[dict]
     community_buttons: list[dict]
+    codes_thumbnail: str        # CODES_THUMBNAIL — artwork on every codes card ("" = game icon)
     emoji: dict[str, dict | None]
     show_legend: bool
     repost: str
@@ -792,6 +796,12 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
     if _env(env, "COMMUNITY_BUTTONS", "").strip().lower() in ("none", "off", "-", "0", "false"):
         community = []
     emoji = {k: parse_emoji(_env(env, f"EMOJI_{k.upper()}", v) or v) for k, v in DEFAULT_EMOJI.items()}
+    # CODES_THUMBNAIL: the artwork on every codes card (the design's own GIF). Only an absolute
+    # http(s) URL is accepted — anything else is dropped, so a typo can never reach Discord's
+    # accessory and get the whole card rejected. A per-game `codes.thumbnail` wins over it.
+    codes_art = _env(env, "CODES_THUMBNAIL").strip()
+    if not codes_art.lower().startswith(("http://", "https://")):
+        codes_art = ""
     state_path = Path(_env(env, "STATE_PATH")) if _env(env, "STATE_PATH") else DEFAULT_STATE_PATH
     return Settings(
         env=env,
@@ -814,6 +824,7 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         state_path=state_path,
         extra_buttons=extra,
         community_buttons=community,
+        codes_thumbnail=codes_art,
         emoji=emoji,
         countdown_estimates=_bool(env, "COUNTDOWN_ESTIMATES", True),
         program_media=_bool(env, "PROGRAM_MEDIA", True),
