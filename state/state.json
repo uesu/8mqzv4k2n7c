@@ -4944,7 +4944,7 @@
       "QYJWFB784MFL": {
         "first_seen": 1794204037,
         "gate": "redeem-validated",
-        "last_seen": 1795276840,
+        "last_seen": 1795320629,
         "message_id": "1570989299388911740",
         "msg_codes": [
           "QYJWFB784MFL"
@@ -5220,7 +5220,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1795276840,
+        "last_seen": 1795320629,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5489,7 +5489,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1795276840,
+        "last_seen": 1795320629,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5523,7 +5523,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1795276840,
+        "last_seen": 1795320629,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -7275,7 +7275,7 @@
         ],
         "47526860": [
           1795320037,
-          0,
+          1,
           "3bdacea5b3561eba"
         ]
       },
@@ -7954,7 +7954,7 @@
         ],
         "47526861": [
           1795320037,
-          0,
+          1,
           "7bee4eeeb77bc7a5"
         ]
       },
@@ -8549,11 +8549,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47503180": [
-          1795147819,
-          2,
-          "37359237b4a219e6"
-        ],
         "47505988": [
           1795167030,
           2,
@@ -8606,13 +8601,6 @@
         ]
       },
       "records": {
-        "47172217": {
-          "messages": [
-            "1563040643398508567"
-          ],
-          "status": "posted",
-          "ts": 1792728304
-        },
         "47172488": {
           "messages": [
             "1563047015104127028"
