@@ -6658,7 +6658,7 @@
       "SUNCHASER": {
         "first_seen": 1795172438,
         "gate": "redeem-validated",
-        "last_seen": 1795347033,
+        "last_seen": 1795390823,
         "message_id": "1573292006535340075",
         "msg_codes": [
           "SUNCHASER"
@@ -10153,7 +10153,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795380023
+          "ts": 1795390823
         },
         "data": {
           "announcement_locked": true,
@@ -10176,17 +10176,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795380023,
+          "banners_checked_ts": 1795390823,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795380023,
+          "banners_search_ts": 1795390823,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795380023,
+          "calendar_ts": 1795390823,
           "estimate_sources": [
             "version cadence"
           ],
