@@ -6748,7 +6748,7 @@
       "ZZZ34SUNBRINGER": {
         "first_seen": 1794618037,
         "gate": "redeem-validated",
-        "last_seen": 1795311029,
+        "last_seen": 1795354231,
         "message_id": "1573324681019138079",
         "msg_codes": [
           "ZZZ34SUNBRINGER"
@@ -8521,11 +8521,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47509083": [
-          1795181432,
-          2,
-          "e2d8eb5798e5c3a1"
-        ],
         "47515889": [
           1795233634,
           2,
