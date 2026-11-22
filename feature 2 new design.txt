@@ -1,0 +1,127 @@
+{
+  "attachments": [],
+  "flags": 32768,
+  "components": [
+    {
+      "id": 2,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "type": 9,
+          "components": [
+            {
+              "id": 1,
+              "type": 10,
+              "content": "## <a:starwarddonut:1483083005361913959> Zenless Zone Zero Redemption Codes\n-# 3 new codes • detected <t:1795241422:R> • <@&1296268365593186426>"
+            }
+          ],
+          "accessory": {
+            "type": 11,
+            "media": {
+              "url": "https://cdn.discordapp.com/attachments/1237644609144754197/1573957325809786910/794744177-ezgif.com-crop.gif?ex=6b03e57d&is=6b0293fd&hm=b25accfe9df6fe098cce29cf4f21544e81a5a2412d9ad5e27e7eb1ae267be419&"
+            }
+          }
+        },
+        {
+          "type": 14
+        },
+        {
+          "id": 3,
+          "type": 9,
+          "components": [
+            {
+              "id": 4,
+              "type": 10,
+              "content": "✦ HOLLOWRUN34\n-# Polychrome ×20 • Denny ×2,222"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Redeem",
+            "emoji": {
+              "id": "1573969377038958644",
+              "name": "starwardthink",
+              "animated": true
+            },
+            "url": "https://zenless.hoyoverse.com/redemption?code=HOLLOWRUN34",
+            "custom_id": "p_371573561371922478"
+          }
+        },
+        {
+          "type": 9,
+          "components": [
+            {
+              "type": 10,
+              "content": "✦ INKSHIFT34\n-# Polychrome ×20 • Denny ×2,222"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Redeem",
+            "emoji": {
+              "id": "1573969377038958644",
+              "name": "starwardthink",
+              "animated": true
+            },
+            "url": "https://zenless.hoyoverse.com/redemption?code=INKSHIFT34",
+            "custom_id": "p_371573548801593346"
+          }
+        },
+        {
+          "type": 9,
+          "components": [
+            {
+              "type": 10,
+              "content": "✦ LEVELUP34\n-# Polychrome ×20 • Denny ×2,222"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Redeem",
+            "emoji": {
+              "id": "1573969377038958644",
+              "name": "starwardthink",
+              "animated": true
+            },
+            "url": "https://zenless.hoyoverse.com/redemption?code=LEVELUP34",
+            "custom_id": "p_371573537627967489"
+          }
+        },
+        {
+          "type": 10,
+          "content": "※ Tap a code to open the official redemption page with it filled in (log in first)\n-# Source: api.ennead.cc, Fandom wiki • Codes expire — redeem soon"
+        },
+        {
+          "type": 14
+        },
+        {
+          "id": 12,
+          "type": 9,
+          "components": [
+            {
+              "id": 13,
+              "type": 10,
+              "content": "**Citlali News**\n-# Delivering news and official updates"
+            }
+          ],
+          "accessory": {
+            "type": 2,
+            "style": 5,
+            "label": "Citlali News",
+            "emoji": {
+              "id": "1439878792653832253",
+              "name": "starward11",
+              "animated": true
+            },
+            "url": "https://discord.gg/HyrVP9wRXu"
+          }
+        }
+      ]
+    }
+  ]
+}
