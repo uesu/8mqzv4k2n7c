@@ -93,6 +93,16 @@
           }
         },
         {
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://cdn.discordapp.com/attachments/1237644609144754197/1573987068206514257/jp3d9FUtCNqnXT2q_trimmed.gif?ex=6b040130&is=6b02afb0&hm=739c79dcc55e179ab60163c2b2b01ae72c9e2910c179d1d849f566ed8c71da07&"
+              }
+            }
+          ]
+        },
+        {
           "type": 10,
           "content": "※ Tap a code to open the official redemption page with it filled in (log in first)\n-# Source: api.ennead.cc, Fandom wiki • Codes expire — redeem soon"
         },
