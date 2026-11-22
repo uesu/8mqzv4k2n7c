@@ -6657,7 +6657,7 @@
       "SUNCHASER": {
         "first_seen": 1795172438,
         "gate": "redeem-validated",
-        "last_seen": 1795303231,
+        "last_seen": 1795347033,
         "message_id": "1573292006535340075",
         "msg_codes": [
           "SUNCHASER"
@@ -8549,26 +8549,6 @@
       "floor": 1794362701,
       "paused": false,
       "rechecks": {
-        "47507076": [
-          1795174242,
-          2,
-          "81788fb20390ae0f"
-        ],
-        "47507109": [
-          1795174242,
-          2,
-          "c2b7af91df2f47b8"
-        ],
-        "47507181": [
-          1795174242,
-          2,
-          "37f88ffdc7adb785"
-        ],
-        "47507184": [
-          1795174242,
-          2,
-          "22b8c5a17b75e74a"
-        ],
         "47507255": [
           1795174826,
           2,
@@ -10222,7 +10202,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795335625
+          "ts": 1795347033
         },
         "data": {
           "announcement_locked": true,
@@ -10245,17 +10225,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795335625,
+          "banners_checked_ts": 1795347033,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795335625,
+          "banners_search_ts": 1795347033,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795335625,
+          "calendar_ts": 1795347033,
           "estimate_sources": [
             "version cadence"
           ],
