@@ -10175,7 +10175,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795457426
+          "ts": 1795468825
         },
         "data": {
           "announcement_locked": true,
@@ -10198,17 +10198,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795457426,
+          "banners_checked_ts": 1795468825,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795457426,
+          "banners_search_ts": 1795468825,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795457426,
+          "calendar_ts": 1795468825,
           "estimate_sources": [
             "version cadence"
           ],
