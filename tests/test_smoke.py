@@ -4306,35 +4306,102 @@ def test_python_patch_selection_is_numeric_stable_and_one_series_at_a_time():
         assert module.bump_ruff_toml(int(target[0]), int(target[1:])) is False
 
 
+WORKFLOW_PINS = ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml")
+
+
+def _assert_runtime_python_docs_agree(root: Path) -> None:
+    """Every artefact that names the runtime interpreter must name the SAME one.
+
+    Written as a function of `root` because the production repo is a *subset*: the sync copies
+    `gamexpress/ tests/ config/ state/ ruff.toml` and the three workflows, and deliberately **not**
+    `README.md`, `AGENTS.md`, `docs/` or `sync_prod.yml`. So each check here is "if this file is
+    present, it must agree" — a guard that hard-required the docs reddened the whole prod monitor
+    run the first time it shipped."""
+    import re
+
+    pins: dict[str, str] = {}
+    for name in WORKFLOW_PINS:
+        path = root / ".github" / "workflows" / name
+        if not path.exists():
+            continue                                   # production carries ci/monitor/bump only
+        found = set(re.findall(r"python-version:\s*'(\d+\.\d+\.\d+)'", path.read_text(encoding="utf-8")))
+        assert len(found) == 1, f"{name} pins {sorted(found) or 'nothing'}"
+        pins[name] = found.pop()
+    assert pins, "no workflow pins an exact Python version"
+    assert len(set(pins.values())) == 1, pins          # a partial bump shows up right here
+    version = next(iter(pins.values()))
+    major, minor = version.split(".")[:2]
+
+    def read(rel: str) -> str | None:
+        path = root / rel
+        return path.read_text(encoding="utf-8") if path.exists() else None
+
+    readme = read("README.md")
+    if readme is not None:
+        assert f"badge/python-{version}-" in readme, "README badge is not the pinned Python"
+        assert f"**{version}**" in readme, "README 'exact CPython …' line is not the pinned Python"
+    policy = read("docs/PYTHON_VERSION.md")
+    if policy is not None:
+        assert f"**{version}**" in policy, "docs/PYTHON_VERSION.md is not the pinned Python"
+    setup = read("docs/PROD-REPO-SETUP.md")
+    if setup is not None:
+        assert f"'{version}'" in setup, "docs/PROD-REPO-SETUP.md is not the pinned Python"
+    ruff_toml = read("ruff.toml")
+    if ruff_toml is not None:
+        assert f'target-version = "py{major}{minor}"' in ruff_toml, "ruff target-version is not the pin"
+        assert not re.search(r"python-version:\s*'?3\.", ruff_toml), \
+            "ruff.toml names a Python version; the bump never edits that comment, so it will drift"
+    agents = read("AGENTS.md")
+    if agents is not None:
+        assert f"Python {major}.{minor} locally" in agents, "AGENTS.md describes the wrong series"
+
+
 def test_every_doc_naming_the_runtime_python_agrees_with_the_pinned_pin():
-    """The Python bump rewrites the workflow pins and ruff's target-version, and by design it never
+    """The Python bump rewrites the workflow pins and ruff's target-version and, by design, never
     edits Markdown (a production repo has none — see docs/PYTHON_VERSION.md). So the prose that
     names the pin is updated by hand, and PR #167 shows how easily one spot is missed: it moved the
     pin to 3.15.2 and left a `(python-version: '3.14')` comment in ruff.toml plus a 3.14.10 badge in
     the README. This test is the reminder, and the reason ruff.toml names no version at all."""
+    _assert_runtime_python_docs_agree(ROOT)
+
+
+def test_the_python_doc_guard_is_safe_in_the_docless_production_repo():
+    """The production repo carries the three workflows + ruff.toml + tests, and none of README,
+    AGENTS.md, docs/ or sync_prod.yml (sync_prod.yml excludes them). The guard above must pass in
+    that shape — it reddened prod's whole `test` job the first time it shipped — and must still
+    catch a drifting pin with no documentation present at all."""
     import re
+    import shutil
 
-    pins = {}
-    for name in ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml"):
-        text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
-        found = set(re.findall(r"python-version:\s*'(\d+\.\d+\.\d+)'", text))
-        assert len(found) == 1, f"{name} pins {sorted(found) or 'nothing'}"
-        pins[name] = found.pop()
-    assert len(set(pins.values())) == 1, pins          # every workflow agrees on one exact patch
-    version = pins["ci.yml"]
-    major, minor = version.split(".")[:2]
-
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    assert f"badge/python-{version}-" in readme                       # the badge
-    assert f"**{version}**" in readme                                 # "Runtime updates use exact …"
-    assert f"**{version}**" in (ROOT / "docs" / "PYTHON_VERSION.md").read_text(encoding="utf-8")
-    assert f"'{version}'" in (ROOT / "docs" / "PROD-REPO-SETUP.md").read_text(encoding="utf-8")
-    ruff_toml = (ROOT / "ruff.toml").read_text(encoding="utf-8")
-    assert f'target-version = "py{major}{minor}"' in ruff_toml
-    assert not re.search(r"python-version:\s*'?3\.", ruff_toml)      # a version here would go stale
-    # AGENTS.md describes the local interpreter; it must not name a series the runtime left behind
-    agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    assert "Python 3.15 locally" in agents
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / ".github" / "workflows").mkdir(parents=True)
+        for name in ("ci.yml", "monitor.yml", "python_version_bump.yml"):
+            shutil.copy(ROOT / ".github" / "workflows" / name, root / ".github" / "workflows" / name)
+        shutil.copy(ROOT / "ruff.toml", root / "ruff.toml")
+        assert not (root / "README.md").exists() and not (root / "docs").exists()
+        _assert_runtime_python_docs_agree(root)                  # the prod shape is fine
+        # one workflow drifting from the others is still caught with no docs in the tree
+        mon = root / ".github" / "workflows" / "monitor.yml"
+        text = mon.read_text(encoding="utf-8")
+        pin = re.search(r"python-version:\s*'(\d+)\.(\d+)\.(\d+)'", text).groups()
+        drifted = f"{pin[0]}.{pin[1]}.{int(pin[2]) + 1}"
+        mon.write_text(text.replace(f"'{'.'.join(pin)}'", f"'{drifted}'"), encoding="utf-8")
+        try:
+            _assert_runtime_python_docs_agree(root)
+        except AssertionError as exc:
+            assert "monitor.yml" in str(exc) or "pins" in str(exc), exc
+        else:
+            raise AssertionError("a workflow pin that drifted must fail the guard")
+        # and a tree with no pin at all is not silently "consistent"
+        for name in ("ci.yml", "monitor.yml", "python_version_bump.yml"):
+            (root / ".github" / "workflows" / name).unlink()
+        try:
+            _assert_runtime_python_docs_agree(root)
+        except AssertionError as exc:
+            assert "no workflow pins" in str(exc), exc
+        else:
+            raise AssertionError("a tree without a pin must fail the guard")
 
 
 def test_python_bump_is_safe_in_a_docless_production_repo():
