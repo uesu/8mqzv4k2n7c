@@ -2,7 +2,7 @@
 # only (`continue-on-error: true`), so a new ruff release can never block a Dependabot PR or a
 # hot-fix; the required `test` job never runs ruff.
 # Matches the interpreter pinned in .github/workflows/{ci,monitor}.yml (python-version: '3.14').
-target-version = "py314"
+target-version = "py315"
 line-length = 120
 
 [lint]
