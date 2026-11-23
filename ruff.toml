@@ -1,7 +1,9 @@
 # Lint settings (`pip install ruff && ruff check .`). CI reads this same file in its ADVISORY job
 # only (`continue-on-error: true`), so a new ruff release can never block a Dependabot PR or a
 # hot-fix; the required `test` job never runs ruff.
-# Matches the interpreter pinned in .github/workflows/{ci,monitor}.yml (python-version: '3.14').
+# target-version follows the interpreter every workflow pins. The bump script rewrites that line
+# only — it never edits comments or Markdown — so no version is written here, and no number can go
+# stale when the pin moves.
 target-version = "py315"
 line-length = 120
 

@@ -4306,6 +4306,37 @@ def test_python_patch_selection_is_numeric_stable_and_one_series_at_a_time():
         assert module.bump_ruff_toml(int(target[0]), int(target[1:])) is False
 
 
+def test_every_doc_naming_the_runtime_python_agrees_with_the_pinned_pin():
+    """The Python bump rewrites the workflow pins and ruff's target-version, and by design it never
+    edits Markdown (a production repo has none — see docs/PYTHON_VERSION.md). So the prose that
+    names the pin is updated by hand, and PR #167 shows how easily one spot is missed: it moved the
+    pin to 3.15.2 and left a `(python-version: '3.14')` comment in ruff.toml plus a 3.14.10 badge in
+    the README. This test is the reminder, and the reason ruff.toml names no version at all."""
+    import re
+
+    pins = {}
+    for name in ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml"):
+        text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
+        found = set(re.findall(r"python-version:\s*'(\d+\.\d+\.\d+)'", text))
+        assert len(found) == 1, f"{name} pins {sorted(found) or 'nothing'}"
+        pins[name] = found.pop()
+    assert len(set(pins.values())) == 1, pins          # every workflow agrees on one exact patch
+    version = pins["ci.yml"]
+    major, minor = version.split(".")[:2]
+
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    assert f"badge/python-{version}-" in readme                       # the badge
+    assert f"**{version}**" in readme                                 # "Runtime updates use exact …"
+    assert f"**{version}**" in (ROOT / "docs" / "PYTHON_VERSION.md").read_text(encoding="utf-8")
+    assert f"'{version}'" in (ROOT / "docs" / "PROD-REPO-SETUP.md").read_text(encoding="utf-8")
+    ruff_toml = (ROOT / "ruff.toml").read_text(encoding="utf-8")
+    assert f'target-version = "py{major}{minor}"' in ruff_toml
+    assert not re.search(r"python-version:\s*'?3\.", ruff_toml)      # a version here would go stale
+    # AGENTS.md describes the local interpreter; it must not name a series the runtime left behind
+    agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    assert "Python 3.15 locally" in agents
+
+
 def test_python_bump_is_safe_in_a_docless_production_repo():
     """The bump must run in a repo that has monitor.yml and nothing else.
 
