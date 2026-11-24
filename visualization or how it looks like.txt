@@ -1,0 +1,103 @@
+{
+  "attachments": [],
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 1942002,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "### [Honkai: Nexus Anima](https://x.com/HonkaiNA) just tweeted:"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "-# ↩️ Replying to [@HonkaiNA](https://x.com/HonkaiNA/status/2125076947688403344)"
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "👀\n\n[#HonkaiNexusAnima](https://x.com/hashtag/HonkaiNexusAnima)\n[#HNAFinalBeta](https://x.com/hashtag/HNAFinalBeta)\n\n42.2% — :brown_heart: Bobabirb\n24.4% — :grey_heart: Kaffiend\n33.3% — :pink_heart: Nomnom"
+        },
+        {
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://pbs.twimg.com/card_img/2125077641678180353/r8XyI4tD?format=jpg&name=orig"
+              }
+            },
+            {
+              "media": {
+                "url": "https://pbs.twimg.com/card_img/2125077677384310784/cXxug9SY?format=jpg&name=orig"
+              }
+            },
+            {
+              "media": {
+                "url": "https://pbs.twimg.com/card_img/2125077711903465472/JF1s87KX?format=jpg&name=orig"
+              }
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "-# 💬 0 🔁 0 ❤️ 5 👁️ 266   •   🕐 <t:1795492992:f>"
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://fxtwitter.com/HonkaiNA/status/2125077752852500587"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
