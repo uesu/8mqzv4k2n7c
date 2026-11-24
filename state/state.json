@@ -7277,12 +7277,12 @@
         ],
         "47546919": [
           1795492837,
-          0,
+          1,
           "e25e327490f1378f"
         ],
         "47546927": [
           1795492837,
-          0,
+          1,
           "7b0702810f807ee3"
         ]
       },
@@ -9869,8 +9869,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1795482630,
-          "banners_search_ts": 1795482630,
+          "banners_checked_ts": 1795493435,
+          "banners_search_ts": 1795493435,
           "banners_settled": [
             "phase1",
             "phase1_4",
