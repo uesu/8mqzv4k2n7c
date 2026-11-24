@@ -637,3 +637,8 @@ summary source: local twitter_monitor.log only; no additional requests
     }
   ]
 }
+
+on that twitter post media content:
+boba birb: https://pbs.twimg.com/card_img/2125077641678180353/r8XyI4tD?format=jpg&name=orig
+kaffiend: https://pbs.twimg.com/card_img/2125077677384310784/cXxug9SY?format=jpg&name=orig
+nomnom: https://pbs.twimg.com/card_img/2125077711903465472/JF1s87KX?format=jpg&name=orig
