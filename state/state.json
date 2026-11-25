@@ -4172,6 +4172,33 @@
         "status": "posted",
         "webhook_fp": "ee502f83bdf4"
       },
+      "AZHGG7H2ZQZS": {
+        "first_seen": 1795590624,
+        "gate": "2 independent sources",
+        "last_seen": 1795590624,
+        "message_id": "1575045996193390715",
+        "msg_codes": [
+          "AZHGG7H2ZQZS"
+        ],
+        "msg_part": [
+          1,
+          1
+        ],
+        "posted_at": 1795590624,
+        "rewards": [
+          "Mora ×10000",
+          "Adventurer's Experience ×10",
+          "Fine Enhancement Ore ×5",
+          "Jueyun Chili Chicken ×5",
+          "Stir-Fried Fish Noodles ×5"
+        ],
+        "sources": [
+          "ennead",
+          "reddit"
+        ],
+        "status": "posted",
+        "webhook_fp": "ee502f83bdf4"
+      },
       "BALLETCOLLAB": {
         "first_seen": 1790323430,
         "last_seen": 1791276018,
