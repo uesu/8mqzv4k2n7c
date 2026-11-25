@@ -4945,7 +4945,7 @@
       "QYJWFB784MFL": {
         "first_seen": 1794204037,
         "gate": "redeem-validated",
-        "last_seen": 1795539029,
+        "last_seen": 1795582839,
         "message_id": "1570989299388911740",
         "msg_codes": [
           "QYJWFB784MFL"
@@ -5221,7 +5221,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361637,
         "gate": "redeem-validated",
-        "last_seen": 1795539029,
+        "last_seen": 1795582839,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5490,7 +5490,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793360418,
         "gate": "redeem-validated",
-        "last_seen": 1795539029,
+        "last_seen": 1795582839,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -5524,7 +5524,7 @@
         "expired_at": 1793491246,
         "first_seen": 1793361021,
         "gate": "redeem-validated",
-        "last_seen": 1795539029,
+        "last_seen": 1795582839,
         "message_id": "1565698167666639064",
         "msg_codes": [
           "AHABLESSYOU",
@@ -8591,8 +8591,8 @@
     },
     "zzz": {
       "cursor": [
-        1795581004,
-        "47558687"
+        1795582808,
+        "47558871"
       ],
       "floor": 1794362701,
       "paused": false,
@@ -8609,8 +8609,13 @@
         ],
         "47558687": [
           1795581038,
-          1,
+          2,
           "0f59918f5754e2a5"
+        ],
+        "47558871": [
+          1795582839,
+          0,
+          "cc38dcb89b84fdf6"
         ]
       },
       "records": {
@@ -8963,6 +8968,13 @@
           ],
           "status": "posted",
           "ts": 1795581004
+        },
+        "47558871": {
+          "messages": [
+            "1575013376793387108"
+          ],
+          "status": "posted",
+          "ts": 1795582808
         }
       },
       "route": "5f931f917050e29a"
