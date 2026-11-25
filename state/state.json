@@ -8604,7 +8604,7 @@
         ],
         "47558594": [
           1795580434,
-          1,
+          2,
           "b5e7718ec143c6e5"
         ],
         "47558687": [
@@ -9909,8 +9909,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1795571425,
-          "banners_search_ts": 1795571425,
+          "banners_checked_ts": 1795582228,
+          "banners_search_ts": 1795582228,
           "banners_settled": [
             "phase1",
             "phase1_4",
