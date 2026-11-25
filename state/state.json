@@ -6749,7 +6749,7 @@
       "ZZZ34SUNBRINGER": {
         "first_seen": 1794618037,
         "gate": "redeem-validated",
-        "last_seen": 1795528224,
+        "last_seen": 1795571425,
         "message_id": "1573324681019138079",
         "msg_codes": [
           "ZZZ34SUNBRINGER"
@@ -6803,7 +6803,7 @@
       "ZZZHSRCOLLAB": {
         "first_seen": 1794618037,
         "gate": "redeem-validated",
-        "last_seen": 1795528224,
+        "last_seen": 1795571425,
         "message_id": "1573322227099766785",
         "msg_codes": [
           "ZZZHSRCOLLAB"
@@ -9859,8 +9859,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1795560029,
-          "banners_search_ts": 1795560029,
+          "banners_checked_ts": 1795571425,
+          "banners_search_ts": 1795571425,
           "banners_settled": [
             "phase1",
             "phase1_4",
