@@ -62,6 +62,24 @@ def http_date_ts(value: str) -> int | None:
     return int(parsed.timestamp())
 
 
+# Round GX-relay-diag (News-Express round 116 / PR #146): a `429` answers with the only
+# rate-limit evidence the source offers. It belongs in the failure line so the step summary can
+# name it — diagnostic only. Nothing retries differently, waits longer or bypasses the limit
+# because of these values; `get_text()`'s retry policy below is unchanged.
+_RATE_LIMIT_HEADERS = ("Retry-After", "X-RateLimit-Scope", "X-RateLimit-Global",
+                       "X-RateLimit-Remaining", "X-RateLimit-Bucket")
+
+
+def rate_limit_note(headers) -> str:
+    """` (retry-after=5, x-ratelimit-scope=user, …)` from a 429's headers, `""` when none."""
+    parts = []
+    for name in _RATE_LIMIT_HEADERS:
+        value = str((headers.get(name) if headers is not None else "") or "").strip()
+        if value:
+            parts.append(f"{name.lower()}={value}")
+    return f" ({', '.join(parts)})" if parts else ""
+
+
 @dataclass
 class Fetcher:
     session: aiohttp.ClientSession
@@ -117,6 +135,8 @@ class Fetcher:
                         self._mark(source, True)
                         return body
                     last = f"HTTP {r.status}"
+                    if r.status == 429:
+                        last += rate_limit_note(r.headers)  # diagnostics, never a retry hint
                     if r.status in (400, 401, 403, 404, 410):
                         break  # permanent for this run — don't hammer
             except (aiohttp.ClientError, asyncio.TimeoutError, UnicodeDecodeError) as e:

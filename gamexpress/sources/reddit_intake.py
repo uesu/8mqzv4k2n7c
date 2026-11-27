@@ -64,8 +64,27 @@ INTAKE_ATTACHMENT_FETCHES = 10  # `record.json` completions per run (relay 0.0.7
 INTAKE_MAX_PAGES = 8
 INTAKE_TIMEOUT = 12
 _FENCE_RE = re.compile(r"```json\s*(\{.*?\})\s*```", re.S)
+_HTTP_CODE_RE = re.compile(r"HTTP (\d{3})")  # `HTTP 429 (retry-after=…)` -> the code
 _REQUIRED = ("id", "sub", "title", "permalink", "created")
 _REDDIT_IMAGE_RE = re.compile(r"https?://(?:i|preview|external-preview)\.redd\.it/[^\s<>()\"']+", re.I)
+# Round GX-relay-media (News-Express round 115 / PR #148): Reddit's rich-text editor writes an
+# inline "GIF" as the shorthand `![gif](<media-id>)` — the media id IS the i.redd.it filename,
+# so the explicit `gif` marker safely supplies the extension. Any other markdown image target is
+# left alone: a bare id is never guessed into a URL.
+_REDDIT_GIF_REF_RE = re.compile(r"!\[\s*gif\s*\]\(\s*([A-Za-z0-9_-]{5,64})\s*\)", re.I)
+
+
+def _body_media_refs(body: str) -> list[str]:
+    """Every media URL a relay body references, in source order (News-Express round 115).
+
+    Bare `i.redd.it` / `preview.redd.it` URLs and shorthand `![gif](<media-id>)` references
+    interleave in the markdown, so both are collected with their offsets and replayed in the
+    order the post shows them rather than in two blocks (the record's own `media[]` stays
+    first). Duplicates that overlap `media[]` collapse in the caller's `dedupe`.
+    """
+    refs: list[tuple[int, str]] = [(m.start(), m.group(0)) for m in _REDDIT_IMAGE_RE.finditer(body)]
+    refs += [(m.start(), f"https://i.redd.it/{m.group(1)}.gif") for m in _REDDIT_GIF_REF_RE.finditer(body)]
+    return [url for _, url in sorted(refs, key=lambda item: item[0])]
 
 
 def snowflake_from_epoch(epoch_s: float) -> int:
@@ -174,7 +193,7 @@ def record_to_entry(rec: dict) -> dict:
     parent = rec.get("parent") if isinstance(rec.get("parent"), dict) else None
     if not media and parent:
         media = list(parent.get("media") or [])  # 0.0.7: a crosspost carries its parent's media
-    for u in media + _REDDIT_IMAGE_RE.findall(body_raw.replace("\\_", "_")):
+    for u in media + _body_media_refs(body_raw.replace("\\_", "_")):
         u = str(u or "").strip()
         if not u.startswith(("http://", "https://")):
             continue
@@ -300,14 +319,28 @@ class IntakeReader:
             page = await self.fetcher.get_json(url, source="intake", headers=headers, params=params,
                                                retries=1, timeout=INTAKE_TIMEOUT)
             if page is None:
-                last = (self.fetcher.health.get("intake").last_error or "") if self.fetcher.health.get("intake") else ""
-                out["detail"] = {
-                    "HTTP 401": "bot token rejected",
-                    "HTTP 403": "bot lacks View Channel / Read Message History on the channel",
-                    "HTTP 404": "channel id unknown to this bot (wrong id, or bot not in the server)",
-                    "HTTP 429": "rate limited",
-                }.get(last, last or "request failed")
-                out["status"] = last.lower().replace(" ", "_") if last.startswith("HTTP ") else "error"
+                h = self.fetcher.health.get("intake")
+                last = (h.last_error or "") if h else ""
+                # Round GX-relay-diag (News-Express round 116 / PR #146): name the history page
+                # that failed and keep the 429's own rate-limit evidence. `pages` counts the page
+                # just requested, so it is the failing page number (1-based). Diagnostics only —
+                # the status string stays `http_<code>` and the fallback chain is unchanged.
+                m_code = _HTTP_CODE_RE.match(last)
+                suffix = last[m_code.end():] if m_code else ""
+                if m_code:
+                    out["status"] = f"http_{m_code.group(1)}"
+                else:
+                    out["status"] = "error"
+                if m_code and m_code.group(1) == "429":
+                    note = suffix.strip().strip("()").strip()
+                    out["detail"] = (f"rate limited on history page {out['pages']}"
+                                     + (f" — {note}" if note else ""))
+                else:
+                    out["detail"] = {
+                        "HTTP 401": "bot token rejected",
+                        "HTTP 403": "bot lacks View Channel / Read Message History on the channel",
+                        "HTTP 404": "channel id unknown to this bot (wrong id, or bot not in the server)",
+                    }.get(last, last or "request failed")
                 return out
             if not isinstance(page, list):
                 out["detail"] = "non-list response"

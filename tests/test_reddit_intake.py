@@ -21,6 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from gamexpress import http  # noqa: E402
 from gamexpress.config import Settings, load_games, load_settings  # noqa: E402
 from gamexpress.http import Fetcher, SourceHealth  # noqa: E402
 from gamexpress.sources import reddit_intake as ri  # noqa: E402
@@ -594,6 +595,85 @@ def test_wiring_is_in_place():
     assert "targets=reddit_targets(games)" in src_once
     assert callable(runner.reddit_targets)   # the scope builder, covered by its own tests above
     assert isinstance(Fetcher.get_json, object) and time.time() > 0
+
+
+def test_relay_body_shorthand_gif_refs_become_media():
+    """News-Express round 115 / PR #148: Reddit's rich-text editor writes an inline GIF as the
+    shorthand `![gif](<media-id>)` — the id IS the i.redd.it filename. The relay's `media[]` can
+    omit it (the Devvit post payload has no URL for that form), so the body reference is resolved
+    here, in source order, and deduped against `media[]` by exact URL. Nothing is guessed: only an
+    explicit `gif` marker with an id-shaped target (5–64 chars of `[A-Za-z0-9_-]`) becomes media.
+    """
+    # live shape (1y2dxhl): gallery post, media[] carries only the cover, body has the GIF refs
+    gif_ids = ["hvsluodja23i1", "gallerygif01id", "gallerygif02id"]
+    rec = _rec(id="1y2dxhl", sub="WutheringWavesLeaks", url="https://www.reddit.com/gallery/1y2dxhl",
+               permalink="/r/WutheringWavesLeaks/comments/1y2dxhl/gallery/",
+               media=["https://i.redd.it/hvsluodja23i1.gif"],
+               body="Gallery\n\n" + "\n".join(f"![gif]({gid})" for gid in gif_ids) + "\n\nthe end")
+    out = ri.record_to_entry(rec)
+    assert out["images"] == [f"https://i.redd.it/{gid}.gif" for gid in gif_ids], out["images"]
+    assert out["videos"] == [] and out["links"] == [], (out["videos"], out["links"])
+    assert "the end" in out["text"]
+
+    # order: bare CDN URLs and shorthand refs interleave exactly as the markdown shows them,
+    # and the record's own media[] stays first
+    mixed = ri.record_to_entry(_rec(id="1ygifmix", sub="Genshin_Impact", media=["https://i.redd.it/cover.jpeg"],
+                                    url="https://www.reddit.com/r/Genshin_Impact/comments/1ygifmix/x/",
+                                    permalink="/r/Genshin_Impact/comments/1ygifmix/x/",
+                                    body="![gif](firstgifid1)\n\nhttps://i.redd.it/middle.jpeg\n\n![gif](lastgifid2)"))
+    assert mixed["images"] == ["https://i.redd.it/cover.jpeg", "https://i.redd.it/firstgifid1.gif",
+                              "https://i.redd.it/middle.jpeg", "https://i.redd.it/lastgifid2.gif"], mixed["images"]
+
+    # conservative: a non-GIF markdown image is never turned into a URL, a too-short id is not
+    # media, and the marker is case/whitespace tolerant
+    guard = ri.record_to_entry(_rec(id="1ygifbad", sub="Genshin_Impact", media=[],
+                                    url="https://www.reddit.com/r/Genshin_Impact/comments/1ygifbad/y/",
+                                    permalink="/r/Genshin_Impact/comments/1ygifbad/y/",
+                                    body="![image](not-a-url) ![gif](abc) ![GIF]( validgifid123 )"))
+    assert guard["images"] == ["https://i.redd.it/validgifid123.gif"], guard["images"]
+    assert guard["links"] == [], guard["links"]
+
+    # a body reference that merely repeats media[] costs no duplicate entry
+    dup = ri.record_to_entry(_rec(id="1ygifdup", sub="Genshin_Impact", media=["https://i.redd.it/hvsluodja23i1.gif"],
+                                  url="https://www.reddit.com/r/Genshin_Impact/comments/1ygifdup/d/",
+                                  permalink="/r/Genshin_Impact/comments/1ygifdup/d/",
+                                  body="![gif](hvsluodja23i1)"))
+    assert dup["images"] == ["https://i.redd.it/hvsluodja23i1.gif"], dup["images"]
+
+    # the entry keeps its shape: this is media discovery only, never a new gate on the post
+    assert dup["relay"] is True and dup["relay_complete"] is True and dup["text"] == "![gif](hvsluodja23i1)"
+
+
+def test_rate_limited_history_page_names_the_page_and_keeps_the_headers():
+    """News-Express round 116 / PR #146: a Discord `429` on the channel history is the one failure
+    where the page number and rate-limit headers decide the next move. They are surfaced in the
+    intake summary — diagnostics only: the status stays `http_429`, the fallback chain runs, and
+    nothing about retries changes."""
+    note = http.rate_limit_note({"Retry-After": "7", "X-RateLimit-Scope": "user",
+                                 "X-RateLimit-Global": "false", "X-RateLimit-Remaining": "0",
+                                 "X-RateLimit-Bucket": "abc123"})
+    assert note == " (retry-after=7, x-ratelimit-scope=user, x-ratelimit-global=false, " \
+                   "x-ratelimit-remaining=0, x-ratelimit-bucket=abc123)", note
+    assert http.rate_limit_note({}) == "" and http.rate_limit_note(None) == ""
+    assert http.rate_limit_note({"Retry-After": "  "}) == ""
+
+    bare = RedditClient(_Fetcher(fail="HTTP 429"), _settings())  # type: ignore[arg-type]
+    assert _run(bare.subreddit("Genshin_Impact")) is None
+    assert bare.intake.summary_line() == ("📡 reddit intake: relay http_429 (rate limited on history "
+                                          "page 1) — redlib/reddit.com chain used"), bare.intake.summary_line()
+
+    ev = RedditClient(_Fetcher(fail="HTTP 429 (retry-after=7, x-ratelimit-scope=user)"),
+                      _settings())  # type: ignore[arg-type]
+    assert _run(ev.subreddit("Genshin_Impact")) is None
+    line = ev.intake.summary_line()
+    assert line.startswith("📡 reddit intake: relay http_429 (rate limited on history page 1"), line
+    assert "retry-after=7" in line and "x-ratelimit-scope=user" in line, line
+
+    # a 503 keeps its old wording (no page number, no invented diagnostics)
+    plain = RedditClient(_Fetcher(fail="HTTP 503"), _settings())  # type: ignore[arg-type]
+    assert _run(plain.subreddit("Genshin_Impact")) is None
+    assert plain.intake.summary_line() == ("📡 reddit intake: relay http_503 (HTTP 503) — "
+                                          "redlib/reddit.com chain used"), plain.intake.summary_line()
 
 
 def main() -> int:
