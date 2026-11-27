@@ -282,3 +282,332 @@ message ClientVariations {
 }
 x-sec-ch-ua-not-a-border
 fvbqyzqsrvyserccyscxbbwvydfwafcq
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="maximum-scale=1,minimum-scale=1,user-scalable=no,width=device-width,initial-scale=1">
+        <meta name="description" content="NTE is an supernatural urban open-world RPG developed by Hotta Studio, a subsidiary of Perfect World Games. In this Anomaly-filled city, you'll make a dazzling entrance, using your extraordinary Esper abilities to navigate freely and handle unexpected events. Beyond that, you can choose your own lifestyle, manage businesses, and experience a vibrant urban life.">
+        <meta name="keywords" content="Neverness To Everness,NTE,NTE game play,NTE game,NTE PV,NTE Trailer,Supernatural,Urban,Urban legend,Open World,City,Paranormal,Esper Ability,Anomaly,Free Exploration,SAKIRI,Mint,Nanally,Chiz,EXE,Linko,Xiaozhen,Elyms,Nitsa,Iroi,Shinku,Tower of Fantasy,ToF,Hotta studio,Perfect World Games,PWG,PW,F2P,free to play,console,Unreal Engine 5,UE5,anime,ACG,RPG,ARPG,NTE NVIDA DLSS,NTE NVIDA RTX,NTE PC,NTE mobile, NTE console,NTE FAQ,NTE devlog,NTE devteam,NTE discord,NTE X,NTE youtube,NTE reddit,NTE update,NTE characters,brand new hotta game,hotta RPG,hotta action game,ACT,hotta ACT,eibon,hethereau,NTE registration,NTE pre-register,NTE sign-up,Appraiser,Latest NTE Posts,phone game,popular phone game,popular mobile game,popular game,anime style game,anime mobile game,free game,free mobile game,city advanture,NTE announce,NTE multiple platforms game,inverness to inverness,inverness,Lacrimosa,Fadia,Eibon Antique Shop,Bureau of Anomaly Control,New Herland District,Miguel District,Bridge Crossings,Unheard Shores">
+        <meta property="fb:app_id" content="481742121015001">
+        <meta property="og:url" content="https://nte.perfectworld.com/en/article/news/gamenews/20261109/264948.html">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Version 1.5 [Once Upon a Glitched Call] Patch Notes">
+        <meta property="og:description" content="Version 1.5 [Once Upon a Glitched Call] Patch Notes">
+        <meta property="og:image" content="">
+        <meta property="og:image:width" content="951">
+        <meta property="og:image:height" content="480">
+        <link rel="canonical" href="https://nte.perfectworld.com/en/article/news/gamenews/20261109/264948.html">
+        <meta itemprop="url" content="https://nte.perfectworld.com/en/article/news/gamenews/20261109/264948.html">
+        <meta itemprop="name" content="Neverness To Everness">
+        <meta itemprop="alternateName" content="NTE">
+        <link rel="shortcut icon" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="icon" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="bookmark" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="apple-touch-icon" href="https://nte.perfectworld.com/public/images/icon.png"/>
+        <title>Version 1.5 [Once Upon a Glitched Call] Patch Notes-NTE (Neverness to Everness) Official Website -Supernatural Urban Open World</title>
+        <link rel="stylesheet" media="screen and (min-width: 769px)" href="https://nte.perfectworld.com/public/style/public260819.css">
+        <link rel="stylesheet" media="screen and (min-width: 769px)" href="https://nte.perfectworld.com/public/style/public_list260427.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="https://nte.perfectworld.com/public/m/style/public260819.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="https://nte.perfectworld.com/public/m/style/public_list260427.css">
+        <script src="https://static.pwsdk.com/public/js/browserTip.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/rem260427.js"></script>
+        <script src="https://static.pwsdk.com/public/js/language1.2.2.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/languageBranch.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/landscape.js"></script>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div class="header">
+                <a href="https://nte.perfectworld.com/index.html" class="logo publicGoogleAnalytics" type="mainlogo_default_click"></a>
+                <div class="menuBtn" hideblock>
+                    <div class="icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="word"></div>
+                </div>
+                <a class="downBtn publicGoogleAnalytics" type="navdownloadnowbtn_default_click"></a>
+                <div class="rel loginStatus headerLoginStatus">
+                    <button class="loginIcon"></button>
+                    <div class="loginAfter">
+                        <div class="cont">
+                            <div class="uidBox">
+                                UID：<span class="loginUid"></span>
+                            </div>
+                            <button aria-label="logOut" class="logOut eventLogout publicGoogleAnalytics" type="logoutbtn_default_click">log out</button>
+                            <a class="userCenter" href="https://nte.perfectworld.com/account-center/index.html" target="_blank">Account</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="rel language">
+                    <button class="iconLanguage publicGoogleAnalytics" type="lang_default_click"></button>
+                    <div class="auto chooseLanguage"></div>
+                </div>
+                <button class="bgMusic publicGoogleAnalytics viewPc" type="musicbtn_default_click"></button>
+            </div>
+            <div class="menuLayer">
+                <div class="abs pageNav">
+                    <a href="https://nte.perfectworld.com/main.html?nav=1" class="n1"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=2" class="n2"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=3" class="n3 active"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=4" class="n4"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=5" class="n5"></a>
+                </div>
+                <div class="abs firstNews viewPc"></div>
+                <div class="abs menuSubNav viewM">
+                    <button class="bgMusic publicGoogleAnalytics" type="mainmusicbtnM_default_click"></button>
+                    <button class="shareHref publicGoogleAnalytics" type="mainshareM_default_click"></button>
+                </div>
+                <a class="abs auto menuDownBtn publicGoogleAnalytics viewM" type="navdownloadnowbtn_default_click"></a>
+                <div class="abs otherPlatform menu-otherPlatform"></div>
+            </div>
+            <div class="rel articlePage" style="display: block">
+                <a href="https://nte.perfectworld.com/en/article/news/index.html" class="backNewsList"></a>
+                <div class="rel articleCont">
+                    <div class="rel articleHead">
+                        <h1 class="abs articleTitle">Version 1.5 [Once Upon a Glitched Call] Patch Notes</h1>
+                        <p class="articlePath">Neverness to Everness>Intel>News</p>
+                        <p class="articleDate">2026.11.09</p>
+                    </div>
+                    <div class="abs articleAside"></div>
+                    <div class="rel article">
+                        <div class="articleContent">
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/104en.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                Hey Appraiser,<br>NTE will undergo maintenance on Nov 11, 06:00 – 11:00 (UTC+8). Once it's done, the all-new Version 1.5 "Once Upon a Glitched Call" goes live. "Pink Paws Heist" will be temporarily unavailable starting Nov 11, 05:30 (UTC+8) and will reopen once maintenance wraps up.<br>Login will be unavailable during this period, so please plan accordingly. Since this is a large update, please keep your data plan in mind when choosing between Wi-Fi and mobile data. We apologize for any inconvenience.<br>※ Akane Rin's "Dazzling Star" Limited Board is available until Nov 11, 2026, 05:59 (UTC+8). Be sure to visit the Void Perks event page to redeem the cosmetic rewards from this board before the event ends.<br>
+                                <br>
+                                <br>[Maintenance & Compensation]<br>● Maintenance Period: Nov 11, 2026, 06:00 – 11:00 (UTC+8)<br>● Maintenance Compensation: Annulith x300<br>● Eligibility: Appraisers who created a character before Nov 11, 2026, 06:00 (UTC+8)<br>● Distribution: Sent via in-game mail after maintenance. Be sure to claim the items before they expire.<br>※ Maintenance may end earlier or later than scheduled depending on actual progress. Please keep an eye on our official announcements for updates.<br>
+                                <br>● Bug Fix Compensation: Annulith x300<br>● Eligibility: Appraisers who created a character before Nov 11, 2026, 06:00 (UTC+8)<br>● Distribution: Sent via in-game mail after maintenance. Be sure to claim the items before they expire.<br>
+                                <br>
+                                <br>[How to Update]<br>PC: Close the game, reopen the launcher, and click Update.<br>Android: Launch the game and follow the in-game update prompt.<br>iOS: Download or update from the App Store.<br>Mac: Download or update from the App Store.<br>PlayStation &reg;: Open the system menu, select NTE, press the OPTIONS button on your controller, then select Check for Update.<br>Steam: Close the game, exit and restart the Steam client, go to your Library, find NTE, and click Update to start the download.<br>Epic: Close the game, reopen the game launcher, and click Update.<br>
+                                <br>
+                                <br>[Update Details]<br>1. New Character & Arc<br>● New Limited S-Class Character: Elyms<br>Availability: Nov 11 (after update) – Dec 2, 05:59 (UTC+8)<br>Unlock Requirement: Complete the main story quest "Prologue - A New Destination - Head to Eibon Antique Shop"<br>Board Details: The "Android Dreams" Limited Board features the S-class character Elyms, along with A-class characters Mint, Edgar, and Adler.<br>During the event, the "Android Dreams" Limited Board also features the "Joy Buoy" glider, the "+Friend & Rescue+" Novus A001 livery, and Elyms's "Drifting Petals" outfit. Reach 50, 120, and 200 total rolls to claim each reward directly from the Skin Perks event page, or obtain them early with lucky rolls on the board.<br>*For full details, head to Scarborough Fair in-game.<br>
+                                <br>● New Limited S-Class Arc: Echoes on Hold<br>Availability: Nov 11 (after update) – Dec 2, 05:59 (UTC+8)<br>Unlock Requirement: Complete the main story quest "Prologue - A New Destination - Head to Eibon Antique Shop"<br>Research Guide: Spend Tri-Keys or Echo Keys to participate in the "Echo Special" Arc Research Program and obtain the limited S-Class Arc "Echoes on Hold". This Arc is currently only available through this program.<br>*For full details, head to Arc Shop › Arc Research Program in-game.<br>
+                                <br>● Limited S-Class Character Rerun: Shinku<br>Availability: Nov 11 (after update) – Dec 2, 05:59 (UTC+8)<br>Unlock Requirement: Complete the main story quest "Prologue - A New Destination - Head to Eibon Antique Shop"<br>Board Details: The "Before the Dawn" Limited Board features the exclusive S-class character Shinku, along with A-class characters Mint, Edgar, and Adler.<br>During the event, the "Before the Dawn" Limited Board also features the "Overcast Canopy" glider livery, the "Hidden Dragon" Blizzard-V4 livery, and Shinku's outfit "Student of Terrasea". Claim them from the Resolve Perks page by accumulating 50/120/200 rolls, or obtain them randomly through rolls before reaching these milestones.<br>※ Only rolls on the "Before the Dawn" Limited Board count toward Resolve Perks progress. Each board is tracked independently, and progress carries over between boards with the same name.<br>*For full details, head to Scarborough Fair in-game.<br>
+                                <br>● Limited S-Class Arc Rerun: Blushing Mirage<br>Availability: Nov 11 (after update) – Dec 2, 05:59 (UTC+8)<br>Unlock Requirement: Complete the main story quest "Prologue - A New Destination - Head to Eibon Antique Shop"<br>Research Guide: Spend Tri-Keys or Resolve Keys to participate in the "Resolve Special" Arc Research Program and obtain the limited S-Class Arc "Blushing Mirage". This Arc is currently only available through this program.<br>*For full details, head to Arc Shop › Arc Research Program in-game.<br>
+                                <br>2. New Story<br>● New Main Story Episode: "Meet Me in the Data Stream"<br>It started as a faded urban legend, people kept dreaming of old friends who left behind an "invalid number".<br>Try calling it and, sure enough, the line is dead. Yet in your dream, a different call comes through...<br>Have the captain and lieutenant of ETD-6 really gone dark on a classified mission? Is a high-level anomaly behind it all, or an anomaly crime at play?<br>"You want your friend back... don't you?"<br>Available: After the Version 1.5 update<br>Unlock Requirement: Complete the main story episode "The Witch"<br>
+                                <br>● City Hangouts<br>New City Hangouts story featuring Elyms<br>Available: After the Version 1.5 update<br>Unlock Requirement: Obtain Elyms and reach the required Bond Level<br>
+                                <br>● Home Time<br>A new invitation mode featuring Elyms<br>Available: After the Version 1.5 update<br>Unlock Requirement: Obtain Elyms and reach the required Bond Level<br>
+                                <br>3. New Stages<br>● New Anomaly Pilgrimage: Amber Broodmother<br>Available: After the Version 1.5 update<br>Unlock Requirement: Complete the main story episode "Fogden Game"<br>
+                                <br>4. New Outfits & Accessories<br>● New Elyms Outfit "Y2K Mystique" Added to Shop<br>Discount Period: Nov 11 (after update) – Dec 23, 05:59 (UTC+8)<br>Discount Price: Riftcrystal x2,680<br>Original Price: Riftcrystal x3,280 (18% off, limited time)<br>Shop Availability: Permanent<br>
+                                <br>● New Elyms Outfit "Drifting Petals"<br>How to Get: While the "Android Dreams" Limited Board is active, roll on the board and land on the matching tile to obtain the outfit, or claim it from the Dialing Perks event page once you've accumulated enough rolls.<br>
+                                <br>● New Elyms Outfit "Windflower"<br>How to Get: Unlocked after you obtain Elyms and reach Bond Lvl 10 with her.<br>
+                                <br>● New Vehicles "Iron Ogre" & "Prototype Land Overlord 001"<br>How to Get: Available from "Open Roads Ahead" Mystery Boxes.<br>
+                                <br>● New Accessory "Tiny Friend"<br>How to Get: Unlocked after reaching 3,000 total progress in the "Fortune's Bounty" event.<br>
+                                <br>● New Accessory "Eagle Eye"<br>How to Get: Purchase the "Forward Momentum Skin Bundle" in Mall › Gift Center.<br>
+                                <br>5. New Mystery Box Event "Open Roads Ahead"<br>Duration: Nov 11 (after update) – Dec 23, 05:59 (UTC+8)<br>Details: Spend Fons or Annulith to open "Open Roads Ahead" Mystery Boxes. Your first box costs Fons x50,000 or Annulith x50, and the price climbs with each one after. There are 15 boxes in total, and opening all of them unlocks every reward in the pool.<br>Mystery Box Contents: The "Open Roads Ahead" Mystery Boxes feature the vehicles "Iron Ogre" and "Prototype Land Overlord 001", the Iron Ogre livery "Caution: Graffiti!", the avatar frame "Wayfinder", the namecard "The Open Road", Fabricated Dice, A Handwritten Letter, Anomaly Pilgrimage Material Selection Box, and more.<br>
+                                <br>6. New Events<br>● "Circle Gifts" Login Event<br>Duration: Nov 11 (after update) – Dec 23, 05:59 (UTC+8)<br>Details: Log in for a total of 7 days to earn Solid Dice x10.<br>
+                                <br>● "City Logistics" Limited-Time Event<br>Duration: Nov 11 (after update) – Dec 23, 05:59 (UTC+8)<br>Details: From a single delivery truck to an entire city. During the event, complete limited-time quests to earn the event currency "Kool" tokens, and finish all limited-time quests to claim the namecard "Big Dreams". Spend Kool tokens in the Event Shop to redeem the vehicle "C001", the title "Hethereau Delivery King", the phone case "Five-Star Reviews", the phone wallpaper "Next Order!", the avatar "Kool", the avatar frame "The Boss Is In", Fabricated Dice, and more. Raise your Reputation Level to earn additional rewards, including the vehicle "Ori-LV03", Annulith, Floe Cinema Ticket, Elite Hunter Guide, and Chaotic Dye.<br>
+                                <br>● "Hunter's Crucible: Breakthrough" Limited-Time Event<br>Duration: Nov 11 (after update) – Dec 23, 05:59 (UTC+8)<br>Details: During the event, clear challenge stages to earn rewards, including the event title "Hunter's Crucible - Blade Honed", Annulith, Fabricated Dice, Fons, Elite Hunter Guides, and Chaotic Dye.<br>※ The visual effect of the event title "Hunter's Crucible - Blade Honed" changes based on your total event points.<br>
+                                <br>● "Full Tank Ahead" Limited-Time Event<br>Event Duration: Nov 19, 10:00 – Dec 23, 05:59 (UTC+8)<br>Details: A special launch event for the TerraX "Iron Ogre". Take the wheel and fight to be king of the hill! During the event, participate to earn the event currency "TX Token", which can be redeemed in the Event Shop for Annulith, Floe Cinema Ticket, Fons, Elite Hunter Guides, Chaotic Dye, and more.<br>
+                                <br>● "Fishing Frenzy" Limited-Time Event<br>Duration: Nov 23, 05:00 – Dec 23, 05:59 (server time)<br>Details: There's more than one way to catch a fish. During the event, head to the "Sea Angler" fishing spot at Nacupeda Park to take part and raise your fishing level for rewards including Annulith, Floe Cinema Tickets, Elite Hunter Guides, Chaotic Dye, Manhole Boss, and more!<br>
+                                <br>● "Pixel Surge" Limited-Time Event<br>Event Duration: Nov 16, 05:00 – Nov 23, 04:59 (server time)<br>Details: During the event, spend Character Pixels in "Houdinii's Magic Stage", "Houdinii's Schemes", "Bubble Can Factory", and "Rabbit Hole" to receive double the rewards.<br>Each day, double rewards apply to up to 120 Character Pixels spent. Unused daily allowance carries over, up to a total cap of 840 Character Pixels for the whole event.<br>
+                                <br>● "Gold Clash" Limited-Time Event<br>Duration: Nov 23, 05:00 – Dec 7, 04:59 (server time)<br>Details: During the event, earn Fons at 2x efficiency in "Pink Paws Heist".<br>
+                                <br>7. Other Content<br>● "Fortune's Bounty" Event<br>Duration: Nov 11 (after update) – Dec 23, 05:59 (server time)<br>Details: Take part during the event to earn "Fortune Coins". Reach progress milestones to claim rewards including the open-world interactable item "Pop-Up Divination House", the accessory "Tiny Friend", the tire tracks "Hyperflame", the tire smoke "Neonbula", Solid Dice, Fabricated Dice, Anomaly Pilgrimage Material Selection Box II, Anomaly Hunt Material Selection Box, Fons, and more!<br>
+                                <br>● Version 1.5 "Circle Bounty" Guide<br>Duration: Nov 11 (after update) – Dec 22, 23:59 (UTC+8)<br>Requirement: Complete the Main Quest "Relax Time"<br>Details: During the event, complete Circle Quests to earn Experience Points and raise your Circle Bounty Rank, unlocking Fabricated Dice, Gold Carrota, De-noise Solution, A Handwritten Letter, Eternal Shell Song, Development EXP Selection Box I, Expansion Core, and more.<br>Purchase "Elite Hunter Supplies" to unlock additional rewards as you rank up, including Annulith x680, Solid Dice x4, Fabricated Dice x2, Arc-light Trove II x1, A Handwritten Letter x2, Fons x950,000, and more!<br>Purchase this season's "Honor Hunter Supplies" to get all the extra rewards listed above, plus instantly receive the avatar "Long Time No See", the avatar frame "Who's Calling?", the namecard "City of Wonders", Fabricated Dice x5, A Handwritten Letter x1, and Fons x500,000!<br>※ Open Arc-light Trove II to choose one of the following: Fluff of Fearlessness, Fluff of Fleetness, Fluff of Finesse, Fluff of Ferocity, Fluff of Fortitude, or Fons x2,000,000.<br>
+                                <br>
+                                <br>[Optimizations & Bug Fixes]<br>◆ Add guitar recording, music share code, and Bagel sharing features for Akane Rin.<br>◆ Skill optimization for Shinku's passive "Menacing Gaze": When entering or retrying a stage in Beyond the Rails, Menacing Gaze now starts at max stacks without needing to build up stacks from scratch.<br>◆ Add PVP rank system to Volley Star.<br>◆ Add collectible showcase, in-match reporting, and match history to "Going, Going, Gone!", along with the new auction assistant, Elyms.<br>◆ Add new collectibles to "Going, Going, Gone!" and adjusted the appearance rates of certain collectibles.<br>◆ Add AI opponent backfill to "Shadow-n-Seek" when matchmaking exceeds a certain wait time, and randomize the spawn locations of certain objects in each match.<br>◆ Add overflow storage for City Stamina and Character Pixels: Excess City Stamina is now stored as City Stamina Reserve (up to 1,000), and excess Character Pixels are stored as Photo Paper Supply (up to 2,400).<br>◆ Add a Resource Overview feature, allowing Appraisers to check their earning progress for Annulith, Solid Dice, Fabricated Dice, and Tri-Key in the current version, with shortcuts to the corresponding events or mini-games (total progress display on Mac and iOS will be added in a future update).<br>◆ Add a new open-world interactable item, the "Pop-Up Divination House", which Appraisers can place or pack up at any time (unlocked by reaching 5,100 total progress in the "Fortune's Bounty" event).<br>◆ Character rendering optimizations: Add support for Snapdragon ANF on mobile, and NVIDIA RTX Spark on PC.<br>◆ Add the ability to level up character Esper Abilities to specific target levels.<br>◆ Add Upgrade Targets for characters.<br>◆ Add a free-roam mode to the vehicle auto-drive system.<br>◆ Add one-click furniture purchasing when importing a Blueprint.<br>◆ Add a playback timing toggle for "First Meeting Replay" to play a character's unlock animation immediately (enable this in Settings › Control).<br>◆ Add a one-click option to delete Map Pins.<br>◆ Add Bond quests for Elyms.<br>◆ Add new Bond interactions for Elyms: reach the required Bond Level to unlock her passenger seat ride-along feature.<br>◆ Add a combat tutorial for Elyms.<br>◆ When multiple Arc Research Programs are available at the same time, the Key item display in the top-right corner will update automatically to match the selected program.<br>◆ Tweak the third-person driving camera angle for the vehicle "Ori-LV03".<br>◆ Make certain accessories compatible with more characters.<br>◆ Optimize item source shortcuts so they now take you directly to the corresponding challenge stages.<br>◆ Optimize the visual presentation of reward items obtained upon a character's 6th Awakening.<br>◆ Improve controller support across in-game menus.<br>◆ Fix an issue where Dodge and Critical Riposte could not chain into subsequent Basic Attack hits while holding Basic Attack with the character Akane Rin.<br>◆ Fix an issue in the Anomaly Hunt "Black Tome" battle where casting Linko's Redirect Skill and selecting Xiaozhen for a Synced Strike while a character was shackled by the boss caused an abnormal DMG boost.<br>◆ Fix an issue where Shinku could occasionally display an abnormal animation while gliding.<br>◆ Fix an issue in multiplayer where players could not deal damage when attacking one of the "Huggy Vines" anomalies at Serenetti Manor.<br>◆ Fix crashes that could occur in certain situations.<br>◆ Improve localization for several languages.<br>◆ Fix other known issues.
+                            </p>
+                        </div>
+                        <div class="rel articleBottom">
+                            <div class="cont">
+                                <div class="articleBottomTxt">Neverness to Everness (NTE) is a supernatural open-world RPG developed by Hotta Studio. The story begins in the city of Hethereau, where you play as the first "unlicensed" Anomaly Hunter. You will join the antique shop Eibon, which relies on taking on Anomaly commissions from the public to stay afloat. Alongside your diverse and extraordinary partners, you'll explore various urban mysteries, experiencing an array of adventures filled with laughter and tears, and crafting your unique urban saga.</div>
+                                <div class="otherPlatform article_otherPlatform"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="articleTop"></button>
+            </div>
+        </div>
+        <script src="https://static.pwsdk.com/public/js/jq_183.js"></script>
+        <script src="https://nte.perfectworld.com/public/cookieBanner/js/stat-nte-perfectworld-1.1.2.js" async></script>
+        <script src="https://nte.perfectworld.com/public/js/enfooter260427.js" async></script>
+        <script src="https://static.pwsdk.com/public/js/bgAutoplay.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/bgMusic.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/mouseTracking.js"></script>
+        <script src="https://static.pwsdk.com/public/js/clipboard.min.js"></script>
+        <script src="https://www.perfectworld.com/public/commonData/gamesData/gameDownload/nte-gameDownload.js"></script>
+        <script src="https://nte.perfectworld.com/public/login/js/nte-login-sdk-stable.min.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/onelinkSmartJs.js"></script>
+        <script src="https://www.perfectworld.com/public/commonData/gamesData/gameSwiper/nte-gameSwiper.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/downLoad260819.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/public260819.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/list260427.js"></script>
+    </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="maximum-scale=1,minimum-scale=1,user-scalable=no,width=device-width,initial-scale=1">
+        <meta name="description" content="NTE is an supernatural urban open-world RPG developed by Hotta Studio, a subsidiary of Perfect World Games. In this Anomaly-filled city, you'll make a dazzling entrance, using your extraordinary Esper abilities to navigate freely and handle unexpected events. Beyond that, you can choose your own lifestyle, manage businesses, and experience a vibrant urban life.">
+        <meta name="keywords" content="Neverness To Everness,NTE,NTE game play,NTE game,NTE PV,NTE Trailer,Supernatural,Urban,Urban legend,Open World,City,Paranormal,Esper Ability,Anomaly,Free Exploration,SAKIRI,Mint,Nanally,Chiz,EXE,Linko,Xiaozhen,Elyms,Nitsa,Iroi,Shinku,Tower of Fantasy,ToF,Hotta studio,Perfect World Games,PWG,PW,F2P,free to play,console,Unreal Engine 5,UE5,anime,ACG,RPG,ARPG,NTE NVIDA DLSS,NTE NVIDA RTX,NTE PC,NTE mobile, NTE console,NTE FAQ,NTE devlog,NTE devteam,NTE discord,NTE X,NTE youtube,NTE reddit,NTE update,NTE characters,brand new hotta game,hotta RPG,hotta action game,ACT,hotta ACT,eibon,hethereau,NTE registration,NTE pre-register,NTE sign-up,Appraiser,Latest NTE Posts,phone game,popular phone game,popular mobile game,popular game,anime style game,anime mobile game,free game,free mobile game,city advanture,NTE announce,NTE multiple platforms game,inverness to inverness,inverness,Lacrimosa,Fadia,Eibon Antique Shop,Bureau of Anomaly Control,New Herland District,Miguel District,Bridge Crossings,Unheard Shores">
+        <meta property="fb:app_id" content="481742121015001">
+        <meta property="og:url" content="https://nte.perfectworld.com/en/article/news/gamebroad/20260526/262362.html">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="NTE V1.1 Preview Special Program丨Intel Recap">
+        <meta property="og:description" content="">
+        <meta property="og:image" content="">
+        <meta property="og:image:width" content="951">
+        <meta property="og:image:height" content="480">
+        <link rel="canonical" href="https://nte.perfectworld.com/en/article/news/gamebroad/20260526/262362.html">
+        <meta itemprop="url" content="https://nte.perfectworld.com/en/article/news/gamebroad/20260526/262362.html">
+        <meta itemprop="name" content="Neverness To Everness">
+        <meta itemprop="alternateName" content="NTE">
+        <link rel="shortcut icon" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="icon" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="bookmark" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="apple-touch-icon" href="https://nte.perfectworld.com/public/images/icon.png"/>
+        <title>NTE V1.1 Preview Special Program丨Intel Recap-NTE (Neverness to Everness) Official Website -Supernatural Urban Open World</title>
+        <link rel="stylesheet" media="screen and (min-width: 769px)" href="https://nte.perfectworld.com/public/style/public260819.css">
+        <link rel="stylesheet" media="screen and (min-width: 769px)" href="https://nte.perfectworld.com/public/style/public_list260427.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="https://nte.perfectworld.com/public/m/style/public260819.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="https://nte.perfectworld.com/public/m/style/public_list260427.css">
+        <script src="https://static.pwsdk.com/public/js/browserTip.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/rem260427.js"></script>
+        <script src="https://static.pwsdk.com/public/js/language1.2.2.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/languageBranch.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/landscape.js"></script>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div class="header">
+                <a href="https://nte.perfectworld.com/index.html" class="logo publicGoogleAnalytics" type="mainlogo_default_click"></a>
+                <div class="menuBtn" hideblock>
+                    <div class="icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="word"></div>
+                </div>
+                <a class="downBtn publicGoogleAnalytics" type="navdownloadnowbtn_default_click"></a>
+                <div class="rel loginStatus headerLoginStatus">
+                    <button class="loginIcon"></button>
+                    <div class="loginAfter">
+                        <div class="cont">
+                            <div class="uidBox">
+                                UID：<span class="loginUid"></span>
+                            </div>
+                            <button aria-label="logOut" class="logOut eventLogout publicGoogleAnalytics" type="logoutbtn_default_click">log out</button>
+                            <a class="userCenter" href="https://nte.perfectworld.com/account-center/index.html" target="_blank">Account</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="rel language">
+                    <button class="iconLanguage publicGoogleAnalytics" type="lang_default_click"></button>
+                    <div class="auto chooseLanguage"></div>
+                </div>
+                <button class="bgMusic publicGoogleAnalytics viewPc" type="musicbtn_default_click"></button>
+            </div>
+            <div class="menuLayer">
+                <div class="abs pageNav">
+                    <a href="https://nte.perfectworld.com/main.html?nav=1" class="n1"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=2" class="n2"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=3" class="n3 active"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=4" class="n4"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=5" class="n5"></a>
+                </div>
+                <div class="abs firstNews viewPc"></div>
+                <div class="abs menuSubNav viewM">
+                    <button class="bgMusic publicGoogleAnalytics" type="mainmusicbtnM_default_click"></button>
+                    <button class="shareHref publicGoogleAnalytics" type="mainshareM_default_click"></button>
+                </div>
+                <a class="abs auto menuDownBtn publicGoogleAnalytics viewM" type="navdownloadnowbtn_default_click"></a>
+                <div class="abs otherPlatform menu-otherPlatform"></div>
+            </div>
+            <div class="rel articlePage" style="display: block">
+                <a href="https://nte.perfectworld.com/en/article/news/index.html" class="backNewsList"></a>
+                <div class="rel articleCont">
+                    <div class="rel articleHead">
+                        <h1 class="abs articleTitle">NTE V1.1 Preview Special Program丨Intel Recap</h1>
+                        <p class="articlePath">Neverness to Everness>Intel>News</p>
+                        <p class="articleDate">2026.05.26</p>
+                    </div>
+                    <div class="abs articleAside"></div>
+                    <div class="rel article">
+                        <div class="articleContent">
+                            <p>And it's a wrap on the Version 1.1 Special Program! Huge thanks to all Appraisers for tuning in. We've put together a rundown of the biggest reveals from the program, so tap the image below to dive in!</p>
+                            <p>
+                                <br>
+                            </p>
+                            <p>&gt;&gt;&gt;What's Inside &lt;&lt;&lt;</p>
+                            <p>▸ All-New Main Story Episode, Locations & Characters</p>
+                            <p>▸ All-New Collab, Gameplay & Events</p>
+                            <p>▸ Rewards & Optimization Roadmap</p>
+                            <p>
+                                <br>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/31.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/32.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/33.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/34.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/35.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/36.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/37.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/38.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/39.jpg" alt="" data-href="" style=""/>
+                            </p>
+                            <p>
+                                <img src="https://ntevmg.perfectworld.com/webops/nte/40.jpg" alt="" data-href="" style=""/>
+                            </p>
+                        </div>
+                        <div class="rel articleBottom">
+                            <div class="cont">
+                                <div class="articleBottomTxt">Neverness to Everness (NTE) is a supernatural open-world RPG developed by Hotta Studio. The story begins in the city of Hethereau, where you play as the first "unlicensed" Anomaly Hunter. You will join the antique shop Eibon, which relies on taking on Anomaly commissions from the public to stay afloat. Alongside your diverse and extraordinary partners, you'll explore various urban mysteries, experiencing an array of adventures filled with laughter and tears, and crafting your unique urban saga.</div>
+                                <div class="otherPlatform article_otherPlatform"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="articleTop"></button>
+            </div>
+        </div>
+        <script src="https://static.pwsdk.com/public/js/jq_183.js"></script>
+        <script src="https://nte.perfectworld.com/public/cookieBanner/js/stat-nte-perfectworld-1.1.2.js" async></script>
+        <script src="https://nte.perfectworld.com/public/js/enfooter260427.js" async></script>
+        <script src="https://static.pwsdk.com/public/js/bgAutoplay.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/bgMusic.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/mouseTracking.js"></script>
+        <script src="https://static.pwsdk.com/public/js/clipboard.min.js"></script>
+        <script src="https://www.perfectworld.com/public/commonData/gamesData/gameDownload/nte-gameDownload.js"></script>
+        <script src="https://nte.perfectworld.com/public/login/js/nte-login-sdk-stable.min.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/onelinkSmartJs.js"></script>
+        <script src="https://www.perfectworld.com/public/commonData/gamesData/gameSwiper/nte-gameSwiper.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/downLoad260819.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/public260819.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/list260427.js"></script>
+    </body>
+</html>
+
