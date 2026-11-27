@@ -1,0 +1,2211 @@
+yours which is low resolution:
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Neverness To Everness Trailer | Wonders Await, In Urban Cityscape!](https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html)\n-# Official News · Neverness to Everness"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://i.ytimg.com/vi/tdZN6H1N3PU/hqdefault.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/BDTDFJanRzIhGU2G3RJNwWW5RbaQBYYiJe0Ehk1Ir_U/https/i.ytimg.com/vi/tdZN6H1N3PU/hqdefault.jpg",
+                "width": 480,
+                "height": 360,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "Welcome to Hethereau!\n\nThis is a world that's ever closer to the supernatural, you gotta learn how to interact with the Anomalies.\n\nThe all new supernatural urban open-world RPG Neverness to Everness is ready for reservation!\n\n**Official Website>>**https://nte.perfectworld.com"
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "https://www.youtube.com/watch?v=tdZN6H1N3PU"
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
+
+the max resolution:
+
+{
+  "attachments": [],
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Neverness To Everness Trailer | Wonders Await, In Urban Cityscape!](https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html)\n-# Official News · Neverness to Everness"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://img.youtube.com/vi/tdZN6H1N3PU/maxresdefault.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/BDTDFJanRzIhGU2G3RJNwWW5RbaQBYYiJe0Ehk1Ir_U/https/i.ytimg.com/vi/tdZN6H1N3PU/hqdefault.jpg",
+                "width": 480,
+                "height": 360,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "Welcome to Hethereau!\n\nThis is a world that's ever closer to the supernatural, you gotta learn how to interact with the Anomalies.\n\nThe all new supernatural urban open-world RPG Neverness to Everness is ready for reservation!\n\n**Official Website>>**https://nte.perfectworld.com"
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "https://www.youtube.com/watch?v=tdZN6H1N3PU"
+        },
+        {
+          "id": 6,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Arknights: Endfield Beta Test II: DEV Comm//02](https://endfield.gryphline.com/en-us/news/1340)\n-# Official News · GRYPHLINE · <t:1761969600:f>"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/d394b83e19412d75a8ec5c1e55bc4dba.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/REWOEWef4x5Ehv3GcN9w6Dizx0PoRf_jB4OOSfjiphg/https/web-static.hg-cdn.com/upload/image/20251031/d394b83e19412d75a8ec5c1e55bc4dba.jpg",
+                "width": 1600,
+                "height": 900,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "-# Page 1"
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**Dear Endministrators:**\n\nThis is the Arknights: Endfield Team. Since the end of Beta Test, we've reviewed your invaluable feedback and made various improvements and adjustments. We've also introduced plenty of new content in line with our development plan. With Beta Test II around the corner, we'd like to share an overview of the key updates and new additions in various game modules.\n\n**1. AIC Factory**\n\n**Added Regional Development System**\n\nIn Beta Test II, we're introducing a Regional Development System that cohesively integrates **regional exploration, AIC Factory production**, and trading. Your efforts at Endfield Industries will now be directly reflected in the environmental changes of Talos-II.\n\n**Regional Stock Bills**\n\nAs Regional Development Level increases, you can earn a new type of cert called Regional Stock Bills through activities such as regional exploration, Outpost Supplies, and delivery jobs.\n\nRegional Stock Bills are a core item in the Regional Development System. You can spend them to make operator gear, redeem critical resources, and upgrade Core AIC Areas. In short, they give you extra rewards for exploring and developing across various regions.\n\n**Varied Regional Gameplay**\n\nWe've added various interactive gameplay specific to each region. You can enjoy the gameplay on your own or with others for a more varied experience.\n\nFor example, Stock Redistribution lets you track price curves and earn profits by buying low and selling high. Depot Node features a goods delivery gameplay where you can transfer and accept delivery jobs for a fun, cooperative delivery experience.\n\nIn the new region, Wuling, you can expect even more region-specific content.\n\n**Outpost Management Cycle**\n\nIn Beta Test II, we've refined the outpost gameplay cycle. Now, you can earn Regional Stock Bills from outposts by supplying goods. The bills can be spent to upgrade and expand outposts to boost their ability to generate even more Regional Stock Bills. You can also spend Regional Stock Bills to expand AIC Factory production and supply more goods to outposts, thereby forming a sustainable production-profit cycle."
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/8ecce42ecf351862a4094a21ea97bb1c.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/IKc3Y1sh7ougEKxA4i3d3IdXf7vDHZDAHJMWS0eCQK0/https/web-static.hg-cdn.com/upload/image/20251031/8ecce42ecf351862a4094a21ea97bb1c.gif",
+                "width": 800,
+                "height": 450,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**Regional Development Level & Benefits**\n\nRegional Development Metrics can be earned in various ways to increase Regional Development Level. As the level increases, advanced development options will become available and new functions will unlock across various regions. You will receive generous rewards throughout this process as well."
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/eb617f68a387cb2ad20bc3bb327f99c8.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/psEl06cGX7ZtVGlanszdpGf_3_lJ8dV84wIv26ragq8/https/web-static.hg-cdn.com/upload/image/20251031/eb617f68a387cb2ad20bc3bb327f99c8.jpg",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "**Added Blueprint System**\n\nWe've added a blueprint system to make AIC Factory planning and construction easier. Acquire and use various blueprints to quickly set up production lines and expedite development across various regions of Talos-II.\n\n**System Blueprints**\n\nCompleting certain simulations rewards System Blueprints for relevant products. These blueprints feature layouts ranging from basic production setups to complex assembly lines. You can use these layouts to easily replicate and build a complete automated production line."
+        },
+        {
+          "id": 11,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/149a2b999a7be52169cb0fefc1ad6105.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/n0adZMziR3UmtHUy00ISp1o3KiWsBpzSABWoGopgros/https/web-static.hg-cdn.com/upload/image/20251031/149a2b999a7be52169cb0fefc1ad6105.gif",
+                "width": 800,
+                "height": 450,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 2"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Creating and Sharing Blueprints**\n\nIn addition to the preset blueprints, you can save your own production line layouts as My Blueprints and share them with friends both in and outside the game. You can also acquire other players' blueprints through blueprint sharing codes. You can choose to reference their layouts for inspiration or simply replicate them. Either way, your production efficiency will improve significantly.\n\n**New Wuling-Specific AIC Factory Elements**\n\nIn Beta Test II, you'll see Wuling use fluid-based AIC technologies and introduce a new concept called Xiranite. We hope this update provides a distinctive AIC Factory experience.\n\n**Xiranite Materials & Technologies**\n\nA special material from Wuling, Xiranite can be produced with the Forge of the Sky, a regional facility of Wuling. Xiranite is used for regional exploration and for making Wuling-exclusive AIC facilities and operator gear.\n\n**Auto-Connecting Power Facilities**\n\nWith the breakthrough Xiranite technology, deployed Xiranite Relays and Xiranite Pylons will automatically connect to the Automation-Core and other Xiranite power facilities within range. Manual connections for power transmission are no longer required, making it easier to transmit power."
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/596a879cb7c2f97abc9b2ab231f2df3c.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/qU7LAus1g0_fXcLULtmxvp_f_sbVUIPYUupegYymVyA/https/web-static.hg-cdn.com/upload/image/20251031/596a879cb7c2f97abc9b2ab231f2df3c.gif",
+                "width": 800,
+                "height": 450,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**Depot Bus Optimization**\n\nIn the previous Beta Test, Depot Buses could only be placed at designated positions, which limited how you could plan your Core AIC Areas. In Wuling, you have more flexibility in arranging Depot Buses by using Depot Bus Ports (as starting points) and Depot Bus Sections.\n\n**Added Shared Facilities**\n\nWhile exploring Talos-II, you may come across Shared Facilities left behind by other players. These include **Memo Beacons** for leaving messages, **Zipline Facilities** for traversing terrain, and Easy Stashes for storing or retrieving items. The footprints of early explorers can give assistance to those who come later.\n\nShared Facilities you placed can be used by your friends as well and may appear on other players' maps. They connect different Endministrators and form a lasting bond between them."
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/cdec4c758692cf45e2385b9d88606832.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/7VkhoAOy64NktUCVB1c_UgIhPLEApv1dpiMa4_PzBy8/https/web-static.hg-cdn.com/upload/image/20251031/cdec4c758692cf45e2385b9d88606832.gif",
+                "width": 800,
+                "height": 450,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**Other AIC Factory Experience Optimizations**\n\nWe've made many other improvements based on feedback from the last test. Here are some of the key changes we'd like to share.\n\nRules for Unlocking Simulations\n\nIn Beta Test II, the rules for unlocking simulations have been refined. Now, **unlocking a phase of the AIC Factory Plan will automatically unlock all simulations within that phase**. You can freely choose and explore the AIC Factory tech that interests you most.\n\n**Tips for Formula Details Page**\n\nWe've added the Smart Tips feature to the formula details page. Now, **when a production line is in abnormal condition**, **a notification will appear** on the formula details page **along with a recommended solution**."
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/d2ee9ad0a5266aab358b09f92d237d4f.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/TNMWEMGeEdf1G3nISJ3wwhuVm1sgr3LAWGv2CqbLVxM/https/web-static.hg-cdn.com/upload/image/20251031/d2ee9ad0a5266aab358b09f92d237d4f.jpg",
+                "width": 1920,
+                "height": 1191,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 3"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Batch Mode**\n\nWe've added the Batch Mode, which lets you Blueprint, Copy, Move, and Stash existing production lines. In this mode, you can rapidly deploy and edit complex production lines to achieve large-scale production.\n\n**Production Line Logistics Facilities**\n\nWe've also added two new facilities: Item Control Port and Pipe Control Port. These facilities allow precise control over the types and quantities of items that can be carried onto a transport belt or pipeline. You can now manage your production lines with unprecedented precision.\n\n**2. Combat System**\n\nAfter reviewing your feedback on the combat system, we've refined and polished the combat experience at a deep level. Our goal is to preserve the strategic depth while making combat smoother, improving feel of control, and expanding tactical variety. Here's a look at the major changes for this test:\n\n**Improved Presentation and Experience of Combat**\n\nWe've made a series of refinements to combat presentation and feel of control. We also added several new features.\n\n**Actions**: Remade certain operators' attack and skill animations; adjusted action transitions for most operators to achieve smoother, more natural movements. Refined enemy reaction animations when taking damage."
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/015481bef9ea6f90f69e8fc65ee9bf68.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/7vv88nqW1mGluDMTahVk25oRIrpdx1IXdCVr89IcySQ/https/web-static.hg-cdn.com/upload/image/20251031/015481bef9ea6f90f69e8fc65ee9bf68.gif",
+                "width": 800,
+                "height": 450,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**Special Effects:** Enhanced attack and skill visuals for most operators; redesigned attack and skill visuals for some operators; refined the visual cues for enemy attack wind-ups.\n\n**Camera:** Refined camera movements and panning during combat to deliver more impactful visuals for releasing combo skills.\n\n**Stagger Node Mechanic:** Introduced a new Stagger Node mechanic for certain powerful enemies. When their Stagger reaches specific nodes, they will temporarily stumble, giving you a valuable window to deal major damage or adjust strategy.\n\n**Others:** Improved combat UI and button prompts. Added options for customizing the buttons of combat UI.\n\n**Underlying Mechanics Optimization**\n\n**We've redesigned the underlying mechanics of Physical Status and Arts Reaction.**\n\n**Physical Status**: Introduced the Vulnerable stack mechanic (up to 4 stacks). The Lift and Knock Down effects can add extra Vulnerable stacks; the Crush and Breach effects can consume Vulnerable stacks to trigger various powerful effects."
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/a1c33bb905d2a4107ef33c9cf4c1cd53.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Yzc2MoV83quLbB8485Aakb7RihxsclezCSi3Q6Ud_b0/https/web-static.hg-cdn.com/upload/image/20251031/a1c33bb905d2a4107ef33c9cf4c1cd53.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**Arts Reaction:** Introduced the Arts Infliction stack mechanic (up to 4 stacks). Repeatedly applying the same type of Arts Inflictions on the enemy triggers Arts Bursts and adds extra Arts Infliction stacks; if the enemy already has an Arts Infliction and a different Arts Infliction is applied to them, then all Arts Infliction stacks will be consumed to trigger various Arts Reaction effects."
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/aedbf518817721e933bec19364d5b0b2.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/KW8IdW2IqBJNsLk3YN_vdEZX7nVKC265wX0pXYe5ajM/https/web-static.hg-cdn.com/upload/image/20251031/aedbf518817721e933bec19364d5b0b2.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "In addition, we've overhauled the Operator Class system and redesigned most operators' skills, talents, and other aspects.\n\nWe hope that you could make clever use of various debuffs to weaken enemies, activate combo effects, and discover your own combat tactics.\n\n**Dodge Control Improvements**\n\nOperators can now perform **two consecutive dodges** within a short window. Dodging no longer interrupts basic attack sequences, allowing for a smoother attack flow. Timing a dodge right before an enemy attack lands triggers Perfect Dodge, which returns some consumed stamina and restores a small amount of Skill Points (SP)."
+        },
+        {
+          "id": 11,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/3736a042d7635195b2e9c61076fa8147.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Si6oupPuGHq6iC2G4zmmgap6Q9RjLt5ZmuBKb1fXIIU/https/web-static.hg-cdn.com/upload/image/20251031/3736a042d7635195b2e9c61076fa8147.gif",
+                "width": 800,
+                "height": 450,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 4"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Improved Teammate AI**\n\nWe've optimized team AI and added coordination moves. Teammates now fight smarter, which makes it easier to achieve team synergy.\n\n- Teammate AI has been refined in attack behaviors. We've added new moves and actions so they behave more naturally and consistently.\n- Teammates will now **make smarter use of equipped tacticals** and support you based on real-time situation in battle.\n- Teammates' combat voice-overs have also been improved to increase immersion.\n\n**New Assist Features**\n\n**Operator Tags**\n\nWe've added Operator Tags that reflect each operator's combat characteristics. These tags help you quickly understand an operator's strengths and combat style at a glance.\n\n**Operator Tutorial Stages**\n\nAll 5-star and 6-star operators now have **exclusive tutorial stages** to help you quickly master their combat styles and techniques for using them.\n\n**Game Tools**\n\nWe've added tools that let you view other players' team setups and combat strategies. We hope these tools help you quickly build your own team and tackle challenges with ease.\n\n**3. Stages and Maps**\n\nMore stage content has been added and map features have been made more practical, all to improve your exploration experience in Talos-II.\n\n**New Regional Ecology & Gameplay**\n\nWe've created various interactive gameplay tailored to each region's ecology. For Valley IV, we've refined the experience of self-contained stages and updated the existing exploration content from the previous test."
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/ae48fe3b362eb9ee200b8d2c78378eb5.gif",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/6RFAU_PORaL_VoQuQZ82EAoKy8_w9cRU7P8NW0cJaMQ/https/web-static.hg-cdn.com/upload/image/20251031/ae48fe3b362eb9ee200b8d2c78378eb5.gif",
+                "width": 800,
+                "height": 450,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "For Wuling, our design centers around the regional signature of Fluid. We've added more fluid-based stage mechanics. You can now use jet drones to spray to unlock certain mechanisms or clear Active Blight.\n\nAdditionally, we've added a wider variety of creatures and enemies with enhanced behavior patterns, so the ecosystem of Talos-II feels more realistic and richly layered."
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/f3cd36a29e26978cb92026731c4821e2.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/hbASyDgAQYRyCyAmqFKIDKRMeGPrueolwskTME1Phcw/https/web-static.hg-cdn.com/upload/image/20251031/f3cd36a29e26978cb92026731c4821e2.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 5"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Improved Environmental Art**\n\nBased on the storytelling and concept designs, we've added some special scenic landscapes. As missions progress, these landscapes will undergo unexpected changes. We also refined the art of certain landmark structures to enhance their visual appeal and functionality.\n\n**Added Exploration Assist Features**\n\nYou can now purchase Detectors and Compasses. When used, these tools reveal hidden storage crates or Aurylenes within a certain range, making exploration easier.\n\nWe've also added plenty of new voice-overs and actions for operators. Now, they give timely prompts on which way to go and help collect identified drops, so you can focus more on exploration and the adventure.\n\n**4. Refinements to Story and Narrative Performances**\n\nWe are very aware of the importance of storytelling and its influence on your experience. That's why we've given a thorough polish and upgrade to the game's storytelling.\n\n**Refinements to Story**\n\nBased on your invaluable feedback from the previous test event, we've reviewed both the main story and side stories and made many changes to narrative pacing and character development. For example, in Beta Test II, you will experience a new chapter of the story unfolding in Wuling. Along with these changes, we've also updated or reworked the relevant cutscenes, audio, and sound effect resources.\n\n**Refinements to Narrative Performances**\n\nWe're using new camera techniques and adding new character gestures and actions to bring the operators to life through 3D storytelling. Many side missions now have cutscenes and cinematics to enhance emotional impact.\n\nWe will continue refining the game's narrative performances to deliver a more immersive audiovisual experience.\n\n**5. Other New Systems and Features**\n\n**Friends & Reception Room Systems**\n\nWe've added various new features to the Friends System. You can now freely display your weapons, collectibles, and operator CVs in Dijiang. You can show off engraved medals and share your collections and achievements with your friends. You can visit your friends' Reception Rooms, explore their room layouts, or provide production assist to their Dijiang cabins."
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/b2028a2863cf3d03a9a7410a44bf93ed.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/BpHSG1emmCJdV1EMvWXZpAdPZQvVBh7IuWmO1-XkraU/https/web-static.hg-cdn.com/upload/image/20251031/b2028a2863cf3d03a9a7410a44bf93ed.jpg",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**Camera System**\n\nThe Camera system lets you freely control the camera view, switch between first-person and third-person perspectives, and adjust parameters such as focal length and aperture. It also allows you to apply filters, change team formations, and add stickers. Use the Camera to capture every amazing moment in Talos-II.\n\n**Engraved Medals System**\n\nYou can earn engraved medals by completing in-game missions, achieving regional development goals, clearing combat challenges, and taking part in social activities. Acquired medals can be reforged to higher levels or trimmed to adopt new appearances. We hope this helps you record every milestone in Talos-II."
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/2f2355b750b72bbb981c1473b953eb96.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/XXCM4CVOctNt_s72zDJ_g1WMgIHmGBNfOttMV1y61W4/https/web-static.hg-cdn.com/upload/image/20251031/2f2355b750b72bbb981c1473b953eb96.jpg",
+                "width": 1654,
+                "height": 853,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**Multi-Layered Maps and Tags**\n\nThe test introduces multi-layered maps. On the map screen, you can view and switch between different layers of the current area to better navigate complex terrain. Custom tags are also available now. You can use these tags to mark important locations for easier navigation."
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/5783540283719aa40aca87f0b721a739.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/37jKPWLm0DK1cwsr-iRLc29-91iwEsvIXhsC1nmrOJc/https/web-static.hg-cdn.com/upload/image/20251031/5783540283719aa40aca87f0b721a739.jpg",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "**Switching Endministrator's form**\n\nYou can visit the Stasis Core on Dijiang and use the Protocol Singularity there to switch the Endministrator's form."
+        },
+        {
+          "id": 11,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20251031/32d07311d2569aa775ef3128e6004b02.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/c7YaodexjbT1RhwKzbdyf6c5mM_QZnJengP942FDoXw/https/web-static.hg-cdn.com/upload/image/20251031/32d07311d2569aa775ef3128e6004b02.jpg",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 6"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Controller Mode**\n\nWe've added a controller mode for this test to provide more control options that fit your play style. Controller support is now available on PC and PS. Support for mobile is in development and will not be available in this test. Thank you for your understanding.\n\n**6. Cross-Platform Adaptation and Optimization**\n\nIn Beta Test II, we're providing platform-specific controls for mobile, PC, and PlayStation, so players on each platform have controls optimized for their device.\n\nThis is the first time we adapt and optimize a game for multiple platforms. We've been continuously updating our technologies and workflows to provide a stable and smooth gaming experience. If you have any feedback or suggestions during the test, please let us know through customer support or surveys. We sincerely appreciate your patience and understanding!\"\n\n**7. Localized Experience**\n\nTo provide a better localized experience for all Endministrators around the globe, we've thoroughly optimized the in-game text.\n\nWe've systematically reviewed and revised text in all languages, and refined sentence structures and expressions to better match the reading preferences of local players. For some languages, we've also added the pronunciation of important and special terms to help you understand the game's concepts and setting more accurately.\n\nWe will keep listening to your feedback and working to enhance the game's localization.\n\nIn addition to what's mentioned in this DEV Comm, we are developing more in-game systems, new characters, and gameplay modes for Beta Test II.\n\nWe're continuously refining and polishing game content. If you encounter any issues during the test, please don't hesitate to let us know. Your feedback is invaluable in helping us make the game better.\n\nThank you again for your continued attention and support of Arknights: Endfield! We hope to see you again in Talos-II!\n\n**Arknights: Endfield Team**"
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://endfield.gryphline.com/en-us/news/1340"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Talos-II Photographer Special Prize Winners Announced!](https://endfield.gryphline.com/en-us/news/3840)\n-# Official News · GRYPHLINE · <t:1780397160:f>"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/289ad81a7e780190b5b1cdc055e8260c.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/6JGB8_UFIjDsfyvvNTM3YO99Dcuk0zGUitgECigZXRc/https/web-static.hg-cdn.com/upload/image/20260602/289ad81a7e780190b5b1cdc055e8260c.jpg",
+                "width": 1600,
+                "height": 900,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "-# Page 1"
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "Thank you for your amazing submissions, Endministrators! The [Special Prize] winners of the Talos-II Photographer event have now been announced. The winners are listed in no particular order.\n\n**465\\*\\*\\*\\*0426**"
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/156c911fcd99c99f70a1390389b8b91b.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/nuhvP5zE9eiwhBooeWoj5xqS0SyFcGeeh8mP3IfHelo/https/web-static.hg-cdn.com/upload/image/20260602/156c911fcd99c99f70a1390389b8b91b.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**498\\*\\*\\*\\*1421**"
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/733593ff6c2360f21634aae268dff679.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/R7r1NKcrBcQFspmTQ2A_3d1ioHj01ddPaiOyP5Q734g/https/web-static.hg-cdn.com/upload/image/20260602/733593ff6c2360f21634aae268dff679.png",
+                "width": 3840,
+                "height": 2160,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "**419\\*\\*\\*\\*0752**"
+        },
+        {
+          "id": 11,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/a7e1b4dfa127be0f0be3d6c1eec787fb.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/kQYaUEOFWvUTgk8HgZrsPJM1FhcSIleSdRhB5SyQ2Js/https/web-static.hg-cdn.com/upload/image/20260602/a7e1b4dfa127be0f0be3d6c1eec787fb.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": 10,
+          "content": "**446\\*\\*\\*\\*9675**"
+        },
+        {
+          "id": 13,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/3e0db29bc8346032f545863660b1949f.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/0CDCCqas9cQ5qL0WwcTQQDFXrAMQawa4YjV94FHNz5I/https/web-static.hg-cdn.com/upload/image/20260602/3e0db29bc8346032f545863660b1949f.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "type": 10,
+          "content": "**407\\*\\*\\*\\*7457**"
+        },
+        {
+          "id": 15,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/33fe6cae6b1f897b4a404ac2816e8e62.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/nKzRXmtrIz1Np2WeUzvEabMFOabFUsy43sHwbU8bAQQ/https/web-static.hg-cdn.com/upload/image/20260602/33fe6cae6b1f897b4a404ac2816e8e62.png",
+                "width": 1920,
+                "height": 1159,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "type": 10,
+          "content": "**680\\*\\*\\*\\*4285**"
+        },
+        {
+          "id": 17,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/0cfaff157f2fb3fefdafecb525fef6fe.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/yXGHVpueC1dG_wSjGSjrMLuzcRR6hi_QxEzt1M5lVzg/https/web-static.hg-cdn.com/upload/image/20260602/0cfaff157f2fb3fefdafecb525fef6fe.png",
+                "width": 1920,
+                "height": 1200,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "type": 10,
+          "content": "**468\\*\\*\\*\\*0262**"
+        },
+        {
+          "id": 19,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/9a4f852079082e5a1fd62e4618c09afb.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/1-ZhwlZMWwwRNzX-vo5VSQ5Fg20RXLd0ycSplOPHNqc/https/web-static.hg-cdn.com/upload/image/20260602/9a4f852079082e5a1fd62e4618c09afb.png",
+                "width": 2560,
+                "height": 1546,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "type": 10,
+          "content": "**480\\*\\*\\*\\*6834**"
+        },
+        {
+          "id": 21,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/020a2c721de966ac8c2259d2a7c5a39a.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/TLwCDnFNsESV0ZxiUPrP0G3Z3llIO2yBUREh3t_iKkE/https/web-static.hg-cdn.com/upload/image/20260602/020a2c721de966ac8c2259d2a7c5a39a.png",
+                "width": 3840,
+                "height": 2160,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "type": 10,
+          "content": "**472\\*\\*\\*\\*4006**"
+        },
+        {
+          "id": 23,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/7590a431057b4939b4d40352719d370c.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/tRbL31uueqKiBgVu2R1i86B-TGMMkjmYqvwA0ZAFPjc/https/web-static.hg-cdn.com/upload/image/20260602/7590a431057b4939b4d40352719d370c.png",
+                "width": 3840,
+                "height": 2160,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "type": 10,
+          "content": "**465\\*\\*\\*\\*5189**"
+        },
+        {
+          "id": 25,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/36b5b33c8fc42092bfae5115cd2c59b6.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Qmd0jdmRc1aF-IpSk2dGkCBgoM6JVtOXGkYaLNE4AAw/https/web-static.hg-cdn.com/upload/image/20260602/36b5b33c8fc42092bfae5115cd2c59b6.png",
+                "width": 2560,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 26,
+          "type": 10,
+          "content": "**681\\*\\*\\*\\*0960**"
+        },
+        {
+          "id": 27,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/a7ee4a2dd441b756354fc8978f43a779.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/mrs45Tsgc36FL6nX0-3LUHubgT-lKzI-sHzPrIXe5p4/https/web-static.hg-cdn.com/upload/image/20260602/a7ee4a2dd441b756354fc8978f43a779.png",
+                "width": 1920,
+                "height": 1159,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 28,
+          "type": 10,
+          "content": "**683\\*\\*\\*\\*4201**"
+        },
+        {
+          "id": 29,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/a8a68905895743143c067d05154ef1e5.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/o8yOsP2RRtWUztb1JPFxmKMFYZadWZB21qPUV4mAtVU/https/web-static.hg-cdn.com/upload/image/20260602/a8a68905895743143c067d05154ef1e5.png",
+                "width": 3840,
+                "height": 2160,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 30,
+          "type": 10,
+          "content": "**602\\*\\*\\*\\*8445**"
+        },
+        {
+          "id": 31,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/e93126f5e6847a7ca047407d53cd8589.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/UVChR7erGfQcGVv7YTender8yNpo1sU2B-S905J9yh0/https/web-static.hg-cdn.com/upload/image/20260602/e93126f5e6847a7ca047407d53cd8589.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "type": 10,
+          "content": "**455\\*\\*\\*\\*8190**"
+        },
+        {
+          "id": 33,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/19147812a9044e2ac09b36b87f61dd63.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/8Te1MyoNtMzL7YouZYZyO4IWvQuQViS572SfqUhvlO8/https/web-static.hg-cdn.com/upload/image/20260602/19147812a9044e2ac09b36b87f61dd63.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "type": 10,
+          "content": "**407\\*\\*\\*\\*8098**"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 2"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/3b946fe1fa1e2bf4fba3eb7af74e072f.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/Y03B8t_7jMdWVvTtkqDMcp6y2KyA8t9RByLSQ4o1S3Y/https/web-static.hg-cdn.com/upload/image/20260602/3b946fe1fa1e2bf4fba3eb7af74e072f.png",
+                "width": 2772,
+                "height": 1402,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "**434\\*\\*\\*\\*8959**"
+        },
+        {
+          "id": 6,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/da230a5082cc9ad6187d8a1ed3cbf309.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/0J2FrByB5E_b3i5gcQp2xOI6KkMU-wGEJHF4hAWmZSc/https/web-static.hg-cdn.com/upload/image/20260602/da230a5082cc9ad6187d8a1ed3cbf309.png",
+                "width": 3216,
+                "height": 1578,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "type": 10,
+          "content": "**650\\*\\*\\*\\*7333**"
+        },
+        {
+          "id": 8,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/211e592f65aad03074d6a251e12be702.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/q4kV2Qh9z2aIuQ59onJK_GOqMOicAJHUbcrhT85uLFs/https/web-static.hg-cdn.com/upload/image/20260602/211e592f65aad03074d6a251e12be702.png",
+                "width": 2560,
+                "height": 1578,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "type": 10,
+          "content": "**623\\*\\*\\*\\*9410**"
+        },
+        {
+          "id": 10,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/0008011ebc075d15faf033a9af3599f5.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/LzaJ_6zduIu8DREnht3ZLiqDfMqfVEZKBeCKPfn9D1k/https/web-static.hg-cdn.com/upload/image/20260602/0008011ebc075d15faf033a9af3599f5.png",
+                "width": 3440,
+                "height": 1440,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": 10,
+          "content": "**490\\*\\*\\*\\*8324**"
+        },
+        {
+          "id": 12,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/ec89e94f4a2fa45a06659774170c7e00.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/FLXE9bMvuM722lLCcDvMv_i9-9c-98WTu0yALACUPmA/https/web-static.hg-cdn.com/upload/image/20260602/ec89e94f4a2fa45a06659774170c7e00.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "type": 10,
+          "content": "**454\\*\\*\\*\\*7981**"
+        },
+        {
+          "id": 14,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/f841c4543388d624add205771b6a13f1.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/wW3f5vXzmIgMn8XX2bIiOZeP9k0gB-QPCRXlQSaVQXw/https/web-static.hg-cdn.com/upload/image/20260602/f841c4543388d624add205771b6a13f1.png",
+                "width": 3440,
+                "height": 1440,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "type": 10,
+          "content": "**691\\*\\*\\*\\*6670**"
+        },
+        {
+          "id": 16,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/caef8c79812286a0d509768ebd5260ad.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/jXA5ZJH7Uw_SnY3VUi_ZQnJq06TU7JfYvz3xWYKEinM/https/web-static.hg-cdn.com/upload/image/20260602/caef8c79812286a0d509768ebd5260ad.png",
+                "width": 2556,
+                "height": 1382,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 17,
+          "type": 10,
+          "content": "**492\\*\\*\\*\\*2286**"
+        },
+        {
+          "id": 18,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/446cadb89e92d63d45d6ab5bc4ebffda.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/btx9BaAwiD46i7y5sJUIc-4k9cTfXUuHQgISQtrMfl8/https/web-static.hg-cdn.com/upload/image/20260602/446cadb89e92d63d45d6ab5bc4ebffda.png",
+                "width": 3840,
+                "height": 2161,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 19,
+          "type": 10,
+          "content": "**658\\*\\*\\*\\*3690**"
+        },
+        {
+          "id": 20,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/34db41d2ff5940b2c3d7bbeb0f494cb4.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/PSI54C7Jz44C1eob73m7UbHK2XkcwSx2oc9Yt0DmjiQ/https/web-static.hg-cdn.com/upload/image/20260602/34db41d2ff5940b2c3d7bbeb0f494cb4.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 21,
+          "type": 10,
+          "content": "**467\\*\\*\\*\\*3832**"
+        },
+        {
+          "id": 22,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/2755258c9acf5ce12cee4f409c405601.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/rblumQJpKK0X4ttGL0mWvQqH0BScy0PCFkoCO6a1hA8/https/web-static.hg-cdn.com/upload/image/20260602/2755258c9acf5ce12cee4f409c405601.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "type": 10,
+          "content": "**423\\*\\*\\*\\*8279**"
+        },
+        {
+          "id": 24,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/551c48ce7fef00729fc24dc3c9423206.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/NlV6Tu5SB3iA3qMF5dY2TAOPgnR5j2k9C9EmMKNQ_LE/https/web-static.hg-cdn.com/upload/image/20260602/551c48ce7fef00729fc24dc3c9423206.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 25,
+          "type": 10,
+          "content": "**477\\*\\*\\*\\*8763**"
+        },
+        {
+          "id": 26,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/7b551796e5a8b48c109e2954b2ff91bd.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/8A0alHTYJblnUDzuHVZ45ED592DN0JV98fDpzlZZU4A/https/web-static.hg-cdn.com/upload/image/20260602/7b551796e5a8b48c109e2954b2ff91bd.png",
+                "width": 2560,
+                "height": 1578,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "type": 10,
+          "content": "**630\\*\\*\\*\\*3678**"
+        },
+        {
+          "id": 28,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/ac7f1afa3e4c83ac6d50d605b5bb51e4.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/R-t7j_7A6Jtl8y9Ymge1hFUeJHhMqKwaZN79c_z-KDM/https/web-static.hg-cdn.com/upload/image/20260602/ac7f1afa3e4c83ac6d50d605b5bb51e4.png",
+                "width": 3840,
+                "height": 2160,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 29,
+          "type": 10,
+          "content": "**662\\*\\*\\*\\*7216**"
+        },
+        {
+          "id": 30,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/c925ba90d68842a315a56371f8f05874.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/z5qH2zHzFgWcU5MLFY8Koxmfx48yXv47WAFohDfc3bo/https/web-static.hg-cdn.com/upload/image/20260602/c925ba90d68842a315a56371f8f05874.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 31,
+          "type": 10,
+          "content": "**409\\*\\*\\*\\*6771**"
+        },
+        {
+          "id": 32,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/d67677581a232579185ca5a6c68cd1ce.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/dQh-87974ISolC2yNJJ4wxxZoUMcV2BxQHPp5vGKWp4/https/web-static.hg-cdn.com/upload/image/20260602/d67677581a232579185ca5a6c68cd1ce.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 33,
+          "type": 10,
+          "content": "**618\\*\\*\\*\\*9589**"
+        },
+        {
+          "id": 34,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/455dcd90477a5420bb52a03b4662179e.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/BclbgWgql-QZR2CVPsu7WeASuRw1hDDGRDb8xpdECN0/https/web-static.hg-cdn.com/upload/image/20260602/455dcd90477a5420bb52a03b4662179e.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 3"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**621\\*\\*\\*\\*4519**"
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/815ba34778bc7448808d7ac999f48e16.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/-U0O1DBkRiQtPgoEFdPv4lsDjoMo05SavkGtL_11lNk/https/web-static.hg-cdn.com/upload/image/20260602/815ba34778bc7448808d7ac999f48e16.png",
+                "width": 2560,
+                "height": 1578,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**469\\*\\*\\*\\*2849**"
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/2f95c48d20bde72942f57096cce9bd69.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/_gU4QYn0RzmFc4rP38jU4lMvSB2RTDEQw0qjd-5caY4/https/web-static.hg-cdn.com/upload/image/20260602/2f95c48d20bde72942f57096cce9bd69.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**631\\*\\*\\*\\*2324**"
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/56411fa752d67d6f62a23c6b2111fddc.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/3guRK4BLTIqJDt82CuiuIjcBsAR4i0oEoiczjtRpCJQ/https/web-static.hg-cdn.com/upload/image/20260602/56411fa752d67d6f62a23c6b2111fddc.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "**496\\*\\*\\*\\*1621**"
+        },
+        {
+          "id": 11,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/9604292d8aefdba4830e5ce9697984d9.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/p13Du8PDkUmlg2WRK6CVgLdqbNMqe7q8I_97Y6hPaxo/https/web-static.hg-cdn.com/upload/image/20260602/9604292d8aefdba4830e5ce9697984d9.png",
+                "width": 3840,
+                "height": 2367,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": 10,
+          "content": "**604\\*\\*\\*\\*7479**"
+        },
+        {
+          "id": 13,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/879c66a8f764c4179b650b09292649f5.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/fTSacoyswQXUYL1trvwbDc1jQTY9OGD7ORbCT1gvJHk/https/web-static.hg-cdn.com/upload/image/20260602/879c66a8f764c4179b650b09292649f5.png",
+                "width": 2556,
+                "height": 1292,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "type": 10,
+          "content": "**677\\*\\*\\*\\*0654**"
+        },
+        {
+          "id": 15,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/3d83c9078d29d1c6952d5ce59470dd05.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/2a71mvFq18bY4faaR_mkaHFMYMhw3odArN-6sWPOV4U/https/web-static.hg-cdn.com/upload/image/20260602/3d83c9078d29d1c6952d5ce59470dd05.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "type": 10,
+          "content": "**456\\*\\*\\*\\*0098**"
+        },
+        {
+          "id": 17,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/e69d4ca813b494a68dd90a9d5e916768.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/seIEUrhjcEqmLFGiJPDQ0Y9N9p5r17AMyZgxGRhWCyo/https/web-static.hg-cdn.com/upload/image/20260602/e69d4ca813b494a68dd90a9d5e916768.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "type": 10,
+          "content": "**654\\*\\*\\*\\*2699**"
+        },
+        {
+          "id": 19,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/6f544c073d5795bc62edad704c419acf.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/jYPj6ZCYF1sGmUflu21A0sHAcFIv7b2cJh_FJ-Y1KZQ/https/web-static.hg-cdn.com/upload/image/20260602/6f544c073d5795bc62edad704c419acf.png",
+                "width": 2560,
+                "height": 1440,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "type": 10,
+          "content": "**484\\*\\*\\*\\*5038**"
+        },
+        {
+          "id": 21,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/9d327c552f740e8000418f7ad8ad3c4e.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/RS-jam8u3sEK9-ptC-S1S-E92VmuT0blb5nTIE7BjNk/https/web-static.hg-cdn.com/upload/image/20260602/9d327c552f740e8000418f7ad8ad3c4e.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "type": 10,
+          "content": "**408\\*\\*\\*\\*8225**"
+        },
+        {
+          "id": 23,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/d961da24c462ee0a3033789e33517ec5.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/VtjfEUHSeTTXkfWXmgrr8FwLdk3jyRHrrDFsrBOlxBM/https/web-static.hg-cdn.com/upload/image/20260602/d961da24c462ee0a3033789e33517ec5.png",
+                "width": 2333,
+                "height": 1315,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 24,
+          "type": 10,
+          "content": "**493\\*\\*\\*\\*3130**"
+        },
+        {
+          "id": 25,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/3862cb282c3c739de31cd4f6f78509e3.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/CV2gAIvdcZVW0NpvsnpWPr1b6SgUyyGTT8PNUCiTqdY/https/web-static.hg-cdn.com/upload/image/20260602/3862cb282c3c739de31cd4f6f78509e3.png",
+                "width": 2560,
+                "height": 1440,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 26,
+          "type": 10,
+          "content": "**419\\*\\*\\*\\*8507**"
+        },
+        {
+          "id": 27,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/f86dc9a04d326f8561ac2156fb909734.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/jHF0qpP1UTV1zT4O3Y6j0LBWqh3RCizzNAR0BakB6QI/https/web-static.hg-cdn.com/upload/image/20260602/f86dc9a04d326f8561ac2156fb909734.png",
+                "width": 1920,
+                "height": 1183,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 28,
+          "type": 10,
+          "content": "**637\\*\\*\\*\\*2040**"
+        },
+        {
+          "id": 29,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/cf04b90647e2b61cb039edce2747d517.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/c0Mxe3r2WW8J9EqYNJ31e1Zil4A3-EWLGaDMdbX-Lig/https/web-static.hg-cdn.com/upload/image/20260602/cf04b90647e2b61cb039edce2747d517.png",
+                "width": 2560,
+                "height": 1440,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 30,
+          "type": 10,
+          "content": "**697\\*\\*\\*\\*1244**"
+        },
+        {
+          "id": 31,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/f7936091625425f62c6a906537d80e85.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/LRrCFK2P97uif0hUHArznj3WcGhElX_oA2BI8JURZMY/https/web-static.hg-cdn.com/upload/image/20260602/f7936091625425f62c6a906537d80e85.png",
+                "width": 2556,
+                "height": 1292,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 32,
+          "type": 10,
+          "content": "**481\\*\\*\\*\\*0021**"
+        },
+        {
+          "id": 33,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/7cd55210884544fd088e5b8bd771f6bc.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/O08l2CobfcFJ8BRFkTLlRP2PKYhqaN9L9sYhvY4_3Xc/https/web-static.hg-cdn.com/upload/image/20260602/7cd55210884544fd088e5b8bd771f6bc.png",
+                "width": 2400,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 34,
+          "type": 10,
+          "content": "**456\\*\\*\\*\\*1254**"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "-# Page 4"
+        },
+        {
+          "id": 3,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 4,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/7e35a56cd6250b83f5774d5d2bb837a5.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/g2A3sLvroGXvRCJX0fbNxeLFUx6LNH4kRMy_WgfsfIM/https/web-static.hg-cdn.com/upload/image/20260602/7e35a56cd6250b83f5774d5d2bb837a5.png",
+                "width": 1366,
+                "height": 768,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 10,
+          "content": "**425\\*\\*\\*\\*9492**"
+        },
+        {
+          "id": 6,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/5f95ee0d4d048976f2d23bed1acdcce3.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/964rLZg7sXso7rFHgwfgXd65_WtZDHWRMPXWEbgFB4s/https/web-static.hg-cdn.com/upload/image/20260602/5f95ee0d4d048976f2d23bed1acdcce3.png",
+                "width": 1920,
+                "height": 1080,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "type": 10,
+          "content": "**486\\*\\*\\*\\*6979**"
+        },
+        {
+          "id": 8,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/b808b937a58c33979542bb01bbe135bd.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/CbtIvinGPsFKfOZ2-47jAsS6LgVmdd3S3KGXGDUIBFA/https/web-static.hg-cdn.com/upload/image/20260602/b808b937a58c33979542bb01bbe135bd.png",
+                "width": 1600,
+                "height": 986,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "type": 10,
+          "content": "**464\\*\\*\\*\\*3275**"
+        },
+        {
+          "id": 10,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/88368620bc2bd738a28052e06b946ff8.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/5l8z0BC3qNq7fStkZPKCHtYH3rvtmKnOrvo8SspnnDg/https/web-static.hg-cdn.com/upload/image/20260602/88368620bc2bd738a28052e06b946ff8.png",
+                "width": 3504,
+                "height": 2160,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": 10,
+          "content": "**687\\*\\*\\*\\*4175**"
+        },
+        {
+          "id": 12,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://web-static.hg-cdn.com/upload/image/20260602/481c1070da14ff9603921afd16131fe9.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/DenyB0CXNBNPQAOFBuXEvJ7Rx8FMWSwThdqYoQ3GISw/https/web-static.hg-cdn.com/upload/image/20260602/481c1070da14ff9603921afd16131fe9.png",
+                "width": 2560,
+                "height": 1578,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://endfield.gryphline.com/en-us/news/3840"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Silver Palace Unveiled: A Detective Adventure ARPG in Victorian Aesthetics](https://silverpalace.elementagames.com/en-us/newsDetail?id=1)\n-# Official News · Silver Palace"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20251218/87375349160d7ae2f89f58f3f9cb547b.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/By4aOSGNljpqtMYUby5vw15TcvMaWsZq0Am2oNLQUME/https/s.elementagames.com/official/image/20251218/87375349160d7ae2f89f58f3f9cb547b.jpg",
+                "width": 1626,
+                "height": 500,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "May 13th, 2025, Singapore —Silver Palace, a fantasy adventure ARPG built with Unreal Engine 5, has been officially announced today alongside the opening of global pre-registration. The announcement from interactive entertainment brand Elementa was accompanied by a brand-new trailer and an over 10-minute gameplay walkthrough. Pre-Registration for the game is now available on the official website.\n\n**Pre-registration page for Silver Palace**：https://silverpalace.elementagames.com/en-us\n\n**YouTube link to the trailer**：https://youtu.be/ELC4r7fbKEQ\n\nSilver Palace is a brand-new ARPG set in a prosperous metropolis with a Victorian aesthetic. It features an engaging story, a delicate art style, distinctive characters, and a dynamic, action-oriented combat system. Players will play the role of a 'Detective' and embark on an adventure with a diverse group of partners to defeat the unknown enemies and unravel the mysteries in Silvernia, an industrialized metropolis built on the power of Silverium.\n\nThe discovery of Silverium was the key to Silvernia's industrialization. This revolutionary element transformed technology and daily life beyond imagination, attracting numerous residents and fostering innovation. The city became a hub of miracles, driven by the massive industrialization and monetization of Silverium under the city's administration.\n\nIn Silver Palace, players assume the role of a 'Detective' tasked with investigating crimes and uncovering hidden truths. As various factions — from corporate monopolies and underground syndicates to royal affiliates and cults — vie for control of Silverium, tensions rise across the city.\n\nPowered by Unreal Engine 5, Silver Palace features anime-style characters and a fluid, immersive combat system. Players can switch between characters in real time to unleash powerful skills and chain QTE combos. As they explore the city's sprawling environments, they'll dive into the scenes of crime, hunt for clues in the shadow, battle their enemies and in the process reveal more of the stories of Silvernia.\n\nTo learn more about Silver Palace and to stay tuned, please follow\n\n**X: @SilverPalace(SilverPalace_EN)** https://x.com/SilverPalace_EN\n\n**Facebook: @Silver Palace** https://www.facebook.com/SilverPalaceOfficial\n\n**YouTube:** and **@Silver Palace** https://www.youtube.com/@SilverPalace-Official"
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://silverpalace.elementagames.com/en-us/newsDetail?id=1"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [\"Private Investigator\" Project Recruitment Now Open](https://silverpalace.elementagames.com/en-us/newsDetail?id=120)\n-# Official News · Silver Palace"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260928/2b8cc49efcf5a2c3e456955935f2cb02.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/upZdPPbhHdv93lLh5uMRQnrWDvgNNm2PMzody7R0v4U/https/s.elementagames.com/official/image/20260928/2b8cc49efcf5a2c3e456955935f2cb02.jpg",
+                "width": 914,
+                "height": 514,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "-# Page 1"
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "Detective, this is a special commission.\n\nWe sincerely invite you to the \"Private Investigator\" Project. In-depth investigations of the unknown side of Silvernia will help us better validate game content under development.\n\nYour opinions and feedback will be crucial for the development of future game content in Silver Palace, Detective. We welcome your participation.\n\n**▍\"Private Investigator\" Project Details**\n\nThe \"Private Investigator\" Project is a long-term recruitment campaign for those interested in small, confidential test programs with a data wipe and no in-game purchases. Submit the recruitment survey to join the \"Private Investigator\" Project for a chance to receive invitations to future confidential tests.\n\nConfidential testing sessions will be available from time to time and only to a limited number of Detectives. We will review the submitted surveys and send test invitations to Detectives who meet the selection criteria. Selected Detectives must sign a non-disclosure agreement, and the sharing, leaking, or revealing of any test content is strictly prohibited.\n\n**▍Recruitment Time**\n\nThe \"Private Investigator\" Project is open for long-term recruitment.\n\n**▍Registration Method**\n\nThe \"Private Investigator\" Project is only open to Detectives aged 18 and above. Those who meet this requirement may complete and submit the \"Private Investigator\" Project Recruitment Survey to register.\n\nhttps://surveys.elementagames.com/s2/10082/zrxz/\n\n\\*Please ensure that all information provided is accurate. Survey submissions that are inconsistent with the actual circumstances shall be disqualified from taking the test.\n\n**▍FAQs**\n\n**I. What is the requirement for joining the \"Private Investigator\" Project? When does the recruitment end?**\n\nThe \"Private Investigator\" Project is only open to Detectives aged 18 and above. Those who meet this criterion and submit the recruitment survey are regarded as having joined the Project. The \"Private Investigator\" Project is open for recruitment on a long-term basis. Interested Detectives may submit the recruitment survey at any time.\n\n**II. After joining the \"Private Investigator\" Project, how do I take part in subsequent confidential tests?**\n\nWhen a confidential test is available, the official team will select Detectives from the pool of applicants based on the requirements of each version and send individual invitations to those who are chosen. Eligibility for each confidential test is determined independently.\n\n**III. What are the differences between confidential tests and public tests?**\n\nTests such as the \"Private Investigator\" Project are confidential, and so are different in nature to public tests.\n\n**IV. If I am selected for participation in a confidential test, can I share it with my friends?**\n\nNo. Test eligibility is strictly for personal use and may not be transferred, shared, or sold in any form.\n\n**V. Can I share the contents of the confidential tests that are not yet released to the public?**\n\nAll game contents of tests under the \"Private Investigator\" Project are not representative of the final product quality. All participating Detectives are strictly prohibited from revealing or sharing test content (including but not limited to taking screenshots, making screen recordings, live streaming, sharing videos, and sharing text descriptions). All participants must sign a non-disclosure agreement before taking part in the test. Thank you for your understanding.\n\n**VI. How will any violations be handled during the test?**"
+        }
+      ]
+    }
+  ]
+}
