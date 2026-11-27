@@ -1,0 +1,91 @@
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [Character Introduction - Taygedo](https://nte.perfectworld.com/en/article/news/gamenews/20240830/252478.html)\n-# Official News · Neverness to Everness"
+        },
+        {
+          "id": 3,
+          "type": 10,
+          "content": "\"Taygedo! Taygedo taygedo taygedo! Taygedo~~taygedo!\"\n\n(Great! You sound like a reliable one! Let's recruit you as my assistant before Sakiri and Nanally get back!)\n\n\"Taygedo! Taygetayge!\"\n\n(Hope Taygedo's secret stash doesn't get found next time!)\n\n\"Tayge! Tayge! Taygedo!\"\n\n(Wish Taygedo could have a love story to remember!)\n\nMeet the exceptional Taygedo—a gentle and lovable Oddity, harmless to all. He's a three-time winner of \"Eibon's Best Restorer,\" a title well-earned and well-deserved! Fully aware of his position at the bottom of Eibon's food chain, Taygedo sometimes entertains a few small schemes—\n\n\"Taygedo! Taygedo taygedo taygedo! Taygedo~~taygedo!\"\n\n(Great! You sound like a reliable one! Let's recruit you as my assistant before Sakiri and Nanally get back!)\n\n——Only to be respectfully turned down."
+        },
+        {
+          "id": 4,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://ntevmg.perfectworld.com/webops/nte/【EN】塔吉多.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/SXrHTErlAIiLVR3Q9GBY5UhZInWeGTvTSFKlNEkme3o/https/ntevmg.perfectworld.com/webops/nte/%E3%80%90EN%E3%80%91%E5%A1%94%E5%90%89%E5%A4%9A.jpg",
+                "width": 1080,
+                "height": 1512,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://nte.perfectworld.com/en/article/news/gamenews/20240830/252478.html"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
