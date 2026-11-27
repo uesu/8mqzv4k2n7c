@@ -1,0 +1,284 @@
+for response:
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="maximum-scale=1,minimum-scale=1,user-scalable=no,width=device-width,initial-scale=1">
+        <meta name="description" content="NTE is an supernatural urban open-world RPG developed by Hotta Studio, a subsidiary of Perfect World Games. In this Anomaly-filled city, you'll make a dazzling entrance, using your extraordinary Esper abilities to navigate freely and handle unexpected events. Beyond that, you can choose your own lifestyle, manage businesses, and experience a vibrant urban life.">
+        <meta name="keywords" content="Neverness To Everness,NTE,NTE game play,NTE game,NTE PV,NTE Trailer,Supernatural,Urban,Urban legend,Open World,City,Paranormal,Esper Ability,Anomaly,Free Exploration,SAKIRI,Mint,Nanally,Chiz,EXE,Linko,Xiaozhen,Elyms,Nitsa,Iroi,Shinku,Tower of Fantasy,ToF,Hotta studio,Perfect World Games,PWG,PW,F2P,free to play,console,Unreal Engine 5,UE5,anime,ACG,RPG,ARPG,NTE NVIDA DLSS,NTE NVIDA RTX,NTE PC,NTE mobile, NTE console,NTE FAQ,NTE devlog,NTE devteam,NTE discord,NTE X,NTE youtube,NTE reddit,NTE update,NTE characters,brand new hotta game,hotta RPG,hotta action game,ACT,hotta ACT,eibon,hethereau,NTE registration,NTE pre-register,NTE sign-up,Appraiser,Latest NTE Posts,phone game,popular phone game,popular mobile game,popular game,anime style game,anime mobile game,free game,free mobile game,city advanture,NTE announce,NTE multiple platforms game,inverness to inverness,inverness,Lacrimosa,Fadia,Eibon Antique Shop,Bureau of Anomaly Control,New Herland District,Miguel District,Bridge Crossings,Unheard Shores">
+        <meta property="fb:app_id" content="481742121015001">
+        <meta property="og:url" content="https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="Neverness To Everness Trailer | Wonders Await, In Urban Cityscape!">
+        <meta property="og:description" content="Welcome to Hethereau!
+This is a world that's ever closer to the supernatural, you gotta learn how to interact with the Anomalies.">
+        <meta property="og:image" content="https://ntevmg.perfectworld.com/webops/nte/News_951x480_EN.jpg">
+        <meta property="og:image:width" content="951">
+        <meta property="og:image:height" content="480">
+        <link rel="canonical" href="https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html">
+        <meta itemprop="url" content="https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html">
+        <meta itemprop="name" content="Neverness To Everness">
+        <meta itemprop="alternateName" content="NTE">
+        <link rel="shortcut icon" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="icon" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="bookmark" href="https://nte.perfectworld.com/favicon.ico"/>
+        <link rel="apple-touch-icon" href="https://nte.perfectworld.com/public/images/icon.png"/>
+        <title>Neverness To Everness Trailer | Wonders Await, In Urban Cityscape!-NTE (Neverness to Everness) Official Website -Supernatural Urban Open World</title>
+        <link rel="stylesheet" media="screen and (min-width: 769px)" href="https://nte.perfectworld.com/public/style/public260819.css">
+        <link rel="stylesheet" media="screen and (min-width: 769px)" href="https://nte.perfectworld.com/public/style/public_list260427.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="https://nte.perfectworld.com/public/m/style/public260819.css">
+        <link rel="stylesheet" media="screen and (max-width: 768px)" href="https://nte.perfectworld.com/public/m/style/public_list260427.css">
+        <script src="https://static.pwsdk.com/public/js/browserTip.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/rem260427.js"></script>
+        <script src="https://static.pwsdk.com/public/js/language1.2.2.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/languageBranch.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/landscape.js"></script>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div class="header">
+                <a href="https://nte.perfectworld.com/index.html" class="logo publicGoogleAnalytics" type="mainlogo_default_click"></a>
+                <div class="menuBtn" hideblock>
+                    <div class="icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="word"></div>
+                </div>
+                <a class="downBtn publicGoogleAnalytics" type="navdownloadnowbtn_default_click"></a>
+                <div class="rel loginStatus headerLoginStatus">
+                    <button class="loginIcon"></button>
+                    <div class="loginAfter">
+                        <div class="cont">
+                            <div class="uidBox">
+                                UID：<span class="loginUid"></span>
+                            </div>
+                            <button aria-label="logOut" class="logOut eventLogout publicGoogleAnalytics" type="logoutbtn_default_click">log out</button>
+                            <a class="userCenter" href="https://nte.perfectworld.com/account-center/index.html" target="_blank">Account</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="rel language">
+                    <button class="iconLanguage publicGoogleAnalytics" type="lang_default_click"></button>
+                    <div class="auto chooseLanguage"></div>
+                </div>
+                <button class="bgMusic publicGoogleAnalytics viewPc" type="musicbtn_default_click"></button>
+            </div>
+            <div class="menuLayer">
+                <div class="abs pageNav">
+                    <a href="https://nte.perfectworld.com/main.html?nav=1" class="n1"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=2" class="n2"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=3" class="n3 active"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=4" class="n4"></a>
+                    <a href="https://nte.perfectworld.com/main.html?nav=5" class="n5"></a>
+                </div>
+                <div class="abs firstNews viewPc"></div>
+                <div class="abs menuSubNav viewM">
+                    <button class="bgMusic publicGoogleAnalytics" type="mainmusicbtnM_default_click"></button>
+                    <button class="shareHref publicGoogleAnalytics" type="mainshareM_default_click"></button>
+                </div>
+                <a class="abs auto menuDownBtn publicGoogleAnalytics viewM" type="navdownloadnowbtn_default_click"></a>
+                <div class="abs otherPlatform menu-otherPlatform"></div>
+            </div>
+            <div class="rel articlePage" style="display: block">
+                <a href="https://nte.perfectworld.com/en/article/news/index.html" class="backNewsList"></a>
+                <div class="rel articleCont">
+                    <div class="rel articleHead">
+                        <h1 class="abs articleTitle">Neverness To Everness Trailer | Wonders Await, In Urban Cityscape!</h1>
+                        <p class="articlePath">Neverness to Everness>Intel>News</p>
+                        <p class="articleDate">2024.08.30</p>
+                    </div>
+                    <div class="abs articleAside"></div>
+                    <div class="rel article">
+                        <div class="articleContent">
+                            <p style="text-align: center;">Welcome to Hethereau!</p>
+                            <p style="text-align: center;">This is a world that's ever closer to the supernatural, you gotta learn how to interact with the Anomalies.</p>
+                            <p style="text-align: center;">
+                                <br>
+                            </p>
+                            <p style="text-align: center;">The all new supernatural urban open-world RPG Neverness to Everness is ready for reservation!</p>
+                            <p style="text-align: center;">
+                                <strong>Official Website &gt;&gt;</strong>
+                                <a href="https://nte.perfectworld.com" target="_blank">
+                                    <span style="color: rgb(54, 88, 226);">
+                                        <strong>https://nte.perfectworld.com</strong>
+                                    </span>
+                                </a>
+                            </p>
+                            <p style="text-align: center;">
+                                <br>
+                            </p>
+                            <div data-w-e-type="video" data-w-e-is-void>
+                                <iframe width="100%" height="630" src="https://www.youtube.com/embed/tdZN6H1N3PU?si=ophyEP1dL0BoBUNc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+                            </div>
+                            <p>
+                                <br>
+                            </p>
+                        </div>
+                        <div class="rel articleBottom">
+                            <div class="cont">
+                                <div class="articleBottomTxt">Neverness to Everness (NTE) is a supernatural open-world RPG developed by Hotta Studio. The story begins in the city of Hethereau, where you play as the first "unlicensed" Anomaly Hunter. You will join the antique shop Eibon, which relies on taking on Anomaly commissions from the public to stay afloat. Alongside your diverse and extraordinary partners, you'll explore various urban mysteries, experiencing an array of adventures filled with laughter and tears, and crafting your unique urban saga.</div>
+                                <div class="otherPlatform article_otherPlatform"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="articleTop"></button>
+            </div>
+        </div>
+        <script src="https://static.pwsdk.com/public/js/jq_183.js"></script>
+        <script src="https://nte.perfectworld.com/public/cookieBanner/js/stat-nte-perfectworld-1.1.2.js" async></script>
+        <script src="https://nte.perfectworld.com/public/js/enfooter260427.js" async></script>
+        <script src="https://static.pwsdk.com/public/js/bgAutoplay.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/bgMusic.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/mouseTracking.js"></script>
+        <script src="https://static.pwsdk.com/public/js/clipboard.min.js"></script>
+        <script src="https://www.perfectworld.com/public/commonData/gamesData/gameDownload/nte-gameDownload.js"></script>
+        <script src="https://nte.perfectworld.com/public/login/js/nte-login-sdk-stable.min.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/onelinkSmartJs.js"></script>
+        <script src="https://www.perfectworld.com/public/commonData/gamesData/gameSwiper/nte-gameSwiper.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/downLoad260819.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/public260819.js"></script>
+        <script src="https://nte.perfectworld.com/public/js/list260427.js"></script>
+    </body>
+</html>
+
+
+for the tdZN6H1N3PU?si=ophyEP1dLOBoBUNc
+
+Request URL
+https://www.youtube.com/embed/tdZN6H1N3PU?si=ophyEP1dL0BoBUNc
+Request method
+GET
+Status code
+200 OK
+Remote address
+142.251.157.4:443
+Referrer policy
+strict-origin-when-cross-origin
+accept-ch
+Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-WoW64, Sec-CH-UA-Form-Factors, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version
+alt-svc
+h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+cache-control
+no-cache, no-store, max-age=0, must-revalidate
+connection-allowlist-report-only
+(response-origin "https://youtube.com" "https://*.youtube.com" "https://youtu.be" "https://www.youtubekids.com" "https://ytkids.app.goo.gl" "https://www.youtube-nocookie.com" "https://www.youtubeeducation.com" "https://youtubei.googleapis.com" "https://youtube.googleapis.com" "https://accounts.google.com" "https://www.gstatic.com" "https://gstatic.com" "https://fonts.gstatic.com" "https://*.gstatic.com" "https://*.ytimg.com" "https://csp.withgoogle.com" "https://fonts.googleapis.com" "https://ajax.googleapis.com" "https://www.googletagmanager.com" "https://apis.google.com" "https://translate.googleapis.com" "https://translate-pa.googleapis.com" "https://translate.google.com" "https://feedback-pa.clients6.google.com" "https://scone-pa.clients6.google.com" "https://inputtools.google.com" "https://clients1.google.com" "https://clients2.google.com" "https://support.google.com" "https://myaccount.google.com" "https://myactivity.google.com" "https://families.google.com" "https://familylink.google.com" "https://policies.google.com" "https://payments.google.com" "https://one.google.com" "https://developers.google.com" "https://play.google.com" "https://analytics.google.com" "https://*.analytics.google.com" "https://www.google-analytics.com" "https://*.google-analytics.com" "https://www.googleadservices.com" "https://*.doubleclick.net" "https://fundingchoices.google.com" "https://ads.google.com" "https://myadcenter.google.com" "https://*.googlevideo.com" "https://docs.google.com" "https://forms.gle" "https://g.co" "https://c.gle" "https://messages.google.com" "https://lh3.googleusercontent.com" "https://lh4.googleusercontent.com" "https://lh5.googleusercontent.com" "https://lh6.googleusercontent.com" "https://play-lh.googleusercontent.com" "https://kstatic.googleusercontent.com" "https://s2.googleusercontent.com" "https://lh3.ggpht.com" "https://lh4.ggpht.com" "https://lh5.ggpht.com" "https://lh6.ggpht.com" "https://yt3.ggpht.com" "https://yt4.ggpht.com" "https://jnn-pa.googleapis.com" "https://*.googlesyndication.com" "https://yt3.googleusercontent.com" "https://yt4.googleusercontent.com" "https://www.google.ad" "https://www.google.ae" "https://www.google.al" "https://www.google.am" "https://www.google.as" "https://www.google.at" "https://www.google.az" "https://www.google.ba" "https://www.google.be" "https://www.google.bf" "https://www.google.bg" "https://www.google.bi" "https://www.google.bj" "https://www.google.bs" "https://www.google.bt" "https://www.google.by" "https://www.google.ca" "https://www.google.cd" "https://www.google.cf" "https://www.google.cg" "https://www.google.ch" "https://www.google.ci" "https://www.google.cl" "https://www.google.cm" "https://www.google.cn" "https://www.google.co.ao" "https://www.google.co.bw" "https://www.google.co.ck" "https://www.google.co.cr" "https://www.google.co.id" "https://www.google.co.il" "https://www.google.co.im" "https://www.google.co.in" "https://www.google.co.je" "https://www.google.co.jp" "https://www.google.co.ke" "https://www.google.co.kr" "https://www.google.co.ls" "https://www.google.co.ma" "https://www.google.co.mz" "https://www.google.co.nz" "https://www.google.co.th" "https://www.google.co.tz" "https://www.google.co.ug" "https://www.google.co.uk" "https://www.google.co.uz" "https://www.google.co.ve" "https://www.google.co.vi" "https://www.google.co.za" "https://www.google.co.zm" "https://www.google.co.zw" "https://www.google.com" "https://www.google.com.af" "https://www.google.com.ag" "https://www.google.com.ai" "https://www.google.com.ar" "https://www.google.com.au" "https://www.google.com.bd" "https://www.google.com.bh" "https://www.google.com.bn" "https://www.google.com.bo" "https://www.google.com.br" "https://www.google.com.bz" "https://www.google.com.cn" "https://www.google.com.co" "https://www.google.com.cu" "https://www.google.com.cy" "https://www.google.com.do" "https://www.google.com.ec" "https://www.google.com.eg" "https://www.google.com.et" "https://www.google.com.fj" "https://www.google.com.gh" "https://www.google.com.gi" "https://www.google.com.gt" "https://www.google.com.hk" "https://www.google.com.jm" "https://www.google.com.kh" "https://www.google.com.kw" "https://www.google.com.lb" "https://www.google.com.ly" "https://www.google.com.mm" "https://www.google.com.mt" "https://www.google.com.mx" "https://www.google.com.my" "https://www.google.com.na" "https://www.google.com.ng" "https://www.google.com.ni" "https://www.google.com.np" "https://www.google.com.om" "https://www.google.com.pa" "https://www.google.com.pe" "https://www.google.com.pg" "https://www.google.com.ph" "https://www.google.com.pk" "https://www.google.com.pr" "https://www.google.com.py" "https://www.google.com.qa" "https://www.google.com.sa" "https://www.google.com.sb" "https://www.google.com.sg" "https://www.google.com.sl" "https://www.google.com.sv" "https://www.google.com.tj" "https://www.google.com.tn" "https://www.google.com.tr" "https://www.google.com.tw" "https://www.google.com.ua" "https://www.google.com.uy" "https://www.google.com.vc" "https://www.google.com.vn" "https://www.google.cv" "https://www.google.cz" "https://www.google.de" "https://www.google.dj" "https://www.google.dk" "https://www.google.dm" "https://www.google.dz" "https://www.google.ee" "https://www.google.es" "https://www.google.fi" "https://www.google.fm" "https://www.google.fr" "https://www.google.ga" "https://www.google.ge" "https://www.google.gg" "https://www.google.gl" "https://www.google.gm" "https://www.google.gp" "https://www.google.gr" "https://www.google.gy" "https://www.google.hk" "https://www.google.hn" "https://www.google.hr" "https://www.google.ht" "https://www.google.hu" "https://www.google.ie" "https://www.google.im" "https://www.google.iq" "https://www.google.is" "https://www.google.it" "https://www.google.je" "https://www.google.jo" "https://www.google.kg" "https://www.google.ki" "https://www.google.kz" "https://www.google.la" "https://www.google.li" "https://www.google.lk" "https://www.google.lt" "https://www.google.lu" "https://www.google.lv" "https://www.google.md" "https://www.google.me" "https://www.google.mg" "https://www.google.mk" "https://www.google.ml" "https://www.google.mn" "https://www.google.ms" "https://www.google.mu" "https://www.google.mv" "https://www.google.mw" "https://www.google.ne" "https://www.google.ng" "https://www.google.nl" "https://www.google.no" "https://www.google.nr" "https://www.google.nu" "https://www.google.pl" "https://www.google.pn" "https://www.google.ps" "https://www.google.pt" "https://www.google.ro" "https://www.google.rs" "https://www.google.ru" "https://www.google.rw" "https://www.google.sc" "https://www.google.se" "https://www.google.sh" "https://www.google.si" "https://www.google.sk" "https://www.google.sm" "https://www.google.sn" "https://www.google.so" "https://www.google.sr" "https://www.google.st" "https://www.google.td" "https://www.google.tg" "https://www.google.tk" "https://www.google.tl" "https://www.google.tm" "https://www.google.tn" "https://www.google.to" "https://www.google.tt" "https://www.google.vg" "https://www.google.vu" "https://www.google.ws" "https://*.playables.usercontent.goog" "https://*.allownetworkplayables.usercontent.goog" "https://*.h5games.usercontent.goog" "https://donate.static.usercontent.goog" "https://video.google.com" "https://drive.google.com" "https://*.drive.google.com" "https://chat.google.com" "https://*.c.chat.google.com" "https://chat.usercontent.google.com" "https://lh3.google.com" "https://lh4.google.com" "https://lh5.google.com" "https://lh6.google.com" "https://www.blogger.com"); redirects=true; report-to=youtube_main-connectionallowlist
+content-encoding
+br
+content-security-policy
+script-src 'unsafe-eval' 'self' 'unsafe-inline' https://www.google.com https://apis.google.com https://ssl.gstatic.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com https://*.youtube.com https://*.google.com https://*.gstatic.com https://youtube.com https://www.youtube.com https://google.com https://*.doubleclick.net https://*.googleapis.com https://www.googleadservices.com https://tpc.googlesyndication.com https://www.youtubekids.com https://www.youtube-nocookie.com https://www.youtubeeducation.com https://www-onepick-opensocial.googleusercontent.com;report-uri https://csp.withgoogle.com/csp/youtube_main/allowlist
+content-security-policy
+base-uri 'self';object-src 'none';script-src 'report-sample' 'nonce-jnh1sZ3A6PKB2hRm_0KwVQ' 'unsafe-inline' 'strict-dynamic' https: http: 'unsafe-eval';report-uri https://csp.withgoogle.com/csp/youtube_main/strict
+content-security-policy
+require-trusted-types-for 'script'
+content-security-policy-report-only
+img-src https://youtube.com https://*.youtube.com https://youtu.be https://www.youtubekids.com https://www.youtube-nocookie.com https://www.youtubeeducation.com https://*.ytimg.com https://*.ggpht.com https://gstatic.com https://*.gstatic.com https://lh3.google.com https://lh4.google.com https://lh5.google.com https://lh6.google.com https://lh7-eu.google.com https://lh7-qw.google.com https://lh7-rt.google.com https://lh7-us.google.com https://lh3.googleusercontent.com https://lh4.googleusercontent.com https://lh5.googleusercontent.com https://lh6.googleusercontent.com https://lh7-eu.googleusercontent.com https://lh7-qw.googleusercontent.com https://lh7-rt.googleusercontent.com https://lh7-us.googleusercontent.com https://play-lh.googleusercontent.com https://yt3.googleusercontent.com https://yt4.googleusercontent.com https://*.playables.usercontent.goog https://*.allownetworkplayables.usercontent.goog https://*.h5games.usercontent.goog https://donate.static.usercontent.goog https://www.googleadservices.com https://*.doubleclick.net https://*.googlesyndication.com https://*.2mdn.net https://*.googlevideo.com https://www.googletagmanager.com https://video.google.com https://youtube.googleapis.com https://inputtools.google.com https://translate.google.com https://translate.googleapis.com https://clients1.google.com https://accounts.google.com blob: https://www.google.ad https://www.google.ae https://www.google.al https://www.google.am https://www.google.as https://www.google.at https://www.google.az https://www.google.ba https://www.google.be https://www.google.bf https://www.google.bg https://www.google.bi https://www.google.bj https://www.google.bs https://www.google.bt https://www.google.by https://www.google.ca https://www.google.cd https://www.google.cf https://www.google.cg https://www.google.ch https://www.google.ci https://www.google.cl https://www.google.cm https://www.google.cn https://www.google.co.ao https://www.google.co.bw https://www.google.co.ck https://www.google.co.cr https://www.google.co.id https://www.google.co.il https://www.google.co.im https://www.google.co.in https://www.google.co.je https://www.google.co.jp https://www.google.co.ke https://www.google.co.kr https://www.google.co.ls https://www.google.co.ma https://www.google.co.mz https://www.google.co.nz https://www.google.co.th https://www.google.co.tz https://www.google.co.ug https://www.google.co.uk https://www.google.co.uz https://www.google.co.ve https://www.google.co.vi https://www.google.co.za https://www.google.co.zm https://www.google.co.zw https://www.google.com https://www.google.com.af https://www.google.com.ag https://www.google.com.ai https://www.google.com.ar https://www.google.com.au https://www.google.com.bd https://www.google.com.bh https://www.google.com.bn https://www.google.com.bo https://www.google.com.br https://www.google.com.bz https://www.google.com.cn https://www.google.com.co https://www.google.com.cu https://www.google.com.cy https://www.google.com.do https://www.google.com.ec https://www.google.com.eg https://www.google.com.et https://www.google.com.fj https://www.google.com.gh https://www.google.com.gi https://www.google.com.gt https://www.google.com.hk https://www.google.com.jm https://www.google.com.kh https://www.google.com.kw https://www.google.com.lb https://www.google.com.ly https://www.google.com.mm https://www.google.com.mt https://www.google.com.mx https://www.google.com.my https://www.google.com.na https://www.google.com.ng https://www.google.com.ni https://www.google.com.np https://www.google.com.om https://www.google.com.pa https://www.google.com.pe https://www.google.com.pg https://www.google.com.ph https://www.google.com.pk https://www.google.com.pr https://www.google.com.py https://www.google.com.qa https://www.google.com.sa https://www.google.com.sb https://www.google.com.sg https://www.google.com.sl https://www.google.com.sv https://www.google.com.tj https://www.google.com.tn https://www.google.com.tr https://www.google.com.tw https://www.google.com.ua https://www.google.com.uy https://www.google.com.vc https://www.google.com.vn https://www.google.cv https://www.google.cz https://www.google.de https://www.google.dj https://www.google.dk https://www.google.dm https://www.google.dz https://www.google.ee https://www.google.es https://www.google.fi https://www.google.fm https://www.google.fr https://www.google.ga https://www.google.ge https://www.google.gg https://www.google.gl https://www.google.gm https://www.google.gp https://www.google.gr https://www.google.gy https://www.google.hk https://www.google.hn https://www.google.hr https://www.google.ht https://www.google.hu https://www.google.ie https://www.google.im https://www.google.iq https://www.google.is https://www.google.it https://www.google.je https://www.google.jo https://www.google.kg https://www.google.ki https://www.google.kz https://www.google.la https://www.google.li https://www.google.lk https://www.google.lt https://www.google.lu https://www.google.lv https://www.google.md https://www.google.me https://www.google.mg https://www.google.mk https://www.google.ml https://www.google.mn https://www.google.ms https://www.google.mu https://www.google.mv https://www.google.mw https://www.google.ne https://www.google.ng https://www.google.nl https://www.google.no https://www.google.nr https://www.google.nu https://www.google.pl https://www.google.pn https://www.google.ps https://www.google.pt https://www.google.ro https://www.google.rs https://www.google.ru https://www.google.rw https://www.google.sc https://www.google.se https://www.google.sh https://www.google.si https://www.google.sk https://www.google.sm https://www.google.sn https://www.google.so https://www.google.sr https://www.google.st https://www.google.td https://www.google.tg https://www.google.tk https://www.google.tl https://www.google.tm https://www.google.tn https://www.google.to https://www.google.tt https://www.google.vg https://www.google.vu https://www.google.ws data:;report-uri https://csp.withgoogle.com/csp/youtube_main/image
+content-type
+text/html; charset=utf-8
+cross-origin-embedder-policy-report-only
+require-corp; report-to="youtube_main"
+cross-origin-opener-policy-report-only
+same-origin; report-to="youtube_main"
+cross-origin-resource-policy
+cross-origin
+date
+Fri, 27 Nov 2026 12:00:52 GMT
+expires
+Mon, 01 Jan 1990 00:00:00 GMT
+origin-trial
+AmhMBR6zCLzDDxpW+HfpP67BqwIknWnyMOXOQGfzYswFmJe+fgaI6XZgAzcxOrzNtP7hEDsOo1jdjFnVr2IdxQ4AAAB4eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJXZWJWaWV3WFJlcXVlc3RlZFdpdGhEZXByZWNhdGlvbiIsImV4cGlyeSI6MTc1ODA2NzE5OSwiaXNTdWJkb21haW4iOnRydWV9
+origin-trial
+AiDEBptUfVeO93q48VdVMe/ubupazdAl8AaHP+NBzdnW8quUcHdzJUyGSfrmtpKJu7EOvwRp9ug2rEo3XU+WMAMAAAB2eyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJEZXZpY2VCb3VuZFNlc3Npb25DcmVkZW50aWFsczIiLCJleHBpcnkiOjE3NzQzMTA0MDAsImlzU3ViZG9tYWluIjp0cnVlfQ==
+origin-trial
+Ao9lPbOYlYWEB+SVHe5mV2bIoTe0cN+xJ2b6VhNakYPBFQ5MGU1Eg+nxeSLMbqnFlr2xj72d2bsU3ei2gfOpKg8AAABreyJvcmlnaW4iOiJodHRwczovL3lvdXR1YmUuY29tOjQ0MyIsImZlYXR1cmUiOiJDb25uZWN0aW9uQWxsb3dsaXN0IiwiZXhwaXJ5IjoxNzg4ODI1NjAwLCJpc1N1YmRvbWFpbiI6dHJ1ZX0=
+p3p
+CP="This is not a P3P policy! See http://support.google.com/accounts/answer/151657?hl=en for more info."
+permissions-policy
+ch-ua-arch=*, ch-ua-bitness=*, ch-ua-full-version=*, ch-ua-full-version-list=*, ch-ua-model=*, ch-ua-wow64=*, ch-ua-form-factors=*, ch-ua-platform=*, ch-ua-platform-version=*
+pragma
+no-cache
+report-to
+{"group":"youtube_main","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/youtube_main"}]}
+reporting-endpoints
+youtube_main-connectionallowlist="https://csp.withgoogle.com/csp/report-to/youtube_main/connectionallowlist"
+server
+ESF
+set-cookie
+__Secure-YEC=; Domain=.youtube.com; Expires=Sat, 02-Mar-2024 12:00:52 GMT; Path=/; Secure; HttpOnly; SameSite=lax
+set-cookie
+VISITOR_INFO1_LIVE=L9ihFiWigd8; Domain=.youtube.com; Expires=Wed, 26-May-2027 12:00:52 GMT; Path=/; Secure; HttpOnly; SameSite=none; Partitioned
+set-cookie
+VISITOR_PRIVACY_METADATA=CgJQSBIEGgAgbA%3D%3D; Domain=.youtube.com; Expires=Wed, 26-May-2027 12:00:52 GMT; Path=/; Secure; HttpOnly; SameSite=none; Partitioned
+set-cookie
+__Secure-3PSIDCC=APD_SKF9ItPbPsFrUgehOxCu19Yr35j_gRuZje_pIMafgttRIrQLBoCSdTIYtRazxRvHZDzx5bxK; expires=Sat, 27-Nov-2027 12:00:52 GMT; path=/; domain=.youtube.com; Secure; HttpOnly; priority=high; SameSite=none
+strict-transport-security
+max-age=31536000
+vary
+Sec-CH-UA-Arch, Sec-CH-UA-Bitness, Sec-CH-UA-Full-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-WoW64, Sec-CH-UA-Form-Factors, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version
+x-content-type-options
+nosniff
+x-xss-protection
+0
+:authority
+www.youtube.com
+:method
+GET
+:path
+/embed/tdZN6H1N3PU?si=ophyEP1dL0BoBUNc
+:scheme
+https
+accept
+text/html,application/xhtml+xml,application/xml;q=0.9,image/jxl,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+accept-encoding
+gzip, deflate, br, zstd
+accept-language
+en,en-US;q=0.9
+cookie
+__Secure-3PAPISID=P66h9P9R0MGGrT4e/ArujvxCMAyNJMxKjw; __Secure-3PSID=g.a000EgkL4xfKWPxEWmAxAyfkSX35bxaK2MP7rlRZCnXt5uZcIIqKltIFFPtVoKZ78QeFlBQeXgACgYKAWcSARQSFQHGX2MiasPXaYum6CW1lfEuL9JA0BoVAUF8yKpiCVuTGMzr-TGcCyKmGr_g0076; LOGIN_INFO=AFmmF2swRQIhAKG14J3DaP01D4oDtZ5pXdeHuczJZRTUvBvJL000VfS4AiBHLjeoZgs7ppAYELulJHEuHyriKEUzKqI0JFhlVIrfqQ:QUQ3MjNmd3Q4dUtVUDFEdERBWDAwaHI5ZmxQMzZocEh2a2NuTFhtaUpUdlZpR24yQm1aTDZyMWVqa1BURWNoOVZ5eXcxT3BpcG5vZnIzOXdiZzYydDRmVWFQSF91T2RkYUZYaW9xMVhYMVpfOU9ncmtsR05GRGlpM20xamU0NlpXY29sZTRlREg1OVBFRXJLSnpKU2VKRGtkZFVCVkIwRTJ3; __Secure-3PSIDTS=sidts-CjUBnJZzaiGnEQYu0rG1V0jZMPlZYQvmV9llMEs06rkzOQqL-cxuREHFEoiElWFBu1AheZMeKBAA; YSC=lX-dqr7Sh0s; VISITOR_INFO1_LIVE=L9ihFiWigd8; VISITOR_PRIVACY_METADATA=CgJQSBIEGgAgbA%3D%3D; __Secure-3PSIDCC=APD_SKFsPlld5OcrN-OOsRskQ4X3GbY9OA8sNHMbJ7Snud1ok44wERpNMdjmpdj4Fp7HPQCFbA3O; __Secure-YNID=CtsBCAUSjQEBDB6PDBpYmVJOvmr6tatj-LJkwyfCxJeRwQUfvPWT4YAueaKbFDIAaa0SHFwKaUAC5fJ0IYerY04uBVBNjdvm0GPgR4R0i0COCHqnGwgGDhhjnRurj6XFmWFt1TnkZG5U7puiYqLoO5i4iJ21F3qpJAaSLfCL0R1VdJXtXIhDyW8_pt9RJOp6ArBpNTMoBTJFARxY9Wr2a9mlsYrKeYgkyEOp-GfVBUxAp4hLr2iV24IZ0PlvMBoHshdm0us6dQsdv7m1b51Af39dejZo7JHvBabef0wN; __Secure-ROLLOUT_TOKEN=CNWLse-D2MWhGBCzoNjPjKiYAxjrufLQjKiYAw%3D%3D
+priority
+u=0, i
+referer
+https://nte.perfectworld.com/
+sec-ch-ua
+"Chromium";v="158", "Not.A/Brand";v="24", "Google Chrome";v="158"
+sec-ch-ua-mobile
+?0
+sec-ch-ua-platform
+"Windows"
+sec-fetch-dest
+iframe
+sec-fetch-mode
+navigate
+sec-fetch-site
+cross-site
+sec-fetch-storage-access
+active
+upgrade-insecure-requests
+1
+user-agent
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36
+x-browser-channel
+stable
+x-browser-copyright
+Copyright 2026 Google LLC. All Rights Reserved.
+x-browser-validation
+FXvljJ/aLvRShJtRYBsrLuwVHEBLWE15WxURbRjLsH81OTg1OTM1
+x-browser-year
+2026
+x-client-data
+CKmdygEIlKHLAQiFoM0BGJL/lDA=
+Decoded:
+message ClientVariations {
+  // Active client experiment variation IDs
+  repeated int32 variation_id = [3313321, 3330196, 3362821];
+  // Active client experiment variation IDs that trigger server-side behavior
+  repeated int32 trigger_variation_id = [101007250];
+}
+x-sec-ch-ua-not-a-border
+fvbqyzqsrvyserccyscxbbwvydfwafcq
