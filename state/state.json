@@ -7958,7 +7958,7 @@
         ],
         "47576352": [
           1795744838,
-          0,
+          1,
           "d3c021d5fa68c176"
         ]
       },
@@ -10228,7 +10228,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795734629
+          "ts": 1795745431
         },
         "data": {
           "announcement_locked": true,
@@ -10251,17 +10251,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795734629,
+          "banners_checked_ts": 1795745431,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795734629,
+          "banners_search_ts": 1795745431,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795734629,
+          "calendar_ts": 1795745431,
           "estimate_sources": [
             "version cadence"
           ],
