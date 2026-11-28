@@ -1,27 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9560",
-        "inflight": false,
-        "messages": [
-          "1576258812216611010",
-          "1576258838456442922",
-          "1576258857670418486",
-          "1576259004487966881",
-          "1576259023471255737",
-          "1576259045365514313",
-          "1576259198583443458"
-        ],
-        "pages": 7,
-        "signature": "6deefff963e4f4bf47a53b9ddcbbdb6064e3b46d92249d24ee05e4c007c17625"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9560",
-          "title": "[Sanctuary of Ink] Version Update Notes",
-          "ts": 1792026000
-        },
         {
           "id": "0743",
           "title": "Arknights: Endfield WhatsApp Account Linking Reward Feature Now Available!",
@@ -858,6 +839,18 @@
             "1576252267533705459"
           ],
           "signature": "6dbd317f827501ebdcaa8be19b004807d09e607008b38fa5264ea48b0d7acf32"
+        },
+        "9560": {
+          "messages": [
+            "1576258812216611010",
+            "1576258838456442922",
+            "1576258857670418486",
+            "1576259004487966881",
+            "1576259023471255737",
+            "1576259045365514313",
+            "1576259198583443458"
+          ],
+          "signature": "6deefff963e4f4bf47a53b9ddcbbdb6064e3b46d92249d24ee05e4c007c17625"
         },
         "9562": {
           "messages": [
