@@ -1379,22 +1379,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "42",
-        "inflight": false,
-        "messages": [
-          "1576230562518274159",
-          "1576230586333401233"
-        ],
-        "pages": 2,
-        "signature": "72bcd4b947e4c6d44ef07c2b3043119576e8260a78ca69046237252819c73d8d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-06-26",
-          "id": "42",
-          "title": "\"Dichotomy\" Beta Test Recruitment FAQ"
-        },
         {
           "date": "2026-06-26",
           "id": "43",
@@ -1530,6 +1516,13 @@
             "1576230238122414222"
           ],
           "signature": "763fd4b5735d9a72e16b6e7d8bb9b27a334ce38b89a2fea8fac58020ba65674e"
+        },
+        "42": {
+          "messages": [
+            "1576230562518274159",
+            "1576230586333401233"
+          ],
+          "signature": "72bcd4b947e4c6d44ef07c2b3043119576e8260a78ca69046237252819c73d8d"
         },
         "7": {
           "messages": [
