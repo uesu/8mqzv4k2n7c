@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2654",
-        "inflight": false,
-        "messages": [
-          "1576255182809866462"
-        ],
-        "pages": 1,
-        "signature": "e09de511a9920dee7b234e19a78bca81bd559c9c169b456e114dde1d2d349507"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2654",
-          "title": "Steam [Pioneer Test] Recruitment Open!",
-          "ts": 1787716800
-        },
         {
           "id": "5209",
           "title": "[Dreamscape of Wind and Snow] Version Pre-Download & Update Notice",
@@ -357,6 +344,12 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2654": {
+          "messages": [
+            "1576255182809866462"
+          ],
+          "signature": "e09de511a9920dee7b234e19a78bca81bd559c9c169b456e114dde1d2d349507"
         },
         "2655": {
           "messages": [
