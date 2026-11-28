@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3846",
-        "inflight": false,
-        "messages": [
-          "1576236359570424034",
-          "1576236379308949599"
-        ],
-        "pages": 2,
-        "signature": "5b9cc506058f25681a506575d147be94e7f400b3f651a7651af7a9346a50e84c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3846",
-          "title": "Arknights: Endfield Zeroth Directive: DEV Comm",
-          "ts": 1770210000
-        },
         {
           "id": "5215",
           "title": "The [Over the Frontier] themed gallery is now live",
@@ -607,6 +593,13 @@
             "1576229154570109010"
           ],
           "signature": "b9a25d56605bf5182e0add74ad6d6366f885ef724523e38a8a7fccc8e3305854"
+        },
+        "3846": {
+          "messages": [
+            "1576236359570424034",
+            "1576236379308949599"
+          ],
+          "signature": "5b9cc506058f25681a506575d147be94e7f400b3f651a7651af7a9346a50e84c"
         },
         "3847": {
           "messages": [
