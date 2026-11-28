@@ -752,22 +752,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "257042",
-        "inflight": false,
-        "messages": [
-          "1576230739979018422"
-        ],
-        "pages": 1,
-        "signature": "fa2f6d272b3437442a232b4bc208d17cfaec685e25f515f299af063bf1e920ae"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-06-24",
-          "id": "257042",
-          "title": "「Become an Anomaly Hunter!」Fan Art Contest Winner Announcement",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20250624/257042.html"
-        },
         {
           "date": "2025-06-25",
           "id": "257051",
@@ -1381,6 +1367,12 @@
             "1576230475851112509"
           ],
           "signature": "97d48b97c320cdba889c338f2f4134c2d0f2ff6d2f3a4cdbea66f62525dcf51b"
+        },
+        "257042": {
+          "messages": [
+            "1576230739979018422"
+          ],
+          "signature": "fa2f6d272b3437442a232b4bc208d17cfaec685e25f515f299af063bf1e920ae"
         }
       },
       "route": "12975a7fb0e13152",
