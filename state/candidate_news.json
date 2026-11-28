@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4482",
-        "inflight": false,
-        "messages": [
-          "1576254538128826579"
-        ],
-        "pages": 1,
-        "signature": "8ff0e14beed03e616a614cb29edb3e249b700e363f648c62ba61911ded6f1647"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4482",
-          "title": "Wishlist Milestone Event",
-          "ts": 1786590000
-        },
         {
           "id": "4481",
           "title": "Arknights: Endfield [Dreamscape of Wind and Snow] Version DEV Comm",
@@ -505,6 +492,12 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4482": {
+          "messages": [
+            "1576254538128826579"
+          ],
+          "signature": "8ff0e14beed03e616a614cb29edb3e249b700e363f648c62ba61911ded6f1647"
         },
         "4484": {
           "messages": [
