@@ -839,23 +839,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "263057",
-        "inflight": false,
-        "messages": [
-          "1576243994533433486",
-          "1576244013823172846"
-        ],
-        "pages": 2,
-        "signature": "ab524c4dc407b80b6a2994ff08faecc403ca7bb729bc73be19bf6bc5c222f841"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-08",
-          "id": "263057",
-          "title": "NTE Steam, Epic, and Samsung Galaxy Store Launch FAQ",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260708/263057.html"
-        },
         {
           "date": "2026-07-08",
           "id": "263085",
@@ -1500,6 +1485,13 @@
             "1576243508413595803"
           ],
           "signature": "dce3f1693e00df7e52078968468e843223a77170fb71f9f11827445de08f7f10"
+        },
+        "263057": {
+          "messages": [
+            "1576243994533433486",
+            "1576244013823172846"
+          ],
+          "signature": "ab524c4dc407b80b6a2994ff08faecc403ca7bb729bc73be19bf6bc5c222f841"
         }
       },
       "route": "12975a7fb0e13152",
