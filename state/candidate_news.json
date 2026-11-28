@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5215",
-        "inflight": false,
-        "messages": [
-          "1576236579385778289"
-        ],
-        "pages": 1,
-        "signature": "5f6a093ba0280fe359321e8d91b8ca5710f5eae06d3b33554ec845eec2b3cad5"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5215",
-          "title": "The [Over the Frontier] themed gallery is now live",
-          "ts": 1770264000
-        },
         {
           "id": "7028",
           "title": "Release Celebration [The Floaty Messenger] Chartered Headhunting Details",
@@ -662,6 +649,12 @@
             "1576233925695512689"
           ],
           "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
+        },
+        "5215": {
+          "messages": [
+            "1576236579385778289"
+          ],
+          "signature": "5f6a093ba0280fe359321e8d91b8ca5710f5eae06d3b33554ec845eec2b3cad5"
         },
         "5216": {
           "messages": [
