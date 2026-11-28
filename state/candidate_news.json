@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5216",
-        "inflight": false,
-        "messages": [
-          "1576235531229069432"
-        ],
-        "pages": 1,
-        "signature": "0008879851850f1eb3c339d30b9dce654f1f9aa333b327807270aaa2a03c7646"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5216",
-          "title": "[Smelting Forge Issue] Limited-Time Offer Details",
-          "ts": 1768971600
-        },
         {
           "id": "0755",
           "title": "Arknights: Endfield Game Tools Guide",
@@ -667,6 +654,12 @@
             "1576233925695512689"
           ],
           "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
+        },
+        "5216": {
+          "messages": [
+            "1576235531229069432"
+          ],
+          "signature": "0008879851850f1eb3c339d30b9dce654f1f9aa333b327807270aaa2a03c7646"
         },
         "5218": {
           "messages": [
