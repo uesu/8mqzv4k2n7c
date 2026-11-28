@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9564",
-        "inflight": false,
-        "messages": [
-          "1576254205864452227"
-        ],
-        "pages": 1,
-        "signature": "2963239b647e93025a405ef2dfd8720aef859e2443859dcacd6ab45d941eed25"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9564",
-          "title": "[Bedazzled Issue] LTO Details",
-          "ts": 1786185000
-        },
         {
           "id": "1329",
           "title": "WhatsApp & Messenger Subscription Event Now Live!",
@@ -827,6 +814,12 @@
             "1576252267533705459"
           ],
           "signature": "6dbd317f827501ebdcaa8be19b004807d09e607008b38fa5264ea48b0d7acf32"
+        },
+        "9564": {
+          "messages": [
+            "1576254205864452227"
+          ],
+          "signature": "2963239b647e93025a405ef2dfd8720aef859e2443859dcacd6ab45d941eed25"
         },
         "9566": {
           "messages": [
