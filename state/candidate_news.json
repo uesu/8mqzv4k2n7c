@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5207",
-        "inflight": false,
-        "messages": [
-          "1576257161737150740"
-        ],
-        "pages": 1,
-        "signature": "1a3a0029e9574ad18098b20a61694b22c21beade4b6771ad11b0415e583961ab"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5207",
-          "title": "[Sanctuary of Ink] New Version Guide Page Release Details",
-          "ts": 1791288000
-        },
         {
           "id": "3838",
           "title": "Steam Wishlist Milestone Reached: 300,000 and Counting!",
@@ -560,6 +547,12 @@
             "1576250990678773905"
           ],
           "signature": "407d882995b82ff24e29cdf41518d48a72ccf65838044bdff8c7cdbb4800ede7"
+        },
+        "5207": {
+          "messages": [
+            "1576257161737150740"
+          ],
+          "signature": "1a3a0029e9574ad18098b20a61694b22c21beade4b6771ad11b0415e583961ab"
         },
         "5208": {
           "messages": [
