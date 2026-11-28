@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3859",
-        "inflight": false,
-        "messages": [
-          "1576229440105480215"
-        ],
-        "pages": 1,
-        "signature": "dcd6aa205652e099ef3feaadbea8912dfdf1da2b294e0325f346b63e41761e65"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3859",
-          "title": "Recruitment Now Open for Arknights: Endfield Beta Test II",
-          "ts": 1761912900
-        },
         {
           "id": "4404",
           "title": "Recruitment Now Open for Arknights: Endfield PlayStation®5 Technical Test",
@@ -695,6 +682,12 @@
             "1576225669967249559"
           ],
           "signature": "35323ab2250f4ea3b85ce701f91c70c9a59ee8d3d42950ffe97eda128f9a554a"
+        },
+        "3859": {
+          "messages": [
+            "1576229440105480215"
+          ],
+          "signature": "dcd6aa205652e099ef3feaadbea8912dfdf1da2b294e0325f346b63e41761e65"
         },
         "4400": {
           "messages": [
