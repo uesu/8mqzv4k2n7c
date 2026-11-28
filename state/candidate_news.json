@@ -1386,7 +1386,13 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": null,
+      "partial": {
+        "id": "65",
+        "inflight": false,
+        "messages": [],
+        "pages": 2,
+        "signature": "aad51b2496396dcc9a1a15918ed3056a2b547a67498caa56571074729e2a6994"
+      },
       "pending": [
         {
           "date": "2026-07-23",
