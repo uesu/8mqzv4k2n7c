@@ -736,22 +736,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "252846",
-        "inflight": false,
-        "messages": [
-          "1576227564257681571"
-        ],
-        "pages": 1,
-        "signature": "f6ffe457fa7b2adb0f8af9eabc738d357bc7dc64f73de3ef678a5dcb2e36e062"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2024-09-20",
-          "id": "252846",
-          "title": "「Incredible Everyday Moments」 Stickers - Episode 1 Now Released!",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20240920/252846.html"
-        },
         {
           "date": "2024-09-26",
           "id": "252941",
@@ -1365,6 +1351,12 @@
             "1576227277228998727"
           ],
           "signature": "70338fda12f748dc56ef4f9f50632e40febb06ea7415b004e1edd8a64e0fed4f"
+        },
+        "252846": {
+          "messages": [
+            "1576227564257681571"
+          ],
+          "signature": "f6ffe457fa7b2adb0f8af9eabc738d357bc7dc64f73de3ef678a5dcb2e36e062"
         }
       },
       "route": "12975a7fb0e13152",
