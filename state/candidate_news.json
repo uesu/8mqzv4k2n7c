@@ -1396,22 +1396,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "32",
-        "inflight": false,
-        "messages": [
-          "1576234392106438668"
-        ],
-        "pages": 1,
-        "signature": "59a227f98eabc084dd5b90a86ea6e2d21a8ef60bd6dab66737fab361e48aff1c"
-      },
-      "pending": [
-        {
-          "date": "2026-10-19",
-          "id": "32",
-          "title": "Fair Game Statement"
-        }
-      ],
+      "partial": null,
+      "pending": [],
       "posted": {
         "1": {
           "messages": [
@@ -1459,6 +1445,12 @@
             "1576226841461792862"
           ],
           "signature": "3e8cfc7b223ee03fec5473ded9eb2cfb6656000e3ab96cd18f0bb57fe4a7c56c"
+        },
+        "32": {
+          "messages": [
+            "1576234392106438668"
+          ],
+          "signature": "59a227f98eabc084dd5b90a86ea6e2d21a8ef60bd6dab66737fab361e48aff1c"
         },
         "34": {
           "messages": [
