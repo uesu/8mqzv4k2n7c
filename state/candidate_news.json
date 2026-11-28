@@ -754,22 +754,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "257154",
-        "inflight": false,
-        "messages": [
-          "1576231265323978924"
-        ],
-        "pages": 1,
-        "signature": "556449faf43bf2a0573590fe7fee60f26aafbc14f80c60d70c8a081f41d99461"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-07-01",
-          "id": "257154",
-          "title": "NTE Containment Test Twitch Drops Event Now Live!",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20250630/257154.html"
-        },
         {
           "date": "2025-07-03",
           "id": "257261",
@@ -1383,6 +1369,12 @@
             "1576230984779702325"
           ],
           "signature": "caacd9c39825cc5a2f020f73fd020a977b2fd0d4dd4315c86d65833fe30c421e"
+        },
+        "257154": {
+          "messages": [
+            "1576231265323978924"
+          ],
+          "signature": "556449faf43bf2a0573590fe7fee60f26aafbc14f80c60d70c8a081f41d99461"
         }
       },
       "route": "12975a7fb0e13152",
