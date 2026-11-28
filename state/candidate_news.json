@@ -1,24 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7017",
-        "inflight": false,
-        "messages": [
-          "1576251460923166752",
-          "1576251480883863595",
-          "1576251502438129757",
-          "1576251762204086363"
-        ],
-        "pages": 4,
-        "signature": "c6989be45873ed8046e7e828dbed8a082da58ff4634e709b03bff0936486388c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7017",
-          "title": "Arknights: Endfield [Homecoming] Core Chapter Version DEV Comm",
-          "ts": 1783737000
-        },
         {
           "id": "5201",
           "title": "[Homecoming] Version Pre-Download & Update Notice",
@@ -683,6 +667,15 @@
             "1576228045767975063"
           ],
           "signature": "022776ec87573afbe66a2172e6efb729aec27d26234c8a0ef5806d79adf298e6"
+        },
+        "7017": {
+          "messages": [
+            "1576251460923166752",
+            "1576251480883863595",
+            "1576251502438129757",
+            "1576251762204086363"
+          ],
+          "signature": "c6989be45873ed8046e7e828dbed8a082da58ff4634e709b03bff0936486388c"
         },
         "7020": {
           "messages": [
