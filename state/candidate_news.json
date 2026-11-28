@@ -1380,21 +1380,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "43",
-        "inflight": false,
-        "messages": [
-          "1576230833298350141"
-        ],
-        "pages": 1,
-        "signature": "c16c247bcf8938e402c2c7ec4282931e6e1d989ade4ffe44ff83d9030e184c47"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-06-26",
-          "id": "43",
-          "title": "Recruitment for the Silver Palace: \"Dichotomy\" Beta Test has officially started!"
-        },
         {
           "date": "2026-07-14",
           "id": "71",
@@ -1532,6 +1519,12 @@
             "1576230586333401233"
           ],
           "signature": "72bcd4b947e4c6d44ef07c2b3043119576e8260a78ca69046237252819c73d8d"
+        },
+        "43": {
+          "messages": [
+            "1576230833298350141"
+          ],
+          "signature": "c16c247bcf8938e402c2c7ec4282931e6e1d989ade4ffe44ff83d9030e184c47"
         },
         "7": {
           "messages": [
