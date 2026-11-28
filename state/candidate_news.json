@@ -1383,22 +1383,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "60",
-        "inflight": false,
-        "messages": [
-          "1576231597986811905",
-          "1576231617247318037"
-        ],
-        "pages": 2,
-        "signature": "b93e8388198993a94bfc22df619787135e0456145f75dde951e793c5e2f1131d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-20",
-          "id": "60",
-          "title": "\"Dichotomy\" Beta Test Pre-Download & Launch Guide"
-        },
         {
           "date": "2026-07-20",
           "id": "86",
@@ -1533,6 +1519,13 @@
             "1576231363005259901"
           ],
           "signature": "32b5784d0fc94831925f8ba60cfd333e006b082031798f6c8e7985add5edfaf6"
+        },
+        "60": {
+          "messages": [
+            "1576231597986811905",
+            "1576231617247318037"
+          ],
+          "signature": "b93e8388198993a94bfc22df619787135e0456145f75dde951e793c5e2f1131d"
         },
         "7": {
           "messages": [
