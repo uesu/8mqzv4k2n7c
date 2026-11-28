@@ -778,22 +778,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "261061",
-        "inflight": false,
-        "messages": [
-          "1576235804911603807"
-        ],
-        "pages": 1,
-        "signature": "22ba73254af3a940578be9e00b90c8a6f747c7d53a15a9bfbf69b319dab4440e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-02-26",
-          "id": "261061",
-          "title": "NTE: Neverness to Everness | Official Launch: April 29",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260226/261061.html"
-        },
         {
           "date": "2026-03-25",
           "id": "261409",
@@ -1407,6 +1393,12 @@
             "1576235599545892885"
           ],
           "signature": "a77f78dccbea78d694967aeb6e653ddd841df0ccf72d240b4fb00b4e2797ac0e"
+        },
+        "261061": {
+          "messages": [
+            "1576235804911603807"
+          ],
+          "signature": "22ba73254af3a940578be9e00b90c8a6f747c7d53a15a9bfbf69b319dab4440e"
         }
       },
       "route": "12975a7fb0e13152",
