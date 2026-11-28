@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0754",
-        "inflight": false,
-        "messages": [
-          "1576237304958165155"
-        ],
-        "pages": 1,
-        "signature": "8da14d79553cb6d6d0f15cc43d840887e7778175fdd2fdf3a13f870a358ad4e0"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0754",
-          "title": "[Express Delivery Issue] LTO Details",
-          "ts": 1770727140
-        },
         {
           "id": "6180",
           "title": "[Grand Blessings for the Spring] Event Series Details",
@@ -518,6 +505,12 @@
         }
       ],
       "posted": {
+        "0754": {
+          "messages": [
+            "1576237304958165155"
+          ],
+          "signature": "8da14d79553cb6d6d0f15cc43d840887e7778175fdd2fdf3a13f870a358ad4e0"
+        },
         "0755": {
           "messages": [
             "1576235737395757382"
