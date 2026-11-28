@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4400",
-        "inflight": false,
-        "messages": [
-          "1576227207632785500"
-        ],
-        "pages": 1,
-        "signature": "de22f286d495f9786d8ac5ed329b32d9deb1cbd3bda3c698d9422a333cea3977"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4400",
-          "title": "Beta Test FAQ",
-          "ts": 1734145200
-        },
         {
           "id": "7032",
           "title": "Arknights: Endfield Beta Test Sign-up Now Open",
@@ -722,6 +709,12 @@
             "1576225669967249559"
           ],
           "signature": "35323ab2250f4ea3b85ce701f91c70c9a59ee8d3d42950ffe97eda128f9a554a"
+        },
+        "4400": {
+          "messages": [
+            "1576227207632785500"
+          ],
+          "signature": "de22f286d495f9786d8ac5ed329b32d9deb1cbd3bda3c698d9422a333cea3977"
         },
         "5220": {
           "messages": [
