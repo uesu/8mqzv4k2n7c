@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9583",
-        "inflight": false,
-        "messages": [
-          "1576226684271591515"
-        ],
-        "pages": 1,
-        "signature": "ab73c62638a6e3d8ccd8ad955f30b1244facffb06f31b9ae91f0a36a2c06724b"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9583",
-          "title": "Arknights: Endfield Technical Test Launch Announcement",
-          "ts": 1704942000
-        },
         {
           "id": "1348",
           "title": "Arknights: Endfield Technical Test Server Closure Notice",
@@ -732,6 +719,12 @@
             "1576226401080578160"
           ],
           "signature": "58a7b5ef4e5c7af2f7e15f24bcc96a5e60b4a7f78e6e368d6e6beea2ed651abb"
+        },
+        "9583": {
+          "messages": [
+            "1576226684271591515"
+          ],
+          "signature": "ab73c62638a6e3d8ccd8ad955f30b1244facffb06f31b9ae91f0a36a2c06724b"
         }
       },
       "route": "b065a5413b2dc845",
