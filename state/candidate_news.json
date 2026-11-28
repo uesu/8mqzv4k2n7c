@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4488",
-        "inflight": false,
-        "messages": [
-          "1576258102703952084"
-        ],
-        "pages": 1,
-        "signature": "f58650ee5fc6eba36c000fb020f6f48782a4a1172aff0946142752a0e0b7f6ac"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4488",
-          "title": "Official Comic [Echoes of the Beginning: Manor's Origin] Is Live",
-          "ts": 1791946200
-        },
         {
           "id": "4489",
           "title": "[Rejuvenation] Chartered Headhunting",
@@ -484,6 +471,12 @@
             "1576250530370420900"
           ],
           "signature": "9db113569a55d72cc67067ba4c08923a528a50cacfa45010f07e79022b5f66fc"
+        },
+        "4488": {
+          "messages": [
+            "1576258102703952084"
+          ],
+          "signature": "f58650ee5fc6eba36c000fb020f6f48782a4a1172aff0946142752a0e0b7f6ac"
         },
         "4492": {
           "messages": [
