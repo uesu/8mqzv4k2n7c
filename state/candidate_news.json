@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7024",
-        "inflight": false,
-        "messages": [
-          "1576245686721191998",
-          "1576245705922838793"
-        ],
-        "pages": 2,
-        "signature": "9c3514b366813cfb16a1c5b01de75cf5f8cacf7b64506069c366b38a41dc41ae"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7024",
-          "title": "[Fest of Brilliance] Special Headhunting Details",
-          "ts": 1778644800
-        },
         {
           "id": "2669",
           "title": "[Smelting Fire Issue] LTO Details",
@@ -698,6 +684,13 @@
             "1576245475076472914"
           ],
           "signature": "3b8cc01d4c4d07cab8b0b0bbdc329a7031e76dfd8075c4a549519dcdaa0feec5"
+        },
+        "7024": {
+          "messages": [
+            "1576245686721191998",
+            "1576245705922838793"
+          ],
+          "signature": "9c3514b366813cfb16a1c5b01de75cf5f8cacf7b64506069c366b38a41dc41ae"
         },
         "7025": {
           "messages": [
