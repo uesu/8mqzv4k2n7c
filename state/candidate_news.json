@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8909",
-        "inflight": false,
-        "messages": [
-          "1576238266577850440"
-        ],
-        "pages": 1,
-        "signature": "9d4fe891b8198b207b41c3b84f7a87e474ef7463ebcf1716fe17468e2431bea8"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8909",
-          "title": "[Graffiti Issue] LTO Details",
-          "ts": 1771822800
-        },
         {
           "id": "2662",
           "title": "Arknights: Endfield [Old Deep Water Dies, by Rising Tide It is Denied] DEV Comm",
@@ -749,6 +736,12 @@
             "1576234692925980823"
           ],
           "signature": "5511ee78ad7e21538bc93fc2b2eb7b0a633f976b224ae93c1141d15ca0b44178"
+        },
+        "8909": {
+          "messages": [
+            "1576238266577850440"
+          ],
+          "signature": "9d4fe891b8198b207b41c3b84f7a87e474ef7463ebcf1716fe17468e2431bea8"
         },
         "8919": {
           "messages": [
