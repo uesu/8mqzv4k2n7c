@@ -868,6 +868,13 @@ class CandidateDeliveryTests(unittest.TestCase):
                     asyncio.run(catchup.run_from_environment())
                 self.assertEqual(len(sends), 7)  # a new attempt holds before any send
 
+    def test_attended_catchup_bundled_animation_preflight(self):
+        import imageio_ffmpeg
+        result = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-version"], capture_output=True,
+                                stdin=subprocess.DEVNULL, timeout=15, check=False)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn(b"ffmpeg version", result.stdout.lower())
+
     def test_attended_catchup_workflow_is_manual_locked_and_explicitly_live(self):
         import yaml
         wf = ROOT / ".github" / "workflows"
@@ -879,6 +886,10 @@ class CandidateDeliveryTests(unittest.TestCase):
         steps = catchup_wf["jobs"]["catchup"]["steps"]
         self.assertFalse(steps[0]["with"]["persist-credentials"])
         self.assertEqual(steps[0]["with"]["fetch-depth"], 0)
+        self.assertIn("imageio_ffmpeg.get_ffmpeg_exe()", steps[-2]["run"])
+        self.assertIn("check=True", steps[-2]["run"])
+        self.assertNotIn("command -v ffmpeg", steps[-1]["run"])
+        self.assertNotIn("command -v ffprobe", steps[-1]["run"])
         self.assertIn("python -m gamexpress.candidate_news_catchup", steps[-1]["run"])
         self.assertNotIn("${{", steps[-1]["run"])
         self.assertIn("CATCHUP_CONFIRM", steps[-1]["env"])

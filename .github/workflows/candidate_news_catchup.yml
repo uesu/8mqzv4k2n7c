@@ -35,6 +35,8 @@ jobs:
         with:
           python-version: '3.15.2'
       - run: python -m pip install -q -r requirements.txt
+      - name: Verify the bundled animation converter before any live posts
+        run: python -c 'import imageio_ffmpeg, subprocess; subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, timeout=15)'
       - name: Attended candidate catch-up (sends live)
         env:
           CATCHUP_GITHUB_TOKEN: ${{ github.token }}
@@ -46,8 +48,6 @@ jobs:
           CATCHUP_CONFIRM: ${{ inputs.confirmation }}
         run: |
           set -euo pipefail
-          command -v ffmpeg >/dev/null
-          command -v ffprobe >/dev/null
           auth="$(printf 'x-access-token:%s' "$CATCHUP_GITHUB_TOKEN" | base64 -w0)"
           echo "::add-mask::$auth"
           export GIT_CONFIG_COUNT=1
