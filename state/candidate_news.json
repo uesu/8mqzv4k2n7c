@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3857",
-        "inflight": false,
-        "messages": [
-          "1576225649700372683",
-          "1576225669967249559"
-        ],
-        "pages": 2,
-        "signature": "35323ab2250f4ea3b85ce701f91c70c9a59ee8d3d42950ffe97eda128f9a554a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3857",
-          "title": "Arknights: Endfield Technical Test Sign-up Now Open",
-          "ts": 1701993600
-        },
         {
           "id": "0766",
           "title": "Arknights: Endfield Technical Test Trailer",
@@ -728,7 +714,15 @@
           "ts": 1795568400
         }
       ],
-      "posted": {},
+      "posted": {
+        "3857": {
+          "messages": [
+            "1576225649700372683",
+            "1576225669967249559"
+          ],
+          "signature": "35323ab2250f4ea3b85ce701f91c70c9a59ee8d3d42950ffe97eda128f9a554a"
+        }
+      },
       "route": "b065a5413b2dc845",
       "source": "endfield",
       "version": 1
