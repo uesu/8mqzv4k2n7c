@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4484",
-        "inflight": false,
-        "messages": [
-          "1576250530370420900"
-        ],
-        "pages": 1,
-        "signature": "9db113569a55d72cc67067ba4c08923a528a50cacfa45010f07e79022b5f66fc"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4484",
-          "title": "[Contingency Contract: Re-Ignition Experimental Operation] Content Update Notes",
-          "ts": 1782367200
-        },
         {
           "id": "1320",
           "title": "Discord Game Stats Widget Is Now Live!",
@@ -536,6 +523,12 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4484": {
+          "messages": [
+            "1576250530370420900"
+          ],
+          "signature": "9db113569a55d72cc67067ba4c08923a528a50cacfa45010f07e79022b5f66fc"
         },
         "4492": {
           "messages": [
