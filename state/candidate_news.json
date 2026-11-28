@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3838",
-        "inflight": false,
-        "messages": [
-          "1576257319468146861"
-        ],
-        "pages": 1,
-        "signature": "6a9ae8555e94bd69760da59e1e614205ba40c70f1c4f3c47ad4bc8f441b41050"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3838",
-          "title": "Steam Wishlist Milestone Reached: 300,000 and Counting!",
-          "ts": 1791334800
-        },
         {
           "id": "7014",
           "title": "Arknights: Endfield [Sanctuary of Ink] Version DEV Comm",
@@ -391,6 +378,12 @@
             "1576253690745196586"
           ],
           "signature": "e99c781ed8e5a92fd65a99290a285f081a075f3d90f5756f23161f50262de4ef"
+        },
+        "3838": {
+          "messages": [
+            "1576257319468146861"
+          ],
+          "signature": "6a9ae8555e94bd69760da59e1e614205ba40c70f1c4f3c47ad4bc8f441b41050"
         },
         "3839": {
           "messages": [
