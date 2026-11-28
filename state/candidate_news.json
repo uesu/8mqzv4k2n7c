@@ -771,22 +771,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "259946",
-        "inflight": false,
-        "messages": [
-          "1576233710812926113"
-        ],
-        "pages": 1,
-        "signature": "9214e925b24bb88edaed634e77baa1b2bdc6a99852873e80cd650a74b6c597c5"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-12-23",
-          "id": "259946",
-          "title": "NTE Co-Ex Test Trailer | Hello, Newcomer",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20251222/259946.html"
-        },
         {
           "date": "2025-12-23",
           "id": "259960",
@@ -1400,6 +1386,12 @@
             "1576232849152024690"
           ],
           "signature": "cb6135f0d615301aaa67e165a6d65568d059885e080593d9acaa376b0a435ddb"
+        },
+        "259946": {
+          "messages": [
+            "1576233710812926113"
+          ],
+          "signature": "9214e925b24bb88edaed634e77baa1b2bdc6a99852873e80cd650a74b6c597c5"
         }
       },
       "route": "12975a7fb0e13152",
