@@ -120,7 +120,25 @@ jobs:
           python tests/test_gachawiki_placeholder.py
           python tests/test_reddit_intake.py
           python tests/test_reddit_usecases.py
+          if [ -f tests/test_endfield_candidate.py ]; then python tests/test_endfield_candidate.py; fi
+          if [ -f tests/test_silverpalace_candidate.py ]; then python tests/test_silverpalace_candidate.py; fi
+          if [ -f tests/test_day_news_candidate.py ]; then python tests/test_day_news_candidate.py; fi
+          if [ -f tests/test_nte_candidate.py ]; then python tests/test_nte_candidate.py; fi
+          if [ -f tests/test_candidate_thumbnail.py ]; then python tests/test_candidate_thumbnail.py; fi
+          if [ -f tests/test_candidate_news_delivery.py ]; then python tests/test_candidate_news_delivery.py; fi
+          if [ -f tests/test_candidate_private_pipeline.py ] && [ -f tools/candidate_private_pipeline_test.py ] && [ -f tools/silver_dedup_test.py ] && [ -f tools/candidate_private_backfill.py ] && [ -f tools/candidate_private_backfill_control.py ] && [ -f tools/silver_animation_upload_probe.py ]; then python tests/test_candidate_private_pipeline.py; fi
           python tests/test_maintenance_live.py
+          # The research tool is dev-only and is not part of the production manifest.
+          if [ -f tools/source_research_probe.py ]; then python tools/source_research_probe.py --self-test; fi
+          if [ -f tools/live_candidate_probe.py ]; then python tools/live_candidate_probe.py --self-test; fi
+          if [ -f tools/archive_research_probe.py ]; then python tools/archive_research_probe.py --self-test; fi
+          if [ -f tools/nte_media_research.py ]; then python tools/nte_media_research.py --self-test; fi
+          if [ -f tools/endfield_media_research.py ]; then python tools/endfield_media_research.py --self-test; fi
+          if [ -f tools/endfield_card_research.py ]; then python tools/endfield_card_research.py --self-test; fi
+          if [ -f tools/feature3_webhook_test.py ]; then python tools/feature3_webhook_test.py --self-test; fi
+          if [ -f tools/feature3_expanded_test.py ]; then python tools/feature3_expanded_test.py --self-test; fi
+          if [ -f tools/nte_thumbnail_test.py ]; then python tools/nte_thumbnail_test.py --self-test; fi
+          if [ -f tools/video_archive_research.py ]; then python tools/video_archive_research.py --self-test; fi
           python -m gamexpress preview --out "$RUNNER_TEMP/previews" > /dev/null
 
       # Values reach the shell through env, never through ${{ }} inlined into `run:` —

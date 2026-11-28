@@ -5,7 +5,7 @@ name: Game-Express Monitor
 # runs change nothing and commit nothing.
 #
 # TRIGGER = cron-job.org (external scheduler) calling the workflow_dispatch API every
-# 5 minutes. Setup: docs/SCHEDULER.md (cron-job.org job + GitHub classic token).
+# operator-selected interval. Setup: docs/SCHEDULER.md (cron-job.org job + GitHub classic token).
 #
 # ────────────────────────────────────────────────────────────────────────────────────────
 # THIS WORKFLOW DOES TWO THINGS, AND THE `mode` INPUT PICKS WHICH. NOTHING ELSE TO CHOOSE.
@@ -14,9 +14,8 @@ name: Game-Express Monitor
 #                 sends no inputs at all). It fetches the official sources, posts a card when
 #                 something new matches, edits it silently when official info arrives, and
 #                 commits the state. Nothing new -> it posts nothing.
-#                 Duplication is impossible: every posted card is remembered in
-#                 state/state.json by its key AND by a hash of its payload, so a re-run can
-#                 neither post twice nor rewrite an unchanged card. Code sources are fetched
+#                 State tracks posted card keys and payload hashes to avoid ordinary repeats;
+#                 a crash after posting but before state persistence can still cause a duplicate. Code sources are fetched
 #                 once per run and shared between games (CodeSources cache), and the Fetcher
 #                 caps concurrent requests, so a run costs a handful of HTTP calls.
 #                   · only    everything / only schedule announcements / only codes
@@ -50,11 +49,10 @@ name: Game-Express Monitor
 # ────────────────────────────────────────────────────────────────────────────────────────
 
 concurrency:
-  # One run at a time. A trigger that arrives mid-run QUEUES and later checks out the
-  # NEWEST branch head (with the previous run's state/state.json), so nothing is posted
-  # twice. cancel-in-progress MUST stay false: a run can sit between "posted to Discord"
-  # and "state committed" — cancelling it there would allow a re-post. Test runs never write
-  # state, so queueing them is harmless.
+  # One active run per repository/ref group. A queued run checks out the newest branch head,
+  # but GitHub may replace an older pending run; this is not a cross-repository lock and does
+  # not guarantee duplicate prevention after a crash. cancel-in-progress MUST stay false:
+  # cancelling between a Discord post and state persistence can cause a repost.
   group: game-express-${{ github.ref }}
   cancel-in-progress: false
 
@@ -158,7 +156,7 @@ jobs:
         with:
           python-version: '3.15.2'
 
-      # This step runs every 5 minutes (cron-job.org), so its speed is the one that actually
+      # This step runs at the chosen cron-job.org interval, so its speed is the one that actually
       # matters: uv installs the exact same packages pip would, just with a much faster resolver.
       # astral-sh doesn't publish a floating major tag like v10; keep `# vX.Y.Z` bare so zizmor verifies it.
       - name: Install uv

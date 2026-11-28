@@ -768,10 +768,27 @@ def _split_expanded_text(content: str, max_chars: int) -> list[str] | None:
                 out.append(line)
                 continue
             tokens = [tok for tok in re.findall(r"\S+\s*", line) if tok]
-            buf = ""
+            safe_tokens = []
             for tok in tokens:
-                if len(tok) > max_chars:
+                if len(tok) <= max_chars:
+                    safe_tokens.append(tok)
+                    continue
+                # Publisher lists can be one huge token of masked identifiers
+                # separated by ideographic commas. Split only at those separators,
+                # without inserting or dropping characters, and never split links
+                # or Markdown formatting. Unknown long tokens still fail closed.
+                if ("、" not in tok or any(mark in tok for mark in
+                        ("[", "]", "`", "**", "~~", "http://", "https://"))):
                     return None
+                segments = tok.split("、")
+                pieces = [part + "、" for part in segments[:-1]]
+                if segments[-1]:
+                    pieces.append(segments[-1])
+                if not pieces or any(len(part) > max_chars for part in pieces):
+                    return None
+                safe_tokens.extend(pieces)
+            buf = ""
+            for tok in safe_tokens:
                 cand = buf + tok
                 if len(cand) <= max_chars:
                     buf = cand
@@ -788,6 +805,33 @@ def _split_expanded_text(content: str, max_chars: int) -> list[str] | None:
 
 
 
+def _keep_headings_with_following_text(units: list[dict]) -> list[dict]:
+    """Keep a short trailing bold heading with its next text paragraph when safe.
+
+    This conservative layout hint never joins across media and never changes
+    article characters. Long or complex paragraphs retain the existing fitter.
+    """
+    result: list[dict] = []
+    i = 0
+    while i < len(units):
+        unit = units[i]
+        if unit.get("type") == 10 and i + 1 < len(units) and units[i + 1].get("type") == 10:
+            value = unit["content"]
+            match = re.search(r"(?:^|\n\n)(\*\*[^\n*]{1,120}\*\*)(?:\n\n)?$", value)
+            if match:
+                split = match.start(1)
+                heading, following = value[split:], units[i + 1]["content"]
+                if len(heading + following) <= MAX_TEXT_TOTAL - 512:
+                    if value[:split]:
+                        result.append(text(value[:split]))
+                    result.append(text(heading + following))
+                    i += 2
+                    continue
+        result.append(unit)
+        i += 1
+    return result
+
+
 def _smart_fit_news(
     units: list[dict],
     *,
@@ -795,6 +839,7 @@ def _smart_fit_news(
     page_payload,
     max_pages: int,
     reserve: int = 0,
+    keep_nte_headings: bool = False,
 ) -> tuple[list[dict] | None, str]:
     """Fit the WHOLE article into at most `max_pages` messages, or explain why it cannot be.
 
@@ -821,6 +866,8 @@ def _smart_fit_news(
             return None, content_notice
         page_units.extend(text(piece) for piece in pieces)
 
+    if keep_nte_headings:
+        page_units = _keep_headings_with_following_text(page_units)
     if not any(unit["type"] == 10 for unit in page_units):
         return None, limit_notice
 
@@ -922,12 +969,10 @@ def news_payloads(
 ) -> list[dict]:
     """Full article in one message, or paged according to the active policy switch.
 
-    When `expand_full` is False (default): attempts 1 message, then at most 2 pages up to
-    7,000 normalized text chars, otherwise 1 halved-word excerpt with 1 lead image.
-    When `expand_full` is True: lifts the 2-page / 7,000-char policy ceiling up to the
-    explicit `NEWS_EXPAND_MAX_PAGES` / `NEWS_EXPAND_MAX_CHARS` / `NEWS_EXPAND_MAX_MEDIA`
-    operational safety bounds, preserving inline text/media order and falling back honestly
-    if any bound is exceeded.
+    Default mode tries one message, then the legacy two-page layout, then smart-fits up to
+    `NEWS_DEFAULT_MAX_PAGES` messages. Expanded mode uses the explicit page, character and
+    media safety bounds. Both preserve inline order when the article fits and otherwise return
+    a labelled excerpt with a lead image and a link to the full article.
     """
     title = _md_link_text(strip_invisible(item.title))
     if len(title) > 500 or not safe_url(item.url):
@@ -1067,6 +1112,8 @@ def news_payloads(
                     splittable = False
                     break
                 page_units.extend(text(piece) for piece in pieces)
+            if item.source == "nte" and item.game == "nte":
+                page_units = _keep_headings_with_following_text(page_units)
             if not splittable:
                 excerpt_notice = (
                     "**Excerpt — this article contains content that exceeds single-message limits.** "
@@ -1124,6 +1171,8 @@ def news_payloads(
             else:
                 page_units.extend(text(piece) for piece in pieces)
 
+        if item.source == "nte" and item.game == "nte":
+            page_units = _keep_headings_with_following_text(page_units)
         pages, current = [], page_prefix(1)
         have_body = False
         for unit in page_units:
@@ -1157,6 +1206,7 @@ def news_payloads(
             units, page_prefix=page_prefix, page_payload=page_payload,
             max_pages=max(1, NEWS_DEFAULT_MAX_PAGES),
             reserve=text_length(news_controls(buttons)),
+            keep_nte_headings=item.source == "nte" and item.game == "nte",
         )
         if pages:
             return pages
@@ -1170,6 +1220,7 @@ def news_payloads(
             units, page_prefix=page_prefix, page_payload=page_payload,
             max_pages=max(1, NEWS_DEFAULT_MAX_PAGES),
             reserve=text_length(news_controls(buttons)),
+            keep_nte_headings=item.source == "nte" and item.game == "nte",
         )
         if pages:
             return pages

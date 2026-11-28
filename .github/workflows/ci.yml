@@ -82,7 +82,30 @@ jobs:
           python tests/test_gachawiki_placeholder.py
           python tests/test_reddit_intake.py
           python tests/test_reddit_usecases.py
+          python tests/test_endfield_candidate.py
+          python tests/test_silverpalace_candidate.py
+          python tests/test_day_news_candidate.py
+          python tests/test_nte_candidate.py
+          python tests/test_candidate_thumbnail.py
+          python tests/test_candidate_news_delivery.py
           python tests/test_maintenance_live.py
+
+      # Private research tools are deliberately excluded from the production sync.
+      # Keep these mandatory in development without requiring them in production.
+      - name: Development-only private and research regression checks
+        if: github.repository == 'uesu/Game-Express'
+        run: |
+          python tests/test_candidate_private_pipeline.py
+          python tools/source_research_probe.py --self-test
+          python tools/live_candidate_probe.py --self-test
+          python tools/archive_research_probe.py --self-test
+          python tools/nte_media_research.py --self-test
+          python tools/endfield_media_research.py --self-test
+          python tools/endfield_card_research.py --self-test
+          python tools/feature3_webhook_test.py --self-test
+          python tools/feature3_expanded_test.py --self-test
+          python tools/nte_thumbnail_test.py --self-test
+          python tools/video_archive_research.py --self-test
 
       - name: Card preview renders (previews/index.html)
         run: python -m gamexpress preview --out /tmp/previews > /dev/null

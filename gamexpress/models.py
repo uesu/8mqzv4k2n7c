@@ -33,6 +33,9 @@ class Item:
             "hoyolab": "HoYoLAB",
             "x": "X Post",
             "kuro": "Official News",
+            "nte": "Official News",
+            "endfield": "Official News",
+            "silverpalace": "Official News",
             "reddit": "Reddit",
         }.get(self.source, "Source")
 

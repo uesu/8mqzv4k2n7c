@@ -488,8 +488,12 @@ def news_link(label: str, url: str) -> str:
 
 
 class _NewsHTML(HTMLParser):
-    def __init__(self):
+    def __init__(self, *, escape_literal_tildes=False, join_table_cells=False):
         super().__init__(convert_charrefs=True)
+        self.escape_literal_tildes = escape_literal_tildes
+        self.join_table_cells = join_table_cells
+        self.row_cells = None
+        self.cell_start = None
         self.blocks = []
         self.parts = []
         self.skip = 0
@@ -539,6 +543,17 @@ class _NewsHTML(HTMLParser):
             self.skip += 1
         if self.skip:
             return
+        if self.join_table_cells and tag == "tr":
+            if self.row_cells is not None:
+                raise ValueError("nested table row")
+            self.row_cells = 0
+        elif self.join_table_cells and tag in ("td", "th") and self.row_cells is not None:
+            if self.cell_start is not None:
+                raise ValueError("nested table cell")
+            self.close_inline()
+            self.cell_start = len(self.parts)
+        if self.cell_start is not None and tag in ("img", "video", "source", "iframe"):
+            raise ValueError("media within table cell requires review")
         if tag == "hr":
             self.close_inline()
             self.parts.append("\n──────────\n")
@@ -572,6 +587,21 @@ class _NewsHTML(HTMLParser):
         if tag in ("script", "style"):
             self.skip = max(0, self.skip - 1)
         elif not self.skip:
+            if self.join_table_cells and tag in ("td", "th") and self.cell_start is not None:
+                self.close_inline()
+                value = "".join(self.parts[self.cell_start:]).strip()
+                self.parts[self.cell_start:] = []
+                self.cell_start = None
+                if value:
+                    if self.row_cells:
+                        self.parts.append(", ")
+                    self.parts.append(value)
+                    self.row_cells += 1
+                return
+            if self.join_table_cells and tag == "tr":
+                if self.cell_start is not None:
+                    raise ValueError("unclosed table cell")
+                self.row_cells = None
             if tag in ("i", "em"):
                 self.italic_depth = max(0, self.italic_depth - 1)
                 if not self.italic_depth:
@@ -620,6 +650,15 @@ class _NewsHTML(HTMLParser):
                     return
                 self.list_prefix_pending = False
             value = _escape_cms_stars(value)
+            if self.escape_literal_tildes:
+                # Literal CMS prose is not Discord strikethrough. Leave URLs alone.
+                pieces, last = [], 0
+                for match in _INLINE_HTTP_URL_RE.finditer(value):
+                    pieces.append(re.sub(r"(?<!\\)~", r"\~", value[last:match.start()]))
+                    pieces.append(match.group(0))
+                    last = match.end()
+                pieces.append(re.sub(r"(?<!\\)~", r"\~", value[last:]))
+                value = "".join(pieces)
             need_open = (
                 (self.bold_depth and not self.bold_open)
                 or (self.strike_depth and not self.strike_open)
@@ -642,7 +681,8 @@ class _NewsHTML(HTMLParser):
             self.parts.append(value)
 
 
-def news_blocks(content: str, structured: str = "", videos: dict[str, str] | None = None) -> list[dict]:
+def news_blocks(content: str, structured: str = "", videos: dict[str, str] | None = None, *,
+                escape_literal_tildes: bool = False, join_table_cells: bool = False) -> list[dict]:
     """Full HTML/Quill article in source order, including linked external players.
 
     Prefer Quill when provided: it retains media that HoYoLAB's plain content can omit.
@@ -733,7 +773,7 @@ def news_blocks(content: str, structured: str = "", videos: dict[str, str] | Non
         return blocks
     if re.fullmatch(r"[a-z]{2}-[a-z]{2}", (content or "").strip()):
         raise ValueError("article body unavailable")
-    parser = _NewsHTML()
+    parser = _NewsHTML(escape_literal_tildes=escape_literal_tildes, join_table_cells=join_table_cells)
     parser.feed(content or "")
     parser.close()
     parser.flush()

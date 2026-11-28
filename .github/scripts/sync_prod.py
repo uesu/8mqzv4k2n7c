@@ -3,14 +3,15 @@
 Used by .github/workflows/sync_prod.yml whenever commits land on main (or via workflow_dispatch).
 
 Safety guarantees:
-  1. Live state protection: `state/state.json` is NEVER created, overwritten, staged, or deleted
-     in the target production repository.
+  1. Live state and inventory protection: `state/state.json`, `state/candidate_news.json` and
+     `variables and secrets.txt` are NEVER created, overwritten, staged, or deleted in the target
+     production repository.
   2. Program announcement seed union: `config/program_announcements.json` preserves any tweet IDs
      discovered live by the production monitor while adding/updating entries from the dev repo.
   3. Dev-only exclusion: `docs/`, `README.md`, `AGENTS.md`, `PRIVACY_POLICY.md`,
      `TERMS_OF_SERVICE.md`, `.env.example`, `previews/`, `archive/`, and
      `.github/workflows/sync_prod.yml` are never copied into the production repository.
-  4. Concurrent monitor commit resilience: if the 5-minute production monitor pushes a state
+  4. Concurrent monitor commit resilience: if the production monitor pushes a state
      commit while a sync is in flight, the push retry fetches the new remote tip, resets to
      `FETCH_HEAD`, and re-applies the deterministic tree sync on top of the fresh state.
   5. Workflow-scope fallback: if `.github/workflows/*` changed and the configured token lacks
@@ -45,6 +46,7 @@ SYNC_WORKFLOW_FILES = (
     ".github/workflows/ci.yml",
     ".github/workflows/monitor.yml",
     ".github/workflows/python_version_bump.yml",
+    ".github/workflows/candidate_news_recovery.yml",
 )
 
 DEV_ONLY_WORKFLOW_FILES = (
@@ -68,6 +70,8 @@ SEMANTIC_MERGE_FILES = (
 
 PROTECTED_PROD_FILES = (
     "state/state.json",
+    "state/candidate_news.json",
+    "variables and secrets.txt",
 )
 
 EXCLUDED_DEV_PATHS = (

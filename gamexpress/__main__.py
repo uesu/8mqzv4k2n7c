@@ -470,10 +470,26 @@ def cmd_validate(_args) -> int:
         if raw_val and raw_val.lower() not in valid_bools:
             print(f"  ! {name}={raw_val!r} is not a recognized boolean ('0'/'1', 'false'/'true')")
             ok = False
+    candidate_opt_in = str(settings.env.get("NEWS_CANDIDATES_BACKFILL", "") or "").strip() == "1"
+    from .candidate_news_delivery import SOURCES as CANDIDATE_NEWS_SOURCES
+    from .candidate_news_delivery import destination as candidate_destination
+
+    if candidate_opt_in:
+        from .candidate_news_runner import CANDIDATE_NEWS_READY
+
+        if not CANDIDATE_NEWS_READY and CANDIDATE_NEWS_SOURCES & settings.news_games:
+            print("  ! candidate news delivery is not released; no posts will be sent")
+            ok = False
+        for key in sorted(CANDIDATE_NEWS_SOURCES & settings.news_games):
+            available = candidate_destination(settings, key) is not None
+            print(f"      candidate news {key}: {'dedicated route configured' if available else 'missing/invalid dedicated route'}")
+            if not available:
+                ok = False
     for name, gset in (("NEWS_GAMES", settings.news_games),
                        ("MAINTENANCE_GAMES", settings.maintenance_games),
                        ("BETA_GAMES", settings.beta_games)):
-        unknown = sorted(k for k in gset if k not in games)
+        candidate_keys = CANDIDATE_NEWS_SOURCES if name == "NEWS_GAMES" and candidate_opt_in else ()
+        unknown = sorted(k for k in gset if k not in games and k not in candidate_keys)
         if unknown:
             print(f"  ! {name} contains unknown game key(s): {', '.join(unknown)}")
             ok = False

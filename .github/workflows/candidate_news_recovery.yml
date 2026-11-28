@@ -1,0 +1,94 @@
+name: Candidate news recovery (attended)
+
+# No Discord POSTs. An operator must first pause ALL writers/schedulers, including
+# other repositories, and independently inspect Discord. This workflow's shared
+# concurrency group only serializes cooperating runs in this repository.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Inspect, preview without posting, resolve a hold, or initialize a first-install ledger
+        type: choice
+        options: [inspect, preview, resolve, initialize]
+        default: inspect
+      source:
+        description: Dedicated official-news source (ignored for initialization)
+        type: choice
+        options: [nte, endfield, silverpalace]
+        required: true
+      article_id:
+        description: Held article ID from inspect (required to resolve)
+        type: string
+      page:
+        description: Held page number from inspect (required to resolve)
+        type: string
+      signature:
+        description: Exact held payload signature from inspect (required to resolve)
+        type: string
+      resolution:
+        description: Delivered, or absent only when independently established
+        type: choice
+        options: [none, delivered, absent]
+        default: none
+      message_id:
+        description: Confirmed Discord message ID only for delivered; never a webhook URL
+        type: string
+      writers_paused:
+        description: All writers and schedulers are paused, including other repositories
+        type: boolean
+        default: false
+      initialization_confirmation:
+        description: Type FIRST_INSTALL_BACKFILL only for a verified first install with approved historical backfill
+        type: string
+      evidence_verified:
+        description: Independently verified the exact destination and delivery outcome
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: game-express-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.15.2'
+      - run: python -m pip install -q -r requirements.txt
+      - name: Initialize, preview or review ledger (never sends)
+        env:
+          RECOVERY_GITHUB_TOKEN: ${{ github.token }}
+          GE_VARS_JSON: ${{ toJSON(vars) }}
+          DISCORD_WEBHOOK_NEWS_NTE: ${{ secrets.DISCORD_WEBHOOK_NEWS_NTE }}
+          DISCORD_WEBHOOK_NEWS_ENDFIELD: ${{ secrets.DISCORD_WEBHOOK_NEWS_ENDFIELD }}
+          DISCORD_WEBHOOK_NEWS_SILVERPALACE: ${{ secrets.DISCORD_WEBHOOK_NEWS_SILVERPALACE }}
+          RECOVERY_MODE: ${{ inputs.mode }}
+          RECOVERY_SOURCE: ${{ inputs.source }}
+          RECOVERY_ARTICLE_ID: ${{ inputs.article_id }}
+          RECOVERY_PAGE: ${{ inputs.page }}
+          RECOVERY_SIGNATURE: ${{ inputs.signature }}
+          RECOVERY_RESOLUTION: ${{ inputs.resolution }}
+          RECOVERY_MESSAGE_ID: ${{ inputs.message_id }}
+          RECOVERY_WRITERS_PAUSED: ${{ inputs.writers_paused }}
+          RECOVERY_EVIDENCE_VERIFIED: ${{ inputs.evidence_verified }}
+          RECOVERY_INIT_CONFIRM: ${{ inputs.initialization_confirmation }}
+        run: |
+          set -euo pipefail
+          auth="$(printf 'x-access-token:%s' "$RECOVERY_GITHUB_TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
+          unset RECOVERY_GITHUB_TOKEN auth
+          python -m gamexpress.candidate_news_recovery

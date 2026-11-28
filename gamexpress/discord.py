@@ -223,10 +223,20 @@ class WebhookClient:
         payload: dict,
         *,
         stop_on_ambiguous: bool = False,
+        files: dict[str, bytes] | None = None,
     ) -> SendResult:
         problems = validate_payload(payload)
         if problems:
             return SendResult(False, 0, error="invalid payload: " + "; ".join(problems))
+        if files is not None:
+            from .news_animation import multipart_form
+
+            try:
+                multipart_form(payload, files)  # validate before opening a connection
+            except (ValueError, TypeError, KeyError):
+                return SendResult(False, 0, error="invalid GIF attachment plan")
+        elif payload.get("attachments"):
+            return SendResult(False, 0, error="missing GIF attachment bytes")
         if self.dry_run:
             # The fingerprint, never the URL: it is enough to tell two destinations apart (which
             # is what the fan-out tests assert) and it cannot be turned back into a secret.
@@ -238,14 +248,16 @@ class WebhookClient:
         delay = 1.0
         for attempt in range(5):
             try:
-                async with self.session.request(method, url, json=payload,
-                                                timeout=aiohttp.ClientTimeout(total=30)) as r:
+                request_data = {"json": payload} if files is None else {"data": multipart_form(payload, files)}
+                request_options = {} if files is None else {"allow_redirects": False}
+                async with self.session.request(method, url, **request_data, **request_options,
+                                                timeout=aiohttp.ClientTimeout(total=120 if files else 30)) as r:
                     status = int(getattr(r, "status", 0) or 0)
                     try:
                         body = await r.text()
                     except (aiohttp.ClientError, asyncio.TimeoutError, UnicodeDecodeError) as e:
                         safe_err = _redact_webhook(e)
-                        if stop_on_ambiguous and method == "POST" and (status == 0 or 200 <= status < 400):
+                        if (stop_on_ambiguous or files is not None) and method == "POST" and (status == 0 or 200 <= status < 400):
                             log.warning(
                                 "Discord POST response body read failed after HTTP %s (%s)"
                                 " — holding as ambiguous without retry",
@@ -277,9 +289,11 @@ class WebhookClient:
                             True,
                             status,
                             message_id=mid,
-                            ambiguous=(stop_on_ambiguous and method == "POST" and mid is None),
+                            ambiguous=((stop_on_ambiguous or files is not None) and method == "POST" and mid is None),
                             message=message,
                         )
+                    if files is not None and method == "POST":
+                        return SendResult(False, status, error="GIF attachment POST not confirmed", ambiguous=True)
                     if status == 429:
                         try:
                             retry = float(json.loads(body).get("retry_after", 1.0))
@@ -299,7 +313,7 @@ class WebhookClient:
                     return SendResult(False, status, error=_redact_webhook(body)[:500])
             except (aiohttp.ClientError, asyncio.TimeoutError) as e:
                 safe_err = _redact_webhook(e)
-                if stop_on_ambiguous:
+                if stop_on_ambiguous or files is not None:
                     if _is_non_retryable_pre_send_error(e):
                         return SendResult(False, 0, error=safe_err, ambiguous=False)
                     if method == "POST" and not _is_definite_pre_send_error(e):
@@ -324,6 +338,7 @@ class WebhookClient:
         payload: dict,
         *,
         stop_on_ambiguous: bool = False,
+        files: dict[str, bytes] | None = None,
     ) -> SendResult:
         base, keep = _split(webhook_url)
         q = urlencode({"wait": "true", "with_components": "true", **keep})
@@ -332,6 +347,7 @@ class WebhookClient:
             f"{base}?{q}",
             payload,
             stop_on_ambiguous=stop_on_ambiguous,
+            files=files,
         )
 
     async def edit(self, webhook_url: str, message_id: str, payload: dict) -> SendResult:

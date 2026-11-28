@@ -90,6 +90,8 @@ class Fetcher:
     # `Last-Modified` (unix ts) of media URLs seen by `verify_media`, keyed by the URL asked for.
     # Undated CDN paths (Kuro `clientUpload/<slug>.mp4`) get their upload date from here.
     media_dates: dict[str, int] = field(default_factory=dict, repr=False)
+    # Most recent bounded signature result from each real media preflight.
+    media_prefixes: dict[str, tuple[bytes, str]] = field(default_factory=dict, repr=False)
 
     def _gate(self) -> asyncio.Semaphore:
         if self._sem is None:
@@ -106,7 +108,8 @@ class Fetcher:
 
     async def get_text(self, url: str, *, source: str, headers: dict | None = None,
                        params: dict | None = None, retries: int = 2,
-                       ok_statuses: tuple[int, ...] = (200,), timeout: float | None = None) -> str | None:
+                       ok_statuses: tuple[int, ...] = (200,), timeout: float | None = None,
+                       allow_redirects: bool = True) -> str | None:
         hdrs = {"User-Agent": BROWSER_UA, "Accept": "*/*"}
         if headers:
             hdrs.update(headers)
@@ -114,8 +117,10 @@ class Fetcher:
         last = ""
         for attempt in range(retries + 1):
             try:
+                redirect_options = {} if allow_redirects else {"allow_redirects": False}
                 async with self._gate(), self.session.get(url, headers=hdrs, params=params,
-                                            timeout=aiohttp.ClientTimeout(total=timeout or self.timeout)) as r:
+                                            timeout=aiohttp.ClientTimeout(total=timeout or self.timeout),
+                                            **redirect_options) as r:
                     if r.status in ok_statuses:
                         # read in chunks, NOT `content.read(MAX_BYTES + 1)`: aiohttp's read(n)
                         # returns whatever is buffered RIGHT NOW (up to n), so a body that
@@ -149,9 +154,11 @@ class Fetcher:
         return None
 
     async def get_json(self, url: str, *, source: str, headers: dict | None = None,
-                       params: dict | None = None, retries: int = 2, timeout: float | None = None):
+                       params: dict | None = None, retries: int = 2, timeout: float | None = None,
+                       allow_redirects: bool = True):
+        redirect_options = {} if allow_redirects else {"allow_redirects": False}
         body = await self.get_text(url, source=source, headers=headers, params=params, retries=retries,
-                                   timeout=timeout)
+                                   timeout=timeout, **redirect_options)
         if body is None:
             return None
         try:
@@ -186,6 +193,9 @@ class Fetcher:
                  "vxreddit.com", "embedez.com", "deltandy.me",
                  # feature 5 (beta): the community databases that publish beta revisions
                  "nanoka.cc", "gachabase.net")
+        # Only the observed official candidate image hosts, not their entire
+        # parent namespaces. Every redirect still passes this same policy.
+        exact_hosts = ("web-static.hg-cdn.com", "ntevmg.perfectworld.com", "s.elementagames.com")
         asked = url
         try:
             for _ in range(4):
@@ -193,7 +203,7 @@ class Fetcher:
                 host = (parts.hostname or "").lower()
                 if (parts.scheme != "https" or parts.username or parts.password
                         or parts.port not in (None, 443)
-                        or not any(host == h or host.endswith("." + h) for h in hosts)):
+                        or not (host in exact_hosts or any(host == h or host.endswith("." + h) for h in hosts))):
                     log.warning("news media rejected: host=%s reason=URL policy", host)
                     return None
                 async with self._gate(), self.session.get(
@@ -241,6 +251,7 @@ class Fetcher:
         """Bounded GET/status/signature preflight; never a Discord decode guarantee."""
         result = await self._news_media_prefix(url)
         if result:
+            self.media_prefixes[url] = result
             raw, mime = result
             image = (raw.startswith((b"\xff\xd8\xff", b"\x89PNG\r\n\x1a\n", b"GIF87a", b"GIF89a"))
                      or (raw[:4] == b"RIFF" and raw[8:12] == b"WEBP"))

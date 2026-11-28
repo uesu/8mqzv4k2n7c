@@ -419,12 +419,15 @@ class FakeCodeSources:
 
 
 def make_ctx(state_path, items=None, now=1789300000, codes_table=None, versions=None, overrides=None, **env):
+    async def unchanged_animation_plan(fetcher, pages, **kwargs):
+        return pages, {}
+
     s = settings(**env)
     s.state_path = Path(state_path)
     return Ctx(settings=s, games=[g for g in GAMES.values() if g.enabled], state=State.load(Path(state_path)),
                fetcher=None, webhook=WebhookClient(None, dry_run=True), x=None,
                code_sources=FakeCodeSources(codes_table or {}), overrides=overrides or {}, now=now,
-               versions=versions or {}, items=items or {})
+               versions=versions or {}, items=items or {}, animation_prepare=unchanged_animation_plan)
 
 
 def reveal_ping_games(ctx, *keys):
@@ -1387,6 +1390,13 @@ def test_ci_and_the_python_bump_gate_run_every_offline_test_file():
         assert f"python tests/{name}" in ci_runs, f"ci.yml's test job does not run tests/{name}"
         assert f"python tests/{name}" in gate["run"], f"the python-bump gate does not run tests/{name}"
     assert ".github/scripts" in ci_runs and ".github/scripts" in gate["run"]   # compileall covers the bump script too
+    # The synced production repository intentionally does not contain dev-only tools.
+    steps = ci["jobs"]["test"]["steps"]
+    private_step = next(s for s in steps if "python tests/test_candidate_private_pipeline.py" in str(s.get("run", "")))
+    assert private_step.get("if") == "github.repository == 'uesu/Game-Express'"
+    for step in steps:
+        if "python tools/" in str(step.get("run", "")):
+            assert step.get("if") == "github.repository == 'uesu/Game-Express'"
 
 
 def test_every_action_is_pinned_to_a_commit_sha_with_a_readable_version_comment():
@@ -4306,7 +4316,7 @@ def test_python_patch_selection_is_numeric_stable_and_one_series_at_a_time():
         assert module.bump_ruff_toml(int(target[0]), int(target[1:])) is False
 
 
-WORKFLOW_PINS = ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml")
+WORKFLOW_PINS = ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml", "candidate_news_recovery.yml")
 
 
 def _assert_runtime_python_docs_agree(root: Path) -> None:
@@ -7887,6 +7897,77 @@ def test_news_media_preflight_status_signature_redirect_and_query_preservation()
         session = Session([])
         assert not await Fetcher(session).verify_media("https://untrusted.example/image.png")
         assert not session.calls
+    asyncio.run(run())
+
+
+def test_silver_palace_exact_cdn_media_preflight_keeps_host_and_signature_guards():
+    from gamexpress.http import Fetcher
+
+    async def run():
+        url = "https://s.elementagames.com/official/image/example.jpg"
+        session = _NewsGifMimeSession(_NewsGifMimeResponse(b"\xff\xd8\xff" + bytes(80), "image/jpeg"))
+        assert await Fetcher(session).verify_media(url)
+        assert session.calls[0][1]["allow_redirects"] is False
+        assert not await Fetcher(_NewsGifMimeSession(_NewsGifMimeResponse(b"bad", "image/jpeg"))).verify_media(url)
+        for bad in ("http://s.elementagames.com/a.jpg", "https://elementagames.com/a.jpg",
+                    "https://other.elementagames.com/a.jpg", "https://sub.s.elementagames.com/a.jpg",
+                    "https://s.elementagames.com.evil.test/a.jpg", "https://u@s.elementagames.com/a.jpg",
+                    "https://s.elementagames.com:444/a.jpg"):
+            session = _NewsGifMimeSession()
+            assert not await Fetcher(session).verify_media(bad) and not session.calls
+        session = _NewsGifMimeSession(_NewsGifMimeResponse(status=302, extra={"Location": "http://127.0.0.1/x"}))
+        assert not await Fetcher(session).verify_media(url) and len(session.calls) == 1
+
+    asyncio.run(run())
+
+
+def test_nte_exact_cdn_media_preflight_keeps_host_and_signature_guards():
+    from gamexpress.http import Fetcher
+
+    async def run():
+        url = "https://ntevmg.perfectworld.com/webops/nte/example.jpg"
+        session = _NewsGifMimeSession(_NewsGifMimeResponse(b"\xff\xd8\xff" + bytes(80), "image/jpeg"))
+        assert await Fetcher(session).verify_media(url)
+        assert session.calls[0][1]["allow_redirects"] is False
+        assert not await Fetcher(_NewsGifMimeSession(_NewsGifMimeResponse(b"bad", "image/jpeg"))).verify_media(url)
+        for bad in ("http://ntevmg.perfectworld.com/a.jpg", "https://perfectworld.com/a.jpg",
+                    "https://other.perfectworld.com/a.jpg", "https://sub.ntevmg.perfectworld.com/a.jpg",
+                    "https://ntevmg.perfectworld.com.evil.test/a.jpg", "https://u@ntevmg.perfectworld.com/a.jpg",
+                    "https://ntevmg.perfectworld.com:444/a.jpg"):
+            session = _NewsGifMimeSession()
+            assert not await Fetcher(session).verify_media(bad) and not session.calls
+        session = _NewsGifMimeSession(_NewsGifMimeResponse(status=302, extra={"Location": "http://127.0.0.1/x"}))
+        assert not await Fetcher(session).verify_media(url) and len(session.calls) == 1
+
+    asyncio.run(run())
+
+
+def test_endfield_exact_cdn_media_preflight_keeps_signature_and_redirect_guards():
+    from gamexpress.http import Fetcher
+
+    async def run():
+        host = "https://web-static.hg-cdn.com/upload/image/"
+        for path, raw, mime in (
+            ("example.gif", b"GIF89a" + bytes(80), "image/gif"),
+            ("example.png", b"\x89PNG\r\n\x1a\n" + bytes(80), "image/png"),
+            ("example.jpg", b"\xff\xd8\xff" + bytes(80), "image/jpeg"),
+        ):
+            session = _NewsGifMimeSession(_NewsGifMimeResponse(raw, mime))
+            assert await Fetcher(session).verify_media(host + path)
+            assert session.calls[0][1]["allow_redirects"] is False
+        session = _NewsGifMimeSession(_NewsGifMimeResponse(b"<html>bad</html>", "image/gif"))
+        assert not await Fetcher(session).verify_media(host + "bad.gif")
+        for url in ("https://hg-cdn.com/image.gif", "https://other.hg-cdn.com/image.gif",
+                    "https://sub.web-static.hg-cdn.com/image.gif", "https://web-static.hg-cdn.com.evil.test/x",
+                    "http://web-static.hg-cdn.com/image.gif", "https://u:p@web-static.hg-cdn.com/image.gif",
+                    "https://web-static.hg-cdn.com:444/image.gif"):
+            session = _NewsGifMimeSession()
+            assert not await Fetcher(session).verify_media(url) and not session.calls
+        session = _NewsGifMimeSession(_NewsGifMimeResponse(
+            status=302, extra={"Location": "https://other.hg-cdn.com/private"}))
+        assert not await Fetcher(session).verify_media(host + "redirect.gif")
+        assert len(session.calls) == 1
+
     asyncio.run(run())
 
 
@@ -16105,7 +16186,9 @@ def test_final_pre_merge_edge_cases_and_repo_doc_consistency():
         assert f"{len(config.DEFAULT_REDDIT)} entries" in readme_t
         assert f"{len(config.DEFAULT_REDDIT_PROXIES)} proxies" in readme_t
         assert f"{len(config.DEFAULT_REDDIT)} Reddit/Redlib entries" in security_t
-        assert "arknights" not in sources_t.lower()
+        # Research may name candidate games; mentioning one must not imply activation.
+        assert "Research only, not an enabled feature" in sources_t
+        assert not {"endfield", "nte", "silverpalace"}.intersection(GAMES)
         assert "Status: not integrated." not in sources_t
         assert "November 6, 2026" in privacy_t and "November 6, 2026" in terms_t   # nitter rotation #8 revision
         assert "nitter.mizuki.st" in privacy_t
@@ -17766,6 +17849,13 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
 
         live_state_payload = b'{"posted": {"genshin:7.2": {"message_id": "999888777"}}, "live": true}\n'
         (prod_root / "state" / "state.json").write_bytes(live_state_payload)
+        candidate_state_payload = b'{"schema":1,"candidate_news":{"test":"preserve"}}\n'
+        (prod_root / "state" / "candidate_news.json").write_bytes(candidate_state_payload)
+        inventory_payload = b"synthetic production inventory; never a credential\n"
+        (prod_root / "variables and secrets.txt").write_bytes(inventory_payload)
+        stale_fixture = prod_root / "tests/fixtures/beta/zzz_changelog_beta.md"
+        stale_fixture.parent.mkdir(parents=True)
+        stale_fixture.write_text("obsolete synthetic test fixture\n", encoding="utf-8")
         (prod_root / "placeholder" / "README.txt").write_text("keep placeholder\n", encoding="utf-8")
         (prod_root / "gamexpress" / "obsolete_module.py").write_text("# stale\n", encoding="utf-8")
         (prod_root / ".github" / "workflows" / "sync_prod.yml").write_text("# accidental copy\n", encoding="utf-8")
@@ -17777,7 +17867,13 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         assert "gamexpress/obsolete_module.py" in res["removed"]
         assert ".github/workflows/sync_prod.yml" in res["removed"]
         assert "state/state.json" in res["preserved"]
+        assert "state/candidate_news.json" in res["preserved"]
+        assert "variables and secrets.txt" in res["preserved"]
+        assert (prod_root / "variables and secrets.txt").read_bytes() == inventory_payload
+        assert not stale_fixture.exists()
+        assert (prod_root / "tests/fixtures/beta/zzz_changelog_beta.txt").is_file()
         assert (prod_root / "state" / "state.json").read_bytes() == live_state_payload
+        assert (prod_root / "state" / "candidate_news.json").read_bytes() == candidate_state_payload
         assert (prod_root / "placeholder" / "README.txt").read_text(encoding="utf-8") == "keep placeholder\n"
         assert not (prod_root / ".github" / "workflows" / "sync_prod.yml").exists()
         assert not (prod_root / "docs").exists()
@@ -17793,6 +17889,12 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         res_idempotent = sync_mod.sync_tree(ROOT, prod_root, include_workflows=True)
         assert res_idempotent["updated"] == [] and res_idempotent["removed"] == []
         assert (prod_root / "state" / "state.json").read_bytes() == live_state_payload
+        # Sync must never bootstrap a missing candidate ledger either; an accidental
+        # empty replacement after loss would cause a full backlog replay.
+        (prod_root / "state" / "candidate_news.json").unlink()
+        sync_mod.sync_tree(ROOT, prod_root, include_workflows=True)
+        assert not (prod_root / "state" / "candidate_news.json").exists()
+        (prod_root / "state" / "candidate_news.json").write_bytes(candidate_state_payload)
 
         # Monotonic workflow pin guard: newer prod Dependabot / python_version_bump pins
         # (e.g. Python 3.14.99 or a newer SHA-pinned action) are NEVER downgraded by dev -> prod sync,
@@ -17832,11 +17934,17 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         sync_mod._run_git(["init", "-q"], cwd=prod_root)
         sync_mod._run_git(["config", "user.name", "test"], cwd=prod_root)
         sync_mod._run_git(["config", "user.email", "test@example.com"], cwd=prod_root)
-        sync_mod._run_git(["add", "-f", "state/state.json", "config/games.json"], cwd=prod_root)
+        sync_mod._run_git(["add", "-f", "state/state.json", "state/candidate_news.json", "config/games.json", "variables and secrets.txt"], cwd=prod_root)
         sync_mod._run_git(["commit", "-q", "-m", "init"], cwd=prod_root)
         (prod_root / "state" / "state.json").write_bytes(b'{"corrupted": true}\n')
+        (prod_root / "state" / "candidate_news.json").write_bytes(b'{"corrupted": true}\n')
+        (prod_root / "variables and secrets.txt").write_bytes(b"unexpected modification\n")
         staged_files = sync_mod._stage_and_verify(prod_root)
         assert "state/state.json" not in staged_files
+        assert "state/candidate_news.json" not in staged_files
+        assert "variables and secrets.txt" not in staged_files
+        assert (prod_root / "variables and secrets.txt").read_bytes() == inventory_payload
+        assert (prod_root / "state" / "candidate_news.json").read_bytes() == candidate_state_payload
         assert ".github/workflows/sync_prod.yml" not in staged_files
         assert (prod_root / "state" / "state.json").read_bytes() == live_state_payload
 
@@ -17861,6 +17969,10 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         assert "persist-credentials: false" in wf_text
         assert "python .github/scripts/sync_prod.py" in wf_text
         assert "python tests/test_smoke.py" in wf_text
+        for name in ("test_endfield_candidate.py", "test_silverpalace_candidate.py", "test_day_news_candidate.py",
+                     "test_nte_candidate.py", "test_candidate_thumbnail.py", "test_candidate_news_delivery.py",
+                     "test_candidate_private_pipeline.py"):
+            assert "python tests/" + name in wf_text
         assert "secrets.PROD_SYNC_PAT || secrets.BUMP_PAT" in wf_text
 
 
@@ -17883,7 +17995,7 @@ def _beta_files() -> dict:
     """Every captured beta fixture, keyed by the URL fragment that should serve it."""
     files: dict[str, dict | str] = {
         "manifest.json": _beta_json("nanoka_manifest.json"),
-        "changelog/beta": (BETA_FIX / "zzz_changelog_beta.md").read_text(encoding="utf-8"),
+        "changelog/beta": (BETA_FIX / "zzz_changelog_beta.txt").read_text(encoding="utf-8"),
     }
     for name in ("zzz_character_1661", "zzz_character_1601", "zzz_character_1551",
                  "zzz_weapon_14166", "zzz_equipment_34300", "zzz_weapon_listing"):
@@ -18006,7 +18118,7 @@ def test_feature5_ping_is_its_own_switch_and_never_inherits_the_global_role():
 def test_feature5_changelog_parser_reads_revisions_sections_and_ids():
     from gamexpress.beta import _entry_id, parse_changelog
 
-    revs = parse_changelog((BETA_FIX / "zzz_changelog_beta.md").read_text(encoding="utf-8"))
+    revs = parse_changelog((BETA_FIX / "zzz_changelog_beta.txt").read_text(encoding="utf-8"))
     assert len(revs) == 2
     top = revs[0]
     assert top["label"] == "v3.4.1 Rev. 19834130"
@@ -28110,3 +28222,130 @@ def test_probe_finds_changed_items_by_detail_and_counts_unreadable_sides():
         SimpleNamespace(fetcher=Fetcher()), "zzz", targets,
         "3.4.1+19997538", "3.4.2+20049556", done, 400))
     assert skipped["total"] == 2 and skipped["checked"] == 2
+
+
+def test_official_news_runner_verified_youtube_cover_and_native_suppression():
+    from unittest.mock import AsyncMock, Mock, patch
+
+    from gamexpress.models import Item
+    from gamexpress.runner import run_news
+    from gamexpress.sources import hoyolab, kuro
+
+    hook = "https://discord.com/api/webhooks/100000000000000099/g_tok"
+    video = "https://www.youtube.com/embed/tdZN6H1N3PU"
+    thumbnail = "https://i.ytimg.com/vi/tdZN6H1N3PU/maxresdefault.jpg"
+    for gk, source, source_name in (("zzz", hoyolab, "hoyolab"), ("wuwa", kuro, "kuro")):
+        for native in (False, True):
+            blocks = [{"kind": "text", "text": "Official news"}, {"kind": "video", "url": video}]
+            if native:
+                blocks.append({"kind": "image", "url": "https://example.org/native.jpg"})
+            article = Item(source_name, gk, "p1", "https://example.org/1", "Official news", "",
+                           1793160008, article_blocks=blocks, official=True)
+            with tempfile.TemporaryDirectory() as tmp:
+                ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES=gk,
+                               **{f"DISCORD_WEBHOOK_NEWS_{gk.upper()}": hook})
+                ctx.now = 1793160000
+                with patch.object(source, "discover_news", return_value=[]):
+                    asyncio.run(run_news(ctx))
+                ctx.now = 1793160030
+                ctx.fetcher = Mock(media_dimensions=AsyncMock(return_value=(1280, 720)),
+                                   verify_media=AsyncMock(return_value=True))
+                with (patch.object(source, "discover_news", return_value=[{"id": "p1", "ts": 1793160008}]),
+                      patch.object(source, "news_article", return_value=article),
+                      patch.object(ctx.fetcher, "media_dimensions", return_value=(1280, 720)) as dimensions,
+                      patch.object(ctx.fetcher, "verify_media", return_value=True),
+                      patch("gamexpress.media.news_media_available", return_value=True)):
+                    asyncio.run(run_news(ctx))
+                posts = [p["payload"] for p in ctx.webhook.sent if p["method"] == "POST"]
+            assert posts, ctx.warnings
+            assert (thumbnail in json.dumps(posts)) is (not native)
+            assert dimensions.call_count == (0 if native else 1)
+            assert article.images == []
+
+
+def test_news_runner_handles_mislabelled_gifs_across_hoyolab_and_kuro():
+    import base64
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress.models import Item
+    from gamexpress.runner import run_news
+    from gamexpress.sources import hoyolab, kuro
+
+    data = base64.b64decode("R0lGODlhBAAEAIEAAP8AAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAABAAEAAAICQABCBxIsCCAgAAh+QQBCgABACwAAAAABAAEAIEAAP8AAAAAAAAAAAAICQABCBxIsCCAgAA7")
+    hook = "https://discord.com/api/webhooks/100000000000000099/g_tok"
+    for gk, source, source_name, media_url in (
+        ("zzz", hoyolab, "hoyolab", "https://upload-os-bbs.hoyolab.com/a.jpg"),
+        ("wuwa", kuro, "kuro", "https://wutheringwaves.kurogames.com/a.jpg"),
+    ):
+        with tempfile.TemporaryDirectory() as tmp:
+            ctx = make_ctx(Path(tmp) / "state.json", NEWS_ENABLED="1", NEWS_GAMES=gk,
+                           **{f"DISCORD_WEBHOOK_NEWS_{gk.upper()}": hook})
+            ctx.animation_prepare = None  # exercise the production planner
+            ctx.now = 1793160000
+            with patch.object(source, "discover_news", return_value=[]):
+                asyncio.run(run_news(ctx))
+            ctx.now = 1793160030
+            item = Item(source_name, gk, "p1", "https://example.org/1", "Official", "", 1793160008,
+                        article_blocks=[{"kind": "text", "text": "Original text"},
+                                        {"kind": "image", "url": media_url}], official=True)
+            ctx.fetcher = types.SimpleNamespace(_news_media_prefix=AsyncMock(return_value=(data[:32], "image/jpeg")))
+            row = {"id": "p1", "ts": 1793160008}
+            with (patch.object(source, "discover_news", return_value=[row]),
+                  patch.object(source, "news_article", return_value=item),
+                  patch("gamexpress.media.news_media_available", return_value=True),
+                  patch("gamexpress.news_animation.fetch_gif", new=AsyncMock(return_value=data))):
+                asyncio.run(run_news(ctx))
+                assert len(ctx.webhook.sent) == 1, ctx.warnings
+                payload = ctx.webhook.sent[0]["payload"]
+                assert len(payload["attachments"]) == 1 and "attachment://animation-" in json.dumps(payload)
+                rec = ctx.state.news_record(gk)["records"]["p1"]
+                assert rec["status"] == "posted" and rec["has_gif_uploads"] is True
+                # Changed content is held rather than PATCHing away an uploaded GIF.
+                item.article_blocks[0]["text"] = "Changed text"
+                ctx.now += 400
+                asyncio.run(run_news(ctx))
+                assert len(ctx.webhook.sent) == 1
+                assert any("animated attachment edit needs manual review" in warning for warning in ctx.warnings)
+
+
+def test_news_gif_upload_has_no_ambiguous_post_retry():
+    import base64
+    import hashlib
+    from unittest.mock import AsyncMock, patch
+
+    from gamexpress.discord import WebhookClient
+
+    data = base64.b64decode("R0lGODlhBAAEAIEAAP8AAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAABAAEAAAICQABCBxIsCCAgAAh+QQBCgABACwAAAAABAAEAIEAAP8AAAAAAAAAAAAICQABCBxIsCCAgAA7")
+    name = "animation-" + hashlib.sha256(data).hexdigest() + ".gif"
+    page = {"flags": cards.IS_COMPONENTS_V2, "allowed_mentions": {"parse": []},
+            "attachments": [{"id": 0, "filename": name}],
+            "components": [cards.container([cards.text("Sample"),
+                {"type": 12, "items": [{"media": {"url": "attachment://" + name}}]}])]}
+
+    class Response:
+        status = 500
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return None
+
+        async def text(self):
+            return "not confirmed"
+
+    class Session:
+        def __init__(self):
+            self.calls = []
+
+        def request(self, *args, **kwargs):
+            self.calls.append((args, kwargs))
+            return Response()
+
+    session = Session()
+    client = WebhookClient(session)
+    with patch.object(asyncio, "sleep", new=AsyncMock()):
+        result = asyncio.run(client.send(HOOK, page, stop_on_ambiguous=True, files={name: data}))
+    assert not result.ok and result.ambiguous
+    assert len(session.calls) == 1 and "data" in session.calls[0][1]
+    assert session.calls[0][1]["allow_redirects"] is False
