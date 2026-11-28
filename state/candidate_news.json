@@ -872,7 +872,7 @@
     "nte": {
       "partial": {
         "id": "264504",
-        "inflight": false,
+        "inflight": true,
         "messages": [
           "1576250159904333887",
           "1576250181278638141"
