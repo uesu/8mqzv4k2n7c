@@ -1,26 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0758",
-        "inflight": false,
-        "messages": [
-          "1576248916431867947",
-          "1576248937004925110",
-          "1576248955891879959",
-          "1576249144358608908",
-          "1576249163287625839",
-          "1576249181432184977"
-        ],
-        "pages": 6,
-        "signature": "75f38cc2308e7a2ac9f8e31fe4b432aecc02caac77956254982fa6c9107285ae"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0758",
-          "title": "[Sketches of Lost Heirlooms] Version Update Notes",
-          "ts": 1780621200
-        },
         {
           "id": "8903",
           "title": "🎁 Discord Mi Fu First Impressions Sharing Event Opens",
@@ -354,6 +336,17 @@
             "1576235737395757382"
           ],
           "signature": "753d837f0d302771cdea4e4d323a0195be8af9ee31a567f888122f4e41b8eb1f"
+        },
+        "0758": {
+          "messages": [
+            "1576248916431867947",
+            "1576248937004925110",
+            "1576248955891879959",
+            "1576249144358608908",
+            "1576249163287625839",
+            "1576249181432184977"
+          ],
+          "signature": "75f38cc2308e7a2ac9f8e31fe4b432aecc02caac77956254982fa6c9107285ae"
         },
         "0759": {
           "messages": [
