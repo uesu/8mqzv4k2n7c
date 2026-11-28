@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6179",
-        "inflight": false,
-        "messages": [
-          "1576259743855415487"
-        ],
-        "pages": 1,
-        "signature": "69e3579b920cf82a7d8164b416f621e097211d6217c55adb8f1b944f05986aa1"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6179",
-          "title": "[Ancestral Spring Flows Anew] RE-Factor Headhunting #1 and [Tender Sprig Issue] RE-Factor Issue #1 Available",
-          "ts": 1793181600
-        },
         {
           "id": "7012",
           "title": "[The Hearth Fire Beckons the Starry Flow] Chartered Headhunting",
@@ -655,6 +642,12 @@
             "1576250093013696614"
           ],
           "signature": "3122686cafbaa419fed2979ac85ede45e44597a84dfebc1e41be15de03431fc0"
+        },
+        "6179": {
+          "messages": [
+            "1576259743855415487"
+          ],
+          "signature": "69e3579b920cf82a7d8164b416f621e097211d6217c55adb8f1b944f05986aa1"
         },
         "6180": {
           "messages": [
