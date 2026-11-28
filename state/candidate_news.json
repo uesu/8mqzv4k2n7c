@@ -801,22 +801,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "262287",
-        "inflight": false,
-        "messages": [
-          "1576239520267894948"
-        ],
-        "pages": 1,
-        "signature": "b79e9279cf0521117a0b13e927e8210fbfde2910ceeacf6272915120e3cee775"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-05-20",
-          "id": "262287",
-          "title": "Instructions on Deleting Game Accounts",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260520/262287.html"
-        },
         {
           "date": "2026-05-25",
           "id": "262335",
@@ -1443,6 +1429,12 @@
             "1576239315204178194"
           ],
           "signature": "2df669139203081ef1b8368f622f52a7388ec13479bb6b82afb1163e63e176d7"
+        },
+        "262287": {
+          "messages": [
+            "1576239520267894948"
+          ],
+          "signature": "b79e9279cf0521117a0b13e927e8210fbfde2910ceeacf6272915120e3cee775"
         }
       },
       "route": "12975a7fb0e13152",
