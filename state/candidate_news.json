@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7014",
-        "inflight": false,
-        "messages": [
-          "1576257532542980331",
-          "1576257553661431819"
-        ],
-        "pages": 2,
-        "signature": "beb3a82f7ebd45007518241f0890a1e034782d6f8c7d564cafd94278a445a03a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7014",
-          "title": "Arknights: Endfield [Sanctuary of Ink] Version DEV Comm",
-          "ts": 1791340200
-        },
         {
           "id": "8995",
           "title": "Discord Game Stats Widget Updates",
@@ -703,6 +689,13 @@
             "1576256993294033017"
           ],
           "signature": "6f5960720bf106f4e2e4409b0675453a7cfa771e592ea6dc81a9267ac32978a6"
+        },
+        "7014": {
+          "messages": [
+            "1576257532542980331",
+            "1576257553661431819"
+          ],
+          "signature": "beb3a82f7ebd45007518241f0890a1e034782d6f8c7d564cafd94278a445a03a"
         },
         "7017": {
           "messages": [
