@@ -868,22 +868,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "264427",
-        "inflight": false,
-        "messages": [
-          "1576249944925405185"
-        ],
-        "pages": 1,
-        "signature": "44ece5efdfaec0ea6820d3f8325c45f2fcb6d0c086a2aff2641971918300e6b3"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-09-29",
-          "id": "264427",
-          "title": "Version 1.4 NTE x Porsche Fan Creation Contest",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20260929/264427.html"
-        },
         {
           "date": "2026-10-12",
           "id": "264504",
@@ -1560,6 +1546,12 @@
             "1576249732353753152"
           ],
           "signature": "d602a0c0e7864cac580884e7cceba04a0f42ecf628632ee6e7a76c9ca8e50bb5"
+        },
+        "264427": {
+          "messages": [
+            "1576249944925405185"
+          ],
+          "signature": "44ece5efdfaec0ea6820d3f8325c45f2fcb6d0c086a2aff2641971918300e6b3"
         }
       },
       "route": "12975a7fb0e13152",
