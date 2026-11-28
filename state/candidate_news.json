@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2669",
-        "inflight": false,
-        "messages": [
-          "1576245929453953080"
-        ],
-        "pages": 1,
-        "signature": "e1aa1f9d371d3fff53496783127b77d852f6e33eb3eb3e460fcb5ac4fbf0b71f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2669",
-          "title": "[Smelting Fire Issue] LTO Details",
-          "ts": 1778646600
-        },
         {
           "id": "5210",
           "title": "[Swift Walker Issue] LTO Details",
@@ -488,6 +475,12 @@
             "1576238521033687185"
           ],
           "signature": "e85db2070ab66600ff2dfc10e0a10f8f3382740c91a2c32a93dd0a76184fef45"
+        },
+        "2669": {
+          "messages": [
+            "1576245929453953080"
+          ],
+          "signature": "e1aa1f9d371d3fff53496783127b77d852f6e33eb3eb3e460fcb5ac4fbf0b71f"
         },
         "2675": {
           "messages": [
