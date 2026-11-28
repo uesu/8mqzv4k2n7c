@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6174",
-        "inflight": false,
-        "messages": [
-          "1576252709198368809"
-        ],
-        "pages": 1,
-        "signature": "b48417f00e7fe56d03e483413210ac5c9df5a7151be3bd2f1c25da8bf3aaa21d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6174",
-          "title": "[Military Grade Issue] LTO Details",
-          "ts": 1784111400
-        },
         {
           "id": "5200",
           "title": "[Homecoming] Version Update Notes",
@@ -631,6 +618,12 @@
             "1576228585000275979"
           ],
           "signature": "b0c18b88520ff486af57ae5248d2e4a502648d1ce4591833a6abfe58221f5bbc"
+        },
+        "6174": {
+          "messages": [
+            "1576252709198368809"
+          ],
+          "signature": "b48417f00e7fe56d03e483413210ac5c9df5a7151be3bd2f1c25da8bf3aaa21d"
         },
         "6175": {
           "messages": [
