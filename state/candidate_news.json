@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2660",
-        "inflight": false,
-        "messages": [
-          "1576241282035228683"
-        ],
-        "pages": 1,
-        "signature": "1875c60a464561de24e7c784e0bbf9d29ead0bef5478d193f469a3e184448735"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2660",
-          "title": "[Scarlet Pearl Issue] LTO Details",
-          "ts": 1774672200
-        },
         {
           "id": "1337",
           "title": "[Journey of the Long-Ear] Celebration Event Details",
@@ -529,6 +516,12 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2660": {
+          "messages": [
+            "1576241282035228683"
+          ],
+          "signature": "1875c60a464561de24e7c784e0bbf9d29ead0bef5478d193f469a3e184448735"
         },
         "2662": {
           "messages": [
