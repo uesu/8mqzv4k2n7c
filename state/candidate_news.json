@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9570",
-        "inflight": false,
-        "messages": [
-          "1576238955781820499"
-        ],
-        "pages": 1,
-        "signature": "ed5082e3276bb810df7cf39d60265fbf1f71b1e9d5df1174cd86322a542def3e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9570",
-          "title": "[Old Deep Water Dies, by Rising Tide It is Denied] Version Update & Maintenance Preview",
-          "ts": 1772852400
-        },
         {
           "id": "1338",
           "title": "[River's Daughter] Chartered Headhunting Details",
@@ -760,6 +747,12 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "9570": {
+          "messages": [
+            "1576238955781820499"
+          ],
+          "signature": "ed5082e3276bb810df7cf39d60265fbf1f71b1e9d5df1174cd86322a542def3e"
         },
         "9572": {
           "messages": [
