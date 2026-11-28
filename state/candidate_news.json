@@ -745,22 +745,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "256464",
-        "inflight": false,
-        "messages": [
-          "1576229809548431371"
-        ],
-        "pages": 1,
-        "signature": "1bad7063f4699c76eea0ad63f0c718187402eff47959be99625fa31127f1822f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-05-15",
-          "id": "256464",
-          "title": "「Become an Anomaly Hunter! 」Fan Art Contest",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20250515/256464.html"
-        },
         {
           "date": "2025-06-10",
           "id": "256772",
@@ -1374,6 +1360,12 @@
             "1576229523995885589"
           ],
           "signature": "2a1b0ea5581606d69e30ea65b6afc0f76f31e36431b838010b24c8130b2774f8"
+        },
+        "256464": {
+          "messages": [
+            "1576229809548431371"
+          ],
+          "signature": "1bad7063f4699c76eea0ad63f0c718187402eff47959be99625fa31127f1822f"
         }
       },
       "route": "12975a7fb0e13152",
