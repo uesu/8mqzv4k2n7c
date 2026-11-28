@@ -1384,23 +1384,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "86",
-        "inflight": false,
-        "messages": [
-          "1576231854904844329",
-          "1576231882855678063",
-          "1576231901352435998"
-        ],
-        "pages": 3,
-        "signature": "13753d7a9a5d7d6e7bb5815c18afe6f59f31950b769d170a59de26c098dfe9ed"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-20",
-          "id": "86",
-          "title": "Silver Palace Fan Content & Streaming Guidelines"
-        },
         {
           "date": "2026-07-22",
           "id": "93",
@@ -1549,6 +1534,14 @@
             "1576231109308711034"
           ],
           "signature": "542387b3d4a157037020e05a10a8eb5b47e5846536c692b07af2e7fd4765ab94"
+        },
+        "86": {
+          "messages": [
+            "1576231854904844329",
+            "1576231882855678063",
+            "1576231901352435998"
+          ],
+          "signature": "13753d7a9a5d7d6e7bb5815c18afe6f59f31950b769d170a59de26c098dfe9ed"
         }
       },
       "route": "f18fe2760d6ec4bc",
