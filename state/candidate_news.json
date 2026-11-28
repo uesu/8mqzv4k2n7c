@@ -741,22 +741,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "254243",
-        "inflight": false,
-        "messages": [
-          "1576228918866743479"
-        ],
-        "pages": 1,
-        "signature": "9fd2d993a281511576988abcee032730e6194b58b36ecffae3f82fd064fdf73c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2024-12-20",
-          "id": "254243",
-          "title": "Character Introduction - Fadia",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20241220/254243.html"
-        },
         {
           "date": "2025-05-15",
           "id": "256444",
@@ -1370,6 +1356,12 @@
             "1576228654466474180"
           ],
           "signature": "a39609ff6e2b074b89e25104b26b21cca95c21e0a0d62309505b92ba5669bf33"
+        },
+        "254243": {
+          "messages": [
+            "1576228918866743479"
+          ],
+          "signature": "9fd2d993a281511576988abcee032730e6194b58b36ecffae3f82fd064fdf73c"
         }
       },
       "route": "12975a7fb0e13152",
