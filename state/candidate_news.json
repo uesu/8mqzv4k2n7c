@@ -779,22 +779,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "261409",
-        "inflight": false,
-        "messages": [
-          "1576236004845555873"
-        ],
-        "pages": 1,
-        "signature": "78de44f8cd1cdfbeb72fd8046699fbdcdd5f3751c5caa86d1d4a0a6c617be977"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-03-25",
-          "id": "261409",
-          "title": "30 Million Pre-Registrations Worldwide — Thank You!",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260324/261409.html"
-        },
         {
           "date": "2026-03-26",
           "id": "261416",
@@ -1408,6 +1394,12 @@
             "1576235804911603807"
           ],
           "signature": "22ba73254af3a940578be9e00b90c8a6f747c7d53a15a9bfbf69b319dab4440e"
+        },
+        "261409": {
+          "messages": [
+            "1576236004845555873"
+          ],
+          "signature": "78de44f8cd1cdfbeb72fd8046699fbdcdd5f3751c5caa86d1d4a0a6c617be977"
         }
       },
       "route": "12975a7fb0e13152",
