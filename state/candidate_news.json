@@ -1399,7 +1399,13 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": null,
+      "partial": {
+        "id": "119",
+        "inflight": false,
+        "messages": [],
+        "pages": 2,
+        "signature": "2da67ab933a4096bd44800c468427d7d47d9adbf99bf3b33c970c53e212eba0a"
+      },
       "pending": [
         {
           "date": "2026-09-23",
