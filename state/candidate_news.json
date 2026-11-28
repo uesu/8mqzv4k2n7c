@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5229",
-        "inflight": false,
-        "messages": [
-          "1576228585000275979"
-        ],
-        "pages": 1,
-        "signature": "b0c18b88520ff486af57ae5248d2e4a502648d1ce4591833a6abfe58221f5bbc"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5229",
-          "title": "Beta Test Officially Ended",
-          "ts": 1739772000
-        },
         {
           "id": "9582",
           "title": "Beta Test: DEV Comm//01",
@@ -715,6 +702,12 @@
             "1576226401080578160"
           ],
           "signature": "58a7b5ef4e5c7af2f7e15f24bcc96a5e60b4a7f78e6e368d6e6beea2ed651abb"
+        },
+        "5229": {
+          "messages": [
+            "1576228585000275979"
+          ],
+          "signature": "b0c18b88520ff486af57ae5248d2e4a502648d1ce4591833a6abfe58221f5bbc"
         },
         "6198": {
           "messages": [
