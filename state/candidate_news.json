@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8992",
-        "inflight": false,
-        "messages": [
-          "1576261777644060715"
-        ],
-        "pages": 1,
-        "signature": "a792dbd4ce8c81d8fbcbecf65d9a7aff61ceab3cf6f78ca97eaf231626075514"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8992",
-          "title": "[To Every Wish Adrift] RE-Factor Headhunting #1 and [Floaty Traveler Issue] RE-Factor Issue #1 Open",
-          "ts": 1795496400
-        },
         {
           "id": "0740",
           "title": "[Meeting You in the World o'Shrooms] Version Update Notes",
@@ -841,6 +828,12 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "8992": {
+          "messages": [
+            "1576261777644060715"
+          ],
+          "signature": "a792dbd4ce8c81d8fbcbecf65d9a7aff61ceab3cf6f78ca97eaf231626075514"
         },
         "8995": {
           "messages": [
