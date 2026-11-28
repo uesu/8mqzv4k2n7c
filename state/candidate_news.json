@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1347",
-        "inflight": false,
-        "messages": [
-          "1576227763080138897"
-        ],
-        "pages": 1,
-        "signature": "06d5d2c14e2c563f7c5937c7f5c4ec572bc196142ed2f12ed560dff5fef40253"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1347",
-          "title": "Beta Test Fair Play Statement",
-          "ts": 1736395200
-        },
         {
           "id": "6198",
           "title": "Beta Test Access Distribution Starts",
@@ -693,6 +680,12 @@
             "1576225920195371170"
           ],
           "signature": "ae2438afed6a9ccefe82737fc7e2e1218e3bfd4f01fb2d0d5fbc135ee21655af"
+        },
+        "1347": {
+          "messages": [
+            "1576227763080138897"
+          ],
+          "signature": "06d5d2c14e2c563f7c5937c7f5c4ec572bc196142ed2f12ed560dff5fef40253"
         },
         "1348": {
           "messages": [
