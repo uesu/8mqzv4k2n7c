@@ -1,24 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4499",
-        "inflight": false,
-        "messages": [
-          "1576233608228638762",
-          "1576233628415819827",
-          "1576233648292896849",
-          "1576233925695512689"
-        ],
-        "pages": 4,
-        "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4499",
-          "title": "Arknights: Endfield [Official Release Preview] DEV Comm",
-          "ts": 1768622400
-        },
         {
           "id": "1332",
           "title": "PSN Account Registration, Login & Usage FAQs",
@@ -674,6 +658,15 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4499": {
+          "messages": [
+            "1576233608228638762",
+            "1576233628415819827",
+            "1576233648292896849",
+            "1576233925695512689"
+          ],
+          "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
         },
         "5218": {
           "messages": [
