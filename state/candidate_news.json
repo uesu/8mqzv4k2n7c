@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4493",
-        "inflight": false,
-        "messages": [
-          "1576243446564388946"
-        ],
-        "pages": 1,
-        "signature": "0065ba05e9d1d6b1bc03fa1acaf954efb184b5e3a0af409d2cc5049775507c32"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4493",
-          "title": "[Pristine Monthly Pass Tribute] Tribute Event",
-          "ts": 1776337200
-        },
         {
           "id": "0751",
           "title": "[At the Wake of Spring] Version Update Notes",
@@ -586,6 +573,12 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4493": {
+          "messages": [
+            "1576243446564388946"
+          ],
+          "signature": "0065ba05e9d1d6b1bc03fa1acaf954efb184b5e3a0af409d2cc5049775507c32"
         },
         "4494": {
           "messages": [
