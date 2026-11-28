@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9575",
-        "inflight": false,
-        "messages": [
-          "1576232514534641707"
-        ],
-        "pages": 1,
-        "signature": "4dc965bb079fbb02c449501b226b2d7a40386c924fafb13cc420ff8dddecc28d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9575",
-          "title": "Beta Test II Ending Notice",
-          "ts": 1765195500
-        },
         {
           "id": "6184",
           "title": "Arknights: Endfield PlayStation®5 Technical Test Now Live!",
@@ -746,6 +733,12 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "9575": {
+          "messages": [
+            "1576232514534641707"
+          ],
+          "signature": "4dc965bb079fbb02c449501b226b2d7a40386c924fafb13cc420ff8dddecc28d"
         },
         "9582": {
           "messages": [
