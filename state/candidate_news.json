@@ -813,25 +813,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "262479",
-        "inflight": false,
-        "messages": [
-          "1576240879197495467",
-          "1576240910126293194",
-          "1576240928883212466",
-          "1576241141127446721"
-        ],
-        "pages": 4,
-        "signature": "e6a6d9c0c3c02de58465b8312ae9c9e18507a7589199e95b9d9d44d30cf7cd09"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-06-02",
-          "id": "262479",
-          "title": "Version 1.1 \"Dreamwalk Corridor\"  Update Notes",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260602/262479.html"
-        },
         {
           "date": "2026-06-03",
           "id": "262503",
@@ -1460,6 +1443,15 @@
             "1576240675941388461"
           ],
           "signature": "b4dd3f23f47e2b7c9bb75f6cae60c5444eb0fc8956a6728a34a1905ccf2e67b6"
+        },
+        "262479": {
+          "messages": [
+            "1576240879197495467",
+            "1576240910126293194",
+            "1576240928883212466",
+            "1576241141127446721"
+          ],
+          "signature": "e6a6d9c0c3c02de58465b8312ae9c9e18507a7589199e95b9d9d44d30cf7cd09"
         }
       },
       "route": "12975a7fb0e13152",
