@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2677",
-        "inflight": false,
-        "messages": [
-          "1576229135691555069",
-          "1576229154570109010"
-        ],
-        "pages": 2,
-        "signature": "b9a25d56605bf5182e0add74ad6d6366f885ef724523e38a8a7fccc8e3305854"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2677",
-          "title": "Arknights: Endfield Online Event Rules",
-          "ts": 1761494400
-        },
         {
           "id": "3859",
           "title": "Recruitment Now Open for Arknights: Endfield Beta Test II",
@@ -687,6 +673,13 @@
             "1576226156489867468"
           ],
           "signature": "8b175b5170145db4079217621b97bb43775a6ae5e66d1ec56fe89eccb550e3a5"
+        },
+        "2677": {
+          "messages": [
+            "1576229135691555069",
+            "1576229154570109010"
+          ],
+          "signature": "b9a25d56605bf5182e0add74ad6d6366f885ef724523e38a8a7fccc8e3305854"
         },
         "3857": {
           "messages": [
