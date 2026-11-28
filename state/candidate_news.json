@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5205",
-        "inflight": false,
-        "messages": [
-          "1576260239970271333"
-        ],
-        "pages": 1,
-        "signature": "2e62891bec04d6c2348ed1a59fb1a5a33a1560c9a0adb7047d1e3c8f7e94c5d9"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5205",
-          "title": "Special Thanks | A Gift of Gratitude for Endministrator",
-          "ts": 1795057500
-        },
         {
           "id": "9568",
           "title": "[11/19/2026] Account Suspension Notice",
@@ -530,6 +517,12 @@
             "1576250990678773905"
           ],
           "signature": "407d882995b82ff24e29cdf41518d48a72ccf65838044bdff8c7cdbb4800ede7"
+        },
+        "5205": {
+          "messages": [
+            "1576260239970271333"
+          ],
+          "signature": "2e62891bec04d6c2348ed1a59fb1a5a33a1560c9a0adb7047d1e3c8f7e94c5d9"
         },
         "5206": {
           "messages": [
