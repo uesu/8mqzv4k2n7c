@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9578",
-        "inflight": false,
-        "messages": [
-          "1576244352324337665"
-        ],
-        "pages": 1,
-        "signature": "0394e8a77826334a92145499a4117fb438e286bc69043a563a0c045dbe425aa0"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9578",
-          "title": "Arknights: Endfield Discord Account Link Page Now Live!",
-          "ts": 1776832200
-        },
         {
           "id": "6187",
           "title": "Arknights: Endfield Game Tools Updated for the New Version!",
@@ -815,6 +802,12 @@
             "1576232514534641707"
           ],
           "signature": "4dc965bb079fbb02c449501b226b2d7a40386c924fafb13cc420ff8dddecc28d"
+        },
+        "9578": {
+          "messages": [
+            "1576244352324337665"
+          ],
+          "signature": "0394e8a77826334a92145499a4117fb438e286bc69043a563a0c045dbe425aa0"
         },
         "9579": {
           "messages": [
