@@ -789,23 +789,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "262015",
-        "inflight": false,
-        "messages": [
-          "1576237605823971371",
-          "1576237627785355326"
-        ],
-        "pages": 2,
-        "signature": "4002bf60dd8b18f88e24dcc8831a643761161e0f28753f137dc43a44bf1fd7e0"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-04-30",
-          "id": "262015",
-          "title": "NTE Official Launch Creation Submission Event",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20260429/262015.html"
-        },
         {
           "date": "2026-05-01",
           "id": "262038",
@@ -1422,6 +1407,13 @@
             "1576237168739754108"
           ],
           "signature": "762ffcb402568e0e28288dc0a032b14ae7c4c8493e8d26c9639b6698613cb10c"
+        },
+        "262015": {
+          "messages": [
+            "1576237605823971371",
+            "1576237627785355326"
+          ],
+          "signature": "4002bf60dd8b18f88e24dcc8831a643761161e0f28753f137dc43a44bf1fd7e0"
         }
       },
       "route": "12975a7fb0e13152",
