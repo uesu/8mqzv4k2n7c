@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6177",
-        "inflight": false,
-        "messages": [
-          "1576261259383283834"
-        ],
-        "pages": 1,
-        "signature": "4ae471d8dd8ee0ea17a5bb5bef547e1a1d2459d346d64832e676d5da214ba908"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6177",
-          "title": "Discord Game Stats Widget Update",
-          "ts": 1795429800
-        },
         {
           "id": "5204",
           "title": "[Anvil, Backpack, Plus A Pot o'Honey] Chartered Headhunting",
@@ -629,6 +616,12 @@
             "1576250093013696614"
           ],
           "signature": "3122686cafbaa419fed2979ac85ede45e44597a84dfebc1e41be15de03431fc0"
+        },
+        "6177": {
+          "messages": [
+            "1576261259383283834"
+          ],
+          "signature": "4ae471d8dd8ee0ea17a5bb5bef547e1a1d2459d346d64832e676d5da214ba908"
         },
         "6178": {
           "messages": [
