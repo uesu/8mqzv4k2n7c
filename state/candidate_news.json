@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2659",
-        "inflight": false,
-        "messages": [
-          "1576261616134127657"
-        ],
-        "pages": 1,
-        "signature": "a6191e9b2585cbe30296aab7ab01f797e728773bd56e193947c6fc5779fee453"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2659",
-          "title": "[Casual Roamer Issue] LTO Details",
-          "ts": 1795494600
-        },
         {
           "id": "8992",
           "title": "[To Every Wish Adrift] RE-Factor Headhunting #1 and [Floaty Traveler Issue] RE-Factor Issue #1 Open",
@@ -248,6 +235,12 @@
             "1576249634509033587"
           ],
           "signature": "292f160437b854df0263e28fa96237c2bf2e944b4b74b5ea06a3a257af3b760a"
+        },
+        "2659": {
+          "messages": [
+            "1576261616134127657"
+          ],
+          "signature": "a6191e9b2585cbe30296aab7ab01f797e728773bd56e193947c6fc5779fee453"
         },
         "2660": {
           "messages": [
