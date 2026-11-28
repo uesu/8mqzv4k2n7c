@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9562",
-        "inflight": false,
-        "messages": [
-          "1576256471170162790"
-        ],
-        "pages": 1,
-        "signature": "cc99669fec1c56634d6d0043e977a93bd8b3b193c521a8f44968543bed652cad"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9562",
-          "title": "Arknights: Endfield Game Tools Updated",
-          "ts": 1790049600
-        },
         {
           "id": "3839",
           "title": "[Resplendent Spectrum] RE-Factor Headhunting #1 and [Tag Artist Issue] RE-Factor Issue #1 Open",
@@ -841,6 +828,12 @@
             "1576252267533705459"
           ],
           "signature": "6dbd317f827501ebdcaa8be19b004807d09e607008b38fa5264ea48b0d7acf32"
+        },
+        "9562": {
+          "messages": [
+            "1576256471170162790"
+          ],
+          "signature": "cc99669fec1c56634d6d0043e977a93bd8b3b193c521a8f44968543bed652cad"
         },
         "9564": {
           "messages": [
