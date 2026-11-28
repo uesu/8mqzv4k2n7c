@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0744",
-        "inflight": false,
-        "messages": [
-          "1576257894410752073",
-          "1576257915356979241"
-        ],
-        "pages": 2,
-        "signature": "267ec01ce7d59cd04d6c740e834bd5e5d61b94ccc26387e7cdaae6254744da9f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0744",
-          "title": "[Sanctuary of Ink] Version Pre-Download & Update Notice",
-          "ts": 1791864000
-        },
         {
           "id": "4488",
           "title": "Official Comic [Echoes of the Beginning: Manor's Origin] Is Live",
@@ -124,6 +110,13 @@
         }
       ],
       "posted": {
+        "0744": {
+          "messages": [
+            "1576257894410752073",
+            "1576257915356979241"
+          ],
+          "signature": "267ec01ce7d59cd04d6c740e834bd5e5d61b94ccc26387e7cdaae6254744da9f"
+        },
         "0748": {
           "messages": [
             "1576251202822209567"
