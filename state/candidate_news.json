@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5202",
-        "inflight": false,
-        "messages": [
-          "1576250990678773905"
-        ],
-        "pages": 1,
-        "signature": "407d882995b82ff24e29cdf41518d48a72ccf65838044bdff8c7cdbb4800ede7"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5202",
-          "title": "🎁 Discord Camille First Impressions Sharing Event Opens",
-          "ts": 1782532800
-        },
         {
           "id": "0748",
           "title": "GRYPHLINK Real-Time Game Data Panel Now Live!",
@@ -575,6 +562,12 @@
             "1576233925695512689"
           ],
           "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
+        },
+        "5202": {
+          "messages": [
+            "1576250990678773905"
+          ],
+          "signature": "407d882995b82ff24e29cdf41518d48a72ccf65838044bdff8c7cdbb4800ede7"
         },
         "5210": {
           "messages": [
