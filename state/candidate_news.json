@@ -1383,21 +1383,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "38",
-        "inflight": false,
-        "messages": [
-          "1576230238122414222"
-        ],
-        "pages": 1,
-        "signature": "763fd4b5735d9a72e16b6e7d8bb9b27a334ce38b89a2fea8fac58020ba65674e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-04-02",
-          "id": "38",
-          "title": "Silver Palace Content Creator Program"
-        },
         {
           "date": "2026-06-26",
           "id": "42",
@@ -1532,6 +1519,12 @@
             "1576229917916406014"
           ],
           "signature": "6aa05a1d09c723b3f38df93accb0abf7def83ff2bdb03c09f3097d00f87eca62"
+        },
+        "38": {
+          "messages": [
+            "1576230238122414222"
+          ],
+          "signature": "763fd4b5735d9a72e16b6e7d8bb9b27a334ce38b89a2fea8fac58020ba65674e"
         },
         "7": {
           "messages": [
