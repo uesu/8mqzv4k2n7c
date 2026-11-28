@@ -873,24 +873,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "264675",
-        "inflight": false,
-        "messages": [
-          "1576250828648612158",
-          "1576250847426515059",
-          "1576250866246226082"
-        ],
-        "pages": 3,
-        "signature": "c9f5a9dfb8274f8e2f4bc2422ece04c20f902b311846223f203a83f97b4adc1d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-10-19",
-          "id": "264675",
-          "title": "Server Maintenance Notice: October 21",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20261019/264675.html"
-        },
         {
           "date": "2026-10-28",
           "id": "264812",
@@ -1571,6 +1555,14 @@
             "1576250621156266107"
           ],
           "signature": "20634cb7c4173a874945c6273c620c611e38e435d445202a6605e50a50f2844d"
+        },
+        "264675": {
+          "messages": [
+            "1576250828648612158",
+            "1576250847426515059",
+            "1576250866246226082"
+          ],
+          "signature": "c9f5a9dfb8274f8e2f4bc2422ece04c20f902b311846223f203a83f97b4adc1d"
         }
       },
       "route": "12975a7fb0e13152",
