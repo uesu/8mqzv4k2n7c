@@ -754,7 +754,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "257154",
+        "inflight": false,
+        "messages": [],
+        "pages": 1,
+        "signature": "556449faf43bf2a0573590fe7fee60f26aafbc14f80c60d70c8a081f41d99461"
+      },
       "pending": [
         {
           "date": "2025-07-01",
