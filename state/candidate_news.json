@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7020",
-        "inflight": false,
-        "messages": [
-          "1576233016475517150"
-        ],
-        "pages": 1,
-        "signature": "0db03a7c6bd4c309aa1accc449b144690d2514a45b8736a7ad7858ec716ca768"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7020",
-          "title": "PlayStation®5 Technical Test Has Officially Ended",
-          "ts": 1766700000
-        },
         {
           "id": "3848",
           "title": "Beta Test II Has Officially Ended",
@@ -711,6 +698,12 @@
             "1576228045767975063"
           ],
           "signature": "022776ec87573afbe66a2172e6efb729aec27d26234c8a0ef5806d79adf298e6"
+        },
+        "7020": {
+          "messages": [
+            "1576233016475517150"
+          ],
+          "signature": "0db03a7c6bd4c309aa1accc449b144690d2514a45b8736a7ad7858ec716ca768"
         },
         "7021": {
           "messages": [
