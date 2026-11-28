@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3831",
-        "inflight": false,
-        "messages": [
-          "1576254021289648149",
-          "1576254041866899638"
-        ],
-        "pages": 2,
-        "signature": "32e8e233c76d402566ea5a201ce66ac0e21e75ba31a8b3a172409994d6f22f10"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3831",
-          "title": "[Good Morning from Your Dawnstar] Chartered Headhunting",
-          "ts": 1786183200
-        },
         {
           "id": "9564",
           "title": "[Bedazzled Issue] LTO Details",
@@ -435,6 +421,13 @@
             "1576229154570109010"
           ],
           "signature": "b9a25d56605bf5182e0add74ad6d6366f885ef724523e38a8a7fccc8e3305854"
+        },
+        "3831": {
+          "messages": [
+            "1576254021289648149",
+            "1576254041866899638"
+          ],
+          "signature": "32e8e233c76d402566ea5a201ce66ac0e21e75ba31a8b3a172409994d6f22f10"
         },
         "3832": {
           "messages": [
