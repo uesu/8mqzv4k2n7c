@@ -1393,22 +1393,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "120",
-        "inflight": false,
-        "messages": [
-          "1576234084022231044",
-          "1576234104377053207"
-        ],
-        "pages": 2,
-        "signature": "b86bfe1979972c0c9dd28ea82f630dcf0f850c1194611aa7c56a59b95cf59fea"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-10-09",
-          "id": "120",
-          "title": "\"Private Investigator\" Project Recruitment Now Open"
-        },
         {
           "date": "2026-10-19",
           "id": "32",
@@ -1441,6 +1427,13 @@
             "1576226316641112147"
           ],
           "signature": "2b8e361db36ae24e8dc9149e9d18bdbce83784d89d1bda861f0a8cb9af4ad783"
+        },
+        "120": {
+          "messages": [
+            "1576234084022231044",
+            "1576234104377053207"
+          ],
+          "signature": "b86bfe1979972c0c9dd28ea82f630dcf0f850c1194611aa7c56a59b95cf59fea"
         },
         "22": {
           "messages": [
