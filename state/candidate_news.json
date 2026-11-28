@@ -1389,22 +1389,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "107",
-        "inflight": false,
-        "messages": [
-          "1576233469510684844",
-          "1576233490024767509"
-        ],
-        "pages": 2,
-        "signature": "a6042822490f8d6cb8311dab1fb450d0a6512f684bc5ff61667e38fb24dbbb36"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-08-22",
-          "id": "107",
-          "title": "Silvernia News: \"Dichotomy\" Beta Test Feedback and Optimization"
-        },
         {
           "date": "2026-09-23",
           "id": "119",
@@ -1427,6 +1413,13 @@
             "1576225839111217224"
           ],
           "signature": "f6195a520e27affa2dcbf6b76e7e2a88d2c229af459442a384c1116d5921e614"
+        },
+        "107": {
+          "messages": [
+            "1576233469510684844",
+            "1576233490024767509"
+          ],
+          "signature": "a6042822490f8d6cb8311dab1fb450d0a6512f684bc5ff61667e38fb24dbbb36"
         },
         "12": {
           "messages": [
