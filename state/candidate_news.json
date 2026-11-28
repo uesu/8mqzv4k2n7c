@@ -1,7 +1,13 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": null,
+      "partial": {
+        "id": "4488",
+        "inflight": false,
+        "messages": [],
+        "pages": 1,
+        "signature": "f58650ee5fc6eba36c000fb020f6f48782a4a1172aff0946142752a0e0b7f6ac"
+      },
       "pending": [
         {
           "id": "4488",
