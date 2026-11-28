@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7012",
-        "inflight": false,
-        "messages": [
-          "1576259903859982370",
-          "1576259923350655230"
-        ],
-        "pages": 2,
-        "signature": "38e5aad5343c6ef759306d705ae5a2cf39a5d7a46f30830f99dacbd701dfc43a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7012",
-          "title": "[The Hearth Fire Beckons the Starry Flow] Chartered Headhunting",
-          "ts": 1793786400
-        },
         {
           "id": "6178",
           "title": "[Moongleam Issue] LTO Details",
@@ -693,6 +679,13 @@
             "1576228045767975063"
           ],
           "signature": "022776ec87573afbe66a2172e6efb729aec27d26234c8a0ef5806d79adf298e6"
+        },
+        "7012": {
+          "messages": [
+            "1576259903859982370",
+            "1576259923350655230"
+          ],
+          "signature": "38e5aad5343c6ef759306d705ae5a2cf39a5d7a46f30830f99dacbd701dfc43a"
         },
         "7013": {
           "messages": [
