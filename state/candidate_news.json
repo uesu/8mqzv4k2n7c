@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0759",
-        "inflight": false,
-        "messages": [
-          "1576248249352855583",
-          "1576248268843782396"
-        ],
-        "pages": 2,
-        "signature": "c8f165e90abcc2de9f064ea0dd1c0031688edd600d2caa23147927b0b8b0d6ec"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0759",
-          "title": "[Fists of No Regrets] Chartered Headhunting",
-          "ts": 1780459200
-        },
         {
           "id": "4492",
           "title": "[Scarlet Knot Issue] LTO Details",
@@ -365,6 +351,13 @@
             "1576235737395757382"
           ],
           "signature": "753d837f0d302771cdea4e4d323a0195be8af9ee31a567f888122f4e41b8eb1f"
+        },
+        "0759": {
+          "messages": [
+            "1576248249352855583",
+            "1576248268843782396"
+          ],
+          "signature": "c8f165e90abcc2de9f064ea0dd1c0031688edd600d2caa23147927b0b8b0d6ec"
         },
         "0766": {
           "messages": [
