@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8999",
-        "inflight": false,
-        "messages": [
-          "1576252267533705459"
-        ],
-        "pages": 1,
-        "signature": "6dbd317f827501ebdcaa8be19b004807d09e607008b38fa5264ea48b0d7acf32"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8999",
-          "title": "Official Comic [Echoes of the Beginning: Bloom Amid Ruin] Is Live",
-          "ts": 1784087400
-        },
         {
           "id": "2656",
           "title": "[North Yearns the Rift Vigile] Chartered Headhunting",
@@ -810,6 +797,12 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "8999": {
+          "messages": [
+            "1576252267533705459"
+          ],
+          "signature": "6dbd317f827501ebdcaa8be19b004807d09e607008b38fa5264ea48b0d7acf32"
         },
         "9566": {
           "messages": [
