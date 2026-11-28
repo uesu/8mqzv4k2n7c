@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6175",
-        "inflight": false,
-        "messages": [
-          "1576250071014572176",
-          "1576250093013696614"
-        ],
-        "pages": 2,
-        "signature": "3122686cafbaa419fed2979ac85ede45e44597a84dfebc1e41be15de03431fc0"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6175",
-          "title": "[Expunger of Sin] Chartered Headhunting",
-          "ts": 1782360000
-        },
         {
           "id": "1321",
           "title": "[Crimson Hued Issue] LTO Details",
@@ -638,6 +624,13 @@
             "1576228585000275979"
           ],
           "signature": "b0c18b88520ff486af57ae5248d2e4a502648d1ce4591833a6abfe58221f5bbc"
+        },
+        "6175": {
+          "messages": [
+            "1576250071014572176",
+            "1576250093013696614"
+          ],
+          "signature": "3122686cafbaa419fed2979ac85ede45e44597a84dfebc1e41be15de03431fc0"
         },
         "6180": {
           "messages": [
