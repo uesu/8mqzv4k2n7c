@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1336",
-        "inflight": false,
-        "messages": [
-          "1576244813492133891"
-        ],
-        "pages": 1,
-        "signature": "6beef89e12de128fcc98950799e8f9e192485b57ba48aaec2958065e13857569"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1336",
-          "title": "Arknights: Endfield × M.RAGE Apparel Collaboration Debuts at LVL UP EXPO 2026",
-          "ts": 1777064400
-        },
         {
           "id": "5211",
           "title": "🎁 Prize Event | AIC Factory Blueprint Showcase",
@@ -451,6 +438,12 @@
             "1576234232911761408"
           ],
           "signature": "d17faf7490183b08f6212e23af6c7f9d9e20608c8c9ca001edc880613a781f6d"
+        },
+        "1336": {
+          "messages": [
+            "1576244813492133891"
+          ],
+          "signature": "6beef89e12de128fcc98950799e8f9e192485b57ba48aaec2958065e13857569"
         },
         "1337": {
           "messages": [
