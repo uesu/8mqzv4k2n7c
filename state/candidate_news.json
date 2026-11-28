@@ -1381,21 +1381,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "71",
-        "inflight": false,
-        "messages": [
-          "1576231109308711034"
-        ],
-        "pages": 1,
-        "signature": "542387b3d4a157037020e05a10a8eb5b47e5846536c692b07af2e7fd4765ab94"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-14",
-          "id": "71",
-          "title": "The Science of All Things - Local Edition: Morgue Street"
-        },
         {
           "date": "2026-07-20",
           "id": "55",
@@ -1540,6 +1527,12 @@
             "1576226069584019549"
           ],
           "signature": "a3689a346710a62743a3a06a61f7f4727c042582818e4a35491be70a84a84b69"
+        },
+        "71": {
+          "messages": [
+            "1576231109308711034"
+          ],
+          "signature": "542387b3d4a157037020e05a10a8eb5b47e5846536c692b07af2e7fd4765ab94"
         }
       },
       "route": "f18fe2760d6ec4bc",
