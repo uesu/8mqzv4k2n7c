@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0767",
-        "inflight": false,
-        "messages": [
-          "1576230669904908338"
-        ],
-        "pages": 1,
-        "signature": "fd2b55116272698d2fd75a8b7c53c0542f7e913aa02a70292f94d253d8da7f1a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0767",
-          "title": "Recruitment Closing Soon for Arknights: Endfield Beta Test II",
-          "ts": 1762916400
-        },
         {
           "id": "7034",
           "title": "Arknights: Endfield Beta Test II Access Distribution Now Underway",
@@ -648,6 +635,12 @@
             "1576225920195371170"
           ],
           "signature": "ae2438afed6a9ccefe82737fc7e2e1218e3bfd4f01fb2d0d5fbc135ee21655af"
+        },
+        "0767": {
+          "messages": [
+            "1576230669904908338"
+          ],
+          "signature": "fd2b55116272698d2fd75a8b7c53c0542f7e913aa02a70292f94d253d8da7f1a"
         },
         "1340": {
           "messages": [
