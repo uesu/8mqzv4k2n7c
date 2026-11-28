@@ -761,22 +761,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "256375",
-        "inflight": false,
-        "messages": [
-          "1576233381585223831"
-        ],
-        "pages": 1,
-        "signature": "d86e13d21d98a65e9ddd1df3a96b217736686e986212bbaf2314ad560ffa5a7a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-12-23",
-          "id": "256375",
-          "title": "NTE CONTENT CREATORS RECRUITMENT PROJECT",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20250514/256375.html"
-        },
         {
           "date": "2025-12-23",
           "id": "259946",
@@ -1306,6 +1292,12 @@
             "1576228918866743479"
           ],
           "signature": "9fd2d993a281511576988abcee032730e6194b58b36ecffae3f82fd064fdf73c"
+        },
+        "256375": {
+          "messages": [
+            "1576233381585223831"
+          ],
+          "signature": "d86e13d21d98a65e9ddd1df3a96b217736686e986212bbaf2314ad560ffa5a7a"
         },
         "256444": {
           "messages": [
