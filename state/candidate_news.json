@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6181",
-        "inflight": false,
-        "messages": [
-          "1576237081733107913"
-        ],
-        "pages": 1,
-        "signature": "ffabab12c6052e477c9055f37188121e5451a21d612bfac46530251b42c7d71f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6181",
-          "title": "Notice Regarding Abnormal Game Performance Caused by NVIDIA App Optimization",
-          "ts": 1770462900
-        },
         {
           "id": "0754",
           "title": "[Express Delivery Issue] LTO Details",
@@ -688,6 +675,12 @@
             "1576228585000275979"
           ],
           "signature": "b0c18b88520ff486af57ae5248d2e4a502648d1ce4591833a6abfe58221f5bbc"
+        },
+        "6181": {
+          "messages": [
+            "1576237081733107913"
+          ],
+          "signature": "ffabab12c6052e477c9055f37188121e5451a21d612bfac46530251b42c7d71f"
         },
         "6184": {
           "messages": [
