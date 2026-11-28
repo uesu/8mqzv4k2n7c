@@ -810,7 +810,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "262456",
+        "inflight": false,
+        "messages": [],
+        "pages": 2,
+        "signature": "b4dd3f23f47e2b7c9bb75f6cae60c5444eb0fc8956a6728a34a1905ccf2e67b6"
+      },
       "pending": [
         {
           "date": "2026-06-01",
