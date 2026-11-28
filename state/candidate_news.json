@@ -774,22 +774,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "260828",
-        "inflight": false,
-        "messages": [
-          "1576235173198962779"
-        ],
-        "pages": 1,
-        "signature": "5c9e8e8ac5fb514dcb87d318c26cf98498869cfc879308b2156b4194484c4eee"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-02-06",
-          "id": "260828",
-          "title": "Fair Play Statement",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260206/260828.html"
-        },
         {
           "date": "2026-02-07",
           "id": "260845",
@@ -1403,6 +1389,12 @@
             "1576234958056591472"
           ],
           "signature": "72cefc6fc40aaf79c96f5ee11ec88f153bf89e178c0e62eecfd196a08d58d0c6"
+        },
+        "260828": {
+          "messages": [
+            "1576235173198962779"
+          ],
+          "signature": "5c9e8e8ac5fb514dcb87d318c26cf98498869cfc879308b2156b4194484c4eee"
         }
       },
       "route": "12975a7fb0e13152",
