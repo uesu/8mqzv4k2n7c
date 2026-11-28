@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1321",
-        "inflight": false,
-        "messages": [
-          "1576250326606942431"
-        ],
-        "pages": 1,
-        "signature": "4d68630a30c9101bfbd7384ea32e2c5a9e7faa7c43bf3f92fb09616173f8faf7"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1321",
-          "title": "[Crimson Hued Issue] LTO Details",
-          "ts": 1782360900
-        },
         {
           "id": "4484",
           "title": "[Contingency Contract: Re-Ignition Experimental Operation] Content Update Notes",
@@ -354,6 +341,12 @@
             "1576230669904908338"
           ],
           "signature": "fd2b55116272698d2fd75a8b7c53c0542f7e913aa02a70292f94d253d8da7f1a"
+        },
+        "1321": {
+          "messages": [
+            "1576250326606942431"
+          ],
+          "signature": "4d68630a30c9101bfbd7384ea32e2c5a9e7faa7c43bf3f92fb09616173f8faf7"
         },
         "1331": {
           "messages": [
