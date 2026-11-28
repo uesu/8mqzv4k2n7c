@@ -789,7 +789,7 @@
     "nte": {
       "partial": {
         "id": "261969",
-        "inflight": false,
+        "inflight": true,
         "messages": [],
         "pages": 2,
         "signature": "762ffcb402568e0e28288dc0a032b14ae7c4c8493e8d26c9639b6698613cb10c"
