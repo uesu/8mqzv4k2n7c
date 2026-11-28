@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9572",
-        "inflight": false,
-        "messages": [
-          "1576238010524114945",
-          "1576238029687750817"
-        ],
-        "pages": 2,
-        "signature": "9ca7bb225db5db73f94cad441af9a917d746e6cf3776581ab9b3cd13b5430f93"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9572",
-          "title": "Release Celebration [Hues of Passion] Details",
-          "ts": 1771821000
-        },
         {
           "id": "8909",
           "title": "[Graffiti Issue] LTO Details",
@@ -761,6 +747,13 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "9572": {
+          "messages": [
+            "1576238010524114945",
+            "1576238029687750817"
+          ],
+          "signature": "9ca7bb225db5db73f94cad441af9a917d746e6cf3776581ab9b3cd13b5430f93"
         },
         "9573": {
           "messages": [
