@@ -824,24 +824,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "263019",
-        "inflight": false,
-        "messages": [
-          "1576243045374886120",
-          "1576243063284695074",
-          "1576243081861267507"
-        ],
-        "pages": 3,
-        "signature": "27b4a80b2bc51251013942f2cda7e425e17ef959088fb8d3bd38cc31aa86c0b0"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-06",
-          "id": "263019",
-          "title": "Account Action Notice: 2026-07-06 (UTC+8)",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260706/263019.html"
-        },
         {
           "date": "2026-07-06",
           "id": "263029",
@@ -1480,6 +1464,14 @@
             "1576242827317346399"
           ],
           "signature": "2061961c83349488be6f8cf1648180de798d2c755ab43722ad4b524b3f771d05"
+        },
+        "263019": {
+          "messages": [
+            "1576243045374886120",
+            "1576243063284695074",
+            "1576243081861267507"
+          ],
+          "signature": "27b4a80b2bc51251013942f2cda7e425e17ef959088fb8d3bd38cc31aa86c0b0"
         }
       },
       "route": "12975a7fb0e13152",
