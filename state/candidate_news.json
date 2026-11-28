@@ -884,22 +884,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "265030",
-        "inflight": false,
-        "messages": [
-          "1576252574829518971"
-        ],
-        "pages": 1,
-        "signature": "d4b0729bdceb031e28d09b37a3ebd5a8b78f1775bef994c525abfa41b9a9310a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-11-12",
-          "id": "265030",
-          "title": "Official Marketing Partnership Contact Channels",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20261112/265030.html"
-        },
         {
           "date": "2026-11-16",
           "id": "265063",
@@ -1590,6 +1576,12 @@
             "1576252351667376159"
           ],
           "signature": "3b8ee96eed5c5b017645cbf5912072fdaa2731aa8b9eba16b99eb6936fbd1382"
+        },
+        "265030": {
+          "messages": [
+            "1576252574829518971"
+          ],
+          "signature": "d4b0729bdceb031e28d09b37a3ebd5a8b78f1775bef994c525abfa41b9a9310a"
         }
       },
       "route": "12975a7fb0e13152",
