@@ -840,9 +840,10 @@
     "nte": {
       "partial": {
         "id": "263409",
-        "inflight": true,
+        "inflight": false,
         "messages": [
-          "1576245327017541794"
+          "1576245327017541794",
+          "1576245346974306386"
         ],
         "pages": 2,
         "signature": "f2196679cb74e611ef88575efb7865bd14349cf9e74e9a4e8422d9d7b4188207"
