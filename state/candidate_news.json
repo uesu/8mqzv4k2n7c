@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5212",
-        "inflight": false,
-        "messages": [
-          "1576243214975893505"
-        ],
-        "pages": 1,
-        "signature": "bcce933e40d645964fb4bb8d160692f07a4c59509af36184b90e64ea3a5184e8"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5212",
-          "title": "[Drifting Raft Issue] LTO Details",
-          "ts": 1776313800
-        },
         {
           "id": "4493",
           "title": "[Pristine Monthly Pass Tribute] Tribute Event",
@@ -616,6 +603,12 @@
             "1576233925695512689"
           ],
           "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
+        },
+        "5212": {
+          "messages": [
+            "1576243214975893505"
+          ],
+          "signature": "bcce933e40d645964fb4bb8d160692f07a4c59509af36184b90e64ea3a5184e8"
         },
         "5213": {
           "messages": [
