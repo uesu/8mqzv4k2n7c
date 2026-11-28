@@ -833,22 +833,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "263085",
-        "inflight": false,
-        "messages": [
-          "1576244219658379557"
-        ],
-        "pages": 1,
-        "signature": "8d022f06dab570dc96bd4a643c03a32b1a56e6e071d44540145841481f22a9a6"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-08",
-          "id": "263085",
-          "title": "New Mystery Box Event \"Neon Rift\" Now Live",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20260708/263085.html"
-        },
         {
           "date": "2026-07-14",
           "id": "263143",
@@ -1494,6 +1480,12 @@
             "1576244013823172846"
           ],
           "signature": "ab524c4dc407b80b6a2994ff08faecc403ca7bb729bc73be19bf6bc5c222f841"
+        },
+        "263085": {
+          "messages": [
+            "1576244219658379557"
+          ],
+          "signature": "8d022f06dab570dc96bd4a643c03a32b1a56e6e071d44540145841481f22a9a6"
         }
       },
       "route": "12975a7fb0e13152",
