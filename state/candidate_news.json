@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3836",
-        "inflight": false,
-        "messages": [
-          "1576260914875858945"
-        ],
-        "pages": 1,
-        "signature": "cb2ce65084015c89c180f3cc1f1419b0138a09a7d19edfa8aedcbd67f450c19c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3836",
-          "title": "New smart features in Team Picks and Build Guide",
-          "ts": 1795316400
-        },
         {
           "id": "3835",
           "title": "[Meeting You in the World o'Shrooms] Version Pre-Download & Update Notice",
@@ -320,6 +307,12 @@
             "1576253690745196586"
           ],
           "signature": "e99c781ed8e5a92fd65a99290a285f081a075f3d90f5756f23161f50262de4ef"
+        },
+        "3836": {
+          "messages": [
+            "1576260914875858945"
+          ],
+          "signature": "cb2ce65084015c89c180f3cc1f1419b0138a09a7d19edfa8aedcbd67f450c19c"
         },
         "3837": {
           "messages": [
