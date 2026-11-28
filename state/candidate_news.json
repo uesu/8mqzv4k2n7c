@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6187",
-        "inflight": false,
-        "messages": [
-          "1576244588627103917"
-        ],
-        "pages": 1,
-        "signature": "0b46ffd01291ea237a875d17d85e2ea829d1532f1d7733d53843fe34a27b967e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6187",
-          "title": "Arknights: Endfield Game Tools Updated for the New Version!",
-          "ts": 1777003200
-        },
         {
           "id": "1336",
           "title": "Arknights: Endfield × M.RAGE Apparel Collaboration Debuts at LVL UP EXPO 2026",
@@ -680,6 +667,12 @@
             "1576232781594370109"
           ],
           "signature": "c4d0f679a0c0d5e4896b9cb7e2917443359038716d105761f56f1c7ac2543ce9"
+        },
+        "6187": {
+          "messages": [
+            "1576244588627103917"
+          ],
+          "signature": "0b46ffd01291ea237a875d17d85e2ea829d1532f1d7733d53843fe34a27b967e"
         },
         "6198": {
           "messages": [
