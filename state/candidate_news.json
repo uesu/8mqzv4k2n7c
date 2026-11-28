@@ -788,22 +788,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "261950",
-        "inflight": false,
-        "messages": [
-          "1576237372180398257"
-        ],
-        "pages": 1,
-        "signature": "4a18e8b00f28997f0fd3c2f899de1c5f9c6e644062133f3f5e2d7f35e325c3de"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-04-29",
-          "id": "261950",
-          "title": "NTE Officially Launched",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260428/261950.html"
-        },
         {
           "date": "2026-04-30",
           "id": "262015",
@@ -1413,6 +1399,12 @@
             "1576236911243296809"
           ],
           "signature": "c50de26acdbd6a16fdb0ff4ebd7196875708e75784e3511abdf71c919fbecc32"
+        },
+        "261950": {
+          "messages": [
+            "1576237372180398257"
+          ],
+          "signature": "4a18e8b00f28997f0fd3c2f899de1c5f9c6e644062133f3f5e2d7f35e325c3de"
         },
         "261969": {
           "messages": [
