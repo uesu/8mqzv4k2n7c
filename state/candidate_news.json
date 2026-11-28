@@ -758,22 +758,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "257483",
-        "inflight": false,
-        "messages": [
-          "1576232585145622862"
-        ],
-        "pages": 1,
-        "signature": "801c0e1cdf3cbf7fae1718eaa1be34009b8c8bb898018a53716f4152191077f1"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-07-17",
-          "id": "257483",
-          "title": "NTE Is Heading to Gamescom2025!",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20250718/257483.html"
-        },
         {
           "date": "2025-07-24",
           "id": "257539",
@@ -1387,6 +1373,12 @@
             "1576232048643936507"
           ],
           "signature": "47702f242259a18f47ecd376ba308072270fdeba50e921eb9b09a1d834bf3337"
+        },
+        "257483": {
+          "messages": [
+            "1576232585145622862"
+          ],
+          "signature": "801c0e1cdf3cbf7fae1718eaa1be34009b8c8bb898018a53716f4152191077f1"
         }
       },
       "route": "12975a7fb0e13152",
