@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7032",
-        "inflight": false,
-        "messages": [
-          "1576227476827545723",
-          "1576227496955871486"
-        ],
-        "pages": 2,
-        "signature": "f27cb23d0ba883a27bba31b98294660abf0594817d3d26c2088df4acf0368ed9"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7032",
-          "title": "Arknights: Endfield Beta Test Sign-up Now Open",
-          "ts": 1734145200
-        },
         {
           "id": "1347",
           "title": "Beta Test Fair Play Statement",
@@ -730,6 +716,13 @@
             "1576226401080578160"
           ],
           "signature": "58a7b5ef4e5c7af2f7e15f24bcc96a5e60b4a7f78e6e368d6e6beea2ed651abb"
+        },
+        "7032": {
+          "messages": [
+            "1576227476827545723",
+            "1576227496955871486"
+          ],
+          "signature": "f27cb23d0ba883a27bba31b98294660abf0594817d3d26c2088df4acf0368ed9"
         },
         "9583": {
           "messages": [
