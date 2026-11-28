@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1338",
-        "inflight": false,
-        "messages": [
-          "1576239193007595523",
-          "1576239211944743004"
-        ],
-        "pages": 2,
-        "signature": "3f445254defe2dba224f84e673f04fba1eb278c3c06119fddeac4295ae7242dc"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1338",
-          "title": "[River's Daughter] Chartered Headhunting Details",
-          "ts": 1773203400
-        },
         {
           "id": "5213",
           "title": "[Budding Anew Issue] LTO Details",
@@ -523,6 +509,13 @@
             "1576234232911761408"
           ],
           "signature": "d17faf7490183b08f6212e23af6c7f9d9e20608c8c9ca001edc880613a781f6d"
+        },
+        "1338": {
+          "messages": [
+            "1576239193007595523",
+            "1576239211944743004"
+          ],
+          "signature": "3f445254defe2dba224f84e673f04fba1eb278c3c06119fddeac4295ae7242dc"
         },
         "1339": {
           "messages": [
