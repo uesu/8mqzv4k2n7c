@@ -1,0 +1,57 @@
+name: Candidate news catch-up (attended live)
+
+# LIVE Discord posts: only after initialization, preview, channel review and explicit
+# opt-in. Pause the external scheduler and every other writer before starting.
+on:
+  workflow_dispatch:
+    inputs:
+      writers_paused:
+        description: All schedulers and other writers are paused
+        type: boolean
+        default: false
+      confirmation:
+        description: Type START_CANDIDATE_BACKFILL to send available historical articles
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: game-express-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  catchup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.15.2'
+      - run: python -m pip install -q -r requirements.txt
+      - name: Attended candidate catch-up (sends live)
+        env:
+          CATCHUP_GITHUB_TOKEN: ${{ github.token }}
+          GE_VARS_JSON: ${{ toJSON(vars) }}
+          DISCORD_WEBHOOK_NEWS_NTE: ${{ secrets.DISCORD_WEBHOOK_NEWS_NTE }}
+          DISCORD_WEBHOOK_NEWS_ENDFIELD: ${{ secrets.DISCORD_WEBHOOK_NEWS_ENDFIELD }}
+          DISCORD_WEBHOOK_NEWS_SILVERPALACE: ${{ secrets.DISCORD_WEBHOOK_NEWS_SILVERPALACE }}
+          CATCHUP_WRITERS_PAUSED: ${{ inputs.writers_paused }}
+          CATCHUP_CONFIRM: ${{ inputs.confirmation }}
+        run: |
+          set -euo pipefail
+          command -v ffmpeg >/dev/null
+          command -v ffprobe >/dev/null
+          auth="$(printf 'x-access-token:%s' "$CATCHUP_GITHUB_TOKEN" | base64 -w0)"
+          echo "::add-mask::$auth"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
+          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"
+          unset CATCHUP_GITHUB_TOKEN auth
+          python -m gamexpress.candidate_news_catchup

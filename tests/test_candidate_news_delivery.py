@@ -19,6 +19,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from gamexpress import candidate_news_catchup as catchup  # noqa: E402
 from gamexpress import candidate_news_delivery as delivery  # noqa: E402
 from gamexpress import candidate_news_recovery as recovery  # noqa: E402
 from gamexpress import candidate_news_runner as runner  # noqa: E402
@@ -747,6 +748,141 @@ class CandidateDeliveryTests(unittest.TestCase):
             self.assertEqual(result["posted"]["1"]["messages"], ["101"])
             persisted = json.loads(git(base, "--git-dir", str(remote), "show", f"refs/heads/{branch}:state/state.json"))
             self.assertEqual(persisted["candidate_news"]["silverpalace"], result)
+
+    def test_attended_catchup_runs_until_all_sources_are_empty(self):
+        state = {source: {"pending": 2, "posted": 0, "partial": False} for source in catchup.SOURCES}
+        calls, waits = [], []
+
+        async def inspect():
+            return copy.deepcopy(state)
+
+        async def run_one(source):
+            calls.append(source)
+            state[source]["pending"] -= 1
+            state[source]["posted"] += 1
+
+        async def wait(seconds):
+            waits.append(seconds)
+
+        result = asyncio.run(catchup.catch_up(inspect, run_one, wait=wait, clock=lambda: 0))
+        self.assertEqual(calls, list(catchup.SOURCES) * 2)
+        self.assertEqual(waits, [catchup.MIN_SOURCE_INTERVAL] * 6)
+        self.assertTrue(all(result[source]["pending"] == 0 for source in catchup.SOURCES))
+
+    def test_attended_catchup_stops_on_any_hold_or_no_progress(self):
+        state = {source: {"pending": 1, "posted": 0, "partial": False} for source in catchup.SOURCES}
+        calls = []
+
+        async def inspect(): return copy.deepcopy(state)
+        async def wait(_seconds): pass
+        async def held(source):
+            calls.append(source)
+            raise catchup.CatchupHold("uncertain send")
+
+        with self.assertRaises(catchup.CatchupHold):
+            asyncio.run(catchup.catch_up(inspect, held, wait=wait, clock=lambda: 0))
+        self.assertEqual(calls, [catchup.SOURCES[0]])
+        calls.clear()
+
+        async def no_progress(source): calls.append(source)
+        with self.assertRaises(catchup.CatchupHold):
+            asyncio.run(catchup.catch_up(inspect, no_progress, wait=wait, clock=lambda: 0))
+        self.assertEqual(calls, list(catchup.SOURCES))
+        calls.clear()
+        times = iter((0, 1))
+        with self.assertRaises(catchup.CatchupHold):
+            asyncio.run(catchup.catch_up(inspect, no_progress, wait=wait, clock=lambda: next(times), deadline_seconds=1))
+        self.assertEqual(calls, [])
+
+    def test_attended_catchup_rejects_missing_approval_before_network(self):
+        env = {"NEWS_GAMES": "nte,endfield,silverpalace", "NEWS_CANDIDATES_BACKFILL": "1"}
+        with (patch.dict("os.environ", env, clear=True),
+              patch.object(catchup.runner, "authoritative_branch", side_effect=AssertionError("must not access git")),
+              self.assertRaises(catchup.CatchupHold)):
+            asyncio.run(catchup.run_from_environment())
+
+    def test_attended_catchup_integrates_runner_and_local_git_without_discord(self):
+        branch = "arena/98b5f4e1-game-express"
+        hooks = {"nte": HOOK,
+                 "endfield": "https://discord.com/api/webhooks/222222222222222222/bbbbbbbbbbbbbbbbbbbb",
+                 "silverpalace": "https://discord.com/api/webhooks/333333333333333333/cccccccccccccccccccc"}
+        env = {"NEWS_GAMES": ",".join(catchup.SOURCES), "NEWS_CANDIDATES_BACKFILL": "1",
+               "CATCHUP_WRITERS_PAUSED": "true", "CATCHUP_CONFIRM": "START_CANDIDATE_BACKFILL"}
+        env.update({f"DISCORD_WEBHOOK_NEWS_{source.upper()}": url for source, url in hooks.items()})
+        settings = load_settings(env)
+        rows = {
+            "endfield": [{"id": str(i), "title": "Official " + str(i), "ts": NOW - 10 + i} for i in (1, 2)],
+            "silverpalace": [row(str(i)) for i in (1, 2)],
+            "nte": [{**row(str(i)), "url": "https://nte.perfectworld.com/en/article/news/gamenews/20261127/" + str(i) + ".html"}
+                    for i in (1, 2)],
+        }
+        sends = []
+        ambiguous = [False]
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            remote, seed = base / "remote.git", base / "seed"
+            seed.mkdir()
+
+            def git(cwd, *args):
+                return subprocess.run(["git", *args], cwd=cwd, capture_output=True, check=True).stdout
+
+            git(base, "init", "--bare", str(remote))
+            git(seed, "init", "-b", branch)
+            git(seed, "config", "user.name", "Test")
+            git(seed, "config", "user.email", "test@example.invalid")
+            (seed / "state").mkdir()
+            records = {source: empty_record(source, delivery.destination(settings, source)[1]) for source in hooks}
+            (seed / "state/candidate_news.json").write_text(json.dumps({"schema": 1, "candidate_news": records}))
+            git(seed, "add", "state")
+            git(seed, "commit", "-m", "synthetic initialized ledger")
+            git(seed, "remote", "add", "origin", str(remote))
+            git(seed, "push", "origin", f"HEAD:refs/heads/{branch}")
+
+            async def discover(_fetcher, source): return copy.deepcopy(rows[source])
+            async def render(_fetcher, _settings, _source, candidate): return [payload(candidate["id"])], {}
+            async def send(_session, _settings, source, _payload, *, files=None):
+                saved = json.loads(git(base, "--git-dir", str(remote), "show", f"refs/heads/{branch}:state/candidate_news.json"))
+                self.assertTrue(saved["candidate_news"][source]["partial"]["inflight"])
+                sends.append(source)
+                if ambiguous[0]:
+                    return SimpleNamespace(ok=False, ambiguous=True, message_id=None)
+                return SimpleNamespace(ok=True, ambiguous=False, message_id=str(1000 + len(sends)))
+
+            def no_post(*args, **kwargs): raise AssertionError("real network POST forbidden")
+            with (patch.dict("os.environ", env, clear=True), patch.object(catchup, "ROOT", seed),
+                  patch.object(runner, "ROOT", seed), patch.object(runner, "authoritative_branch", return_value=branch),
+                  patch.object(catchup, "MIN_SOURCE_INTERVAL", 0), patch.object(delivery, "discover", discover),
+                  patch.object(delivery, "render_candidate_animated", render), patch.object(delivery, "send_candidate_once", send),
+                  patch("aiohttp.ClientSession.post", no_post), contextlib.redirect_stdout(io.StringIO())):
+                asyncio.run(catchup.run_from_environment())
+                self.assertEqual(sends, list(catchup.SOURCES) * 2)
+                final = json.loads(git(base, "--git-dir", str(remote), "show", f"refs/heads/{branch}:state/candidate_news.json"))
+                self.assertTrue(all(len(final["candidate_news"][source]["posted"]) == 2 for source in hooks))
+                rows["endfield"].append({"id": "3", "title": "Official 3", "ts": NOW - 7})
+                ambiguous[0] = True
+                with self.assertRaises(catchup.CatchupHold):
+                    asyncio.run(catchup.run_from_environment())
+                self.assertEqual(sends[-1], "endfield")
+                self.assertEqual(len(sends), 7)
+                with self.assertRaises(catchup.CatchupHold):
+                    asyncio.run(catchup.run_from_environment())
+                self.assertEqual(len(sends), 7)  # a new attempt holds before any send
+
+    def test_attended_catchup_workflow_is_manual_locked_and_explicitly_live(self):
+        import yaml
+        wf = ROOT / ".github" / "workflows"
+        catchup_wf = yaml.safe_load((wf / "candidate_news_catchup.yml").read_text())
+        monitor_wf = yaml.safe_load((wf / "monitor.yml").read_text())
+        self.assertEqual(catchup_wf["concurrency"], monitor_wf["concurrency"])
+        self.assertFalse(catchup_wf["concurrency"]["cancel-in-progress"])
+        self.assertEqual(set(catchup_wf[True]), {"workflow_dispatch"})
+        steps = catchup_wf["jobs"]["catchup"]["steps"]
+        self.assertFalse(steps[0]["with"]["persist-credentials"])
+        self.assertEqual(steps[0]["with"]["fetch-depth"], 0)
+        self.assertIn("python -m gamexpress.candidate_news_catchup", steps[-1]["run"])
+        self.assertNotIn("${{", steps[-1]["run"])
+        self.assertIn("CATCHUP_CONFIRM", steps[-1]["env"])
+        self.assertIn("CATCHUP_WRITERS_PAUSED", steps[-1]["env"])
 
     def test_crashed_process_holds_after_restart_and_reviewed_resolution(self):
         """A fresh process sees a durable intent after a simulated crash; no network POSTs."""

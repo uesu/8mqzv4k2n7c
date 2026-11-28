@@ -4316,7 +4316,7 @@ def test_python_patch_selection_is_numeric_stable_and_one_series_at_a_time():
         assert module.bump_ruff_toml(int(target[0]), int(target[1:])) is False
 
 
-WORKFLOW_PINS = ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml", "candidate_news_recovery.yml")
+WORKFLOW_PINS = ("ci.yml", "monitor.yml", "python_version_bump.yml", "sync_prod.yml", "candidate_news_recovery.yml", "candidate_news_catchup.yml")
 
 
 def _assert_runtime_python_docs_agree(root: Path) -> None:
@@ -17852,7 +17852,10 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         candidate_state_payload = b'{"schema":1,"candidate_news":{"test":"preserve"}}\n'
         (prod_root / "state" / "candidate_news.json").write_bytes(candidate_state_payload)
         inventory_payload = b"synthetic production inventory; never a credential\n"
-        (prod_root / "variables and secrets.txt").write_bytes(inventory_payload)
+        inventory_names = ("variables and secrets.txt", "variables and secrets for game express.txt",
+                           "variables and secrets for news express.txt", "news express twitter and reddit.txt")
+        for name in inventory_names:
+            (prod_root / name).write_bytes(inventory_payload)
         stale_fixture = prod_root / "tests/fixtures/beta/zzz_changelog_beta.md"
         stale_fixture.parent.mkdir(parents=True)
         stale_fixture.write_text("obsolete synthetic test fixture\n", encoding="utf-8")
@@ -17868,8 +17871,9 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         assert ".github/workflows/sync_prod.yml" in res["removed"]
         assert "state/state.json" in res["preserved"]
         assert "state/candidate_news.json" in res["preserved"]
-        assert "variables and secrets.txt" in res["preserved"]
-        assert (prod_root / "variables and secrets.txt").read_bytes() == inventory_payload
+        for name in inventory_names:
+            assert name in res["preserved"]
+            assert (prod_root / name).read_bytes() == inventory_payload
         assert not stale_fixture.exists()
         assert (prod_root / "tests/fixtures/beta/zzz_changelog_beta.txt").is_file()
         assert (prod_root / "state" / "state.json").read_bytes() == live_state_payload
@@ -17934,16 +17938,18 @@ def test_prod_sync_workflow_and_tree_synchronizer_preserve_live_state_and_merge_
         sync_mod._run_git(["init", "-q"], cwd=prod_root)
         sync_mod._run_git(["config", "user.name", "test"], cwd=prod_root)
         sync_mod._run_git(["config", "user.email", "test@example.com"], cwd=prod_root)
-        sync_mod._run_git(["add", "-f", "state/state.json", "state/candidate_news.json", "config/games.json", "variables and secrets.txt"], cwd=prod_root)
+        sync_mod._run_git(["add", "-f", "state/state.json", "state/candidate_news.json", "config/games.json", *inventory_names], cwd=prod_root)
         sync_mod._run_git(["commit", "-q", "-m", "init"], cwd=prod_root)
         (prod_root / "state" / "state.json").write_bytes(b'{"corrupted": true}\n')
         (prod_root / "state" / "candidate_news.json").write_bytes(b'{"corrupted": true}\n')
-        (prod_root / "variables and secrets.txt").write_bytes(b"unexpected modification\n")
+        for name in inventory_names:
+            (prod_root / name).write_bytes(b"unexpected modification\n")
         staged_files = sync_mod._stage_and_verify(prod_root)
         assert "state/state.json" not in staged_files
         assert "state/candidate_news.json" not in staged_files
-        assert "variables and secrets.txt" not in staged_files
-        assert (prod_root / "variables and secrets.txt").read_bytes() == inventory_payload
+        for name in inventory_names:
+            assert name not in staged_files
+            assert (prod_root / name).read_bytes() == inventory_payload
         assert (prod_root / "state" / "candidate_news.json").read_bytes() == candidate_state_payload
         assert ".github/workflows/sync_prod.yml" not in staged_files
         assert (prod_root / "state" / "state.json").read_bytes() == live_state_payload

@@ -3,8 +3,8 @@
 Used by .github/workflows/sync_prod.yml whenever commits land on main (or via workflow_dispatch).
 
 Safety guarantees:
-  1. Live state and inventory protection: `state/state.json`, `state/candidate_news.json` and
-     `variables and secrets.txt` are NEVER created, overwritten, staged, or deleted in the target
+  1. Live state and inventory protection: both state files and the named production inventory/log
+     files in PROTECTED_PROD_FILES are NEVER created, overwritten, staged, or deleted in the target
      production repository.
   2. Program announcement seed union: `config/program_announcements.json` preserves any tweet IDs
      discovered live by the production monitor while adding/updating entries from the dev repo.
@@ -47,6 +47,7 @@ SYNC_WORKFLOW_FILES = (
     ".github/workflows/monitor.yml",
     ".github/workflows/python_version_bump.yml",
     ".github/workflows/candidate_news_recovery.yml",
+    ".github/workflows/candidate_news_catchup.yml",
 )
 
 DEV_ONLY_WORKFLOW_FILES = (
@@ -72,6 +73,9 @@ PROTECTED_PROD_FILES = (
     "state/state.json",
     "state/candidate_news.json",
     "variables and secrets.txt",
+    "variables and secrets for game express.txt",
+    "variables and secrets for news express.txt",
+    "news express twitter and reddit.txt",
 )
 
 EXCLUDED_DEV_PATHS = (
