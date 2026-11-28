@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1320",
-        "inflight": false,
-        "messages": [
-          "1576250760335728723"
-        ],
-        "pages": 1,
-        "signature": "a2d4a5223e2896290d277cf60ca305cae90414faabf2a1eae5500b493f66d880"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1320",
-          "title": "Discord Game Stats Widget Is Now Live!",
-          "ts": 1782481500
-        },
         {
           "id": "5202",
           "title": "🎁 Discord Camille First Impressions Sharing Event Opens",
@@ -344,6 +331,12 @@
             "1576230669904908338"
           ],
           "signature": "fd2b55116272698d2fd75a8b7c53c0542f7e913aa02a70292f94d253d8da7f1a"
+        },
+        "1320": {
+          "messages": [
+            "1576250760335728723"
+          ],
+          "signature": "a2d4a5223e2896290d277cf60ca305cae90414faabf2a1eae5500b493f66d880"
         },
         "1321": {
           "messages": [
