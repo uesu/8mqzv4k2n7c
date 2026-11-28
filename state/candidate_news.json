@@ -867,22 +867,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "264365",
-        "inflight": false,
-        "messages": [
-          "1576249016864346254"
-        ],
-        "pages": 1,
-        "signature": "e5c34d071765df6490e5a066a1713f88444099d64876656dad04eca05196205d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-09-24",
-          "id": "264365",
-          "title": "NTE Top-Up Center Exclusive Bundles Now Available!",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20260924/264365.html"
-        },
         {
           "date": "2026-09-28",
           "id": "264393",
@@ -1553,6 +1539,12 @@
             "1576248771916861654"
           ],
           "signature": "5aad43f946e4ed42291bff4e77d60be2d9098a02c4cc8b9289cb6126bd0c0012"
+        },
+        "264365": {
+          "messages": [
+            "1576249016864346254"
+          ],
+          "signature": "e5c34d071765df6490e5a066a1713f88444099d64876656dad04eca05196205d"
         }
       },
       "route": "12975a7fb0e13152",
