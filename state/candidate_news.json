@@ -1382,21 +1382,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "55",
-        "inflight": false,
-        "messages": [
-          "1576231363005259901"
-        ],
-        "pages": 1,
-        "signature": "32b5784d0fc94831925f8ba60cfd333e006b082031798f6c8e7985add5edfaf6"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-20",
-          "id": "55",
-          "title": "Intel Processor BIOS Update Guide"
-        },
         {
           "date": "2026-07-20",
           "id": "60",
@@ -1530,6 +1517,12 @@
             "1576230833298350141"
           ],
           "signature": "c16c247bcf8938e402c2c7ec4282931e6e1d989ade4ffe44ff83d9030e184c47"
+        },
+        "55": {
+          "messages": [
+            "1576231363005259901"
+          ],
+          "signature": "32b5784d0fc94831925f8ba60cfd333e006b082031798f6c8e7985add5edfaf6"
         },
         "7": {
           "messages": [
