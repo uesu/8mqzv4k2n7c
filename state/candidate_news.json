@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1337",
-        "inflight": false,
-        "messages": [
-          "1576241480446771322"
-        ],
-        "pages": 1,
-        "signature": "7d77e22e4782fb2dd6ec22ba79698a28265d75fd1078625a25c97255cbb4745d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1337",
-          "title": "[Journey of the Long-Ear] Celebration Event Details",
-          "ts": 1775008800
-        },
         {
           "id": "8906",
           "title": "Arknights: Endfield Now on GeForce NOW – FAQ",
@@ -488,6 +475,12 @@
             "1576234232911761408"
           ],
           "signature": "d17faf7490183b08f6212e23af6c7f9d9e20608c8c9ca001edc880613a781f6d"
+        },
+        "1337": {
+          "messages": [
+            "1576241480446771322"
+          ],
+          "signature": "7d77e22e4782fb2dd6ec22ba79698a28265d75fd1078625a25c97255cbb4745d"
         },
         "1338": {
           "messages": [
