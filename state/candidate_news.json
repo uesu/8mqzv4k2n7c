@@ -1,23 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2662",
-        "inflight": false,
-        "messages": [
-          "1576238480600727623",
-          "1576238501446291487",
-          "1576238521033687185"
-        ],
-        "pages": 3,
-        "signature": "e85db2070ab66600ff2dfc10e0a10f8f3382740c91a2c32a93dd0a76184fef45"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2662",
-          "title": "Arknights: Endfield [Old Deep Water Dies, by Rising Tide It is Denied] DEV Comm",
-          "ts": 1772445600
-        },
         {
           "id": "1339",
           "title": "[Qingbo Rising] Limited-Time Sign-In Event Details",
@@ -562,6 +547,14 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2662": {
+          "messages": [
+            "1576238480600727623",
+            "1576238501446291487",
+            "1576238521033687185"
+          ],
+          "signature": "e85db2070ab66600ff2dfc10e0a10f8f3382740c91a2c32a93dd0a76184fef45"
         },
         "2675": {
           "messages": [
