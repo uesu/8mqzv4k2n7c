@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0755",
-        "inflight": false,
-        "messages": [
-          "1576235737395757382"
-        ],
-        "pages": 1,
-        "signature": "753d837f0d302771cdea4e4d323a0195be8af9ee31a567f888122f4e41b8eb1f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0755",
-          "title": "Arknights: Endfield Game Tools Guide",
-          "ts": 1769050800
-        },
         {
           "id": "7029",
           "title": "Follow the Arknights: Endfield official social media accounts to earn up to 180 Oroberyls",
@@ -553,6 +540,12 @@
         }
       ],
       "posted": {
+        "0755": {
+          "messages": [
+            "1576235737395757382"
+          ],
+          "signature": "753d837f0d302771cdea4e4d323a0195be8af9ee31a567f888122f4e41b8eb1f"
+        },
         "0766": {
           "messages": [
             "1576225920195371170"
