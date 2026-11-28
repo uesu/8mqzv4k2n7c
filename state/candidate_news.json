@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7013",
-        "inflight": false,
-        "messages": [
-          "1576256993294033017"
-        ],
-        "pages": 1,
-        "signature": "6f5960720bf106f4e2e4409b0675453a7cfa771e592ea6dc81a9267ac32978a6"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7013",
-          "title": "[OrbiPom! MERGE!] Fun & Games Event Details",
-          "ts": 1790751600
-        },
         {
           "id": "5207",
           "title": "[Sanctuary of Ink] New Version Guide Page Release Details",
@@ -699,6 +686,12 @@
             "1576228045767975063"
           ],
           "signature": "022776ec87573afbe66a2172e6efb729aec27d26234c8a0ef5806d79adf298e6"
+        },
+        "7013": {
+          "messages": [
+            "1576256993294033017"
+          ],
+          "signature": "6f5960720bf106f4e2e4409b0675453a7cfa771e592ea6dc81a9267ac32978a6"
         },
         "7017": {
           "messages": [
