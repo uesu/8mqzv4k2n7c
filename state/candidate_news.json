@@ -859,24 +859,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "263947",
-        "inflight": false,
-        "messages": [
-          "1576247675374805076",
-          "1576247694580654091",
-          "1576247712964288613"
-        ],
-        "pages": 3,
-        "signature": "98c42f17bd02916b6de2756355b06095a29823d9d94604af48c5308095b4e9e8"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-09-08",
-          "id": "263947",
-          "title": "Server Maintenance Notice: 2026-09-09",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260908/263947.html"
-        },
         {
           "date": "2026-09-14",
           "id": "264144",
@@ -1542,6 +1526,14 @@
             "1576247201926221865"
           ],
           "signature": "f197143ea76000d3728aea4c4b707a65033106e8e2e1a54a5cdda8480453f1df"
+        },
+        "263947": {
+          "messages": [
+            "1576247675374805076",
+            "1576247694580654091",
+            "1576247712964288613"
+          ],
+          "signature": "98c42f17bd02916b6de2756355b06095a29823d9d94604af48c5308095b4e9e8"
         }
       },
       "route": "12975a7fb0e13152",
