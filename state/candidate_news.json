@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8919",
-        "inflight": false,
-        "messages": [
-          "1576231193291133111"
-        ],
-        "pages": 1,
-        "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8919",
-          "title": "Arknights: Endfield PlayStation®5 Technical Test Access Distribution Now Underway",
-          "ts": 1763953200
-        },
         {
           "id": "5222",
           "title": "Arknights: Endfield Beta Test II Pre-Download Now Available",
@@ -742,6 +729,12 @@
             "1576230916622258278"
           ],
           "signature": "ac6fe7069e4ba551386cdb6a95fc9e41cb08f84f339a998c10024dd702b3b7b2"
+        },
+        "8919": {
+          "messages": [
+            "1576231193291133111"
+          ],
+          "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
         },
         "9582": {
           "messages": [
