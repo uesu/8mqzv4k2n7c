@@ -796,22 +796,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "262114",
-        "inflight": false,
-        "messages": [
-          "1576238588553597094"
-        ],
-        "pages": 1,
-        "signature": "3e249265ff4bdfb3b5d344e22df0980d8037a1862fdb95191920d17b7f02207a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-05-07",
-          "id": "262114",
-          "title": "NTE: A Letter from Hethereau | To My Precious~",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260507/262114.html"
-        },
         {
           "date": "2026-05-11",
           "id": "262132",
@@ -1432,6 +1418,12 @@
             "1576238328834031719"
           ],
           "signature": "5717af76dc686e7af1a1e0aace67bd7a45b8319e08588da45367b5c17169c44a"
+        },
+        "262114": {
+          "messages": [
+            "1576238588553597094"
+          ],
+          "signature": "3e249265ff4bdfb3b5d344e22df0980d8037a1862fdb95191920d17b7f02207a"
         }
       },
       "route": "12975a7fb0e13152",
