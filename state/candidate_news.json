@@ -3,8 +3,10 @@
     "endfield": {
       "partial": {
         "id": "9574",
-        "inflight": true,
-        "messages": [],
+        "inflight": false,
+        "messages": [
+          "1576234471508807883"
+        ],
         "pages": 2,
         "signature": "7fd2c342b5ed1e6ec67e3a5b849b5cb8e9f754cdf680682c4e68a09ff8ca69b5"
       },
