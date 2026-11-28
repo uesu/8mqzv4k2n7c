@@ -843,26 +843,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "263605",
-        "inflight": false,
-        "messages": [
-          "1576245998076829790",
-          "1576246019484684410",
-          "1576246038552121385",
-          "1576246224409985087",
-          "1576246242864930858"
-        ],
-        "pages": 5,
-        "signature": "4699f674849f09769fa946e0eaac13bf9310dee23488653ca72ffc4dbc959b83"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-08-18",
-          "id": "263605",
-          "title": "Ver. 1.3 Rising from the Moonlit Fog Patch Notes",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260817/263605.html"
-        },
         {
           "date": "2026-08-24",
           "id": "263718",
@@ -1516,6 +1498,16 @@
             "1576245796326604891"
           ],
           "signature": "28f965a585e7b81c00bc3a540dd189fd73c395d9bff4bfc2beb1a713eb4785ee"
+        },
+        "263605": {
+          "messages": [
+            "1576245998076829790",
+            "1576246019484684410",
+            "1576246038552121385",
+            "1576246224409985087",
+            "1576246242864930858"
+          ],
+          "signature": "4699f674849f09769fa946e0eaac13bf9310dee23488653ca72ffc4dbc959b83"
         }
       },
       "route": "12975a7fb0e13152",
