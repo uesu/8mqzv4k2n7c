@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9569",
-        "inflight": false,
-        "messages": [
-          "1576260566538785012"
-        ],
-        "pages": 1,
-        "signature": "502b0c6ce58de29ea0e1c0a1023423e0f24474a3021b02839b82ce1f72f5e628"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9569",
-          "title": "[Meeting You in the World o'Shrooms] New Version Guide Page Release Details",
-          "ts": 1795262400
-        },
         {
           "id": "7011",
           "title": "[Meeting You in the World o'Shrooms] Version DEV Comm",
@@ -886,6 +873,12 @@
             "1576260408233169097"
           ],
           "signature": "b66d5b3641720480e2636324db0c5878d5e6334f74706741e21703729773b76e"
+        },
+        "9569": {
+          "messages": [
+            "1576260566538785012"
+          ],
+          "signature": "502b0c6ce58de29ea0e1c0a1023423e0f24474a3021b02839b82ce1f72f5e628"
         },
         "9570": {
           "messages": [
