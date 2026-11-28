@@ -834,7 +834,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "263143",
+        "inflight": false,
+        "messages": [],
+        "pages": 3,
+        "signature": "2567296d5ae8dd730250f7f07b7f38fc66e44403faa635116f10bb400650c99b"
+      },
       "pending": [
         {
           "date": "2026-07-14",
