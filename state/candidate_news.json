@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9566",
-        "inflight": false,
-        "messages": [
-          "1576249857528692890",
-          "1576249878324052021"
-        ],
-        "pages": 2,
-        "signature": "8e34a0e7210a49f53ffa95d1d6fff56e1dd0b60a22f69736728bd7fca69b486b"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9566",
-          "title": "🎁 [Contract Re-Ignition: Shared Insights] Discord Share & Win Event Now Open!",
-          "ts": 1781928000
-        },
         {
           "id": "6175",
           "title": "[Expunger of Sin] Chartered Headhunting",
@@ -803,6 +789,13 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "9566": {
+          "messages": [
+            "1576249857528692890",
+            "1576249878324052021"
+          ],
+          "signature": "8e34a0e7210a49f53ffa95d1d6fff56e1dd0b60a22f69736728bd7fca69b486b"
         },
         "9570": {
           "messages": [
