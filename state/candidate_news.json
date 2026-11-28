@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0748",
-        "inflight": false,
-        "messages": [
-          "1576251202822209567"
-        ],
-        "pages": 1,
-        "signature": "a7944363d9f2babe30b58c7666a264db9da5f1c6eb1cbee6fab673e00e423b16"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0748",
-          "title": "GRYPHLINK Real-Time Game Data Panel Now Live!",
-          "ts": 1783656000
-        },
         {
           "id": "7017",
           "title": "Arknights: Endfield [Homecoming] Core Chapter Version DEV Comm",
@@ -263,6 +250,12 @@
         }
       ],
       "posted": {
+        "0748": {
+          "messages": [
+            "1576251202822209567"
+          ],
+          "signature": "a7944363d9f2babe30b58c7666a264db9da5f1c6eb1cbee6fab673e00e423b16"
+        },
         "0750": {
           "messages": [
             "1576242718747791624"
