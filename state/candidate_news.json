@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "7028",
-        "inflight": false,
-        "messages": [
-          "1576236782683422762",
-          "1576236803147431987"
-        ],
-        "pages": 2,
-        "signature": "46b9138b609ca989910941ff8229c5711bd35e14dcbabdb3c011e082bf26257f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "7028",
-          "title": "Release Celebration [The Floaty Messenger] Chartered Headhunting Details",
-          "ts": 1770350400
-        },
         {
           "id": "6181",
           "title": "Notice Regarding Abnormal Game Performance Caused by NVIDIA App Optimization",
@@ -718,6 +704,13 @@
             "1576231981430087811"
           ],
           "signature": "accb0516bb66b90778211ff24a155218a7b610a95ffe40281554033534e3be06"
+        },
+        "7028": {
+          "messages": [
+            "1576236782683422762",
+            "1576236803147431987"
+          ],
+          "signature": "46b9138b609ca989910941ff8229c5711bd35e14dcbabdb3c011e082bf26257f"
         },
         "7029": {
           "messages": [
