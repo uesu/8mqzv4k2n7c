@@ -783,22 +783,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "261900",
-        "inflight": false,
-        "messages": [
-          "1576236453103673535"
-        ],
-        "pages": 1,
-        "signature": "946b13a1ee9cd91b105b800eafd3b23208985326df83bcd39f0547e64e73b33c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-04-23",
-          "id": "261900",
-          "title": "NTE Launch Events & Rewards At a Glance",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20260422/261900.html"
-        },
         {
           "date": "2026-04-26",
           "id": "261919",
@@ -1412,6 +1398,12 @@
             "1576236225453498450"
           ],
           "signature": "b685bc3695e78c15d673c6730d5401c92af3221ad7d37e2fc99f29a904da7e20"
+        },
+        "261900": {
+          "messages": [
+            "1576236453103673535"
+          ],
+          "signature": "946b13a1ee9cd91b105b800eafd3b23208985326df83bcd39f0547e64e73b33c"
         }
       },
       "route": "12975a7fb0e13152",
