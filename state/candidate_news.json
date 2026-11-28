@@ -751,22 +751,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "256774",
-        "inflight": false,
-        "messages": [
-          "1576230475851112509"
-        ],
-        "pages": 1,
-        "signature": "97d48b97c320cdba889c338f2f4134c2d0f2ff6d2f3a4cdbea66f62525dcf51b"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-06-10",
-          "id": "256774",
-          "title": "NTE Containment Test Instructions and FAQ",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20250610/256774.html"
-        },
         {
           "date": "2025-06-24",
           "id": "257042",
@@ -1380,6 +1366,12 @@
             "1576230152487043365"
           ],
           "signature": "8b792617739ae8ae1b75746e25324f4e935039cef095d43ec6b0b4c85fa050a2"
+        },
+        "256774": {
+          "messages": [
+            "1576230475851112509"
+          ],
+          "signature": "97d48b97c320cdba889c338f2f4134c2d0f2ff6d2f3a4cdbea66f62525dcf51b"
         }
       },
       "route": "12975a7fb0e13152",
