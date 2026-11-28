@@ -1358,21 +1358,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "12",
-        "inflight": false,
-        "messages": [
-          "1576226316641112147"
-        ],
-        "pages": 1,
-        "signature": "2b8e361db36ae24e8dc9149e9d18bdbce83784d89d1bda861f0a8cb9af4ad783"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-12-19",
-          "id": "12",
-          "title": "[Monotype] Beta Test Recruitment FAQ"
-        },
         {
           "date": "2026-01-09",
           "id": "22",
@@ -1470,6 +1457,12 @@
             "1576225839111217224"
           ],
           "signature": "f6195a520e27affa2dcbf6b76e7e2a88d2c229af459442a384c1116d5921e614"
+        },
+        "12": {
+          "messages": [
+            "1576226316641112147"
+          ],
+          "signature": "2b8e361db36ae24e8dc9149e9d18bdbce83784d89d1bda861f0a8cb9af4ad783"
         },
         "7": {
           "messages": [
