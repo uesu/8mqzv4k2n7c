@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9582",
-        "inflight": false,
-        "messages": [
-          "1576228848595505325"
-        ],
-        "pages": 1,
-        "signature": "f65f3317f89b72a9702ae01b3d9354af8133fd887dbaa280dfd2b0652b2295f6"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9582",
-          "title": "Beta Test: DEV Comm//01",
-          "ts": 1740477600
-        },
         {
           "id": "2677",
           "title": "Arknights: Endfield Online Event Rules",
@@ -735,6 +722,12 @@
             "1576227496955871486"
           ],
           "signature": "f27cb23d0ba883a27bba31b98294660abf0594817d3d26c2088df4acf0368ed9"
+        },
+        "9582": {
+          "messages": [
+            "1576228848595505325"
+          ],
+          "signature": "f65f3317f89b72a9702ae01b3d9354af8133fd887dbaa280dfd2b0652b2295f6"
         },
         "9583": {
           "messages": [
