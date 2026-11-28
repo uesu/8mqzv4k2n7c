@@ -784,22 +784,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "261919",
-        "inflight": false,
-        "messages": [
-          "1576236648004325468"
-        ],
-        "pages": 1,
-        "signature": "1e5e24fb20bf5990ff62fb25df7a4b604240a8c67478da495e02b987c8ee1313"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-04-26",
-          "id": "261919",
-          "title": "NTE Pre-Download Now Live",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260424/261919.html"
-        },
         {
           "date": "2026-04-27",
           "id": "261931",
@@ -1413,6 +1399,12 @@
             "1576236453103673535"
           ],
           "signature": "946b13a1ee9cd91b105b800eafd3b23208985326df83bcd39f0547e64e73b33c"
+        },
+        "261919": {
+          "messages": [
+            "1576236648004325468"
+          ],
+          "signature": "1e5e24fb20bf5990ff62fb25df7a4b604240a8c67478da495e02b987c8ee1313"
         }
       },
       "route": "12975a7fb0e13152",
