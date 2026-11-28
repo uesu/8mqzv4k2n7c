@@ -760,22 +760,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "257163",
-        "inflight": false,
-        "messages": [
-          "1576233083559084103"
-        ],
-        "pages": 1,
-        "signature": "4b1fc7a69fee799cb13d41ba23beb9d4bc07db19003136572303e4ae830c1b1f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-12-16",
-          "id": "257163",
-          "title": "NTE Containment Test Pre-download is Now Live!",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20250702/257163.html"
-        },
         {
           "date": "2025-12-23",
           "id": "256375",
@@ -1359,6 +1345,12 @@
             "1576231265323978924"
           ],
           "signature": "556449faf43bf2a0573590fe7fee60f26aafbc14f80c60d70c8a081f41d99461"
+        },
+        "257163": {
+          "messages": [
+            "1576233083559084103"
+          ],
+          "signature": "4b1fc7a69fee799cb13d41ba23beb9d4bc07db19003136572303e4ae830c1b1f"
         },
         "257261": {
           "messages": [
