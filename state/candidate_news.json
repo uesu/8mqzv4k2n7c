@@ -733,7 +733,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "252478",
+        "inflight": false,
+        "messages": [],
+        "pages": 1,
+        "signature": "e9812933f77f2266b0bf5b7c678dfb4297787edb31acb7bf1f0f99016d9f526b"
+      },
       "pending": [
         {
           "date": "2024-08-30",
