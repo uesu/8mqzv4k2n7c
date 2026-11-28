@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5204",
-        "inflight": false,
-        "messages": [
-          "1576261429688926280",
-          "1576261451033612430"
-        ],
-        "pages": 2,
-        "signature": "0c2026ace2936c204b278eea33e5e7e9f1da7335777f84332c9301046cf0756e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5204",
-          "title": "[Anvil, Backpack, Plus A Pot o'Honey] Chartered Headhunting",
-          "ts": 1795492800
-        },
         {
           "id": "2659",
           "title": "[Casual Roamer Issue] LTO Details",
@@ -509,6 +495,13 @@
             "1576250990678773905"
           ],
           "signature": "407d882995b82ff24e29cdf41518d48a72ccf65838044bdff8c7cdbb4800ede7"
+        },
+        "5204": {
+          "messages": [
+            "1576261429688926280",
+            "1576261451033612430"
+          ],
+          "signature": "0c2026ace2936c204b278eea33e5e7e9f1da7335777f84332c9301046cf0756e"
         },
         "5205": {
           "messages": [
