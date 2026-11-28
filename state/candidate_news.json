@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3844",
-        "inflight": false,
-        "messages": [
-          "1576240575311777964"
-        ],
-        "pages": 1,
-        "signature": "1e9414d75b8fc48ac3a0743d416b8f0f72c433588a270c6b326f283d8eaddd8a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3844",
-          "title": "Notice Regarding Game Issues Caused by NVIDIA Driver Updates",
-          "ts": 1773728400
-        },
         {
           "id": "0752",
           "title": "Arknights: Endfield x Beard Papa's collaboration coming soon",
@@ -559,6 +546,12 @@
             "1576229154570109010"
           ],
           "signature": "b9a25d56605bf5182e0add74ad6d6366f885ef724523e38a8a7fccc8e3305854"
+        },
+        "3844": {
+          "messages": [
+            "1576240575311777964"
+          ],
+          "signature": "1e9414d75b8fc48ac3a0743d416b8f0f72c433588a270c6b326f283d8eaddd8a"
         },
         "3846": {
           "messages": [
