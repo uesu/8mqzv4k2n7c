@@ -787,23 +787,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "261969",
-        "inflight": false,
-        "messages": [
-          "1576237150184415374",
-          "1576237168739754108"
-        ],
-        "pages": 2,
-        "signature": "762ffcb402568e0e28288dc0a032b14ae7c4c8493e8d26c9639b6698613cb10c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-04-28",
-          "id": "261969",
-          "title": "NTE — PlayStation®5 FAQ",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260428/261969.html"
-        },
         {
           "date": "2026-04-29",
           "id": "261950",
@@ -1419,6 +1404,13 @@
             "1576236911243296809"
           ],
           "signature": "c50de26acdbd6a16fdb0ff4ebd7196875708e75784e3511abdf71c919fbecc32"
+        },
+        "261969": {
+          "messages": [
+            "1576237150184415374",
+            "1576237168739754108"
+          ],
+          "signature": "762ffcb402568e0e28288dc0a032b14ae7c4c8493e8d26c9639b6698613cb10c"
         }
       },
       "route": "12975a7fb0e13152",
