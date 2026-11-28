@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0766",
-        "inflight": false,
-        "messages": [
-          "1576225920195371170"
-        ],
-        "pages": 1,
-        "signature": "ae2438afed6a9ccefe82737fc7e2e1218e3bfd4f01fb2d0d5fbc135ee21655af"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0766",
-          "title": "Arknights: Endfield Technical Test Trailer",
-          "ts": 1701996300
-        },
         {
           "id": "2675",
           "title": "Arknights: Endfield Technical Test Video and Live-stream Content Creator Program: Prelude",
@@ -723,6 +710,12 @@
         }
       ],
       "posted": {
+        "0766": {
+          "messages": [
+            "1576225920195371170"
+          ],
+          "signature": "ae2438afed6a9ccefe82737fc7e2e1218e3bfd4f01fb2d0d5fbc135ee21655af"
+        },
         "3857": {
           "messages": [
             "1576225649700372683",
