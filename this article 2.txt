@@ -1,0 +1,216 @@
+it seems okay on the discohook browser but on discord, the image is just static:
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [The Science of All Things - Curious Deductions Edition](https://silverpalace.elementagames.com/en-us/newsDetail?id=99)\n-# Official News · Silver Palace"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260724/6bf5a26da339ad69c51625defb6b4523.png",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/pBDRtSE_MYX_A9N4tGX7zwJqFysScAKaoI7EP44hpUw/https/s.elementagames.com/official/image/20260724/6bf5a26da339ad69c51625defb6b4523.png",
+                "width": 914,
+                "height": 514,
+                "content_type": "image/png"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**The Resurrection Mystery**\n\n**A Curious Case Shrouded in Secrets**\n\nIn the dead of night amid cemetery tombs, a mystery unfolds with a vanishing wound.\n\nAfter a scholar's death, an ancient legend casts its shadow over a secluded manor. The only explanation defies everything people thought they knew."
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260723/2740547ff367403112d1e43ea900e4c6.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/0kzs0o9GdZhYnUgs-RxCXUbudZGC5ne04L8zUeLOFlU/https/s.elementagames.com/official/image/20260723/2740547ff367403112d1e43ea900e4c6.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**Search for Clues. Deduce with Care.**\n\n\"Curious Deductions\" features multiple endings. People from all walks of life. A tangled web of clues. The devil is in the details.\n\nEvery deduction you make shapes the investigation and leads the mystery toward a different conclusion."
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260723/ccabc536b9617b1ccaf77a2d2d54047d.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/vAFBj04D_AnKuFWxzzo_5PQyJfxiL5pVSsyQ0y4_JbY/https/s.elementagames.com/official/image/20260723/ccabc536b9617b1ccaf77a2d2d54047d.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**Revisit Every Possibility**\n\nYou may conduct multiple Deductions until you reach an answer you're satisfied with. Once you've uncovered one such ending, press \"Restart Deduction\" to revert Evidence Board progress and seek out another ending.\n\nThere can only be one truth; once you've unveiled the truth behind a case, you'll unlock a unique collectable and achievement. Good luck out there, Detective!"
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260723/32021126a9aa62e180d3a28c7a185ba8.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/FOijk4QIqCOvguU_lYgCTS7CSgI4ZxELQZdzXhWg6gY/https/s.elementagames.com/official/image/20260723/32021126a9aa62e180d3a28c7a185ba8.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://silverpalace.elementagames.com/en-us/newsDetail?id=99"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
+
+i also asked soemone and it says this:
+
+there's this for example, i right click but it's jpg: https://s.elementagames.com/official/image/20260723/2740547ff367403112d1e43ea900e4c6.jpg
+
+but it was moving?
+
+The file URL ending in .jpg is almost certainly a renamed GIF or animated WebP file. Modern web browsers ignore file extensions and read the internal binary header of the file to decide how to render it.
+(Note: The direct image URL you shared could not be fetched directly by my browsing tool, so this breakdown is based on standard CDN behavior and the visual frames from your screenshots).
+
+Why It Moves on the Website
+
+• Header Sniffing: When Elementa Games uploaded the animation to their CDN (s.elementagames.com), their CMS or upload script likely appended .jpg as a default extension even though the raw file is actually a GIF or WebP. Chrome and other browsers check the actual Content-Type header or file signature (GIF89a or RIFF...WEBP) and play the animation normally.
+• Why Saving It Breaks or Looks Strange: If you right-click and save that file to your computer, Windows or your local image viewer trusts the .jpg extension rather than inspecting the file header. As a result, it either opens only the first static frame or throws a file corruption error.
+
+How to Check and Fix the File
+
+• Verify in Chrome DevTools: Press F12 on the news page, go to the Network tab, filter by Img, and click on 2740547ff367403112d1e43ea900e4c6.jpg. Under the Headers tab, look at Content-Type—it will likely say image/gif or image/webp.
+• Rename the Extension: After saving the .jpg file to your PC, manually rename the extension to .gif or .webp (matching what you saw in DevTools). Once renamed, your local media players, Discord, and editors will recognize and play the full animation properly.
+Would you like help converting that animation into a standard .mp4 or .gif for Discord, or are you trying to automate scraping these news embeds?
+
+
+To handle mislabeled media URLs automatically when scraping, inspect the HTTP response headers or the raw binary magic bytes instead of trusting the file extension in the URL.
+CDNs frequently serve GIF or WebP files under .jpg links, which can cause Discord embeds or local parsers to render only a static frame if you rely on the URL string.
+
+1. Detect the True Format in Python
+
+You can check the Content-Type header first, and fall back to reading the first few bytes (magic numbers) of the downloaded content to determine the real extension:
+python
+import requests
+
+url = "https://elementagames.com"
+response = requests.get(url, stream=True)
+data = response.content
+
+def get_true_extension(content_type: str, raw_bytes: bytes) -> str:
+    # 1. Check magic bytes (most reliable)
+    if raw_bytes.startswith(b"GIF87a") or raw_bytes.startswith(b"GIF89a"):
+        return ".gif"
+    if raw_bytes.startswith(b"RIFF") and raw_bytes[8:12] == b"WEBP":
+        return ".webp"
+    if raw_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+        return ".png"
+    if raw_bytes.startswith(b"\xff\xd8\xff"):
+        return ".jpg"
+
+    # 2. Fallback to Content-Type header
+    if "gif" in content_type:
+        return ".gif"
+    if "webp" in content_type:
+        return ".webp"
+    return ".jpg"
+
+ext = get_true_extension(response.headers.get("Content-Type", ""), data)
+print(f"Detected real format: {ext}")
+Use code with caution.
+
+2. Handling Animated WebP vs. GIF for Discord
+
+• Renamed .gif files: Once you save or upload the byte stream with a .gif filename (for example, via discord.File(io.BytesIO(data), filename="image.gif")), Discord will automatically animate it in embeds and messages.
+• Animated .webp files: Discord does not always animate .webp files reliably when passed via external embed URLs or certain upload methods. If ext == ".webp", you can check if it has multiple frames using Pillow (Image.open(io.BytesIO(data)).is_animated) and convert it to .gif or .mp4 on the fly before uploading.
+Are you passing these image URLs directly into Discord webhook embeds, or downloading and re-uploading the files through your bot?
