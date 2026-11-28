@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6178",
-        "inflight": false,
-        "messages": [
-          "1576260078204362894"
-        ],
-        "pages": 1,
-        "signature": "65dfa1e682ee788adf97bfaae8a3634be9a5fb01d472fffdf7a41d907d230cb7"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6178",
-          "title": "[Moongleam Issue] LTO Details",
-          "ts": 1793788200
-        },
         {
           "id": "5205",
           "title": "Special Thanks | A Gift of Gratitude for Endministrator",
@@ -645,6 +632,12 @@
             "1576250093013696614"
           ],
           "signature": "3122686cafbaa419fed2979ac85ede45e44597a84dfebc1e41be15de03431fc0"
+        },
+        "6178": {
+          "messages": [
+            "1576260078204362894"
+          ],
+          "signature": "65dfa1e682ee788adf97bfaae8a3634be9a5fb01d472fffdf7a41d907d230cb7"
         },
         "6179": {
           "messages": [
