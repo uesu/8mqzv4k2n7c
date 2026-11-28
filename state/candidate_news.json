@@ -2,7 +2,723 @@
   "candidate_news": {
     "endfield": {
       "partial": null,
-      "pending": [],
+      "pending": [
+        {
+          "id": "3857",
+          "title": "Arknights: Endfield Technical Test Sign-up Now Open",
+          "ts": 1701993600
+        },
+        {
+          "id": "0766",
+          "title": "Arknights: Endfield Technical Test Trailer",
+          "ts": 1701996300
+        },
+        {
+          "id": "2675",
+          "title": "Arknights: Endfield Technical Test Video and Live-stream Content Creator Program: Prelude",
+          "ts": 1702263600
+        },
+        {
+          "id": "5220",
+          "title": "Technical Test Access Distribution Completed",
+          "ts": 1704423600
+        },
+        {
+          "id": "9583",
+          "title": "Arknights: Endfield Technical Test Launch Announcement",
+          "ts": 1704942000
+        },
+        {
+          "id": "1348",
+          "title": "Arknights: Endfield Technical Test Server Closure Notice",
+          "ts": 1705662000
+        },
+        {
+          "id": "4400",
+          "title": "Beta Test FAQ",
+          "ts": 1734145200
+        },
+        {
+          "id": "7032",
+          "title": "Arknights: Endfield Beta Test Sign-up Now Open",
+          "ts": 1734145200
+        },
+        {
+          "id": "1347",
+          "title": "Beta Test Fair Play Statement",
+          "ts": 1736395200
+        },
+        {
+          "id": "6198",
+          "title": "Beta Test Access Distribution Starts",
+          "ts": 1736395200
+        },
+        {
+          "id": "7031",
+          "title": "Beta Test Notice",
+          "ts": 1737082800
+        },
+        {
+          "id": "5229",
+          "title": "Beta Test Officially Ended",
+          "ts": 1739772000
+        },
+        {
+          "id": "9582",
+          "title": "Beta Test: DEV Comm//01",
+          "ts": 1740477600
+        },
+        {
+          "id": "2677",
+          "title": "Arknights: Endfield Online Event Rules",
+          "ts": 1761494400
+        },
+        {
+          "id": "3859",
+          "title": "Recruitment Now Open for Arknights: Endfield Beta Test II",
+          "ts": 1761912900
+        },
+        {
+          "id": "4404",
+          "title": "Recruitment Now Open for Arknights: Endfield PlayStation®5 Technical Test",
+          "ts": 1761912900
+        },
+        {
+          "id": "1340",
+          "title": "Arknights: Endfield Beta Test II: DEV Comm//02",
+          "ts": 1761969600
+        },
+        {
+          "id": "0767",
+          "title": "Recruitment Closing Soon for Arknights: Endfield Beta Test II",
+          "ts": 1762916400
+        },
+        {
+          "id": "7034",
+          "title": "Arknights: Endfield Beta Test II Access Distribution Now Underway",
+          "ts": 1763953200
+        },
+        {
+          "id": "8919",
+          "title": "Arknights: Endfield PlayStation®5 Technical Test Access Distribution Now Underway",
+          "ts": 1763953200
+        },
+        {
+          "id": "5222",
+          "title": "Arknights: Endfield Beta Test II Pre-Download Now Available",
+          "ts": 1764158400
+        },
+        {
+          "id": "5218",
+          "title": "Beta Test II Test Instructions",
+          "ts": 1764298800
+        },
+        {
+          "id": "7021",
+          "title": "Arknights: Endfield Beta Test II: DEV Comm//03",
+          "ts": 1765195200
+        },
+        {
+          "id": "9575",
+          "title": "Beta Test II Ending Notice",
+          "ts": 1765195500
+        },
+        {
+          "id": "6184",
+          "title": "Arknights: Endfield PlayStation®5 Technical Test Now Live!",
+          "ts": 1765508400
+        },
+        {
+          "id": "7020",
+          "title": "PlayStation®5 Technical Test Has Officially Ended",
+          "ts": 1766700000
+        },
+        {
+          "id": "3848",
+          "title": "Beta Test II Has Officially Ended",
+          "ts": 1766988000
+        },
+        {
+          "id": "4499",
+          "title": "Arknights: Endfield [Official Release Preview] DEV Comm",
+          "ts": 1768622400
+        },
+        {
+          "id": "1332",
+          "title": "PSN Account Registration, Login & Usage FAQs",
+          "ts": 1768816800
+        },
+        {
+          "id": "9574",
+          "title": "Arknights: Endfield Pre-Download Now Available",
+          "ts": 1768874400
+        },
+        {
+          "id": "8900",
+          "title": "Arknights: Endfield Fair Play Statement",
+          "ts": 1768892400
+        },
+        {
+          "id": "9573",
+          "title": "Automated Industry Complex & Blueprint Usage Policy",
+          "ts": 1768892400
+        },
+        {
+          "id": "1331",
+          "title": "Arknights: Endfield Controller Support & FAQ",
+          "ts": 1768903200
+        },
+        {
+          "id": "3847",
+          "title": "[Scars of the Forge] Chartered Headhunting",
+          "ts": 1768969800
+        },
+        {
+          "id": "5216",
+          "title": "[Smelting Forge Issue] Limited-Time Offer Details",
+          "ts": 1768971600
+        },
+        {
+          "id": "0755",
+          "title": "Arknights: Endfield Game Tools Guide",
+          "ts": 1769050800
+        },
+        {
+          "id": "7029",
+          "title": "Follow the Arknights: Endfield official social media accounts to earn up to 180 Oroberyls",
+          "ts": 1769050800
+        },
+        {
+          "id": "4497",
+          "title": "Arknights: Endfield Fan Content and Streaming Guidelines",
+          "ts": 1770119400
+        },
+        {
+          "id": "3846",
+          "title": "Arknights: Endfield Zeroth Directive: DEV Comm",
+          "ts": 1770210000
+        },
+        {
+          "id": "5215",
+          "title": "The [Over the Frontier] themed gallery is now live",
+          "ts": 1770264000
+        },
+        {
+          "id": "7028",
+          "title": "Release Celebration [The Floaty Messenger] Chartered Headhunting Details",
+          "ts": 1770350400
+        },
+        {
+          "id": "6181",
+          "title": "Notice Regarding Abnormal Game Performance Caused by NVIDIA App Optimization",
+          "ts": 1770462900
+        },
+        {
+          "id": "0754",
+          "title": "[Express Delivery Issue] LTO Details",
+          "ts": 1770727140
+        },
+        {
+          "id": "6180",
+          "title": "[Grand Blessings for the Spring] Event Series Details",
+          "ts": 1771128000
+        },
+        {
+          "id": "0753",
+          "title": "Official Comic [The Promise] Now Released",
+          "ts": 1771646400
+        },
+        {
+          "id": "9572",
+          "title": "Release Celebration [Hues of Passion] Details",
+          "ts": 1771821000
+        },
+        {
+          "id": "8909",
+          "title": "[Graffiti Issue] LTO Details",
+          "ts": 1771822800
+        },
+        {
+          "id": "2662",
+          "title": "Arknights: Endfield [Old Deep Water Dies, by Rising Tide It is Denied] DEV Comm",
+          "ts": 1772445600
+        },
+        {
+          "id": "1339",
+          "title": "[Qingbo Rising] Limited-Time Sign-In Event Details",
+          "ts": 1772593200
+        },
+        {
+          "id": "9570",
+          "title": "[Old Deep Water Dies, by Rising Tide It is Denied] Version Update & Maintenance Preview",
+          "ts": 1772852400
+        },
+        {
+          "id": "1338",
+          "title": "[River's Daughter] Chartered Headhunting Details",
+          "ts": 1773203400
+        },
+        {
+          "id": "5213",
+          "title": "[Budding Anew Issue] LTO Details",
+          "ts": 1773205200
+        },
+        {
+          "id": "8907",
+          "title": "[Old Deep Water Dies, by Rising Tide It is Denied] Version Update Notes",
+          "ts": 1773277200
+        },
+        {
+          "id": "7026",
+          "title": "Security Risk Warning for Using Unofficial Tools",
+          "ts": 1773279000
+        },
+        {
+          "id": "3844",
+          "title": "Notice Regarding Game Issues Caused by NVIDIA Driver Updates",
+          "ts": 1773728400
+        },
+        {
+          "id": "0752",
+          "title": "Arknights: Endfield x Beard Papa's collaboration coming soon",
+          "ts": 1774393200
+        },
+        {
+          "id": "3843",
+          "title": "[Wolf Pearl] Chartered Headhunting Details",
+          "ts": 1774670400
+        },
+        {
+          "id": "2660",
+          "title": "[Scarlet Pearl Issue] LTO Details",
+          "ts": 1774672200
+        },
+        {
+          "id": "1337",
+          "title": "[Journey of the Long-Ear] Celebration Event Details",
+          "ts": 1775008800
+        },
+        {
+          "id": "8906",
+          "title": "Arknights: Endfield Now on GeForce NOW – FAQ",
+          "ts": 1775188800
+        },
+        {
+          "id": "4494",
+          "title": "Arknights: Endfield [At the Wake of Spring] Core Chapter Version DEV Comm",
+          "ts": 1776049200
+        },
+        {
+          "id": "7025",
+          "title": "[At the Wake of Spring] Version Update & Maintenance Preview",
+          "ts": 1776063600
+        },
+        {
+          "id": "0750",
+          "title": "Official Comic [To Bloom] Now Released",
+          "ts": 1776223800
+        },
+        {
+          "id": "9579",
+          "title": "[Thunder of Renewal] Chartered Headhunting",
+          "ts": 1776312000
+        },
+        {
+          "id": "5212",
+          "title": "[Drifting Raft Issue] LTO Details",
+          "ts": 1776313800
+        },
+        {
+          "id": "4493",
+          "title": "[Pristine Monthly Pass Tribute] Tribute Event",
+          "ts": 1776337200
+        },
+        {
+          "id": "0751",
+          "title": "[At the Wake of Spring] Version Update Notes",
+          "ts": 1776387600
+        },
+        {
+          "id": "9578",
+          "title": "Arknights: Endfield Discord Account Link Page Now Live!",
+          "ts": 1776832200
+        },
+        {
+          "id": "6187",
+          "title": "Arknights: Endfield Game Tools Updated for the New Version!",
+          "ts": 1777003200
+        },
+        {
+          "id": "1336",
+          "title": "Arknights: Endfield × M.RAGE Apparel Collaboration Debuts at LVL UP EXPO 2026",
+          "ts": 1777064400
+        },
+        {
+          "id": "5211",
+          "title": "🎁 Prize Event | AIC Factory Blueprint Showcase",
+          "ts": 1777456800
+        },
+        {
+          "id": "8905",
+          "title": "[Party Together] - [Pastry Tower] Fest Event Details",
+          "ts": 1777536000
+        },
+        {
+          "id": "7023",
+          "title": "Arknights: Endfield x Happy Lemon collaboration coming soon",
+          "ts": 1778470740
+        },
+        {
+          "id": "7024",
+          "title": "[Fest of Brilliance] Special Headhunting Details",
+          "ts": 1778644800
+        },
+        {
+          "id": "2669",
+          "title": "[Smelting Fire Issue] LTO Details",
+          "ts": 1778646600
+        },
+        {
+          "id": "5210",
+          "title": "[Swift Walker Issue] LTO Details",
+          "ts": 1778646900
+        },
+        {
+          "id": "2668",
+          "title": "[Party Together] - [Gift Box Castell] Fest Event Details",
+          "ts": 1778731200
+        },
+        {
+          "id": "9577",
+          "title": "Arknights: Endfield [Sketches of Lost Heirlooms] Version DEV Comm",
+          "ts": 1779508800
+        },
+        {
+          "id": "6186",
+          "title": "Update on PayPal Service Restoration in Certain Regions",
+          "ts": 1779510600
+        },
+        {
+          "id": "1335",
+          "title": "Talos-II Photographer",
+          "ts": 1779768000
+        },
+        {
+          "id": "3840",
+          "title": "Talos-II Photographer Special Prize Winners Announced!",
+          "ts": 1780397160
+        },
+        {
+          "id": "0759",
+          "title": "[Fists of No Regrets] Chartered Headhunting",
+          "ts": 1780459200
+        },
+        {
+          "id": "4492",
+          "title": "[Scarlet Knot Issue] LTO Details",
+          "ts": 1780460100
+        },
+        {
+          "id": "8904",
+          "title": "[Sketches of Lost Heirlooms] Version Pre-Download & Update Notice",
+          "ts": 1780461000
+        },
+        {
+          "id": "0758",
+          "title": "[Sketches of Lost Heirlooms] Version Update Notes",
+          "ts": 1780621200
+        },
+        {
+          "id": "8903",
+          "title": "🎁 Discord Mi Fu First Impressions Sharing Event Opens",
+          "ts": 1780718400
+        },
+        {
+          "id": "2657",
+          "title": "[Contingency Contract: Re-Ignition Experimental Operation] Release Details",
+          "ts": 1781755200
+        },
+        {
+          "id": "9566",
+          "title": "🎁 [Contract Re-Ignition: Shared Insights] Discord Share & Win Event Now Open!",
+          "ts": 1781928000
+        },
+        {
+          "id": "6175",
+          "title": "[Expunger of Sin] Chartered Headhunting",
+          "ts": 1782360000
+        },
+        {
+          "id": "1321",
+          "title": "[Crimson Hued Issue] LTO Details",
+          "ts": 1782360900
+        },
+        {
+          "id": "4484",
+          "title": "[Contingency Contract: Re-Ignition Experimental Operation] Content Update Notes",
+          "ts": 1782367200
+        },
+        {
+          "id": "1320",
+          "title": "Discord Game Stats Widget Is Now Live!",
+          "ts": 1782481500
+        },
+        {
+          "id": "5202",
+          "title": "🎁 Discord Camille First Impressions Sharing Event Opens",
+          "ts": 1782532800
+        },
+        {
+          "id": "0748",
+          "title": "GRYPHLINK Real-Time Game Data Panel Now Live!",
+          "ts": 1783656000
+        },
+        {
+          "id": "7017",
+          "title": "Arknights: Endfield [Homecoming] Core Chapter Version DEV Comm",
+          "ts": 1783737000
+        },
+        {
+          "id": "5201",
+          "title": "[Homecoming] Version Pre-Download & Update Notice",
+          "ts": 1784001600
+        },
+        {
+          "id": "8999",
+          "title": "Official Comic [Echoes of the Beginning: Bloom Amid Ruin] Is Live",
+          "ts": 1784087400
+        },
+        {
+          "id": "2656",
+          "title": "[North Yearns the Rift Vigile] Chartered Headhunting",
+          "ts": 1784109600
+        },
+        {
+          "id": "6174",
+          "title": "[Military Grade Issue] LTO Details",
+          "ts": 1784111400
+        },
+        {
+          "id": "5200",
+          "title": "[Homecoming] Version Update Notes",
+          "ts": 1784163600
+        },
+        {
+          "id": "3832",
+          "title": "[Protocol Invitation: The Return] Web Event Details",
+          "ts": 1784179800
+        },
+        {
+          "id": "2655",
+          "title": "Arknights: Endfield Game Tools Updated for the New Version!",
+          "ts": 1784775600
+        },
+        {
+          "id": "3831",
+          "title": "[Good Morning from Your Dawnstar] Chartered Headhunting",
+          "ts": 1786183200
+        },
+        {
+          "id": "9564",
+          "title": "[Bedazzled Issue] LTO Details",
+          "ts": 1786185000
+        },
+        {
+          "id": "1329",
+          "title": "WhatsApp & Messenger Subscription Event Now Live!",
+          "ts": 1786338000
+        },
+        {
+          "id": "4482",
+          "title": "Wishlist Milestone Event",
+          "ts": 1786590000
+        },
+        {
+          "id": "4481",
+          "title": "Arknights: Endfield [Dreamscape of Wind and Snow] Version DEV Comm",
+          "ts": 1787392800
+        },
+        {
+          "id": "2654",
+          "title": "Steam [Pioneer Test] Recruitment Open!",
+          "ts": 1787716800
+        },
+        {
+          "id": "5209",
+          "title": "[Dreamscape of Wind and Snow] Version Pre-Download & Update Notice",
+          "ts": 1788148800
+        },
+        {
+          "id": "6172",
+          "title": "[Winter Hunt] Chartered Headhunting",
+          "ts": 1788235200
+        },
+        {
+          "id": "4480",
+          "title": "[Deep Cold Issue] LTO Details",
+          "ts": 1788237000
+        },
+        {
+          "id": "2653",
+          "title": "Discord Game Stats Widget Updates",
+          "ts": 1788256800
+        },
+        {
+          "id": "5208",
+          "title": "[Dreamscape of Wind and Snow] Version Update Notes",
+          "ts": 1788310800
+        },
+        {
+          "id": "9562",
+          "title": "Arknights: Endfield Game Tools Updated",
+          "ts": 1790049600
+        },
+        {
+          "id": "3839",
+          "title": "[Resplendent Spectrum] RE-Factor Headhunting #1 and [Tag Artist Issue] RE-Factor Issue #1 Open",
+          "ts": 1790157600
+        },
+        {
+          "id": "1326",
+          "title": "Dense Forest Slumbers Beneath the Snow, Echoing Bells Awaken an Old City — [Dreamscape of Wind and Snow] Development Insights",
+          "ts": 1790672400
+        },
+        {
+          "id": "7013",
+          "title": "[OrbiPom! MERGE!] Fun & Games Event Details",
+          "ts": 1790751600
+        },
+        {
+          "id": "5207",
+          "title": "[Sanctuary of Ink] New Version Guide Page Release Details",
+          "ts": 1791288000
+        },
+        {
+          "id": "3838",
+          "title": "Steam Wishlist Milestone Reached: 300,000 and Counting!",
+          "ts": 1791334800
+        },
+        {
+          "id": "7014",
+          "title": "Arknights: Endfield [Sanctuary of Ink] Version DEV Comm",
+          "ts": 1791340200
+        },
+        {
+          "id": "8995",
+          "title": "Discord Game Stats Widget Updates",
+          "ts": 1791455400
+        },
+        {
+          "id": "0744",
+          "title": "[Sanctuary of Ink] Version Pre-Download & Update Notice",
+          "ts": 1791864000
+        },
+        {
+          "id": "4488",
+          "title": "Official Comic [Echoes of the Beginning: Manor's Origin] Is Live",
+          "ts": 1791946200
+        },
+        {
+          "id": "4489",
+          "title": "[Rejuvenation] Chartered Headhunting",
+          "ts": 1791972000
+        },
+        {
+          "id": "2652",
+          "title": "[Seal of Jade Issue] LTO Details",
+          "ts": 1791973800
+        },
+        {
+          "id": "3837",
+          "title": "Arknights: Endfield Is Now Officially Available on Steam!",
+          "ts": 1791979200
+        },
+        {
+          "id": "9560",
+          "title": "[Sanctuary of Ink] Version Update Notes",
+          "ts": 1792026000
+        },
+        {
+          "id": "0743",
+          "title": "Arknights: Endfield WhatsApp Account Linking Reward Feature Now Available!",
+          "ts": 1792123200
+        },
+        {
+          "id": "5206",
+          "title": "Arknights: Endfield Steam Client Account Linking Guide",
+          "ts": 1792227600
+        },
+        {
+          "id": "6179",
+          "title": "[Ancestral Spring Flows Anew] RE-Factor Headhunting #1 and [Tender Sprig Issue] RE-Factor Issue #1 Available",
+          "ts": 1793181600
+        },
+        {
+          "id": "7012",
+          "title": "[The Hearth Fire Beckons the Starry Flow] Chartered Headhunting",
+          "ts": 1793786400
+        },
+        {
+          "id": "6178",
+          "title": "[Moongleam Issue] LTO Details",
+          "ts": 1793788200
+        },
+        {
+          "id": "5205",
+          "title": "Special Thanks | A Gift of Gratitude for Endministrator",
+          "ts": 1795057500
+        },
+        {
+          "id": "9568",
+          "title": "[11/19/2026] Account Suspension Notice",
+          "ts": 1795094100
+        },
+        {
+          "id": "9569",
+          "title": "[Meeting You in the World o'Shrooms] New Version Guide Page Release Details",
+          "ts": 1795262400
+        },
+        {
+          "id": "7011",
+          "title": "[Meeting You in the World o'Shrooms] Version DEV Comm",
+          "ts": 1795314600
+        },
+        {
+          "id": "3836",
+          "title": "New smart features in Team Picks and Build Guide",
+          "ts": 1795316400
+        },
+        {
+          "id": "3835",
+          "title": "[Meeting You in the World o'Shrooms] Version Pre-Download & Update Notice",
+          "ts": 1795406400
+        },
+        {
+          "id": "6177",
+          "title": "Discord Game Stats Widget Update",
+          "ts": 1795429800
+        },
+        {
+          "id": "5204",
+          "title": "[Anvil, Backpack, Plus A Pot o'Honey] Chartered Headhunting",
+          "ts": 1795492800
+        },
+        {
+          "id": "2659",
+          "title": "[Casual Roamer Issue] LTO Details",
+          "ts": 1795494600
+        },
+        {
+          "id": "8992",
+          "title": "[To Every Wish Adrift] RE-Factor Headhunting #1 and [Floaty Traveler Issue] RE-Factor Issue #1 Open",
+          "ts": 1795496400
+        },
+        {
+          "id": "0740",
+          "title": "[Meeting You in the World o'Shrooms] Version Update Notes",
+          "ts": 1795568400
+        }
+      ],
       "posted": {},
       "route": "b065a5413b2dc845",
       "source": "endfield",
