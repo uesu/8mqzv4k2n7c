@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1348",
-        "inflight": false,
-        "messages": [
-          "1576226924618059777"
-        ],
-        "pages": 1,
-        "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1348",
-          "title": "Arknights: Endfield Technical Test Server Closure Notice",
-          "ts": 1705662000
-        },
         {
           "id": "4400",
           "title": "Beta Test FAQ",
@@ -708,6 +695,12 @@
             "1576225920195371170"
           ],
           "signature": "ae2438afed6a9ccefe82737fc7e2e1218e3bfd4f01fb2d0d5fbc135ee21655af"
+        },
+        "1348": {
+          "messages": [
+            "1576226924618059777"
+          ],
+          "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
         },
         "2675": {
           "messages": [
