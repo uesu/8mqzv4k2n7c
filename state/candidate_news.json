@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4492",
-        "inflight": false,
-        "messages": [
-          "1576248471990706177"
-        ],
-        "pages": 1,
-        "signature": "d2c7f3120bbb43a22d8590e45d839ca0feb71918996ce1cd887a5717868429cc"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4492",
-          "title": "[Scarlet Knot Issue] LTO Details",
-          "ts": 1780460100
-        },
         {
           "id": "8904",
           "title": "[Sketches of Lost Heirlooms] Version Pre-Download & Update Notice",
@@ -553,6 +540,12 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4492": {
+          "messages": [
+            "1576248471990706177"
+          ],
+          "signature": "d2c7f3120bbb43a22d8590e45d839ca0feb71918996ce1cd887a5717868429cc"
         },
         "4493": {
           "messages": [
