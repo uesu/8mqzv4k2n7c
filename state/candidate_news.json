@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8904",
-        "inflight": false,
-        "messages": [
-          "1576248704099422319"
-        ],
-        "pages": 1,
-        "signature": "cfba22fcbfa1e99929196f4adc57348ab2666fd9a8313129b97e210db769aad6"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8904",
-          "title": "[Sketches of Lost Heirlooms] Version Pre-Download & Update Notice",
-          "ts": 1780461000
-        },
         {
           "id": "0758",
           "title": "[Sketches of Lost Heirlooms] Version Update Notes",
@@ -756,6 +743,12 @@
             "1576234692925980823"
           ],
           "signature": "5511ee78ad7e21538bc93fc2b2eb7b0a633f976b224ae93c1141d15ca0b44178"
+        },
+        "8904": {
+          "messages": [
+            "1576248704099422319"
+          ],
+          "signature": "cfba22fcbfa1e99929196f4adc57348ab2666fd9a8313129b97e210db769aad6"
         },
         "8905": {
           "messages": [
