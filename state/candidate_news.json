@@ -1,23 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1332",
-        "inflight": false,
-        "messages": [
-          "1576234186640195646",
-          "1576234207880028242",
-          "1576234232911761408"
-        ],
-        "pages": 3,
-        "signature": "d17faf7490183b08f6212e23af6c7f9d9e20608c8c9ca001edc880613a781f6d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1332",
-          "title": "PSN Account Registration, Login & Usage FAQs",
-          "ts": 1768816800
-        },
         {
           "id": "9574",
           "title": "Arknights: Endfield Pre-Download Now Available",
@@ -601,6 +586,14 @@
             "1576230669904908338"
           ],
           "signature": "fd2b55116272698d2fd75a8b7c53c0542f7e913aa02a70292f94d253d8da7f1a"
+        },
+        "1332": {
+          "messages": [
+            "1576234186640195646",
+            "1576234207880028242",
+            "1576234232911761408"
+          ],
+          "signature": "d17faf7490183b08f6212e23af6c7f9d9e20608c8c9ca001edc880613a781f6d"
         },
         "1340": {
           "messages": [
