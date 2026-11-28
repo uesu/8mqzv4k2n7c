@@ -802,7 +802,7 @@
     "nte": {
       "partial": {
         "id": "262255",
-        "inflight": false,
+        "inflight": true,
         "messages": [],
         "pages": 3,
         "signature": "2df669139203081ef1b8368f622f52a7388ec13479bb6b82afb1163e63e176d7"
