@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8905",
-        "inflight": false,
-        "messages": [
-          "1576245260823040041"
-        ],
-        "pages": 1,
-        "signature": "0c7be661fbfc8a472e9aa9f7730ef95c64785f5715f27309a800a84b8a65a7d6"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8905",
-          "title": "[Party Together] - [Pastry Tower] Fest Event Details",
-          "ts": 1777536000
-        },
         {
           "id": "7023",
           "title": "Arknights: Endfield x Happy Lemon collaboration coming soon",
@@ -751,6 +738,12 @@
             "1576234692925980823"
           ],
           "signature": "5511ee78ad7e21538bc93fc2b2eb7b0a633f976b224ae93c1141d15ca0b44178"
+        },
+        "8905": {
+          "messages": [
+            "1576245260823040041"
+          ],
+          "signature": "0c7be661fbfc8a472e9aa9f7730ef95c64785f5715f27309a800a84b8a65a7d6"
         },
         "8906": {
           "messages": [
