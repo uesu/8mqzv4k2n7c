@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4497",
-        "inflight": false,
-        "messages": [
-          "1576236134537891964",
-          "1576236154112446616"
-        ],
-        "pages": 2,
-        "signature": "e517dbf2f71fa0c2836866c0cc8b36c4059d0b475cc6c38b70a8e4be67187bb0"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4497",
-          "title": "Arknights: Endfield Fan Content and Streaming Guidelines",
-          "ts": 1770119400
-        },
         {
           "id": "3846",
           "title": "Arknights: Endfield Zeroth Directive: DEV Comm",
@@ -650,6 +636,13 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4497": {
+          "messages": [
+            "1576236134537891964",
+            "1576236154112446616"
+          ],
+          "signature": "e517dbf2f71fa0c2836866c0cc8b36c4059d0b475cc6c38b70a8e4be67187bb0"
         },
         "4499": {
           "messages": [
