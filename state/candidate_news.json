@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6172",
-        "inflight": false,
-        "messages": [
-          "1576255538101227641",
-          "1576255559408029909"
-        ],
-        "pages": 2,
-        "signature": "0c39f09fbae630b5e20b27f947bda4efd93a04162f5db5abdcdbae83b66b0e2d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6172",
-          "title": "[Winter Hunt] Chartered Headhunting",
-          "ts": 1788235200
-        },
         {
           "id": "4480",
           "title": "[Deep Cold Issue] LTO Details",
@@ -644,6 +630,13 @@
             "1576228585000275979"
           ],
           "signature": "b0c18b88520ff486af57ae5248d2e4a502648d1ce4591833a6abfe58221f5bbc"
+        },
+        "6172": {
+          "messages": [
+            "1576255538101227641",
+            "1576255559408029909"
+          ],
+          "signature": "0c39f09fbae630b5e20b27f947bda4efd93a04162f5db5abdcdbae83b66b0e2d"
         },
         "6174": {
           "messages": [
