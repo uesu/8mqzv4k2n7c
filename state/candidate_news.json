@@ -1385,23 +1385,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "93",
-        "inflight": false,
-        "messages": [
-          "1576232381583589457",
-          "1576232409219727503",
-          "1576232431411921057"
-        ],
-        "pages": 3,
-        "signature": "f8aece9b99a4d1dee4e63821f61c920bcd2c66d8d1b625272b195b4d79c556ee"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-22",
-          "id": "93",
-          "title": "The Science of All Things - Combat Edition"
-        },
         {
           "date": "2026-07-23",
           "id": "65",
@@ -1553,6 +1538,14 @@
             "1576231901352435998"
           ],
           "signature": "13753d7a9a5d7d6e7bb5815c18afe6f59f31950b769d170a59de26c098dfe9ed"
+        },
+        "93": {
+          "messages": [
+            "1576232381583589457",
+            "1576232409219727503",
+            "1576232431411921057"
+          ],
+          "signature": "f8aece9b99a4d1dee4e63821f61c920bcd2c66d8d1b625272b195b4d79c556ee"
         }
       },
       "route": "f18fe2760d6ec4bc",
