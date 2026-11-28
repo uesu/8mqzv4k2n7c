@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1326",
-        "inflight": false,
-        "messages": [
-          "1576256828872986665"
-        ],
-        "pages": 1,
-        "signature": "1a977e11f7640ee23e01e53dde3dc61728f9900dc930083a87566dc5c7b6b1ff"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1326",
-          "title": "Dense Forest Slumbers Beneath the Snow, Echoing Bells Awaken an Old City — [Dreamscape of Wind and Snow] Development Insights",
-          "ts": 1790672400
-        },
         {
           "id": "7013",
           "title": "[OrbiPom! MERGE!] Fun & Games Event Details",
@@ -242,6 +229,12 @@
             "1576250326606942431"
           ],
           "signature": "4d68630a30c9101bfbd7384ea32e2c5a9e7faa7c43bf3f92fb09616173f8faf7"
+        },
+        "1326": {
+          "messages": [
+            "1576256828872986665"
+          ],
+          "signature": "1a977e11f7640ee23e01e53dde3dc61728f9900dc930083a87566dc5c7b6b1ff"
         },
         "1329": {
           "messages": [
