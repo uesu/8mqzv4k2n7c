@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2657",
-        "inflight": false,
-        "messages": [
-          "1576249634509033587"
-        ],
-        "pages": 1,
-        "signature": "292f160437b854df0263e28fa96237c2bf2e944b4b74b5ea06a3a257af3b760a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2657",
-          "title": "[Contingency Contract: Re-Ignition Experimental Operation] Release Details",
-          "ts": 1781755200
-        },
         {
           "id": "9566",
           "title": "🎁 [Contract Re-Ignition: Shared Insights] Discord Share & Win Event Now Open!",
@@ -438,6 +425,12 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2657": {
+          "messages": [
+            "1576249634509033587"
+          ],
+          "signature": "292f160437b854df0263e28fa96237c2bf2e944b4b74b5ea06a3a257af3b760a"
         },
         "2660": {
           "messages": [
