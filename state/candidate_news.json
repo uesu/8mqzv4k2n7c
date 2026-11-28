@@ -1,26 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1340",
-        "inflight": false,
-        "messages": [
-          "1576230050066337955",
-          "1576230070539002089",
-          "1576230090269004040",
-          "1576230357601222827",
-          "1576230387372400803",
-          "1576230408289259561"
-        ],
-        "pages": 6,
-        "signature": "12582f32e88cd2e0b327b8081bb8ab6160f63577b7c3f925f9d0b5626f41984d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1340",
-          "title": "Arknights: Endfield Beta Test II: DEV Comm//02",
-          "ts": 1761969600
-        },
         {
           "id": "0767",
           "title": "Recruitment Closing Soon for Arknights: Endfield Beta Test II",
@@ -658,6 +640,17 @@
             "1576225920195371170"
           ],
           "signature": "ae2438afed6a9ccefe82737fc7e2e1218e3bfd4f01fb2d0d5fbc135ee21655af"
+        },
+        "1340": {
+          "messages": [
+            "1576230050066337955",
+            "1576230070539002089",
+            "1576230090269004040",
+            "1576230357601222827",
+            "1576230387372400803",
+            "1576230408289259561"
+          ],
+          "signature": "12582f32e88cd2e0b327b8081bb8ab6160f63577b7c3f925f9d0b5626f41984d"
         },
         "1347": {
           "messages": [
