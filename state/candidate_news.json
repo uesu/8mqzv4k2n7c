@@ -733,22 +733,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "252478",
-        "inflight": false,
-        "messages": [
-          "1576227001872678963"
-        ],
-        "pages": 1,
-        "signature": "e9812933f77f2266b0bf5b7c678dfb4297787edb31acb7bf1f0f99016d9f526b"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2024-08-30",
-          "id": "252478",
-          "title": "Character Introduction - Taygedo",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20240830/252478.html"
-        },
         {
           "date": "2024-09-05",
           "id": "252619",
@@ -1362,6 +1348,12 @@
             "1576226753767284836"
           ],
           "signature": "bad38bde933c09cd37bd7082296a07d94ab1d12d5c0237116b6dbd2e565cab0b"
+        },
+        "252478": {
+          "messages": [
+            "1576227001872678963"
+          ],
+          "signature": "e9812933f77f2266b0bf5b7c678dfb4297787edb31acb7bf1f0f99016d9f526b"
         }
       },
       "route": "12975a7fb0e13152",
