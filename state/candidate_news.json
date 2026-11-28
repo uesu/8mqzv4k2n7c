@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8906",
-        "inflight": false,
-        "messages": [
-          "1576241699926188296"
-        ],
-        "pages": 1,
-        "signature": "f0bd9f554256e3dca26c78657eb9b9e7c2cee34a9bfd334f74570d95211e2c61"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8906",
-          "title": "Arknights: Endfield Now on GeForce NOW – FAQ",
-          "ts": 1775188800
-        },
         {
           "id": "4494",
           "title": "Arknights: Endfield [At the Wake of Spring] Core Chapter Version DEV Comm",
@@ -748,6 +735,12 @@
             "1576234692925980823"
           ],
           "signature": "5511ee78ad7e21538bc93fc2b2eb7b0a633f976b224ae93c1141d15ca0b44178"
+        },
+        "8906": {
+          "messages": [
+            "1576241699926188296"
+          ],
+          "signature": "f0bd9f554256e3dca26c78657eb9b9e7c2cee34a9bfd334f74570d95211e2c61"
         },
         "8907": {
           "messages": [
