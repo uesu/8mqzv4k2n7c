@@ -1357,7 +1357,113 @@
     },
     "silverpalace": {
       "partial": null,
-      "pending": [],
+      "pending": [
+        {
+          "date": "2025-05-13",
+          "id": "1",
+          "title": "Silver Palace Unveiled: A Detective Adventure ARPG in Victorian Aesthetics"
+        },
+        {
+          "date": "2025-12-19",
+          "id": "7",
+          "title": "[Monotype] Beta Test Recruitment has officially started!"
+        },
+        {
+          "date": "2025-12-19",
+          "id": "12",
+          "title": "[Monotype] Beta Test Recruitment FAQ"
+        },
+        {
+          "date": "2026-01-09",
+          "id": "22",
+          "title": "[Monotype] Beta Test Schedule Notification and Pre-Download Guide"
+        },
+        {
+          "date": "2026-01-09",
+          "id": "23",
+          "title": "[Monotype] Beta Test News and Important Rewards"
+        },
+        {
+          "date": "2026-01-16",
+          "id": "34",
+          "title": "[Monotype] Beta Test  Survey Event Qualification Results Announcement"
+        },
+        {
+          "date": "2026-04-02",
+          "id": "38",
+          "title": "Silver Palace Content Creator Program"
+        },
+        {
+          "date": "2026-06-26",
+          "id": "42",
+          "title": "\"Dichotomy\" Beta Test Recruitment FAQ"
+        },
+        {
+          "date": "2026-06-26",
+          "id": "43",
+          "title": "Recruitment for the Silver Palace: \"Dichotomy\" Beta Test has officially started!"
+        },
+        {
+          "date": "2026-07-14",
+          "id": "71",
+          "title": "The Science of All Things - Local Edition: Morgue Street"
+        },
+        {
+          "date": "2026-07-20",
+          "id": "55",
+          "title": "Intel Processor BIOS Update Guide"
+        },
+        {
+          "date": "2026-07-20",
+          "id": "60",
+          "title": "\"Dichotomy\" Beta Test Pre-Download & Launch Guide"
+        },
+        {
+          "date": "2026-07-20",
+          "id": "86",
+          "title": "Silver Palace Fan Content & Streaming Guidelines"
+        },
+        {
+          "date": "2026-07-22",
+          "id": "93",
+          "title": "The Science of All Things - Combat Edition"
+        },
+        {
+          "date": "2026-07-23",
+          "id": "65",
+          "title": "\"Dichotomy\" Beta Test News and Important Rewards"
+        },
+        {
+          "date": "2026-07-23",
+          "id": "88",
+          "title": "\"Dichotomy\" Beta Test Twitch Drops: Watch Livestreams to Gain Test Access"
+        },
+        {
+          "date": "2026-07-26",
+          "id": "99",
+          "title": "The Science of All Things - Curious Deductions Edition"
+        },
+        {
+          "date": "2026-08-22",
+          "id": "107",
+          "title": "Silvernia News: \"Dichotomy\" Beta Test Feedback and Optimization"
+        },
+        {
+          "date": "2026-09-23",
+          "id": "119",
+          "title": "\"Dichotomy: Retrace\" Technical Test Recruitment FAQ"
+        },
+        {
+          "date": "2026-10-09",
+          "id": "120",
+          "title": "\"Private Investigator\" Project Recruitment Now Open"
+        },
+        {
+          "date": "2026-10-19",
+          "id": "32",
+          "title": "Fair Game Statement"
+        }
+      ],
       "posted": {},
       "route": "f18fe2760d6ec4bc",
       "source": "silverpalace",
