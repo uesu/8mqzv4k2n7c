@@ -1356,21 +1356,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "1",
-        "inflight": false,
-        "messages": [
-          "1576225839111217224"
-        ],
-        "pages": 1,
-        "signature": "f6195a520e27affa2dcbf6b76e7e2a88d2c229af459442a384c1116d5921e614"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-05-13",
-          "id": "1",
-          "title": "Silver Palace Unveiled: A Detective Adventure ARPG in Victorian Aesthetics"
-        },
         {
           "date": "2025-12-19",
           "id": "7",
@@ -1472,7 +1459,14 @@
           "title": "Fair Game Statement"
         }
       ],
-      "posted": {},
+      "posted": {
+        "1": {
+          "messages": [
+            "1576225839111217224"
+          ],
+          "signature": "f6195a520e27affa2dcbf6b76e7e2a88d2c229af459442a384c1116d5921e614"
+        }
+      },
       "route": "f18fe2760d6ec4bc",
       "source": "silverpalace",
       "version": 1
