@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5220",
-        "inflight": false,
-        "messages": [
-          "1576226401080578160"
-        ],
-        "pages": 1,
-        "signature": "58a7b5ef4e5c7af2f7e15f24bcc96a5e60b4a7f78e6e368d6e6beea2ed651abb"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5220",
-          "title": "Technical Test Access Distribution Completed",
-          "ts": 1704423600
-        },
         {
           "id": "9583",
           "title": "Arknights: Endfield Technical Test Launch Announcement",
@@ -731,6 +718,12 @@
             "1576225669967249559"
           ],
           "signature": "35323ab2250f4ea3b85ce701f91c70c9a59ee8d3d42950ffe97eda128f9a554a"
+        },
+        "5220": {
+          "messages": [
+            "1576226401080578160"
+          ],
+          "signature": "58a7b5ef4e5c7af2f7e15f24bcc96a5e60b4a7f78e6e368d6e6beea2ed651abb"
         }
       },
       "route": "b065a5413b2dc845",
