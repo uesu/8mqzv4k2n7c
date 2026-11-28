@@ -757,22 +757,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "257403",
-        "inflight": false,
-        "messages": [
-          "1576232048643936507"
-        ],
-        "pages": 1,
-        "signature": "47702f242259a18f47ecd376ba308072270fdeba50e921eb9b09a1d834bf3337"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-07-15",
-          "id": "257403",
-          "title": "NTE Containment Test Ending Soon",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20250714/257403.html"
-        },
         {
           "date": "2025-07-17",
           "id": "257483",
@@ -1386,6 +1372,12 @@
             "1576231769022398627"
           ],
           "signature": "d68ac9da7e549b4b79e0abbb6d65e1bdece27d68a75bcada620d36de8a30009c"
+        },
+        "257403": {
+          "messages": [
+            "1576232048643936507"
+          ],
+          "signature": "47702f242259a18f47ecd376ba308072270fdeba50e921eb9b09a1d834bf3337"
         }
       },
       "route": "12975a7fb0e13152",
