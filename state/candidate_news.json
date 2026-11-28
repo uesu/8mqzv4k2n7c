@@ -885,23 +885,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "264885",
-        "inflight": false,
-        "messages": [
-          "1576251565793214568",
-          "1576251585254662286"
-        ],
-        "pages": 2,
-        "signature": "3f951e35d95e7274d449abcb120e675fd89682136b44ae6776b534749c6f472d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-11-04",
-          "id": "264885",
-          "title": "NTE V1.5 Fan Creation Event: Enter to Win $1,000 + Annulith x6,480!",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20261104/264885.html"
-        },
         {
           "date": "2026-11-09",
           "id": "264938",
@@ -1586,6 +1571,13 @@
             "1576251294744838446"
           ],
           "signature": "34368dafcaed8fb2a8092a77582f8be3a2b86444ec4aab8c05a1439a7236d4d8"
+        },
+        "264885": {
+          "messages": [
+            "1576251565793214568",
+            "1576251585254662286"
+          ],
+          "signature": "3f951e35d95e7274d449abcb120e675fd89682136b44ae6776b534749c6f472d"
         }
       },
       "route": "12975a7fb0e13152",
