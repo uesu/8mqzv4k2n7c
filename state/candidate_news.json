@@ -1,23 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9577",
-        "inflight": false,
-        "messages": [
-          "1576246609631772795",
-          "1576246629596528805",
-          "1576246649808887973"
-        ],
-        "pages": 3,
-        "signature": "7b88f5a7cb691f672490bf7573a0ff0eaf32911d05fea8fb0a66e50c05df0743"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9577",
-          "title": "Arknights: Endfield [Sketches of Lost Heirlooms] Version DEV Comm",
-          "ts": 1779508800
-        },
         {
           "id": "6186",
           "title": "Update on PayPal Service Restoration in Certain Regions",
@@ -822,6 +807,14 @@
             "1576232514534641707"
           ],
           "signature": "4dc965bb079fbb02c449501b226b2d7a40386c924fafb13cc420ff8dddecc28d"
+        },
+        "9577": {
+          "messages": [
+            "1576246609631772795",
+            "1576246629596528805",
+            "1576246649808887973"
+          ],
+          "signature": "7b88f5a7cb691f672490bf7573a0ff0eaf32911d05fea8fb0a66e50c05df0743"
         },
         "9578": {
           "messages": [
