@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8903",
-        "inflight": false,
-        "messages": [
-          "1576249392443170827",
-          "1576249411875504220"
-        ],
-        "pages": 2,
-        "signature": "b03d06774166aafb29ad383de8f908cbd7ee410340c3837727cee869eda46c98"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8903",
-          "title": "🎁 Discord Mi Fu First Impressions Sharing Event Opens",
-          "ts": 1780718400
-        },
         {
           "id": "2657",
           "title": "[Contingency Contract: Re-Ignition Experimental Operation] Release Details",
@@ -758,6 +744,13 @@
             "1576234692925980823"
           ],
           "signature": "5511ee78ad7e21538bc93fc2b2eb7b0a633f976b224ae93c1141d15ca0b44178"
+        },
+        "8903": {
+          "messages": [
+            "1576249392443170827",
+            "1576249411875504220"
+          ],
+          "signature": "b03d06774166aafb29ad383de8f908cbd7ee410340c3837727cee869eda46c98"
         },
         "8904": {
           "messages": [
