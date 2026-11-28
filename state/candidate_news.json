@@ -1388,21 +1388,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "99",
-        "inflight": false,
-        "messages": [
-          "1576233227109269628"
-        ],
-        "pages": 1,
-        "signature": "8e26aac4b1a8ca1a3a15740f9265cf7dd83ed4a600fc08dfc164615e1b48c695"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-26",
-          "id": "99",
-          "title": "The Science of All Things - Curious Deductions Edition"
-        },
         {
           "date": "2026-08-22",
           "id": "107",
@@ -1560,6 +1547,12 @@
             "1576232431411921057"
           ],
           "signature": "f8aece9b99a4d1dee4e63821f61c920bcd2c66d8d1b625272b195b4d79c556ee"
+        },
+        "99": {
+          "messages": [
+            "1576233227109269628"
+          ],
+          "signature": "8e26aac4b1a8ca1a3a15740f9265cf7dd83ed4a600fc08dfc164615e1b48c695"
         }
       },
       "route": "f18fe2760d6ec4bc",
