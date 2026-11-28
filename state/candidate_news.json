@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1331",
-        "inflight": false,
-        "messages": [
-          "1576235086527996005",
-          "1576235105935040691"
-        ],
-        "pages": 2,
-        "signature": "4aec1bfcdac0175dc40e09b72f92e2a4abbbf3f680ab8e1804659cc93b2db035"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1331",
-          "title": "Arknights: Endfield Controller Support & FAQ",
-          "ts": 1768903200
-        },
         {
           "id": "3847",
           "title": "[Scars of the Forge] Chartered Headhunting",
@@ -580,6 +566,13 @@
             "1576230669904908338"
           ],
           "signature": "fd2b55116272698d2fd75a8b7c53c0542f7e913aa02a70292f94d253d8da7f1a"
+        },
+        "1331": {
+          "messages": [
+            "1576235086527996005",
+            "1576235105935040691"
+          ],
+          "signature": "4aec1bfcdac0175dc40e09b72f92e2a4abbbf3f680ab8e1804659cc93b2db035"
         },
         "1332": {
           "messages": [
