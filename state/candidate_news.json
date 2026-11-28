@@ -1386,22 +1386,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "65",
-        "inflight": false,
-        "messages": [
-          "1576232678976655536",
-          "1576232698815713334"
-        ],
-        "pages": 2,
-        "signature": "aad51b2496396dcc9a1a15918ed3056a2b547a67498caa56571074729e2a6994"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-23",
-          "id": "65",
-          "title": "\"Dichotomy\" Beta Test News and Important Rewards"
-        },
         {
           "date": "2026-07-23",
           "id": "88",
@@ -1528,6 +1514,13 @@
             "1576231617247318037"
           ],
           "signature": "b93e8388198993a94bfc22df619787135e0456145f75dde951e793c5e2f1131d"
+        },
+        "65": {
+          "messages": [
+            "1576232678976655536",
+            "1576232698815713334"
+          ],
+          "signature": "aad51b2496396dcc9a1a15918ed3056a2b547a67498caa56571074729e2a6994"
         },
         "7": {
           "messages": [
