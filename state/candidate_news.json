@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5211",
-        "inflight": false,
-        "messages": [
-          "1576245025346420939"
-        ],
-        "pages": 1,
-        "signature": "b53d4d1dda32596034c287e398aadb3f0106577c84e62ee9e7261998806c1d44"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5211",
-          "title": "🎁 Prize Event | AIC Factory Blueprint Showcase",
-          "ts": 1777456800
-        },
         {
           "id": "8905",
           "title": "[Party Together] - [Pastry Tower] Fest Event Details",
@@ -610,6 +597,12 @@
             "1576233925695512689"
           ],
           "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
+        },
+        "5211": {
+          "messages": [
+            "1576245025346420939"
+          ],
+          "signature": "b53d4d1dda32596034c287e398aadb3f0106577c84e62ee9e7261998806c1d44"
         },
         "5212": {
           "messages": [
