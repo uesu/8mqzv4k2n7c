@@ -1,24 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4494",
-        "inflight": false,
-        "messages": [
-          "1576241952087613582",
-          "1576241973294137536",
-          "1576241993657622591",
-          "1576242230077825057"
-        ],
-        "pages": 4,
-        "signature": "a38e7a8ac1c0d453bf2ef165995db3340ac5a6377ca8d003313307f62a2fa71e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4494",
-          "title": "Arknights: Endfield [At the Wake of Spring] Core Chapter Version DEV Comm",
-          "ts": 1776049200
-        },
         {
           "id": "7025",
           "title": "[At the Wake of Spring] Version Update & Maintenance Preview",
@@ -608,6 +592,15 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4494": {
+          "messages": [
+            "1576241952087613582",
+            "1576241973294137536",
+            "1576241993657622591",
+            "1576242230077825057"
+          ],
+          "signature": "a38e7a8ac1c0d453bf2ef165995db3340ac5a6377ca8d003313307f62a2fa71e"
         },
         "4497": {
           "messages": [
