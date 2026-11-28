@@ -772,22 +772,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "260819",
-        "inflight": false,
-        "messages": [
-          "1576234958056591472"
-        ],
-        "pages": 1,
-        "signature": "72cefc6fc40aaf79c96f5ee11ec88f153bf89e178c0e62eecfd196a08d58d0c6"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-02-06",
-          "id": "260819",
-          "title": "NTE Co-Ex Test Now Live!",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260205/260819.html"
-        },
         {
           "date": "2026-02-06",
           "id": "260828",
@@ -1401,6 +1387,12 @@
             "1576234760169193646"
           ],
           "signature": "ff1be1a7676e5bbd0ac8c21de0dc3c0ed5442ab4975ee5a88eac14818a438c18"
+        },
+        "260819": {
+          "messages": [
+            "1576234958056591472"
+          ],
+          "signature": "72cefc6fc40aaf79c96f5ee11ec88f153bf89e178c0e62eecfd196a08d58d0c6"
         }
       },
       "route": "12975a7fb0e13152",
