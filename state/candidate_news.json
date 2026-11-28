@@ -777,22 +777,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "260974",
-        "inflight": false,
-        "messages": [
-          "1576235599545892885"
-        ],
-        "pages": 1,
-        "signature": "a77f78dccbea78d694967aeb6e653ddd841df0ccf72d240b4fb00b4e2797ac0e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-02-19",
-          "id": "260974",
-          "title": "NTE Co-Ex Test Ending Soon",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260213/260974.html"
-        },
         {
           "date": "2026-02-26",
           "id": "261061",
@@ -1406,6 +1392,12 @@
             "1576235397535637577"
           ],
           "signature": "f417aefa4ffad7e0b5083e1d257bfbd59bd26eba8c0997b9875e957ec4220dd3"
+        },
+        "260974": {
+          "messages": [
+            "1576235599545892885"
+          ],
+          "signature": "a77f78dccbea78d694967aeb6e653ddd841df0ccf72d240b4fb00b4e2797ac0e"
         }
       },
       "route": "12975a7fb0e13152",
