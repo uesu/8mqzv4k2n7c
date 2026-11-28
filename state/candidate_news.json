@@ -800,7 +800,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "262255",
+        "inflight": false,
+        "messages": [],
+        "pages": 3,
+        "signature": "2df669139203081ef1b8368f622f52a7388ec13479bb6b82afb1163e63e176d7"
+      },
       "pending": [
         {
           "date": "2026-05-18",
