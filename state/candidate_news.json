@@ -760,7 +760,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "257163",
+        "inflight": false,
+        "messages": [],
+        "pages": 1,
+        "signature": "4b1fc7a69fee799cb13d41ba23beb9d4bc07db19003136572303e4ae830c1b1f"
+      },
       "pending": [
         {
           "date": "2025-12-16",
