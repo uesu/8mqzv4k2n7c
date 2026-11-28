@@ -1398,8 +1398,10 @@
     "silverpalace": {
       "partial": {
         "id": "32",
-        "inflight": true,
-        "messages": [],
+        "inflight": false,
+        "messages": [
+          "1576234392106438668"
+        ],
         "pages": 1,
         "signature": "59a227f98eabc084dd5b90a86ea6e2d21a8ef60bd6dab66737fab361e48aff1c"
       },
