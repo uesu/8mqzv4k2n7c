@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9579",
-        "inflight": false,
-        "messages": [
-          "1576242959823667312",
-          "1576242979876634685"
-        ],
-        "pages": 2,
-        "signature": "50b80dd142bb41f9f23e919c4ba2d772e95403de5a429f31b20813ed28d0582d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9579",
-          "title": "[Thunder of Renewal] Chartered Headhunting",
-          "ts": 1776312000
-        },
         {
           "id": "5212",
           "title": "[Drifting Raft Issue] LTO Details",
@@ -812,6 +798,13 @@
             "1576232514534641707"
           ],
           "signature": "4dc965bb079fbb02c449501b226b2d7a40386c924fafb13cc420ff8dddecc28d"
+        },
+        "9579": {
+          "messages": [
+            "1576242959823667312",
+            "1576242979876634685"
+          ],
+          "signature": "50b80dd142bb41f9f23e919c4ba2d772e95403de5a429f31b20813ed28d0582d"
         },
         "9582": {
           "messages": [
