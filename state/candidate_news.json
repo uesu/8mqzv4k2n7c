@@ -1387,21 +1387,8 @@
       "version": 1
     },
     "silverpalace": {
-      "partial": {
-        "id": "88",
-        "inflight": false,
-        "messages": [
-          "1576232934833131571"
-        ],
-        "pages": 1,
-        "signature": "46f41e5f1fbd9532b10014fda648b0ff97c0f7562a7849085afbf8d52788ef11"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-23",
-          "id": "88",
-          "title": "\"Dichotomy\" Beta Test Twitch Drops: Watch Livestreams to Gain Test Access"
-        },
         {
           "date": "2026-07-26",
           "id": "99",
@@ -1550,6 +1537,12 @@
             "1576231901352435998"
           ],
           "signature": "13753d7a9a5d7d6e7bb5815c18afe6f59f31950b769d170a59de26c098dfe9ed"
+        },
+        "88": {
+          "messages": [
+            "1576232934833131571"
+          ],
+          "signature": "46f41e5f1fbd9532b10014fda648b0ff97c0f7562a7849085afbf8d52788ef11"
         },
         "93": {
           "messages": [
