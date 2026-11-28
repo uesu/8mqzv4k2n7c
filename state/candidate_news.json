@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9573",
-        "inflight": false,
-        "messages": [
-          "1576234890737885237"
-        ],
-        "pages": 1,
-        "signature": "3616ddbf84dc261ce7b363b8e7495071f90e7b53a6bdcb5fa61e539561c2579f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9573",
-          "title": "Automated Industry Complex & Blueprint Usage Policy",
-          "ts": 1768892400
-        },
         {
           "id": "1331",
           "title": "Arknights: Endfield Controller Support & FAQ",
@@ -747,6 +734,12 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "9573": {
+          "messages": [
+            "1576234890737885237"
+          ],
+          "signature": "3616ddbf84dc261ce7b363b8e7495071f90e7b53a6bdcb5fa61e539561c2579f"
         },
         "9574": {
           "messages": [
