@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3843",
-        "inflight": false,
-        "messages": [
-          "1576241052350812192",
-          "1576241078862872638"
-        ],
-        "pages": 2,
-        "signature": "8aa6c9e0b50e5bc4e27a899166769cfd29ab528f46d62ceba81e2f5e5149184f"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3843",
-          "title": "[Wolf Pearl] Chartered Headhunting Details",
-          "ts": 1774670400
-        },
         {
           "id": "2660",
           "title": "[Scarlet Pearl Issue] LTO Details",
@@ -556,6 +542,13 @@
             "1576229154570109010"
           ],
           "signature": "b9a25d56605bf5182e0add74ad6d6366f885ef724523e38a8a7fccc8e3305854"
+        },
+        "3843": {
+          "messages": [
+            "1576241052350812192",
+            "1576241078862872638"
+          ],
+          "signature": "8aa6c9e0b50e5bc4e27a899166769cfd29ab528f46d62ceba81e2f5e5149184f"
         },
         "3844": {
           "messages": [
