@@ -822,7 +822,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "262911",
+        "inflight": false,
+        "messages": [],
+        "pages": 3,
+        "signature": "2061961c83349488be6f8cf1648180de798d2c755ab43722ad4b524b3f771d05"
+      },
       "pending": [
         {
           "date": "2026-06-29",
