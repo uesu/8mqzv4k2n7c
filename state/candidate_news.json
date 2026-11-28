@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9574",
-        "inflight": false,
-        "messages": [
-          "1576234471508807883",
-          "1576234492677595183"
-        ],
-        "pages": 2,
-        "signature": "7fd2c342b5ed1e6ec67e3a5b849b5cb8e9f754cdf680682c4e68a09ff8ca69b5"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9574",
-          "title": "Arknights: Endfield Pre-Download Now Available",
-          "ts": 1768874400
-        },
         {
           "id": "8900",
           "title": "Arknights: Endfield Fair Play Statement",
@@ -752,6 +738,13 @@
             "1576231193291133111"
           ],
           "signature": "1406590f9d4e22b30de081bece8b833e5ccaa92b94638c66c17f7cf6080ad0ea"
+        },
+        "9574": {
+          "messages": [
+            "1576234471508807883",
+            "1576234492677595183"
+          ],
+          "signature": "7fd2c342b5ed1e6ec67e3a5b849b5cb8e9f754cdf680682c4e68a09ff8ca69b5"
         },
         "9575": {
           "messages": [
