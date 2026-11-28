@@ -1,26 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5208",
-        "inflight": false,
-        "messages": [
-          "1576256070664462537",
-          "1576256091602427905",
-          "1576256109717758055",
-          "1576256267692019904",
-          "1576256285652025407",
-          "1576256303934738684"
-        ],
-        "pages": 6,
-        "signature": "6bc2c6e39bc098a37905cce9412d838b7bb62ac0e156b84e1022daed3403501b"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5208",
-          "title": "[Dreamscape of Wind and Snow] Version Update Notes",
-          "ts": 1788310800
-        },
         {
           "id": "9562",
           "title": "Arknights: Endfield Game Tools Updated",
@@ -578,6 +560,17 @@
             "1576250990678773905"
           ],
           "signature": "407d882995b82ff24e29cdf41518d48a72ccf65838044bdff8c7cdbb4800ede7"
+        },
+        "5208": {
+          "messages": [
+            "1576256070664462537",
+            "1576256091602427905",
+            "1576256109717758055",
+            "1576256267692019904",
+            "1576256285652025407",
+            "1576256303934738684"
+          ],
+          "signature": "6bc2c6e39bc098a37905cce9412d838b7bb62ac0e156b84e1022daed3403501b"
         },
         "5209": {
           "messages": [
