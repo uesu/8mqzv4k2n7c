@@ -3,7 +3,7 @@
     "endfield": {
       "partial": {
         "id": "5204",
-        "inflight": false,
+        "inflight": true,
         "messages": [
           "1576261429688926280"
         ],
