@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1329",
-        "inflight": false,
-        "messages": [
-          "1576254370805190708"
-        ],
-        "pages": 1,
-        "signature": "6a7d3158f02ab4bfed392ca0e1515187de4ca5800bb76181b51f62b8948fdc85"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1329",
-          "title": "WhatsApp & Messenger Subscription Event Now Live!",
-          "ts": 1786338000
-        },
         {
           "id": "4482",
           "title": "Wishlist Milestone Event",
@@ -297,6 +284,12 @@
             "1576250326606942431"
           ],
           "signature": "4d68630a30c9101bfbd7384ea32e2c5a9e7faa7c43bf3f92fb09616173f8faf7"
+        },
+        "1329": {
+          "messages": [
+            "1576254370805190708"
+          ],
+          "signature": "6a7d3158f02ab4bfed392ca0e1515187de4ca5800bb76181b51f62b8948fdc85"
         },
         "1331": {
           "messages": [
