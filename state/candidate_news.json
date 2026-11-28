@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5210",
-        "inflight": false,
-        "messages": [
-          "1576246163185860761"
-        ],
-        "pages": 1,
-        "signature": "c4b3bd1bf3054a7c476ec4d17ea416f566039493808cde0539744eba8e4d2e8e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5210",
-          "title": "[Swift Walker Issue] LTO Details",
-          "ts": 1778646900
-        },
         {
           "id": "2668",
           "title": "[Party Together] - [Gift Box Castell] Fest Event Details",
@@ -591,6 +578,12 @@
             "1576233925695512689"
           ],
           "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
+        },
+        "5210": {
+          "messages": [
+            "1576246163185860761"
+          ],
+          "signature": "c4b3bd1bf3054a7c476ec4d17ea416f566039493808cde0539744eba8e4d2e8e"
         },
         "5211": {
           "messages": [
