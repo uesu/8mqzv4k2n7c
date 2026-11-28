@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2655",
-        "inflight": false,
-        "messages": [
-          "1576253858739654698"
-        ],
-        "pages": 1,
-        "signature": "a43cc02e8d9a7993109a2b50a2749a5701c10804970e1b9148a7036d2979c57d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2655",
-          "title": "Arknights: Endfield Game Tools Updated for the New Version!",
-          "ts": 1784775600
-        },
         {
           "id": "3831",
           "title": "[Good Morning from Your Dawnstar] Chartered Headhunting",
@@ -381,6 +368,12 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2655": {
+          "messages": [
+            "1576253858739654698"
+          ],
+          "signature": "a43cc02e8d9a7993109a2b50a2749a5701c10804970e1b9148a7036d2979c57d"
         },
         "2656": {
           "messages": [
