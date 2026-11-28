@@ -1,0 +1,729 @@
+https://github.com/uesu/8mqzv4k2n7c/actions/runs/46148884003
+
+Candidate news catch-up (attended live) #1
+
+2026-11-28T13:17:38.3885213Z Current runner version: '2.338.2'
+2026-11-28T13:17:38.3913858Z ##[group]Runner Image Provisioner
+2026-11-28T13:17:38.3914881Z Hosted Compute Agent
+2026-11-28T13:17:38.3915723Z Version: 20261111.635
+2026-11-28T13:17:38.3916588Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+2026-11-28T13:17:38.3917504Z Build Date: 2026-11-11T01:49:01Z
+2026-11-28T13:17:38.3918553Z Worker ID: {a560c7e4-a9e8-4291-8f74-41f14c005d41}
+2026-11-28T13:17:38.3919465Z Region: eastus2
+2026-11-28T13:17:38.3920278Z Cloud: Azure
+2026-11-28T13:17:38.3921076Z ##[endgroup]
+2026-11-28T13:17:38.3922553Z ##[group]Operating System
+2026-11-28T13:17:38.3923214Z Ubuntu
+2026-11-28T13:17:38.3923698Z 26.04.1
+2026-11-28T13:17:38.3924217Z LTS
+2026-11-28T13:17:38.3924670Z ##[endgroup]
+2026-11-28T13:17:38.3925125Z ##[group]Runner Image
+2026-11-28T13:17:38.3925737Z Image: ubuntu-26.04
+2026-11-28T13:17:38.3926225Z Version: 20261122.9.1
+2026-11-28T13:17:38.3927663Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261122.9/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-28T13:17:38.3928996Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261122.9
+2026-11-28T13:17:38.3929787Z ##[endgroup]
+2026-11-28T13:17:38.3930873Z ##[group]GITHUB_TOKEN Permissions
+2026-11-28T13:17:38.3932885Z Contents: write
+2026-11-28T13:17:38.3933462Z Metadata: read
+2026-11-28T13:17:38.3933944Z ##[endgroup]
+2026-11-28T13:17:38.3935876Z Secret source: Actions
+2026-11-28T13:17:38.3937210Z Cache mode: write
+2026-11-28T13:17:38.3938395Z Prepare workflow directory
+2026-11-28T13:17:38.4294735Z Prepare all required actions
+2026-11-28T13:17:38.4350785Z Getting action download info
+2026-11-28T13:17:38.5978764Z Download action repository 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-11-28T13:17:38.6716736Z Download action repository 'actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0' (SHA:6d4fd22b20465ccc0f7354476588e8df7c9ca0e0)
+2026-11-28T13:17:38.8316598Z Complete job name: catchup
+2026-11-28T13:17:38.9174305Z ##[group]Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+2026-11-28T13:17:38.9175139Z with:
+2026-11-28T13:17:38.9175498Z   ref: main
+2026-11-28T13:17:38.9175849Z   fetch-depth: 0
+2026-11-28T13:17:38.9176238Z   persist-credentials: false
+2026-11-28T13:17:38.9176715Z   repository: uesu/8mqzv4k2n7c
+2026-11-28T13:17:38.9180119Z   token: ***
+2026-11-28T13:17:38.9180491Z   ssh-strict: true
+2026-11-28T13:17:38.9180868Z   ssh-user: git
+2026-11-28T13:17:38.9181222Z   clean: true
+2026-11-28T13:17:38.9181604Z   sparse-checkout-cone-mode: true
+2026-11-28T13:17:38.9182043Z   fetch-tags: false
+2026-11-28T13:17:38.9182544Z   show-progress: true
+2026-11-28T13:17:38.9182931Z   lfs: false
+2026-11-28T13:17:38.9183285Z   submodules: false
+2026-11-28T13:17:38.9183667Z   set-safe-directory: true
+2026-11-28T13:17:38.9184100Z   allow-unsafe-pr-checkout: false
+2026-11-28T13:17:38.9184704Z ##[endgroup]
+2026-11-28T13:17:39.2010492Z Syncing repository: uesu/8mqzv4k2n7c
+2026-11-28T13:17:39.2013649Z ##[group]Getting Git version info
+2026-11-28T13:17:39.2015049Z Working directory is '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-11-28T13:17:39.2030240Z [command]/usr/bin/git version
+2026-11-28T13:17:39.2074781Z git version 2.56.1
+2026-11-28T13:17:39.2090859Z ##[endgroup]
+2026-11-28T13:17:39.2100754Z Temporarily overriding HOME='/home/runner/work/_temp/ff16cffe-d95c-407b-a517-8eee8cff54dc' before making global git config changes
+2026-11-28T13:17:39.2103893Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-28T13:17:39.2106535Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-11-28T13:17:39.2165037Z Deleting the contents of '/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c'
+2026-11-28T13:17:39.2176399Z ##[group]Determining repository object format
+2026-11-28T13:17:39.3903188Z ##[endgroup]
+2026-11-28T13:17:39.3905687Z ##[group]Initializing the repository
+2026-11-28T13:17:39.3914973Z [command]/usr/bin/git init /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-11-28T13:17:39.4009494Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-28T13:17:39.4011781Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-28T13:17:39.4013993Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-28T13:17:39.4015486Z hint: call:
+2026-11-28T13:17:39.4016382Z hint:
+2026-11-28T13:17:39.4017413Z hint: 	git config --global init.defaultBranch <name>
+2026-11-28T13:17:39.4018630Z hint:
+2026-11-28T13:17:39.4020164Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-28T13:17:39.4022878Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-28T13:17:39.4024942Z hint:
+2026-11-28T13:17:39.4026084Z hint: 	git branch -m <name>
+2026-11-28T13:17:39.4027260Z hint:
+2026-11-28T13:17:39.4028976Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-28T13:17:39.4032015Z Initialized empty Git repository in /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/
+2026-11-28T13:17:39.4040359Z [command]/usr/bin/git remote add origin https://github.com/uesu/8mqzv4k2n7c
+2026-11-28T13:17:39.4091427Z ##[endgroup]
+2026-11-28T13:17:39.4094033Z ##[group]Disabling automatic garbage collection
+2026-11-28T13:17:39.4096254Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-28T13:17:39.4137333Z ##[endgroup]
+2026-11-28T13:17:39.4139309Z ##[group]Setting up auth
+2026-11-28T13:17:39.4140679Z Removing SSH command configuration
+2026-11-28T13:17:39.4142837Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-28T13:17:39.4183806Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-28T13:17:39.4679032Z Removing HTTP extra header
+2026-11-28T13:17:39.4682102Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-28T13:17:39.4709324Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-28T13:17:39.5004767Z Removing includeIf entries pointing to credentials config files
+2026-11-28T13:17:39.5008466Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-28T13:17:39.5039164Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-28T13:17:39.5314840Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-28T13:17:39.5349321Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path /home/runner/work/_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:39.5379642Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:39.5411531Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:39.5444442Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:39.5473135Z ##[endgroup]
+2026-11-28T13:17:39.5475071Z ##[group]Fetching the repository
+2026-11-28T13:17:39.5479277Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-11-28T13:17:41.3318941Z From https://github.com/uesu/8mqzv4k2n7c
+2026-11-28T13:17:41.3320375Z  * [new branch]      main       -> origin/main
+2026-11-28T13:17:41.3323438Z ##[endgroup]
+2026-11-28T13:17:41.3323939Z ##[group]Determining the checkout info
+2026-11-28T13:17:41.3328642Z [command]/usr/bin/git branch --list --remote origin/main
+2026-11-28T13:17:41.3357325Z   origin/main
+2026-11-28T13:17:41.3360848Z ##[endgroup]
+2026-11-28T13:17:41.3364795Z [command]/usr/bin/git sparse-checkout disable
+2026-11-28T13:17:41.3416997Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-28T13:17:41.3447994Z ##[group]Checking out the ref
+2026-11-28T13:17:41.3450986Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-11-28T13:17:41.3839038Z Switched to a new branch 'main'
+2026-11-28T13:17:41.3843844Z branch 'main' set up to track 'origin/main'.
+2026-11-28T13:17:41.3859843Z ##[endgroup]
+2026-11-28T13:17:41.3910250Z [command]/usr/bin/git log -1 --format=%H
+2026-11-28T13:17:41.3936642Z a6ed463947afed6c9f4205a7aba79cb73fcec534
+2026-11-28T13:17:41.3945386Z ##[group]Removing auth
+2026-11-28T13:17:41.3945918Z Removing SSH command configuration
+2026-11-28T13:17:41.3947981Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-28T13:17:41.3977725Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-28T13:17:41.4214255Z Removing HTTP extra header
+2026-11-28T13:17:41.4216792Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-28T13:17:41.4246903Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-28T13:17:41.4479580Z Removing includeIf entries pointing to credentials config files
+2026-11-28T13:17:41.4481628Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-28T13:17:41.4512489Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-11-28T13:17:41.4513411Z includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-11-28T13:17:41.4514039Z includeif.gitdir:/github/workspace/.git.path
+2026-11-28T13:17:41.4514751Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-28T13:17:41.4520181Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path
+2026-11-28T13:17:41.4545331Z /home/runner/work/_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:41.4553248Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-c12a6c20\-366e\-4a10\-bef1\-bd23af739033\.config
+2026-11-28T13:17:41.4591274Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path
+2026-11-28T13:17:41.4614142Z /home/runner/work/_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:41.4620892Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-c12a6c20\-366e\-4a10\-bef1\-bd23af739033\.config
+2026-11-28T13:17:41.4655076Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-11-28T13:17:41.4713616Z /github/runner_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:41.4724330Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-c12a6c20\-366e\-4a10\-bef1\-bd23af739033\.config
+2026-11-28T13:17:41.4758985Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-11-28T13:17:41.4781963Z /github/runner_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config
+2026-11-28T13:17:41.4788828Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-c12a6c20\-366e\-4a10\-bef1\-bd23af739033\.config
+2026-11-28T13:17:41.4822653Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-28T13:17:41.5056049Z Removing credentials config '/home/runner/work/_temp/git-credentials-c12a6c20-366e-4a10-bef1-bd23af739033.config'
+2026-11-28T13:17:41.5063633Z ##[endgroup]
+2026-11-28T13:17:41.5377764Z ##[group]Run actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0
+2026-11-28T13:17:41.5378290Z with:
+2026-11-28T13:17:41.5378621Z   python-version: 3.15.2
+2026-11-28T13:17:41.5378982Z   check-latest: false
+2026-11-28T13:17:41.5381371Z   token: ***
+2026-11-28T13:17:41.5381810Z   mirror: https://raw.githubusercontent.com/actions/python-versions/main
+2026-11-28T13:17:41.5382528Z   update-environment: true
+2026-11-28T13:17:41.5382958Z   allow-prereleases: false
+2026-11-28T13:17:41.5383331Z   freethreaded: false
+2026-11-28T13:17:41.5383684Z ##[endgroup]
+2026-11-28T13:17:41.6319833Z ##[group]Installed versions
+2026-11-28T13:17:41.6351164Z Successfully set up CPython (3.15.2)
+2026-11-28T13:17:41.6352611Z ##[endgroup]
+2026-11-28T13:17:41.6467361Z ##[group]Run python -m pip install -q -r requirements.txt
+2026-11-28T13:17:41.6468119Z [36;1mpython -m pip install -q -r requirements.txt[0m
+2026-11-28T13:17:41.6517297Z shell: /usr/bin/bash -e {0}
+2026-11-28T13:17:41.6517714Z env:
+2026-11-28T13:17:41.6518138Z   pythonLocation: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:41.6518722Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.15.2/x64/lib/pkgconfig
+2026-11-28T13:17:41.6519293Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:41.6519801Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:41.6520328Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:41.6520846Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.15.2/x64/lib
+2026-11-28T13:17:41.6521299Z ##[endgroup]
+2026-11-28T13:17:45.6923156Z ##[group]Run python -c 'import imageio_ffmpeg, subprocess; subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, timeout=15)'
+2026-11-28T13:17:45.6924243Z [36;1mpython -c 'import imageio_ffmpeg, subprocess; subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True, timeout=15)'[0m
+2026-11-28T13:17:45.6955886Z shell: /usr/bin/bash -e {0}
+2026-11-28T13:17:45.6956108Z env:
+2026-11-28T13:17:45.6956336Z   pythonLocation: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.6956702Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.15.2/x64/lib/pkgconfig
+2026-11-28T13:17:45.6957036Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.6957356Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.6957664Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.6957987Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.15.2/x64/lib
+2026-11-28T13:17:45.6958250Z ##[endgroup]
+2026-11-28T13:17:45.8284424Z ##[group]Run set -euo pipefail
+2026-11-28T13:17:45.8284708Z [36;1mset -euo pipefail[0m
+2026-11-28T13:17:45.8285027Z [36;1mauth="$(printf 'x-access-token:%s' "$CATCHUP_GITHUB_TOKEN" | base64 -w0)"[0m
+2026-11-28T13:17:45.8285388Z [36;1mecho "::add-mask::$auth"[0m
+2026-11-28T13:17:45.8285615Z [36;1mexport GIT_CONFIG_COUNT=1[0m
+2026-11-28T13:17:45.8285934Z [36;1mexport GIT_CONFIG_KEY_0=http.https://github.com/.extraheader[0m
+2026-11-28T13:17:45.8286338Z [36;1mexport GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $auth"[0m
+2026-11-28T13:17:45.8286638Z [36;1munset CATCHUP_GITHUB_TOKEN auth[0m
+2026-11-28T13:17:45.8286910Z [36;1mpython -m gamexpress.candidate_news_catchup[0m
+2026-11-28T13:17:45.8318176Z shell: /usr/bin/bash -e {0}
+2026-11-28T13:17:45.8318392Z env:
+2026-11-28T13:17:45.8318630Z   pythonLocation: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.8319005Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.15.2/x64/lib/pkgconfig
+2026-11-28T13:17:45.8319396Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.8319707Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.8320017Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.15.2/x64
+2026-11-28T13:17:45.8320355Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.15.2/x64/lib
+2026-11-28T13:17:45.8322840Z   CATCHUP_GITHUB_TOKEN: ***
+2026-11-28T13:17:45.8325603Z   GE_VARS_JSON: {
+  "AUTO_MERGE_DEPENDABOT": "yes",
+  "CODES_MARK_EXPIRED": "off",
+  "CODES_MEDIA": "https://cdn.discordapp.com/attachments/1237644609144754197/1573987068206514257/jp3d9FUtCNqnXT2q_trimmed.gif?ex=6b040130&is=6b02afb0&hm=739c79dcc55e179ab60163c2b2b01ae72c9e2910c179d1d849f566ed8c71da07&",
+  "CODES_THUMBNAIL": "https://cdn.discordapp.com/attachments/1237644609144754197/1573957325809786910/794744177-ezgif.com-crop.gif?ex=6b03e57d&is=6b0293fd&hm=b25accfe9df6fe098cce29cf4f21544e81a5a2412d9ad5e27e7eb1ae267be419&",
+  "INTAKE_CHANNEL_ID": "1566780258575847445",
+  "INTAKE_QUIET_TARGETS": "1",
+  "MAINTENANCE_GAMES": "genshin,starrail,zzz,wuwa",
+  "NEWS_CANDIDATES_AUTHORITY_BRANCH": "main",
+  "NEWS_CANDIDATES_AUTHORITY_REPOSITORY": "uesu/8mqzv4k2n7c",
+  "NEWS_CANDIDATES_BACKFILL": "1",
+  "NEWS_EXPAND_FULL": "1",
+  "NEWS_GAMES": "genshin,starrail,zzz,wuwa,hna,nte,endfield,silverpalace",
+  "NEWS_GROUP_LONG_STRIPS": "1",
+  "PING_MAINTENANCE": "<@&1296268365593186426>",
+  "PING_SCHEDULE": "<@&1296268365593186426>"
+}
+2026-11-28T13:17:45.8328794Z   DISCORD_WEBHOOK_NEWS_NTE: ***
+2026-11-28T13:17:45.8329355Z   DISCORD_WEBHOOK_NEWS_ENDFIELD: ***
+2026-11-28T13:17:45.8329908Z   DISCORD_WEBHOOK_NEWS_SILVERPALACE: ***
+2026-11-28T13:17:45.8330152Z   CATCHUP_WRITERS_PAUSED: true
+2026-11-28T13:17:45.8330397Z   CATCHUP_CONFIRM: START_CANDIDATE_BACKFILL
+2026-11-28T13:17:45.8330625Z ##[endgroup]
+2026-11-28T13:18:08.5135815Z endfield: endfield news: queued=142 recorded=1 partial-pages=0
+2026-11-28T13:18:25.4040112Z nte: nte news: queued=102 recorded=1 partial-pages=0
+2026-11-28T13:18:47.8574132Z silverpalace: silverpalace news: queued=20 recorded=1 partial-pages=0
+2026-11-28T13:19:07.3059903Z endfield: endfield news: queued=141 recorded=2 partial-pages=0
+2026-11-28T13:19:22.9338571Z nte: nte news: queued=101 recorded=2 partial-pages=0
+2026-11-28T13:19:43.2358397Z silverpalace: silverpalace news: queued=19 recorded=2 partial-pages=0
+2026-11-28T13:20:04.8184313Z endfield: endfield news: queued=140 recorded=3 partial-pages=0
+2026-11-28T13:20:21.5034603Z nte: nte news: queued=100 recorded=3 partial-pages=0
+2026-11-28T13:20:42.0202884Z silverpalace: silverpalace news: queued=18 recorded=3 partial-pages=0
+2026-11-28T13:21:01.9302508Z endfield: endfield news: queued=139 recorded=4 partial-pages=0
+2026-11-28T13:21:18.5473709Z nte: nte news: queued=99 recorded=4 partial-pages=0
+2026-11-28T13:21:49.3065454Z silverpalace: silverpalace news: queued=17 recorded=4 partial-pages=0
+2026-11-28T13:22:09.5199776Z endfield: endfield news: queued=138 recorded=5 partial-pages=0
+2026-11-28T13:22:25.9704686Z nte: nte news: queued=98 recorded=5 partial-pages=0
+2026-11-28T13:22:47.0391440Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=0
+2026-11-28T13:23:09.1173987Z endfield: endfield news: queued=137 recorded=6 partial-pages=0
+2026-11-28T13:23:25.1115150Z nte: nte news: queued=97 recorded=6 partial-pages=0
+2026-11-28T13:23:55.3431196Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=3
+2026-11-28T13:24:14.5440455Z endfield: endfield news: queued=136 recorded=7 partial-pages=0
+2026-11-28T13:24:30.9453779Z nte: nte news: queued=96 recorded=7 partial-pages=0
+2026-11-28T13:24:58.9686665Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=6
+2026-11-28T13:25:23.0388081Z endfield: endfield news: queued=135 recorded=8 partial-pages=0
+2026-11-28T13:25:39.9399317Z nte: nte news: queued=95 recorded=8 partial-pages=0
+2026-11-28T13:26:08.1588914Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=9
+2026-11-28T13:26:26.7328999Z endfield: endfield news: queued=134 recorded=9 partial-pages=0
+2026-11-28T13:26:36.0531448Z news media rejected: host=i.ytimg.com status=404
+2026-11-28T13:26:36.4873325Z news media rejected: host=i.ytimg.com status=404
+2026-11-28T13:26:43.9839083Z nte: nte news: queued=94 recorded=9 partial-pages=0
+2026-11-28T13:27:14.0944580Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=12
+2026-11-28T13:27:33.9763855Z endfield: endfield news: queued=133 recorded=10 partial-pages=0
+2026-11-28T13:27:50.0421960Z nte: nte news: queued=93 recorded=10 partial-pages=0
+2026-11-28T13:28:17.1090126Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=15
+2026-11-28T13:28:39.2163944Z endfield: endfield news: queued=132 recorded=11 partial-pages=0
+2026-11-28T13:28:55.5968862Z nte: nte news: queued=92 recorded=11 partial-pages=0
+2026-11-28T13:29:22.9558741Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=18
+2026-11-28T13:29:42.6191729Z endfield: endfield news: queued=131 recorded=12 partial-pages=0
+2026-11-28T13:29:59.1449518Z nte: nte news: queued=91 recorded=12 partial-pages=0
+2026-11-28T13:30:26.0560364Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=21
+2026-11-28T13:30:45.6924305Z endfield: endfield news: queued=130 recorded=13 partial-pages=0
+2026-11-28T13:31:02.9960763Z nte: nte news: queued=90 recorded=13 partial-pages=0
+2026-11-28T13:31:35.7225331Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=24
+2026-11-28T13:31:58.2520494Z endfield: endfield news: queued=129 recorded=14 partial-pages=0
+2026-11-28T13:32:14.9397829Z nte: nte news: queued=89 recorded=14 partial-pages=0
+2026-11-28T13:32:42.9047299Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=27
+2026-11-28T13:33:09.8510251Z endfield: endfield news: queued=128 recorded=15 partial-pages=0
+2026-11-28T13:33:26.2927511Z nte: nte news: queued=88 recorded=15 partial-pages=0
+2026-11-28T13:33:53.1729562Z silverpalace: silverpalace news: queued=16 recorded=5 partial-pages=30
+2026-11-28T13:34:18.0620819Z endfield: endfield news: queued=127 recorded=16 partial-pages=0
+2026-11-28T13:34:34.9665369Z nte: nte news: queued=87 recorded=16 partial-pages=0
+2026-11-28T13:35:00.1657123Z silverpalace: silverpalace news: queued=15 recorded=6 partial-pages=0
+2026-11-28T13:35:40.2891058Z endfield: endfield news: queued=127 recorded=16 partial-pages=3
+2026-11-28T13:35:56.0607436Z nte: nte news: queued=86 recorded=17 partial-pages=0
+2026-11-28T13:36:16.6516491Z silverpalace: silverpalace news: queued=14 recorded=7 partial-pages=0
+2026-11-28T13:36:57.0043585Z endfield: endfield news: queued=126 recorded=17 partial-pages=0
+2026-11-28T13:37:13.3916736Z nte: nte news: queued=85 recorded=18 partial-pages=0
+2026-11-28T13:37:39.8276022Z silverpalace: silverpalace news: queued=13 recorded=8 partial-pages=0
+2026-11-28T13:38:00.0177045Z endfield: endfield news: queued=125 recorded=18 partial-pages=0
+2026-11-28T13:38:17.2032119Z nte: nte news: queued=84 recorded=19 partial-pages=0
+2026-11-28T13:38:38.6019219Z silverpalace: silverpalace news: queued=12 recorded=9 partial-pages=0
+2026-11-28T13:38:58.5966838Z endfield: endfield news: queued=124 recorded=19 partial-pages=0
+2026-11-28T13:39:15.0838611Z nte: nte news: queued=83 recorded=20 partial-pages=0
+2026-11-28T13:39:44.4956771Z silverpalace: silverpalace news: queued=11 recorded=10 partial-pages=0
+2026-11-28T13:40:05.2683113Z endfield: endfield news: queued=123 recorded=20 partial-pages=0
+2026-11-28T13:40:23.9405318Z nte: nte news: queued=82 recorded=21 partial-pages=0
+2026-11-28T13:40:45.0401039Z silverpalace: silverpalace news: queued=10 recorded=11 partial-pages=0
+2026-11-28T13:41:04.2868808Z endfield: endfield news: queued=122 recorded=21 partial-pages=0
+2026-11-28T13:41:20.1179686Z nte: nte news: queued=81 recorded=22 partial-pages=0
+2026-11-28T13:41:45.4895871Z silverpalace: silverpalace news: queued=9 recorded=12 partial-pages=0
+2026-11-28T13:42:05.1620965Z endfield: endfield news: queued=121 recorded=22 partial-pages=0
+2026-11-28T13:42:21.9498853Z nte: nte news: queued=80 recorded=23 partial-pages=0
+2026-11-28T13:42:53.0924100Z silverpalace: silverpalace news: queued=8 recorded=13 partial-pages=0
+2026-11-28T13:43:12.3222893Z endfield: endfield news: queued=120 recorded=23 partial-pages=0
+2026-11-28T13:43:28.4418404Z nte: nte news: queued=79 recorded=24 partial-pages=0
+2026-11-28T13:44:59.7787004Z silverpalace: silverpalace news: queued=7 recorded=14 partial-pages=0
+2026-11-28T13:45:19.9104724Z endfield: endfield news: queued=119 recorded=24 partial-pages=0
+2026-11-28T13:45:37.5928371Z nte: nte news: queued=78 recorded=25 partial-pages=0
+2026-11-28T13:46:03.5901906Z silverpalace: silverpalace news: queued=6 recorded=15 partial-pages=0
+2026-11-28T13:46:23.1394635Z endfield: endfield news: queued=118 recorded=25 partial-pages=0
+2026-11-28T13:46:39.5553274Z nte: nte news: queued=77 recorded=26 partial-pages=0
+2026-11-28T13:46:59.6264582Z silverpalace: silverpalace news: queued=5 recorded=16 partial-pages=0
+2026-11-28T13:47:19.1711643Z endfield: endfield news: queued=117 recorded=26 partial-pages=0
+2026-11-28T13:47:35.4096409Z nte: nte news: queued=76 recorded=27 partial-pages=0
+2026-11-28T13:48:10.0290017Z silverpalace: silverpalace news: queued=4 recorded=17 partial-pages=0
+2026-11-28T13:48:29.8932992Z endfield: endfield news: queued=116 recorded=27 partial-pages=0
+2026-11-28T13:48:46.2237066Z nte: nte news: queued=75 recorded=28 partial-pages=0
+2026-11-28T13:49:11.8541785Z silverpalace: silverpalace news: queued=3 recorded=18 partial-pages=0
+2026-11-28T13:49:48.5785105Z endfield: endfield news: queued=116 recorded=27 partial-pages=3
+2026-11-28T13:50:04.7169081Z nte: nte news: queued=74 recorded=29 partial-pages=0
+2026-11-28T13:50:30.9000122Z silverpalace: silverpalace news: queued=2 recorded=19 partial-pages=0
+2026-11-28T13:50:55.6928251Z endfield: endfield news: queued=115 recorded=28 partial-pages=0
+2026-11-28T13:51:12.5156728Z nte: nte news: queued=73 recorded=30 partial-pages=0
+2026-11-28T13:51:38.3341337Z silverpalace: silverpalace news: queued=1 recorded=20 partial-pages=0
+2026-11-28T13:52:09.6342564Z endfield: endfield news: queued=114 recorded=29 partial-pages=0
+2026-11-28T13:52:25.5082133Z nte: nte news: queued=72 recorded=31 partial-pages=0
+2026-11-28T13:52:47.2859646Z silverpalace: silverpalace news: queued=0 recorded=21 partial-pages=0
+2026-11-28T13:53:11.0568878Z endfield: endfield news: queued=113 recorded=30 partial-pages=0
+2026-11-28T13:53:28.5761549Z nte: nte news: queued=71 recorded=32 partial-pages=0
+2026-11-28T13:53:39.3067362Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:53:58.7498958Z endfield: endfield news: queued=112 recorded=31 partial-pages=0
+2026-11-28T13:54:14.5572712Z nte: nte news: queued=70 recorded=33 partial-pages=0
+2026-11-28T13:54:25.9912953Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:54:45.7606055Z endfield: endfield news: queued=111 recorded=32 partial-pages=0
+2026-11-28T13:55:01.9353691Z nte: nte news: queued=69 recorded=34 partial-pages=0
+2026-11-28T13:55:13.4186625Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:55:37.1886348Z endfield: endfield news: queued=110 recorded=33 partial-pages=0
+2026-11-28T13:55:53.2402896Z nte: nte news: queued=68 recorded=35 partial-pages=0
+2026-11-28T13:56:04.4536987Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:56:30.4305411Z endfield: endfield news: queued=109 recorded=34 partial-pages=0
+2026-11-28T13:56:47.0757214Z nte: nte news: queued=67 recorded=36 partial-pages=0
+2026-11-28T13:56:58.1768796Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:57:18.9665721Z endfield: endfield news: queued=108 recorded=35 partial-pages=0
+2026-11-28T13:57:36.2902078Z nte: nte news: queued=66 recorded=37 partial-pages=0
+2026-11-28T13:57:48.4964714Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:58:07.8148651Z endfield: endfield news: queued=107 recorded=36 partial-pages=0
+2026-11-28T13:58:23.8545485Z nte: nte news: queued=65 recorded=38 partial-pages=0
+2026-11-28T13:58:35.2398826Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:58:54.5447873Z endfield: endfield news: queued=106 recorded=37 partial-pages=0
+2026-11-28T13:59:11.9457358Z nte: nte news: queued=64 recorded=39 partial-pages=0
+2026-11-28T13:59:23.2096322Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T13:59:47.9929786Z endfield: endfield news: queued=105 recorded=38 partial-pages=0
+2026-11-28T14:00:04.2514161Z nte: nte news: queued=63 recorded=40 partial-pages=0
+2026-11-28T14:00:16.0594994Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:00:41.0201110Z endfield: endfield news: queued=104 recorded=39 partial-pages=0
+2026-11-28T14:00:58.5527063Z nte: nte news: queued=62 recorded=41 partial-pages=0
+2026-11-28T14:01:09.0139124Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:01:28.7555508Z endfield: endfield news: queued=103 recorded=40 partial-pages=0
+2026-11-28T14:01:45.2549072Z nte: nte news: queued=61 recorded=42 partial-pages=0
+2026-11-28T14:01:56.3780717Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:02:22.1556475Z endfield: endfield news: queued=102 recorded=41 partial-pages=0
+2026-11-28T14:02:47.6940140Z nte: nte news: queued=60 recorded=43 partial-pages=0
+2026-11-28T14:02:58.9909266Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:03:28.5815635Z endfield: endfield news: queued=101 recorded=42 partial-pages=0
+2026-11-28T14:03:49.6130718Z nte: nte news: queued=59 recorded=44 partial-pages=0
+2026-11-28T14:04:00.6043393Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:04:21.6939001Z endfield: endfield news: queued=100 recorded=43 partial-pages=0
+2026-11-28T14:04:37.8219202Z nte: nte news: queued=58 recorded=45 partial-pages=0
+2026-11-28T14:04:49.9986747Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:05:14.0159228Z endfield: endfield news: queued=99 recorded=44 partial-pages=0
+2026-11-28T14:05:38.9287266Z nte: nte news: queued=57 recorded=46 partial-pages=0
+2026-11-28T14:05:50.1426175Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:06:22.1847721Z endfield: endfield news: queued=98 recorded=45 partial-pages=0
+2026-11-28T14:06:38.4215042Z nte: nte news: queued=56 recorded=47 partial-pages=0
+2026-11-28T14:06:49.5149009Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:07:14.1784722Z endfield: endfield news: queued=97 recorded=46 partial-pages=0
+2026-11-28T14:07:38.9211038Z nte: nte news: queued=56 recorded=47 partial-pages=3
+2026-11-28T14:07:50.2465623Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:08:10.8029871Z endfield: endfield news: queued=96 recorded=47 partial-pages=0
+2026-11-28T14:08:25.6985781Z nte: nte news: queued=55 recorded=48 partial-pages=0
+2026-11-28T14:08:37.4383640Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:09:11.5193613Z endfield: endfield news: queued=95 recorded=48 partial-pages=0
+2026-11-28T14:09:27.7172201Z nte: nte news: queued=54 recorded=49 partial-pages=0
+2026-11-28T14:09:39.1859989Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:09:59.8352991Z endfield: endfield news: queued=94 recorded=49 partial-pages=0
+2026-11-28T14:10:24.3758161Z nte: nte news: queued=53 recorded=50 partial-pages=0
+2026-11-28T14:10:35.9677760Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:10:55.2118484Z endfield: endfield news: queued=93 recorded=50 partial-pages=0
+2026-11-28T14:11:20.5220648Z nte: nte news: queued=52 recorded=51 partial-pages=0
+2026-11-28T14:11:32.1463357Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:11:56.0820604Z endfield: endfield news: queued=92 recorded=51 partial-pages=0
+2026-11-28T14:12:20.6220065Z nte: nte news: queued=51 recorded=52 partial-pages=0
+2026-11-28T14:12:32.3518917Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:12:53.3553169Z endfield: endfield news: queued=91 recorded=52 partial-pages=0
+2026-11-28T14:13:09.9686009Z nte: nte news: queued=50 recorded=53 partial-pages=0
+2026-11-28T14:13:21.2328921Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:13:52.6091336Z endfield: endfield news: queued=91 recorded=52 partial-pages=3
+2026-11-28T14:14:12.9873308Z nte: nte news: queued=49 recorded=54 partial-pages=0
+2026-11-28T14:14:24.1466557Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:14:50.5681576Z endfield: endfield news: queued=91 recorded=52 partial-pages=6
+2026-11-28T14:15:11.2150124Z nte: nte news: queued=48 recorded=55 partial-pages=0
+2026-11-28T14:15:23.2311691Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:15:42.3867224Z endfield: endfield news: queued=90 recorded=53 partial-pages=0
+2026-11-28T14:15:58.7749600Z nte: nte news: queued=47 recorded=56 partial-pages=0
+2026-11-28T14:16:10.8651119Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:16:31.0765195Z endfield: endfield news: queued=89 recorded=54 partial-pages=0
+2026-11-28T14:16:47.4080844Z nte: nte news: queued=46 recorded=57 partial-pages=0
+2026-11-28T14:16:59.0517237Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:17:23.9022032Z endfield: endfield news: queued=88 recorded=55 partial-pages=0
+2026-11-28T14:17:44.9428690Z nte: nte news: queued=45 recorded=58 partial-pages=0
+2026-11-28T14:17:56.4398295Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:18:17.4000737Z endfield: endfield news: queued=87 recorded=56 partial-pages=0
+2026-11-28T14:18:44.2070100Z nte: nte news: queued=45 recorded=58 partial-pages=3
+2026-11-28T14:18:55.2316009Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:19:21.1832824Z endfield: endfield news: queued=86 recorded=57 partial-pages=0
+2026-11-28T14:19:36.0102220Z nte: nte news: queued=44 recorded=59 partial-pages=0
+2026-11-28T14:19:48.4361512Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:20:09.8713635Z endfield: endfield news: queued=85 recorded=58 partial-pages=0
+2026-11-28T14:20:25.4558695Z nte: nte news: queued=43 recorded=60 partial-pages=0
+2026-11-28T14:20:36.6971146Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:21:01.1709179Z endfield: endfield news: queued=84 recorded=59 partial-pages=0
+2026-11-28T14:21:18.4652468Z nte: nte news: queued=42 recorded=61 partial-pages=0
+2026-11-28T14:21:29.9260224Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:21:49.2999049Z endfield: endfield news: queued=83 recorded=60 partial-pages=0
+2026-11-28T14:22:10.6790531Z nte: nte news: queued=41 recorded=62 partial-pages=0
+2026-11-28T14:22:22.5438469Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:22:58.3844297Z endfield: endfield news: queued=83 recorded=60 partial-pages=3
+2026-11-28T14:23:18.5426157Z nte: nte news: queued=40 recorded=63 partial-pages=0
+2026-11-28T14:23:29.6716895Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:23:55.7073935Z endfield: endfield news: queued=82 recorded=61 partial-pages=0
+2026-11-28T14:24:21.3614767Z nte: nte news: queued=39 recorded=64 partial-pages=0
+2026-11-28T14:24:31.9263502Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:24:51.9799998Z endfield: endfield news: queued=81 recorded=62 partial-pages=0
+2026-11-28T14:25:15.4868168Z nte: nte news: queued=38 recorded=65 partial-pages=0
+2026-11-28T14:25:26.7063479Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:25:53.3792907Z endfield: endfield news: queued=80 recorded=63 partial-pages=0
+2026-11-28T14:26:17.9303011Z nte: nte news: queued=37 recorded=66 partial-pages=0
+2026-11-28T14:26:29.6874885Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:26:54.1994422Z endfield: endfield news: queued=79 recorded=64 partial-pages=0
+2026-11-28T14:27:18.5068615Z nte: nte news: queued=36 recorded=67 partial-pages=0
+2026-11-28T14:27:29.9195153Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:27:50.4630005Z endfield: endfield news: queued=78 recorded=65 partial-pages=0
+2026-11-28T14:28:14.3339786Z nte: nte news: queued=36 recorded=67 partial-pages=3
+2026-11-28T14:28:25.4154729Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:28:45.8118657Z endfield: endfield news: queued=77 recorded=66 partial-pages=0
+2026-11-28T14:29:00.4988958Z nte: nte news: queued=35 recorded=68 partial-pages=0
+2026-11-28T14:29:12.0898911Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:29:41.0569074Z endfield: endfield news: queued=77 recorded=66 partial-pages=3
+2026-11-28T14:30:01.7822058Z nte: nte news: queued=34 recorded=69 partial-pages=0
+2026-11-28T14:30:13.9013361Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:30:40.5698418Z endfield: endfield news: queued=77 recorded=66 partial-pages=6
+2026-11-28T14:31:01.8574669Z nte: nte news: queued=33 recorded=70 partial-pages=0
+2026-11-28T14:31:13.3260924Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:31:33.8230172Z endfield: endfield news: queued=76 recorded=67 partial-pages=0
+2026-11-28T14:31:50.3869801Z nte: nte news: queued=32 recorded=71 partial-pages=0
+2026-11-28T14:32:01.9108230Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:32:22.2793404Z endfield: endfield news: queued=75 recorded=68 partial-pages=0
+2026-11-28T14:32:47.5959570Z nte: nte news: queued=31 recorded=72 partial-pages=0
+2026-11-28T14:32:58.5447395Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:33:18.3282714Z endfield: endfield news: queued=74 recorded=69 partial-pages=0
+2026-11-28T14:33:38.0837000Z nte: nte news: queued=30 recorded=73 partial-pages=0
+2026-11-28T14:33:49.9711918Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:34:11.9033575Z endfield: endfield news: queued=73 recorded=70 partial-pages=0
+2026-11-28T14:34:32.1527907Z nte: nte news: queued=29 recorded=74 partial-pages=0
+2026-11-28T14:34:42.7448644Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:35:05.3950634Z endfield: endfield news: queued=72 recorded=71 partial-pages=0
+2026-11-28T14:35:27.3265060Z nte: nte news: queued=28 recorded=75 partial-pages=0
+2026-11-28T14:35:37.7083319Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:35:58.3198890Z endfield: endfield news: queued=71 recorded=72 partial-pages=0
+2026-11-28T14:36:18.8866406Z nte: nte news: queued=27 recorded=76 partial-pages=0
+2026-11-28T14:36:28.9914941Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:36:49.4045243Z endfield: endfield news: queued=70 recorded=73 partial-pages=0
+2026-11-28T14:37:09.2016103Z nte: nte news: queued=26 recorded=77 partial-pages=0
+2026-11-28T14:37:19.4813996Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:37:44.2635128Z endfield: endfield news: queued=69 recorded=74 partial-pages=0
+2026-11-28T14:38:05.9116664Z nte: nte news: queued=25 recorded=78 partial-pages=0
+2026-11-28T14:38:16.8280038Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:38:38.1823772Z endfield: endfield news: queued=68 recorded=75 partial-pages=0
+2026-11-28T14:39:02.3744680Z nte: nte news: queued=25 recorded=78 partial-pages=3
+2026-11-28T14:39:13.0346410Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:39:33.7133054Z endfield: endfield news: queued=67 recorded=76 partial-pages=0
+2026-11-28T14:39:52.2474982Z nte: nte news: queued=24 recorded=79 partial-pages=0
+2026-11-28T14:40:02.9777781Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:40:24.2411796Z endfield: endfield news: queued=66 recorded=77 partial-pages=0
+2026-11-28T14:40:44.5616465Z nte: nte news: queued=23 recorded=80 partial-pages=0
+2026-11-28T14:40:56.7703304Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:41:29.4291333Z endfield: endfield news: queued=65 recorded=78 partial-pages=0
+2026-11-28T14:41:54.1795710Z nte: nte news: queued=22 recorded=81 partial-pages=0
+2026-11-28T14:42:04.2305096Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:42:23.4400465Z endfield: endfield news: queued=64 recorded=79 partial-pages=0
+2026-11-28T14:42:46.9695294Z nte: nte news: queued=22 recorded=81 partial-pages=3
+2026-11-28T14:42:58.1559501Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:43:17.7672882Z endfield: endfield news: queued=63 recorded=80 partial-pages=0
+2026-11-28T14:43:40.8829075Z nte: nte news: queued=21 recorded=82 partial-pages=0
+2026-11-28T14:43:51.8465982Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:45:17.9923711Z endfield: endfield news: queued=63 recorded=80 partial-pages=3
+2026-11-28T14:45:43.2754088Z nte: nte news: queued=20 recorded=83 partial-pages=0
+2026-11-28T14:45:54.9509609Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:46:56.8010719Z endfield: endfield news: queued=62 recorded=81 partial-pages=0
+2026-11-28T14:47:17.9778990Z nte: nte news: queued=19 recorded=84 partial-pages=0
+2026-11-28T14:47:29.6474071Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:47:55.4201280Z endfield: endfield news: queued=61 recorded=82 partial-pages=0
+2026-11-28T14:48:11.2695862Z nte: nte news: queued=18 recorded=85 partial-pages=0
+2026-11-28T14:48:23.5983414Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:48:43.8020812Z endfield: endfield news: queued=60 recorded=83 partial-pages=0
+2026-11-28T14:49:08.5594857Z nte: nte news: queued=17 recorded=86 partial-pages=0
+2026-11-28T14:49:19.3897638Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:49:39.4486073Z endfield: endfield news: queued=59 recorded=84 partial-pages=0
+2026-11-28T14:49:58.5580811Z nte: nte news: queued=16 recorded=87 partial-pages=0
+2026-11-28T14:50:09.0147910Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:50:38.0026707Z endfield: endfield news: queued=59 recorded=84 partial-pages=3
+2026-11-28T14:50:54.1793870Z nte: nte news: queued=15 recorded=88 partial-pages=0
+2026-11-28T14:51:05.0855494Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:51:33.1271826Z endfield: endfield news: queued=58 recorded=85 partial-pages=0
+2026-11-28T14:51:53.3392098Z nte: nte news: queued=14 recorded=89 partial-pages=0
+2026-11-28T14:52:04.1830084Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:52:27.8380160Z endfield: endfield news: queued=57 recorded=86 partial-pages=0
+2026-11-28T14:52:51.7634037Z nte: nte news: queued=14 recorded=89 partial-pages=3
+2026-11-28T14:53:01.6984558Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:53:21.1520376Z endfield: endfield news: queued=56 recorded=87 partial-pages=0
+2026-11-28T14:53:44.5102833Z nte: nte news: queued=13 recorded=90 partial-pages=0
+2026-11-28T14:53:54.2747487Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:54:19.1305064Z endfield: endfield news: queued=55 recorded=88 partial-pages=0
+2026-11-28T14:54:35.5089527Z nte: nte news: queued=12 recorded=91 partial-pages=0
+2026-11-28T14:54:44.6433569Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:55:10.4021146Z endfield: endfield news: queued=54 recorded=89 partial-pages=0
+2026-11-28T14:55:34.3115872Z nte: nte news: queued=12 recorded=91 partial-pages=3
+2026-11-28T14:55:45.3679829Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:56:06.3823577Z endfield: endfield news: queued=53 recorded=90 partial-pages=0
+2026-11-28T14:56:20.7090635Z nte: nte news: queued=11 recorded=92 partial-pages=0
+2026-11-28T14:56:35.6299520Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:56:54.6550948Z endfield: endfield news: queued=52 recorded=91 partial-pages=0
+2026-11-28T14:57:17.7537371Z nte: nte news: queued=10 recorded=93 partial-pages=0
+2026-11-28T14:57:28.7643713Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:57:49.9079635Z endfield: endfield news: queued=51 recorded=92 partial-pages=0
+2026-11-28T14:58:14.6063327Z nte: nte news: queued=9 recorded=94 partial-pages=0
+2026-11-28T14:58:25.1919990Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:58:44.7572879Z endfield: endfield news: queued=50 recorded=93 partial-pages=0
+2026-11-28T14:59:04.7817719Z nte: nte news: queued=8 recorded=95 partial-pages=0
+2026-11-28T14:59:16.0062644Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T14:59:35.1061487Z endfield: endfield news: queued=49 recorded=94 partial-pages=0
+2026-11-28T14:59:56.7401465Z nte: nte news: queued=7 recorded=96 partial-pages=0
+2026-11-28T15:00:08.2733613Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:00:45.3824900Z endfield: endfield news: queued=49 recorded=94 partial-pages=3
+2026-11-28T15:01:05.9604325Z nte: nte news: queued=6 recorded=97 partial-pages=0
+2026-11-28T15:01:22.3940346Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:01:48.6233129Z endfield: endfield news: queued=48 recorded=95 partial-pages=0
+2026-11-28T15:02:08.6537721Z nte: nte news: queued=5 recorded=98 partial-pages=0
+2026-11-28T15:02:19.8330998Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:02:44.6454439Z endfield: endfield news: queued=47 recorded=96 partial-pages=0
+2026-11-28T15:03:08.8483961Z nte: nte news: queued=5 recorded=98 partial-pages=3
+2026-11-28T15:03:20.4679850Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:03:49.3126132Z endfield: endfield news: queued=46 recorded=97 partial-pages=0
+2026-11-28T15:04:09.4144612Z nte: nte news: queued=4 recorded=99 partial-pages=0
+2026-11-28T15:04:20.9097940Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:04:46.3530162Z endfield: endfield news: queued=45 recorded=98 partial-pages=0
+2026-11-28T15:05:01.9905325Z nte: nte news: queued=3 recorded=100 partial-pages=0
+2026-11-28T15:05:13.4375305Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:05:35.0184944Z endfield: endfield news: queued=44 recorded=99 partial-pages=0
+2026-11-28T15:05:56.4270007Z nte: nte news: queued=2 recorded=101 partial-pages=0
+2026-11-28T15:06:07.3915456Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:06:36.7019782Z endfield: endfield news: queued=44 recorded=99 partial-pages=3
+2026-11-28T15:07:00.2287110Z nte: nte news: queued=2 recorded=101 partial-pages=3
+2026-11-28T15:07:10.7183036Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:07:38.4000181Z endfield: endfield news: queued=44 recorded=99 partial-pages=6
+2026-11-28T15:07:52.7986453Z nte: nte news: queued=1 recorded=102 partial-pages=0
+2026-11-28T15:08:05.7422830Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:08:36.7266160Z endfield: endfield news: queued=43 recorded=100 partial-pages=0
+2026-11-28T15:08:56.6184095Z nte: nte news: queued=0 recorded=103 partial-pages=0
+2026-11-28T15:09:08.3433782Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:09:28.3603514Z endfield: endfield news: queued=42 recorded=101 partial-pages=0
+2026-11-28T15:09:36.6472983Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:09:47.4442954Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:10:08.4266606Z endfield: endfield news: queued=41 recorded=102 partial-pages=0
+2026-11-28T15:10:16.6046098Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:10:26.4769876Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:10:51.7207590Z endfield: endfield news: queued=40 recorded=103 partial-pages=0
+2026-11-28T15:11:00.1118501Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:11:10.5330526Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:11:31.2030943Z endfield: endfield news: queued=39 recorded=104 partial-pages=0
+2026-11-28T15:11:39.4389291Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:11:50.7363677Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:12:10.2734808Z endfield: endfield news: queued=38 recorded=105 partial-pages=0
+2026-11-28T15:12:18.9686038Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:12:29.9056881Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:12:50.2335540Z endfield: endfield news: queued=37 recorded=106 partial-pages=0
+2026-11-28T15:12:58.6025822Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:13:10.5025306Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:13:53.5724062Z endfield: endfield news: queued=37 recorded=106 partial-pages=3
+2026-11-28T15:14:01.8162592Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:14:13.7247705Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:14:43.3346404Z endfield: endfield news: queued=36 recorded=107 partial-pages=0
+2026-11-28T15:14:51.5023400Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:15:03.1535158Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:15:24.1170694Z endfield: endfield news: queued=35 recorded=108 partial-pages=0
+2026-11-28T15:15:32.4631492Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:15:43.5070247Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:16:08.9539074Z endfield: endfield news: queued=34 recorded=109 partial-pages=0
+2026-11-28T15:16:17.1365969Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:16:28.0498312Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:16:54.0124698Z endfield: endfield news: queued=33 recorded=110 partial-pages=0
+2026-11-28T15:17:02.3689927Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:17:13.6485236Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:17:34.1764243Z endfield: endfield news: queued=32 recorded=111 partial-pages=0
+2026-11-28T15:17:42.3656803Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:17:53.9100294Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:18:14.5583961Z endfield: endfield news: queued=31 recorded=112 partial-pages=0
+2026-11-28T15:18:22.9796350Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:18:34.8138997Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:19:03.5827594Z endfield: endfield news: queued=31 recorded=112 partial-pages=3
+2026-11-28T15:19:11.7857353Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:19:23.5913241Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:19:51.1721867Z endfield: endfield news: queued=30 recorded=113 partial-pages=0
+2026-11-28T15:19:59.5389267Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:20:10.3821986Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:20:31.1829282Z endfield: endfield news: queued=29 recorded=114 partial-pages=0
+2026-11-28T15:20:39.3547215Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:20:51.3788832Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:21:13.0861052Z endfield: endfield news: queued=28 recorded=115 partial-pages=0
+2026-11-28T15:21:21.4815145Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:21:33.2364627Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:21:56.5731675Z endfield: endfield news: queued=27 recorded=116 partial-pages=0
+2026-11-28T15:22:04.7951630Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:22:15.1094455Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:22:35.9416472Z endfield: endfield news: queued=26 recorded=117 partial-pages=0
+2026-11-28T15:22:44.2631261Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:22:54.7450986Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:23:15.8596200Z endfield: endfield news: queued=25 recorded=118 partial-pages=0
+2026-11-28T15:23:24.0604953Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:23:34.7909912Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:23:53.5915810Z endfield: endfield news: queued=24 recorded=119 partial-pages=0
+2026-11-28T15:24:01.9591545Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:24:13.0861525Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:24:49.4446340Z endfield: endfield news: queued=23 recorded=120 partial-pages=0
+2026-11-28T15:24:57.6739686Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:25:08.3610709Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:25:29.4817938Z endfield: endfield news: queued=22 recorded=121 partial-pages=0
+2026-11-28T15:25:37.8213459Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:25:49.6482613Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:26:15.5046339Z endfield: endfield news: queued=21 recorded=122 partial-pages=0
+2026-11-28T15:26:23.7374840Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:26:35.5485687Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:27:00.6028187Z endfield: endfield news: queued=20 recorded=123 partial-pages=0
+2026-11-28T15:27:08.9546554Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:27:20.2811177Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:27:44.7622782Z endfield: endfield news: queued=19 recorded=124 partial-pages=0
+2026-11-28T15:27:52.9470721Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:28:04.3492579Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:28:24.1793672Z endfield: endfield news: queued=18 recorded=125 partial-pages=0
+2026-11-28T15:28:32.4474409Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:28:44.1296309Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:29:11.4903195Z endfield: endfield news: queued=17 recorded=126 partial-pages=0
+2026-11-28T15:29:19.7569091Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:29:30.7922153Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:29:58.7340441Z endfield: endfield news: queued=17 recorded=126 partial-pages=3
+2026-11-28T15:30:07.2488423Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:30:17.7980512Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:30:43.5868639Z endfield: endfield news: queued=17 recorded=126 partial-pages=6
+2026-11-28T15:30:51.8264605Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:31:04.2007974Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:31:21.3887169Z endfield: endfield news: queued=16 recorded=127 partial-pages=0
+2026-11-28T15:31:29.7146591Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:31:41.0749076Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:32:00.0603856Z endfield: endfield news: queued=15 recorded=128 partial-pages=0
+2026-11-28T15:32:08.2402924Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:32:19.5428283Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:32:50.2345199Z endfield: endfield news: queued=14 recorded=129 partial-pages=0
+2026-11-28T15:32:58.5408402Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:33:09.4811420Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:33:31.2910969Z endfield: endfield news: queued=13 recorded=130 partial-pages=0
+2026-11-28T15:33:39.4952177Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:33:50.9095295Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:34:14.1685327Z endfield: endfield news: queued=12 recorded=131 partial-pages=0
+2026-11-28T15:34:22.4494315Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:34:32.7393900Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:34:51.3152689Z endfield: endfield news: queued=11 recorded=132 partial-pages=0
+2026-11-28T15:34:59.4850545Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:35:10.9903119Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:35:30.0861851Z endfield: endfield news: queued=10 recorded=133 partial-pages=0
+2026-11-28T15:35:38.4908010Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:35:50.1724702Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:36:09.7052814Z endfield: endfield news: queued=9 recorded=134 partial-pages=0
+2026-11-28T15:36:17.8949684Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:36:29.0829091Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:36:48.4556463Z endfield: endfield news: queued=8 recorded=135 partial-pages=0
+2026-11-28T15:36:56.8035721Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:37:08.1736583Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:37:32.9989478Z endfield: endfield news: queued=7 recorded=136 partial-pages=0
+2026-11-28T15:37:41.1813543Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:37:52.2806598Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:38:10.8854621Z endfield: endfield news: queued=6 recorded=137 partial-pages=0
+2026-11-28T15:38:19.2646406Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:38:30.0180933Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:38:53.4871115Z endfield: endfield news: queued=5 recorded=138 partial-pages=0
+2026-11-28T15:39:01.6970558Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:39:12.5791245Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:39:34.3403886Z endfield: endfield news: queued=4 recorded=139 partial-pages=0
+2026-11-28T15:39:42.7107395Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:39:54.3474471Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:40:18.5246638Z endfield: endfield news: queued=3 recorded=140 partial-pages=0
+2026-11-28T15:40:26.7308806Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:40:38.5846690Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:40:58.0764266Z endfield: endfield news: queued=2 recorded=141 partial-pages=0
+2026-11-28T15:41:06.4001634Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:41:16.7787587Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:41:38.9426792Z endfield: endfield news: queued=1 recorded=142 partial-pages=0
+2026-11-28T15:41:47.1518403Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:41:58.4167913Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:42:24.7093811Z endfield: endfield news: queued=1 recorded=142 partial-pages=3
+2026-11-28T15:42:32.9938189Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:42:43.9186529Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:43:09.8180595Z endfield: endfield news: queued=0 recorded=143 partial-pages=0
+2026-11-28T15:43:18.0650648Z nte: nte news: caught up (103 recorded)
+2026-11-28T15:43:27.9071915Z silverpalace: silverpalace news: caught up (21 recorded)
+2026-11-28T15:43:33.3105348Z All three sources caught up to their checked snapshots; no more backlog was seen in this pass.
+2026-11-28T15:43:33.3105784Z endfield: recorded=143 pending=0
+2026-11-28T15:43:33.3106018Z nte: recorded=103 pending=0
+2026-11-28T15:43:33.3106253Z silverpalace: recorded=21 pending=0
+2026-11-28T15:43:33.3525571Z Post job cleanup.
+2026-11-28T15:43:33.4648611Z Post job cleanup.
+2026-11-28T15:43:33.5339832Z [command]/usr/bin/git version
+2026-11-28T15:43:33.5378567Z git version 2.56.1
+2026-11-28T15:43:33.5410097Z Temporarily overriding HOME='/home/runner/work/_temp/f35bbaf1-c4d2-41ba-9559-fde6737ea8e7' before making global git config changes
+2026-11-28T15:43:33.5411644Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-28T15:43:33.5414404Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/8mqzv4k2n7c/8mqzv4k2n7c
+2026-11-28T15:43:33.5445133Z Removing SSH command configuration
+2026-11-28T15:43:33.5450357Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-28T15:43:33.5482271Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-28T15:43:33.5761635Z Removing HTTP extra header
+2026-11-28T15:43:33.5766365Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-28T15:43:33.5803377Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-28T15:43:33.6065215Z Removing includeIf entries pointing to credentials config files
+2026-11-28T15:43:33.6071395Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-28T15:43:33.6103231Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-28T15:43:33.6488268Z Cleaning up orphan processes
