@@ -855,22 +855,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "264134",
-        "inflight": false,
-        "messages": [
-          "1576248335159922919"
-        ],
-        "pages": 1,
-        "signature": "5b8b36b1cffaef3a936f43cc69bb5db2cf7e9fd5011b86f0acbda580cc3fb8af"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-09-15",
-          "id": "264134",
-          "title": "Asia & SEA Server Maintenance Notice: Sept 16",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20260914/264134.html"
-        },
         {
           "date": "2026-09-21",
           "id": "264250",
@@ -1532,6 +1518,12 @@
             "1576247712964288613"
           ],
           "signature": "98c42f17bd02916b6de2756355b06095a29823d9d94604af48c5308095b4e9e8"
+        },
+        "264134": {
+          "messages": [
+            "1576248335159922919"
+          ],
+          "signature": "5b8b36b1cffaef3a936f43cc69bb5db2cf7e9fd5011b86f0acbda580cc3fb8af"
         },
         "264144": {
           "messages": [
