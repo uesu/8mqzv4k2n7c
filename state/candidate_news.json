@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "9568",
-        "inflight": false,
-        "messages": [
-          "1576260408233169097"
-        ],
-        "pages": 1,
-        "signature": "b66d5b3641720480e2636324db0c5878d5e6334f74706741e21703729773b76e"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "9568",
-          "title": "[11/19/2026] Account Suspension Notice",
-          "ts": 1795094100
-        },
         {
           "id": "9569",
           "title": "[Meeting You in the World o'Shrooms] New Version Guide Page Release Details",
@@ -885,6 +872,12 @@
             "1576249878324052021"
           ],
           "signature": "8e34a0e7210a49f53ffa95d1d6fff56e1dd0b60a22f69736728bd7fca69b486b"
+        },
+        "9568": {
+          "messages": [
+            "1576260408233169097"
+          ],
+          "signature": "b66d5b3641720480e2636324db0c5878d5e6334f74706741e21703729773b76e"
         },
         "9570": {
           "messages": [
