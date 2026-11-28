@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4489",
-        "inflight": false,
-        "messages": [
-          "1576258270635491479",
-          "1576258289551802474"
-        ],
-        "pages": 2,
-        "signature": "7dfa0c7c465fcab4490dde793c586b8a5ef423859f238fe587bfb71e7a4b9db8"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4489",
-          "title": "[Rejuvenation] Chartered Headhunting",
-          "ts": 1791972000
-        },
         {
           "id": "2652",
           "title": "[Seal of Jade Issue] LTO Details",
@@ -486,6 +472,13 @@
             "1576258102703952084"
           ],
           "signature": "f58650ee5fc6eba36c000fb020f6f48782a4a1172aff0946142752a0e0b7f6ac"
+        },
+        "4489": {
+          "messages": [
+            "1576258270635491479",
+            "1576258289551802474"
+          ],
+          "signature": "7dfa0c7c465fcab4490dde793c586b8a5ef423859f238fe587bfb71e7a4b9db8"
         },
         "4492": {
           "messages": [
