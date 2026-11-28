@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "6180",
-        "inflight": false,
-        "messages": [
-          "1576237523628327004"
-        ],
-        "pages": 1,
-        "signature": "50bca282fdeeb249bb0cfe4e4261bde77c55e1e4372595173b7f0d3be2d99421"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "6180",
-          "title": "[Grand Blessings for the Spring] Event Series Details",
-          "ts": 1771128000
-        },
         {
           "id": "0753",
           "title": "Official Comic [The Promise] Now Released",
@@ -684,6 +671,12 @@
             "1576228585000275979"
           ],
           "signature": "b0c18b88520ff486af57ae5248d2e4a502648d1ce4591833a6abfe58221f5bbc"
+        },
+        "6180": {
+          "messages": [
+            "1576237523628327004"
+          ],
+          "signature": "50bca282fdeeb249bb0cfe4e4261bde77c55e1e4372595173b7f0d3be2d99421"
         },
         "6181": {
           "messages": [
