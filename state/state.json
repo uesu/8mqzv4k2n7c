@@ -4219,7 +4219,7 @@
       "CDOF4X83H7X2": {
         "first_seen": 1793775019,
         "gate": "redeem-validated",
-        "last_seen": 1795825227,
+        "last_seen": 1795881367,
         "message_id": "1567440902862012537",
         "msg_codes": [
           "CDOF4X83H7X2",
@@ -6687,7 +6687,7 @@
       "SUNCHASER": {
         "first_seen": 1795172438,
         "gate": "redeem-validated",
-        "last_seen": 1795826424,
+        "last_seen": 1795881367,
         "message_id": "1573292006535340075",
         "msg_codes": [
           "SUNCHASER"
@@ -6778,7 +6778,7 @@
       "ZZZ34SUNBRINGER": {
         "first_seen": 1794618037,
         "gate": "redeem-validated",
-        "last_seen": 1795833030,
+        "last_seen": 1795881367,
         "message_id": "1573324681019138079",
         "msg_codes": [
           "ZZZ34SUNBRINGER"
@@ -6832,7 +6832,7 @@
       "ZZZHSRCOLLAB": {
         "first_seen": 1794618037,
         "gate": "redeem-validated",
-        "last_seen": 1795833030,
+        "last_seen": 1795881367,
         "message_id": "1573322227099766785",
         "msg_codes": [
           "ZZZHSRCOLLAB"
@@ -6925,7 +6925,7 @@
   "heartbeat": {
     "every_min": 1440,
     "instance": "alpha",
-    "last_success": 1795793433
+    "last_success": 1795881367
   },
   "icons": {
     "genshin": "https://pbs.twimg.com/profile_images/2117809147018371072/kvJNhHo2_200x200.jpg",
@@ -9944,8 +9944,8 @@
               ]
             }
           },
-          "banners_checked_ts": 1795862422,
-          "banners_search_ts": 1795862422,
+          "banners_checked_ts": 1795881367,
+          "banners_search_ts": 1795881367,
           "banners_settled": [
             "phase1",
             "phase1_4",
@@ -10249,7 +10249,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795857023
+          "ts": 1795881367
         },
         "data": {
           "announcement_locked": true,
@@ -10272,17 +10272,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795857023,
+          "banners_checked_ts": 1795881367,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795857023,
+          "banners_search_ts": 1795881367,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795857023,
+          "calendar_ts": 1795881367,
           "estimate_sources": [
             "version cadence"
           ],
