@@ -5224,7 +5224,7 @@
       "AEONAHA": {
         "first_seen": 1794373819,
         "gate": "redeem-validated",
-        "last_seen": 1795813240,
+        "last_seen": 1795857023,
         "message_id": "1569942408031113268",
         "msg_codes": [
           "AEONAHA"
@@ -10261,7 +10261,7 @@
               "version": "3.4"
             }
           ],
-          "ts": 1795845642
+          "ts": 1795857023
         },
         "data": {
           "announcement_locked": true,
@@ -10284,17 +10284,17 @@
               "Alice Thymefield"
             ]
           },
-          "banners_checked_ts": 1795845642,
+          "banners_checked_ts": 1795857023,
           "banners_display": {
             "Alice": "Alice Thymefield"
           },
-          "banners_search_ts": 1795845642,
+          "banners_search_ts": 1795857023,
           "banners_settled": [
             "phase1",
             "phase2",
             "reruns"
           ],
-          "calendar_ts": 1795845642,
+          "calendar_ts": 1795857023,
           "estimate_sources": [
             "version cadence"
           ],
