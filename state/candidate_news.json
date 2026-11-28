@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2668",
-        "inflight": false,
-        "messages": [
-          "1576246374654152919"
-        ],
-        "pages": 1,
-        "signature": "24c477449861fdd8c47b1d2e2f298ee95c0fef78011c20cea3059e4ade1c4c2a"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2668",
-          "title": "[Party Together] - [Gift Box Castell] Fest Event Details",
-          "ts": 1778731200
-        },
         {
           "id": "9577",
           "title": "Arknights: Endfield [Sketches of Lost Heirlooms] Version DEV Comm",
@@ -478,6 +465,12 @@
             "1576238521033687185"
           ],
           "signature": "e85db2070ab66600ff2dfc10e0a10f8f3382740c91a2c32a93dd0a76184fef45"
+        },
+        "2668": {
+          "messages": [
+            "1576246374654152919"
+          ],
+          "signature": "24c477449861fdd8c47b1d2e2f298ee95c0fef78011c20cea3059e4ade1c4c2a"
         },
         "2669": {
           "messages": [
