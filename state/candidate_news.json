@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1339",
-        "inflight": false,
-        "messages": [
-          "1576238723623030926"
-        ],
-        "pages": 1,
-        "signature": "c3903d7d6a234338b8db36a4dedcd60b1288cb613b3a064bb8f988791b7e9958"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1339",
-          "title": "[Qingbo Rising] Limited-Time Sign-In Event Details",
-          "ts": 1772593200
-        },
         {
           "id": "9570",
           "title": "[Old Deep Water Dies, by Rising Tide It is Denied] Version Update & Maintenance Preview",
@@ -532,6 +519,12 @@
             "1576234232911761408"
           ],
           "signature": "d17faf7490183b08f6212e23af6c7f9d9e20608c8c9ca001edc880613a781f6d"
+        },
+        "1339": {
+          "messages": [
+            "1576238723623030926"
+          ],
+          "signature": "c3903d7d6a234338b8db36a4dedcd60b1288cb613b3a064bb8f988791b7e9958"
         },
         "1340": {
           "messages": [
