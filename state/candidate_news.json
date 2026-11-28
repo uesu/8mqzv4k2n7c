@@ -865,7 +865,13 @@
       "version": 1
     },
     "nte": {
-      "partial": null,
+      "partial": {
+        "id": "264409",
+        "inflight": false,
+        "messages": [],
+        "pages": 6,
+        "signature": "d602a0c0e7864cac580884e7cceba04a0f42ecf628632ee6e7a76c9ca8e50bb5"
+      },
       "pending": [
         {
           "date": "2026-09-29",
