@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2652",
-        "inflight": false,
-        "messages": [
-          "1576258454555852812"
-        ],
-        "pages": 1,
-        "signature": "f2f986c2557cdd5d7ad001f78b5e333f1bc49e0ede1c6a9c8d1c3c7a2506a561"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2652",
-          "title": "[Seal of Jade Issue] LTO Details",
-          "ts": 1791973800
-        },
         {
           "id": "3837",
           "title": "Arknights: Endfield Is Now Officially Available on Steam!",
@@ -285,6 +272,12 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2652": {
+          "messages": [
+            "1576258454555852812"
+          ],
+          "signature": "f2f986c2557cdd5d7ad001f78b5e333f1bc49e0ede1c6a9c8d1c3c7a2506a561"
         },
         "2653": {
           "messages": [
