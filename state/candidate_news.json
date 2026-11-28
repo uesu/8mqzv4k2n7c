@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "1335",
-        "inflight": false,
-        "messages": [
-          "1576247102445453313"
-        ],
-        "pages": 1,
-        "signature": "5353022696c5640f92e7eead69207864f820c5048c1114db84f5bd0d4121f0a8"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "1335",
-          "title": "Talos-II Photographer",
-          "ts": 1779768000
-        },
         {
           "id": "3840",
           "title": "Talos-II Photographer Special Prize Winners Announced!",
@@ -401,6 +388,12 @@
             "1576234232911761408"
           ],
           "signature": "d17faf7490183b08f6212e23af6c7f9d9e20608c8c9ca001edc880613a781f6d"
+        },
+        "1335": {
+          "messages": [
+            "1576247102445453313"
+          ],
+          "signature": "5353022696c5640f92e7eead69207864f820c5048c1114db84f5bd0d4121f0a8"
         },
         "1336": {
           "messages": [
