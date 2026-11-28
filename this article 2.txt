@@ -1,4 +1,4 @@
-it seems okay on the discohook browser but on discord, the image is just static:
+it seems okay on the discohook browser but on discord, the image or media content is just static:
 
 {
   "attachments": [],
@@ -160,7 +160,6 @@ there's this for example, i right click but it's jpg: https://s.elementagames.co
 but it was moving?
 
 The file URL ending in .jpg is almost certainly a renamed GIF or animated WebP file. Modern web browsers ignore file extensions and read the internal binary header of the file to decide how to render it.
-(Note: The direct image URL you shared could not be fetched directly by my browsing tool, so this breakdown is based on standard CDN behavior and the visual frames from your screenshots).
 
 Why It Moves on the Website
 
@@ -214,3 +213,291 @@ Use code with caution.
 • Renamed .gif files: Once you save or upload the byte stream with a .gif filename (for example, via discord.File(io.BytesIO(data), filename="image.gif")), Discord will automatically animate it in embeds and messages.
 • Animated .webp files: Discord does not always animate .webp files reliably when passed via external embed URLs or certain upload methods. If ext == ".webp", you can check if it has multiple frames using Pillow (Image.open(io.BytesIO(data)).is_animated) and convert it to .gif or .mp4 on the fly before uploading.
 Are you passing these image URLs directly into Discord webhook embeds, or downloading and re-uploading the files through your bot?
+
+this too:
+https://silverpalace.elementagames.com/en-us/newsDetail?id=93
+
+{
+  "attachments": [],
+  "webhook_id": "1575835200103907328",
+  "flags": 32768,
+  "components": [
+    {
+      "id": 1,
+      "type": 17,
+      "accent_color": 14922399,
+      "spoiler": false,
+      "components": [
+        {
+          "id": 2,
+          "type": 10,
+          "content": "## [The Science of All Things - Combat Edition](https://silverpalace.elementagames.com/en-us/newsDetail?id=93)\n-# Official News · Silver Palace"
+        },
+        {
+          "id": 3,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/070692e5e6d41773a7634469b3e58fe9.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/5_lU_QQaEgeCJUCIar968UaVi3gCnN0d16Vm_it5qW0/https/s.elementagames.com/official/image/20260721/070692e5e6d41773a7634469b3e58fe9.jpg",
+                "width": 914,
+                "height": 514,
+                "content_type": "image/jpeg"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": 10,
+          "content": "**Revamped Combat**\n\nDuring this test, you'll not only experience a completely refreshed combat system, but also face off against a host of formidable foes making their first appearances in Silvernia. Each enemy features unique combat mechanics, striking visual design, and spectacular battle performances, all crafted to deliver exhilarating combat and a feast for the eyes.\n\n**Enhanced Performance Quality**"
+        },
+        {
+          "id": 5,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/c00c394f7ebc98382cd8a2d76e44d005.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/L5k_WoUspR862PAgjL8EPcXmW8OydKYDbUeeABwXmZg/https/s.elementagames.com/official/image/20260721/c00c394f7ebc98382cd8a2d76e44d005.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": 10,
+          "content": "**All-New Battle Mechanics**"
+        },
+        {
+          "id": 7,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/97ed095134eb087715cec83675025e3d.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/gYEqXabQuGg0Y8gRzmQwt502wdP-sQP4DFD815VdM0g/https/s.elementagames.com/official/image/20260721/97ed095134eb087715cec83675025e3d.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": 10,
+          "content": "**Stunning Visual Effects**"
+        },
+        {
+          "id": 9,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/173ed7d781e73dbe0a9c12183e558432.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/5BxtoBJuibdZ2PlYHl9PVa4373Yu_Ops7ldTUMU-jQM/https/s.elementagames.com/official/image/20260721/173ed7d781e73dbe0a9c12183e558432.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": 10,
+          "content": "**Combat Features**\n\n**Parries**\n\nWhen a yellow circle appears as an enemy prepares to attack, parry just before the hit lands to reduce DMG taken and deal DMG to the enemy. Additionally, successful parries can be chained into combos, allowing you to rapidly unleash powerful attacks."
+        },
+        {
+          "id": 11,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/70bb4ba828639cabe5d9b3082daa798a.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/uOMgrKnNM6d048zZN_EPEuVNlLQriTdWIzvOXTFq-0Q/https/s.elementagames.com/official/image/20260721/70bb4ba828639cabe5d9b3082daa798a.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": 10,
+          "content": "**Executions**\n\nOnce an enemy has been Stunned, you can perform an Execution on them to deal significant DMG."
+        },
+        {
+          "id": 13,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/93bfa85a9e56001f746a9feda85ac630.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/WCnRQMdqydGNZZ_4bk9uvTEZhT_a18nTZON7b1nM1cI/https/s.elementagames.com/official/image/20260721/93bfa85a9e56001f746a9feda85ac630.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "type": 10,
+          "content": "**Synchronised Combat**\n\nWhen a character performs a Charged Attack or unleashes a Charged Skill, switching to another character will cause the outgoing character to remain on the field until their current action is complete. By making clever use of this technique, you can have multiple characters fighting on the field at once. Combine their skills to unlock even more combat potential."
+        },
+        {
+          "id": 15,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/2a0a99ff57f3d43776a8a00ddd416a21.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/x7QLbaPzgP29d-7TZYEjrUA-Ym29jp8BMED1EdKEE3Y/https/s.elementagames.com/official/image/20260721/2a0a99ff57f3d43776a8a00ddd416a21.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "type": 10,
+          "content": "**Battle Mechanics**\n\n**Weakened States**\n\nAfter suffering an Execution, enemies will be left in a temporarily weakened state. Make use of this opportunity to unleash unrelenting attacks."
+        },
+        {
+          "id": 17,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/0d3450c1ffd7ed4c16a4db037e716b26.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/NmEH6xkTg-x1lm8dWEcypCypUjhNYQ_22GsuQPaLuBw/https/s.elementagames.com/official/image/20260721/0d3450c1ffd7ed4c16a4db037e716b26.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "type": 10,
+          "content": "**Resonance Effects**\n\nCharacters build their Resonance meters as they attack. Once full, a Resonance Effect is triggered based on their Reactor attribute, significantly increasing their DMG dealt."
+        },
+        {
+          "id": 19,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/290a032d33b1f5f82b1a56ec7e1a2160.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/AXxca8MxQOAvbxmW2Smj85jhN97CGs2ynCv1xV00vsQ/https/s.elementagames.com/official/image/20260721/290a032d33b1f5f82b1a56ec7e1a2160.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "type": 10,
+          "content": "**Casual Mode**\n\nWhile we continue to expand the strategic depth and gameplay possibilities offered by the game's combat, we want to make sure that every Detective can enjoy the thrill of battle. If you prefer a more relaxed combat experience, try switching to \"Casual Mode\". By repeatedly clicking the left mouse button, you can trigger a variety of stylish combos with ease, allowing you to quickly get the hang of combat and defeat formidable foes.\n\nAdditionally, when \"Casual Mode\" is enabled, characters will trigger a Time Dilation effect and be shown a prompt when they are about to be hit. Even Detectives experiencing Silvernia for the first time can remain calm amid the clash of blades, responding to danger with composure."
+        },
+        {
+          "id": 21,
+          "type": 12,
+          "items": [
+            {
+              "media": {
+                "url": "https://s.elementagames.com/official/image/20260721/c82863cbbde5fdabf8f9824e8ef193ae.jpg",
+                "proxy_url": "https://images-ext-1.discordapp.net/external/ZSP2xdVUHxbdP1rwBx1TXWo0WVcWFEA0yNbChZibxIM/https/s.elementagames.com/official/image/20260721/c82863cbbde5fdabf8f9824e8ef193ae.jpg",
+                "width": 960,
+                "height": 540,
+                "content_type": "image/gif"
+              },
+              "description": null,
+              "spoiler": false
+            }
+          ]
+        },
+        {
+          "id": 22,
+          "type": 14,
+          "divider": true,
+          "spacing": 1
+        },
+        {
+          "type": 1,
+          "components": [
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Read Post",
+              "emoji": {
+                "id": "1472388018689282261",
+                "name": "starwardhmm",
+                "animated": true
+              },
+              "url": "https://silverpalace.elementagames.com/en-us/newsDetail?id=93"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Citlali News",
+              "emoji": {
+                "id": "1439878792653832253",
+                "name": "starward11",
+                "animated": true
+              },
+              "url": "https://discord.gg/HyrVP9wRXu"
+            },
+            {
+              "type": 2,
+              "style": 5,
+              "label": "Donate",
+              "emoji": {
+                "id": "1509026327548657914",
+                "name": "starwardfans",
+                "animated": true
+              },
+              "url": "https://ko-fi.com/jieunlatte"
+            }
+          ]
+        },
+        {
+          "id": 27,
+          "type": 10,
+          "content": "-# It takes time, tools, hosting and ongoing maintenance to keep the news working. If it helps you stay updated, consider supporting so it can keep improving <a:starwardlove:1570666942233055312>"
+        }
+      ]
+    }
+  ]
+}
