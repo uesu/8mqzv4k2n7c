@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0753",
-        "inflight": false,
-        "messages": [
-          "1576237809553899561"
-        ],
-        "pages": 1,
-        "signature": "2e2982091be3133b4dc07446118c4a0ee954a2a6a3eaf7c71740eeeffcb3d74c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0753",
-          "title": "Official Comic [The Promise] Now Released",
-          "ts": 1771646400
-        },
         {
           "id": "9572",
           "title": "Release Celebration [Hues of Passion] Details",
@@ -508,6 +495,12 @@
         }
       ],
       "posted": {
+        "0753": {
+          "messages": [
+            "1576237809553899561"
+          ],
+          "signature": "2e2982091be3133b4dc07446118c4a0ee954a2a6a3eaf7c71740eeeffcb3d74c"
+        },
         "0754": {
           "messages": [
             "1576237304958165155"
