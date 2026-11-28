@@ -1,27 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "8907",
-        "inflight": false,
-        "messages": [
-          "1576239654464921681",
-          "1576239687570559047",
-          "1576239706679672903",
-          "1576239912875983060",
-          "1576239931368407193",
-          "1576239949714296934",
-          "1576240160738255029"
-        ],
-        "pages": 7,
-        "signature": "594ed9ab01d97b7f3b7b95a18ffd4de95af68cbc5a8740f2e12e7a40bfb3b40d"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "8907",
-          "title": "[Old Deep Water Dies, by Rising Tide It is Denied] Version Update Notes",
-          "ts": 1773277200
-        },
         {
           "id": "7026",
           "title": "Security Risk Warning for Using Unofficial Tools",
@@ -752,6 +733,18 @@
             "1576234692925980823"
           ],
           "signature": "5511ee78ad7e21538bc93fc2b2eb7b0a633f976b224ae93c1141d15ca0b44178"
+        },
+        "8907": {
+          "messages": [
+            "1576239654464921681",
+            "1576239687570559047",
+            "1576239706679672903",
+            "1576239912875983060",
+            "1576239931368407193",
+            "1576239949714296934",
+            "1576240160738255029"
+          ],
+          "signature": "594ed9ab01d97b7f3b7b95a18ffd4de95af68cbc5a8740f2e12e7a40bfb3b40d"
         },
         "8909": {
           "messages": [
