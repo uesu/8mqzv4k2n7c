@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5222",
-        "inflight": false,
-        "messages": [
-          "1576231444877938800"
-        ],
-        "pages": 1,
-        "signature": "6d42ea55a94619f655a6d94d179845d3bfb9a176ac11c5efa60e591c4c656cc1"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5222",
-          "title": "Arknights: Endfield Beta Test II Pre-Download Now Available",
-          "ts": 1764158400
-        },
         {
           "id": "5218",
           "title": "Beta Test II Test Instructions",
@@ -706,6 +693,12 @@
             "1576226401080578160"
           ],
           "signature": "58a7b5ef4e5c7af2f7e15f24bcc96a5e60b4a7f78e6e368d6e6beea2ed651abb"
+        },
+        "5222": {
+          "messages": [
+            "1576231444877938800"
+          ],
+          "signature": "6d42ea55a94619f655a6d94d179845d3bfb9a176ac11c5efa60e591c4c656cc1"
         },
         "5229": {
           "messages": [
