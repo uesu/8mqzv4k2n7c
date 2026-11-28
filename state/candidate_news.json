@@ -768,22 +768,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "260706",
-        "inflight": false,
-        "messages": [
-          "1576234301656404009"
-        ],
-        "pages": 1,
-        "signature": "b8f0bc07cb622a1aac945c381b401cce6671302aa5ea52bb971bd05b0d25ce13"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-02-04",
-          "id": "260706",
-          "title": "NTE [Co-Ex Test] PC Setup Guide",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20260203/260706.html"
-        },
         {
           "date": "2026-02-04",
           "id": "260715",
@@ -1397,6 +1383,12 @@
             "1576233994897326323"
           ],
           "signature": "9dd7396efe6c9d2f168f769371289ddddea106206cce8e45ad10a4685c2b3c01"
+        },
+        "260706": {
+          "messages": [
+            "1576234301656404009"
+          ],
+          "signature": "b8f0bc07cb622a1aac945c381b401cce6671302aa5ea52bb971bd05b0d25ce13"
         }
       },
       "route": "12975a7fb0e13152",
