@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "5201",
-        "inflight": false,
-        "messages": [
-          "1576251974612025495",
-          "1576251998611968001"
-        ],
-        "pages": 2,
-        "signature": "e86298cd97b8283fb7cfe71326f0b759c8f6bdc98e0bb39334effef711fd745c"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "5201",
-          "title": "[Homecoming] Version Pre-Download & Update Notice",
-          "ts": 1784001600
-        },
         {
           "id": "8999",
           "title": "Official Comic [Echoes of the Beginning: Bloom Amid Ruin] Is Live",
@@ -567,6 +553,13 @@
             "1576233925695512689"
           ],
           "signature": "95b466b329a76c68b517433fdcf7b350cdcf8221bfb667a8e904dd42489d9896"
+        },
+        "5201": {
+          "messages": [
+            "1576251974612025495",
+            "1576251998611968001"
+          ],
+          "signature": "e86298cd97b8283fb7cfe71326f0b759c8f6bdc98e0bb39334effef711fd745c"
         },
         "5202": {
           "messages": [
