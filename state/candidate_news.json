@@ -765,22 +765,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "259960",
-        "inflight": false,
-        "messages": [
-          "1576233994897326323"
-        ],
-        "pages": 1,
-        "signature": "9dd7396efe6c9d2f168f769371289ddddea106206cce8e45ad10a4685c2b3c01"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2025-12-23",
-          "id": "259960",
-          "title": "NTE Co-Ex Test Now Recruiting",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20251222/259960.html"
-        },
         {
           "date": "2026-02-04",
           "id": "260706",
@@ -1394,6 +1380,12 @@
             "1576233710812926113"
           ],
           "signature": "9214e925b24bb88edaed634e77baa1b2bdc6a99852873e80cd650a74b6c597c5"
+        },
+        "259960": {
+          "messages": [
+            "1576233994897326323"
+          ],
+          "signature": "9dd7396efe6c9d2f168f769371289ddddea106206cce8e45ad10a4685c2b3c01"
         }
       },
       "route": "12975a7fb0e13152",
