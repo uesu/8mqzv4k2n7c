@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "3839",
-        "inflight": false,
-        "messages": [
-          "1576256641664295063"
-        ],
-        "pages": 1,
-        "signature": "af203215d6f87f4ebcc72d5a8fc4a3fd4998d87f77dd026456217719d80db6f0"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "3839",
-          "title": "[Resplendent Spectrum] RE-Factor Headhunting #1 and [Tag Artist Issue] RE-Factor Issue #1 Open",
-          "ts": 1790157600
-        },
         {
           "id": "1326",
           "title": "Dense Forest Slumbers Beneath the Snow, Echoing Bells Awaken an Old City — [Dreamscape of Wind and Snow] Development Insights",
@@ -405,6 +392,12 @@
             "1576253690745196586"
           ],
           "signature": "e99c781ed8e5a92fd65a99290a285f081a075f3d90f5756f23161f50262de4ef"
+        },
+        "3839": {
+          "messages": [
+            "1576256641664295063"
+          ],
+          "signature": "af203215d6f87f4ebcc72d5a8fc4a3fd4998d87f77dd026456217719d80db6f0"
         },
         "3840": {
           "messages": [
