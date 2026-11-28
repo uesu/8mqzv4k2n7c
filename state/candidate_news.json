@@ -836,23 +836,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "262998",
-        "inflight": false,
-        "messages": [
-          "1576243745656021023",
-          "1576243765545406515"
-        ],
-        "pages": 2,
-        "signature": "1b68188260065e54f739649cccafaeb4270de75263a8872e4e5e753cb592013b"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-07-08",
-          "id": "262998",
-          "title": "NTE Version 1.2 Creation Submission Event",
-          "url": "https://nte.perfectworld.com/en/article/news/gameevent/20260703/262998.html"
-        },
         {
           "date": "2026-07-08",
           "id": "263057",
@@ -1479,6 +1464,13 @@
             "1576242827317346399"
           ],
           "signature": "2061961c83349488be6f8cf1648180de798d2c755ab43722ad4b524b3f771d05"
+        },
+        "262998": {
+          "messages": [
+            "1576243745656021023",
+            "1576243765545406515"
+          ],
+          "signature": "1b68188260065e54f739649cccafaeb4270de75263a8872e4e5e753cb592013b"
         },
         "263019": {
           "messages": [
