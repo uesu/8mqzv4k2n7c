@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "0743",
-        "inflight": false,
-        "messages": [
-          "1576259359900569844"
-        ],
-        "pages": 1,
-        "signature": "c3918cbd909e6930401f810dea268cfa417688d9d30e1bc43a8fd4f306dbe5c8"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "0743",
-          "title": "Arknights: Endfield WhatsApp Account Linking Reward Feature Now Available!",
-          "ts": 1792123200
-        },
         {
           "id": "5206",
           "title": "Arknights: Endfield Steam Client Account Linking Guide",
@@ -93,6 +80,12 @@
         }
       ],
       "posted": {
+        "0743": {
+          "messages": [
+            "1576259359900569844"
+          ],
+          "signature": "c3918cbd909e6930401f810dea268cfa417688d9d30e1bc43a8fd4f306dbe5c8"
+        },
         "0744": {
           "messages": [
             "1576257894410752073",
