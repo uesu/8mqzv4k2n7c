@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2653",
-        "inflight": false,
-        "messages": [
-          "1576255896080744665"
-        ],
-        "pages": 1,
-        "signature": "db29610123f5b8e09cf5f9993b75ca1fd3a2f71b28e3eac063752e0e6284e8be"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2653",
-          "title": "Discord Game Stats Widget Updates",
-          "ts": 1788256800
-        },
         {
           "id": "5208",
           "title": "[Dreamscape of Wind and Snow] Version Update Notes",
@@ -337,6 +324,12 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2653": {
+          "messages": [
+            "1576255896080744665"
+          ],
+          "signature": "db29610123f5b8e09cf5f9993b75ca1fd3a2f71b28e3eac063752e0e6284e8be"
         },
         "2654": {
           "messages": [
