@@ -800,7 +800,7 @@
     "nte": {
       "partial": {
         "id": "262144",
-        "inflight": false,
+        "inflight": true,
         "messages": [
           "1576239024950091817"
         ],
