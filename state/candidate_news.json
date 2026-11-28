@@ -1,22 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "2656",
-        "inflight": false,
-        "messages": [
-          "1576252490180067361",
-          "1576252509247381709"
-        ],
-        "pages": 2,
-        "signature": "1031670bd13b78407132ebe84b861d7fef80729e3a513c8acd57aefafe1ede19"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "2656",
-          "title": "[North Yearns the Rift Vigile] Chartered Headhunting",
-          "ts": 1784109600
-        },
         {
           "id": "6174",
           "title": "[Military Grade Issue] LTO Details",
@@ -402,6 +388,13 @@
             "1576226924618059777"
           ],
           "signature": "3e9fd4bba51cdd262e3c675abd879cfe8557a09f23aa87361e7ba8a60be19914"
+        },
+        "2656": {
+          "messages": [
+            "1576252490180067361",
+            "1576252509247381709"
+          ],
+          "signature": "1031670bd13b78407132ebe84b861d7fef80729e3a513c8acd57aefafe1ede19"
         },
         "2657": {
           "messages": [
