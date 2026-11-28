@@ -1,21 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4480",
-        "inflight": false,
-        "messages": [
-          "1576255727641829598"
-        ],
-        "pages": 1,
-        "signature": "21a13fbea29d15ec5477096e36e8cf2629f7bbacbab780555d19b3350931c476"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4480",
-          "title": "[Deep Cold Issue] LTO Details",
-          "ts": 1788237000
-        },
         {
           "id": "2653",
           "title": "Discord Game Stats Widget Updates",
@@ -486,6 +473,12 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4480": {
+          "messages": [
+            "1576255727641829598"
+          ],
+          "signature": "21a13fbea29d15ec5477096e36e8cf2629f7bbacbab780555d19b3350931c476"
         },
         "4481": {
           "messages": [
