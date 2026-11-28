@@ -1,24 +1,8 @@
 {
   "candidate_news": {
     "endfield": {
-      "partial": {
-        "id": "4481",
-        "inflight": false,
-        "messages": [
-          "1576254767762645123",
-          "1576254787605897228",
-          "1576254808661430505",
-          "1576255012311666689"
-        ],
-        "pages": 4,
-        "signature": "036391be691353361c9bf0ead05caa0701d2ec7967d66e8a18450b7b38a65a59"
-      },
+      "partial": null,
       "pending": [
-        {
-          "id": "4481",
-          "title": "Arknights: Endfield [Dreamscape of Wind and Snow] Version DEV Comm",
-          "ts": 1787392800
-        },
         {
           "id": "2654",
           "title": "Steam [Pioneer Test] Recruitment Open!",
@@ -503,6 +487,15 @@
             "1576229738932871209"
           ],
           "signature": "e285058c2c0331c01463912c97f6cf8173ea5c05baa3115ebb1817a57b7fb860"
+        },
+        "4481": {
+          "messages": [
+            "1576254767762645123",
+            "1576254787605897228",
+            "1576254808661430505",
+            "1576255012311666689"
+          ],
+          "signature": "036391be691353361c9bf0ead05caa0701d2ec7967d66e8a18450b7b38a65a59"
         },
         "4482": {
           "messages": [
