@@ -898,25 +898,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "265053",
-        "inflight": false,
-        "messages": [
-          "1576253038035992678",
-          "1576253056297734166",
-          "1576253075314708491",
-          "1576253291623350274"
-        ],
-        "pages": 4,
-        "signature": "3482f0756eb544753a6f3f70ab9019468dd5387e9c9cea759176740dd19fc14b"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2026-11-20",
-          "id": "265053",
-          "title": "《NTE》 Fan Content Guidelines",
-          "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20261113/265053.html"
-        },
         {
           "date": "2026-11-23",
           "id": "265196",
@@ -1601,6 +1584,15 @@
             "1576252574829518971"
           ],
           "signature": "d4b0729bdceb031e28d09b37a3ebd5a8b78f1775bef994c525abfa41b9a9310a"
+        },
+        "265053": {
+          "messages": [
+            "1576253038035992678",
+            "1576253056297734166",
+            "1576253075314708491",
+            "1576253291623350274"
+          ],
+          "signature": "3482f0756eb544753a6f3f70ab9019468dd5387e9c9cea759176740dd19fc14b"
         },
         "265063": {
           "messages": [
