@@ -728,22 +728,8 @@
       "version": 1
     },
     "nte": {
-      "partial": {
-        "id": "252469",
-        "inflight": false,
-        "messages": [
-          "1576225745502605384"
-        ],
-        "pages": 1,
-        "signature": "e61efa24821e723dbb195beef62f979e6bf990647d8dc11617222f652082bab8"
-      },
+      "partial": null,
       "pending": [
-        {
-          "date": "2024-08-30",
-          "id": "252469",
-          "title": "Neverness To Everness Trailer | Wonders Await, In Urban Cityscape!",
-          "url": "https://nte.perfectworld.com/en/article/news/gamenews/20240830/252469.html"
-        },
         {
           "date": "2024-08-30",
           "id": "252471",
@@ -1357,7 +1343,14 @@
           "url": "https://nte.perfectworld.com/en/article/news/gamebroad/20261123/265196.html"
         }
       ],
-      "posted": {},
+      "posted": {
+        "252469": {
+          "messages": [
+            "1576225745502605384"
+          ],
+          "signature": "e61efa24821e723dbb195beef62f979e6bf990647d8dc11617222f652082bab8"
+        }
+      },
       "route": "12975a7fb0e13152",
       "source": "nte",
       "version": 1
